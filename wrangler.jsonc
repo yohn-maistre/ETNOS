@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "strata-preview",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "STRATA_ORIGIN": "https://strata-preview.giyaibo.workers.dev",
+    "STRATA_NODE": "preview"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "STRATA", "class_name": "StrataNode" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["StrataNode"] }],
+  "observability": { "enabled": false }
+}

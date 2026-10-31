@@ -1,5 +1,6 @@
+import type { Database } from './database.ts'
+
 export const schema = `
-PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS actors (
  id TEXT PRIMARY KEY, did TEXT NOT NULL UNIQUE, name TEXT NOT NULL,
  kind TEXT NOT NULL CHECK(kind IN ('human','agent')), operator_id TEXT REFERENCES actors(id)
@@ -47,5 +48,78 @@ CREATE TABLE IF NOT EXISTS audit (
  sequence INTEGER PRIMARY KEY AUTOINCREMENT, actor_id TEXT NOT NULL, action TEXT NOT NULL,
  target TEXT NOT NULL, created INTEGER NOT NULL
 );
-PRAGMA user_version = 1;
 `;
+
+const migrations = [schema, `
+ALTER TABLE communities ADD COLUMN admission TEXT NOT NULL DEFAULT 'approval' CHECK(admission IN ('open','approval','invite'));
+UPDATE communities SET admission='invite' WHERE visibility!='public';
+CREATE TABLE join_requests (
+ community_id TEXT NOT NULL REFERENCES communities(id), actor_id TEXT NOT NULL REFERENCES actors(id),
+ message TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('pending','approved','declined')),
+ created INTEGER NOT NULL, PRIMARY KEY(community_id,actor_id)
+);
+CREATE TABLE invitations (
+ hash TEXT PRIMARY KEY, community_id TEXT NOT NULL REFERENCES communities(id),
+ issuer_id TEXT NOT NULL REFERENCES actors(id), recipient_id TEXT NOT NULL REFERENCES actors(id),
+ expires INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0, revoked INTEGER NOT NULL DEFAULT 0
+);
+`, `
+CREATE TABLE votes (
+ post_id TEXT NOT NULL REFERENCES posts(id), actor_id TEXT NOT NULL REFERENCES actors(id),
+ value INTEGER NOT NULL CHECK(value IN (-1,1)), PRIMARY KEY(post_id,actor_id)
+);
+CREATE TABLE bookmarks (
+ post_id TEXT NOT NULL REFERENCES posts(id), actor_id TEXT NOT NULL REFERENCES actors(id),
+ created INTEGER NOT NULL, PRIMARY KEY(post_id,actor_id)
+);
+CREATE TABLE reports (
+ id TEXT PRIMARY KEY, post_id TEXT NOT NULL REFERENCES posts(id), reporter_id TEXT NOT NULL REFERENCES actors(id),
+ reason TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('open','resolved','dismissed')),
+ decision TEXT, reviewer_id TEXT REFERENCES actors(id), created INTEGER NOT NULL,
+ UNIQUE(post_id,reporter_id)
+);
+CREATE TABLE topics (id TEXT PRIMARY KEY, title TEXT NOT NULL, normalized TEXT NOT NULL UNIQUE);
+CREATE TABLE community_topics (
+ community_id TEXT NOT NULL REFERENCES communities(id), topic_id TEXT NOT NULL REFERENCES topics(id),
+ PRIMARY KEY(community_id,topic_id)
+);
+CREATE INDEX bookmarks_actor ON bookmarks(actor_id,created);
+CREATE INDEX reports_post_state ON reports(post_id,state);
+CREATE INDEX votes_post ON votes(post_id);
+`, `
+ALTER TABLE communities ADD COLUMN publication TEXT NOT NULL DEFAULT 'local' CHECK(publication IN ('local','atproto'));
+UPDATE outbox SET state='cancelled' WHERE operation='put' AND state='pending';
+`, `
+CREATE TABLE wiki_pages (
+ id TEXT PRIMARY KEY, community_id TEXT NOT NULL REFERENCES communities(id), title TEXT NOT NULL,
+ revision_id TEXT, created INTEGER NOT NULL
+);
+CREATE TABLE wiki_proposals (
+ id TEXT PRIMARY KEY, page_id TEXT NOT NULL REFERENCES wiki_pages(id), author_id TEXT NOT NULL REFERENCES actors(id),
+ base_revision_id TEXT, text TEXT NOT NULL, citations TEXT NOT NULL, language TEXT NOT NULL,
+ perspective TEXT NOT NULL, digest TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('pending','accepted','rejected')),
+ created INTEGER NOT NULL
+);
+CREATE TABLE wiki_revisions (
+ id TEXT PRIMARY KEY, page_id TEXT NOT NULL REFERENCES wiki_pages(id), parent_id TEXT REFERENCES wiki_revisions(id),
+ proposal_id TEXT NOT NULL UNIQUE REFERENCES wiki_proposals(id), author_id TEXT NOT NULL REFERENCES actors(id),
+ reviewer_id TEXT NOT NULL REFERENCES actors(id), text TEXT NOT NULL, citations TEXT NOT NULL,
+ language TEXT NOT NULL, perspective TEXT NOT NULL, digest TEXT NOT NULL, created INTEGER NOT NULL
+);
+CREATE INDEX wiki_community ON wiki_pages(community_id,created);
+CREATE INDEX wiki_page_proposals ON wiki_proposals(page_id,created);
+`]
+
+/** DO storage has no PRAGMA user_version or SQL BEGIN/COMMIT support.
+ * Existing local v1 tables are adopted by the idempotent first migration. */
+export function migrate(database: Database) {
+  database.transaction(() => {
+    database.exec('CREATE TABLE IF NOT EXISTS strata_migrations (version INTEGER PRIMARY KEY)')
+    const version = database.get<{ version: number }>('SELECT COALESCE(MAX(version),0) version FROM strata_migrations')!.version
+    if (version > migrations.length) throw new Error('Database schema is newer than this host')
+    for (let i=version; i<migrations.length; i++) {
+      database.exec(migrations[i])
+      database.run('INSERT INTO strata_migrations(version) VALUES(?)', i+1)
+    }
+  })
+}

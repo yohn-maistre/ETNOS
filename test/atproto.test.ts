@@ -1,7 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { Agent } from '@atproto/api'
-import { AtprotoPublisher, COLLECTION, type PublicRecord } from '../src/transport.ts'
+import { AtprotoPublisher } from '../src/atproto-publisher.ts'
+import { COLLECTION, type PublicRecord } from '../src/transport.ts'
 
 const did='did:web:sandbox.example'
 const cid='bafyreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevtenxquvyku'

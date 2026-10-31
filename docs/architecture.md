@@ -1,6 +1,6 @@
 # Custodial nodes and the AT commons
 
-Status: proposed architecture, with the narrower local implementation described in status.md.
+Status: architectural baseline is frozen in [Decision 001](decision-001-product-and-runtime.md); narrower delivered behavior is described in status.md. Earlier proposal text is subordinate to that decision.
 
 ## Three kinds of data
 
@@ -43,7 +43,7 @@ Local post mutation, its outbox intent and audit entry are transactional. Remote
 
 The owner selected TypeScript for Strata and the official AT SDK, retaining Rust where justified in Aksara/native adapters. The initial runnable profile is a loopback Node 24 host with persistent SQLite and built-in HTTP. It requires no Redis, container, vector database or resident model. There is no claim of a measured phone minimum, serverless compatibility or production reliability yet.
 
-Later profiles can use SQLite-family storage on a small persistent host or a separately qualified Cloudflare D1/Durable Object strategy. Platform adapters must preserve the transaction/outbox, policy and recovery invariants; local SQLite APIs cannot simply be imported into Workers. Do not create provider-specific infrastructure until its profile is implemented and measured.
+The Worker profile now uses a SQLite Durable Object per configured logical node, `transactionSync`, portable schema migrations and the same policy/Fetch handler. Node retains its own SQLite adapter. Actual-workerd tests cover isolation, atomic rollback, source bytes, uncertain delivery, independent node storage and restart; this is narrower than production recovery/resource/security qualification. No `node:sqlite` import enters the Worker. Outward AT publishing is separately selected per public community and defaults off.
 
 AT public ingestion/indexing, PDS operations and hosted services have their own resource costs. Local nodes do not make public knowledge available while every holder is offline. An optional durable public host/pinning policy is needed for availability; encrypted Iroh transport does not supply storage, authorization or a free relay guarantee.
 

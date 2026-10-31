@@ -30,7 +30,7 @@ function fixture() {
   const alice = s.provision('did:web:alice.example','Alice')
   const bob = s.provision('did:web:bob.example','Bob')
   const agent = s.provision('did:web:agent.example','Lab assistant',alice.actor.id)
-  const pub = s.createCommunity(alice.actor.id,'Public square','Ordinary conversation','public',true)
+  const pub = s.createCommunity(alice.actor.id,'Public square','Ordinary conversation','public',true,'open','atproto')
   const hidden = s.createCommunity(alice.actor.id,'Hidden circle','Private description','hidden-private')
   return { s, alice, bob, agent, pub, hidden, advance:(n:number)=>{now+=n} }
 }
@@ -232,7 +232,7 @@ test('source bytes and queued intent survive reopen; interrupted work is not aut
   try {
     let s=new Strata(path)
     const owner=s.provision('did:web:owner.example','Owner')
-    const c=s.createCommunity(owner.actor.id,'Community','Description','public')
+    const c=s.createCommunity(owner.actor.id,'Community','Description','public',false,'approval','atproto')
     const sid=s.createSource(owner.actor.id,Buffer.from([0xff,0x12,0x00]))
     s.createPost(owner.actor.id,c.id,'Persistent post')
     s.run("UPDATE outbox SET state='sending'");s.close()

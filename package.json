@@ -11,14 +11,22 @@
     "check": "tsc --noEmit",
     "test": "node --disable-warning=ExperimentalWarning --test test/*.test.ts",
     "start": "node --disable-warning=ExperimentalWarning src/cli.ts serve",
-    "demo": "node --disable-warning=ExperimentalWarning src/cli.ts demo"
+    "demo": "node --disable-warning=ExperimentalWarning src/cli.ts demo",
+    "check:worker": "tsc -p tsconfig.worker.json",
+    "types:worker": "wrangler types worker-configuration.d.ts --include-runtime false --strict-vars false",
+    "build:worker": "wrangler deploy --dry-run --outdir dist",
+    "test:worker": "wrangler deploy --dry-run --config wrangler.test.jsonc --outdir .wrangler/test && node --test test/worker.test.mjs",
+    "dev:worker": "wrangler dev --var STRATA_ORIGIN:http://localhost:8787"
   },
   "dependencies": {
     "@atproto/api": "0.30.0",
     "@atproto/lexicon": "0.7.17"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "5.20261031.1",
     "@types/node": "^24.0.0",
-    "typescript": "7.0.2"
+    "miniflare": "5.20261023.3-beta",
+    "typescript": "7.0.2",
+    "wrangler": "4.156.0"
   }
 }

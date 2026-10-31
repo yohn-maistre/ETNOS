@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "strata-test-only",
+  "main": "test/worker-harness.ts",
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": { "STRATA_ORIGIN": "https://strata.example", "STRATA_NODE": "preview" },
+  "durable_objects": { "bindings": [{ "name": "STRATA", "class_name": "TestNode" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["TestNode"] }]
+}

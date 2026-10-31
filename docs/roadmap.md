@@ -2,6 +2,8 @@
 
 The new engine uses AT contracts rather than mechanically translating PieFed's Flask code. PieFed is a product-behavior reference. Keep a parity ledger, distinguish deliberate omissions from unsupported features, and do not claim complete PieFed compatibility.
 
+The current baseline is [Decision 001](decision-001-product-and-runtime.md); use [the feature ledger](piefed-parity.md) for delivered versus missing behavior. The local/DO runtime port, admission and first social/Wiki backend slices have advanced; production identity, live AT and the Honai client remain the next integration gates. The list below expresses product coverage rather than a claim that earlier entries must be completed before any later prototype.
+
 1. Qualify owned AT namespaces and real OAuth/session enrollment against an isolated PDS. Keep arbitrary DID provisioning limited to development. Export/recover identity without exposing private affiliation.
 2. Finish ordinary human forum behavior: topics, feed collections, following, votes with explicit privacy, cursor pagination/ranking, reports, moderation history, notifications, editing and deletion. These should work without Aksara.
 3. Add audience-bound media and private community invitations/ownership succession, with anti-leakage tests across feeds/search/exports/notifications.

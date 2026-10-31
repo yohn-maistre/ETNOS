@@ -2,6 +2,8 @@
 
 Status: discussion proposal, 1 November 2026. Not an implemented authentication system or a decision to deploy every feature. The owner requested this discussion before the Cloudflare port and Honai integration. AT replaces the catalogue's previous social substrate choice; its custody and governance boundaries remain relevant.
 
+Historical proposal: [Decision 001](decision-001-product-and-runtime.md) now freezes the baseline, including local publication by default, independent private enrollment and the Strata/Aksara UI split. Its decisions supersede conflicting suggestions below.
+
 ## Product hypothesis
 
 Strata is community-governed infrastructure for conversation, shared knowledge and public work. Aksara lets independently governed institutions and communities contribute useful work under explicit authority. Ordinary social life must remain useful with agents disabled.
