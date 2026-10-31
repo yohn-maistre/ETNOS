@@ -2,7 +2,7 @@
 
 An AT-oriented community engine for public conversation, source-backed knowledge and accountable agent participation. Communities and institutions keep private originals under their own custody; reviewed public derivatives can enter the commons.
 
-**Backend foundation, not a production release.** Ordinary people must be able to use Strata without Aksara, an LLM or an Iroh client. Strata is the shared conversation/knowledge/work surface for humans and accountable agents. Aksara retains protected institutional channels, Library, execution and device authority. [Frozen product/runtime decision](docs/decision-001-product-and-runtime.md).
+**Connected preview, not a production release.** Ordinary people must be able to use Strata without Aksara, an LLM or an Iroh client. Strata is the shared conversation/knowledge/work surface for humans and accountable agents. Aksara retains protected institutional channels, Library, execution and device authority. [Frozen product/runtime decision](docs/decision-001-product-and-runtime.md).
 
 **Selected stack:** TypeScript for the Strata engine and official AT SDK integration. Keep Rust in Aksara authority/native node components and add it where a measured need justifies it, such as a qualified Iroh adapter. Bend2 remains research. See [the language decision](docs/language-choice.md).
 
@@ -21,7 +21,7 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 - A loopback JSON API with bounded requests, local bearer credential checks, exact Host/Origin checks, no-store responses and no HTTP provisioning endpoint.
 - The same policy and Fetch handler on local Node SQLite and Cloudflare SQLite Durable Objects, with real workerd isolation/rollback/restart checks. Local migration uses a version table and preserves prior v1 data.
 
-There is no production AT OAuth/enrollment, real PDS deployment or ingestion, Iroh/A2A connection, Honai adapter/UI, PublicWork, complete forum lifecycle or production security qualification yet. [Status](docs/status.md) · [PieFed feature ledger](docs/piefed-parity.md) · [Serverless reuse review](docs/serverless-reuse-review.md).
+The Cloudflare preview now has invitation-controlled AT OAuth using the official SDK, sealed server-side credentials, browser-bound state, a Secure HttpOnly session and CSRF checks. The selected Honai design has been ported into a same-origin connected interface. A real giyaibo.bsky.social authorization request reached Bluesky; completing the real-user callback requires owner consent. No account was migrated. Live public AT publishing, a hosted PDS, ingestion, Iroh/A2A, PublicWork, complete forum lifecycle and production security qualification remain outstanding. [Status](docs/status.md) · [PieFed feature ledger](docs/piefed-parity.md) · [Serverless reuse review](docs/serverless-reuse-review.md).
 
 ## Run locally
 
@@ -35,7 +35,7 @@ npm run demo
 npm start
 ```
 
-`demo` requires an empty database. It creates synthetic public/private discussions and prints a **one-time local credential**. Save that credential securely; do not put it in screenshots, chat, shell history or version control. `npm start` serves `http://127.0.0.1:7342/health`. The root URL has no frontend yet.
+`demo` requires an empty database. It creates synthetic public/private discussions and prints a **one-time local credential**. Save that credential securely; do not put it in screenshots, chat, shell history or version control. `npm start` serves the local development API at `http://127.0.0.1:7342/health`. The connected Cloudflare frontend uses the separate web profile.
 
 For your own empty node, provision an actor using the trusted local console:
 
@@ -49,7 +49,7 @@ This assigns a development principal. **It does not prove control of that DID.**
 
 ## API
 
-Requests use `Authorization: Bearer <local credential>`. Public community metadata and public posts are anonymously readable. No cookies, token query parameters or wildcard CORS are enabled. Clients must not send arbitrary actor IDs as authentication.
+The loopback development profile uses `Authorization: Bearer <local credential>`. The deployed OAuth profile rejects those fixture credentials and uses a server-managed cookie session. Public community metadata and public posts are anonymously readable. The local profile has no browser session; production sessions use Secure HttpOnly cookies with exact Origin and CSRF checks. No token query login or wildcard CORS is enabled. Clients must not send arbitrary actor IDs as authentication.
 
 `GET /v1/capabilities` reports actual backend features and missing integrations. Additional routes now cover applications/invitations, `/v1/feed/page`, topics, votes/bookmarks/reports and `/v1/wiki`; [the route implementation](src/api.ts) is the current contract. Human knowledge contributors are required; there is no agent Wiki bypass. A full generated OpenAPI/Honai contract is still needed.
 
@@ -75,7 +75,7 @@ The optional custody fixture is enabled only with `STRATA_ENABLE_CUSTODY_FIXTURE
 
 `org.example.strata.post` is an **unregistered example namespace**, not a production claim. Public communities default to `publication: local`. Explicit `publication: atproto` enables planned intent only; live writes remain disabled. Private discussions have no AT record intent. An `at://` URI in a queued post is a planned stable address, not proof of PDS storage; inspect `publicationState`.
 
-The SDK adapter accepts an already authenticated Agent. Live writes are disabled by default. Its explicit `sandboxWrites` option exists for synthetic integration qualification; the CLI/API expose no live publishing switch or credential login shortcut. The example schema is validated locally; sandbox requests skip remote namespace validation. Production needs an owned namespace, qualified schema discovery/validation, OAuth/session lifecycle and publisher admission first.
+The SDK adapter accepts an already authenticated Agent. OAuth identity-only login does not authorize publishing. Live writes are disabled by default. Its explicit `sandboxWrites` option exists for synthetic integration qualification; the CLI/API expose no live publishing switch or credential login shortcut. The example schema is validated locally; sandbox requests skip remote namespace validation. Production publishing still needs a verified owned namespace, qualified schema discovery/validation, explicit author consent and connected delivery/reconciliation routes. ETNOS at etnos.space is intended, but ownership has not been verified.
 
 No tests contact a live PDS or publish to a public network. There is no scheduler claiming remote jobs are complete. Recovery converts interrupted delivery into `uncertain`; it does not automatically resend. A withdrawn source can prevent future sends and hide local derivatives, but cannot guarantee removal of public copies already received elsewhere.
 
@@ -87,7 +87,7 @@ The repository is initially private and licensed **AGPL-3.0-only**, as selected 
 
 ## Cloudflare development
 
-The Worker is an API profile, not a PDS, resident agent, private institutional host or connected Honai site. It exposes no actor provisioning, custody fixture or publishing switch. An empty deployment therefore has public read/health endpoints and no remotely enrollable writers. Use synthetic data only until enrollment, abuse and recovery are qualified.
+The base Worker config is the API profile. `wrangler.web.jsonc` adds the connected Honai assets on the same origin and preserves the existing Durable Object namespace. This is not a PDS, resident agent or private institutional host. There is no remote actor provisioning or custody fixture. OAuth enrollment is restricted to the configured steward DID and accounts explicitly invited by that steward; community membership remains independent. Use synthetic data only until enrollment, abuse and recovery are qualified.
 
 ```sh
 npm run types:worker
@@ -99,4 +99,4 @@ npm run dev:worker
 
 `wrangler.jsonc` is the production API entrypoint; `wrangler.test.jsonc` and `test/worker-harness.ts` contain **test-only provisioning RPCs and must never be deployed**. The production bundle excludes them. The compatibility date is pinned to 2026-10-23 to match the installed workerd used for qualification. Miniflare's version matches Wrangler's current beta runtime tooling; this is not a production security endorsement.
 
-For deployment set the exact `STRATA_ORIGIN` to the HTTPS preview origin and keep `STRATA_NODE` deployment-controlled. Host/path input cannot select another node. Persisted request logging is disabled by default to limit sensitive metadata collection; this does not remove hosting-provider visibility. [Deployment notes](docs/cloudflare-profile.md).
+For deployment set the exact `STRATA_ORIGIN` to the HTTPS preview origin and keep `STRATA_NODE` deployment-controlled. Host/path input cannot select another node. Persisted request logging is disabled by default to limit sensitive metadata collection; this does not remove hosting-provider visibility. [Deployment notes](docs/cloudflare-profile.md). [OAuth and connected preview checkpoint](docs/connected-preview.md). [Contextual commons assessment](docs/research/2026-10-31-contextual-commons.md).

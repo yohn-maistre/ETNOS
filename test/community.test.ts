@@ -163,7 +163,7 @@ test('legacy v1 database migrates without exposing old sources or replaying prev
     assert.equal(s.jobs('old')[0].state,'cancelled')
     assert.equal(s.getPost(undefined,'post').text,'Prior intent')
     s.close()
-    const again=new Strata(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,5);again.close()
+    const again=new Strata(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,7);again.close()
   } finally {rmSync(dir,{recursive:true,force:true})}
 })
 
@@ -183,4 +183,28 @@ test('shared Fetch API bounds bodies and rechecks credentials after awaiting a b
     assert.equal(checks,2)
     assert.equal(s.feed().length,0)
   } finally {s.close()}
+})
+
+test('thread roots are stable across nested replies and private threads never enter public projections',async()=>{
+  const{s,owner,outsider,pub,hidden}=fixture()
+  try{
+    const root=s.createPost(owner.actor.id,pub.id,'Public root')
+    const reply=s.createPost(owner.actor.id,pub.id,'First reply',root.id)
+    const nested=s.createPost(owner.actor.id,pub.id,'Nested reply',reply.id)
+    const secret=s.createPost(owner.actor.id,hidden.id,'Protected root')
+    s.createPost(owner.actor.id,hidden.id,'Protected reply',secret.id)
+    assert.equal(reply.rootId,root.id);assert.equal(nested.rootId,root.id)
+    assert.equal(s.getPost(undefined,root.id).replies,2)
+    assert.deepEqual(s.feedPage(undefined,{rootsOnly:true}).items.map(p=>p.id),[root.id])
+    assert.equal(s.feedPage(undefined,{rootId:root.id}).items.length,2)
+    assert.throws(()=>s.feedPage(outsider.actor.id,{rootId:secret.id}),/Not found/)
+    const handler=api(s)
+    assert.equal((await handler(new Request(s.base+'/v1/posts/'+secret.id+'/replies'))).status,404)
+    const thread=await(await handler(new Request(s.base+'/v1/posts/'+nested.id+'/replies'))).json()
+    assert.equal(thread.items.length,2)
+    assert.equal(JSON.stringify(thread).includes('operator_id'),false)
+    assert.equal(JSON.stringify(thread).includes('Protected'),false)
+    s.hidePost(owner.actor.id,root.id)
+    assert.equal((await handler(new Request(s.base+'/v1/posts/'+nested.id+'/replies'))).status,404)
+  }finally{s.close()}
 })

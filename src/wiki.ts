@@ -53,6 +53,12 @@ export class Wiki {
     if(s.community(communityId).visibility!=='public')throw new Fault(404,'Not found')
     return s.all<Page>('SELECT * FROM wiki_pages WHERE community_id=? ORDER BY created DESC,id DESC LIMIT 100',communityId)
   }
+  all(){return this.store.all<Page>("SELECT w.* FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' ORDER BY w.created DESC,w.id DESC LIMIT 100")}
+  proposals(actorId:string,pageId:string){
+    const s=this.store,page=this.page(pageId),member=s.requireMember(actorId,page.community_id)
+    const steward=s.actor(actorId).kind==='human' && ['owner','moderator'].includes(member.role)
+    return s.all<Proposal>('SELECT * FROM wiki_proposals WHERE page_id=? AND (?=1 OR author_id=?) ORDER BY created DESC,id DESC LIMIT 100',pageId,steward?1:0,actorId).map(p=>({...p,citations:JSON.parse(p.citations) as string[]}))
+  }
   propose(actorId:string,pageId:string,baseRevision:string|null,body:string,sourceUrls:string[],language:string,perspective:string) {
     const s=this.store
     return s.tx(()=>{

@@ -3,6 +3,7 @@ import worker, { StrataNode } from '../src/worker.ts'
 import { StrataCore } from '../src/core.ts'
 import { CloudflareDatabase } from '../src/cloudflare-database.ts'
 import type { Publisher, PublicRecord } from '../src/transport.ts'
+import {fixture,issuer} from './oauth-fixture.ts'
 
 export class TestNode extends StrataNode {
   private core() { return new StrataCore(new CloudflareDatabase(this.ctx.storage),this.env.STRATA_ORIGIN) }
@@ -50,6 +51,14 @@ export class TestNode extends StrataNode {
   }
   remove(actorId: string, communityId: string, target: string) { this.core().setMember(actorId,communityId,target,false) }
   interrupt() { const s=this.core();s.run("UPDATE outbox SET state='sending' WHERE state='pending'") }
+  async authContract(){
+    const{auth,state}=await fixture(this.core())
+    const start=await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.env.STRATA_ORIGIN,'content-type':'application/json'},body:JSON.stringify({handle:'member.example'})}))
+    if(start?.status!==200)return JSON.stringify({start:start?.status})
+    const flow=start.headers.getSetCookie().find(x=>x.startsWith('__Host-strata_flow='))!.split(';')[0]
+    const callback=await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}}))
+    return JSON.stringify({start:start.status,callback:callback?.status,location:callback?.headers.get('location'),hasCookie:callback?.headers.getSetCookie().some(x=>x.startsWith('__Host-strata='))})
+  }
 }
 
 export default worker

@@ -67,6 +67,8 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     const other=ns.getByName('independent-node')
     const separate=JSON.parse(await other.seed())
     assert.notEqual(separate.owner.actor.id,f.owner.actor.id)
+    const oauth=ns.getByName('oauth-node')
+    assert.deepEqual(JSON.parse(await oauth.authContract()),{start:200,callback:303,location:'/',hasCookie:true})
     await stub.interrupt()
     await mf.dispose()
     mf=runtime(dir)

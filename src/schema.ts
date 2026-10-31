@@ -108,6 +108,27 @@ CREATE TABLE wiki_revisions (
 );
 CREATE INDEX wiki_community ON wiki_pages(community_id,created);
 CREATE INDEX wiki_page_proposals ON wiki_proposals(page_id,created);
+`, `
+CREATE TABLE oauth_records (
+ kind TEXT NOT NULL CHECK(kind IN ('state','session')), key TEXT NOT NULL,
+ sealed TEXT NOT NULL, expires INTEGER NOT NULL, PRIMARY KEY(kind,key)
+);
+CREATE TABLE browser_sessions (
+ hash TEXT PRIMARY KEY, actor_id TEXT NOT NULL REFERENCES actors(id), csrf TEXT NOT NULL,
+ created INTEGER NOT NULL, expires INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE enrollment_allowlist (did TEXT PRIMARY KEY, added_by TEXT NOT NULL REFERENCES actors(id));
+CREATE TABLE auth_buckets (key TEXT PRIMARY KEY, window INTEGER NOT NULL, count INTEGER NOT NULL);
+CREATE TABLE starter_spaces (slug TEXT PRIMARY KEY, community_id TEXT NOT NULL UNIQUE REFERENCES communities(id));
+`, `
+ALTER TABLE posts ADD COLUMN root_id TEXT REFERENCES posts(id);
+WITH RECURSIVE roots(id,root) AS (
+ SELECT id,id FROM posts WHERE parent_id IS NULL
+ UNION ALL SELECT p.id,r.root FROM posts p JOIN roots r ON p.parent_id=r.id
+) UPDATE posts SET root_id=(SELECT root FROM roots WHERE roots.id=posts.id);
+CREATE INDEX posts_root_created ON posts(root_id,created DESC,id DESC);
+CREATE INDEX posts_parent ON posts(parent_id,hidden);
+CREATE INDEX posts_created ON posts(created DESC,id DESC);
 `]
 
 /** DO storage has no PRAGMA user_version or SQL BEGIN/COMMIT support.

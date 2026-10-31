@@ -3,16 +3,43 @@
   "name": "strata-preview",
   "main": "src/worker.ts",
   "compatibility_date": "2026-10-23",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "workers_dev": true,
   "preview_urls": false,
   "vars": {
     "STRATA_ORIGIN": "https://strata-preview.giyaibo.workers.dev",
-    "STRATA_NODE": "preview"
+    "STRATA_NODE": "preview",
+    "STRATA_AUTH_MODE": "atproto",
+    "STRATA_STEWARD_DID": "did:plc:uhhrncfqtpg26h24irfcpuma",
+    "STRATA_COLLECTION": "org.example.strata.post",
+    "STRATA_PUBLISHING_ENABLED": "false",
+    "STRATA_OAUTH_HOSTS": "bsky.social,public.api.bsky.app,plc.directory,.host.bsky.network"
   },
   "durable_objects": {
-    "bindings": [{ "name": "STRATA", "class_name": "StrataNode" }]
+    "bindings": [
+      {
+        "name": "STRATA",
+        "class_name": "StrataNode"
+      }
+    ]
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["StrataNode"] }],
-  "observability": { "enabled": false }
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "StrataNode"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": false
+  },
+  "secrets": {
+    "required": [
+      "STRATA_OAUTH_JWK",
+      "STRATA_AUTH_SEAL_KEY"
+    ]
+  }
 }

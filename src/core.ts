@@ -2,7 +2,7 @@ import { randomBytes, randomUUID, createHash } from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { migrate } from './schema.ts'
 import type { Database, Binding } from './database.ts'
-import { validateRecord, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
+import { PostContract, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
 
 export class Fault extends Error {
   status: number
@@ -14,7 +14,7 @@ type Membership = { role: 'owner' | 'moderator' | 'member'; active: number }
 type Source = { id: string; owner_id: string; bytes: Uint8Array; revision: number; withdrawn: number; digest: string }
 type Release = { id: string; source_id: string; source_revision: number; community_id: string; publisher_id: string; text: string; digest: string; approved: number; revoked: number; post_id: string | null }
 type Mandate = { id: string; agent_id: string; community_id: string; expires: number; revoked: number; hourly_limit: number }
-export type Post = { id: string; author_id: string; community_id: string; parent_id: string | null; text: string; created: number; hidden: number; mandate_id: string | null; release_id: string | null; uri: string | null }
+export type Post = { id: string; author_id: string; community_id: string; parent_id: string | null; text: string; created: number; hidden: number; mandate_id: string | null; release_id: string | null; uri: string | null;root_id:string }
 type Job = { id: string; post_id: string; operation: 'put' | 'delete'; state: string; repo: string; rkey: string; record: string; cid: string | null }
 const digest = (input: string | Uint8Array) => createHash('sha256').update(input).digest('hex')
 const id = () => randomUUID()
@@ -28,12 +28,14 @@ export class StrataCore {
   db: Database
   base: string
   clock: () => number
-  constructor(database: Database, base = 'http://127.0.0.1:7342', clock = () => Date.now()) {
+  readonly contract:PostContract
+  constructor(database: Database, base = 'http://127.0.0.1:7342', clock = () => Date.now(),options:{collection?:string}={}) {
     this.clock=clock
     const url = new URL(base)
     if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash || url.pathname !== '/') throw new Error('Expected an origin URL')
     this.base = url.origin
     this.db = database
+    this.contract=new PostContract(options.collection??COLLECTION)
     migrate(database)
   }
   close() { this.db.close() }
@@ -216,11 +218,11 @@ export class StrataCore {
     const parent = parentId ? this.get<Post>('SELECT * FROM posts WHERE id=? AND hidden=0', parentId) : undefined
     if (parentId && (!parent || parent.community_id !== communityId)) missing()
     const pid = id(), actor = this.actor(actorId), created = this.clock()
-    const uri = c.visibility === 'public' && c.publication==='atproto' ? `at://${actor.did}/${COLLECTION}/${pid}` : null
-    this.run('INSERT INTO posts VALUES(?,?,?,?,?,?,0,?,?,?)', pid, actorId, communityId, parentId ?? null, input(text), created, mandateId ?? null, releaseId ?? null, uri)
+    const uri = c.visibility === 'public' && c.publication==='atproto' ? `at://${actor.did}/${this.contract.collection}/${pid}` : null
+    this.run('INSERT INTO posts(id,author_id,community_id,parent_id,text,created,hidden,mandate_id,release_id,uri,root_id) VALUES(?,?,?,?,?,?,0,?,?,?,?)', pid, actorId, communityId, parentId ?? null, input(text), created, mandateId ?? null, releaseId ?? null, uri,parent?.root_id??pid)
     if (uri) {
-      const record: PublicRecord = { $type: COLLECTION, text: text.trim(), community: `${this.base}/v1/communities/${communityId}`, createdAt: new Date(created).toISOString(), actorKind:actor.kind, ...(parent?.uri ? { replyTo: parent.uri } : {}) }
-      validateRecord(record)
+      const record: PublicRecord = { $type: this.contract.collection, text: text.trim(), community: `${this.base}/v1/communities/${communityId}`, createdAt: new Date(created).toISOString(), actorKind:actor.kind, ...(parent?.uri ? { replyTo: parent.uri } : {}) }
+      this.contract.validate(record)
       this.run("INSERT INTO outbox(id,post_id,operation,state,repo,rkey,record) VALUES(?,?,'put','pending',?,?,?)", id(), pid, actor.did, pid, JSON.stringify(record))
     }
     this.audit(actorId, 'post.create', pid)
@@ -229,7 +231,10 @@ export class StrataCore {
   private view(p: Post, viewer?: string) {
     // No release/source/mandate foreign keys in either public or private feed views.
     const { id,author_id,community_id,parent_id,text,created,uri } = p
+    const author=this.actor(author_id)
     return { id,author_id,community_id,parent_id,text,created,uri, actorKind:this.actor(author_id).kind,
+      author:{id:author.id,did:author.did,name:author.name,kind:author.kind},rootId:p.root_id,
+      replies:this.get<{count:number}>('SELECT COUNT(*) count FROM posts WHERE root_id=? AND id!=? AND hidden=0',p.root_id,p.root_id)!.count,
       publicationState:uri ? this.get<{state:string}>("SELECT state FROM outbox WHERE post_id=? AND operation='put'",id)!.state : this.community(community_id).visibility==='public'?'local':'private',
       score:this.get<{score:number}>('SELECT COALESCE(SUM(value),0) score FROM votes WHERE post_id=?',id)!.score,
       myVote:viewer ? this.get<{value:number}>('SELECT value FROM votes WHERE post_id=? AND actor_id=?',id,viewer)?.value ?? 0 : 0,
@@ -245,10 +250,11 @@ export class StrataCore {
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
       AND instr(lower(p.text),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200)).map(p=>this.view(p,actorId))
   }
-  feedPage(actorId?: string, options: {query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number} = {}) {
+  feedPage(actorId?: string, options: {query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string} = {}) {
     const limit=options.limit ?? 30
     if(!Number.isInteger(limit) || limit<1 || limit>100) throw new Fault(400,'Limit must be between 1 and 100')
     if(options.communityId && !this.canRead(actorId,this.community(options.communityId))) missing()
+    if(options.rootId)this.getPost(actorId,options.rootId)
     let before: [number,string] | undefined
     if(options.cursor) {
       try {
@@ -263,9 +269,11 @@ export class StrataCore {
       AND instr(lower(p.text),lower(?))>0
       AND (? IS NULL OR p.community_id=?)
       AND (? IS NULL OR EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?))
+      AND (?=0 OR p.parent_id IS NULL)
+      AND (? IS NULL OR (p.root_id=? AND p.id!=?))
       AND (? IS NULL OR p.created<? OR (p.created=? AND p.id<?))
       ORDER BY p.created DESC,p.id DESC LIMIT ?`,actorId??null,(options.query??'').slice(0,200),options.communityId??null,options.communityId??null,
-      options.topicId??null,options.topicId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
+      options.topicId??null,options.topicId??null,options.rootsOnly?1:0,options.rootId??null,options.rootId??null,options.rootId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
     const selected=rows.slice(0,limit),last=selected.at(-1)
     return {items:selected.map(p=>this.view(p,actorId)),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
   }

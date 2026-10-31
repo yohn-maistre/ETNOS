@@ -1,6 +1,17 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": { "types": ["node", "@cloudflare/workers-types"] },
-  "include": ["src/worker.ts", "src/cloudflare-database.ts", "worker-configuration.d.ts", "test/worker-harness.ts"],
+  "compilerOptions": {
+    "types": [
+      "node",
+      "@cloudflare/workers-types"
+    ]
+  },
+  "include": [
+    "src/worker.ts",
+    "src/cloudflare-database.ts",
+    "worker-configuration.d.ts",
+    "test/worker-harness.ts",
+    "src/web-worker.ts"
+  ],
   "exclude": []
 }

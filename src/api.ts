@@ -1,11 +1,11 @@
 import { Buffer } from 'node:buffer'
-import { StrataCore, Fault, type Community } from './core.ts'
+import { StrataCore, Fault, type Community, type Actor } from './core.ts'
 import { Social } from './social.ts'
 import { Wiki } from './wiki.ts'
 import { capabilities } from './capabilities.ts'
 
 const MAX_BODY = 1500000
-async function body(req: Request): Promise<Record<string, unknown>> {
+export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
   if (req.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') throw new Fault(415, 'JSON required')
   const reader = req.body?.getReader()
   if (!reader) throw new Fault(400, 'Invalid JSON')
@@ -15,7 +15,7 @@ async function body(req: Request): Promise<Record<string, unknown>> {
       const {done,value}=await reader.read()
       if (done) break
       size+=value.byteLength
-      if(size>MAX_BODY) { await reader.cancel(); throw new Fault(413,'Request too large') }
+      if(size>maximum) { await reader.cancel(); throw new Fault(413,'Request too large') }
       chunks.push(value)
     }
   } finally { reader.releaseLock() }
@@ -29,7 +29,8 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export function api(store: StrataCore, options: { custodyFixture?: boolean; runtime?: string } = {}) {
+export type ApiOptions={custodyFixture?:boolean;runtime?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export function api(store: StrataCore, options: ApiOptions = {}) {
   const social=new Social(store)
   const wiki=new Wiki(store)
   return async (req: Request): Promise<Response> => {
@@ -42,22 +43,26 @@ export function api(store: StrataCore, options: { custodyFixture?: boolean; runt
       if (origin && origin !== store.base) throw new Fault(403,'Origin not allowed')
       const path = url.pathname
       const auth = req.headers.get('authorization')
-      const actor = auth ? store.authenticate(auth.startsWith('Bearer ') ? auth.slice(7) : '') : undefined
+      const principal=()=>options.principal ? options.principal(req) : auth ? store.authenticate(auth.startsWith('Bearer ') ? auth.slice(7) : '') : undefined
+      const actor = principal()
       const authenticated = () => { if (!actor) throw new Fault(401,'Authentication required'); return actor.id }
       const parts = path.split('/').filter(Boolean)
       if (path !== '/health' && parts[0] !== 'v1') throw new Fault(404, 'Not found')
       if (['sources','releases'].includes(parts[1]) && !options.custodyFixture) throw new Fault(501,'Custody fixture disabled; Aksara adapter is not connected')
       let result: unknown
       if (req.method === 'GET') {
-        if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
+        if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth-invite-only':'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/me') result = store.actor(authenticated())
-        else if (path === '/v1/capabilities') result=capabilities
+        else if (path === '/v1/memberships') result=store.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1',authenticated())
+        else if (path === '/v1/capabilities') result={...capabilities,auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto'}}
         else if (path === '/v1/communities') result = store.listCommunities(actor?.id)
         else if (path === '/v1/topics') result=social.topics()
+        else if (path === '/v1/wiki') result=wiki.all()
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2])
         else if (parts.length === 3 && parts[1] === 'wiki') result=wiki.read(parts[2])
         else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'history') result=wiki.history(parts[2])
+        else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'proposals') result=wiki.proposals(authenticated(),parts[2])
         else if (parts.length === 3 && parts[1] === 'wiki-proposals') result=wiki.proposal(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'reports') result=social.reports(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'requests') result = store.joinRequests(authenticated(),parts[2])
@@ -71,7 +76,12 @@ export function api(store: StrataCore, options: { custodyFixture?: boolean; runt
           query:url.searchParams.get('q')??undefined,communityId:url.searchParams.get('community')??undefined,
           topicId:url.searchParams.get('topic')??undefined,cursor:url.searchParams.get('cursor')??undefined,
           limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined,
+          rootsOnly:url.searchParams.get('roots')==='true',
         })
+        else if (parts.length===4 && parts[1]==='posts' && parts[3]==='replies') {
+          const target=store.getPost(actor?.id,parts[2])
+          result=store.feedPage(actor?.id,{rootId:target.rootId,limit:100,cursor:url.searchParams.get('cursor')??undefined})
+        }
         else if (parts.length === 3 && parts[1] === 'posts') result = store.getPost(actor?.id,parts[2])
         else if (parts.length === 3 && parts[1] === 'sources') {
           const s = store.source(authenticated(),parts[2]); result = { ...s, bytes: Buffer.from(s.bytes).toString('base64') }
@@ -82,8 +92,10 @@ export function api(store: StrataCore, options: { custodyFixture?: boolean; runt
         return json(200,result)
       }
       if (req.method !== 'POST') throw new Fault(405, 'Method not allowed')
+      options.writeGuard?.(req)
       const caller = authenticated(), b = await body(req)
-      store.authenticate(auth!.slice(7)) // Recheck after awaiting an untrusted body.
+      const current=principal() // Recheck after awaiting an untrusted body.
+      if(current?.id!==caller)throw new Fault(401,'Authentication required')
       if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'join') result = store.join(caller,parts[2])
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'requests') result = store.requestJoin(caller,parts[2],string(b.message))
