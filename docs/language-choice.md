@@ -1,10 +1,19 @@
 # Core language discussion
 
-31 October 2026. Status: owner leaning Rust or Bend2; final selection pending. AGPL-3.0-only is selected. Repository remains private.
+31 October 2026. Status: **owner selected TypeScript for Strata, with Rust where it makes sense**. AGPL-3.0-only is selected. Repository remains private.
 
-The initial runnable foundation is TypeScript/Node/SQLite, using the official AT SDK and Lexicon validator. It is reference behavior and failure evidence, not an irreversible production-backend choice. Seventeen tests currently pass; none proves a Rust/Bend implementation or a real network deployment.
+The initial runnable foundation is TypeScript/Node/SQLite, using the official AT SDK and Lexicon validator. The owner chose this direction after considering Rust/Bend2: reuse the official SDK and keep the public engine lightweight, while retaining Rust in Aksara and appropriate native adapters. Seventeen tests and a CLI persistence/isolation smoke check pass; none proves a Rust/Bend implementation or a real network deployment.
 
-## Recommendation: Rust core
+## Selected responsibilities
+
+- TypeScript: Strata's domain/application layer, AT SDK/Lexicons and web/backend integration.
+- Rust: existing Aksara institutional authority and native peer/node components when qualified; a possible Iroh adapter, not a mandatory second Strata runtime.
+- SQLite: initial persistent local profile. Hosted/serverless adapters require their own transactional and resource qualification.
+- Bend2: optional bounded research, not a dependency or default engine.
+
+No language choice alone proves security, latency or low memory. Keep this foundation modular without creating speculative polyglot services. The discussion below records why Rust was a serious alternative and Bend2 was not selected for the web host.
+
+## Evaluated alternative: Rust core
 
 Rust is a strong match for a small native node, SQLite transactions, explicit domain state, existing Aksara integration and Iroh's native library. A possible stack is a portable Rust domain crate, a native HTTP/storage host using established libraries, and separate platform adapters. Svelte/TypeScript can remain the frontend. AT integration can use qualified Rust libraries or a narrow TS transport adapter rather than recreating the protocol. Having Rust in both systems must not merge their separate authority/key/data boundaries.
 

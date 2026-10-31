@@ -4,7 +4,7 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 
 **First local foundation, not a production release.** Ordinary people must be able to use Strata without Aksara, an LLM or an Iroh client. This repository starts the backend separately from Honai Metro's UI and Aksara's institutional authority.
 
-**Language under review:** the runnable code currently uses TypeScript. The owner is considering Rust or Bend2; Rust is the recommended core direction. Preserve this slice as a tested behavior reference while making that choice. See [the language assessment](docs/language-choice.md).
+**Selected stack:** TypeScript for the Strata engine and official AT SDK integration. Keep Rust in Aksara authority/native node components and add it where a measured need justifies it, such as a qualified Iroh adapter. Bend2 remains research. See [the language decision](docs/language-choice.md).
 
 ## Implemented now
 

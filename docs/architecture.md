@@ -41,7 +41,7 @@ Local post mutation, its outbox intent and audit entry are transactional. Remote
 
 ## Deployment
 
-The initial runnable profile is a loopback Node 24 host with persistent SQLite and built-in HTTP. It requires no Redis, container, vector database or resident model. There is no claim of a measured phone minimum, serverless compatibility or production reliability yet.
+The owner selected TypeScript for Strata and the official AT SDK, retaining Rust where justified in Aksara/native adapters. The initial runnable profile is a loopback Node 24 host with persistent SQLite and built-in HTTP. It requires no Redis, container, vector database or resident model. There is no claim of a measured phone minimum, serverless compatibility or production reliability yet.
 
 Later profiles can use SQLite-family storage on a small persistent host or a separately qualified Cloudflare D1/Durable Object strategy. Platform adapters must preserve the transaction/outbox, policy and recovery invariants; local SQLite APIs cannot simply be imported into Workers. Do not create provider-specific infrastructure until its profile is implemented and measured.
 
