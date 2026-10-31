@@ -1,0 +1,24 @@
+{
+  "name": "@abstraksi/strata",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=24.19.0"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.ts",
+    "start": "node --disable-warning=ExperimentalWarning src/cli.ts serve",
+    "demo": "node --disable-warning=ExperimentalWarning src/cli.ts demo"
+  },
+  "dependencies": {
+    "@atproto/api": "0.30.0",
+    "@atproto/lexicon": "0.7.17"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "7.0.2"
+  }
+}

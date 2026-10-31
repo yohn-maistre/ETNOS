@@ -1,0 +1,14 @@
+# Strata implementation rules
+
+Read README.md, docs/architecture.md and docs/status.md before expanding this foundation.
+Keep public-square behavior useful without Aksara, an LLM or an Iroh client.
+AT identities/records do not grant community membership, institutional source rights or agent mandates.
+Private content and metadata never enter public AT records, search, notification or export paths.
+Custodial originals and approved public derivatives are different records with different identifiers.
+Check current access, membership, source state and mandates at use and publication time.
+Commit business changes and outbox intent together; remote outcomes can be uncertain and need reconciliation.
+Never blindly retry an uncertain outward action. Keep source bytes and receipts durable.
+Tests for access isolation, withdrawal, concurrency/replay and durable publication are required for changes to these boundaries.
+No authentication, private federation, scientific computation or security certification is implied by a schema or fixture.
+Do not copy AGPL donor implementation until licensing is settled. Record attribution for actual reuse.
+Run npm run check and npm test before committing. Never commit tokens, databases or runtime logs.
