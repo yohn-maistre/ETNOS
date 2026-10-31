@@ -37,7 +37,7 @@ Original bytes → private source/custody state → proposed public text → exa
 
 The implementation's development custody fixture tests that lifecycle with local owner-only source bytes and exact digest approval. It is disabled on HTTP by default. Production Aksara custody must connect through a separately qualified port to the existing Rust authority and actual SharingGrant evaluator. Do not grow this fixture into a competing institutional kernel.
 
-Local post mutation, its outbox intent and audit entry are transactional. Remote actions occur outside the transaction. A lost acknowledgment remains uncertain. Stable record keys and create-only compare-and-swap prevent blind overwrites; reconciliation reads the destination rather than inventing a successful receipt. A negative read cannot prove a revoked in-flight write will never arrive. Deletion waits for the original ambiguous write to settle; externally changed records need review.
+Local post mutation, its outbox intent and audit entry are transactional. Remote actions occur outside the transaction. A lost acknowledgment remains uncertain. Stable record keys and create-only compare-and-swap prevent blind overwrites; reconciliation reads the destination rather than inventing a successful receipt. A negative read cannot prove a revoked in-flight write will never arrive. Deletion waits for the original ambiguous write to settle; externally changed records need review. Community moderation suppresses the local view; it does not grant deletion rights over another author’s PDS repository.
 
 ## Deployment
 

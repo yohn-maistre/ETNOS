@@ -264,7 +264,9 @@ export class Strata {
       const p = this.get<Post>('SELECT * FROM posts WHERE id=?', postId) ?? missing()
       this.requireSteward(actorId, p.community_id)
       this.run('UPDATE posts SET hidden=1 WHERE id=?', postId)
-      this.queueDelete(postId)
+      // Moderation suppresses this application's view; it cannot delete another
+      // actor's AT repository. A not-yet-sent intent can still be cancelled.
+      this.run("UPDATE outbox SET state='cancelled' WHERE post_id=? AND operation='put' AND state='pending'",postId)
       this.audit(actorId, 'post.hide', postId)
     })
   }
@@ -279,6 +281,16 @@ export class Strata {
     if (p.parent_id) {
       if (this.get<Post>('SELECT * FROM posts WHERE id=?', p.parent_id)?.hidden) throw new Fault(409, 'Parent unavailable')
       if (this.get<Job>("SELECT * FROM outbox WHERE post_id=? AND operation='put'", p.parent_id)?.state !== 'delivered') throw new Fault(409, 'Parent publication must settle first')
+    }
+  }
+  private settlePut(job: Job) {
+    const p=this.get<Post>('SELECT * FROM posts WHERE id=?',job.post_id)!
+    // Only a custodial release's withdrawal contract schedules retraction.
+    // Membership/mandate changes or community moderation do not confer PDS
+    // deletion authority over already-published ordinary contributions.
+    if (p.release_id) {
+      try { this.checkRelease(p.release_id) }
+      catch { this.run('UPDATE posts SET hidden=1 WHERE id=?',p.id);this.queueDelete(p.id) }
     }
   }
   recoverInterrupted() {
@@ -306,7 +318,7 @@ export class Strata {
         const result = await publisher.put(job.rkey, JSON.parse(job.record))
         this.tx(() => {
           this.run("UPDATE outbox SET state='delivered',cid=? WHERE id=?", result.cid, jobId)
-          try { this.eligible(job) } catch { this.run('UPDATE posts SET hidden=1 WHERE id=?', job.post_id); this.queueDelete(job.post_id) }
+          this.settlePut(job)
         })
       }
     } catch {
@@ -329,7 +341,7 @@ export class Strata {
       } else if (remote) {
         if (digest(canonical(remote.record)) !== digest(canonical(JSON.parse(job.record)))) throw new Fault(409, 'Remote record differs; manual review required')
         this.run("UPDATE outbox SET state='delivered',cid=?,error=NULL WHERE id=?", remote.cid, jobId)
-        try { this.eligible(job) } catch { this.run('UPDATE posts SET hidden=1 WHERE id=?', job.post_id); this.queueDelete(job.post_id) }
+        this.settlePut(job)
       } else {
         try { this.eligible(job); this.run("UPDATE outbox SET state='pending',error=NULL WHERE id=?", jobId) }
         catch { this.run("UPDATE outbox SET error='Absence observed; a late delivery is still possible' WHERE id=?", jobId) }

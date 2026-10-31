@@ -2,7 +2,7 @@
 
 31 October 2026. Status: **owner selected TypeScript for Strata, with Rust where it makes sense**. AGPL-3.0-only is selected. Repository remains private.
 
-The initial runnable foundation is TypeScript/Node/SQLite, using the official AT SDK and Lexicon validator. The owner chose this direction after considering Rust/Bend2: reuse the official SDK and keep the public engine lightweight, while retaining Rust in Aksara and appropriate native adapters. Seventeen tests and a CLI persistence/isolation smoke check pass; none proves a Rust/Bend implementation or a real network deployment.
+The initial runnable foundation is TypeScript/Node/SQLite, using the official AT SDK and Lexicon validator. The owner chose this direction after considering Rust/Bend2: reuse the official SDK and keep the public engine lightweight, while retaining Rust in Aksara and appropriate native adapters. Eighteen tests and a CLI persistence/isolation smoke check pass; none proves a Rust/Bend implementation or a real network deployment.
 
 ## Selected responsibilities
 

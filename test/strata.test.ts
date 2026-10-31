@@ -205,6 +205,21 @@ test('public replies wait for parent publication',async()=>{
   assert.equal(pds.records.size,2)
   s.close()
 })
+test('community moderation hides another author contribution without granting PDS deletion authority',async()=>{
+  const {s,alice,bob,pub}=fixture()
+  s.join(bob.actor.id,pub.id)
+  const post=s.createPost(bob.actor.id,pub.id,'An ordinary contribution'),pds=new Pds(bob.actor.did)
+  const job=s.jobs(bob.actor.id)[0]
+  await s.deliver(bob.actor.id,job.id,pds)
+  s.hidePost(alice.actor.id,post.id)
+  assert.equal(s.feed().length,0)
+  assert.equal(pds.records.size,1)
+  assert.equal(s.jobs(bob.actor.id).some(j=>j.operation==='delete'),false)
+  const pending=s.createPost(bob.actor.id,pub.id,'Not yet delivered')
+  s.hidePost(alice.actor.id,pending.id)
+  assert.equal(s.jobs(bob.actor.id).find(j=>j.post_id===pending.id)!.state,'cancelled')
+  s.close()
+})
 test('canonical public schema rejects private metadata and malformed time',()=>{
   const record={$type:COLLECTION,text:'Public',community:'https://example.org/community/music',createdAt:new Date().toISOString(),actorKind:'human'}
   validateRecord(record)
