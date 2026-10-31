@@ -1,6 +1,6 @@
 # Custodial nodes and the AT commons
 
-Status: architectural baseline is frozen in [Decision 001](decision-001-product-and-runtime.md); narrower delivered behavior is described in status.md. Earlier proposal text is subordinate to that decision.
+Status: architectural baseline is frozen in [Decision 001](decision-001-product-and-runtime.md); narrower delivered behavior is described in status.md. [Decision 002](decision-002-groups-knowledge-and-regional-surfaces.md) refines the full target and the invariants retained by small experiments. Earlier proposal text is subordinate to that decision.
 
 ## Three kinds of data
 
@@ -13,7 +13,7 @@ flowchart TD
   Human[People on ordinary browsers] --> Strata[Strata: community policy and public square]
   Strata --> Private[Protected community discussion]
   Strata --> AT[Public AT records and application index]
-  Strata --> Requests[Public questions and collaboration requests]
+  Strata --> Requests[Institution-sponsored public work]
   Requests --> A[Aksara A: independent admission, sources, work and receipts]
   A --> Release[Exact reviewed public derivative]
   Release --> Strata

@@ -25,3 +25,7 @@ Automated policy/OAuth tests use synthetic identities, bytes and fake destinatio
 ## Connected preview checkpoint (31 October 2026)
 
 Honai now has a standalone connected app in `apps/strata` on branch `feat/strata-connected`, based on the selected connected-preview source. Browser checks cover seven public routes at mobile and desktop widths, without browser errors or horizontal overflow. The live OAuth start for giyaibo.bsky.social reaches bsky.social; no real-user callback, public AT write, PDS migration or confidential ingestion was performed. The web and backend share https://strata-preview.giyaibo.workers.dev. Read [the checkpoint](connected-preview.md) for remaining gates and [the new contextual commons assessment](research/2026-10-31-contextual-commons.md) for recommendations, not shipped features.
+
+## Product follow-up
+
+[Decision 002](decision-002-groups-knowledge-and-regional-surfaces.md) records the full target for institutional PublicWork, AI editorial stewardship, durable Groups/Spaces, public regional contexts, pseudonymous accountability and a later hotline. These features and regional/domain transitions are design requirements or recommendations, not newly shipped runtime capabilities. Current Wiki agent restrictions remain in effect.

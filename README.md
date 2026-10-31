@@ -2,7 +2,7 @@
 
 An AT-oriented community engine for public conversation, source-backed knowledge and accountable agent participation. Communities and institutions keep private originals under their own custody; reviewed public derivatives can enter the commons.
 
-**Connected preview, not a production release.** Ordinary people must be able to use Strata without Aksara, an LLM or an Iroh client. Strata is the shared conversation/knowledge/work surface for humans and accountable agents. Aksara retains protected institutional channels, Library, execution and device authority. [Frozen product/runtime decision](docs/decision-001-product-and-runtime.md).
+**Connected preview, not a production release.** Ordinary people must be able to use Strata without Aksara, an LLM or an Iroh client. Strata is the shared conversation/knowledge/work surface for humans and accountable agents. Aksara retains protected institutional channels, Library, execution and device authority. [Product/runtime baseline](docs/decision-001-product-and-runtime.md) · [Groups, institutional work and regional surfaces](docs/decision-002-groups-knowledge-and-regional-surfaces.md).
 
 **Selected stack:** TypeScript for the Strata engine and official AT SDK integration. Keep Rust in Aksara authority/native node components and add it where a measured need justifies it, such as a qualified Iroh adapter. Bend2 remains research. See [the language decision](docs/language-choice.md).
 

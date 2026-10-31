@@ -20,9 +20,9 @@ Changing a private room to public is not an ordinary visibility toggle. A review
 
 The implementation now separates these three choices. Migration adopts prior local data, makes membership approval explicit, and cancels previously pending implicit public AT writes. Sending/uncertain jobs remain uncertain and are not blindly replayed; acknowledged history is preserved. There is no HTTP endpoint to flip an existing community's audience or publication policy.
 
-## First pan-Papuan deployment
+## General deployment and first regional experience
 
-One hosted commons first, with places/topics as views rather than one server per region. Proposed initial public spaces are everyday discussion, questions/help, culture/languages and community notices. Use approval admission and local-only publication initially. Names and moderation need local review before launch. These are onboarding suggestions, not automatically created empty communities or claims to represent Papua.
+ETNOS is intended as a general hosted commons, with Papua as its first focused regional experience. Places/topics are views rather than one server per region. Decision 002 refines the regional entry points, collective identity and sponsorship model. Proposed initial public spaces are everyday discussion, questions/help, culture/languages and community notices. Use approval admission and local-only publication initially. Names and moderation need local review before launch. These are onboarding suggestions, not automatically created empty communities or claims to represent Papua.
 
 Do not auto-create named NGO, clinic, school, staff or geographic membership directories. Member/private spaces are explicitly established by accountable stewards. Protected institutional channels and source knowledge remain in Aksara. Research belongs within the integrated Wiki experience, with contextual specialist views when useful.
 
@@ -52,7 +52,7 @@ Public human contributions stay useful without Aksara. Agents have an accountabl
 
 Public Wiki uses restricted proposals and accepted revisions, source references, language/perspective attribution, stale-base conflict detection and correction history. A revision is a local editorial decision, not a universal historical truth. Source rights, legitimacy and consent still require appropriate humans; URL validity is not rights verification.
 
-PublicWork is proposed public coordination. It must not become a remote internal WorkObject. A public question may lead to independently admitted Aksara work and an approved public return; raw archive identifiers, private membership, memory and tool traces do not cross automatically.
+PublicWork is proposed institution/community-sponsored public coordination. Ordinary questions and informal offers do not create work items; an authorized human representative or mandated Aksara must explicitly sponsor or adopt one. It must not become a remote internal WorkObject. A public question may lead to independently admitted Aksara work and an approved public return; raw archive identifiers, private membership, memory and tool traces do not cross automatically.
 
 HTTPS and independently authorized A2A come first. Iroh is optional native transport; it supplies neither authority nor anonymity. Mesh/HaLow/Starlink are connectivity choices requiring field validation, power and lawful regional radio configuration. Delayed/offline operations recheck current rights before effects. Permissioned peering, offline exchange, field devices and contributed compute are later profiles, not required daemons in the first forum.
 
@@ -65,3 +65,7 @@ HTTPS and independently authorized A2A come first. Iroh is optional native trans
 5. Compromise, backup/restore, resource/abuse and field qualification before sensitive institutional data. Then independently governed peer/offline/hardware profiles.
 
 Freeze the boundaries and acceptance evidence; improve implementation and upstream reuse when tests justify it. AGPL-3.0-only remains selected and the repository remains private until the owner changes its visibility.
+
+## Follow-up direction
+
+[Decision 002](decision-002-groups-knowledge-and-regional-surfaces.md) refines institutional PublicWork, future AI editorial proposals, durable local Groups/Spaces, public contexts without membership mapping, a later hotline surface, and a general ETNOS deployment with regional entry points. It supersedes conflicting earlier proposals while retaining current implementation/security gates.

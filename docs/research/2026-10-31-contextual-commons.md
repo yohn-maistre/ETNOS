@@ -2,9 +2,11 @@
 
 Research and product assessment, 31 October 2026. The owner's supplied chat summary is context, not a new specification or an instruction to implement its priority table. Recommendations below are not shipped capabilities. ETNOS at etnos.space is the intended first deployment; domain ownership and permanent record namespace remain unverified.
 
-Strata is an engine for communities to turn conversation into shared knowledge and accountable work. ETNOS is its first regional surface. Aksara is a continuing institutional/community agent that participates through Strata, its own web interface, messaging channels and devices. Each is a surface; none acquires the institution's source or execution authority by hosting its interface.
+Strata is an engine for communities to turn conversation into shared knowledge and accountable work. ETNOS is intended as a general deployment, with Papua as its first focused regional experience. Aksara is a continuing institutional/community agent that participates through Strata, its own web interface, messaging channels and devices. Each is a surface; none acquires the institution's source or execution authority by hosting its interface.
 
 The most useful product promise is: **ask together, investigate under local authority, publish what is approved, and keep the result useful.** This is more concrete than either “an Indigenous social network” or “a knowledge graph.” It should work for an ordinary person without an agent or protocol knowledge.
+
+The owner's later refinements are recorded in [Decision 002](../decision-002-groups-knowledge-and-regional-surfaces.md). In particular, informal requests/offers below stay conversation; PublicWork requires explicit institution/governed-community sponsorship. Durable local Groups/Spaces are intended engine capabilities, with a separate experimental AT adapter.
 
 ## Assessment of the supplied summary
 
