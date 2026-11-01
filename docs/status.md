@@ -1,5 +1,8 @@
 # Foundation status
 
+**Current alpha preparation:** see [alpha-20.md](alpha-20.md) for the consolidated feature/test matrix and remaining gates. The table below records earlier foundation checkpoints; later implemented content/DM/UI features must not be classified as missing from it alone.
+
+
 This is a runnable local/Worker backend and protocol fixture, a connected invited-user preview, not a secure production node. No public AT writes or confidential data ingestion were performed. Deployment evidence is recorded separately in cloudflare-profile.md.
 
 | Capability | Current evidence | Remaining gate |
@@ -37,3 +40,7 @@ Honai now has a standalone connected app in `apps/strata` on branch `feat/strata
 Conversation/media refinement: [checkpoint](forum-media-checkpoint.md) records nested reply ergonomics, image galleries, scope and preview quotas.
 
 Latest forum-first work: [rich content, lifecycle, capacity and Spaces experiment](forum-rich-content-checkpoint.md).
+
+## Alpha discovery preparation (1 November 2026)
+
+Added unified permission-filtered search, independent author profile pagination and private local following with a following feed (schema 15). DM contact search accepts DID/name and prior peers while retaining self/block/private-discovery boundaries. Honai adds keyboard search, real Explore sections and independent base/accent/static-texture preferences. Tests and preview delivery evidence are recorded in the alpha checkpoint. No domain cutover, PDS signup, AT broadcast, WPW/Aksara connection or production-readiness claim is implied.

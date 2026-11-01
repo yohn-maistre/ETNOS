@@ -1,10 +1,29 @@
 import {randomUUID} from 'node:crypto'
 import {StrataCore,Fault,type Post} from './core.ts'
+import {Search} from './search.ts'
 
 function text(value:string,max:number) { if(typeof value!=='string' || !value.trim() || value.length>max) throw new Fault(400,'Invalid input');return value.trim() }
 export class Social {
   private store: StrataCore
   constructor(store:StrataCore) { this.store=store }
+  follow(actorId:string,targetId:string,follow:boolean) {
+    const s=this.store
+    return s.tx(()=>{
+      if(s.actor(actorId).kind!=='human')throw new Fault(403,'Human participant required')
+      if(actorId===targetId)throw new Fault(400,'Choose another participant')
+      // Removal remains possible after the peer loses their last visible post.
+      if(follow)new Search(s).profile(actorId,targetId)
+      if(follow&&s.get('SELECT 1 FROM dm_blocks WHERE (actor_id=? AND peer_id=?) OR (peer_id=? AND actor_id=?)',actorId,targetId,actorId,targetId))throw new Fault(404,'Not found')
+      if(follow&&!s.get('SELECT 1 FROM follows WHERE actor_id=? AND target_id=?',actorId,targetId)&&s.get<{n:number}>('SELECT count(*) n FROM follows WHERE actor_id=?',actorId)!.n>=500)throw new Fault(409,'Following limit reached')
+      if(follow)s.run('INSERT OR IGNORE INTO follows(actor_id,target_id,created) VALUES(?,?,?)',actorId,targetId,s.clock())
+      else s.run('DELETE FROM follows WHERE actor_id=? AND target_id=?',actorId,targetId)
+      return {following:follow}
+    })
+  }
+  following(actorId:string) {
+    this.store.actor(actorId)
+    return this.store.all<{id:string;name:string;did:string;kind:string}>(`SELECT a.id,a.name,a.did,a.kind FROM follows f JOIN actors a ON a.id=f.target_id WHERE f.actor_id=? ORDER BY f.created DESC,a.id LIMIT 500`,actorId)
+  }
   people(actorId:string,query:string){
     this.store.actor(actorId)
     if(typeof query!=='string'||query.trim().length<2||query.length>100)return[]

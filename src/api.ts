@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer'
 import { StrataCore, Fault, type Community, type Actor } from './core.ts'
 import { Social } from './social.ts'
+import { Search } from './search.ts'
 import { Wiki } from './wiki.ts'
 import {Groups,strings,type Group,type Context} from './groups.ts'
 import {DirectMessages} from './dm.ts'
@@ -41,7 +42,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const media=new Media(store)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
-  const social=new Social(store)
+  const social=new Social(store),search=new Search(store)
   const wiki=new Wiki(store)
   const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups)
   return async (req: Request): Promise<Response> => {
@@ -64,7 +65,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       if (req.method === 'GET') {
         if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth-invite-only':'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
+        else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
+        else if (path === '/v1/following') result=social.following(authenticated())
         else if (path === '/v1/me') result = store.actor(authenticated())
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='moderation')result=forum.moderation(authenticated(),parts[2])
         else if (path === '/v1/memberships') result=store.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1',authenticated())
@@ -86,10 +89,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===3&&parts[1]==='work')result=work.read(parts[2])
         else if(parts.length===4&&parts[1]==='work'&&parts[3]==='proposals')result=work.proposals(authenticated(),parts[2])
         else if(parts.length===3&&parts[1]==='actors'){
-          const target=store.actor(parts[2])
-          const publicRecord=store.get("SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.author_id=? AND p.hidden=0 AND c.visibility='public' UNION ALL SELECT 1 FROM wiki_revisions r JOIN wiki_pages w ON w.revision_id=r.id JOIN communities c ON c.id=w.community_id WHERE r.author_id=? AND c.visibility='public' LIMIT 1",target.id,target.id)
-          if(actor?.id!==target.id&&!publicRecord)throw new Fault(404,'Not found')
-          result={id:target.id,did:target.did,name:target.name,kind:target.kind}
+          result=search.profile(actor?.id,parts[2])
         }
         else if (path === '/v1/communities') result = store.listCommunities(actor?.id)
         else if (path === '/v1/topics') result=social.topics()
@@ -109,7 +109,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         }
         else if (path === '/v1/feed') result = store.feed(actor?.id, url.searchParams.get('q') ?? '')
         else if (path === '/v1/feed/page') result=store.feedPage(actor?.id,{
-          query:url.searchParams.get('q')??undefined,communityId:url.searchParams.get('community')??undefined,
+          followingId:url.searchParams.get('following')==='true'?authenticated():undefined,authorId:url.searchParams.get('author')??undefined,query:url.searchParams.get('q')??undefined,communityId:url.searchParams.get('community')??undefined,
           topicId:url.searchParams.get('topic')??undefined,cursor:url.searchParams.get('cursor')??undefined,
           limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined,
           rootsOnly:url.searchParams.get('roots')==='true',contextId:url.searchParams.has('context')?groups.context(url.searchParams.get('context')!).id:undefined,
@@ -162,6 +162,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         if(typeof b.enabled!=='boolean')throw new Fault(400,'Boolean required')
         result=groups.recognize(caller,parts[2],b.enabled)
       }
+      else if(parts.length===4&&parts[1]==='actors'&&parts[3]==='follow'){if(typeof b.following!=='boolean')throw new Fault(400,'Boolean required');result=social.follow(caller,parts[2],b.following)}
       else if(path==='/v1/contexts')result=groups.createContext(caller,{slug:string(b.slug),title:string(b.title),kind:string(b.kind) as Context['kind'],description:string(b.description),language:string(b.language),aliases:strings(b.aliases??[],20)})
       else if(parts.length===4&&['posts','groups','wiki'].includes(parts[1])&&parts[3]==='contexts'){
         const kind=parts[1]==='posts'?'post':parts[1]==='groups'?'group':'wiki'

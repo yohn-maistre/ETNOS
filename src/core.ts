@@ -276,7 +276,7 @@ export class StrataCore {
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
       AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200));return this.views(rows,actorId)
   }
-  feedPage(actorId?: string, options: {query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string;contextId?:string} = {}) {
+  feedPage(actorId?: string, options: {followingId?:string;authorId?:string;query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string;contextId?:string} = {}) {
     const limit=options.limit ?? 30
     if(!Number.isInteger(limit) || limit<1 || limit>100) throw new Fault(400,'Limit must be between 1 and 100')
     if(options.communityId && !this.canRead(actorId,this.community(options.communityId))) missing()
@@ -293,16 +293,18 @@ export class StrataCore {
     const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.hidden=0 AND (p.deleted=0 OR p.parent_id IS NOT NULL)
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
       AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM follows f WHERE f.actor_id=? AND f.target_id=p.author_id))
+      AND (? IS NULL OR p.author_id=?)
       AND (? IS NULL OR p.community_id=?)
       AND (? IS NULL OR EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?))
       AND (? IS NULL OR EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND rc.context_id=? AND cx.active=1))
       AND (?=0 OR p.parent_id IS NULL)
       AND (? IS NULL OR (p.root_id=? AND p.id!=?))
       AND (? IS NULL OR p.created<? OR (p.created=? AND p.id<?))
-      ORDER BY p.created DESC,p.id DESC LIMIT ?`,actorId??null,(options.query??'').slice(0,200),options.communityId??null,options.communityId??null,
+      ORDER BY p.created DESC,p.id DESC LIMIT ?`,actorId??null,(options.query??'').slice(0,200),options.followingId??null,options.followingId??null,options.authorId??null,options.authorId??null,options.communityId??null,options.communityId??null,
       options.topicId??null,options.topicId??null,options.contextId??null,options.contextId??null,options.rootsOnly?1:0,options.rootId??null,options.rootId??null,options.rootId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
     const selected=rows.slice(0,limit),last=selected.at(-1)
-    const pinned=options.communityId&&!options.cursor&&!options.query&&!options.rootId&&!options.topicId&&!options.contextId?this.views(this.all<Post>('SELECT * FROM posts WHERE community_id=? AND pinned=1 AND hidden=0 AND deleted=0 ORDER BY created DESC,id DESC LIMIT 3',options.communityId),actorId):[]
+    const pinned=options.communityId&&!options.cursor&&!options.query&&!options.rootId&&!options.topicId&&!options.contextId&&!options.authorId&&!options.followingId?this.views(this.all<Post>('SELECT * FROM posts WHERE community_id=? AND pinned=1 AND hidden=0 AND deleted=0 ORDER BY created DESC,id DESC LIMIT 3',options.communityId),actorId):[]
     return {pinned,items:this.views(selected,actorId),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
   }
   source(actorId: string, sourceId: string) {

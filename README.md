@@ -6,6 +6,10 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 
 **Selected stack:** TypeScript for the Strata engine and official AT SDK integration. Keep Rust in Aksara authority/native node components and add it where a measured need justifies it, such as a qualified Iroh adapter. Bend2 remains research. See [the language decision](docs/language-choice.md).
 
+## Twenty-person alpha
+
+[Current scope, release gates, domain plan and capacity](docs/alpha-20.md) · [Engine/client deployment contract](docs/client-deployment-contract.md). Public reading, invited participation, local publication by default. The UI and engine remain separate repositories with an optional integrated deployment.
+
 ## Implemented now
 
 - Persistent SQLite communities with public, listed-private and hidden-private visibility.
@@ -21,7 +25,7 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 - A loopback JSON API with bounded requests, local bearer credential checks, exact Host/Origin checks, no-store responses and no HTTP provisioning endpoint.
 - The same policy and Fetch handler on local Node SQLite and Cloudflare SQLite Durable Objects, with real workerd isolation/rollback/restart checks. Local migration uses a version table and preserves prior v1 data.
 
-The Cloudflare preview now has invitation-controlled AT OAuth using the official SDK, sealed server-side credentials, browser-bound state, a Secure HttpOnly session and CSRF checks. The selected Honai design has been ported into a same-origin connected interface. A real giyaibo.bsky.social authorization request reached Bluesky; completing the real-user callback requires owner consent. No account was migrated. Local Groups/Spaces, public Contexts, sponsor-controlled PublicWork, bounded agent editorial proposals, a private activity inbox and experimental one-to-one encrypted DMs are now implemented. [Current scope and messaging limits](docs/commons-implementation.md). Live public AT publishing, a hosted PDS, ingestion, Iroh/A2A, complete forum lifecycle and production security qualification remain outstanding. [Status](docs/status.md) · [PieFed feature ledger](docs/piefed-parity.md) · [Serverless reuse review](docs/serverless-reuse-review.md).
+The Cloudflare preview now has invitation-controlled AT OAuth using the official SDK, sealed server-side credentials, browser-bound state, a Secure HttpOnly session and CSRF checks. The selected Honai design has been ported into a same-origin connected interface. A real giyaibo.bsky.social authorization request reached Bluesky; the owner has since completed real login and posting in the preview. A second-user alpha flow remains to be verified. No account was migrated. Local Groups/Spaces, public Contexts, sponsor-controlled PublicWork, bounded agent editorial proposals, a private activity inbox and experimental one-to-one encrypted DMs are now implemented. [Current scope and messaging limits](docs/commons-implementation.md). Live public AT publishing, a hosted PDS, ingestion, Iroh/A2A, complete forum lifecycle and production security qualification remain outstanding. [Status](docs/status.md) · [PieFed feature ledger](docs/piefed-parity.md) · [Serverless reuse review](docs/serverless-reuse-review.md).
 
 ## Run locally
 

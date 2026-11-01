@@ -241,9 +241,12 @@ export class DirectMessages {
     )
       return [];
     return this.s.all<{ id: string; name: string; did: string }>(
-      `SELECT a.id,a.name,a.did FROM actors a JOIN dm_devices d ON d.actor_id=a.id WHERE a.kind='human' AND a.id!=? AND instr(lower(a.name),lower(?))>0 AND NOT EXISTS(SELECT 1 FROM dm_blocks b WHERE (b.actor_id=? AND b.peer_id=a.id) OR (b.peer_id=? AND b.actor_id=a.id)) AND EXISTS(SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.author_id=a.id AND p.hidden=0 AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))) ORDER BY a.name LIMIT 20`,
+      `SELECT a.id,a.name,a.did FROM actors a JOIN dm_devices d ON d.actor_id=a.id WHERE a.kind='human' AND a.id!=? AND (instr(lower(a.name),lower(?))>0 OR instr(lower(a.did),lower(?))>0) AND NOT EXISTS(SELECT 1 FROM dm_blocks b WHERE (b.actor_id=? AND b.peer_id=a.id) OR (b.peer_id=? AND b.actor_id=a.id)) AND (EXISTS(SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.author_id=a.id AND p.hidden=0 AND p.deleted=0 AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))) OR EXISTS(SELECT 1 FROM dm_threads t WHERE (t.sender_id=? AND t.recipient_id=a.id) OR (t.recipient_id=? AND t.sender_id=a.id))) ORDER BY a.name LIMIT 20`,
       actorId,
-      query.trim(),
+      query.trim().replace(/^@/, ''),
+      query.trim().replace(/^@/, ''),
+      actorId,
+      actorId,
       actorId,
       actorId,
       actorId,

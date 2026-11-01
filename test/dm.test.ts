@@ -171,3 +171,19 @@ test("lost key registration acknowledgement retries without making a consumed pa
     s.close();
   }
 });
+
+test('DM discovery excludes self and private-only strangers, matches DID, and retains existing peers without public posts',()=>{
+ const{s,dm,aid,bid,c,reserve}=fixture()
+ try{
+  assert.deepEqual(dm.contacts(aid,'Alice'),[])
+  assert.deepEqual(dm.contacts(aid,'Other'),[])
+  assert.deepEqual(dm.contacts(aid,'Bob'),[])
+  reserve()
+  assert.equal(dm.contacts(aid,'@Bob')[0].id,bid)
+  assert.equal(dm.contacts(aid,'did:web:bob.example')[0].id,bid)
+  assert.deepEqual(dm.contacts(c.actor.id,'Bob'),[])
+  const t=dm.list(aid)[0]
+  dm.close(aid,t.id,true)
+  assert.deepEqual(dm.contacts(aid,'Bob'),[])
+ }finally{s.close()}
+})

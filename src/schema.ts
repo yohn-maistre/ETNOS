@@ -242,6 +242,9 @@ CREATE TABLE moderation_events(id TEXT PRIMARY KEY,community_id TEXT NOT NULL RE
 CREATE INDEX moderation_community ON moderation_events(community_id,created DESC);
 CREATE TABLE post_requests(actor_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,post_id TEXT NOT NULL REFERENCES posts(id),PRIMARY KEY(actor_id,request_key));
 CREATE INDEX post_author_recent ON posts(author_id,created DESC);
+`, `
+CREATE TABLE follows(actor_id TEXT NOT NULL REFERENCES actors(id),target_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(actor_id,target_id),CHECK(actor_id!=target_id));
+CREATE INDEX follows_target ON follows(target_id,actor_id);
 `]
 
 

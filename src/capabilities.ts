@@ -4,7 +4,7 @@ export const capabilities = {
   auth:{localCredentials:true,atOAuth:false,remoteSignup:false,institutionalAccess:false},
   communities:{visibility:true,admission:true,applications:true,invitations:true,ownershipTransfer:false},
   conversation:{text:true,replies:true,votes:true,bookmarks:true,cursorPagination:true,publicTopics:true,
-    edits:true,authorDeletion:true,localRichText:true,titles:true,links:true,media:true,polls:true,events:true,notifications:true,directMessages:true},
+    edits:true,authorDeletion:true,localRichText:true,titles:true,links:true,media:true,polls:true,events:true,notifications:true,directMessages:true,localFollowing:true,crossEntitySearch:true},
   groups:{local:true,forumSpaces:true,protectedMembership:true,externalATGroups:false,publicContexts:true,institutionalSponsorship:true},
   messaging:{local:true,experimental:true,encryptedClient:true,independentSecurityReview:false,multiDevice:false,attachments:false,interop:false},
   activity:{localInbox:true,readState:true,permissionFiltered:true,email:false,webPush:false,liveUpdates:false},
