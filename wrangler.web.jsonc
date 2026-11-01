@@ -9,7 +9,7 @@
   "workers_dev": true,
   "preview_urls": false,
   "vars": {
-    "STRATA_ORIGIN": "https://strata-preview.giyaibo.workers.dev",
+    "STRATA_ORIGIN": "https://etnos.space",
     "STRATA_NODE": "preview",
     "STRATA_AUTH_MODE": "atproto",
     "STRATA_STEWARD_DID": "did:plc:uhhrncfqtpg26h24irfcpuma",

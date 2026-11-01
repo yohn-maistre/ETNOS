@@ -1,6 +1,8 @@
 # Decision 004: full AT accounts, separate account hosting
 
-1 November 2026 · Direction accepted: full AT experience. Hosting choice and an experimental PDS pilot remain under evaluation. Local-only passkey accounts are not being introduced as a substitute.
+1 November 2026 · Follow-up: [Decision 005](decision-005-node-account-data-planes.md) adds source audits, measured WPW R2 inventory and the owner-authorized domain cutover. DNS parking observations below are historical.
+
+Direction accepted: full AT experience. Hosting choice and an experimental PDS pilot remain under evaluation. Local-only passkey accounts are not being introduced as a substitute.
 
 ## Recommendation
 
