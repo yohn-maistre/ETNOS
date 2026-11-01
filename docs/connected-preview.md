@@ -4,7 +4,15 @@ Updated 1 November 2026. Preview: https://strata-preview.giyaibo.workers.dev
 
 The engine and the selected Honai visual direction now run on the same origin. The original Sites prototype is unchanged. ETNOS is the intended deployment name; no etnos.space DNS/domain change or purchase was performed, and the permanent AT namespace remains an unregistered example.
 
-## Latest deployment — forum content and isolated Spaces lab
+## Current deployment — Threads conversation ergonomics
+
+Deployment `7db1943c4e86427ba19bcc6aff9ec39e`; Honai `e18ce777a32f181cb6e019456202c3e1ec43fac4`, unchanged engine code `537977f`. Reported startup 105 ms is an artifact observation, not a traffic benchmark. The Worker script remains SHA-256 `f43af4760bbcf9b0f1e8156f0a7c63ab8664847385c9f4b0a9ddba0f0bc6b7ef`; only frontend assets and version annotation changed. Same origin, Durable Object namespace, schema 14 and signing/sealing secret bindings; public AT publishing remains false.
+
+The frontend now has a centered 640px reading surface, quiet navigation, unified post/reply typography, consistent soft controls, tablet icon navigation, a mobile feed selector and a more direct composer. Draft confirmation preserves writing across Cancel/Escape/close; no plaintext persistent draft store was introduced. Full scope, official Threads comparison sources and remaining gaps are in [Honai's ergonomics checkpoint](https://github.com/yohn-maistre/honai-metro/blob/feat/strata-connected/apps/strata/THREADS-ERGONOMICS.md).
+
+Verification: built-UI screenshots of feed, thread, composer, login and settings at 390/768/1440px, plus light mode; Svelte check (0 errors/warnings), ESLint, native checks and four browser journeys. New behavioral checks cover draft keep/discard, mobile feed switching, keyboard sidebar recovery and one main landmark. Public post-deploy routes, existing conversation and Spaces report return 200 at 390/1440px without overflow or browser errors. Existing real posts/replies are retained; synthetic visual fixtures were not deployed as community content. The UI polish does not qualify physical mobile keyboards, assistive technology, production recovery or launch capacity.
+
+## Previous deployment — forum content and isolated Spaces lab
 
 Deployment `29d074c4d67e41cbab7341c3dfa1b7be`; engine `537977f`, Honai `ca9dc3b`. Worker artifact SHA-256 `f43af4760bbcf9b0f1e8156f0a7c63ab8664847385c9f4b0a9ddba0f0bc6b7ef`, 2,859,070 bytes / 775,980 gzip; reported startup 112 ms. These are artifact/startup observations, not traffic benchmarks. Application schema advances to **14**, retaining namespace `2b28195b06644e77bc380c8d41b65ce6`, DO migration tag `v1`, origin and both signing/sealing secret bindings. Existing public posts and replies still render; no synthetic data was written to the deployment.
 
