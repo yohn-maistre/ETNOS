@@ -8,7 +8,7 @@ Optional, separately deployed AT account hosting inside the Strata repository. E
 - Public AT repository create/read/update/delete, signed commits and CAR export; official `verifyRepoCar` checks an actual local export.
 - Real official Strata OAuth client → local PDS PAR/PKCE/DPoP authorization → scoped repository write, with all network edges intercepted. A read-only consent cannot write and a reused DPoP proof is rejected. No fake token exchange stands in for this test.
 - Serialized account operations, authoritative conditional-write preconditions and atomic SQL block/root/reference updates; identical records at two paths retain their shared bytes when one changes.
-- Upload staging: an uploaded blob is not publicly served until referenced by a public record. Do not use staging as private institutional storage.
+- Upload staging: uploads initially have no public serving URL. Promotion occurs during a public write attempt and may survive a failed commit; treat every PDS upload as intended-public. Do not use staging as private institutional storage.
 - Durable legacy refresh-session registration, one-use rotation and logout revocation. A legacy access JWT remains valid until its normal two-hour expiry; immediate access-token revocation is not implemented.
 - Host checks, bounded request streams (256KiB JSON, 5MiB blobs, 16MiB CAR imports; import requires an inactive empty account), login throttling and disabled implicit AppView/arbitrary-service proxying.
 - Closed account creation, no relay notifications by default, Spaces off. The repository is still public; an unadvertised host is not private.
