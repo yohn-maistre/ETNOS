@@ -2,7 +2,7 @@ import backend,{StrataNode} from './worker.ts'
 import {json} from './api.ts'
 import {publicNews} from './news.ts'
 export {StrataNode}
-type WebEnv=Cloudflare.Env & {ASSETS:Fetcher}
+type WebEnv=Cloudflare.Env & {ASSETS:Fetcher;WATCH_NEWS?:Fetcher}
 const legacyOrigin='https://strata-preview.giyaibo.workers.dev'
 const edgeCache=()=> (caches as unknown as {default:Cache}).default
 export default {
@@ -27,7 +27,7 @@ export default {
       if(request.method!=='GET')return json(405,{error:'Method not allowed'})
       const key=new Request(url.origin+'/v1/news'),cached=await edgeCache().match(key)
       if(cached)return cached
-      const response=await publicNews()
+      const response=await publicNews(env.WATCH_NEWS ? (_url,options)=>env.WATCH_NEWS!.fetch('https://watch.internal/current?limit=6',options) : fetch)
       if(response.ok)await edgeCache().put(key,response.clone())
       return response
     }

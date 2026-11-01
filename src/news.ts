@@ -5,7 +5,7 @@ const source={name:'West Papua Watch',url:'https://westpapua.watch/news/'}
 const unavailable=()=>Response.json({source,items:[],available:false} satisfies NewsFeed,{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}})
 export async function publicNews(fetcher:typeof fetch=fetch) {
   try {
-    const response=await fetcher('https://westpapua.watch/api/current?limit=6',{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(4000)})
+    const response=await fetcher('https://westpapua.watch/api/current?limit=6',{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(8000)})
     if(!response.ok||!response.headers.get('content-type')?.includes('json')||!response.body)return unavailable()
     const reader=response.body.getReader(),chunks:Uint8Array[]=[];let size=0
     try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>131072){await reader.cancel();return unavailable()}chunks.push(part.value)}}finally{reader.releaseLock()}

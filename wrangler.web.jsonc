@@ -42,6 +42,7 @@
       "STRATA_AUTH_SEAL_KEY"
     ]
   },
+  "services": [{"binding":"WATCH_NEWS","service":"westpapua-watch-engine"}],
   "assets": {
     "directory": "./web",
     "binding": "ASSETS",
