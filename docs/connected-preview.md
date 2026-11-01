@@ -1,8 +1,16 @@
 # OAuth and connected Honai checkpoint
 
-31 October 2026. Preview: https://strata-preview.giyaibo.workers.dev
+Updated 1 November 2026. Preview: https://strata-preview.giyaibo.workers.dev
 
 The engine and the selected Honai visual direction now run on the same origin. The original Sites prototype is unchanged. ETNOS is the intended deployment name; no etnos.space DNS/domain change or purchase was performed, and the permanent AT namespace remains an unregistered example.
+
+## Latest deployment — forum content and isolated Spaces lab
+
+Deployment `29d074c4d67e41cbab7341c3dfa1b7be`; engine `537977f`, Honai `ca9dc3b`. Worker artifact SHA-256 `f43af4760bbcf9b0f1e8156f0a7c63ab8664847385c9f4b0a9ddba0f0bc6b7ef`, 2,859,070 bytes / 775,980 gzip; reported startup 112 ms. These are artifact/startup observations, not traffic benchmarks. Application schema advances to **14**, retaining namespace `2b28195b06644e77bc380c8d41b65ce6`, DO migration tag `v1`, origin and both signing/sealing secret bindings. Existing public posts and replies still render; no synthetic data was written to the deployment.
+
+[Rich content, lifecycle, capacity and experiment scope](forum-rich-content-checkpoint.md). Titles/links/Markdown, long writing, image-only posts, click-to-load external video, polls/events, local author edits/deletion and human moderator locks/pins/hide/restore are enabled. Buttons are neutral with quiet customizable accents; duplicate route loaders are removed. The read-only [Spaces experiment report](https://strata-preview.giyaibo.workers.dev/labs/spaces) shows the isolated official alpha two-PDS trial, including its observed old-credential access after removal. No real community/account migration, hosted PDS, private AT federation or live public publishing was enabled.
+
+Validation: 58 Node tests; actual-workerd access/rollback/persistence/restart and rich forum lifecycle checks; Worker/type checks; Svelte check (0 errors/warnings), UI ESLint/root lint, 3 native UI tests and 4 isolated browser journeys. The independent Spaces probe passed 14 checks using official alpha PDS/SDK. Post-deploy public verification covered 20 routes across 390/1440 px plus the existing thread and lab page; all returned 200 with no horizontal overflow or browser errors. Public health/capabilities are 200; inaccessible media remains an indistinguishable 404. No live load test was performed.
 
 ## Delivered
 
@@ -29,7 +37,7 @@ The API-only entrypoint remains src/worker.ts. The web profile uses src/web-work
 
 Use a reviewed build in cloud CI/development, not the owner's phone. Do not deploy test/worker-harness.ts or a test config. Preserve signing/sealing secrets when updating a Worker; do not regenerate them on ordinary deployments. Rotation and recovery require a separate plan for sealed sessions and revocation.
 
-The initial same-origin web deployment was 2,793,567 uncompressed script bytes, approximately 747 KiB gzip, with 121ms reported startup; these are artifact/startup observations, not request-latency or traffic benchmarks. Subsequent UI-only assets do not change the engine artifact. One logical node still uses one Durable Object and synchronous SQL; feed projections have per-post queries. AT scalability does not establish this implementation's capacity. No DAU/RPS guarantee or measured advantage over PieFed/Lemmy/SiliconBeest is claimed.
+The initial same-origin web deployment was 2,793,567 uncompressed script bytes, approximately 747 KiB gzip, with 121ms reported startup; these are artifact/startup observations, not request-latency or traffic benchmarks. Subsequent UI-only assets do not change the engine artifact. One logical node still uses one Durable Object and synchronous SQL; feed projections now batch reads; see the latest checkpoint below. AT scalability does not establish this implementation's capacity. No DAU/RPS guarantee or measured advantage over PieFed/Lemmy/SiliconBeest is claimed.
 
 ## Remaining release gates
 
