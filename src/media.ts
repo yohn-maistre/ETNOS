@@ -78,9 +78,9 @@ export class Media{
   }
   response(actor:string|undefined,id:string){
     const m=this.s.get<ImageRow>('SELECT * FROM media WHERE id=?',id)
-    if(!m)throw new Fault(404,'Image unavailable')
+    if(!m)throw new Fault(404,'Not found')
     if(m.post_id)this.s.getPost(actor,m.post_id)
-    else if(this.s.clock()-m.created>=DAY||!actor||actor!==m.owner_id||!this.s.canRead(actor,this.s.community(m.community_id)))throw new Fault(404,'Image unavailable')
+    else if(this.s.clock()-m.created>=DAY||!actor||actor!==m.owner_id||!this.s.canRead(actor,this.s.community(m.community_id)))throw new Fault(404,'Not found')
     return new Response(new Uint8Array(m.bytes),{headers:{'content-type':'image/webp','content-length':String(m.size),'cache-control':'no-store','x-content-type-options':'nosniff','cross-origin-resource-policy':'same-origin','referrer-policy':'no-referrer'}})
   }
 }

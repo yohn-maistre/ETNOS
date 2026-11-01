@@ -24,8 +24,8 @@ test('private image drafts, post metadata and bytes recheck live access and mode
  const{s,m,a,b,o,priv}=setup()
  try{
  const draft=m.upload(a.actor.id,priv.id,image,'A description')
- assert.throws(()=>m.response(b.actor.id,draft.id),/unavailable/)
- assert.throws(()=>m.response(undefined,draft.id),/unavailable/)
+ assert.throws(()=>m.response(b.actor.id,draft.id),/Not found/)
+ assert.throws(()=>m.response(undefined,draft.id),/Not found/)
  const post=s.createPost(a.actor.id,priv.id,'Private image');m.attach(a.actor.id,post.id,[draft.id])
  assert.equal(s.getPost(b.actor.id,post.id).media[0].alt,'A description')
  assert.deepEqual(new Uint8Array(await m.response(b.actor.id,draft.id).arrayBuffer()),new Uint8Array(Buffer.from(image,'base64')))
@@ -58,7 +58,7 @@ test('upload admission, agent limits, expiry and node storage budget are enforce
  assert.throws(()=>m.upload(o.actor.id,pub.id,image,''))
  const agent=s.provision('did:web:media-agent.example','Agent',a.actor.id);s.setMember(a.actor.id,pub.id,agent.actor.id,true)
  assert.throws(()=>m.upload(agent.actor.id,pub.id,image,''),/Human/)
- const draft=m.upload(a.actor.id,priv.id,image,'');advance(86400001);assert.throws(()=>m.response(a.actor.id,draft.id),/unavailable/)
+ const draft=m.upload(a.actor.id,priv.id,image,'');advance(86400001);assert.throws(()=>m.response(a.actor.id,draft.id),/Not found/)
  const post=s.createPost(a.actor.id,priv.id,'Expired draft');assert.throws(()=>m.attach(a.actor.id,post.id,[draft.id]))
  const live=m.upload(b.actor.id,priv.id,image,'');assert.equal(s.get('SELECT id FROM media WHERE id=?',draft.id),undefined)
  s.run('UPDATE media SET size=? WHERE id=?',64*1024*1024,live.id)
@@ -72,5 +72,19 @@ test('small-image floods are bounded by draft and upload counts, not only byte q
   for(let i=0;i<16;i++)m.upload(a.actor.id,pub.id,image,'Description')
   assert.throws(()=>m.upload(a.actor.id,pub.id,image,''),/upload limit/)
   assert.equal(s.get<{n:number}>('SELECT COUNT(*) n FROM media')!.n,16)
+ }finally{s.close()}
+})
+
+test('private and nonexistent image HTTP responses do not reveal image existence',async()=>{
+ const{s,m,a,o,priv}=setup(),handler=api(s)
+ try{
+  const imageDraft=m.upload(a.actor.id,priv.id,image,'Private description'),post=s.createPost(a.actor.id,priv.id,'Private image')
+  m.attach(a.actor.id,post.id,[imageDraft.id])
+  const responses=[]
+  for(const id of[imageDraft.id,crypto.randomUUID()]){
+   const res=await handler(new Request(s.base+'/v1/media/'+id,{headers:{authorization:'Bearer '+o.token}}))
+   responses.push({status:res.status,body:await res.text()})
+  }
+  assert.deepEqual(responses[0],responses[1])
  }finally{s.close()}
 })
