@@ -15,6 +15,7 @@ export class Social {
     return s.tx(()=>{
       const post=s.getPost(actorId,postId)
       s.requireMember(actorId,post.community_id)
+      if(post.deleted)throw new Fault(409,'Post deleted')
       if(s.actor(actorId).kind!=='human') throw new Fault(403,'Agents cannot vote')
       if(![-1,0,1].includes(value)) throw new Fault(400,'Invalid vote')
       if(value===0) s.run('DELETE FROM votes WHERE post_id=? AND actor_id=?',postId,actorId)
@@ -25,7 +26,7 @@ export class Social {
   bookmark(actorId:string,postId:string,save:boolean) {
     const s=this.store
     return s.tx(()=>{
-      s.actor(actorId);s.getPost(actorId,postId)
+      s.actor(actorId);if(s.getPost(actorId,postId).deleted)throw new Fault(409,'Post deleted')
       if(save) s.run('INSERT OR IGNORE INTO bookmarks VALUES(?,?,?)',postId,actorId,s.clock())
       else s.run('DELETE FROM bookmarks WHERE post_id=? AND actor_id=?',postId,actorId)
       return {saved:save}

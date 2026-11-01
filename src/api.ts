@@ -6,6 +6,7 @@ import {Groups,strings,type Group,type Context} from './groups.ts'
 import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
+import {Forum} from './forum.ts'
 import { Media } from './media.ts'
 import { capabilities } from './capabilities.ts'
 
@@ -36,6 +37,7 @@ export function json(code: number, data: unknown) {
 }
 export type ApiOptions={custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
+  const forum=new Forum(store)
   const media=new Media(store)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
@@ -64,6 +66,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth-invite-only':'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
         else if (path === '/v1/me') result = store.actor(authenticated())
+        else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='moderation')result=forum.moderation(authenticated(),parts[2])
         else if (path === '/v1/memberships') result=store.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1',authenticated())
         else if (path === '/v1/capabilities') result={...capabilities,auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto'}}
         else if(path==='/v1/dm/contacts')result=dm.contacts(authenticated(),url.searchParams.get('q')??'')
@@ -187,7 +190,12 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         if (typeof b.active !== 'boolean') throw new Fault(400,'Boolean required')
         result = store.setMember(caller,parts[2],string(b.actorId),b.active,b.role === undefined ? 'member' : string(b.role) as 'member'|'moderator')
       }
-      else if (path === '/v1/posts') result = store.tx(()=>{const post=store.createPost(caller,string(b.communityId),string(b.text),b.parentId === undefined ? undefined : string(b.parentId),b.mandateId === undefined ? undefined : string(b.mandateId));media.attach(caller,post.id,strings(b.mediaIds??[]));for(const id of strings(b.contextIds??[]))groups.attach(caller,'post',post.id,id);return store.getPost(caller,post.id)})
+      else if (path === '/v1/posts') result=forum.create(caller,b,groups)
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='edit')result=forum.edit(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='delete')result=forum.delete(caller,parts[2],b.revision)
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='moderate')result=forum.moderate(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='poll')result=forum.poll(caller,parts[2],b.choice)
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='rsvp')result=forum.rsvp(caller,parts[2],b.response)
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'vote') {
         if(typeof b.value!=='number') throw new Fault(400,'Numeric vote required')
         result=social.vote(caller,parts[2],b.value)

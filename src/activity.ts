@@ -33,7 +33,7 @@ export class Activity {
       `
       SELECT 'reply:'||p.id AS id,'reply' AS kind,p.root_id AS target_id,c.title AS title,'Balasan baru' AS detail,p.created AS created
       FROM posts p JOIN posts parent ON parent.id=p.parent_id JOIN communities c ON c.id=p.community_id
-      WHERE parent.author_id=?1 AND p.author_id!=?1 AND parent.hidden=0 AND p.hidden=0 AND
+      WHERE parent.author_id=?1 AND p.author_id!=?1 AND parent.hidden=0 AND p.hidden=0 AND parent.deleted=0 AND p.deleted=0 AND
         (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=?1 AND m.active=1))
       UNION ALL
       SELECT 'wiki-review:'||p.id,'wiki-review',w.id,w.title,'Usulan menunggu tinjauan',p.created

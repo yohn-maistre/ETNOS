@@ -229,6 +229,19 @@ CREATE TABLE media (
 );
 CREATE INDEX media_post ON media(post_id,position);
 CREATE INDEX media_owner_created ON media(owner_id,created);
+`, `
+ALTER TABLE posts ADD COLUMN content TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE posts ADD COLUMN revision INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE posts ADD COLUMN updated INTEGER;
+ALTER TABLE posts ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE posts ADD COLUMN locked INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE posts ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0;
+CREATE TABLE poll_votes(post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),choice INTEGER NOT NULL,created INTEGER NOT NULL,PRIMARY KEY(post_id,actor_id));
+CREATE TABLE event_responses(post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),response TEXT NOT NULL CHECK(response IN ('going','interested')),created INTEGER NOT NULL,PRIMARY KEY(post_id,actor_id));
+CREATE TABLE moderation_events(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),action TEXT NOT NULL,reason TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE INDEX moderation_community ON moderation_events(community_id,created DESC);
+CREATE TABLE post_requests(actor_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,post_id TEXT NOT NULL REFERENCES posts(id),PRIMARY KEY(actor_id,request_key));
+CREATE INDEX post_author_recent ON posts(author_id,created DESC);
 `]
 
 

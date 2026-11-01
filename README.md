@@ -100,3 +100,5 @@ npm run dev:worker
 `wrangler.jsonc` is the production API entrypoint; `wrangler.test.jsonc` and `test/worker-harness.ts` contain **test-only provisioning RPCs and must never be deployed**. The production bundle excludes them. The compatibility date is pinned to 2026-10-23 to match the installed workerd used for qualification. Miniflare's version matches Wrangler's current beta runtime tooling; this is not a production security endorsement.
 
 For deployment set the exact `STRATA_ORIGIN` to the HTTPS preview origin and keep `STRATA_NODE` deployment-controlled. Host/path input cannot select another node. Persisted request logging is disabled by default to limit sensitive metadata collection; this does not remove hosting-provider visibility. [Deployment notes](docs/cloudflare-profile.md). [OAuth and connected preview checkpoint](docs/connected-preview.md). [Contextual commons assessment](docs/research/2026-10-31-contextual-commons.md).
+
+Latest forum-first work: [rich content, lifecycle, capacity and Spaces experiment](docs/forum-rich-content-checkpoint.md).

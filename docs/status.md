@@ -35,3 +35,5 @@ Honai now has a standalone connected app in `apps/strata` on branch `feat/strata
 [Delivered scope and qualification limits](commons-implementation.md) supersede the earlier feature inventory above. The connected app now uses shadcn-svelte, has customizable family accents, local Groups/Spaces and institutional work flows, an activity inbox, and an experimental client-encrypted human-to-human DM slice. This does not imply independently reviewed cryptography, multi-device recovery, AT Groups interop, a model running as Aksara or public AT delivery.
 
 Conversation/media refinement: [checkpoint](forum-media-checkpoint.md) records nested reply ergonomics, image galleries, scope and preview quotas.
+
+Latest forum-first work: [rich content, lifecycle, capacity and Spaces experiment](forum-rich-content-checkpoint.md).

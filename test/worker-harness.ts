@@ -7,6 +7,8 @@ import type { Publisher, PublicRecord } from '../src/transport.ts'
 import {Groups} from '../src/groups.ts'
 import {PublicWork} from '../src/public-work.ts'
 import {Wiki} from '../src/wiki.ts'
+import type {Binding} from '../src/database.ts'
+import {Forum} from '../src/forum.ts'
 import {Activity} from '../src/activity.ts'
 import {DirectMessages} from '../src/dm.ts'
 import {fixture,issuer} from './oauth-fixture.ts'
@@ -95,6 +97,23 @@ export class TestNode extends StrataNode {
     const notice=new Activity(s).list(b.actor.id).items[0].kind;dm.close(b.actor.id,t.id,true)
     let blocked=false;try{dm.send(a.actor.id,t.id,dm.device(a.actor.id)!.id,crypto.randomUUID(),opaque)}catch{blocked=true}
     return JSON.stringify({isolated,idempotent:sent.id===replayed.id,notice,blocked,outbox:s.jobs(a.actor.id).length})
+  }
+  forumContract(){
+    const s=this.core(),a=s.provision('did:web:forum-bench.example','Synthetic forum owner'),c=s.createCommunity(a.actor.id,'Synthetic forum','Synthetic only','public'),forum=new Forum(s)
+    const poll=s.createPost(a.actor.id,c.id,'Poll',undefined,undefined,{content:{poll:{options:['Morning','Evening'],closesAt:s.clock()+86400000}}})
+    const voted=forum.poll(a.actor.id,poll.id,0).poll!.total===1
+    forum.moderate(a.actor.id,poll.id,{action:'lock',reason:'Synthetic check'})
+    let lockDenied=false;try{s.createPost(a.actor.id,c.id,'No reply',poll.id)}catch{lockDenied=true}
+    const edited=forum.edit(a.actor.id,poll.id,{revision:1,text:'Updated',content:{title:'New title'}})
+    const deleted=forum.delete(a.actor.id,poll.id,edited.revision).deleted
+    for(let i=0;i<30;i++){const p=s.createPost(a.actor.id,c.id,'Synthetic post '+i);for(let j=0;j<5;j++)s.createPost(a.actor.id,c.id,'Synthetic reply',p.id)}
+    let queries=0;const get=s.db.get.bind(s.db),all=s.db.all.bind(s.db)
+    s.db.get=<T>(sql:string,...args:Binding[])=>{queries++;return get<T>(sql,...args)}
+    s.db.all=<T>(sql:string,...args:Binding[])=>{queries++;return all<T>(sql,...args)}
+    const samples:number[]=[];let queryCount=0,count=0
+    for(let i=0;i<50;i++){queries=0;const start=performance.now(),feed=s.feedPage(undefined,{limit:30,rootsOnly:true});samples.push(performance.now()-start);queryCount=queries;count=feed.items.length}
+    samples.sort((a,b)=>a-b)
+    return JSON.stringify({voted,lockDenied,deleted,roots:count,replies:150,iterations:50,queriesPerFeed:queryCount,p50Ms:samples[25],p95Ms:samples[47]})
   }
   async authContract(){
     const{auth,state}=await fixture(this.core())

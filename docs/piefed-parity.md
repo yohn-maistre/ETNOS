@@ -15,17 +15,17 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Community ownership transfer | Planned | Accepted handover, recovery and succession; avoid unilateral takeover |
 | Profiles, avatars, banners, rules, links | Planned | Public actor/institution bindings; private affiliations excluded |
 | Moderator invitation/management UI | Partial | Role changes in API; safe discovery and UI missing |
-| Text posts | Local | Persistent bounded body and escaped URL links; separate title/link types still absent |
+| Text posts | Local | Local 20k body, title/link, sanitized Markdown and warnings; AT rich delivery remains separate |
 | Nested replies | Local | Same-community references, stable roots, direct counts and parent-publication ordering; connected nested/collapsible UI with per-reply actions, loaded-sibling sorting and cursor loading |
-| Author edit history | Planned | Stable identity, revision/conflict and AT update semantics |
-| Author deletion and tombstones | Planned | Scoped PDS authority, replies and public-copy limitations |
+| Author edit history | Partial | Local author edits with revision CAS; historical versions and AT updates remain missing |
+| Author deletion and tombstones | Partial | Local author tombstone/content/media erasure preserving replies; separate PDS/release lifecycle |
 | Moderator hiding | Local | Local suppression, cancel unsent intent; no author PDS deletion rights |
-| Locking, pinning, announcements | Planned | Typed permissions and thread lifecycle |
+| Locking, pinning, announcements | Partial | Human steward locks/pins, community pin section and restricted action log; instance announcements absent |
 | Cross-posts / duplicate links | Planned | References and disclosure boundaries |
-| Images, galleries, video, attachments | Partial | Bounded static images/galleries/alt text/viewer, audience-checked bytes and atomic attachments; preview SQLite store. Video/files, scalable object store and AT blob publishing remain absent |
+| Images, galleries, video, attachments | Partial | Bounded static images/galleries/alt text/viewer, audience-checked bytes and atomic attachments; preview SQLite store. Click-to-load allowlisted external video embeds; uploaded video/files, scalable object store and AT blob publishing remain absent |
 | Link previews / remote fetch | Planned | SSRF, redirects, size/time limits and cache privacy |
-| Polls | Planned | Eligibility, closing, multiple choice and vote privacy |
-| Events / calendars / reminders | Planned | Time zones, RSVP privacy, feeds and expiry |
+| Polls | Partial | Local single-choice, current human membership, expiry/clear/change and aggregate counts; multi-select absent |
+| Events / calendars / reminders | Partial | Local timestamps, location and aggregate RSVP; calendars/reminders absent |
 | Votes | Partial | One local +/-/clear vote per admitted human; no agent votes or public voter list; no AT vote export |
 | Ranking / vote display controls | Planned | New ordering exists; hot/top/active/controversial not implemented |
 | Cursor pagination | Local | Permission filter before limit; bounded newest feed and tied timestamps |
@@ -81,3 +81,5 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 The forum's launch gate includes account admission/recovery, abuse controls, ordinary post lifecycle, safe media if enabled, moderation, notifications, accessibility and operational recovery. Backend rows passing tests do not satisfy that launch gate. Higher-level Wiki/agent work must not hide missing ordinary forum behavior.
 
 Current conversation/media scope and privacy limits: [checkpoint](forum-media-checkpoint.md). Most planned families are implementation work, not inherent AT limitations; ActivityPub/PieFed federation specifically requires an independent adapter.
+
+[Rich forum and official Spaces checkpoint](forum-rich-content-checkpoint.md) records the latest narrower delivered behavior and capacity observations.

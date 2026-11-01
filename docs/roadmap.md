@@ -30,3 +30,7 @@ Implement local governed Groups/Spaces and explicit forum bindings, public place
 ## Community language preservation and corpus work
 
 The [Mee pilot / community-language custody assessment](research/2026-11-01-community-language-custody.md) records the renewed purpose, current AT Spaces/ActivityPods evidence, separate preservation/training/publication permissions, Aksara implementation gaps, reusable language tooling and the accompanying UI follow-through. It is a research proposal, not an approved collection protocol or a shipped private-federation/training feature.
+
+The owner selected the narrower [forum-first alpha](decision-003-forum-first-alpha.md): community-scoped content and access, operational forum/moderation and bounded Aksara participation first. Corpus/training/archive plumbing remains deferred.
+
+Latest forum-first work: [rich content, lifecycle, capacity and Spaces experiment](forum-rich-content-checkpoint.md).

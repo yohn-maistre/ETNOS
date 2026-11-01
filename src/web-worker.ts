@@ -13,7 +13,7 @@ export default {
     headers.set('permissions-policy','camera=(), microphone=(), geolocation=()')
     if(headers.get('content-type')?.includes('text/html')){
       headers.set('cache-control','no-store')
-      headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
+      headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
     }
     return new Response(response.body,{status:response.status,headers})
   },

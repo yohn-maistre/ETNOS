@@ -48,7 +48,7 @@ test('attachments cannot move across owners or communities, replay, escape atomi
  assert.equal((await create({communityId:priv.id,text:'Cannot reuse',mediaIds:[secret.id]})).status,404)
  const at=s.createCommunity(a.actor.id,'AT','Public AT','public',false,'approval','atproto')
  assert.throws(()=>m.upload(a.actor.id,at.id,image,''),/not enabled/)
- assert.equal((await create({communityId:at.id,text:'No incomplete AT intent',mediaIds:[secret.id]})).status,403)
+ assert.equal((await create({communityId:at.id,text:'No incomplete AT intent',mediaIds:[secret.id]})).status,409)
  assert.equal(s.jobs(a.actor.id).length,0)
  }finally{s.close()}
 })
