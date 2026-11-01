@@ -44,3 +44,5 @@ Latest forum-first work: [rich content, lifecycle, capacity and Spaces experimen
 ## Alpha discovery preparation (1 November 2026)
 
 Added unified permission-filtered search, independent author profile pagination and private local following with a following feed (schema 15). DM contact search accepts DID/name and prior peers while retaining self/block/private-discovery boundaries. Honai adds keyboard search, real Explore sections and independent base/accent/static-texture preferences. Tests and preview delivery evidence are recorded in the alpha checkpoint. No domain cutover, PDS signup, AT broadcast, WPW/Aksara connection or production-readiness claim is implied.
+
+The discovery/control preview was deployed as `d3e2cf17e92b498ea240fe19cc295750` (engine code `466ae51`, Honai `a6dccd9`), preserving origin and storage. Six browser journeys and post-deploy public-route/search checks passed. Full AT accounts are the selected signup direction; PDS hosting remains a separate service decision, with no local-only signup substitution. See Decision 004 and connected-preview.md.
