@@ -26,3 +26,7 @@ The catalogue's source and permission boundaries are retained; AT selection and 
 ## Next product foundations
 
 Implement local governed Groups/Spaces and explicit forum bindings, public place/topic contexts without inferred membership, institutional pages and deliberate work adoption, then explicit agent editorial drafts with current rights and exact-base review. Build the AT Group adapter in an isolated experimental profile. ETNOS is general-purpose, with Papua as the first regional lens. A funded listen-first hotline is a later surface, not a launch dependency. The full model, staged acceptance evidence and domain transition are specified in Decision 002.
+
+## Community language preservation and corpus work
+
+The [Mee pilot / community-language custody assessment](research/2026-11-01-community-language-custody.md) records the renewed purpose, current AT Spaces/ActivityPods evidence, separate preservation/training/publication permissions, Aksara implementation gaps, reusable language tooling and the accompanying UI follow-through. It is a research proposal, not an approved collection protocol or a shipped private-federation/training feature.
