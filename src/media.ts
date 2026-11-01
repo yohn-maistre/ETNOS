@@ -52,9 +52,10 @@ export class Media{
       if(typeof alt!=='string'||alt.length>1000)throw new Fault(400,'Image description is too long')
       const dimensions=inspectWebP(bytes),now=this.s.clock()
       this.s.run('DELETE FROM media WHERE post_id IS NULL AND created<?',now-DAY)
-      const usage=this.s.get<{n:number}>('SELECT COALESCE(SUM(size),0) n FROM media WHERE owner_id=? AND created>?',actor,now-DAY)!.n
-      const total=this.s.get<{n:number}>('SELECT COALESCE(SUM(size),0) n FROM media')!.n
-      if(usage+bytes.length>8*1024*1024||total+bytes.length>64*1024*1024)throw new Fault(429,'Preview image storage limit reached')
+      const usage=this.s.get<{size:number;n:number;hourly:number;drafts:number}>('SELECT COALESCE(SUM(size),0) size,COUNT(*) n,COALESCE(SUM(CASE WHEN created>? THEN 1 ELSE 0 END),0) hourly,COALESCE(SUM(CASE WHEN post_id IS NULL THEN 1 ELSE 0 END),0) drafts FROM media WHERE owner_id=? AND created>?',now-3600000,actor,now-DAY)!
+      const total=this.s.get<{size:number;n:number}>('SELECT COALESCE(SUM(size),0) size,COUNT(*) n FROM media')!
+      if(usage.n>=64||usage.hourly>=32||usage.drafts>=16||total.n>=5000)throw new Fault(429,'Preview image upload limit reached')
+      if(usage.size+bytes.length>8*1024*1024||total.size+bytes.length>64*1024*1024)throw new Fault(429,'Preview image storage limit reached')
       const id=randomUUID()
       this.s.run('INSERT INTO media(id,owner_id,community_id,bytes,size,width,height,alt,created) VALUES(?,?,?,?,?,?,?,?,?)',id,actor,communityId,bytes,bytes.length,dimensions.width,dimensions.height,alt.trim(),now)
       return{id,url:'/v1/media/'+id,alt:alt.trim(),...dimensions}

@@ -65,3 +65,12 @@ test('upload admission, agent limits, expiry and node storage budget are enforce
  assert.throws(()=>m.upload(a.actor.id,priv.id,image,''),/storage limit/)
  }finally{s.close()}
 })
+
+test('small-image floods are bounded by draft and upload counts, not only byte quotas',()=>{
+ const{s,m,a,pub}=setup()
+ try{
+  for(let i=0;i<16;i++)m.upload(a.actor.id,pub.id,image,'Description')
+  assert.throws(()=>m.upload(a.actor.id,pub.id,image,''),/upload limit/)
+  assert.equal(s.get<{n:number}>('SELECT COUNT(*) n FROM media')!.n,16)
+ }finally{s.close()}
+})

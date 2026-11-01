@@ -14,7 +14,7 @@ Uploads require a currently admitted human. Drafts are visible only to their own
 
 Every image fetch rechecks its attached post's current visibility/read permission. Revocation and moderation hiding prevent subsequent server reads of both metadata and bytes. Responses use no-store, nosniff and same-origin resource policy. Already downloaded copies cannot be recalled; private community images are access controlled, not end-to-end encrypted. DM media is not enabled.
 
-Preview budgets: 8 MiB per uploader per rolling day, 64 MiB total attached/draft image bytes per logical node, four images per post, 24h draft expiry with opportunistic cleanup on uploads. Existing posts are never automatically expired to make space. An operator storage/retention UI, rate/flood protection, backup/restore qualification and a scalable object-store adapter remain work. These are deliberately small preview limits, not a free production media-hosting claim. Original institutional evidence still belongs in Aksara's custodial store, with separately reviewed public derivatives.
+Preview budgets: 8 MiB and 64 uploads per uploader per rolling day, 32 uploads/hour and 16 pending drafts per uploader, 64 MiB total image bytes and 5,000 image rows per logical node, four images per post, 24h draft expiry with opportunistic cleanup on uploads. Existing posts are never automatically expired to make space. An operator storage/retention UI, rate/flood protection, backup/restore qualification and a scalable object-store adapter remain work. These are deliberately small preview limits, not a free production media-hosting claim. Original institutional evidence still belongs in Aksara's custodial store, with separately reviewed public derivatives.
 
 ## Design/reuse
 
