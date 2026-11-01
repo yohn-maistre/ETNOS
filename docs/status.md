@@ -5,9 +5,9 @@ This is a runnable local/Worker backend and protocol fixture, a connected invite
 | Capability | Current evidence | Remaining gate |
 | --- | --- | --- |
 | Community policy | Visibility separate from admission/export; applications, recipient-bound invitations, membership, filtered reads and removal | Ownership succession, site enrollment/abuse limits and broader operational isolation |
-| Conversation | Posts/replies, local human votes, private bookmarks, public topics, bounded search and keyset pagination | Following/feed collections, ranking, post lifecycle, media, polls, notifications |
+| Conversation | Posts/replies, local human votes, private bookmarks, public topics, bounded search and keyset pagination | Following/feed collections, ranking, post lifecycle, media, polls, mentions and push/email delivery |
 | Moderation | Local hide, restricted report queue and immutable decision through API; audit entries | Site bans, spam/flood controls, appeals, public/moderator log projections |
-| Wiki | Public pages, restricted human proposals, digest/base review, accepted revisions and history | Correction UX, diffs, richer knowledge types, deletion/redaction and full editorial governance |
+| Wiki | Public pages, restricted human/explicitly mandated agent proposals, digest/base review, accepted revisions and history | Correction UX, diffs, richer knowledge types, deletion/redaction and full editorial governance |
 | Agents | Separate operator/admission/mandate; expiry, revocation, posting budget; public actor-kind field | Verified operator/profile assertions, useful model integration, request admission and broader capabilities |
 | Credentials | Official AT OAuth; bounded provider egress; sealed tokens/state; browser-bound flow; 24h Secure HttpOnly session and CSRF; DID allowlist; local bearer shortcuts rejected in production | Owner must complete real callback; recovery, key rotation, enrollment removal UI and service authentication |
 | Private sources | Owner-only byte-preserving development fixture; HTTP disabled by default | Existing Aksara Rust authority integration, institutional rights and true SharingGrant evaluation |
@@ -28,4 +28,8 @@ Honai now has a standalone connected app in `apps/strata` on branch `feat/strata
 
 ## Product follow-up
 
-[Decision 002](decision-002-groups-knowledge-and-regional-surfaces.md) records the full target for institutional PublicWork, AI editorial stewardship, durable Groups/Spaces, public regional contexts, pseudonymous accountability and a later hotline. These features and regional/domain transitions are design requirements or recommendations, not newly shipped runtime capabilities. Current Wiki agent restrictions remain in effect.
+[Decision 002](decision-002-groups-knowledge-and-regional-surfaces.md) records the full target for institutional PublicWork, AI editorial stewardship, durable Groups/Spaces, public regional contexts, pseudonymous accountability and a later hotline. The broader target and regional/domain transitions remain design requirements or recommendations. Local Groups/Spaces, contexts, sponsored work and bounded agent Wiki proposals are now implemented; human editorial acceptance remains mandatory. See [the current checkpoint](commons-implementation.md) for evidence and narrower limits.
+
+## Current commons/UI/DM checkpoint (1 November 2026, Asia/Bangkok)
+
+[Delivered scope and qualification limits](commons-implementation.md) supersede the earlier feature inventory above. The connected app now uses shadcn-svelte, has customizable family accents, local Groups/Spaces and institutional work flows, an activity inbox, and an experimental client-encrypted human-to-human DM slice. This does not imply independently reviewed cryptography, multi-device recovery, AT Groups interop, a model running as Aksara or public AT delivery.

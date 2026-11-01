@@ -12,7 +12,7 @@ The engine and the selected Honai visual direction now run on the same origin. T
 - Browser-bound ten-minute authorization state, atomic consumption, callback issuer checks, verified DID enrollment, 24-hour application session, explicit CSRF confirmation and exact Origin on mutations. Local development bearer credentials cannot authenticate on the hosted profile. A new login revokes previous browser sessions for that actor; logout revokes local access even if the provider is unavailable.
 - Initial steward is bound to giyaibo.bsky.social's verified DID, not a typed display name. Later login admission requires a steward invitation. This grants deployment enrollment only; each community grants membership and agent mandates separately.
 - First verified steward login creates four empty public, approval-controlled communities. They publish locally and contain no synthetic posts or invented organizations. Existing state is preserved; bootstrapping is idempotent.
-- Standalone Svelte app in Honai's apps/strata: real API-backed text conversations, replies, votes, bookmarks/reports, communities and applications, steward queues, public Wiki proposals/review/history, account settings/invites/logout. Only theme preference uses localStorage. Legacy Photon remains separately available in its original source.
+- Standalone Svelte app in Honai's apps/strata: real API-backed text conversations, replies, votes, bookmarks/reports, communities and applications, steward queues, public Wiki proposals/review/history, account settings/invites/logout. Theme/accent presentation preferences use localStorage; experimental DM key/history state uses a separately passphrase-encrypted IndexedDB vault. Legacy Photon remains separately available in its original source.
 - Configurable public record contract and live adapter checks retain CAS/CID safety and require remote validation for any future live mode. This does not connect a live publishing route by itself.
 
 ## Validation and actual limits
@@ -37,7 +37,7 @@ The initial same-origin web deployment was 2,793,567 uncompressed script bytes, 
 - Verified owned namespace, discoverable production Lexicon, explicit publication consent, live delivery/reconciliation routes and a disposable-account publishing/deletion test. Preview publishing stays off.
 - PDS hosting and hosted account signup are separate work. No existing account migration or hosted username registration has occurred. Private-only accounts remain planned.
 - Backups/restore, owner succession/recovery, broader moderation/abuse controls, membership/enrollment removal UX, key rotation, load/resource ceilings and production security qualification.
-- Post lifecycle/media/notifications, PublicWork, contextual entities, institution profiles, AT ingestion and Aksara/Iroh/A2A adapters remain incomplete. Do not label the preview full PieFed parity or a production institutional vault.
+- Post lifecycle/media, advanced notifications, AT ingestion and Aksara/Iroh/A2A adapters remain incomplete. The later [commons checkpoint](commons-implementation.md) records local Groups/Spaces, contextual entities, PublicWork and experimental DMs. Do not label the preview full PieFed parity or a production institutional vault.
 
 A public custom AT record is public even if this deployment only admits invited writers. It is not automatically a Bluesky post. ActivityPub/Threads bridging is a separate opt-in projection, never a route for protected source or membership data.
 

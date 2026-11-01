@@ -129,7 +129,99 @@ WITH RECURSIVE roots(id,root) AS (
 CREATE INDEX posts_root_created ON posts(root_id,created DESC,id DESC);
 CREATE INDEX posts_parent ON posts(parent_id,hidden);
 CREATE INDEX posts_created ON posts(created DESC,id DESC);
+`, `
+CREATE TABLE groups (
+ id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL,
+ kind TEXT NOT NULL CHECK(kind IN ('collective','institution')),
+ visibility TEXT NOT NULL CHECK(visibility IN ('public','hidden-private')),
+ sponsorship TEXT NOT NULL CHECK(sponsorship IN ('unrequested','pending','enabled','suspended')),
+ created INTEGER NOT NULL
+);
+CREATE TABLE group_members (
+ group_id TEXT NOT NULL REFERENCES groups(id), actor_id TEXT NOT NULL REFERENCES actors(id),
+ role TEXT NOT NULL CHECK(role IN ('owner','steward','member')), active INTEGER NOT NULL DEFAULT 1,
+ PRIMARY KEY(group_id,actor_id)
+);
+CREATE TABLE spaces (
+ id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES groups(id),
+ community_id TEXT NOT NULL UNIQUE REFERENCES communities(id), modality TEXT NOT NULL CHECK(modality='forum'), created INTEGER NOT NULL
+);
+CREATE TABLE contexts (
+ id TEXT PRIMARY KEY, slug TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
+ kind TEXT NOT NULL CHECK(kind IN ('place','region','topic','language')), description TEXT NOT NULL,
+ language TEXT NOT NULL, aliases TEXT NOT NULL, created INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1
+);
+CREATE TABLE record_contexts (
+ record_kind TEXT NOT NULL CHECK(record_kind IN ('post','group','wiki','work')), record_id TEXT NOT NULL,
+ context_id TEXT NOT NULL REFERENCES contexts(id), issuer_id TEXT NOT NULL REFERENCES actors(id), created INTEGER NOT NULL,
+ PRIMARY KEY(record_kind,record_id,context_id)
+);
+CREATE INDEX record_context_lookup ON record_contexts(context_id,record_kind,record_id);
+CREATE INDEX spaces_group ON spaces(group_id,created);
+CREATE INDEX group_members_actor ON group_members(actor_id,active);
+`, `
+CREATE TABLE work_grants (
+ id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES groups(id), agent_id TEXT NOT NULL REFERENCES actors(id),
+ issuer_id TEXT NOT NULL REFERENCES actors(id), expires INTEGER NOT NULL, hourly_limit INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE public_work (
+ id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES groups(id), community_id TEXT NOT NULL REFERENCES communities(id),
+ origin_post_id TEXT REFERENCES posts(id), title TEXT NOT NULL, description TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('proposed','adopted','active','blocked','completed','withdrawn')),
+ revision INTEGER NOT NULL, result_id TEXT, created INTEGER NOT NULL, updated INTEGER NOT NULL
+);
+CREATE TABLE work_events (
+ id TEXT PRIMARY KEY, work_id TEXT NOT NULL REFERENCES public_work(id), group_id TEXT NOT NULL REFERENCES groups(id),
+ actor_id TEXT NOT NULL REFERENCES actors(id), kind TEXT NOT NULL, created INTEGER NOT NULL
+);
+CREATE TABLE work_requests (
+ actor_id TEXT NOT NULL REFERENCES actors(id), request_key TEXT NOT NULL, digest TEXT NOT NULL,
+ target_id TEXT NOT NULL REFERENCES public_work(id), PRIMARY KEY(actor_id,request_key)
+);
+CREATE TABLE work_consents (
+ post_id TEXT NOT NULL REFERENCES posts(id), group_id TEXT NOT NULL REFERENCES groups(id), author_id TEXT NOT NULL REFERENCES actors(id),
+ digest TEXT NOT NULL, expires INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(post_id,group_id)
+);
+CREATE TABLE work_results (
+ id TEXT PRIMARY KEY, work_id TEXT NOT NULL REFERENCES public_work(id), author_id TEXT NOT NULL REFERENCES actors(id),
+ text TEXT NOT NULL, citations TEXT NOT NULL, digest TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('pending','accepted','rejected')), created INTEGER NOT NULL, grant_id TEXT REFERENCES work_grants(id)
+);
+CREATE TABLE public_work_results (
+ id TEXT PRIMARY KEY, work_id TEXT NOT NULL REFERENCES public_work(id), proposal_id TEXT NOT NULL UNIQUE REFERENCES work_results(id),
+ text TEXT NOT NULL, citations TEXT NOT NULL, digest TEXT NOT NULL, created INTEGER NOT NULL, reviewer_id TEXT NOT NULL REFERENCES actors(id)
+);
+CREATE INDEX public_work_group_updated ON public_work(group_id,updated DESC,id DESC);
+CREATE INDEX work_events_agent_budget ON work_events(actor_id,group_id,created);
+CREATE INDEX work_results_work ON work_results(work_id,created);
+`, `
+CREATE TABLE editorial_mandates (
+ id TEXT PRIMARY KEY, agent_id TEXT NOT NULL REFERENCES actors(id), community_id TEXT NOT NULL REFERENCES communities(id),
+ issuer_id TEXT NOT NULL REFERENCES actors(id), purpose TEXT NOT NULL, expires INTEGER NOT NULL,
+ revoked INTEGER NOT NULL DEFAULT 0, hourly_limit INTEGER NOT NULL
+);
+ALTER TABLE wiki_proposals ADD COLUMN editorial_mandate_id TEXT REFERENCES editorial_mandates(id);
+CREATE INDEX editorial_proposal_budget ON wiki_proposals(author_id,page_id,created);
+`, `
+CREATE TABLE activity_reads (
+ actor_id TEXT NOT NULL REFERENCES actors(id), event_key TEXT NOT NULL, read_at INTEGER NOT NULL,
+ PRIMARY KEY(actor_id,event_key)
+);
+ALTER TABLE wiki_proposals ADD COLUMN decided INTEGER;
+ALTER TABLE join_requests ADD COLUMN decided INTEGER;
+`, `
+CREATE TABLE dm_devices (actor_id TEXT PRIMARY KEY REFERENCES actors(id),id TEXT NOT NULL UNIQUE,signature_key TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE dm_packages (id TEXT PRIMARY KEY,actor_id TEXT NOT NULL REFERENCES actors(id),data TEXT NOT NULL,expires INTEGER NOT NULL,thread_id TEXT);
+CREATE TABLE dm_threads (id TEXT PRIMARY KEY,sender_id TEXT NOT NULL REFERENCES actors(id),recipient_id TEXT NOT NULL REFERENCES actors(id),sender_device TEXT NOT NULL,recipient_device TEXT NOT NULL,package_id TEXT NOT NULL UNIQUE REFERENCES dm_packages(id),state TEXT NOT NULL CHECK(state IN ('preparing','pending','active','closed')),welcome TEXT,version INTEGER NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL,request_key TEXT NOT NULL,UNIQUE(sender_id,request_key));
+CREATE TABLE dm_envelopes (id TEXT PRIMARY KEY,thread_id TEXT NOT NULL REFERENCES dm_threads(id),sender_id TEXT NOT NULL REFERENCES actors(id),client_id TEXT NOT NULL,version INTEGER NOT NULL,ciphertext TEXT NOT NULL,created INTEGER NOT NULL,UNIQUE(sender_id,client_id),UNIQUE(thread_id,version));
+CREATE TABLE dm_reads (actor_id TEXT NOT NULL REFERENCES actors(id),thread_id TEXT NOT NULL REFERENCES dm_threads(id),version INTEGER NOT NULL,PRIMARY KEY(actor_id,thread_id));
+CREATE TABLE dm_blocks (actor_id TEXT NOT NULL REFERENCES actors(id),peer_id TEXT NOT NULL REFERENCES actors(id),PRIMARY KEY(actor_id,peer_id));
+CREATE INDEX dm_threads_sender ON dm_threads(sender_id,updated DESC);
+CREATE INDEX dm_threads_recipient ON dm_threads(recipient_id,updated DESC);
+CREATE INDEX dm_packages_available ON dm_packages(actor_id,expires) WHERE thread_id IS NULL;
+CREATE INDEX dm_sender_rate ON dm_envelopes(sender_id,created);
 `]
+
 
 /** DO storage has no PRAGMA user_version or SQL BEGIN/COMMIT support.
  * Existing local v1 tables are adopted by the idempotent first migration. */

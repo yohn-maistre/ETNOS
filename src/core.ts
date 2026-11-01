@@ -127,7 +127,7 @@ export class StrataCore {
       if(this.actor(actorId).kind!=='human') throw new Fault(403,'Agents require steward admission')
       if(this.get('SELECT 1 FROM memberships WHERE community_id=? AND actor_id=?',communityId,actorId)) throw new Fault(409,'Contact a steward about existing membership')
       if(this.get('SELECT 1 FROM join_requests WHERE community_id=? AND actor_id=?',communityId,actorId)) throw new Fault(409,'Application already exists')
-      this.run("INSERT INTO join_requests VALUES(?,?,?,'pending',?)",communityId,actorId,input(message,500),this.clock())
+      this.run("INSERT INTO join_requests(community_id,actor_id,message,state,created) VALUES(?,?,?,'pending',?)",communityId,actorId,input(message,500),this.clock())
       this.audit(actorId,'membership.request',communityId)
       return {state:'pending'}
     })
@@ -142,7 +142,7 @@ export class StrataCore {
       if(!this.get("SELECT 1 FROM join_requests WHERE community_id=? AND actor_id=? AND state='pending'",communityId,target)) missing()
       if(this.get('SELECT 1 FROM memberships WHERE community_id=? AND actor_id=?',communityId,target)) throw new Fault(409,'Membership changed; review separately')
       if(approve) this.run("INSERT INTO memberships VALUES(?,?,'member',1)",communityId,target)
-      this.run('UPDATE join_requests SET state=? WHERE community_id=? AND actor_id=?',approve?'approved':'declined',communityId,target)
+      this.run('UPDATE join_requests SET state=?,decided=? WHERE community_id=? AND actor_id=?',approve?'approved':'declined',this.clock(),communityId,target)
       this.audit(actorId,approve?'membership.approve':'membership.decline',communityId)
     })
   }
@@ -234,6 +234,7 @@ export class StrataCore {
     const author=this.actor(author_id)
     return { id,author_id,community_id,parent_id,text,created,uri, actorKind:this.actor(author_id).kind,
       author:{id:author.id,did:author.did,name:author.name,kind:author.kind},rootId:p.root_id,
+      contexts:this.all<{id:string;slug:string;title:string;kind:string}>("SELECT c.id,c.slug,c.title,c.kind FROM record_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.record_kind='post' AND l.record_id=? AND c.active=1 ORDER BY c.title LIMIT 10",id),
       replies:this.get<{count:number}>('SELECT COUNT(*) count FROM posts WHERE root_id=? AND id!=? AND hidden=0',p.root_id,p.root_id)!.count,
       publicationState:uri ? this.get<{state:string}>("SELECT state FROM outbox WHERE post_id=? AND operation='put'",id)!.state : this.community(community_id).visibility==='public'?'local':'private',
       score:this.get<{score:number}>('SELECT COALESCE(SUM(value),0) score FROM votes WHERE post_id=?',id)!.score,
@@ -250,7 +251,7 @@ export class StrataCore {
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
       AND instr(lower(p.text),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200)).map(p=>this.view(p,actorId))
   }
-  feedPage(actorId?: string, options: {query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string} = {}) {
+  feedPage(actorId?: string, options: {query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string;contextId?:string} = {}) {
     const limit=options.limit ?? 30
     if(!Number.isInteger(limit) || limit<1 || limit>100) throw new Fault(400,'Limit must be between 1 and 100')
     if(options.communityId && !this.canRead(actorId,this.community(options.communityId))) missing()
@@ -269,11 +270,12 @@ export class StrataCore {
       AND instr(lower(p.text),lower(?))>0
       AND (? IS NULL OR p.community_id=?)
       AND (? IS NULL OR EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?))
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND rc.context_id=? AND cx.active=1))
       AND (?=0 OR p.parent_id IS NULL)
       AND (? IS NULL OR (p.root_id=? AND p.id!=?))
       AND (? IS NULL OR p.created<? OR (p.created=? AND p.id<?))
       ORDER BY p.created DESC,p.id DESC LIMIT ?`,actorId??null,(options.query??'').slice(0,200),options.communityId??null,options.communityId??null,
-      options.topicId??null,options.topicId??null,options.rootsOnly?1:0,options.rootId??null,options.rootId??null,options.rootId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
+      options.topicId??null,options.topicId??null,options.contextId??null,options.contextId??null,options.rootsOnly?1:0,options.rootId??null,options.rootId??null,options.rootId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
     const selected=rows.slice(0,limit),last=selected.at(-1)
     return {items:selected.map(p=>this.view(p,actorId)),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
   }

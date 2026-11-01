@@ -5,6 +5,11 @@ function text(value:string,max:number) { if(typeof value!=='string' || !value.tr
 export class Social {
   private store: StrataCore
   constructor(store:StrataCore) { this.store=store }
+  people(actorId:string,query:string){
+    this.store.actor(actorId)
+    if(typeof query!=='string'||query.trim().length<2||query.length>100)return[]
+    return this.store.all<{id:string;name:string;did:string;kind:string}>(`SELECT a.id,a.name,a.did,a.kind FROM actors a WHERE a.id!=? AND instr(lower(a.name),lower(?))>0 AND (EXISTS(SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.author_id=a.id AND p.hidden=0 AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))) OR EXISTS(SELECT 1 FROM wiki_pages w JOIN wiki_revisions r ON r.id=w.revision_id JOIN communities c ON c.id=w.community_id WHERE r.author_id=a.id AND c.visibility='public')) ORDER BY a.name,a.id LIMIT 20`,actorId,query.trim(),actorId)
+  }
   vote(actorId:string,postId:string,value:number) {
     const s=this.store
     return s.tx(()=>{

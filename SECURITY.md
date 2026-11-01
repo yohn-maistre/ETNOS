@@ -15,3 +15,7 @@ Report vulnerabilities privately to the repository owner through an agreed priva
 ## Hosted authentication boundary
 
 Only explicitly qualified HTTPS provider hosts may receive OAuth discovery/token traffic. Identity verification does not grant deployment enrollment, community membership or institutional rights. Public metadata/JWKS contains public keys only. Signing and credential-sealing secrets are separate Cloudflare secret bindings and must be preserved during ordinary deployments. Server sessions expire after 24 hours; mutation requests require exact Origin and CSRF confirmation. The production profile rejects local fixture bearer credentials. The node steward and hosting operator are trusted within their declared roles; compromise is not contained by calling this serverless. Agent/service authentication and private-only enrollment remain separate work.
+
+## Experimental direct messages
+
+The forum DM slice uses client-side ts-mls and an encrypted local key/history vault. The library and application have not had an independent security audit; do not use this preview for sensitive activist communications. See [the exact threat model and limitations](docs/commons-implementation.md), including initial service-mediated key trust, metadata, malicious web delivery, a single browser/device, missing recovery/rekey/device migration and origin-bound local keys. No Signal/Matrix interoperability, agents reading DMs or server-side plaintext processing is enabled.

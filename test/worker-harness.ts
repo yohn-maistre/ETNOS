@@ -1,8 +1,14 @@
 // Test-only entrypoint. This class and its provisioning RPCs MUST NOT be deployed.
+import {Buffer} from 'node:buffer'
 import worker, { StrataNode } from '../src/worker.ts'
 import { StrataCore } from '../src/core.ts'
 import { CloudflareDatabase } from '../src/cloudflare-database.ts'
 import type { Publisher, PublicRecord } from '../src/transport.ts'
+import {Groups} from '../src/groups.ts'
+import {PublicWork} from '../src/public-work.ts'
+import {Wiki} from '../src/wiki.ts'
+import {Activity} from '../src/activity.ts'
+import {DirectMessages} from '../src/dm.ts'
 import {fixture,issuer} from './oauth-fixture.ts'
 
 export class TestNode extends StrataNode {
@@ -51,6 +57,45 @@ export class TestNode extends StrataNode {
   }
   remove(actorId: string, communityId: string, target: string) { this.core().setMember(actorId,communityId,target,false) }
   interrupt() { const s=this.core();s.run("UPDATE outbox SET state='sending' WHERE state='pending'") }
+  governanceContract(){
+    const s=this.core(),owner=s.provision('did:web:governance.example','Synthetic governor'),member=s.provision('did:web:group-member.example','Synthetic member')
+    const groups=new Groups(s,{stewardDid:owner.actor.did}),work=new PublicWork(s,groups),wiki=new Wiki(s)
+    const group=groups.create(owner.actor.id,'Synthetic institution','Only contract data','institution','public')
+    const pub=groups.createSpace(owner.actor.id,group.id,{title:'Public space',description:'Synthetic',visibility:'public',automation:true})
+    const hidden=groups.createSpace(owner.actor.id,group.id,{title:'Hidden space',description:'Synthetic',visibility:'hidden-private'})
+    groups.setMember(owner.actor.id,group.id,member.actor.id,true)
+    const hiddenOmitted=!JSON.stringify(groups.read(undefined,group.id)).includes(hidden.id)
+    const separateAdmission=!s.membership(member.actor.id,hidden.id)
+    groups.requestSponsorship(owner.actor.id,group.id);groups.recognize(owner.actor.id,group.id,true)
+    const item=work.create(owner.actor.id,{groupId:group.id,communityId:pub.id,title:'Synthetic work',description:'Only contract data',requestKey:crypto.randomUUID()})
+    const result=work.proposeResult(owner.actor.id,item.id,'Approved public result',[])
+    const completed=work.acceptResult(owner.actor.id,result.id,result.digest,1)
+    const privateProposalOmitted=!JSON.stringify(completed).includes(result.id)
+    let rolledBack=false;const before=s.all('SELECT * FROM audit').length
+    try{s.tx(()=>{s.audit(owner.actor.id,'outer.start','test');try{s.tx(()=>{s.audit(owner.actor.id,'inner.write','test');throw Error('Synthetic failure')})}catch{/* Must still abort the unit. */}})}catch{rolledBack=s.all('SELECT * FROM audit').length===before}
+    const agent=s.provision('did:web:worker-editor.example','Synthetic editor',owner.actor.id);s.setMember(owner.actor.id,pub.id,agent.actor.id,true)
+    const page=wiki.create(owner.actor.id,pub.id,'Synthetic knowledge'),grant=wiki.grant(owner.actor.id,agent.actor.id,pub.id,'Only public drafts',Date.now()+60000)
+    const draft=wiki.propose(agent.actor.id,page.id,null,'Agent proposal',[],'id','Declared perspective',grant.id)
+    const hiddenDraft=wiki.read(page.id).revision===null;wiki.decide(owner.actor.id,draft.id,draft.digest,true)
+    const activity=new Activity(s),root=s.createPost(owner.actor.id,hidden.id,'Private thread')
+    s.setMember(owner.actor.id,hidden.id,member.actor.id,true);s.createPost(member.actor.id,hidden.id,'Private reply',root.id)
+    const inbox=activity.list(owner.actor.id),notice=inbox.items.find(i=>i.kind==='reply')!
+    const activityRead=activity.markRead(owner.actor.id,[notice.id]).items.find(i=>i.id===notice.id)?.read===true
+    const activityPrivate=!JSON.stringify(activity.list(agent.actor.id)).includes(hidden.title)
+    return JSON.stringify({hiddenOmitted,separateAdmission,state:completed.state,privateProposalOmitted,rolledBack,hiddenDraft,activityRead,activityPrivate,agentAuthor:wiki.read(page.id).revision?.authorKind})
+  }
+  dmContract(){
+    const s=this.core(),dm=new DirectMessages(s),a=s.provision('did:web:dm-a.example','Synthetic sender'),b=s.provision('did:web:dm-b.example','Synthetic recipient'),outsider=s.provision('did:web:dm-outside.example','Outside')
+    const forum=s.createCommunity(a.actor.id,'Synthetic forum','Only contract data','public');s.setMember(a.actor.id,forum.id,b.actor.id,true)
+    const key=Buffer.alloc(33,2).toString('base64'),opaque=Buffer.from('Synthetic ciphertext fixture only').toString('base64')
+    for(const user of[a,b])dm.register(user.actor.id,{deviceId:crypto.randomUUID(),signatureKey:key,packages:[{id:crypto.randomUUID(),data:opaque}]})
+    const t=dm.reserve(a.actor.id,b.actor.id,dm.device(a.actor.id)!.id,crypto.randomUUID());dm.start(a.actor.id,t.id,dm.device(a.actor.id)!.id,opaque);dm.decide(b.actor.id,t.id,dm.device(b.actor.id)!.id,true)
+    const clientId=crypto.randomUUID(),sent=dm.send(a.actor.id,t.id,dm.device(a.actor.id)!.id,clientId,opaque),replayed=dm.send(a.actor.id,t.id,dm.device(a.actor.id)!.id,clientId,opaque)
+    let isolated=false;try{dm.messages(outsider.actor.id,t.id)}catch{isolated=true}
+    const notice=new Activity(s).list(b.actor.id).items[0].kind;dm.close(b.actor.id,t.id,true)
+    let blocked=false;try{dm.send(a.actor.id,t.id,dm.device(a.actor.id)!.id,crypto.randomUUID(),opaque)}catch{blocked=true}
+    return JSON.stringify({isolated,idempotent:sent.id===replayed.id,notice,blocked,outbox:s.jobs(a.actor.id).length})
+  }
   async authContract(){
     const{auth,state}=await fixture(this.core())
     const start=await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.env.STRATA_ORIGIN,'content-type':'application/json'},body:JSON.stringify({handle:'member.example'})}))

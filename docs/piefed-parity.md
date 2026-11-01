@@ -32,11 +32,11 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Following / subscriptions | Planned | People and communities; approval and private relationship semantics |
 | Topics / groupings | Partial | Public topics can group multiple public communities; rich hierarchy/admin and topic UI absent |
 | User-created feeds / nested collections | Planned | Public/private collection membership and export filtering |
-| Place and language discovery | Planned | Source-qualified names/relationships, multilingual aliases, no forced region ontology |
+| Place and language discovery | Partial | Public place/region/topic/language contexts and aliases; no personal affiliation mapping. Source-qualified names/relationships, multilingual aliases, no forced region ontology |
 | Search | Partial | Bounded text substring with current permissions; full text, filters and indexing absent |
 | Bookmarks | Local | Private to actor; revoked access disappears from collection |
 | Read/unread / saved filters / favourites | Planned | Private preferences and no covert tracking |
-| Notifications / mentions / subscriptions | Planned | Permission checked at delivery and read; safe previews and push/email settings |
+| Notifications / mentions / subscriptions | Partial | Current-access activity inbox/read state; replies, review/admission and generic DM notices. Mentions/subscriptions/push/email remain absent |
 | Reports and steward triage | Partial | Restricted queue, decision, no reporter ID in queue projection; escalation/appeal UI absent |
 | Moderation log | Partial | Internal audit; audience-safe public/moderator projections absent |
 | Appeals and correction requests | Planned | Independent reviewer, outcomes and private evidence |
@@ -44,10 +44,10 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Suspensions, bans and anti-abuse | Partial | Membership removal exists; site bans, account limits, spam/flood/rate/bot protections absent |
 | Content warnings / NSFW / alt text | Planned | Accessible rendering, preference and media metadata |
 | Flairs / tags / custom emoji | Planned | Permission, localization and asset provenance |
-| Private messaging / chat | Adapt | Evaluate mature E2EE systems; local private forum is not secure messenger equivalence |
+| Private messaging / chat | Partial | Experimental ts-mls client-encrypted 1:1 human DMs; invitations, blocking, single device and encrypted local vault. Unaudited; no interop/recovery or sensitive-use qualification |
 | RSS/Atom, imports and scheduled posts | Planned | Publication rights, SSRF and reauthorization at send time |
 | Login, registration modes | Partial | Trusted local credential provisioning only; no remote signup or proof of DID control |
-| AT OAuth / narrow permissions | Planned | Real runtime qualification, session/DPoP persistence, refresh and revoke |
+| AT OAuth / narrow permissions | Partial | Official SDK, sealed state/session/DPoP, invited enrollment and CSRF. Live publishing qualification remains |
 | Private-only identity / passkeys | Planned | Qualified identity provider or standard passkey implementation |
 | Sessions / recovery / TOTP | Planned | Devices, expiry, compromise recovery, step-up and account linking |
 | Account export/delete/migration | Planned | Include app-side state, private memberships, PDS separation and practical exit |
@@ -62,10 +62,10 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Wiki collaboration / correction UI | Planned | Proposal queues, reviewed rebase, revision detail/diff, safe rendering, contestation and page lifecycle |
 | Research within Wiki | Planned | Typed evidence/datasets/methods; preserve perspectives rather than AI consensus |
 | Protected institutional knowledge | Separate | Aksara Library and authority; no private Wiki archive in public Strata |
-| PublicWork | Planned | Public requests, accountable participants, milestones, reviewed results |
+| PublicWork | Partial | Admitted institutional/group sponsors, explicit adoption/author consent, bounded agent grants and reviewed public results; milestones/execution adapters remain |
 | Agents | Partial | Human operator, separate admission, expiring posting mandate, budget and revocation |
 | Agent profile / handoff / mute | Planned | Public remit, operator/challenge route, human-first feed controls |
-| Agent Wiki/work authority | Planned | Posting mandate grants neither Wiki changes nor tool execution |
+| Agent Wiki/work authority | Partial | Separate expiring/budgeted editorial and sponsor-work grants; human acceptance; no service-auth/model execution or tool rights |
 | Aksara release integration | Separate | Development custody fixture only; qualify actual Rust authority/release port |
 | A2A partner requests | Planned | Independent receiving admission, bounded scope, refusal and receipts |
 | Iroh transfer / private peering | Planned | Native transport, peer enrollment, authorization and metadata threat model |
@@ -76,6 +76,6 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Local persistent runtime | Local | Node SQLite transactions, migrations and reopen tests |
 | Serverless runtime | Local | Worker + SQLite DO port; actual-workerd tests; deployment evidence tracked separately |
 | Backup/restore / disk limits / monitoring | Partial | Reopen/restart only; real recovery, incident response and quota qualification absent |
-| UI / client API | Partial | Typed capabilities endpoint and native JSON routes; Honai Strata adapter absent |
+| UI / client API | Partial | Same-origin Honai app, shadcn-svelte/Lucide, real local APIs and isolated browser contracts; broader forum lifecycle remains |
 
 The forum's launch gate includes account admission/recovery, abuse controls, ordinary post lifecycle, safe media if enabled, moderation, notifications, accessibility and operational recovery. Backend rows passing tests do not satisfy that launch gate. Higher-level Wiki/agent work must not hide missing ordinary forum behavior.
