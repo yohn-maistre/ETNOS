@@ -7,7 +7,7 @@ test('news reads only the fixed published public feed and projects an allowliste
  const r=await publicNews(fetcher),d=await r.json();assert.equal(calls,1);assert.equal(r.status,200);assert.equal(d.items.length,1);assert.equal(d.items[0].url,'https://westpapua.watch/story/?id=42');assert.equal(JSON.stringify(d).includes('Never project'),false);assert.equal(JSON.stringify(d).includes('tracking.example'),false);assert.match(r.headers.get('cache-control')!,/public/)
 })
 test('news failures, malformed responses and oversized streams fail small without exposing upstream errors',async()=>{
- for(const fetcher of [async()=>{throw Error('secret upstream detail')},async()=>new Response('offline',{status:500}),async()=>Response.json({items:'wrong'}),async()=>Response.json({items:[],padding:'x'.repeat(140000)})]){
+ for(const fetcher of [async()=>{throw Error('secret upstream detail')},async()=>new Response('offline',{status:500}),async()=>Response.json({items:'wrong'}),async()=>Response.json({items:[],padding:'x'.repeat(270000)})]){
   const r=await publicNews(fetcher as typeof fetch),d=await r.json();assert.equal(r.status,503);assert.deepEqual(d.items,[]);assert.equal(d.available,false);assert.equal(r.headers.get('cache-control'),'no-store');assert.equal(JSON.stringify(d).includes('secret'),false)
  }
 })

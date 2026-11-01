@@ -27,7 +27,7 @@ Automated policy/OAuth tests use synthetic identities, bytes and fake destinatio
 
 ## Connected preview checkpoint (31 October 2026)
 
-Honai now has a standalone connected app in `apps/strata` on branch `feat/strata-connected`, based on the selected connected-preview source. Browser checks cover seven public routes at mobile and desktop widths, without browser errors or horizontal overflow. The live OAuth start for giyaibo.bsky.social reaches bsky.social; no real-user callback, public AT write, PDS migration or confidential ingestion was performed. The web and backend share https://strata-preview.giyaibo.workers.dev. Read [the checkpoint](connected-preview.md) for remaining gates and [the new contextual commons assessment](research/2026-10-31-contextual-commons.md) for recommendations, not shipped features.
+Honai now has a standalone connected app in `apps/strata` on branch `feat/strata-connected`, based on the selected connected-preview source. Browser checks cover seven public routes at mobile and desktop widths, without browser errors or horizontal overflow. The live OAuth start for giyaibo.bsky.social reaches bsky.social; no real-user callback, public AT write, PDS migration or confidential ingestion was performed. The web and backend now share https://etnos.space; the old Worker URL redirects and retains an encrypted-vault recovery page. Read [the checkpoint](connected-preview.md) for remaining gates and [the new contextual commons assessment](research/2026-10-31-contextual-commons.md) for recommendations, not shipped features.
 
 ## Product follow-up
 
@@ -46,3 +46,7 @@ Latest forum-first work: [rich content, lifecycle, capacity and Spaces experimen
 Added unified permission-filtered search, independent author profile pagination and private local following with a following feed (schema 15). DM contact search accepts DID/name and prior peers while retaining self/block/private-discovery boundaries. Honai adds keyboard search, real Explore sections and independent base/accent/static-texture preferences. Tests and preview delivery evidence are recorded in the alpha checkpoint. No domain cutover, PDS signup, AT broadcast, WPW/Aksara connection or production-readiness claim is implied.
 
 The discovery/control preview was deployed as `59f31383fdd84e1d967a7daf6ce9c5d4` (engine code `466ae51`, Honai `f01aff0`), preserving origin and storage. Six browser journeys and post-deploy public-route/search checks passed. Full AT accounts are the selected signup direction; PDS hosting remains a separate service decision, with no local-only signup substitution. See Decision 004 and connected-preview.md.
+
+## Optional PDS hosting, 1 November 2026
+
+See [PDS hosting](pds-hosting.md): separately packaged experimental Worker PDS, official-library repository/CAR checks, real local official-client OAuth integration, durable legacy refresh rotation/revocation, and machine-readable Cloudflare/server/external deployment planning. This is not live hosted signup, a production audit or multi-tenant Worker qualification. The forum remains usable with existing invited AT identities.

@@ -19,3 +19,9 @@ Only explicitly qualified HTTPS provider hosts may receive OAuth discovery/token
 ## Experimental direct messages
 
 The forum DM slice uses client-side ts-mls and an encrypted local key/history vault. The library and application have not had an independent security audit; do not use this preview for sensitive activist communications. See [the exact threat model and limitations](docs/commons-implementation.md), including initial service-mediated key trust, metadata, malicious web delivery, a single browser/device, missing recovery/rekey/device migration and origin-bound local keys. No Signal/Matrix interoperability, agents reading DMs or server-side plaintext processing is enabled.
+
+## Experimental PDS package
+
+`packages/pds` is an optional attributed Cirrus-derived implementation, not a production-qualified identity host. Its tests use synthetic local identities and do not deploy accounts. Legacy refresh sessions have durable single-use rotation and logout revocation; legacy access JWTs still expire normally after two hours. Password recovery, passkey lifecycle, full migration/backup restoration, abuse/load qualification and independent review remain gates before hosted signup. Keep test keys and `wrangler.test.jsonc` off deployed services. Public repo data is public even with relay notification disabled.
+
+The canonical-origin release includes an explicit passphrase-encrypted browser vault transfer for the old ETNOS URL. This is not general multi-device messaging or rollback-safe historical backup restoration. Do not reuse an old ratchet snapshot over newer active state.

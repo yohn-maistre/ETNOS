@@ -13,3 +13,6 @@ coverage/
 dist/
 web/
 dist-web/
+
+.strata-pds/
+pds.env

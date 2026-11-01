@@ -16,7 +16,9 @@
     "types:worker": "wrangler types worker-configuration.d.ts --include-runtime false --strict-vars false",
     "build:worker": "wrangler deploy --dry-run --outdir dist",
     "test:worker": "wrangler deploy --dry-run --config wrangler.test.jsonc --outdir .wrangler/test && node --test test/worker.test.mjs",
-    "dev:worker": "wrangler dev --var STRATA_ORIGIN:http://localhost:8787"
+    "dev:worker": "wrangler dev --var STRATA_ORIGIN:http://localhost:8787",
+    "pds": "node --disable-warning=ExperimentalWarning src/pds-cli.ts",
+    "test:web": "wrangler deploy --dry-run --config wrangler.web-test.jsonc --outdir .wrangler/web-test && node --test test/web-origin.test.mjs"
   },
   "dependencies": {
     "@atproto-labs/did-resolver": "0.3.11",

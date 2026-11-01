@@ -2,7 +2,7 @@
 
 Updated 1 November 2026. Preview: https://strata-preview.giyaibo.workers.dev
 
-The engine and the selected Honai visual direction now run on the same origin. The original Sites prototype is unchanged. ETNOS is the intended deployment name; no etnos.space DNS/domain change or purchase was performed, and the permanent AT namespace remains an unregistered example.
+The engine and Honai interface now share **https://etnos.space**, the owner-authorized canonical origin. The old workers.dev URL redirects and retains a browser-local encrypted-message recovery page. Historical deployment receipts below describe their original dates; the original Sites prototype is unchanged. The permanent public AT namespace is still an unregistered example and public AT publishing remains disabled.
 
 ## Current deployment — Threads conversation ergonomics
 

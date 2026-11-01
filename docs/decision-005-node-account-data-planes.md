@@ -1,6 +1,6 @@
 # Decision 005: one node experience, explicit data boundaries
 
-1 November 2026 · Architecture proposal, not a deployed PDS service. This extends [account hosting](decision-004-at-account-hosting.md) after source inspection. UI/news and the owner-authorized canonical-origin cutover can ship independently.
+1 November 2026 · Architecture direction. Follow-up: the owner authorized an optional in-repository PDS implementation; [hosting status](pds-hosting.md) records the new experimental Worker package and CLI. It has not been deployed as a live PDS service. This extends [account hosting](decision-004-at-account-hosting.md) after source inspection. UI/news and the owner-authorized canonical-origin cutover can ship independently.
 
 ## A community node can host identities while ETNOS hosts the interface
 
@@ -59,7 +59,7 @@ Inspected upstream source snapshots, not just homepages:
 | [pds.js](https://tangled.org/chadtmiller.com/pds.js), commit `72a7c998bdc765c3d196b1f0a8f65ac54016c862`, core 2.5.2 | Explicit actor/shared/blob/WebSocket ports; Node, Deno and Workers adapters; optional extensions outside core; streaming/multipart blob paths; DO WebSocket hibernation | Community implementation, single-account and no multi-user invite administration. Own MST/repository/crypto code increases compatibility review scope. Extension hooks are trusted code. Relay URL defaults to none |
 | [Official PDS](https://github.com/bluesky-social/pds) | Mature multi-account operational path, official AT implementation, SQLite account repositories | Persistent service and storage; the recommended 1GB VM is a deployment starting point, **not** measured per-user RAM or a minimum proven for our workload |
 
-**Proposed approach:** qualify Cirrus first for a narrowly scoped Cloudflare AT-hosting pilot because repository-format correctness benefits from official library reuse. Borrow the *port boundaries* of pds.js for our node design and keep it as the portable-runtime comparison. Do not combine two implementations' cryptography or create a multi-tenant fork by changing a hostname. Neither is “the official Cloudflare PDS.” No additional public DID, PDS or account was created in this pass.
+**Proposed approach:** qualify Cirrus first for a narrowly scoped Cloudflare AT-hosting pilot because repository-format correctness benefits from official library reuse. Borrow the *port boundaries* of pds.js for our node design and keep it as the portable-runtime comparison. Do not combine two implementations' cryptography or create a multi-tenant fork by changing a hostname. Neither is “the official Cloudflare PDS.” An attributed, optional Cirrus-derived Strata PDS package now exists and passes local checks; no public DID, deployed PDS or real account was created.
 
 For a pilot, use disposable identities and interop tests for OAuth, DPoP, MST/CAR imports, blobs/range requests, relay restart, deletion, key rotation, recovery, exports and restore. An entire-node backup includes blobs, signing/recovery material, authority policy and service state; a CAR alone is not a full-node backup.
 

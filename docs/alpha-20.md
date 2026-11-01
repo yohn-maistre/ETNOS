@@ -1,3 +1,5 @@
+> Current origin: https://etnos.space. The owner attached the Worker custom domain and authorized the cutover on 1 November 2026. Historical registrar-parking observations below are superseded. See connected-preview.md for the latest receipt and pds-hosting.md for optional account hosting; self-hosted PDS signup is not yet open.
+
 # ETNOS: twenty-person alpha
 
 Decision and preparation record · 1 November 2026 (Asia/Bangkok)

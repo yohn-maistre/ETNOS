@@ -106,3 +106,7 @@ npm run dev:worker
 For deployment set the exact `STRATA_ORIGIN` to the HTTPS preview origin and keep `STRATA_NODE` deployment-controlled. Host/path input cannot select another node. Persisted request logging is disabled by default to limit sensitive metadata collection; this does not remove hosting-provider visibility. [Deployment notes](docs/cloudflare-profile.md). [OAuth and connected preview checkpoint](docs/connected-preview.md). [Contextual commons assessment](docs/research/2026-10-31-contextual-commons.md).
 
 Latest forum-first work: [rich content, lifecycle, capacity and Spaces experiment](docs/forum-rich-content-checkpoint.md).
+
+## Optional account hosting
+
+See [PDS hosting](docs/pds-hosting.md) and `npm run --silent pds -- capabilities --json` for the experimental, separately deployed PDS service and Cloudflare/server/external provider profiles. Planning is local and account creation remains closed. The canonical ETNOS surface is https://etnos.space.
