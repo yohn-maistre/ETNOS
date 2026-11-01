@@ -97,4 +97,4 @@ The final Honai follow-up removes unused imports and prevents an Explore respons
 
 ## Canonical ETNOS alpha, 1 November 2026
 
-Latest deployment: **https://etnos.space**, Worker version `7b71555a27e14baaa0de7012bbeb32d1`. [The release receipt](release-2026-11-01-etnos.md) supersedes older origin/DNS observations and records source versions, tests, artifact hash and remaining gates. The existing node/schema/secrets remain; the optional PDS package is implemented in source and tested locally, not deployed as hosted signup.
+Latest deployment: **https://etnos.space**, Worker version `a8879b873c4d41f5abe542e83214128b`. [The release receipt](release-2026-11-01-etnos.md) supersedes older origin/DNS observations and records source versions, tests, artifact hash and remaining gates. The existing node/schema/secrets remain; the optional PDS package is implemented in source and tested locally, not deployed as hosted signup.
