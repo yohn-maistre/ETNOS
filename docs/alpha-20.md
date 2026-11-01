@@ -12,6 +12,8 @@ One useful conversation network before many deployments: readable threads, contr
 
 Site enrollment, community membership and AT identity are three independent decisions. A successful AT OAuth sign-in does not automatically admit an account to ETNOS or a private community. Invitation alone does not give everyone moderation privileges. Choose one default public posting community and a small number of optional communities so the first twenty people can find each other. Do not launch twenty empty geographic instances.
 
+Full AT account hosting is the selected direction; see [Decision 004](decision-004-at-account-hosting.md) for the researched serverless/PDS/database options. Local-only signup is not being introduced.
+
 ## Signup, domain and publishing
 
 `etnos.space` exists as an active Cloudflare zone. On inspection today its apex A record was still `162.255.119.161`; `www` pointed to `parkingpage.namecheap.com`. No Worker custom-domain binding for it was present. Nameservers/zone activation alone do not route the application. Existing registrar mail records must be preserved.
