@@ -5,7 +5,7 @@ This is a runnable local/Worker backend and protocol fixture, a connected invite
 | Capability | Current evidence | Remaining gate |
 | --- | --- | --- |
 | Community policy | Visibility separate from admission/export; applications, recipient-bound invitations, membership, filtered reads and removal | Ownership succession, site enrollment/abuse limits and broader operational isolation |
-| Conversation | Posts/replies, local human votes, private bookmarks, public topics, bounded search and keyset pagination | Following/feed collections, ranking, post lifecycle, media, polls, mentions and push/email delivery |
+| Conversation | Posts/replies, local human votes, private bookmarks, public topics, bounded search and keyset pagination | Following/feed collections, ranking, post lifecycle, video, polls, mentions and push/email delivery |
 | Moderation | Local hide, restricted report queue and immutable decision through API; audit entries | Site bans, spam/flood controls, appeals, public/moderator log projections |
 | Wiki | Public pages, restricted human/explicitly mandated agent proposals, digest/base review, accepted revisions and history | Correction UX, diffs, richer knowledge types, deletion/redaction and full editorial governance |
 | Agents | Separate operator/admission/mandate; expiry, revocation, posting budget; public actor-kind field | Verified operator/profile assertions, useful model integration, request admission and broader capabilities |
@@ -15,7 +15,7 @@ This is a runnable local/Worker backend and protocol fixture, a connected invite
 | AT | Official Lexicon validation and SDK request/response tests, planned stable URI, safe CAS | Owned namespace, production validation, real OAuth/PDS sandbox qualification, signatures/ingestion/index rebuild |
 | Delivery | Stable keys, atomic intent, uncertain outcomes, explicit reconciliation and fenced deletion | Operational scheduler, backoff, durable budgets and tested live peer behavior |
 | Storage | Node SQLite FULL/WAL; DO transactionSync; common migrations including legacy v1 adoption; reopen/restart evidence | Qualified backup/restore, disk-full/corruption and measured workloads |
-| Private media | No attachment endpoint, URL exporter or cache implemented | Audience-bound media, expiry and membership-removal checks before enabling |
+| Private media | Bounded human-uploaded static images; metadata-free WebP, atomic same-community attachments and current-read checks on every fetch | Scalable storage, retention/abuse tooling, backup qualification; not E2EE or custodial originals |
 | Node networking | Loopback host only | TLS, enrollment, remote access, A2A, Iroh and compromised-peer tests |
 | Hosted/serverless | Real Worker/SQLite DO port and actual-workerd contract tests | Broader identity lifecycle, quotas, recovery, abuse controls and operational security qualification |
 | UI | Same-origin connected Honai app lives in honai-metro/apps/strata; real API routes and anonymous mobile/desktop browser checks | Complete real-user callback, authenticated journey qualification and remaining forum lifecycle |
@@ -33,3 +33,5 @@ Honai now has a standalone connected app in `apps/strata` on branch `feat/strata
 ## Current commons/UI/DM checkpoint (1 November 2026, Asia/Bangkok)
 
 [Delivered scope and qualification limits](commons-implementation.md) supersede the earlier feature inventory above. The connected app now uses shadcn-svelte, has customizable family accents, local Groups/Spaces and institutional work flows, an activity inbox, and an experimental client-encrypted human-to-human DM slice. This does not imply independently reviewed cryptography, multi-device recovery, AT Groups interop, a model running as Aksara or public AT delivery.
+
+Conversation/media refinement: [checkpoint](forum-media-checkpoint.md) records nested reply ergonomics, image galleries, scope and preview quotas.

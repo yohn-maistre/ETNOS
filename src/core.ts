@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID, createHash } from 'node:crypto'
 import { Buffer } from 'node:buffer'
+import { mediaViews } from './media.ts'
 import { migrate } from './schema.ts'
 import type { Database, Binding } from './database.ts'
 import { PostContract, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
@@ -236,6 +237,8 @@ export class StrataCore {
       author:{id:author.id,did:author.did,name:author.name,kind:author.kind},rootId:p.root_id,
       contexts:this.all<{id:string;slug:string;title:string;kind:string}>("SELECT c.id,c.slug,c.title,c.kind FROM record_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.record_kind='post' AND l.record_id=? AND c.active=1 ORDER BY c.title LIMIT 10",id),
       replies:this.get<{count:number}>('SELECT COUNT(*) count FROM posts WHERE root_id=? AND id!=? AND hidden=0',p.root_id,p.root_id)!.count,
+      directReplies:this.get<{count:number}>('SELECT COUNT(*) count FROM posts WHERE parent_id=? AND hidden=0',p.id)!.count,
+      media:mediaViews(this,p.id),
       publicationState:uri ? this.get<{state:string}>("SELECT state FROM outbox WHERE post_id=? AND operation='put'",id)!.state : this.community(community_id).visibility==='public'?'local':'private',
       score:this.get<{score:number}>('SELECT COALESCE(SUM(value),0) score FROM votes WHERE post_id=?',id)!.score,
       myVote:viewer ? this.get<{value:number}>('SELECT value FROM votes WHERE post_id=? AND actor_id=?',id,viewer)?.value ?? 0 : 0,

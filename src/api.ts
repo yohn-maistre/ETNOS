@@ -6,6 +6,7 @@ import {Groups,strings,type Group,type Context} from './groups.ts'
 import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
+import { Media } from './media.ts'
 import { capabilities } from './capabilities.ts'
 
 const MAX_BODY = 1500000
@@ -35,6 +36,7 @@ export function json(code: number, data: unknown) {
 }
 export type ApiOptions={custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
+  const media=new Media(store)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store)
@@ -58,7 +60,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       if (['sources','releases'].includes(parts[1]) && !options.custodyFixture) throw new Fault(501,'Custody fixture disabled; Aksara adapter is not connected')
       let result: unknown
       if (req.method === 'GET') {
-        if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth-invite-only':'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
+        if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
+        else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth-invite-only':'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
         else if (path === '/v1/me') result = store.actor(authenticated())
         else if (path === '/v1/memberships') result=store.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1',authenticated())
@@ -126,7 +129,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       const caller = authenticated(), b = await body(req)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
-      if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
+      if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
+      else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){
         if(!Array.isArray(b.packages)||b.packages.some(p=>!p||typeof p!=='object'||typeof p.id!=='string'||typeof p.data!=='string'))throw new Fault(400,'Key packages required')
         result=dm.register(caller,{deviceId:string(b.deviceId),signatureKey:string(b.signatureKey),packages:b.packages as {id:string;data:string}[]})
@@ -183,7 +187,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         if (typeof b.active !== 'boolean') throw new Fault(400,'Boolean required')
         result = store.setMember(caller,parts[2],string(b.actorId),b.active,b.role === undefined ? 'member' : string(b.role) as 'member'|'moderator')
       }
-      else if (path === '/v1/posts') result = store.tx(()=>{const post=store.createPost(caller,string(b.communityId),string(b.text),b.parentId === undefined ? undefined : string(b.parentId),b.mandateId === undefined ? undefined : string(b.mandateId));for(const id of strings(b.contextIds??[]))groups.attach(caller,'post',post.id,id);return store.getPost(caller,post.id)})
+      else if (path === '/v1/posts') result = store.tx(()=>{const post=store.createPost(caller,string(b.communityId),string(b.text),b.parentId === undefined ? undefined : string(b.parentId),b.mandateId === undefined ? undefined : string(b.mandateId));media.attach(caller,post.id,strings(b.mediaIds??[]));for(const id of strings(b.contextIds??[]))groups.attach(caller,'post',post.id,id);return store.getPost(caller,post.id)})
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'vote') {
         if(typeof b.value!=='number') throw new Fault(400,'Numeric vote required')
         result=social.vote(caller,parts[2],b.value)

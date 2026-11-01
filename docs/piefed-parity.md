@@ -15,14 +15,14 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Community ownership transfer | Planned | Accepted handover, recovery and succession; avoid unilateral takeover |
 | Profiles, avatars, banners, rules, links | Planned | Public actor/institution bindings; private affiliations excluded |
 | Moderator invitation/management UI | Partial | Role changes in API; safe discovery and UI missing |
-| Text posts | Local | Persistent bounded body; post title/link/media types still absent |
-| Nested replies | Local | Same-community references and parent-publication ordering |
+| Text posts | Local | Persistent bounded body and escaped URL links; separate title/link types still absent |
+| Nested replies | Local | Same-community references, stable roots, direct counts and parent-publication ordering; connected nested/collapsible UI with per-reply actions, loaded-sibling sorting and cursor loading |
 | Author edit history | Planned | Stable identity, revision/conflict and AT update semantics |
 | Author deletion and tombstones | Planned | Scoped PDS authority, replies and public-copy limitations |
 | Moderator hiding | Local | Local suppression, cancel unsent intent; no author PDS deletion rights |
 | Locking, pinning, announcements | Planned | Typed permissions and thread lifecycle |
 | Cross-posts / duplicate links | Planned | References and disclosure boundaries |
-| Images, galleries, video, attachments | Planned | R2/audience-bound delivery, upload limits, metadata stripping and safe processing |
+| Images, galleries, video, attachments | Partial | Bounded static images/galleries/alt text/viewer, audience-checked bytes and atomic attachments; preview SQLite store. Video/files, scalable object store and AT blob publishing remain absent |
 | Link previews / remote fetch | Planned | SSRF, redirects, size/time limits and cache privacy |
 | Polls | Planned | Eligibility, closing, multiple choice and vote privacy |
 | Events / calendars / reminders | Planned | Time zones, RSVP privacy, feeds and expiry |
@@ -42,14 +42,14 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Appeals and correction requests | Planned | Independent reviewer, outcomes and private evidence |
 | User/community/domain/instance blocks | Planned | Personal filters distinct from server admission and institutional access |
 | Suspensions, bans and anti-abuse | Partial | Membership removal exists; site bans, account limits, spam/flood/rate/bot protections absent |
-| Content warnings / NSFW / alt text | Planned | Accessible rendering, preference and media metadata |
+| Content warnings / NSFW / alt text | Partial | Image alt text and accessible viewer; warnings/NSFW preferences remain absent |
 | Flairs / tags / custom emoji | Planned | Permission, localization and asset provenance |
 | Private messaging / chat | Partial | Experimental ts-mls client-encrypted 1:1 human DMs; invitations, blocking, single device and encrypted local vault. Unaudited; no interop/recovery or sensitive-use qualification |
 | RSS/Atom, imports and scheduled posts | Planned | Publication rights, SSRF and reauthorization at send time |
-| Login, registration modes | Partial | Trusted local credential provisioning only; no remote signup or proof of DID control |
+| Login, registration modes | Partial | Invited verified AT OAuth in connected preview; local fixture provisioning is not accepted in production. Hosted PDS signup/registration and private-only accounts remain absent |
 | AT OAuth / narrow permissions | Partial | Official SDK, sealed state/session/DPoP, invited enrollment and CSRF. Live publishing qualification remains |
 | Private-only identity / passkeys | Planned | Qualified identity provider or standard passkey implementation |
-| Sessions / recovery / TOTP | Planned | Devices, expiry, compromise recovery, step-up and account linking |
+| Sessions / recovery / TOTP | Partial | Sealed expiring OAuth cookie sessions and logout; recovery, TOTP, step-up and account linking remain absent |
 | Account export/delete/migration | Planned | Include app-side state, private memberships, PDS separation and practical exit |
 | Site settings / roles / legal pages | Planned | Supported operator model, governance and bounded administration |
 | Federation | Adapt | AT selected; no implicit ActivityPub, Lemmy or PieFed wire compatibility |
@@ -79,3 +79,5 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | UI / client API | Partial | Same-origin Honai app, shadcn-svelte/Lucide, real local APIs and isolated browser contracts; broader forum lifecycle remains |
 
 The forum's launch gate includes account admission/recovery, abuse controls, ordinary post lifecycle, safe media if enabled, moderation, notifications, accessibility and operational recovery. Backend rows passing tests do not satisfy that launch gate. Higher-level Wiki/agent work must not hide missing ordinary forum behavior.
+
+Current conversation/media scope and privacy limits: [checkpoint](forum-media-checkpoint.md). Most planned families are implementation work, not inherent AT limitations; ActivityPub/PieFed federation specifically requires an independent adapter.

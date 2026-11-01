@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os'
 import {join} from 'node:path'
 import {Miniflare,convertV4MiniflareOptions} from 'miniflare'
 
+import {image} from './media-fixture.ts'
 const origin='https://strata.example'
 function runtime(persist) {
   return new Miniflare(convertV4MiniflareOptions({name:'strata-test-only',modules:true,scriptPath:'.wrangler/test/worker-harness.js',
@@ -73,6 +74,11 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     assert.deepEqual(JSON.parse(await governance.governanceContract()),{hiddenOmitted:true,separateAdmission:true,state:'completed',privateProposalOmitted:true,rolledBack:true,hiddenDraft:true,activityRead:true,activityPrivate:true,agentAuthor:'agent'})
     const oauth=ns.getByName('oauth-node')
     assert.deepEqual(JSON.parse(await oauth.authContract()),{start:200,callback:303,location:'/',hasCookie:true})
+    const uploaded=await(await call(mf,'/v1/media',f.owner.token,{communityId:f.hidden.id,bytes:image,alt:'Private image fixture'})).json()
+    assert.equal((await call(mf,`/v1/media/${uploaded.id}`,f.outsider.token)).status,404)
+    const withImage=await(await call(mf,'/v1/posts',f.owner.token,{communityId:f.hidden.id,text:'Private image post',mediaIds:[uploaded.id]})).json()
+    assert.equal(withImage.media[0].alt,'Private image fixture')
+    assert.deepEqual(Buffer.from(await(await call(mf,`/v1/media/${uploaded.id}`,f.owner.token)).arrayBuffer()),Buffer.from(image,'base64'))
     await stub.interrupt()
     await mf.dispose()
     mf=runtime(dir)
@@ -81,5 +87,8 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     assert.equal(jobs.some(j=>j.state==='sending'),false)
     assert.equal(jobs.some(j=>j.state==='uncertain'),true)
     assert.equal((await call(mf,`/v1/posts/${f.secret.id}`,f.owner.token)).status,200)
+    assert.deepEqual(Buffer.from(await(await call(mf,`/v1/media/${uploaded.id}`,f.owner.token)).arrayBuffer()),Buffer.from(image,'base64'))
+    await call(mf,`/v1/posts/${withImage.id}/hide`,f.owner.token,{})
+    assert.equal((await call(mf,`/v1/media/${uploaded.id}`,f.owner.token)).status,404)
   } finally { await mf.dispose();await rm(dir,{recursive:true,force:true}) }
 })

@@ -220,6 +220,15 @@ CREATE INDEX dm_threads_sender ON dm_threads(sender_id,updated DESC);
 CREATE INDEX dm_threads_recipient ON dm_threads(recipient_id,updated DESC);
 CREATE INDEX dm_packages_available ON dm_packages(actor_id,expires) WHERE thread_id IS NULL;
 CREATE INDEX dm_sender_rate ON dm_envelopes(sender_id,created);
+`, `
+CREATE TABLE media (
+ id TEXT PRIMARY KEY, owner_id TEXT NOT NULL REFERENCES actors(id),
+ community_id TEXT NOT NULL REFERENCES communities(id), post_id TEXT REFERENCES posts(id),
+ bytes BLOB NOT NULL, size INTEGER NOT NULL, width INTEGER NOT NULL, height INTEGER NOT NULL,
+ alt TEXT NOT NULL, position INTEGER, created INTEGER NOT NULL
+);
+CREATE INDEX media_post ON media(post_id,position);
+CREATE INDEX media_owner_created ON media(owner_id,created);
 `]
 
 
