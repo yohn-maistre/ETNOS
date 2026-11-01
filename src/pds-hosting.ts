@@ -20,7 +20,8 @@ export const capabilities = {
   automaticDeployment: false,
   automaticDidCreation: false,
   automaticAccountMigration: false,
-  privateDataInPublicRepo: false,
+  publicRepositories: true,
+  privateVaultProvided: false,
   serverlessImplementation:
     "in-repository Cirrus-derived Worker with official AT repo/crypto libraries",
   serverImplementation: "official PDS container profile",
