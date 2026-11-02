@@ -1,6 +1,6 @@
 import {createHash,randomUUID} from 'node:crypto'
 import {StrataCore,Fault,type Post} from './core.ts'
-import {contentInput,contentOf} from './post-content.ts'
+import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
 import {Groups,strings} from './groups.ts'
 
 /** Local forum lifecycle. Public PDS mutation requires its own qualified workflow. */
@@ -41,8 +41,9 @@ export class Forum {
    const p=this.editable(actor,id,b.revision),old=contentOf(p.content)
    if(typeof b.text!=='string'||b.text.length>20000)throw new Fault(400,'Invalid post text')
    const patch=b.content??{}
-   if(!patch||typeof patch!=='object'||Array.isArray(patch)||Object.keys(patch).some(k=>!['title','url','format','warning'].includes(k)))throw new Fault(400,'Edit only text, title, link or warning')
+   if(!patch||typeof patch!=='object'||Array.isArray(patch)||Object.keys(patch).some(k=>!['title','url','format','warning','inlineMedia'].includes(k)))throw new Fault(400,'Edit only text, title, link or warning')
    const c={...contentInput(patch,s.clock()),...(old.poll?{poll:old.poll}:{}),...(old.event?{event:old.event}:{})}
+   checkInlineMedia(c,s.all<{id:string}>('SELECT id FROM media WHERE post_id=?',id).map(m=>m.id))
    if(!b.text.trim()&&!c.title&&!c.url&&!c.poll&&!c.event&&!s.get('SELECT 1 FROM media WHERE post_id=?',id))throw new Fault(400,'Add text, a link or media')
    s.run('UPDATE posts SET text=?,content=?,revision=revision+1,updated=? WHERE id=?',b.text.trim(),JSON.stringify(c),s.clock(),id)
    s.audit(actor,'post.edit',id);return s.getPost(actor,id)

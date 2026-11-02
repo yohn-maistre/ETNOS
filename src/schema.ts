@@ -245,6 +245,11 @@ CREATE INDEX post_author_recent ON posts(author_id,created DESC);
 `, `
 CREATE TABLE follows(actor_id TEXT NOT NULL REFERENCES actors(id),target_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(actor_id,target_id),CHECK(actor_id!=target_id));
 CREATE INDEX follows_target ON follows(target_id,actor_id);
+`, `
+ALTER TABLE wiki_pages ADD COLUMN draft INTEGER NOT NULL DEFAULT 0;
+CREATE TABLE wiki_policies(community_id TEXT PRIMARY KEY REFERENCES communities(id),contributor_group_id TEXT REFERENCES groups(id),reviewer_group_id TEXT REFERENCES groups(id));
+CREATE TABLE wiki_requests(actor_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,page_id TEXT NOT NULL REFERENCES wiki_pages(id),PRIMARY KEY(actor_id,request_key));
+CREATE TABLE actor_profiles(actor_id TEXT PRIMARY KEY REFERENCES actors(id),bio TEXT NOT NULL,website TEXT NOT NULL,location TEXT NOT NULL);
 `]
 
 

@@ -1,7 +1,8 @@
 import backend,{StrataNode} from './worker.ts'
 import {json} from './api.ts'
-import {publicNews,publicStory,publicNewsImage} from './news.ts'
+import {publicNews,publicStory,publicNewsImage,newsQuery} from './news.ts'
 import {publicVideo} from './video.ts'
+import {publicLinkPreview,previewURL} from './link-preview.ts'
 export {StrataNode}
 type WebEnv=Cloudflare.Env & {ASSETS:Fetcher;WATCH_NEWS?:Fetcher}
 const legacyOrigin='https://strata-preview.giyaibo.workers.dev'
@@ -24,6 +25,15 @@ export default {
       headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'none'")
       return new Response(response.body,{status:response.status,headers})
     }
+    if(['/v1/link-preview','/v1/link-preview/image'].includes(url.pathname)){
+      if(request.method!=='GET')return json(405,{error:'Method not allowed'})
+      let target:string;try{target=previewURL(url.searchParams.get('url')??'')}catch{return json(404,{error:'Preview unavailable'})}
+      const key=new Request(url.origin+url.pathname+'?url='+encodeURIComponent(target)),cached=await edgeCache().match(key)
+      if(cached)return cached
+      const response=await publicLinkPreview(target,url.pathname.endsWith('/image'))
+      if(response.ok)await edgeCache().put(key,response.clone())
+      return response
+    }
     const videoRoute=url.pathname.match(/^\/v1\/video-preview\/(youtube|vimeo)\/([A-Za-z0-9_-]{6,12})(\/image)?$/)
     if(videoRoute){
       if(request.method!=='GET')return json(405,{error:'Method not allowed'})
@@ -36,7 +46,10 @@ export default {
     const newsRoute=url.pathname.match(/^\/v1\/news(?:\/(\d{1,12})(\/image)?)?$/)
     if(newsRoute){
       if(request.method!=='GET')return json(405,{error:'Method not allowed'})
-      const key=new Request(url.origin+url.pathname),cached=await edgeCache().match(key)
+      let query=''
+      if(!newsRoute[1]){try{query='?'+newsQuery(url.searchParams)}catch{return json(400,{error:'Invalid news filters'})}}
+      else if(newsRoute[2]&&url.searchParams.has('asset')){const asset=url.searchParams.get('asset')!;if(!/^[a-f0-9]{24}$/.test(asset))return json(404,{error:'Image unavailable'});query='?asset='+asset}
+      const key=new Request(url.origin+url.pathname+query),cached=await edgeCache().match(key)
       if(cached)return cached
       const upstream:typeof fetch=async(input,options)=>{
         if(!env.WATCH_NEWS)return fetch(input,options)
@@ -44,7 +57,7 @@ export default {
         try { const response=await env.WATCH_NEWS.fetch(new Request('https://watch.internal'+target.pathname.replace(/^\/api/,'')+target.search,{headers:{accept:'application/json'},signal:options?.signal}));if(response.ok)return response } catch { /* fixed public read fallback */ }
         return fetch(input,options)
       }
-      const response=newsRoute[2]?await publicNewsImage(newsRoute[1],upstream):newsRoute[1]?await publicStory(newsRoute[1],upstream):await publicNews(upstream)
+      const response=newsRoute[2]?await publicNewsImage(newsRoute[1],upstream,fetch,url.searchParams.get('asset')):newsRoute[1]?await publicStory(newsRoute[1],upstream):await publicNews(upstream,url.searchParams)
       if(response.ok)await edgeCache().put(key,response.clone())
       return response
     }

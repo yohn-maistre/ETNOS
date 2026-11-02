@@ -7,7 +7,8 @@ export class Search {
   profile(viewer: string | undefined, targetId: string) {
     const s=this.store, a=s.actor(targetId)
     if(viewer!==a.id&&!this.visibleAuthor(viewer,a.id))throw new Fault(404,'Not found')
-    return {id:a.id,did:a.did,name:a.name,kind:a.kind}
+    const profile=s.get<{bio:string;website:string;location:string}>('SELECT bio,website,location FROM actor_profiles WHERE actor_id=?',a.id)
+    return {id:a.id,did:a.did,name:a.name,kind:a.kind,...(profile??{})}
   }
   private visibleAuthor(viewer:string|undefined,id:string) {
     return this.store.get(`SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id
@@ -28,7 +29,7 @@ export class Search {
       AND instr(lower(c.title||' '||c.description),lower(?))>0 ORDER BY c.title,c.id LIMIT 6`,v,q)
     const contexts=s.all<{id:string;slug:string;title:string;kind:string;description:string}>(`SELECT id,slug,title,kind,description FROM contexts WHERE active=1 AND instr(lower(title||' '||description||' '||aliases),lower(?))>0 ORDER BY title,id LIMIT 6`,q)
     const groups=s.all<{id:string;title:string;description:string;kind:string}>(`SELECT g.id,g.title,g.description,g.kind FROM groups g WHERE (g.visibility='public' OR EXISTS(SELECT 1 FROM group_members m WHERE m.group_id=g.id AND m.actor_id=? AND m.active=1)) AND instr(lower(g.title||' '||g.description),lower(?))>0 ORDER BY g.title,g.id LIMIT 6`,v,q)
-    const wiki=s.all<{id:string;title:string;community_id:string}>(`SELECT w.id,w.title,w.community_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id LEFT JOIN wiki_revisions r ON r.id=w.revision_id WHERE c.visibility='public' AND instr(lower(w.title||' '||COALESCE(r.text,'')),lower(?))>0 ORDER BY w.created DESC,w.id DESC LIMIT 6`,q)
+    const wiki=s.all<{id:string;title:string;community_id:string}>(`SELECT w.id,w.title,w.community_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id LEFT JOIN wiki_revisions r ON r.id=w.revision_id WHERE c.visibility='public' AND (w.draft=0 OR w.revision_id IS NOT NULL) AND instr(lower(w.title||' '||COALESCE(r.text,'')),lower(?))>0 ORDER BY w.created DESC,w.id DESC LIMIT 6`,q)
     return {query:q,people,posts,communities,contexts,groups,wiki}
   }
 }

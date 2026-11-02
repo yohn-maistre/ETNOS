@@ -163,7 +163,7 @@ test('legacy v1 database migrates without exposing old sources or replaying prev
     assert.equal(s.jobs('old')[0].state,'cancelled')
     assert.equal(s.getPost(undefined,'post').text,'Prior intent')
     s.close()
-    const again=new Strata(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,15);again.close()
+    const again=new Strata(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,16);again.close()
   } finally {rmSync(dir,{recursive:true,force:true})}
 })
 
@@ -201,7 +201,11 @@ test('thread roots are stable across nested replies and private threads never en
     const handler=api(s)
     assert.equal((await handler(new Request(s.base+'/v1/posts/'+secret.id+'/replies'))).status,404)
     const thread=await(await handler(new Request(s.base+'/v1/posts/'+nested.id+'/replies'))).json()
-    assert.equal(thread.items.length,2)
+    assert.equal(thread.items.length,0)
+    const branch=await(await handler(new Request(s.base+'/v1/posts/'+reply.id+'/replies'))).json()
+    assert.deepEqual(branch.items.map((p:{id:string})=>p.id),[nested.id])
+    const all=await(await handler(new Request(s.base+'/v1/posts/'+root.id+'/replies'))).json()
+    assert.equal(all.items.length,2)
     assert.equal(JSON.stringify(thread).includes('operator_id'),false)
     assert.equal(JSON.stringify(thread).includes('Protected'),false)
     s.hidePost(owner.actor.id,root.id)

@@ -38,7 +38,7 @@ export class Activity {
       UNION ALL
       SELECT 'wiki-review:'||p.id,'wiki-review',w.id,w.title,'Usulan menunggu tinjauan',p.created
       FROM wiki_proposals p JOIN wiki_pages w ON w.id=p.page_id JOIN communities c ON c.id=w.community_id JOIN memberships m ON m.community_id=c.id
-      WHERE ?2='human' AND c.visibility='public' AND p.state='pending' AND p.author_id!=?1 AND m.actor_id=?1 AND m.active=1 AND m.role IN ('owner','moderator')
+      WHERE ?2='human' AND c.visibility='public' AND p.state='pending' AND p.author_id!=?1 AND m.actor_id=?1 AND m.active=1 AND m.role IN ('owner','moderator') AND (NOT EXISTS(SELECT 1 FROM wiki_policies wp WHERE wp.community_id=c.id AND wp.reviewer_group_id IS NOT NULL) OR EXISTS(SELECT 1 FROM wiki_policies wp JOIN group_members gm ON gm.group_id=wp.reviewer_group_id WHERE wp.community_id=c.id AND gm.actor_id=?1 AND gm.active=1))
       UNION ALL
       SELECT 'wiki-decision:'||p.id||':'||p.state,'wiki-decision',w.id,w.title,CASE p.state WHEN 'accepted' THEN 'Revisi diterima' ELSE 'Usulan ditolak' END,COALESCE(p.decided,p.created)
       FROM wiki_proposals p JOIN wiki_pages w ON w.id=p.page_id JOIN communities c ON c.id=w.community_id JOIN memberships m ON m.community_id=c.id

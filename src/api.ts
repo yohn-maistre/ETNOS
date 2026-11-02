@@ -3,6 +3,7 @@ import { StrataCore, Fault, type Community, type Actor } from './core.ts'
 import { Social } from './social.ts'
 import { Search } from './search.ts'
 import { Wiki } from './wiki.ts'
+import {updateProfile} from './profile.ts'
 import {Groups,strings,type Group,type Context} from './groups.ts'
 import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
@@ -93,11 +94,12 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         }
         else if (path === '/v1/communities') result = store.listCommunities(actor?.id)
         else if (path === '/v1/topics') result=social.topics()
-        else if (path === '/v1/wiki') result=wiki.all()
+        else if (path === '/v1/wiki') result=wiki.all(actor?.id)
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
-        else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2])
-        else if (parts.length === 3 && parts[1] === 'wiki') result=wiki.read(parts[2])
-        else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'history') result=wiki.history(parts[2])
+        else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
+        else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])
+        else if (parts.length === 3 && parts[1] === 'wiki') result=wiki.read(parts[2],actor?.id)
+        else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'history') {wiki.read(parts[2],actor?.id);result=wiki.history(parts[2])}
         else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'proposals') result=wiki.proposals(authenticated(),parts[2])
         else if (parts.length === 3 && parts[1] === 'wiki-proposals') result=wiki.proposal(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'reports') result=social.reports(authenticated(),parts[2])
@@ -113,11 +115,11 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
           followingId:url.searchParams.get('following')==='true'?authenticated():undefined,authorId:url.searchParams.get('author')??undefined,query:url.searchParams.get('q')??undefined,communityId:url.searchParams.get('community')??undefined,
           topicId:url.searchParams.get('topic')??undefined,cursor:url.searchParams.get('cursor')??undefined,
           limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined,
-          rootsOnly:url.searchParams.get('roots')==='true',contextId:url.searchParams.has('context')?groups.context(url.searchParams.get('context')!).id:undefined,
+          pollsOnly:url.searchParams.get('polls')==='true',rootsOnly:url.searchParams.get('roots')==='true',contextId:url.searchParams.has('context')?groups.context(url.searchParams.get('context')!).id:undefined,
         })
         else if (parts.length===4 && parts[1]==='posts' && parts[3]==='replies') {
           const target=store.getPost(actor?.id,parts[2])
-          result=store.feedPage(actor?.id,{rootId:target.rootId,limit:100,cursor:url.searchParams.get('cursor')??undefined})
+          result=store.feedPage(actor?.id,{rootId:target.rootId,branchId:target.id===target.rootId?undefined:target.id,limit:100,cursor:url.searchParams.get('cursor')??undefined})
         }
         else if (parts.length === 3 && parts[1] === 'posts') result = store.getPost(actor?.id,parts[2])
         else if (parts.length === 3 && parts[1] === 'sources') {
@@ -133,7 +135,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       const caller = authenticated(), b = await body(req)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
-      if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
+      if(path==='/v1/profile')result=updateProfile(store,caller,b)
+      else if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){
         if(!Array.isArray(b.packages)||b.packages.some(p=>!p||typeof p!=='object'||typeof p.id!=='string'||typeof p.data!=='string'))throw new Fault(400,'Key packages required')
@@ -209,7 +212,11 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'report') result=social.report(caller,parts[2],string(b.reason))
       else if (parts.length === 4 && parts[1] === 'reports' && parts[3] === 'decide') result=social.decideReport(caller,parts[2],string(b.state) as 'resolved'|'dismissed',string(b.decision))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'topics') result=social.addTopic(caller,parts[2],string(b.title))
-      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.create(caller,parts[2],string(b.title))
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.setPolicy(caller,parts[2],b.contributorGroupId===null?null:string(b.contributorGroupId),b.reviewerGroupId===null?null:string(b.reviewerGroupId))
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') {
+        if(b.draft!==undefined){const d=b.draft as Record<string,unknown>;if(!d||typeof d!=='object'||!Array.isArray(d.citations)||d.citations.some(c=>typeof c!=='string'))throw new Fault(400,'Draft and citations required');result=wiki.createDraft(caller,parts[2],string(b.title),{text:string(d.text),citations:d.citations as string[],language:string(d.language),perspective:string(d.perspective)},b.requestKey===undefined?undefined:string(b.requestKey))}
+        else result=wiki.create(caller,parts[2],string(b.title))
+      }
       else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'proposals') {
         if(!Array.isArray(b.citations) || b.citations.some(c=>typeof c!=='string')) throw new Fault(400,'Citation URLs required')
         result=wiki.propose(caller,parts[2],b.baseRevision===null?null:string(b.baseRevision),string(b.text),b.citations as string[],string(b.language),string(b.perspective),b.editorialMandateId===undefined?undefined:string(b.editorialMandateId))
