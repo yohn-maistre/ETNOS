@@ -10,7 +10,7 @@ test('actual web Worker: canonical API, recovery-only legacy surface, no legacy 
   assert.equal((await fetch(canonical+'/health')).status,200)
   const news=await fetch(canonical+'/v1/news?privateQuery=never-forward',{headers:{cookie:'private-cookie',authorization:'Bearer never-forward'}})
   assert.equal(news.status,200);assert.equal((await news.json()).items[0].title,'Synthetic public news')
-  assert.deepEqual(newsRequests,[{url:'https://watch.internal/current?limit=6',cookie:null,authorization:null}])
+  assert.deepEqual(newsRequests,[{url:'https://watch.internal/current?limit=12',cookie:null,authorization:null}])
   assert.equal((await fetch('https://evil.example/health')).status,400)
   const moved=await fetch(legacy+'/explore?q=mee');assert.equal(moved.status,302);assert.equal(moved.headers.get('location'),canonical+'/explore?q=mee')
   const callback=await fetch(legacy+'/auth/callback?code=secret-code&state=secret-state');assert.equal(callback.headers.get('location'),canonical+'/login');assert.equal(callback.headers.get('referrer-policy'),'no-referrer')

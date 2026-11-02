@@ -109,6 +109,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         }
         else if (path === '/v1/feed') result = store.feed(actor?.id, url.searchParams.get('q') ?? '')
         else if (path === '/v1/feed/page') result=store.feedPage(actor?.id,{
+          linkUrls:url.searchParams.has('links')?(()=>{try{return JSON.parse(url.searchParams.get('links')!)}catch{throw new Fault(400,'Invalid related links')}})():undefined,
           followingId:url.searchParams.get('following')==='true'?authenticated():undefined,authorId:url.searchParams.get('author')??undefined,query:url.searchParams.get('q')??undefined,communityId:url.searchParams.get('community')??undefined,
           topicId:url.searchParams.get('topic')??undefined,cursor:url.searchParams.get('cursor')??undefined,
           limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined,

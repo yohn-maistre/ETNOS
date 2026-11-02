@@ -50,3 +50,9 @@ The discovery/control preview was deployed as `59f31383fdd84e1d967a7daf6ce9c5d4`
 ## Optional PDS hosting, 1 November 2026
 
 See [PDS hosting](pds-hosting.md): separately packaged experimental Worker PDS, official-library repository/CAR checks, real local official-client OAuth integration, durable legacy refresh rotation/revocation, and machine-readable Cloudflare/server/external deployment planning. This is not live hosted signup, a production audit or multi-tenant Worker qualification. The forum remains usable with existing invited AT identities.
+
+## Native news and alpha interface, 3 November 2026 (Asia/Bangkok)
+
+[News/video adapter boundaries](alpha-news-and-video-2026-11-03.md) describe the bounded public WPW reader, fixed-provider cover/title cards, and exact-link related discussion queries. Related posts still pass current community visibility and membership checks. This adds no database migration, paid service, PDS signup or AT broadcast. Honai's interface pass adds optional independently scrolling feeds, profile/media tabs, a full-screen photo viewer, a shared top loading line and entry scroll restoration.
+
+[Wiki and community engagement research](wiki-and-community-engagement-2026-11-03.md) records the proposed reviewed-knowledge atlas and sponsor-approved question/report/response loop. Git export, group-specific proposal rules, richer editors and consultations remain proposals, not shipped features. Current forum polls are opt-in community polls, not representative surveys or secret ballots.
