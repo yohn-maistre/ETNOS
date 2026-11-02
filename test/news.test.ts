@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {publicNews,publicStory,publicNewsImage} from '../src/news.ts'
 test('news projects only bounded published fields with same-origin image references',async()=>{
  let calls=0
- const fetcher:typeof fetch=async(url,options)=>{calls++;assert.equal(url,'https://westpapua.watch/api/current?limit=12');assert.equal(options?.redirect,'error');assert.deepEqual(options?.headers,{accept:'application/json'});assert.ok(options?.signal);return Response.json({items:[{id:42,title:{id:'Kabar publik'},source_count:2,latest_report_at:'2026-11-01T10:00:00Z',image:{url:'https://tracking.example'},private_debug:'Never project'},{id:'../admin',title:{id:'Invalid'}},{id:42,title:{id:'Duplicate'}},{id:43,title:{en:'Public second'},image:{url:'https://img.antaranews.com/image.jpg',rights_status:'attributed_external',credit:'ANTARA'}}]})}
+ const fetcher:typeof fetch=async(url,options)=>{calls++;assert.equal(url,'https://westpapua.watch/api/current?limit=12');assert.equal(options?.redirect,'manual');assert.deepEqual(options?.headers,{accept:'application/json'});assert.ok(options?.signal);return Response.json({items:[{id:42,title:{id:'Kabar publik'},source_count:2,latest_report_at:'2026-11-01T10:00:00Z',image:{url:'https://tracking.example'},private_debug:'Never project'},{id:'../admin',title:{id:'Invalid'}},{id:42,title:{id:'Duplicate'}},{id:43,title:{en:'Public second'},image:{url:'https://img.antaranews.com/image.jpg',rights_status:'attributed_external',credit:'ANTARA'}}]})}
  const r=await publicNews(fetcher),d=await r.json();assert.equal(calls,1);assert.equal(r.status,200);assert.equal(d.items.length,2);assert.equal(d.items[0].url,'https://westpapua.watch/story/?id=42');assert.equal(JSON.stringify(d).includes('Never project'),false);assert.equal(JSON.stringify(d).includes('tracking.example'),false);assert.equal(d.items[1].image,'/v1/news/43/image');assert.match(r.headers.get('cache-control')!,/public/)
 })
 test('news failures, malformed responses and oversized streams fail small',async()=>{
@@ -20,7 +20,7 @@ test('native news detail excludes editorial internals, invalid sources and unpub
 })
 test('news image port cannot proxy arbitrary hosts, redirects, HTML, oversized or mismatched bytes',async()=>{
  let calls=0
- const imageFetch:typeof fetch=async(url,options)=>{calls++;assert.equal(url,'https://img.antaranews.com/image.jpg');assert.equal(options?.redirect,'error');assert.equal(options?.credentials,'omit');return new Response(new Uint8Array([255,216,255,1]),{headers:{'content-type':'image/jpeg'}})}
+ const imageFetch:typeof fetch=async(url,options)=>{calls++;assert.equal(url,'https://img.antaranews.com/image.jpg');assert.equal(options?.redirect,'manual');assert.equal(options?.credentials,undefined);assert.equal(new Headers(options?.headers).has('cookie'),false);assert.equal(new Headers(options?.headers).has('authorization'),false);return new Response(new Uint8Array([255,216,255,1]),{headers:{'content-type':'image/jpeg'}})}
  const result=await publicNewsImage('42',async()=>Response.json(detail()),imageFetch);assert.equal(result.status,200);assert.equal(calls,1);assert.equal(result.headers.get('content-type'),'image/jpeg')
  for(const url of ['http://127.0.0.1/admin','https://localhost/private','https://img.antaranews.com.evil.example/x','https://user:pass@img.antaranews.com/x','https://img.antaranews.com:444/x']) assert.equal((await publicNewsImage('42',async()=>Response.json(detail(url)),imageFetch)).status,404)
  assert.equal(calls,1)

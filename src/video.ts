@@ -9,7 +9,7 @@ async function bytes(response:Response,max:number){
 }
 async function metadata(provider:string,id:string,fetcher:typeof fetch){
  const url=provider==='youtube'?'https://www.youtube.com/oembed?url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)+'&format=json':'https://vimeo.com/api/oembed.json?url='+encodeURIComponent('https://vimeo.com/'+id)
- const response=await fetcher(url,{redirect:'error',credentials:'omit',headers:{accept:'application/json'},signal:AbortSignal.timeout(6000)})
+ const response=await fetcher(url,{redirect:'manual',headers:{accept:'application/json'},signal:AbortSignal.timeout(6000)})
  if(!response.ok||!response.headers.get('content-type')?.includes('json'))throw Error('unavailable')
  const data=JSON.parse(new TextDecoder().decode(await bytes(response,32768)))
  let image:string|null=null
@@ -23,7 +23,7 @@ export async function publicVideo(provider:string,id:string,image=false,fetcher:
   const data=image&&provider==='youtube'?{title:'',image:'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'}:await metadata(provider,id,fetcher)
   if(!image)return Response.json({title:data.title||'Video',provider:provider==='youtube'?'YouTube':'Vimeo',image:data.image?'/v1/video-preview/'+provider+'/'+id+'/image':null},{headers:policy})
   if(!data.image)return new Response(null,{status:404})
-  const response=await fetcher(data.image,{redirect:'error',credentials:'omit',headers:{accept:'image/jpeg,image/png,image/webp'},signal:AbortSignal.timeout(6000)})
+  const response=await fetcher(data.image,{redirect:'manual',headers:{accept:'image/jpeg,image/png,image/webp'},signal:AbortSignal.timeout(6000)})
   const type=response.headers.get('content-type')?.split(';')[0].trim()
   if(!response.ok||!['image/jpeg','image/png','image/webp'].includes(type??''))throw Error('image')
   const body=await bytes(response,1048576)

@@ -21,7 +21,7 @@ async function bounded(response:Response,limit:number){
  const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length}return bytes
 }
 async function read(path:string,fetcher:typeof fetch){
- const response=await fetcher('https://westpapua.watch/api/'+path,{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(8000)})
+ const response=await fetcher('https://westpapua.watch/api/'+path,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)})
  if(!response.ok)throw Error(response.status===404?'missing':'upstream')
  if(!response.headers.get('content-type')?.includes('json'))throw Error('format')
  return JSON.parse(new TextDecoder().decode(await bounded(response,524288)))
@@ -63,7 +63,7 @@ export async function publicNewsImage(id:string,fetcher:typeof fetch=fetch,image
   const articles=Array.isArray(data.articles)?data.articles.slice(0,24):[]
   const url=articles.map((a:Record<string,unknown>)=>imageURL(a.image_url)).find(Boolean)
   if(!url)return unavailable('image',404)
-  const response=await imageFetcher(url,{redirect:'error',credentials:'omit',headers:{accept:'image/jpeg,image/png,image/webp'},signal:AbortSignal.timeout(8000)})
+  const response=await imageFetcher(url,{redirect:'manual',headers:{accept:'image/jpeg,image/png,image/webp'},signal:AbortSignal.timeout(8000)})
   const type=response.headers.get('content-type')?.split(';')[0].trim()
   if(!response.ok||!['image/jpeg','image/png','image/webp'].includes(type??''))return unavailable('image',404)
   const bytes=await bounded(response,2097152)

@@ -16,3 +16,5 @@ Video scrolling/composition loads **cover/title only**. A player iframe/native v
 UI and media caches reduce repeated public requests; metadata/failure payloads are bounded. The image port does not alter R2 usage or introduce a paid image-resizing service. Public image sizes/availability still depend on publishers. No new PDS, public AT broadcasting or account migration is part of this change.
 
 Sources: https://developers.google.com/youtube/terms/required-minimum-functionality#api-client-identity-and-credentials and https://developers.google.com/youtube/iframe_api_revision_history (Error 153).
+
+Runtime correction: the actual Workers outbound path rejects browser `credentials` and `redirect: 'error'` options. Server ports now construct fresh explicit headers without credentials and use `redirect: 'manual'`, rejecting every non-success response rather than following redirects. The real workerd contract exercises oEmbed, video covers and news photos through its outbound service, and checks that neither cookies nor authorization reach those services. Node fetch stubs alone did not catch this runtime difference.
