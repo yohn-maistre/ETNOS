@@ -10,6 +10,7 @@ import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
 import {Forum} from './forum.ts'
 import { Media } from './media.ts'
+import {Decisions,type DecisionProvider} from './decisions.ts'
 import { capabilities } from './capabilities.ts'
 
 const MAX_BODY = 1500000
@@ -37,9 +38,10 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const forum=new Forum(store)
+  const decisions=new Decisions(store,options.decisions)
   const media=new Media(store)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
@@ -72,7 +74,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/me') result = store.actor(authenticated())
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='moderation')result=forum.moderation(authenticated(),parts[2])
         else if (path === '/v1/memberships') result=store.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1',authenticated())
-        else if (path === '/v1/capabilities') result={...capabilities,auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto'}}
+        else if (path === '/v1/capabilities') result={...capabilities,decisions:{enabled:!!options.decisions},auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto'}}
         else if(path==='/v1/dm/contacts')result=dm.contacts(authenticated(),url.searchParams.get('q')??'')
         else if(path==='/v1/dm/me')result=dm.me(authenticated())
         else if(path==='/v1/dm/threads')result=dm.list(authenticated())
@@ -135,7 +137,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       const caller = authenticated(), b = await body(req)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
-      if(path==='/v1/profile')result=updateProfile(store,caller,b)
+      if(parts.length===4&&parts[1]==='posts'&&parts[3]==='suggestions') result=await decisions.suggest(caller,parts[2],string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
+      else if(path==='/v1/profile')result=updateProfile(store,caller,b)
       else if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){

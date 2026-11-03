@@ -2,6 +2,7 @@ import { DurableObject } from 'cloudflare:workers'
 import { CloudflareDatabase } from './cloudflare-database.ts'
 import { StrataCore, Fault } from './core.ts'
 import { api, json } from './api.ts'
+import {workerDecisions} from './worker-decisions.ts'
 import {BrowserAuth} from './oauth.ts'
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
@@ -19,7 +20,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           const auth=await BrowserAuth.create(core,{origin:env.STRATA_ORIGIN,privateJwk:env.STRATA_OAUTH_JWK,sealKey:env.STRATA_AUTH_SEAL_KEY,
             stewardDid:env.STRATA_STEWARD_DID,allowedHosts:env.STRATA_OAUTH_HOSTS.split(',').map(x=>x.trim()).filter(Boolean),
             collection:env.STRATA_COLLECTION,publishingEnabled:env.STRATA_PUBLISHING_ENABLED==='true'})
-          const handler=api(core,{runtime:'cloudflare-durable-object',authMode:'atproto',stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
+          const handler=api(core,{decisions:workerDecisions(env),runtime:'cloudflare-durable-object',authMode:'atproto',stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await auth.route(request))??handler(request)
         }
       }else this.handle=api(core,{runtime:'cloudflare-durable-object'})

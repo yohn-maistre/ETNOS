@@ -12,7 +12,8 @@
     "worker-configuration.d.ts",
     "test/worker-harness.ts",
     "src/web-worker.ts",
-    "test/web-harness.ts"
+    "test/web-harness.ts",
+    "src/worker-decisions.ts"
   ],
   "exclude": []
 }

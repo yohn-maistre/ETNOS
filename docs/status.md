@@ -62,3 +62,7 @@ See [PDS hosting](pds-hosting.md): separately packaged experimental Worker PDS, 
 [Commons implementation](commons-next-implementation.md) now records the corresponding interface/policy work and release gates: filtered news, compact directory/Home layouts, focused replies, scoped inline-media documents, restricted initial wiki drafts and group review policies, optional profile fields and community poll/follow-up discovery. Schema 16 is additive. This does not deploy a PDS, enable AT broadcasting, run a resident agent or qualify institutional polling/custody.
 
 Latest delivery: [3 November commons/mobile release receipt](release-2026-11-03-commons.md) records the deployed source/artifact versions, additive schema 16, private initial wiki review, richer documents, compact discovery and the mobile/profile refinement. The final UI has one scrolling navigation list, bottom Menu access, configurable phone feed tabs, single-surface video previews and Serat as the fresh-state default. Peer-feed swipes remain a design proposal.
+
+## Public decision pilot and friends-test polish — 3 November 2026
+
+[Decision pilot](decision-pilot-2026-11-03.md) records explicit human-steward public triage, additive schema 17, bounded Cloudflare AI inference, abstention and the loopback Aksara HTTP demonstration. This does not introduce production agent enrollment, institutional verification or autonomous posting. The corresponding Honai pass improves news density, tab scrolling, contextual relations, thread continuation and mobile dock clearance.

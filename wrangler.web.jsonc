@@ -15,7 +15,8 @@
     "STRATA_STEWARD_DID": "did:plc:uhhrncfqtpg26h24irfcpuma",
     "STRATA_COLLECTION": "org.example.strata.post",
     "STRATA_PUBLISHING_ENABLED": "false",
-    "STRATA_OAUTH_HOSTS": "bsky.social,public.api.bsky.app,plc.directory,.host.bsky.network"
+    "STRATA_OAUTH_HOSTS": "bsky.social,public.api.bsky.app,plc.directory,.host.bsky.network",
+    "STRATA_DECISIONS_ENABLED": "true"
   },
   "durable_objects": {
     "bindings": [
@@ -42,11 +43,19 @@
       "STRATA_AUTH_SEAL_KEY"
     ]
   },
-  "services": [{"binding":"WATCH_NEWS","service":"westpapua-watch-engine"}],
+  "services": [
+    {
+      "binding": "WATCH_NEWS",
+      "service": "westpapua-watch-engine"
+    }
+  ],
   "assets": {
     "directory": "./web",
     "binding": "ASSETS",
     "run_worker_first": true,
     "not_found_handling": "single-page-application"
+  },
+  "ai": {
+    "binding": "AI"
   }
 }
