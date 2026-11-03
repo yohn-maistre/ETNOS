@@ -9,6 +9,25 @@ import {Media} from '../src/media.ts'
 import {Forum} from '../src/forum.ts'
 import {api} from '../src/api.ts'
 import {image} from './media-fixture.ts'
+test('wiki accountability projects only exact accepted participants and keeps draft contributors restricted',async()=>{
+ const s=new Strata(':memory:'),owner=s.provision('did:web:wiki-owner.example','Public reviewer'),peer=s.provision('did:web:wiki-peer.example','Contributor'),stranger=s.provision('did:web:wiki-other.example','Unrelated private person'),w=new Wiki(s),c=s.createCommunity(owner.actor.id,'Public','Public','public')
+ try {
+  s.setMember(owner.actor.id,c.id,peer.actor.id,true)
+  const p=w.createDraft(owner.actor.id,c.id,'Accountable page',{text:'First',citations:[],language:'id',perspective:'Free-text attribution'})
+  const first=w.proposals(owner.actor.id,p.id)[0];w.decide(owner.actor.id,first.id,first.digest,true)
+  const draft=w.propose(peer.actor.id,p.id,w.read(p.id).revision_id,'Changed',[],'id','A different attribution')
+  assert.deepEqual(w.proposals(owner.actor.id,p.id).find(x=>x.id===draft.id)?.author,{id:peer.actor.id,name:'Contributor',kind:'human'})
+  assert.throws(()=>w.proposals(stranger.actor.id,p.id))
+  assert.equal(w.read(p.id).revision?.text,'First')
+  w.decide(owner.actor.id,draft.id,draft.digest,true)
+  const revision=w.read(p.id).revision!
+  assert.deepEqual(revision.author,{id:peer.actor.id,name:'Contributor',kind:'human'})
+  assert.deepEqual(revision.reviewer,{id:owner.actor.id,name:'Public reviewer',kind:'human'})
+  assert.equal('did' in revision.author,false)
+  assert.equal(JSON.stringify(w.read(p.id)).includes('Unrelated private person'),false)
+  assert.equal(w.history(p.id)[0].reviewer?.id,owner.actor.id)
+ }finally{s.close()}
+})
 test('atomic wiki drafts hide identity, title and history until reviewed; failed creation leaves no page',async()=>{
  const s=new Strata(':memory:','https://next.example'),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:reader.example','Reader'),w=new Wiki(s),c=s.createCommunity(a.actor.id,'Public','Public','public')
  try{

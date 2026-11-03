@@ -24,6 +24,7 @@ function citations(values:string[]) {
 export class Wiki {
   private store:StrataCore
   constructor(store:StrataCore) {this.store=store}
+  private attribution(actorId:string){const actor=this.store.actor(actorId);return {id:actor.id,name:actor.name,kind:actor.kind}}
   private human(actorId:string) {if(this.store.actor(actorId).kind!=='human')throw new Fault(403,'Human knowledge contributor required; posting mandates do not authorize Wiki changes')}
   private authorizeProposal(actorId:string,communityId:string,mandateId?:string|null,consume=true){
     const s=this.store,actor=s.actor(actorId);s.requireMember(actorId,communityId)
@@ -93,7 +94,7 @@ export class Wiki {
     const revision=page.revision_id?this.store.get<Revision>('SELECT * FROM wiki_revisions WHERE id=?',page.revision_id):null
     if(!revision)return {...page,revision:null}
     const {proposal_id:_privateProposal,...accepted}=revision
-    return {...page,revision:{...accepted,authorKind:this.store.actor(revision.author_id).kind,citations:JSON.parse(revision.citations) as string[]}}
+    return {...page,revision:{...accepted,authorKind:this.store.actor(revision.author_id).kind,author:this.attribution(revision.author_id),reviewer:this.attribution(revision.reviewer_id),citations:JSON.parse(revision.citations) as string[]}}
   }
   list(communityId:string,actorId?:string) {
     const s=this.store
@@ -104,7 +105,7 @@ export class Wiki {
   proposals(actorId:string,pageId:string){
     const s=this.store,page=this.page(pageId);s.requireMember(actorId,page.community_id);this.draftAccess(page,actorId)
     let steward=false;try{this.reviewer(actorId,page.community_id);steward=true}catch{}
-    return s.all<Proposal>('SELECT * FROM wiki_proposals WHERE page_id=? AND (?=1 OR author_id=?) ORDER BY created DESC,id DESC LIMIT 100',pageId,steward?1:0,actorId).map(p=>({...p,authorKind:s.actor(p.author_id).kind,citations:JSON.parse(p.citations) as string[]}))
+    return s.all<Proposal>('SELECT * FROM wiki_proposals WHERE page_id=? AND (?=1 OR author_id=?) ORDER BY created DESC,id DESC LIMIT 100',pageId,steward?1:0,actorId).map(p=>({...p,authorKind:s.actor(p.author_id).kind,author:this.attribution(p.author_id),citations:JSON.parse(p.citations) as string[]}))
   }
   propose(actorId:string,pageId:string,baseRevision:string|null,body:string,sourceUrls:string[],language:string,perspective:string,editorialMandateId?:string) {
     const s=this.store
@@ -150,6 +151,6 @@ export class Wiki {
   }
   history(pageId:string) {
     this.page(pageId)
-    return this.store.all<Omit<Revision,'text'|'citations'|'proposal_id'>>('SELECT id,page_id,parent_id,author_id,reviewer_id,language,perspective,digest,created FROM wiki_revisions WHERE page_id=? ORDER BY created DESC,id DESC LIMIT 100',pageId)
+    return this.store.all<Omit<Revision,'text'|'citations'|'proposal_id'>>('SELECT id,page_id,parent_id,author_id,reviewer_id,language,perspective,digest,created FROM wiki_revisions WHERE page_id=? ORDER BY created DESC,id DESC LIMIT 100',pageId).map(r=>({...r,author:this.attribution(r.author_id),reviewer:this.attribution(r.reviewer_id)}))
   }
 }
