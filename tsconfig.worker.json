@@ -11,7 +11,8 @@
     "src/cloudflare-database.ts",
     "worker-configuration.d.ts",
     "test/worker-harness.ts",
-    "src/web-worker.ts"
+    "src/web-worker.ts",
+    "test/web-harness.ts"
   ],
   "exclude": []
 }

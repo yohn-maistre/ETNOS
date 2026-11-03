@@ -79,7 +79,9 @@ export default {
       if(request.method==='GET'&&response.ok){
         // Deliberately construct new anonymous requests: even signed-in readers
         // receive the same public-only sharing projection as an external crawler.
-        const read=async(path:string)=>boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+path,{signal:AbortSignal.timeout(6000)}),env))
+        // Keep local DO RPC requests free of AbortSignal: this compatibility
+        // date cannot serialize signals across RPC. These reads only query local SQL.
+        const read=async(path:string)=>boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+path),env))
         const newsRead:typeof fetch=async(input,options)=>{const target=new URL(String(input));if(env.WATCH_NEWS){try{const r=await env.WATCH_NEWS.fetch(new Request('https://watch.internal'+target.pathname.replace(/^\/api/,'')+target.search,{signal:options?.signal,headers:{accept:'application/json'}}));if(r.ok)return r}catch{ /* public fallback */ }}return fetch(input,options)}
         const meta=await resolveShare(url.pathname,read,async id=>boundedJSON(await publicStory(id,newsRead)))
         headers.delete('etag');headers.delete('last-modified');headers.delete('content-length')

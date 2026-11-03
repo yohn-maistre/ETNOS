@@ -21,6 +21,7 @@
     "src/worker.ts",
     "src/cloudflare-database.ts",
     "test/worker-harness.ts",
-    "src/web-worker.ts"
+    "src/web-worker.ts",
+    "test/web-harness.ts"
   ]
 }
