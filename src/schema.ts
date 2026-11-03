@@ -253,6 +253,16 @@ CREATE TABLE actor_profiles(actor_id TEXT PRIMARY KEY REFERENCES actors(id),bio 
 `, `
 CREATE TABLE decision_requests(id TEXT PRIMARY KEY,actor_id TEXT NOT NULL REFERENCES actors(id),post_id TEXT NOT NULL REFERENCES posts(id),revision INTEGER NOT NULL,request_key TEXT NOT NULL,created INTEGER NOT NULL,state TEXT NOT NULL,digest TEXT,result TEXT,UNIQUE(actor_id,request_key));
 CREATE INDEX decision_requests_budget ON decision_requests(created,actor_id);
+`, `
+CREATE TABLE agent_registrations(agent_id TEXT PRIMARY KEY REFERENCES actors(id),community_id TEXT NOT NULL REFERENCES communities(id),group_id TEXT REFERENCES groups(id),role TEXT NOT NULL CHECK(role IN ('guest','worker','steward')),family TEXT NOT NULL CHECK(family IN ('aksara','external')),created INTEGER NOT NULL,revoked INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE agent_deployments(id TEXT PRIMARY KEY,agent_id TEXT NOT NULL REFERENCES actors(id),label TEXT NOT NULL,jwk TEXT NOT NULL,fingerprint TEXT NOT NULL UNIQUE,created INTEGER NOT NULL,revoked INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE agent_tokens(hash TEXT PRIMARY KEY,deployment_id TEXT NOT NULL REFERENCES agent_deployments(id),scope TEXT NOT NULL,expires INTEGER NOT NULL);
+CREATE TABLE agent_assertions(deployment_id TEXT NOT NULL REFERENCES agent_deployments(id),jti TEXT NOT NULL,expires INTEGER NOT NULL,PRIMARY KEY(deployment_id,jti));
+CREATE TABLE agent_auth_attempts(id TEXT PRIMARY KEY,deployment_id TEXT NOT NULL REFERENCES agent_deployments(id),created INTEGER NOT NULL);
+CREATE INDEX agent_deployments_actor ON agent_deployments(agent_id);
+CREATE INDEX agent_token_expiry ON agent_tokens(expires);
+CREATE INDEX agent_attempt_time ON agent_auth_attempts(created);
+CREATE TABLE agent_wiki_requests(agent_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,proposal_id TEXT NOT NULL REFERENCES wiki_proposals(id),PRIMARY KEY(agent_id,request_key));
 `]
 
 

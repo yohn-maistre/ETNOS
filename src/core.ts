@@ -2,6 +2,7 @@ import { randomBytes, randomUUID, createHash } from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { Media, type MediaView } from './media.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
+import {agentLabels} from './agent-labels.ts'
 import { migrate } from './schema.ts'
 import type { Database, Binding } from './database.ts'
 import { PostContract, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
@@ -240,6 +241,7 @@ export class StrataCore {
     if(!posts.length)return[]
     const ids=JSON.stringify(posts.map(p=>p.id)),roots=JSON.stringify([...new Set(posts.map(p=>p.root_id))]),communities=JSON.stringify([...new Set(posts.map(p=>p.community_id))])
     const authors=new Map(this.all<Actor>('SELECT * FROM actors WHERE id IN(SELECT value FROM json_each(?))',JSON.stringify([...new Set(posts.map(p=>p.author_id))])).map(a=>[a.id,a]))
+    const attribution=agentLabels(this,[...authors.values()].filter(a=>a.kind==='agent').map(a=>a.id))
     const policy=new Map(this.all<Community>('SELECT * FROM communities WHERE id IN(SELECT value FROM json_each(?))',communities).map(c=>[c.id,c]))
     const roles=new Map(viewer?this.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1 AND community_id IN(SELECT value FROM json_each(?))',viewer,communities).map(m=>[m.community_id,m.role]):[])
     const human=!!viewer&&this.actor(viewer).kind==='human'
@@ -254,7 +256,7 @@ export class StrataCore {
     const responses=this.all<{post_id:string;response:string;n:number;mine:number}>('SELECT post_id,response,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM event_responses WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,response',viewer??null,ids)
     return posts.map(p=>{
       const author=authors.get(p.author_id)!,content=p.deleted?{}:contentOf(p.content),votes=pollVotes.filter(v=>v.post_id===p.id),rsvp=responses.filter(v=>v.post_id===p.id)
-      return{id:p.id,author_id:p.author_id,community_id:p.community_id,parent_id:p.parent_id,text:p.deleted?'':p.text,created:p.created,uri:p.uri,actorKind:author.kind,author:{id:author.id,did:author.did,name:author.name,kind:author.kind},rootId:p.root_id,
+      return{id:p.id,author_id:p.author_id,community_id:p.community_id,parent_id:p.parent_id,text:p.deleted?'':p.text,created:p.created,uri:p.uri,actorKind:author.kind,author:{id:author.id,did:author.did,name:author.name,kind:author.kind,...(author.kind==='agent'?{agent:attribution.get(author.id)??{role:'guest',family:'external',official:false}}:{})},rootId:p.root_id,
         content,revision:p.revision,updated:p.updated,deleted:!!p.deleted,locked:!!p.locked,pinned:!!p.pinned,
         permissions:{edit:human&&viewer===p.author_id&&roles.has(p.community_id)&&!p.uri&&!p.deleted&&!p.release_id,moderate:human&&['owner','moderator'].includes(roles.get(p.community_id)??'')},
         contexts:p.deleted?[]:contexts.filter(c=>c.post_id===p.id).map(({id,slug,title,kind})=>({id,slug,title,kind})),

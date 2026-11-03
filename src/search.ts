@@ -1,3 +1,4 @@
+import {agentLabels} from './agent-labels.ts'
 import { StrataCore, Fault } from './core.ts'
 
 /** Permission-filtered local discovery. Never indexes private proposals or memberships. */
@@ -8,7 +9,7 @@ export class Search {
     const s=this.store, a=s.actor(targetId)
     if(viewer!==a.id&&!this.visibleAuthor(viewer,a.id))throw new Fault(404,'Not found')
     const profile=s.get<{bio:string;website:string;location:string}>('SELECT bio,website,location FROM actor_profiles WHERE actor_id=?',a.id)
-    return {id:a.id,did:a.did,name:a.name,kind:a.kind,...(profile??{})}
+    return {id:a.id,did:a.did,name:a.name,kind:a.kind,...(a.kind==='agent'?{agent:agentLabels(s,[a.id]).get(a.id)??{role:'guest',family:'external',official:false}}:{}),...(profile??{})}
   }
   private visibleAuthor(viewer:string|undefined,id:string) {
     return this.store.get(`SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id

@@ -244,6 +244,7 @@ export class BrowserAuth {
       this.store.run('INSERT INTO starter_spaces VALUES(?,?)',slug,id);this.store.audit(actorId,'community.bootstrap',id)
     })
   }
+  operatorAllowed(actorId:string){return this.allowed(this.store.actor(actorId).did)}
   async agent(request:Request){
     this.writeGuard(request);const actor=this.principal(request)
     if(!actor)throw new Fault(401,'Authentication required')

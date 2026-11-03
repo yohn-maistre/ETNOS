@@ -8,6 +8,10 @@ test('actual web Worker: canonical API, recovery-only legacy surface, no legacy 
  try {
   const fetch=(url,init)=>mf.dispatchFetch(url,{redirect:'manual',...init})
   assert.equal((await fetch(canonical+'/health')).status,200)
+  const metadata=await fetch(canonical+'/.well-known/oauth-protected-resource/mcp');assert.equal(metadata.status,200);assert.equal((await metadata.json()).resource,canonical+'/mcp')
+  const rpc=await fetch(canonical+'/mcp',{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list',params:{}})});assert.equal(rpc.status,200);const rpcBody=await rpc.text();assert.match(rpcBody,/etnos_read_feed/)
+  const deniedAgent=await fetch(canonical+'/mcp',{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream',cookie:'__Host-strata=not-an-agent'},body:JSON.stringify({jsonrpc:'2.0',id:2,method:'tools/call',params:{name:'etnos_create_post',arguments:{}}})});assert.equal(deniedAgent.status,401);assert.match(deniedAgent.headers.get('www-authenticate'),/resource_metadata/)
+
   const fixture=JSON.parse(await(await mf.getDurableObjectNamespace('STRATA')).getByName('test-only').seed())
   for(const [path,title] of [['/square/'+fixture.post.id,'Runtime public conversation'],['/people/'+fixture.owner.actor.id,'Runtime author'],['/communities/'+fixture.pub.id,'Public runtime room']]){const response=await fetch(canonical+path,{headers:{cookie:'private-cookie',authorization:'Bearer private'}});assert.match(await response.text(),new RegExp('property=\"og:title\" content=\"'+title+'\"'))}
   const hiddenHTML=await(await fetch(canonical+'/square/'+fixture.secret.id)).text();assert.doesNotMatch(hiddenHTML,/Never public/);assert.match(hiddenHTML,/noindex/)

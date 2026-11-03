@@ -32,6 +32,7 @@ export default {
       headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'none'")
       return new Response(response.body,{status:response.status,headers})
     }
+    if(['/mcp','/auth.md','/llms.txt','/agents/token','/.well-known/oauth-protected-resource/mcp','/.well-known/oauth-authorization-server/agents'].includes(url.pathname))return backend.fetch(request,env)
     if(['/v1/link-preview','/v1/link-preview/image'].includes(url.pathname)){
       if(request.method!=='GET')return json(405,{error:'Method not allowed'})
       let target:string;try{target=previewURL(url.searchParams.get('url')??'')}catch{return json(404,{error:'Preview unavailable'})}

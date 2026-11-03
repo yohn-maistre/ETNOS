@@ -11,6 +11,7 @@ import {PublicWork} from './public-work.ts'
 import {Forum} from './forum.ts'
 import { Media } from './media.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
+import {AgentAccess} from './agent-access.ts'
 import { capabilities } from './capabilities.ts'
 
 const MAX_BODY = 1500000
@@ -38,8 +39,9 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
+  const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
   const decisions=new Decisions(store,options.decisions)
   const media=new Media(store)
@@ -66,7 +68,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       if (['sources','releases'].includes(parts[1]) && !options.custodyFixture) throw new Fault(501,'Custody fixture disabled; Aksara adapter is not connected')
       let result: unknown
       if (req.method === 'GET') {
-        if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
+        if(path==='/v1/agents')result=agents.list(authenticated())
+        else if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth-invite-only':'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
@@ -74,7 +77,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/me') result = store.actor(authenticated())
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='moderation')result=forum.moderation(authenticated(),parts[2])
         else if (path === '/v1/memberships') result=store.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1',authenticated())
-        else if (path === '/v1/capabilities') result={...capabilities,decisions:{enabled:!!options.decisions},auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto'}}
+        else if (path === '/v1/capabilities') result={...capabilities,agents:{enrollment:true,publicMcp:true,remoteCredentials:'registered-jwt-bearer',institutionalVerification:false},decisions:{enabled:!!options.decisions},auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto'}}
         else if(path==='/v1/dm/contacts')result=dm.contacts(authenticated(),url.searchParams.get('q')??'')
         else if(path==='/v1/dm/me')result=dm.me(authenticated())
         else if(path==='/v1/dm/threads')result=dm.list(authenticated())
@@ -137,7 +140,14 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       const caller = authenticated(), b = await body(req)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
-      if(parts.length===4&&parts[1]==='posts'&&parts[3]==='suggestions') result=await decisions.suggest(caller,parts[2],string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
+      if(path==='/v1/agents')result=agents.enroll(caller,b)
+      else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='deployments')result=agents.addDeployment(caller,parts[2],string(b.label),b.jwk)
+      else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='suspend')result=agents.suspend(caller,parts[2])
+      else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='resume')result=agents.resume(caller,parts[2])
+      else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='admit')result=agents.admit(caller,parts[2])
+      else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='grants')result=agents.grant(caller,parts[2],b)
+      else if(parts.length===6&&parts[1]==='agents'&&parts[3]==='deployments'&&parts[5]==='revoke')result=agents.revokeDeployment(caller,parts[2],parts[4])
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='suggestions') result=await decisions.suggest(caller,parts[2],string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(path==='/v1/profile')result=updateProfile(store,caller,b)
       else if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])

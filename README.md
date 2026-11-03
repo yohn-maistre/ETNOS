@@ -22,7 +22,7 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 - A development custody/release fixture preserving original bytes, exact-digest human review, designated publication, withdrawal and public-view redaction. Its HTTP routes are disabled by default. This is **not** the Aksara SharingGrant evaluator or a production institutional vault.
 - Public post intent and outbox committed in one transaction. Stable record keys, uncertain outcomes, explicit reconciliation, CID-bound deletion and no automatic replay after interruption.
 - Draft AT Lexicon checked with the official validator, and an official AT SDK adapter tested against synthetic responses. Public records and feed views omit private source/release/mandate foreign keys.
-- A loopback JSON API with bounded requests, local bearer credential checks, exact Host/Origin checks, no-store responses and no HTTP provisioning endpoint.
+- A loopback JSON API with bounded requests, local bearer credential checks, exact Host/Origin checks, no-store responses and no arbitrary human provisioning endpoint. Controlled operator-owned agent enrollment is described below.
 - The same policy and Fetch handler on local Node SQLite and Cloudflare SQLite Durable Objects, with real workerd isolation/rollback/restart checks. Local migration uses a version table and preserves prior v1 data.
 
 The Cloudflare preview now has invitation-controlled AT OAuth using the official SDK, sealed server-side credentials, browser-bound state, a Secure HttpOnly session and CSRF checks. The selected Honai design has been ported into a same-origin connected interface. A real giyaibo.bsky.social authorization request reached Bluesky; the owner has since completed real login and posting in the preview. A second-user alpha flow remains to be verified. No account was migrated. Local Groups/Spaces, public Contexts, sponsor-controlled PublicWork, bounded agent editorial proposals, a private activity inbox and experimental one-to-one encrypted DMs are now implemented. [Current scope and messaging limits](docs/commons-implementation.md). Live public AT publishing, a hosted PDS, ingestion, Iroh/A2A, complete forum lifecycle and production security qualification remain outstanding. [Status](docs/status.md) · [PieFed feature ledger](docs/piefed-parity.md) · [Serverless reuse review](docs/serverless-reuse-review.md).
@@ -47,7 +47,7 @@ For your own empty node, provision an actor using the trusted local console:
 node src/cli.ts provision did:web:example.org 'Local steward'
 ```
 
-This assigns a development principal. **It does not prove control of that DID.** There is deliberately no remote signup/provisioning route. Agent provisioning additionally takes its human operator's local actor ID. Node operators are trusted; local provisioning can create credentials and read the database.
+This assigns a development principal. **It does not prove control of that DID.** There is no anonymous human signup or arbitrary-DID provisioning route. Authenticated human operators can separately enroll scoped agent identities through the reviewed agent entrance. Agent provisioning additionally takes its human operator's local actor ID. Node operators are trusted; local provisioning can create credentials and read the database.
 
 `STRATA_DB` selects a database path; default `.strata/node.sqlite`. `STRATA_ORIGIN` selects the expected loopback origin. The CLI rejects non-loopback serving. Files are created under a restrictive umask, but the SQLite database is not encrypted at rest. Do not put sensitive real records in this unqualified development host.
 
@@ -91,7 +91,7 @@ The repository is initially private and licensed **AGPL-3.0-only**, as selected 
 
 ## Cloudflare development
 
-The base Worker config is the API profile. `wrangler.web.jsonc` adds the connected Honai assets on the same origin and preserves the existing Durable Object namespace. This is not a PDS, resident agent or private institutional host. There is no remote actor provisioning or custody fixture. OAuth enrollment is restricted to the configured steward DID and accounts explicitly invited by that steward; community membership remains independent. Use synthetic data only until enrollment, abuse and recovery are qualified.
+The base Worker config is the API profile. `wrangler.web.jsonc` adds the connected Honai assets on the same origin and preserves the existing Durable Object namespace. This is not a PDS, resident agent or private institutional host. There is no anonymous actor provisioning or custody fixture; invited human operators can enroll scoped agents. OAuth enrollment is restricted to the configured steward DID and accounts explicitly invited by that steward; community membership remains independent. Use synthetic data only until enrollment, abuse and recovery are qualified.
 
 ```sh
 npm run types:worker
@@ -110,3 +110,7 @@ Latest forum-first work: [rich content, lifecycle, capacity and Spaces experimen
 ## Optional account hosting
 
 See [PDS hosting](docs/pds-hosting.md) and `npm run --silent pds -- capabilities --json` for the experimental, separately deployed PDS service and Cloudflare/server/external provider profiles. Planning is local and account creation remains closed. The canonical ETNOS surface is https://etnos.space.
+
+## Agent entrance
+
+Public clients can use https://etnos.space/mcp for bounded public reading. Invited human operators manage distinct agent identities, public deployment keys and separate community/mandate permissions at /agents. Private cultural/language communities remain outside MCP even for agents with separate private membership. [Current contract, CLI and limits](docs/agent-entrance-2026-11-03.md) · [AUTH.md](AUTH.md). This is not verified government enrollment, hardware attestation, a private-source release mechanism or a resident scheduler.

@@ -35,6 +35,7 @@ export class Wiki {
     s.requireSteward(grant.issuer_id,communityId)
     if(consume&&s.get<{n:number}>('SELECT count(*) AS n FROM wiki_proposals p JOIN wiki_pages w ON w.id=p.page_id WHERE p.author_id=? AND w.community_id=? AND p.created>?',actorId,communityId,s.clock()-3600000)!.n>=grant.hourly_limit)throw new Fault(429,'Editorial proposal budget exceeded')
   }
+  checkProposalAuthority(actorId:string,communityId:string,mandateId:string){this.authorizeProposal(actorId,communityId,mandateId,false)}
   grant(operator:string,agentId:string,communityId:string,purpose:string,expires:number,hourlyLimit=3){return this.store.tx(()=>{
     const s=this.store;s.requireSteward(operator,communityId);s.requireMember(agentId,communityId)
     const agent=s.actor(agentId)

@@ -1,11 +1,14 @@
 import { createServer } from 'node:http'
 import { Readable } from 'node:stream'
 import { api, json } from './api.ts'
+import {AgentAccess} from './agent-access.ts'
+import {agentRoutes} from './agent-mcp.ts'
 import type { StrataCore } from './core.ts'
 
 /** Loopback HTTP transport; the application handler is shared with Workers. */
 export function server(store: StrataCore, options: { custodyFixture?: boolean } = {}) {
-  const handle=api(store,options)
+  const access=new AgentAccess(store),routes=agentRoutes(store,access),app=api(store,{...options,agentAccess:access})
+  const handle=async(req:Request)=>(await routes(req))??app(req)
   return createServer(async(req,res)=>{
     try {
       if (!req.url || req.headers.host !== new URL(store.base).host) {

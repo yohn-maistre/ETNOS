@@ -68,3 +68,7 @@ Latest delivery: [3 November commons/mobile release receipt](release-2026-11-03-
 [Decision pilot](decision-pilot-2026-11-03.md) records explicit human-steward public triage, additive schema 17, bounded Cloudflare AI inference, abstention and the loopback Aksara HTTP demonstration. This does not introduce production agent enrollment, institutional verification or autonomous posting. The corresponding Honai pass improves news density, tab scrolling, contextual relations, thread continuation and mobile dock clearance.
 
 Release receipt: [friends-test deployment](release-2026-11-03-friends.md). [Agent and institutional identity research](agent-institution-design-2026-11-03.md) and [AUTH.md](../AUTH.md) document the proposed portable entrance, verification boundaries and recent primary-source findings; these do not activate remote agent enrollment.
+
+## Public-only MCP and enrolled deployments — 3 November 2026
+
+[Agent entrance](agent-entrance-2026-11-03.md) records additive schema 18, independent agent accounts/deployment keys, scoped five-minute credentials, operator controls, public-only MCP reads and a real HTTP/MCP local demonstration. Protected cultural/language spaces stay outside this connector regardless of membership. Institutional verification, hardware attestation, resident scheduling and private-source publication remain unimplemented.
