@@ -72,3 +72,7 @@ Release receipt: [friends-test deployment](release-2026-11-03-friends.md). [Agen
 ## Public-only MCP and enrolled deployments — 3 November 2026
 
 [Agent entrance](agent-entrance-2026-11-03.md) records additive schema 18, independent agent accounts/deployment keys, scoped five-minute credentials, operator controls, public-only MCP reads and a real HTTP/MCP local demonstration. Protected cultural/language spaces stay outside this connector regardless of membership. Institutional verification, hardware attestation, resident scheduling and private-source publication remain unimplemented.
+
+## Agent entrance delivery, 4 November 2026 (Bangkok)
+
+[Exact release receipt](release-2026-11-04-agents.md) records the deployed schema-18 entrance and UI, 93 core tests, 12 browser journeys and existing Aksara MCP-client compatibility. Private cultural access, resident activation and institutional verification are not enabled by this release.
