@@ -4,7 +4,7 @@ This implements the next-phase assessment and the final S.space reference pass. 
 
 ## Delivered behavior
 
-- Five primary destinations, with account utilities separately accessible. Rooms and organizations share a directory while keeping their existing IDs and different membership/authority models.
+- Core social pages and account utilities in one scrolling navigation list, reachable from the bottom-right mobile Menu control. Rooms and organizations share a directory while keeping their existing IDs and different membership/authority models.
 - Home offers one, two or three feeds through a small layout control; `/board` remains usable. Workspace headers, toolbars and feed scrollers have separate layout rows. Thin, restrained scrollbars retain hover/focus visibility. Mobile navigation closes after route changes and supports touch dismissal through the existing focus-trapped Sheet.
 - Explore presents three news stories and links to a full `/news` index. The fixed WPW port forwards only validated desk/place/page/limit controls, preserves paging metadata and separates edge cache keys. Photos pin their selected URL digest so a feed credit cannot silently accompany another article's image. Suara Papua is an approved host, but source HTTP 403 responses remain an availability limit; failed images collapse cleanly.
 - Focused reply routes fetch the chosen branch. A bounded recursive SQL selection preserves current root/community visibility before projection and pagination. The reader previews a child reply, exposes expansion, and moves deeper branches to their own route. Mobile reply submission uses an accessible arrow control.
@@ -42,7 +42,7 @@ Open Social Groups/Spaces remains a pinned synthetic lab. Existing revocation/ex
 - [x] Actual workerd storage/isolation/restart contract and web Worker outbound tests, including cache-key separation and absence of forwarded forum credentials.
 - [x] UI type checks and native tests; expanded editor loaded separately from ordinary reading.
 - [x] New isolated browser journey: wiki draft/acceptance, profile edit, inline image/viewer, deep branch, news filters/paging, Home columns, drawer navigation/dismissal and screenshots.
-- [ ] Complete the full frozen-build browser regression suite and visual review.
-- [ ] Commit source, deploy the exact reviewed artifact with existing namespace/secrets/origin, then verify production through anonymous read-only requests and screenshots.
+- [x] Complete all nine frozen-build browser journeys and visual review. The final wiki-loading/news-layout fixes also pass the affected journeys; the new web preview port has an explicit fixture in the older news journey.
+- [x] Commit source, deploy the exact reviewed artifact with existing namespace/secrets/origin, then verify production through anonymous read-only requests and screenshots. See [the release receipt](release-2026-11-03-commons.md).
 
 The deployment receipt records final source IDs, checks, artifact sizes/hash, version and remaining limits after those gates complete. Synthetic people, posts and sources stay in loopback test fixtures and are never seeded into the public node.
