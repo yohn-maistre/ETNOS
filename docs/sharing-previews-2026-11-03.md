@@ -11,3 +11,9 @@ Messaging services control their own card caches. Existing messages may retain a
 The deployed runtime check exposed Cloudflare's disabled AbortSignal serialization across Durable Object RPC at the current compatibility date. Local SQL sharing reads now create anonymous Requests without a signal; public news/photo fetches retain their outbound timeouts. The test-only web harness seeds real SQLite public/private data and checks the complete production web handler for post, profile and community metadata. Its provisioning class is excluded from the production entrypoint.
 
 First live verification: news 1166 returns its Indonesian title, summary and 47,165-byte JPEG; the homepage and protected messages page return the 1200×630 brand PNG. West Papua Watch's English and Indonesian story 1166 cards return the same source photo and localized titles. Recovery/canonical-origin tests still pass.
+
+## Final production verification
+
+Engine source `3a5f026`, UI source `dcacec4`. Worker version `03420b9b-1115-4180-bf37-db633a424eea`, deployment `b721c8ea-ce8a-412c-baf7-892e0474e6f9` at 100%. Bundle SHA-256 `06f5197a3885106ce703fcc1eb41e00c5ceb1d4cc469e884339ed15c8b7d3364`. Existing Durable Object namespace, schema, secret bindings, WATCH_NEWS service and compatibility date are preserved.
+
+Live crawler-style reads passed for news 1166, post dec5b56c-135e-4871-ae65-7d2293cb6e13, its public author and Beranda community. Every public page has its own canonical/title plus one Open Graph and Twitter image. Video post uses its JPEG cover; profile/community use the branded PNG. All images return HTTP 200 with correct MIME/signature. Protected messages stay generic/noindex, and the old-origin recovery surface retains `connect-src 'none'`. Final checks: TypeScript app and Worker checks, 83 core tests, real web Worker/SQLite sharing and privacy test, production dry run. No messaging app was driven or cache invalidation claimed.
