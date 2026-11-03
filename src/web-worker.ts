@@ -3,10 +3,17 @@ import {json} from './api.ts'
 import {publicNews,publicStory,publicNewsImage,newsQuery} from './news.ts'
 import {publicVideo} from './video.ts'
 import {publicLinkPreview,previewURL} from './link-preview.ts'
+import {resolveShare,shareTags} from './share.ts'
 export {StrataNode}
 type WebEnv=Cloudflare.Env & {ASSETS:Fetcher;WATCH_NEWS?:Fetcher}
 const legacyOrigin='https://strata-preview.giyaibo.workers.dev'
 const edgeCache=()=> (caches as unknown as {default:Cache}).default
+async function boundedJSON(response:Response){
+  if(!response.ok||!response.body)throw Error('Unavailable public preview')
+  const reader=response.body.getReader(),parts:Uint8Array[]=[];let size=0
+  try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>2097152)throw Error('Preview too large');parts.push(part.value)}}finally{await reader.cancel().catch(()=>{});reader.releaseLock()}
+  const bytes=new Uint8Array(size);let offset=0;for(const part of parts){bytes.set(part,offset);offset+=part.length}return JSON.parse(new TextDecoder().decode(bytes))
+}
 export default {
   async fetch(request:Request,env:WebEnv):Promise<Response>{
     const url=new URL(request.url)
@@ -69,6 +76,16 @@ export default {
     if(headers.get('content-type')?.includes('text/html')){
       headers.set('cache-control','no-store')
       headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; media-src https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
+      if(request.method==='GET'&&response.ok){
+        // Deliberately construct new anonymous requests: even signed-in readers
+        // receive the same public-only sharing projection as an external crawler.
+        const read=async(path:string)=>boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+path,{signal:AbortSignal.timeout(6000)}),env))
+        const newsRead:typeof fetch=async(input,options)=>{const target=new URL(String(input));if(env.WATCH_NEWS){try{const r=await env.WATCH_NEWS.fetch(new Request('https://watch.internal'+target.pathname.replace(/^\/api/,'')+target.search,{signal:options?.signal,headers:{accept:'application/json'}}));if(r.ok)return r}catch{ /* public fallback */ }}return fetch(input,options)}
+        const meta=await resolveShare(url.pathname,read,async id=>boundedJSON(await publicStory(id,newsRead)))
+        headers.delete('etag');headers.delete('last-modified');headers.delete('content-length')
+        if(!meta.index)headers.set('x-robots-tag','noindex, nofollow')
+        return new HTMLRewriter().on('title',{element(e){e.setInnerContent(meta.title==='ETNOS'?'ETNOS':meta.title+' · ETNOS')}}).on('meta[name="description"],meta[property^="og:"],meta[name^="twitter:"],meta[name="robots"],link[rel="canonical"]',{element(e){e.remove()}}).on('head',{element(e){e.append(shareTags(meta,env.STRATA_ORIGIN),{html:true})}}).transform(new Response(response.body,{status:response.status,headers}))
+      }
     }
     return new Response(response.body,{status:response.status,headers})
   },
