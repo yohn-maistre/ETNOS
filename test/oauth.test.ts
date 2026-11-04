@@ -104,3 +104,21 @@ test('expired OAuth state, cross-origin login and local bearer shortcuts are rej
     assert.equal((await handler(new Request(origin+'/v1/me',{headers:{authorization:'Bearer '+local.token}}))).status,401)
   }finally{s.close()}
 })
+
+// Custom handle and PDS host are independent. This is an invited-login fixture,
+// not an enabled provider-started new-account/signup implementation.
+test('an invited ETNOS-domain handle completes the actual OAuth route on an external PDS',async()=>{
+ const s=new Strata(':memory:',origin),customHandle='friend.etnos.example'
+ try{
+  const {auth,state}=await fixture(s,{},did,customHandle)
+  const start=(await auth.route(req('/auth/start',{body:{handle:customHandle}})))!
+  assert.equal(start.status,200)
+  const flow=cookiePart(start,'__Host-strata_flow')
+  const signed=(await auth.route(req('/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{cookie:flow})))!
+  assert.equal(signed.headers.get('location'),'/')
+  const session=cookiePart(signed,'__Host-strata')
+  const me=await (await auth.route(req('/auth/me',{cookie:session})))!.json() as {actor:{id:string;did:string;name:string}}
+  assert.equal(me.actor.did,did);assert.equal(me.actor.name,customHandle)
+  assert.equal(s.get<{n:number}>('SELECT count(*) n FROM actors')!.n,1)
+ }finally{s.close()}
+})

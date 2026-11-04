@@ -80,3 +80,7 @@ Release receipt: [friends-test deployment](release-2026-11-03-friends.md). [Agen
 ## Simplified navigation and gradual automatic theme — 4 November 2026
 
 [Navigation release receipt](release-2026-11-04-navigation.md): feed-first Home with Lajur removed, unified permission-filtered directory, earlier cover without oversized initials, Settings above sign-in/profile, compact previews/composer and graceful news-photo fallback. Fresh sky-blue/device-local automatic themes ease over 30 seconds with contrast guards; explicit saved choices persist. UI source `df89bae`, version `5fc90ae7-2665-4242-a72e-86853e53b230`; backend bytes/schema/authority unchanged. Nine UI checks, fourteen browser journeys, live loaded-page samples and public MCP read passed without production writes.
+
+## Custom-handle qualification — 4 November 2026
+
+[Handle portability receipt](handle-portability-2026-11-04.md) records a temporary real Free-zone DNS proof, official-client rejection of an unconfirmed alias, cleanup, invited custom-handle OAuth and simulated PDS-location continuity. Core check and 97 tests pass. No runtime/auth/schema change, actual account-handle update, live PDS migration or open signup is implied. Provider-started new-account enrollment and approved handle claims remain the next implementation.
