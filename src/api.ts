@@ -70,7 +70,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       if (req.method === 'GET') {
         if(path==='/v1/agents')result=agents.list(authenticated())
         else if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
-        else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth-invite-only':'local-provisioned-credentials', atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
+        else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth':'local-provisioned-credentials', enrollment:options.authMode==='atproto'?(options.enrollmentMode??'invite'):null, atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
         else if (path === '/v1/following') result=social.following(authenticated())

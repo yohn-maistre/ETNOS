@@ -44,6 +44,8 @@ test('open provider-started signup: no handle, real SDK PAR/PKCE/DPoP, verified 
   const handler=api(s,{authMode:'atproto',enrollmentMode:'open',principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
   const capabilities=await(await handler(req('/v1/capabilities'))).json() as {auth:{remoteSignup:boolean;hostedAccounts:boolean}}
   assert.equal(capabilities.auth.remoteSignup,true);assert.equal(capabilities.auth.hostedAccounts,false)
+  const health=await(await handler(req('/health'))).json() as {auth:string;enrollment:string}
+  assert.equal(health.auth,'atproto-oauth');assert.equal(health.enrollment,'open')
   assert.equal((await handler(req('/v1/posts/'+secret.id,undefined,cookie))).status,404)
   assert.equal(JSON.stringify(await(await handler(req('/v1/communities',undefined,cookie))).json()).includes(hidden.id),false)
   assert.equal((await handler(req('/v1/posts',{communityId:hidden.id,text:'Forbidden'},cookie,me.csrf))).status,404)
