@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "strata-preview",
   "main": "src/web-worker.ts",
+  "minify": true,
   "compatibility_date": "2026-10-23",
   "compatibility_flags": [
     "nodejs_compat"
@@ -12,6 +13,8 @@
     "STRATA_ORIGIN": "https://etnos.space",
     "STRATA_NODE": "preview",
     "STRATA_AUTH_MODE": "atproto",
+    "STRATA_ENROLLMENT_MODE": "open",
+    "STRATA_CLIENT_NAME": "ETNOS",
     "STRATA_STEWARD_DID": "did:plc:uhhrncfqtpg26h24irfcpuma",
     "STRATA_COLLECTION": "org.example.strata.post",
     "STRATA_PUBLISHING_ENABLED": "false",

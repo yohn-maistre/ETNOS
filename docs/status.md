@@ -1,5 +1,7 @@
 # Foundation status
 
+**Human signup update, 4 November 2026:** [provider-started Bluesky signup](signup-2026-11-04.md) now implements verified return/enrollment and configurable open/invite/closed admission. The owner selected open signup. Community, institution and agent permissions stay independent. Older invitation-only checkpoints below describe their release dates; the latest release receipt records deployed status.
+
 **Current alpha preparation:** see [alpha-20.md](alpha-20.md) for the consolidated feature/test matrix and remaining gates. The table below records earlier foundation checkpoints; later implemented content/DM/UI features must not be classified as missing from it alone.
 
 

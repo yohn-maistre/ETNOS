@@ -86,6 +86,7 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     console.log('Synthetic local workerd feed benchmark:',JSON.stringify(forum))
     const oauth=ns.getByName('oauth-node')
     assert.deepEqual(JSON.parse(await oauth.authContract()),{start:200,callback:303,location:'/',hasCookie:true})
+    assert.deepEqual(JSON.parse(await ns.getByName('signup-node').signupContract()),{start:200,location:'/communities?welcome=1',noLoginHint:true,verified:true,memberships:0,hiddenOmitted:true,schema:19})
     const uploaded=await(await call(mf,'/v1/media',f.owner.token,{communityId:f.hidden.id,bytes:image,alt:'Private image fixture'})).json()
     assert.equal((await call(mf,`/v1/media/${uploaded.id}`,f.outsider.token)).status,404)
     const withImage=await(await call(mf,'/v1/posts',f.owner.token,{communityId:f.hidden.id,text:'Private image post',mediaIds:[uploaded.id]})).json()

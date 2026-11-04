@@ -20,11 +20,13 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           const routes=agentRoutes(core,new AgentAccess(core,{operatorAllowed:()=>false}))
           this.handle=async request=>(await routes(request))??(new URL(request.url).pathname.startsWith('/auth/')?json(503,{error:'Sign-in is being configured'}):publicApi(request))
         }else{
+          const enrollmentMode=env.STRATA_ENROLLMENT_MODE==='open'?'open':env.STRATA_ENROLLMENT_MODE==='closed'?'closed':'invite'
           const auth=await BrowserAuth.create(core,{origin:env.STRATA_ORIGIN,privateJwk:env.STRATA_OAUTH_JWK,sealKey:env.STRATA_AUTH_SEAL_KEY,
             stewardDid:env.STRATA_STEWARD_DID,allowedHosts:env.STRATA_OAUTH_HOSTS.split(',').map(x=>x.trim()).filter(Boolean),
-            collection:env.STRATA_COLLECTION,publishingEnabled:env.STRATA_PUBLISHING_ENABLED==='true'})
+            collection:env.STRATA_COLLECTION,publishingEnabled:env.STRATA_PUBLISHING_ENABLED==='true',
+            enrollmentMode,clientName:env.STRATA_CLIENT_NAME})
           const access=new AgentAccess(core,{stewardDid:env.STRATA_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access)
-          const handler=api(core,{agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',authMode:'atproto',stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
+          const handler=api(core,{agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
       }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{agentAccess:access,runtime:'cloudflare-durable-object'});this.handle=async r=>(await routes(r))??handler(r)}

@@ -17,7 +17,21 @@ function cookie(request:Request,name:string){
 const setCookie=(name:string,value:string,age:number)=>`${name}=${value}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=${age}`
 type Saved={sealed:string;expires:number}
 type BrowserSession={hash:string;actor_id:string;csrf:string;created:number;expires:number;revoked:number}
-export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean}
+export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean;enrollmentMode?:'open'|'invite'|'closed';clientName?:string}
+type EnrollmentInvite={id:string;hash:string;issuer_id:string;created:number;expires:number;revoked:number;used_by:string|null;used_at:number|null}
+type FlowContext={browser:string;returnTo:string;enroll?:'open'|'invite';inviteHash?:string;did?:string}
+function returnPath(value:unknown){
+  if(value===undefined)return '/'
+  if(typeof value!=='string'||value.length>1024||!value.startsWith('/')||value.startsWith('//')||/[\\\x00-\x20\x7f]/.test(value))throw new Fault(400,'Invalid return destination')
+  const url=new URL(value,'https://local.invalid')
+  if(url.origin!=='https://local.invalid'||/^\/(auth|oauth|login)(\/|$)/.test(url.pathname))throw new Fault(400,'Invalid return destination')
+  return url.pathname+url.search+url.hash
+}
+function flowContext(appState:string):FlowContext{
+  // Existing ten-minute login flows survive a rolling deployment.
+  if(/^[a-f0-9]{64}$/.test(appState))return{browser:appState,returnTo:'/'}
+  return JSON.parse(appState) as FlowContext
+}
 
 /** No arbitrary discovery destinations: hosted providers are explicitly allowed.
  * Standard SDK discovery still verifies DID/issuer. Each redirect is independently
@@ -122,7 +136,7 @@ export class BrowserAuth {
     const scopes='atproto'+(config.publishingEnabled && config.collection?' repo:'+config.collection:'')
     const fetch=providerFetch(config.allowedHosts,fetcher)
     const client=new NodeOAuthClient({
-      clientMetadata:{client_id:config.origin+'/oauth/client-metadata.json',client_name:'Strata',client_uri:config.origin,
+      clientMetadata:{client_id:config.origin+'/oauth/client-metadata.json',client_name:config.clientName??'Strata',client_uri:config.origin,
         redirect_uris:[config.origin+'/auth/callback'],grant_types:['authorization_code','refresh_token'],response_types:['code'],
         scope:scopes,application_type:'web',token_endpoint_auth_method:'private_key_jwt',token_endpoint_auth_signing_alg:'ES256',
         dpop_bound_access_tokens:true,jwks_uri:config.origin+'/oauth/jwks.json'},
@@ -136,6 +150,17 @@ export class BrowserAuth {
     return new BrowserAuth(store,config,records,client)
   }
   private allowed(did:string){return !!this.config.stewardDid && (did===this.config.stewardDid || !!this.store.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',did))}
+  private enrollmentMode(){return this.config.enrollmentMode??'invite'}
+  private enrollmentSteward(){
+    const actor=this.store.get<Actor>("SELECT * FROM actors WHERE did=? AND kind='human'",this.config.stewardDid)
+    if(!actor)throw new Fault(503,'Enrollment is being configured')
+    return actor
+  }
+  private invite(inviteHash:string){
+    const invite=this.store.get<EnrollmentInvite>('SELECT * FROM enrollment_invitations WHERE hash=?',inviteHash)
+    if(!invite||invite.revoked||invite.used_by||invite.expires<=this.store.clock())throw new Fault(403,'Invitation is invalid, expired or already used')
+    return invite
+  }
   private session(request:Request){
     const sid=cookie(request,SESSION_COOKIE)
     if(!/^[A-Za-z0-9_-]{43}$/.test(sid))return undefined
@@ -172,6 +197,7 @@ export class BrowserAuth {
     if(path==='/oauth/jwks.json' && request.method==='GET')return json(200,this.client.jwks)
     if(!path.startsWith('/auth/'))return undefined
     try{
+      if(path==='/auth/options' && request.method==='GET')return json(200,{provider:'bluesky',enrollment:this.config.stewardDid?this.enrollmentMode():'closed'})
       if(path==='/auth/me' && request.method==='GET'){
         const current=this.session(request)
         return json(200,current?{actor:{id:current.actor.id,did:current.actor.did,name:current.actor.name,kind:current.actor.kind},csrf:current.session.csrf,expires:current.session.expires,steward:current.actor.did===this.config.stewardDid}:{actor:null,csrf:null,steward:false})
@@ -182,31 +208,79 @@ export class BrowserAuth {
         if(!this.config.stewardDid)throw new Fault(503,'Steward identity has not been configured')
         if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw new Fault(415,'JSON required')
         const body=await readBody(request,1000)
-        if(typeof body.handle!=='string'||body.handle.length>253||!body.handle.includes('.'))throw new Fault(400,'Enter your full AT handle')
-        const identity=await this.client.identityResolver.resolve(body.handle)
-        if(!this.allowed(identity.did))throw new Fault(403,'Enrollment is by invitation')
-        const flow=token(),scope=body.publishing===true && this.config.publishingEnabled?this.client.clientMetadata.scope:'atproto'
-        const url=await this.client.authorize(identity.did,{state:hash(flow),scope})
+        const context:FlowContext={browser:'',returnTo:returnPath(body.returnTo)}
+        let target:string
+        if(body.mode==='signup'){
+          if(this.enrollmentMode()==='closed')throw new Fault(403,'Registration is closed')
+          this.enrollmentSteward()
+          if(typeof body.invitation==='string' && body.invitation){
+            if(!/^[A-Za-z0-9_-]{43}$/.test(body.invitation))throw new Fault(403,'Invitation is invalid, expired or already used')
+            context.inviteHash=hash(body.invitation);this.invite(context.inviteHash);context.enroll='invite'
+          }else{
+            if(this.enrollmentMode()!=='open')throw new Fault(403,'An ETNOS invitation code is required')
+            context.enroll='open'
+          }
+          // A fixed provider, not an arbitrary discovery URL from request input.
+          // Its OAuth UI offers account creation and existing-account sign-in.
+          target='https://bsky.social'
+        }else{
+          if(body.mode!==undefined && body.mode!=='login')throw new Fault(400,'Invalid sign-in mode')
+          if(typeof body.handle!=='string'||body.handle.length>253||!body.handle.includes('.'))throw new Fault(400,'Enter your full AT handle')
+          const identity=await this.client.identityResolver.resolve(body.handle)
+          if(!this.allowed(identity.did))throw new Fault(403,'Join ETNOS first to enroll this account')
+          context.did=identity.did;target=identity.did
+        }
+        const flow=token(),scope=body.mode!=='signup' && body.publishing===true && this.config.publishingEnabled?this.client.clientMetadata.scope:'atproto'
+        context.browser=hash(flow)
+        const url=await this.client.authorize(target,{state:JSON.stringify(context),scope})
         const response=json(200,{authorizationUrl:url.href});response.headers.append('set-cookie',setCookie(FLOW_COOKIE,flow,600));return response
       }
       if(path==='/auth/callback' && request.method==='GET'){
         const params=new URL(request.url).searchParams,state=params.get('state'),flow=cookie(request,FLOW_COOKIE)
         if(!state||state.length>200||!flow)throw new Fault(400,'Sign-in session expired')
         const saved=await this.records.get<NodeSavedState>('state',state)
-        if(!saved?.appState || !equal(saved.appState,hash(flow)))throw new Fault(403,'Sign-in confirmation failed')
+        if(!saved?.appState)throw new Fault(403,'Sign-in confirmation failed')
+        const context=flowContext(saved.appState)
+        if(!equal(context.browser,hash(flow)))throw new Fault(403,'Sign-in confirmation failed')
         const {session}=await this.client.callback(params)
-        if(!this.allowed(session.did)){await this.client.revoke(session.did);throw new Fault(403,'Enrollment is by invitation')}
-        const identity=await this.client.identityResolver.resolve(session.did)
-        const sid=token(),csrf=token(),now=this.store.clock(),actor=this.store.tx(()=>{
-          let person=this.store.get<Actor>('SELECT * FROM actors WHERE did=?',session.did)
-          if(!person){const id=crypto.randomUUID();this.store.run("INSERT INTO actors VALUES(?,?,?,'human',NULL)",id,session.did,identity.handle);person=this.store.actor(id)}
-          if(person.kind!=='human')throw new Fault(403,'Service actors cannot use human enrollment')
-          this.store.run('UPDATE browser_sessions SET revoked=1 WHERE actor_id=?',person.id)
-          this.store.run('INSERT INTO browser_sessions VALUES(?,?,?,?,?,0)',hash(sid),person.id,csrf,now,now+86400000)
-          this.store.audit(person.id,'session.open',person.id);return person
-        })
+        let sid:string,actor:Actor
+        try{
+          if(context.did && context.did!==session.did)throw new Fault(403,'Account did not match sign-in')
+          const identity=await this.client.identityResolver.resolve(session.did)
+          sid=token();const csrf=token(),now=this.store.clock()
+          actor=this.store.tx(()=>{
+            // Recheck enrollment after ALL discovery/token I/O, in the same
+            // transaction that consumes the invite and creates the local session.
+            let invitation:EnrollmentInvite|undefined
+            if(context.enroll){
+              if(this.enrollmentMode()==='closed')throw new Fault(403,'Registration is closed')
+              if(context.enroll==='invite')invitation=this.invite(context.inviteHash??'')
+              else if(this.enrollmentMode()!=='open')throw new Fault(403,'Registration now requires an invitation')
+            }else if(!this.allowed(session.did))throw new Fault(403,'Enrollment is by invitation')
+            let person=this.store.get<Actor>('SELECT * FROM actors WHERE did=?',session.did)
+            // Existing enrollment removal must not become self-reversible simply
+            // because new-account registration is open. A steward can reinstate.
+            if(person && !this.allowed(session.did) && context.enroll==='open')throw new Fault(403,'Account enrollment is inactive; contact the steward')
+            if(!person){const id=crypto.randomUUID();this.store.run("INSERT INTO actors VALUES(?,?,?,'human',NULL)",id,session.did,identity.handle);person=this.store.actor(id)}
+            if(person.kind!=='human')throw new Fault(403,'Service actors cannot use human enrollment')
+            if(!this.allowed(session.did)){
+              const steward=this.enrollmentSteward()
+              this.store.run('INSERT INTO enrollment_allowlist VALUES(?,?)',session.did,steward.id)
+              if(invitation)this.store.run('UPDATE enrollment_invitations SET used_by=?,used_at=? WHERE id=?',person.id,now,invitation.id)
+              this.store.audit(person.id,'enrollment.join',person.id)
+            }
+            this.store.run('UPDATE browser_sessions SET revoked=1 WHERE actor_id=?',person.id)
+            this.store.run('INSERT INTO browser_sessions VALUES(?,?,?,?,?,0)',hash(sid),person.id,csrf,now,now+86400000)
+            this.store.audit(person.id,'session.open',person.id);return person
+          })
+        }catch(error){
+          // A provider may already have created the account. Revoke this app's
+          // grant on failed local enrollment; never retry remote account creation.
+          try{await this.client.revoke(session.did)}catch{/* Local denial still applies. */}
+          this.records.del('session',session.did);throw error
+        }
         if(actor.did===this.config.stewardDid)this.bootstrap(actor.id)
-        const response=new Response(null,{status:303,headers:{location:'/', 'cache-control':'no-store','referrer-policy':'no-referrer'}})
+        const response=new Response(null,{status:303,headers:{location:returnPath(context.returnTo), 'cache-control':'no-store','referrer-policy':'no-referrer'}})
         response.headers.append('set-cookie',setCookie(SESSION_COOKIE,sid,86400));response.headers.append('set-cookie',setCookie(FLOW_COOKIE,'',0));return response
       }
       if(path==='/auth/logout' && request.method==='POST'){
@@ -227,6 +301,28 @@ export class BrowserAuth {
         this.writeGuard(request)
         this.store.tx(()=>{this.store.run('INSERT OR IGNORE INTO enrollment_allowlist VALUES(?,?)',identity.did,current.actor.id);this.store.audit(current.actor.id,'enrollment.invite',identity.did)})
         return json(200,{handle:identity.handle,did:identity.did})
+      }
+      if(path==='/auth/enrollment-invites' || /^\/auth\/enrollment-invites\/[0-9a-f-]{36}\/revoke$/.test(path)){
+        this.writeGuard(request);const current=this.session(request)!
+        if(current.actor.did!==this.config.stewardDid)throw new Fault(403,'Node steward required')
+        if(path==='/auth/enrollment-invites' && request.method==='GET')return json(200,{invitations:this.store.all('SELECT id,created,expires,revoked,used_at FROM enrollment_invitations ORDER BY created DESC,id DESC LIMIT 50')})
+        if(request.method!=='POST')throw new Fault(405,'Method not allowed')
+        const body=await readBody(request,1000);this.writeGuard(request)
+        if(path.endsWith('/revoke')){
+          const id=path.split('/')[3]
+          this.store.tx(()=>{this.store.run('UPDATE enrollment_invitations SET revoked=1 WHERE id=?',id);this.store.audit(current.actor.id,'enrollment.invite.revoke',id)})
+          return json(200,{ok:true})
+        }
+        const days=body.days??7
+        if(!Number.isInteger(days)||Number(days)<1||Number(days)>30)throw new Fault(400,'Choose 1 to 30 days')
+        const invitation=token(),id=crypto.randomUUID(),now=this.store.clock(),expires=now+Number(days)*86400000
+        this.store.tx(()=>{
+          const active=this.store.get<{n:number}>('SELECT count(*) n FROM enrollment_invitations WHERE revoked=0 AND used_by IS NULL AND expires>?',now)!.n
+          if(active>=50)throw new Fault(429,'Revoke an unused invitation before creating another')
+          this.store.run('INSERT INTO enrollment_invitations(id,hash,issuer_id,created,expires) VALUES(?,?,?,?,?)',id,hash(invitation),current.actor.id,now,expires)
+          this.store.audit(current.actor.id,'enrollment.invite.create',id)
+        })
+        return json(200,{id,invitation,expires})
       }
       throw new Fault(404,'Not found')
     }catch(error){

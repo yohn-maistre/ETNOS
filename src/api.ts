@@ -39,7 +39,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -77,7 +77,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/me') result = store.actor(authenticated())
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='moderation')result=forum.moderation(authenticated(),parts[2])
         else if (path === '/v1/memberships') result=store.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1',authenticated())
-        else if (path === '/v1/capabilities') result={...capabilities,agents:{enrollment:true,publicMcp:true,remoteCredentials:'registered-jwt-bearer',institutionalVerification:false},decisions:{enabled:!!options.decisions},auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto'}}
+        else if (path === '/v1/capabilities') result={...capabilities,agents:{enrollment:true,publicMcp:true,remoteCredentials:'registered-jwt-bearer',institutionalVerification:false},decisions:{enabled:!!options.decisions},auth:{...capabilities.auth,localCredentials:options.authMode!=='atproto',atOAuth:options.authMode==='atproto',remoteSignup:options.authMode==='atproto'&&options.enrollmentMode==='open',signupProvider:options.authMode==='atproto'?'bluesky':null,hostedAccounts:false}}
         else if(path==='/v1/dm/contacts')result=dm.contacts(authenticated(),url.searchParams.get('q')??'')
         else if(path==='/v1/dm/me')result=dm.me(authenticated())
         else if(path==='/v1/dm/threads')result=dm.list(authenticated())

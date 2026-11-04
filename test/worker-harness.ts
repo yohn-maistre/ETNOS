@@ -11,7 +11,7 @@ import type {Binding} from '../src/database.ts'
 import {Forum} from '../src/forum.ts'
 import {Activity} from '../src/activity.ts'
 import {DirectMessages} from '../src/dm.ts'
-import {fixture,issuer} from './oauth-fixture.ts'
+import {fixture,issuer,did} from './oauth-fixture.ts'
 
 export class TestNode extends StrataNode {
   private core() { return new StrataCore(new CloudflareDatabase(this.ctx.storage),this.env.STRATA_ORIGIN) }
@@ -122,6 +122,19 @@ export class TestNode extends StrataNode {
     const flow=start.headers.getSetCookie().find(x=>x.startsWith('__Host-strata_flow='))!.split(';')[0]
     const callback=await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}}))
     return JSON.stringify({start:start.status,callback:callback?.status,location:callback?.headers.get('location'),hasCookie:callback?.headers.getSetCookie().some(x=>x.startsWith('__Host-strata='))})
+  }
+  async signupContract(){
+    const s=this.core(),owner=s.provision(did,'Fixture steward'),newcomer='did:plc:zzzzzzzzzzzzzzzzzzzzzzzz'
+    const hidden=s.createCommunity(owner.actor.id,'Protected language','Private','hidden-private')
+    const {auth,state,parameters}=await fixture(s,{enrollmentMode:'open'},newcomer,'new.bsky.social',newcomer)
+    const start=(await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.env.STRATA_ORIGIN,'content-type':'application/json'},body:JSON.stringify({mode:'signup',returnTo:'/communities?welcome=1'})})))!
+    if(start.status!==200)return JSON.stringify({start:start.status})
+    const flow=start.headers.getSetCookie().find(x=>x.startsWith('__Host-strata_flow='))!.split(';')[0]
+    const callback=(await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}})))!
+    const cookie=callback.headers.getSetCookie().find(x=>x.startsWith('__Host-strata='))!.split(';')[0]
+    const actor=auth.principal(new Request(this.env.STRATA_ORIGIN+'/auth/me',{headers:{cookie}}))!
+    return JSON.stringify({start:start.status,location:callback.headers.get('location'),noLoginHint:!parameters().has('login_hint'),verified:actor.did===newcomer,
+      memberships:s.all('SELECT 1 FROM memberships WHERE actor_id=?',actor.id).length,hiddenOmitted:!s.listCommunities(actor.id).some(c=>c.id===hidden.id),schema:s.get<{version:number}>('SELECT max(version) version FROM strata_migrations')!.version})
   }
 }
 

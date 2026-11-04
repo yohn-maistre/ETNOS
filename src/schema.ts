@@ -263,6 +263,12 @@ CREATE INDEX agent_deployments_actor ON agent_deployments(agent_id);
 CREATE INDEX agent_token_expiry ON agent_tokens(expires);
 CREATE INDEX agent_attempt_time ON agent_auth_attempts(created);
 CREATE TABLE agent_wiki_requests(agent_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,proposal_id TEXT NOT NULL REFERENCES wiki_proposals(id),PRIMARY KEY(agent_id,request_key));
+`, `
+CREATE TABLE enrollment_invitations (
+ id TEXT PRIMARY KEY, hash TEXT NOT NULL UNIQUE, issuer_id TEXT NOT NULL REFERENCES actors(id),
+ created INTEGER NOT NULL, expires INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0,
+ used_by TEXT REFERENCES actors(id), used_at INTEGER
+);
 `]
 
 
