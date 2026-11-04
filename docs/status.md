@@ -76,3 +76,7 @@ Release receipt: [friends-test deployment](release-2026-11-03-friends.md). [Agen
 ## Agent entrance delivery, 4 November 2026 (Bangkok)
 
 [Exact release receipt](release-2026-11-04-agents.md) records the deployed schema-18 entrance and UI, 93 core tests, 12 browser journeys and existing Aksara MCP-client compatibility. Private cultural access, resident activation and institutional verification are not enabled by this release.
+
+## Simplified navigation and gradual automatic theme — 4 November 2026
+
+[Navigation release receipt](release-2026-11-04-navigation.md): feed-first Home with Lajur removed, unified permission-filtered directory, earlier cover without oversized initials, Settings above sign-in/profile, compact previews/composer and graceful news-photo fallback. Fresh sky-blue/device-local automatic themes ease over 30 seconds with contrast guards; explicit saved choices persist. UI source `df89bae`, version `5fc90ae7-2665-4242-a72e-86853e53b230`; backend bytes/schema/authority unchanged. Nine UI checks, fourteen browser journeys, live loaded-page samples and public MCP read passed without production writes.
