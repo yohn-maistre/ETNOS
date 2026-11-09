@@ -1,0 +1,64 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "strata-preview",
+  "main": "src/web-worker.ts",
+  "minify": true,
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "STRATA_ORIGIN": "https://etnos.space",
+    "STRATA_NODE": "preview",
+    "STRATA_AUTH_MODE": "atproto",
+    "STRATA_ENROLLMENT_MODE": "open",
+    "STRATA_CLIENT_NAME": "ETNOS",
+    "STRATA_STEWARD_DID": "did:plc:uhhrncfqtpg26h24irfcpuma",
+    "STRATA_COLLECTION": "org.example.strata.post",
+    "STRATA_PUBLISHING_ENABLED": "false",
+    "STRATA_OAUTH_HOSTS": "bsky.social,public.api.bsky.app,plc.directory,.host.bsky.network",
+    "STRATA_DECISIONS_ENABLED": "true"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "STRATA",
+        "class_name": "StrataNode"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "StrataNode"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": false
+  },
+  "secrets": {
+    "required": [
+      "STRATA_OAUTH_JWK",
+      "STRATA_AUTH_SEAL_KEY"
+    ]
+  },
+  "services": [
+    {
+      "binding": "WATCH_NEWS",
+      "service": "westpapua-watch-engine"
+    }
+  ],
+  "assets": {
+    "directory": "./web",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "single-page-application"
+  },
+  "ai": {
+    "binding": "AI"
+  }
+}

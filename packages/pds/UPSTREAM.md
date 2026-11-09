@@ -1,0 +1,18 @@
+# Strata PDS provenance and local changes
+
+`src/upstream/` is an in-repository fork of Cirrus's non-CLI PDS source, by Matt Kane and contributors: https://github.com/ascorbic/cirrus at commit `de476f57ba1fb936c6480a8fc278b6c7fc250cab`, package 0.19.0, fetched 1 November 2026. The upstream package declares MIT; that grant and attribution are preserved in LICENSE.cirrus. The repository's AGPL-3.0-only license covers Strata additions/modifications while preserving upstream MIT notices. Official AT repository/crypto primitives remain dependencies.
+
+Final local deltas:
+
+- Separate Strata edge entry: exact host routing, request-body bounds, closed registration and public hosting capabilities. Imports require an inactive empty account. Ordinary AT repositories remain public.
+- Export the account-stub selector; remove implicit Bluesky AppView and arbitrary-service proxy routes. Ignore empty relay entries, making the unadvertised profile perform no crawl notification. Spaces stays off in generated profiles.
+- Durable, bounded authentication-attempt budgets with pseudonymous keys and no raw IP storage.
+- Durable legacy refresh JTI registration, atomic one-use rotation and logout revocation. Upstream deleteSession was a no-op. Legacy access JWTs retain their normal two-hour expiry; this is not instant access-token revocation. OAuth/DPoP session handling remains the provider foundation.
+- Dispose repository/account RPC facets and OAuth provider storage explicitly after awaited operations.
+- Serialize per-account engine read/write operations. Apply authoritative swapRecord/swapCommit checks to conditional mutations. Racing edit/refresh contracts require one winner.
+- Apply block writes, record-reference updates, pruning and root changes in an explicit SQLite transaction. A path→CID index prevents deleting identical record bytes still used by another path. Build the index once for imported/preexisting repos and maintain it incrementally.
+- Wrangler/TS7 compatibility: literal provenance version, CacheStorage type narrowing, NSID template typing and copied ArrayBuffers for Worker response bodies. The included upstream package.json remains provenance metadata.
+
+`src/worker.ts`, the operator CLI and tests are Strata additions. The server profile runs the official PDS container, not the Cloudflare implementation unchanged on Linux. This first Worker package is single-account per deployment and has not been deployed as a public PDS.
+
+Remaining qualification includes streaming export snapshots during concurrent mutation, full import/migration/restore, passkey and recovery lifecycle, OAuth grant-management/revocation UX, abuse/CPU/load budgets and independent security review. Keep institutional/corpus/agent-private data outside public repositories. Local tests and an official-client OAuth exchange do not establish all of these properties.

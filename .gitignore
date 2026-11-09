@@ -11,3 +11,8 @@ coverage/
 .dev.vars
 .dev.vars.*
 dist/
+web/
+dist-web/
+
+.strata-pds/
+pds.env

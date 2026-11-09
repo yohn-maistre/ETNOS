@@ -15,41 +15,41 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Community ownership transfer | Planned | Accepted handover, recovery and succession; avoid unilateral takeover |
 | Profiles, avatars, banners, rules, links | Planned | Public actor/institution bindings; private affiliations excluded |
 | Moderator invitation/management UI | Partial | Role changes in API; safe discovery and UI missing |
-| Text posts | Local | Persistent bounded body; post title/link/media types still absent |
-| Nested replies | Local | Same-community references and parent-publication ordering |
-| Author edit history | Planned | Stable identity, revision/conflict and AT update semantics |
-| Author deletion and tombstones | Planned | Scoped PDS authority, replies and public-copy limitations |
+| Text posts | Local | Local 20k body, title/link, sanitized Markdown and warnings; AT rich delivery remains separate |
+| Nested replies | Local | Same-community references, stable roots, direct counts and parent-publication ordering; connected nested/collapsible UI with per-reply actions, loaded-sibling sorting and cursor loading |
+| Author edit history | Partial | Local author edits with revision CAS; historical versions and AT updates remain missing |
+| Author deletion and tombstones | Partial | Local author tombstone/content/media erasure preserving replies; separate PDS/release lifecycle |
 | Moderator hiding | Local | Local suppression, cancel unsent intent; no author PDS deletion rights |
-| Locking, pinning, announcements | Planned | Typed permissions and thread lifecycle |
+| Locking, pinning, announcements | Partial | Human steward locks/pins, community pin section and restricted action log; instance announcements absent |
 | Cross-posts / duplicate links | Planned | References and disclosure boundaries |
-| Images, galleries, video, attachments | Planned | R2/audience-bound delivery, upload limits, metadata stripping and safe processing |
+| Images, galleries, video, attachments | Partial | Bounded static images/galleries/alt text/viewer, audience-checked bytes and atomic attachments; preview SQLite store. Click-to-load allowlisted external video embeds; uploaded video/files, scalable object store and AT blob publishing remain absent |
 | Link previews / remote fetch | Planned | SSRF, redirects, size/time limits and cache privacy |
-| Polls | Planned | Eligibility, closing, multiple choice and vote privacy |
-| Events / calendars / reminders | Planned | Time zones, RSVP privacy, feeds and expiry |
+| Polls | Partial | Local single-choice, current human membership, expiry/clear/change and aggregate counts; multi-select absent |
+| Events / calendars / reminders | Partial | Local timestamps, location and aggregate RSVP; calendars/reminders absent |
 | Votes | Partial | One local +/-/clear vote per admitted human; no agent votes or public voter list; no AT vote export |
 | Ranking / vote display controls | Planned | New ordering exists; hot/top/active/controversial not implemented |
 | Cursor pagination | Local | Permission filter before limit; bounded newest feed and tied timestamps |
 | Following / subscriptions | Planned | People and communities; approval and private relationship semantics |
 | Topics / groupings | Partial | Public topics can group multiple public communities; rich hierarchy/admin and topic UI absent |
 | User-created feeds / nested collections | Planned | Public/private collection membership and export filtering |
-| Place and language discovery | Planned | Source-qualified names/relationships, multilingual aliases, no forced region ontology |
+| Place and language discovery | Partial | Public place/region/topic/language contexts and aliases; no personal affiliation mapping. Source-qualified names/relationships, multilingual aliases, no forced region ontology |
 | Search | Partial | Bounded text substring with current permissions; full text, filters and indexing absent |
 | Bookmarks | Local | Private to actor; revoked access disappears from collection |
 | Read/unread / saved filters / favourites | Planned | Private preferences and no covert tracking |
-| Notifications / mentions / subscriptions | Planned | Permission checked at delivery and read; safe previews and push/email settings |
+| Notifications / mentions / subscriptions | Partial | Current-access activity inbox/read state; replies, review/admission and generic DM notices. Mentions/subscriptions/push/email remain absent |
 | Reports and steward triage | Partial | Restricted queue, decision, no reporter ID in queue projection; escalation/appeal UI absent |
 | Moderation log | Partial | Internal audit; audience-safe public/moderator projections absent |
 | Appeals and correction requests | Planned | Independent reviewer, outcomes and private evidence |
 | User/community/domain/instance blocks | Planned | Personal filters distinct from server admission and institutional access |
 | Suspensions, bans and anti-abuse | Partial | Membership removal exists; site bans, account limits, spam/flood/rate/bot protections absent |
-| Content warnings / NSFW / alt text | Planned | Accessible rendering, preference and media metadata |
+| Content warnings / NSFW / alt text | Partial | Image alt text and accessible viewer; warnings/NSFW preferences remain absent |
 | Flairs / tags / custom emoji | Planned | Permission, localization and asset provenance |
-| Private messaging / chat | Adapt | Evaluate mature E2EE systems; local private forum is not secure messenger equivalence |
+| Private messaging / chat | Partial | Experimental ts-mls client-encrypted 1:1 human DMs; invitations, blocking, single device and encrypted local vault. Unaudited; no interop/recovery or sensitive-use qualification |
 | RSS/Atom, imports and scheduled posts | Planned | Publication rights, SSRF and reauthorization at send time |
-| Login, registration modes | Partial | Trusted local credential provisioning only; no remote signup or proof of DID control |
-| AT OAuth / narrow permissions | Planned | Real runtime qualification, session/DPoP persistence, refresh and revoke |
+| Login, registration modes | Partial | Invited verified AT OAuth in connected preview; local fixture provisioning is not accepted in production. Hosted PDS signup/registration and private-only accounts remain absent |
+| AT OAuth / narrow permissions | Partial | Official SDK, sealed state/session/DPoP, invited enrollment and CSRF. Live publishing qualification remains |
 | Private-only identity / passkeys | Planned | Qualified identity provider or standard passkey implementation |
-| Sessions / recovery / TOTP | Planned | Devices, expiry, compromise recovery, step-up and account linking |
+| Sessions / recovery / TOTP | Partial | Sealed expiring OAuth cookie sessions and logout; recovery, TOTP, step-up and account linking remain absent |
 | Account export/delete/migration | Planned | Include app-side state, private memberships, PDS separation and practical exit |
 | Site settings / roles / legal pages | Planned | Supported operator model, governance and bounded administration |
 | Federation | Adapt | AT selected; no implicit ActivityPub, Lemmy or PieFed wire compatibility |
@@ -62,10 +62,10 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Wiki collaboration / correction UI | Planned | Proposal queues, reviewed rebase, revision detail/diff, safe rendering, contestation and page lifecycle |
 | Research within Wiki | Planned | Typed evidence/datasets/methods; preserve perspectives rather than AI consensus |
 | Protected institutional knowledge | Separate | Aksara Library and authority; no private Wiki archive in public Strata |
-| PublicWork | Planned | Public requests, accountable participants, milestones, reviewed results |
+| PublicWork | Partial | Admitted institutional/group sponsors, explicit adoption/author consent, bounded agent grants and reviewed public results; milestones/execution adapters remain |
 | Agents | Partial | Human operator, separate admission, expiring posting mandate, budget and revocation |
 | Agent profile / handoff / mute | Planned | Public remit, operator/challenge route, human-first feed controls |
-| Agent Wiki/work authority | Planned | Posting mandate grants neither Wiki changes nor tool execution |
+| Agent Wiki/work authority | Partial | Separate expiring/budgeted editorial and sponsor-work grants; human acceptance; no service-auth/model execution or tool rights |
 | Aksara release integration | Separate | Development custody fixture only; qualify actual Rust authority/release port |
 | A2A partner requests | Planned | Independent receiving admission, bounded scope, refusal and receipts |
 | Iroh transfer / private peering | Planned | Native transport, peer enrollment, authorization and metadata threat model |
@@ -76,6 +76,10 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Local persistent runtime | Local | Node SQLite transactions, migrations and reopen tests |
 | Serverless runtime | Local | Worker + SQLite DO port; actual-workerd tests; deployment evidence tracked separately |
 | Backup/restore / disk limits / monitoring | Partial | Reopen/restart only; real recovery, incident response and quota qualification absent |
-| UI / client API | Partial | Typed capabilities endpoint and native JSON routes; Honai Strata adapter absent |
+| UI / client API | Partial | Same-origin Honai app, shadcn-svelte/Lucide, real local APIs and isolated browser contracts; broader forum lifecycle remains |
 
 The forum's launch gate includes account admission/recovery, abuse controls, ordinary post lifecycle, safe media if enabled, moderation, notifications, accessibility and operational recovery. Backend rows passing tests do not satisfy that launch gate. Higher-level Wiki/agent work must not hide missing ordinary forum behavior.
+
+Current conversation/media scope and privacy limits: [checkpoint](forum-media-checkpoint.md). Most planned families are implementation work, not inherent AT limitations; ActivityPub/PieFed federation specifically requires an independent adapter.
+
+[Rich forum and official Spaces checkpoint](forum-rich-content-checkpoint.md) records the latest narrower delivered behavior and capacity observations.

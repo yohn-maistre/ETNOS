@@ -1,8 +1,11 @@
 import { randomBytes, randomUUID, createHash } from 'node:crypto'
 import { Buffer } from 'node:buffer'
+import { Media, type MediaView } from './media.ts'
+import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
+import {agentLabels} from './agent-labels.ts'
 import { migrate } from './schema.ts'
 import type { Database, Binding } from './database.ts'
-import { validateRecord, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
+import { PostContract, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
 
 export class Fault extends Error {
   status: number
@@ -14,7 +17,7 @@ type Membership = { role: 'owner' | 'moderator' | 'member'; active: number }
 type Source = { id: string; owner_id: string; bytes: Uint8Array; revision: number; withdrawn: number; digest: string }
 type Release = { id: string; source_id: string; source_revision: number; community_id: string; publisher_id: string; text: string; digest: string; approved: number; revoked: number; post_id: string | null }
 type Mandate = { id: string; agent_id: string; community_id: string; expires: number; revoked: number; hourly_limit: number }
-export type Post = { id: string; author_id: string; community_id: string; parent_id: string | null; text: string; created: number; hidden: number; mandate_id: string | null; release_id: string | null; uri: string | null }
+export type Post = { id: string; author_id: string; community_id: string; parent_id: string | null; text: string; created: number; hidden: number; mandate_id: string | null; release_id: string | null; uri: string | null;root_id:string;content:string;revision:number;updated:number|null;deleted:number;locked:number;pinned:number }
 type Job = { id: string; post_id: string; operation: 'put' | 'delete'; state: string; repo: string; rkey: string; record: string; cid: string | null }
 const digest = (input: string | Uint8Array) => createHash('sha256').update(input).digest('hex')
 const id = () => randomUUID()
@@ -28,12 +31,14 @@ export class StrataCore {
   db: Database
   base: string
   clock: () => number
-  constructor(database: Database, base = 'http://127.0.0.1:7342', clock = () => Date.now()) {
+  readonly contract:PostContract
+  constructor(database: Database, base = 'http://127.0.0.1:7342', clock = () => Date.now(),options:{collection?:string}={}) {
     this.clock=clock
     const url = new URL(base)
     if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash || url.pathname !== '/') throw new Error('Expected an origin URL')
     this.base = url.origin
     this.db = database
+    this.contract=new PostContract(options.collection??COLLECTION)
     migrate(database)
   }
   close() { this.db.close() }
@@ -125,7 +130,7 @@ export class StrataCore {
       if(this.actor(actorId).kind!=='human') throw new Fault(403,'Agents require steward admission')
       if(this.get('SELECT 1 FROM memberships WHERE community_id=? AND actor_id=?',communityId,actorId)) throw new Fault(409,'Contact a steward about existing membership')
       if(this.get('SELECT 1 FROM join_requests WHERE community_id=? AND actor_id=?',communityId,actorId)) throw new Fault(409,'Application already exists')
-      this.run("INSERT INTO join_requests VALUES(?,?,?,'pending',?)",communityId,actorId,input(message,500),this.clock())
+      this.run("INSERT INTO join_requests(community_id,actor_id,message,state,created) VALUES(?,?,?,'pending',?)",communityId,actorId,input(message,500),this.clock())
       this.audit(actorId,'membership.request',communityId)
       return {state:'pending'}
     })
@@ -140,7 +145,7 @@ export class StrataCore {
       if(!this.get("SELECT 1 FROM join_requests WHERE community_id=? AND actor_id=? AND state='pending'",communityId,target)) missing()
       if(this.get('SELECT 1 FROM memberships WHERE community_id=? AND actor_id=?',communityId,target)) throw new Fault(409,'Membership changed; review separately')
       if(approve) this.run("INSERT INTO memberships VALUES(?,?,'member',1)",communityId,target)
-      this.run('UPDATE join_requests SET state=? WHERE community_id=? AND actor_id=?',approve?'approved':'declined',communityId,target)
+      this.run('UPDATE join_requests SET state=?,decided=? WHERE community_id=? AND actor_id=?',approve?'approved':'declined',this.clock(),communityId,target)
       this.audit(actorId,approve?'membership.approve':'membership.decline',communityId)
     })
   }
@@ -207,33 +212,61 @@ export class StrataCore {
       if (newPost && count >= m.hourly_limit) throw new Fault(429, 'Agent budget exceeded')
     }
   }
-  createPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string) {
-    return this.tx(() => this.view(this.insertPost(actorId, communityId, text, parentId, mandateId)))
+  createPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string,options:{content?:unknown;mediaIds?:string[]}={}) {
+    return this.tx(() => {const p=this.insertPost(actorId, communityId, text, parentId, mandateId,undefined,options);new Media(this).attach(actorId,p.id,options.mediaIds??[]);checkInlineMedia(contentOf(p.content),options.mediaIds??[]);return this.view(p,actorId)})
   }
-  private insertPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string, releaseId?: string) {
+  private insertPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string, releaseId?: string,options:{content?:unknown;mediaIds?:string[]}={}) {
     this.checkWrite(actorId, communityId, mandateId)
-    const c = this.community(communityId)
+    const c = this.community(communityId),content=contentInput(options.content,this.clock())
     const parent = parentId ? this.get<Post>('SELECT * FROM posts WHERE id=? AND hidden=0', parentId) : undefined
-    if (parentId && (!parent || parent.community_id !== communityId)) missing()
+    if (parentId && (!parent || parent.community_id !== communityId || parent.deleted)) missing()
+    if(parent && this.get<Post>('SELECT * FROM posts WHERE id=?',parent.root_id)?.locked)throw new Fault(409,'This conversation is locked')
+    if(parent && (content.poll||content.event))throw new Fault(400,'Polls and events belong in an opening post')
     const pid = id(), actor = this.actor(actorId), created = this.clock()
-    const uri = c.visibility === 'public' && c.publication==='atproto' ? `at://${actor.did}/${COLLECTION}/${pid}` : null
-    this.run('INSERT INTO posts VALUES(?,?,?,?,?,?,0,?,?,?)', pid, actorId, communityId, parentId ?? null, input(text), created, mandateId ?? null, releaseId ?? null, uri)
+    const uri = c.visibility === 'public' && c.publication==='atproto' ? `at://${actor.did}/${this.contract.collection}/${pid}` : null
+    if(uri&&(Object.keys(content).some(k=>k!=='format')||(options.mediaIds?.length??0)>0||content.format==='markdown'))throw new Fault(409,'Rich AT publishing is not enabled')
+    if(typeof text!=='string'||text.length>(uri?6000:20000))throw new Fault(400,'Post text is too long')
+    if(!text.trim()&&!content.title&&!content.url&&!content.poll&&!content.event&&!options.mediaIds?.length)throw new Fault(400,'Add text, a link or media')
+    this.run('INSERT INTO posts(id,author_id,community_id,parent_id,text,created,hidden,mandate_id,release_id,uri,root_id,content) VALUES(?,?,?,?,?,?,0,?,?,?,?,?)', pid, actorId, communityId, parentId ?? null, text.trim(), created, mandateId ?? null, releaseId ?? null, uri,parent?.root_id??pid,JSON.stringify(content))
     if (uri) {
-      const record: PublicRecord = { $type: COLLECTION, text: text.trim(), community: `${this.base}/v1/communities/${communityId}`, createdAt: new Date(created).toISOString(), actorKind:actor.kind, ...(parent?.uri ? { replyTo: parent.uri } : {}) }
-      validateRecord(record)
+      const record: PublicRecord = { $type: this.contract.collection, text: text.trim(), community: `${this.base}/v1/communities/${communityId}`, createdAt: new Date(created).toISOString(), actorKind:actor.kind, ...(parent?.uri ? { replyTo: parent.uri } : {}) }
+      this.contract.validate(record)
       this.run("INSERT INTO outbox(id,post_id,operation,state,repo,rkey,record) VALUES(?,?,'put','pending',?,?,?)", id(), pid, actor.did, pid, JSON.stringify(record))
     }
     this.audit(actorId, 'post.create', pid)
     return this.get<Post>('SELECT * FROM posts WHERE id=?', pid)!
   }
-  private view(p: Post, viewer?: string) {
-    // No release/source/mandate foreign keys in either public or private feed views.
-    const { id,author_id,community_id,parent_id,text,created,uri } = p
-    return { id,author_id,community_id,parent_id,text,created,uri, actorKind:this.actor(author_id).kind,
-      publicationState:uri ? this.get<{state:string}>("SELECT state FROM outbox WHERE post_id=? AND operation='put'",id)!.state : this.community(community_id).visibility==='public'?'local':'private',
-      score:this.get<{score:number}>('SELECT COALESCE(SUM(value),0) score FROM votes WHERE post_id=?',id)!.score,
-      myVote:viewer ? this.get<{value:number}>('SELECT value FROM votes WHERE post_id=? AND actor_id=?',id,viewer)?.value ?? 0 : 0,
-      bookmarked:!!viewer && !!this.get('SELECT 1 FROM bookmarks WHERE post_id=? AND actor_id=?',id,viewer) }
+  private view(p: Post, viewer?: string) {return this.views([p],viewer)[0]}
+  private views(posts:Post[],viewer?:string){
+    if(!posts.length)return[]
+    const ids=JSON.stringify(posts.map(p=>p.id)),roots=JSON.stringify([...new Set(posts.map(p=>p.root_id))]),communities=JSON.stringify([...new Set(posts.map(p=>p.community_id))])
+    const authors=new Map(this.all<Actor>('SELECT * FROM actors WHERE id IN(SELECT value FROM json_each(?))',JSON.stringify([...new Set(posts.map(p=>p.author_id))])).map(a=>[a.id,a]))
+    const attribution=agentLabels(this,[...authors.values()].filter(a=>a.kind==='agent').map(a=>a.id))
+    const policy=new Map(this.all<Community>('SELECT * FROM communities WHERE id IN(SELECT value FROM json_each(?))',communities).map(c=>[c.id,c]))
+    const roles=new Map(viewer?this.all<{community_id:string;role:string}>('SELECT community_id,role FROM memberships WHERE actor_id=? AND active=1 AND community_id IN(SELECT value FROM json_each(?))',viewer,communities).map(m=>[m.community_id,m.role]):[])
+    const human=!!viewer&&this.actor(viewer).kind==='human'
+    const scores=new Map(this.all<{post_id:string;score:number;mine:number}>('SELECT post_id,SUM(value) score,SUM(CASE WHEN actor_id=? THEN value ELSE 0 END) mine FROM votes WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id',viewer??null,ids).map(v=>[v.post_id,v]))
+    const bookmarks=new Set(viewer?this.all<{post_id:string}>('SELECT post_id FROM bookmarks WHERE actor_id=? AND post_id IN(SELECT value FROM json_each(?))',viewer,ids).map(b=>b.post_id):[])
+    const counts=this.all<{id:string;kind:string;n:number}>("SELECT root_id id,'root' kind,COUNT(*) n FROM posts WHERE root_id IN(SELECT value FROM json_each(?)) AND id!=root_id AND hidden=0 GROUP BY root_id UNION ALL SELECT parent_id id,'direct' kind,COUNT(*) n FROM posts WHERE parent_id IN(SELECT value FROM json_each(?)) AND hidden=0 GROUP BY parent_id",roots,ids)
+    const rootCounts=new Map(counts.filter(c=>c.kind==='root').map(c=>[c.id,c.n])),directCounts=new Map(counts.filter(c=>c.kind==='direct').map(c=>[c.id,c.n]))
+    const contexts=this.all<{post_id:string;id:string;slug:string;title:string;kind:string}>("SELECT * FROM(SELECT l.record_id post_id,c.id,c.slug,c.title,c.kind,ROW_NUMBER() OVER(PARTITION BY l.record_id ORDER BY c.title) rank FROM record_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.record_kind='post' AND l.record_id IN(SELECT value FROM json_each(?)) AND c.active=1) WHERE rank<=10",ids)
+    const media=this.all<MediaView&{post_id:string}>('SELECT id,post_id,alt,width,height FROM media WHERE post_id IN(SELECT value FROM json_each(?)) ORDER BY position',ids)
+    const jobs=new Map(this.all<{post_id:string;state:string}>("SELECT post_id,state FROM outbox WHERE operation='put' AND post_id IN(SELECT value FROM json_each(?))",ids).map(j=>[j.post_id,j.state]))
+    const pollVotes=this.all<{post_id:string;choice:number;n:number;mine:number}>('SELECT post_id,choice,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM poll_votes WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,choice',viewer??null,ids)
+    const responses=this.all<{post_id:string;response:string;n:number;mine:number}>('SELECT post_id,response,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM event_responses WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,response',viewer??null,ids)
+    return posts.map(p=>{
+      const author=authors.get(p.author_id)!,content=p.deleted?{}:contentOf(p.content),votes=pollVotes.filter(v=>v.post_id===p.id),rsvp=responses.filter(v=>v.post_id===p.id)
+      return{id:p.id,author_id:p.author_id,community_id:p.community_id,parent_id:p.parent_id,text:p.deleted?'':p.text,created:p.created,uri:p.uri,actorKind:author.kind,author:{id:author.id,did:author.did,name:author.name,kind:author.kind,...(author.kind==='agent'?{agent:attribution.get(author.id)??{role:'guest',family:'external',official:false}}:{})},rootId:p.root_id,
+        content,revision:p.revision,updated:p.updated,deleted:!!p.deleted,locked:!!p.locked,pinned:!!p.pinned,
+        permissions:{edit:human&&viewer===p.author_id&&roles.has(p.community_id)&&!p.uri&&!p.deleted&&!p.release_id,moderate:human&&['owner','moderator'].includes(roles.get(p.community_id)??'')},
+        contexts:p.deleted?[]:contexts.filter(c=>c.post_id===p.id).map(({id,slug,title,kind})=>({id,slug,title,kind})),
+        replies:rootCounts.get(p.root_id)??0,directReplies:directCounts.get(p.id)??0,
+        media:p.deleted?[]:media.filter(m=>m.post_id===p.id).map(({id,alt,width,height})=>({id,alt,width,height,url:'/v1/media/'+id})),
+        publicationState:p.uri?jobs.get(p.id)??'unknown':policy.get(p.community_id)?.visibility==='public'?'local':'private',
+        score:p.deleted?0:scores.get(p.id)?.score??0,myVote:p.deleted?0:scores.get(p.id)?.mine??0,bookmarked:!p.deleted&&bookmarks.has(p.id),
+        poll:content.poll?{options:content.poll.options.map((label,i)=>({label,votes:votes.find(v=>v.choice===i)?.n??0})),closesAt:content.poll.closesAt,closed:this.clock()>=content.poll.closesAt||!!p.locked,total:votes.reduce((n,v)=>n+v.n,0),myVote:votes.find(v=>v.mine)?.choice??null}:null,
+        event:content.event?{...content.event,going:rsvp.find(v=>v.response==='going')?.n??0,interested:rsvp.find(v=>v.response==='interested')?.n??0,myResponse:rsvp.find(v=>v.mine)?.response??null}:null}
+    })
   }
   getPost(actorId: string | undefined, postId: string) {
     const p = this.get<Post>('SELECT * FROM posts WHERE id=? AND hidden=0', postId) ?? missing()
@@ -241,14 +274,16 @@ export class StrataCore {
     return this.view(p,actorId)
   }
   feed(actorId?: string, query = '') {
-    return this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.hidden=0
+    const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.hidden=0 AND (p.deleted=0 OR p.parent_id IS NOT NULL)
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
-      AND instr(lower(p.text),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200)).map(p=>this.view(p,actorId))
+      AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200));return this.views(rows,actorId)
   }
-  feedPage(actorId?: string, options: {query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number} = {}) {
+  feedPage(actorId?: string, options: {linkUrls?:string[];followingId?:string;authorId?:string;query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string;branchId?:string;pollsOnly?:boolean;contextId?:string} = {}) {
+    if(options.linkUrls && (!Array.isArray(options.linkUrls)||options.linkUrls.length>16||options.linkUrls.some(u=>typeof u!=='string'||u.length>2048||!/^https?:\/\//.test(u))))throw new Fault(400,'Invalid related links')
     const limit=options.limit ?? 30
     if(!Number.isInteger(limit) || limit<1 || limit>100) throw new Fault(400,'Limit must be between 1 and 100')
     if(options.communityId && !this.canRead(actorId,this.community(options.communityId))) missing()
+    if(options.rootId)this.getPost(actorId,options.rootId)
     let before: [number,string] | undefined
     if(options.cursor) {
       try {
@@ -258,16 +293,25 @@ export class StrataCore {
         before=[decoded[0],decoded[1]]
       } catch { throw new Fault(400,'Invalid cursor') }
     }
-    const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.hidden=0
+    const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.hidden=0 AND (p.deleted=0 OR p.parent_id IS NOT NULL)
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
-      AND instr(lower(p.text),lower(?))>0
+      AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM follows f WHERE f.actor_id=? AND f.target_id=p.author_id))
+      AND (? IS NULL OR p.author_id=?)
+      AND (? IS NULL OR json_extract(p.content,'$.url') IN (SELECT value FROM json_each(?)))
       AND (? IS NULL OR p.community_id=?)
       AND (? IS NULL OR EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?))
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND rc.context_id=? AND cx.active=1))
+      AND (?=0 OR json_type(p.content,'$.poll')='object')
+      AND (?=0 OR p.parent_id IS NULL)
+      AND (? IS NULL OR (p.root_id=? AND p.id!=?))
+      AND (? IS NULL OR p.id IN (WITH RECURSIVE descendants(id) AS (SELECT id FROM posts WHERE parent_id=? UNION SELECT child.id FROM posts child JOIN descendants d ON child.parent_id=d.id) SELECT id FROM descendants))
       AND (? IS NULL OR p.created<? OR (p.created=? AND p.id<?))
-      ORDER BY p.created DESC,p.id DESC LIMIT ?`,actorId??null,(options.query??'').slice(0,200),options.communityId??null,options.communityId??null,
-      options.topicId??null,options.topicId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
+      ORDER BY p.created DESC,p.id DESC LIMIT ?`,actorId??null,(options.query??'').slice(0,200),options.followingId??null,options.followingId??null,options.authorId??null,options.authorId??null,options.linkUrls?JSON.stringify(options.linkUrls):null,options.linkUrls?JSON.stringify(options.linkUrls):null,options.communityId??null,options.communityId??null,
+      options.topicId??null,options.topicId??null,options.contextId??null,options.contextId??null,options.pollsOnly?1:0,options.rootsOnly?1:0,options.rootId??null,options.rootId??null,options.rootId??null,options.branchId??null,options.branchId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
     const selected=rows.slice(0,limit),last=selected.at(-1)
-    return {items:selected.map(p=>this.view(p,actorId)),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
+    const pinned=options.communityId&&!options.cursor&&!options.query&&!options.rootId&&!options.topicId&&!options.contextId&&!options.authorId&&!options.followingId&&!options.linkUrls?this.views(this.all<Post>('SELECT * FROM posts WHERE community_id=? AND pinned=1 AND hidden=0 AND deleted=0 ORDER BY created DESC,id DESC LIMIT 3',options.communityId),actorId):[]
+    return {pinned,items:this.views(selected,actorId),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
   }
   source(actorId: string, sourceId: string) {
     const s = this.get<Source>('SELECT * FROM sources WHERE id=? AND owner_id=? AND withdrawn=0', sourceId, actorId) ?? missing()
@@ -362,11 +406,12 @@ export class StrataCore {
   private eligible(job: Job) {
     const p = this.get<Post>('SELECT * FROM posts WHERE id=?', job.post_id) ?? missing()
     const community=this.community(p.community_id)
-    if (p.hidden || community.visibility !== 'public' || community.publication !== 'atproto') throw new Fault(409, 'Post unavailable for AT publication')
+    if (p.hidden || p.deleted || community.visibility !== 'public' || community.publication !== 'atproto') throw new Fault(409, 'Post unavailable for AT publication')
     this.checkWrite(p.author_id, p.community_id, p.mandate_id, false)
     if (p.release_id) this.checkRelease(p.release_id)
     if (p.parent_id) {
-      if (this.get<Post>('SELECT * FROM posts WHERE id=?', p.parent_id)?.hidden) throw new Fault(409, 'Parent unavailable')
+      const parent=this.get<Post>('SELECT * FROM posts WHERE id=?', p.parent_id)
+      if (!parent || parent.hidden || parent.deleted) throw new Fault(409, 'Parent unavailable')
       if (this.get<Job>("SELECT * FROM outbox WHERE post_id=? AND operation='put'", p.parent_id)?.state !== 'delivered') throw new Fault(409, 'Parent publication must settle first')
     }
   }

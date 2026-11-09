@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os'
 import {join} from 'node:path'
 import {Miniflare,convertV4MiniflareOptions} from 'miniflare'
 
+import {image} from './media-fixture.ts'
 const origin='https://strata.example'
 function runtime(persist) {
   return new Miniflare(convertV4MiniflareOptions({name:'strata-test-only',modules:true,scriptPath:'.wrangler/test/worker-harness.js',
@@ -29,6 +30,15 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     const f=JSON.parse(await stub.seed())
     assert.equal((await call(mf,'/health')).status,200)
     assert.equal((await (await call(mf,'/health')).json()).runtime,'cloudflare-durable-object')
+    const search=await(await call(mf,'/v1/search?q=Owner')).json()
+    assert.equal(search.people[0].id,f.owner.actor.id)
+    assert.equal(JSON.stringify(await(await call(mf,'/v1/search?q=Never')).json()).includes(f.secret.id),false)
+    assert.equal((await call(mf,`/v1/actors/${f.owner.actor.id}/follow`,f.member.token,{following:true})).status,200)
+    assert.equal((await(await call(mf,'/v1/following',f.member.token)).json())[0].id,f.owner.actor.id)
+    const followed=await(await call(mf,'/v1/feed/page?following=true',f.member.token)).json()
+    assert.equal(followed.items[0].id,f.publicPost.id)
+    assert.equal(JSON.stringify(followed).includes(f.secret.id),false)
+    assert.equal((await call(mf,'/v1/feed/page?following=true')).status,401)
     assert.equal((await call(mf,'/v1/me',f.member.actor.id)).status,401)
     assert.equal((await call(mf,`/v1/posts/${f.secret.id}`,f.outsider.token)).status,404)
     assert.equal(JSON.stringify(await(await call(mf,'/v1/communities')).json()).includes(f.hidden.id),false)
@@ -67,6 +77,21 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     const other=ns.getByName('independent-node')
     const separate=JSON.parse(await other.seed())
     assert.notEqual(separate.owner.actor.id,f.owner.actor.id)
+    const dm=ns.getByName('dm-node')
+    assert.deepEqual(JSON.parse(await dm.dmContract()),{isolated:true,idempotent:true,notice:'dm-message',blocked:true,outbox:0})
+    const governance=ns.getByName('governance-node')
+    assert.deepEqual(JSON.parse(await governance.governanceContract()),{hiddenOmitted:true,separateAdmission:true,state:'completed',privateProposalOmitted:true,rolledBack:true,hiddenDraft:true,activityRead:true,activityPrivate:true,agentAuthor:'agent'})
+    const forum=JSON.parse(await ns.getByName('forum-node').forumContract())
+    assert.equal(forum.voted,true);assert.equal(forum.lockDenied,true);assert.equal(forum.deleted,true);assert.equal(forum.roots,30);assert.equal(forum.queriesPerFeed,10)
+    console.log('Synthetic local workerd feed benchmark:',JSON.stringify(forum))
+    const oauth=ns.getByName('oauth-node')
+    assert.deepEqual(JSON.parse(await oauth.authContract()),{start:200,callback:303,location:'/',hasCookie:true})
+    assert.deepEqual(JSON.parse(await ns.getByName('signup-node').signupContract()),{start:200,location:'/communities?welcome=1',noLoginHint:true,verified:true,memberships:0,hiddenOmitted:true,schema:19})
+    const uploaded=await(await call(mf,'/v1/media',f.owner.token,{communityId:f.hidden.id,bytes:image,alt:'Private image fixture'})).json()
+    assert.equal((await call(mf,`/v1/media/${uploaded.id}`,f.outsider.token)).status,404)
+    const withImage=await(await call(mf,'/v1/posts',f.owner.token,{communityId:f.hidden.id,text:'Private image post',mediaIds:[uploaded.id]})).json()
+    assert.equal(withImage.media[0].alt,'Private image fixture')
+    assert.deepEqual(Buffer.from(await(await call(mf,`/v1/media/${uploaded.id}`,f.owner.token)).arrayBuffer()),Buffer.from(image,'base64'))
     await stub.interrupt()
     await mf.dispose()
     mf=runtime(dir)
@@ -75,5 +100,8 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     assert.equal(jobs.some(j=>j.state==='sending'),false)
     assert.equal(jobs.some(j=>j.state==='uncertain'),true)
     assert.equal((await call(mf,`/v1/posts/${f.secret.id}`,f.owner.token)).status,200)
+    assert.deepEqual(Buffer.from(await(await call(mf,`/v1/media/${uploaded.id}`,f.owner.token)).arrayBuffer()),Buffer.from(image,'base64'))
+    await call(mf,`/v1/posts/${withImage.id}/hide`,f.owner.token,{})
+    assert.equal((await call(mf,`/v1/media/${uploaded.id}`,f.owner.token)).status,404)
   } finally { await mf.dispose();await rm(dir,{recursive:true,force:true}) }
 })

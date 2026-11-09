@@ -108,7 +108,169 @@ CREATE TABLE wiki_revisions (
 );
 CREATE INDEX wiki_community ON wiki_pages(community_id,created);
 CREATE INDEX wiki_page_proposals ON wiki_proposals(page_id,created);
+`, `
+CREATE TABLE oauth_records (
+ kind TEXT NOT NULL CHECK(kind IN ('state','session')), key TEXT NOT NULL,
+ sealed TEXT NOT NULL, expires INTEGER NOT NULL, PRIMARY KEY(kind,key)
+);
+CREATE TABLE browser_sessions (
+ hash TEXT PRIMARY KEY, actor_id TEXT NOT NULL REFERENCES actors(id), csrf TEXT NOT NULL,
+ created INTEGER NOT NULL, expires INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE enrollment_allowlist (did TEXT PRIMARY KEY, added_by TEXT NOT NULL REFERENCES actors(id));
+CREATE TABLE auth_buckets (key TEXT PRIMARY KEY, window INTEGER NOT NULL, count INTEGER NOT NULL);
+CREATE TABLE starter_spaces (slug TEXT PRIMARY KEY, community_id TEXT NOT NULL UNIQUE REFERENCES communities(id));
+`, `
+ALTER TABLE posts ADD COLUMN root_id TEXT REFERENCES posts(id);
+WITH RECURSIVE roots(id,root) AS (
+ SELECT id,id FROM posts WHERE parent_id IS NULL
+ UNION ALL SELECT p.id,r.root FROM posts p JOIN roots r ON p.parent_id=r.id
+) UPDATE posts SET root_id=(SELECT root FROM roots WHERE roots.id=posts.id);
+CREATE INDEX posts_root_created ON posts(root_id,created DESC,id DESC);
+CREATE INDEX posts_parent ON posts(parent_id,hidden);
+CREATE INDEX posts_created ON posts(created DESC,id DESC);
+`, `
+CREATE TABLE groups (
+ id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL,
+ kind TEXT NOT NULL CHECK(kind IN ('collective','institution')),
+ visibility TEXT NOT NULL CHECK(visibility IN ('public','hidden-private')),
+ sponsorship TEXT NOT NULL CHECK(sponsorship IN ('unrequested','pending','enabled','suspended')),
+ created INTEGER NOT NULL
+);
+CREATE TABLE group_members (
+ group_id TEXT NOT NULL REFERENCES groups(id), actor_id TEXT NOT NULL REFERENCES actors(id),
+ role TEXT NOT NULL CHECK(role IN ('owner','steward','member')), active INTEGER NOT NULL DEFAULT 1,
+ PRIMARY KEY(group_id,actor_id)
+);
+CREATE TABLE spaces (
+ id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES groups(id),
+ community_id TEXT NOT NULL UNIQUE REFERENCES communities(id), modality TEXT NOT NULL CHECK(modality='forum'), created INTEGER NOT NULL
+);
+CREATE TABLE contexts (
+ id TEXT PRIMARY KEY, slug TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
+ kind TEXT NOT NULL CHECK(kind IN ('place','region','topic','language')), description TEXT NOT NULL,
+ language TEXT NOT NULL, aliases TEXT NOT NULL, created INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1
+);
+CREATE TABLE record_contexts (
+ record_kind TEXT NOT NULL CHECK(record_kind IN ('post','group','wiki','work')), record_id TEXT NOT NULL,
+ context_id TEXT NOT NULL REFERENCES contexts(id), issuer_id TEXT NOT NULL REFERENCES actors(id), created INTEGER NOT NULL,
+ PRIMARY KEY(record_kind,record_id,context_id)
+);
+CREATE INDEX record_context_lookup ON record_contexts(context_id,record_kind,record_id);
+CREATE INDEX spaces_group ON spaces(group_id,created);
+CREATE INDEX group_members_actor ON group_members(actor_id,active);
+`, `
+CREATE TABLE work_grants (
+ id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES groups(id), agent_id TEXT NOT NULL REFERENCES actors(id),
+ issuer_id TEXT NOT NULL REFERENCES actors(id), expires INTEGER NOT NULL, hourly_limit INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE public_work (
+ id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES groups(id), community_id TEXT NOT NULL REFERENCES communities(id),
+ origin_post_id TEXT REFERENCES posts(id), title TEXT NOT NULL, description TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('proposed','adopted','active','blocked','completed','withdrawn')),
+ revision INTEGER NOT NULL, result_id TEXT, created INTEGER NOT NULL, updated INTEGER NOT NULL
+);
+CREATE TABLE work_events (
+ id TEXT PRIMARY KEY, work_id TEXT NOT NULL REFERENCES public_work(id), group_id TEXT NOT NULL REFERENCES groups(id),
+ actor_id TEXT NOT NULL REFERENCES actors(id), kind TEXT NOT NULL, created INTEGER NOT NULL
+);
+CREATE TABLE work_requests (
+ actor_id TEXT NOT NULL REFERENCES actors(id), request_key TEXT NOT NULL, digest TEXT NOT NULL,
+ target_id TEXT NOT NULL REFERENCES public_work(id), PRIMARY KEY(actor_id,request_key)
+);
+CREATE TABLE work_consents (
+ post_id TEXT NOT NULL REFERENCES posts(id), group_id TEXT NOT NULL REFERENCES groups(id), author_id TEXT NOT NULL REFERENCES actors(id),
+ digest TEXT NOT NULL, expires INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(post_id,group_id)
+);
+CREATE TABLE work_results (
+ id TEXT PRIMARY KEY, work_id TEXT NOT NULL REFERENCES public_work(id), author_id TEXT NOT NULL REFERENCES actors(id),
+ text TEXT NOT NULL, citations TEXT NOT NULL, digest TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('pending','accepted','rejected')), created INTEGER NOT NULL, grant_id TEXT REFERENCES work_grants(id)
+);
+CREATE TABLE public_work_results (
+ id TEXT PRIMARY KEY, work_id TEXT NOT NULL REFERENCES public_work(id), proposal_id TEXT NOT NULL UNIQUE REFERENCES work_results(id),
+ text TEXT NOT NULL, citations TEXT NOT NULL, digest TEXT NOT NULL, created INTEGER NOT NULL, reviewer_id TEXT NOT NULL REFERENCES actors(id)
+);
+CREATE INDEX public_work_group_updated ON public_work(group_id,updated DESC,id DESC);
+CREATE INDEX work_events_agent_budget ON work_events(actor_id,group_id,created);
+CREATE INDEX work_results_work ON work_results(work_id,created);
+`, `
+CREATE TABLE editorial_mandates (
+ id TEXT PRIMARY KEY, agent_id TEXT NOT NULL REFERENCES actors(id), community_id TEXT NOT NULL REFERENCES communities(id),
+ issuer_id TEXT NOT NULL REFERENCES actors(id), purpose TEXT NOT NULL, expires INTEGER NOT NULL,
+ revoked INTEGER NOT NULL DEFAULT 0, hourly_limit INTEGER NOT NULL
+);
+ALTER TABLE wiki_proposals ADD COLUMN editorial_mandate_id TEXT REFERENCES editorial_mandates(id);
+CREATE INDEX editorial_proposal_budget ON wiki_proposals(author_id,page_id,created);
+`, `
+CREATE TABLE activity_reads (
+ actor_id TEXT NOT NULL REFERENCES actors(id), event_key TEXT NOT NULL, read_at INTEGER NOT NULL,
+ PRIMARY KEY(actor_id,event_key)
+);
+ALTER TABLE wiki_proposals ADD COLUMN decided INTEGER;
+ALTER TABLE join_requests ADD COLUMN decided INTEGER;
+`, `
+CREATE TABLE dm_devices (actor_id TEXT PRIMARY KEY REFERENCES actors(id),id TEXT NOT NULL UNIQUE,signature_key TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE dm_packages (id TEXT PRIMARY KEY,actor_id TEXT NOT NULL REFERENCES actors(id),data TEXT NOT NULL,expires INTEGER NOT NULL,thread_id TEXT);
+CREATE TABLE dm_threads (id TEXT PRIMARY KEY,sender_id TEXT NOT NULL REFERENCES actors(id),recipient_id TEXT NOT NULL REFERENCES actors(id),sender_device TEXT NOT NULL,recipient_device TEXT NOT NULL,package_id TEXT NOT NULL UNIQUE REFERENCES dm_packages(id),state TEXT NOT NULL CHECK(state IN ('preparing','pending','active','closed')),welcome TEXT,version INTEGER NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL,request_key TEXT NOT NULL,UNIQUE(sender_id,request_key));
+CREATE TABLE dm_envelopes (id TEXT PRIMARY KEY,thread_id TEXT NOT NULL REFERENCES dm_threads(id),sender_id TEXT NOT NULL REFERENCES actors(id),client_id TEXT NOT NULL,version INTEGER NOT NULL,ciphertext TEXT NOT NULL,created INTEGER NOT NULL,UNIQUE(sender_id,client_id),UNIQUE(thread_id,version));
+CREATE TABLE dm_reads (actor_id TEXT NOT NULL REFERENCES actors(id),thread_id TEXT NOT NULL REFERENCES dm_threads(id),version INTEGER NOT NULL,PRIMARY KEY(actor_id,thread_id));
+CREATE TABLE dm_blocks (actor_id TEXT NOT NULL REFERENCES actors(id),peer_id TEXT NOT NULL REFERENCES actors(id),PRIMARY KEY(actor_id,peer_id));
+CREATE INDEX dm_threads_sender ON dm_threads(sender_id,updated DESC);
+CREATE INDEX dm_threads_recipient ON dm_threads(recipient_id,updated DESC);
+CREATE INDEX dm_packages_available ON dm_packages(actor_id,expires) WHERE thread_id IS NULL;
+CREATE INDEX dm_sender_rate ON dm_envelopes(sender_id,created);
+`, `
+CREATE TABLE media (
+ id TEXT PRIMARY KEY, owner_id TEXT NOT NULL REFERENCES actors(id),
+ community_id TEXT NOT NULL REFERENCES communities(id), post_id TEXT REFERENCES posts(id),
+ bytes BLOB NOT NULL, size INTEGER NOT NULL, width INTEGER NOT NULL, height INTEGER NOT NULL,
+ alt TEXT NOT NULL, position INTEGER, created INTEGER NOT NULL
+);
+CREATE INDEX media_post ON media(post_id,position);
+CREATE INDEX media_owner_created ON media(owner_id,created);
+`, `
+ALTER TABLE posts ADD COLUMN content TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE posts ADD COLUMN revision INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE posts ADD COLUMN updated INTEGER;
+ALTER TABLE posts ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE posts ADD COLUMN locked INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE posts ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0;
+CREATE TABLE poll_votes(post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),choice INTEGER NOT NULL,created INTEGER NOT NULL,PRIMARY KEY(post_id,actor_id));
+CREATE TABLE event_responses(post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),response TEXT NOT NULL CHECK(response IN ('going','interested')),created INTEGER NOT NULL,PRIMARY KEY(post_id,actor_id));
+CREATE TABLE moderation_events(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),action TEXT NOT NULL,reason TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE INDEX moderation_community ON moderation_events(community_id,created DESC);
+CREATE TABLE post_requests(actor_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,post_id TEXT NOT NULL REFERENCES posts(id),PRIMARY KEY(actor_id,request_key));
+CREATE INDEX post_author_recent ON posts(author_id,created DESC);
+`, `
+CREATE TABLE follows(actor_id TEXT NOT NULL REFERENCES actors(id),target_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(actor_id,target_id),CHECK(actor_id!=target_id));
+CREATE INDEX follows_target ON follows(target_id,actor_id);
+`, `
+ALTER TABLE wiki_pages ADD COLUMN draft INTEGER NOT NULL DEFAULT 0;
+CREATE TABLE wiki_policies(community_id TEXT PRIMARY KEY REFERENCES communities(id),contributor_group_id TEXT REFERENCES groups(id),reviewer_group_id TEXT REFERENCES groups(id));
+CREATE TABLE wiki_requests(actor_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,page_id TEXT NOT NULL REFERENCES wiki_pages(id),PRIMARY KEY(actor_id,request_key));
+CREATE TABLE actor_profiles(actor_id TEXT PRIMARY KEY REFERENCES actors(id),bio TEXT NOT NULL,website TEXT NOT NULL,location TEXT NOT NULL);
+`, `
+CREATE TABLE decision_requests(id TEXT PRIMARY KEY,actor_id TEXT NOT NULL REFERENCES actors(id),post_id TEXT NOT NULL REFERENCES posts(id),revision INTEGER NOT NULL,request_key TEXT NOT NULL,created INTEGER NOT NULL,state TEXT NOT NULL,digest TEXT,result TEXT,UNIQUE(actor_id,request_key));
+CREATE INDEX decision_requests_budget ON decision_requests(created,actor_id);
+`, `
+CREATE TABLE agent_registrations(agent_id TEXT PRIMARY KEY REFERENCES actors(id),community_id TEXT NOT NULL REFERENCES communities(id),group_id TEXT REFERENCES groups(id),role TEXT NOT NULL CHECK(role IN ('guest','worker','steward')),family TEXT NOT NULL CHECK(family IN ('aksara','external')),created INTEGER NOT NULL,revoked INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE agent_deployments(id TEXT PRIMARY KEY,agent_id TEXT NOT NULL REFERENCES actors(id),label TEXT NOT NULL,jwk TEXT NOT NULL,fingerprint TEXT NOT NULL UNIQUE,created INTEGER NOT NULL,revoked INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE agent_tokens(hash TEXT PRIMARY KEY,deployment_id TEXT NOT NULL REFERENCES agent_deployments(id),scope TEXT NOT NULL,expires INTEGER NOT NULL);
+CREATE TABLE agent_assertions(deployment_id TEXT NOT NULL REFERENCES agent_deployments(id),jti TEXT NOT NULL,expires INTEGER NOT NULL,PRIMARY KEY(deployment_id,jti));
+CREATE TABLE agent_auth_attempts(id TEXT PRIMARY KEY,deployment_id TEXT NOT NULL REFERENCES agent_deployments(id),created INTEGER NOT NULL);
+CREATE INDEX agent_deployments_actor ON agent_deployments(agent_id);
+CREATE INDEX agent_token_expiry ON agent_tokens(expires);
+CREATE INDEX agent_attempt_time ON agent_auth_attempts(created);
+CREATE TABLE agent_wiki_requests(agent_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,proposal_id TEXT NOT NULL REFERENCES wiki_proposals(id),PRIMARY KEY(agent_id,request_key));
+`, `
+CREATE TABLE enrollment_invitations (
+ id TEXT PRIMARY KEY, hash TEXT NOT NULL UNIQUE, issuer_id TEXT NOT NULL REFERENCES actors(id),
+ created INTEGER NOT NULL, expires INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0,
+ used_by TEXT REFERENCES actors(id), used_at INTEGER
+);
 `]
+
 
 /** DO storage has no PRAGMA user_version or SQL BEGIN/COMMIT support.
  * Existing local v1 tables are adopted by the idempotent first migration. */

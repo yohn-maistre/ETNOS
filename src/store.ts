@@ -5,6 +5,9 @@ export * from './core.ts'
 
 export class LocalDatabase implements Database {
   private sqlite: DatabaseSync
+  private inTransaction=false
+  private poisoned=false
+  private cause:unknown
   constructor(path = ':memory:') {
     this.sqlite = new DatabaseSync(path)
     const version = this.sqlite.prepare('PRAGMA user_version').get() as { user_version: number }
@@ -16,13 +19,14 @@ export class LocalDatabase implements Database {
   all<T>(sql: string, ...args: Binding[]) { return this.sqlite.prepare(sql).all(...args) as T[] }
   run(sql: string, ...args: Binding[]) { this.sqlite.prepare(sql).run(...args) }
   transaction<T>(fn: () => T): T {
-    this.exec('BEGIN IMMEDIATE')
+    const invoke=()=>{const result=fn();if(result && typeof (result as {then?:unknown}).then==='function')throw new Error('Transaction callback must be synchronous');return result}
+    if(this.inTransaction){try{return invoke()}catch(error){this.poisoned=true;this.cause=error;throw error}}
+    this.exec('BEGIN IMMEDIATE');this.inTransaction=true;this.poisoned=false
     try {
-      const result = fn()
-      if (result && typeof (result as { then?: unknown }).then === 'function') throw new Error('Transaction callback must be synchronous')
-      this.exec('COMMIT')
-      return result
-    } catch (error) { this.exec('ROLLBACK'); throw error }
+      const result=invoke()
+      if(this.poisoned)throw new Error('Nested operation failed; transaction aborted',{cause:this.cause})
+      this.exec('COMMIT');return result
+    }catch(error){this.exec('ROLLBACK');throw error}finally{this.inTransaction=false;this.poisoned=false;this.cause=undefined}
   }
   close() { this.sqlite.close() }
 }

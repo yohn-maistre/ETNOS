@@ -34,3 +34,7 @@ The deployment receipt below is updated only after a real upload and external ve
 - Cloudflare reported module startup of 11 ms; this is not a request latency or load benchmark.
 - External HTTPS checks passed: health/capabilities/feed/communities 200, anonymous identity/write 401, foreign Origin 403 and custody fixture 501. Public feed and communities are empty; no remote writer was enrolled.
 - The preview is the API only. Honai, production login and live AT remain disconnected. No sensitive data or public AT test content was uploaded.
+
+## Superseding connected preview checkpoint
+
+The API-only first deployment above is historical. The preview now uses a same-origin Honai asset binding, official AT OAuth with controlled enrollment, and application sessions. See [connected-preview.md](connected-preview.md) for current behavior and its remaining gates. No hosted PDS, real account migration or live AT publication has been performed.

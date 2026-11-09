@@ -1,0 +1,12 @@
+// Local contract build only. No assets, secrets or deployed identity are required.
+{
+  "name": "strata-web-test-only",
+  "main": "test/web-harness.ts",
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "vars": {"STRATA_ORIGIN":"https://etnos.space","STRATA_NODE":"test-only","STRATA_AUTH_MODE":"atproto"},
+  "durable_objects": {"bindings":[{"name":"STRATA","class_name":"TestWebNode"}]},
+  "migrations": [{"tag":"v1","new_sqlite_classes":["TestWebNode"]}],
+  "observability": {"enabled":false}
+}

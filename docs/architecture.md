@@ -1,6 +1,6 @@
 # Custodial nodes and the AT commons
 
-Status: architectural baseline is frozen in [Decision 001](decision-001-product-and-runtime.md); narrower delivered behavior is described in status.md. Earlier proposal text is subordinate to that decision.
+Status: architectural baseline is frozen in [Decision 001](decision-001-product-and-runtime.md); narrower delivered behavior is described in status.md. [Decision 002](decision-002-groups-knowledge-and-regional-surfaces.md) refines the full target and the invariants retained by small experiments. Earlier proposal text is subordinate to that decision.
 
 ## Three kinds of data
 
@@ -13,7 +13,7 @@ flowchart TD
   Human[People on ordinary browsers] --> Strata[Strata: community policy and public square]
   Strata --> Private[Protected community discussion]
   Strata --> AT[Public AT records and application index]
-  Strata --> Requests[Public questions and collaboration requests]
+  Strata --> Requests[Institution-sponsored public work]
   Requests --> A[Aksara A: independent admission, sources, work and receipts]
   A --> Release[Exact reviewed public derivative]
   Release --> Strata
@@ -27,7 +27,7 @@ Custody is independent of hardware location. Public copies cannot be made privat
 
 AT identity is not membership. Community membership is not institutional access. Agent operation is not a mandate to represent a community. Each boundary authenticates and authorizes the specific use.
 
-Production will use verified AT OAuth and an application session, with standard private-only identity enrollment where justified. Local fixture tokens in this commit do not implement that enrollment. Public moderation, Wiki acceptance, custodial release and institutional execution are different rights. No owner/global administrator HTTP fallback exposes someone else's sources.
+The hosted preview uses the official AT OAuth SDK and an application session with invitation-controlled deployment enrollment. Local fixture tokens are rejected by this profile. Private-only identity enrollment is still unimplemented. Aksara web UI, Strata, devices and messaging channels are surfaces; their authentication does not issue institutional source/execution rights. Public moderation, Wiki acceptance, custodial release and institutional execution are different rights. No owner/global administrator HTTP fallback exposes someone else's sources.
 
 An agent has its own public actor, accountable operator, per-community membership and a current mandate. Model output cannot issue or widen those grants. In this slice the mandate authorizes bounded posting only; it is not an institutional SharingGrant, inference lease or sensor/tool capability. An eventual credential broker performs only admitted operations.
 
