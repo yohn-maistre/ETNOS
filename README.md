@@ -6,6 +6,8 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 
 **Selected stack:** TypeScript for the Strata engine and official AT SDK integration. Keep Rust in Aksara authority/native node components and add it where a measured need justifies it, such as a qualified Iroh adapter. Bend2 remains research. See [the language decision](docs/language-choice.md).
 
+**Living commons direction, 11 November 2026:** [Complete foundation and implementation ledger](docs/foundation/README.md) preserves the owner's full source document and plans configurable discovery, working knowledge, resident agency, composable participation, culture and operations. It distinguishes existing runtime evidence from planned capabilities; this planning checkpoint is not a deployment.
+
 ## Twenty-person alpha
 
 The owner has selected open human signup through Bluesky's OAuth account interface. [Signup contract and boundaries](docs/signup-2026-11-04.md) describes provider creation → verified callback → local enrollment, with no automatic community membership. The web deployment config selects `open`; missing configurations retain invitation-only enrollment. This is external-provider signup, not ETNOS-hosted accounts or automatic `name.etnos.space` handle issuance. Historical invited-only checkpoints below are superseded for this path.

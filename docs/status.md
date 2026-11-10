@@ -1,5 +1,7 @@
 # Foundation status
 
+**Living commons planning, 11 November 2026:** [Complete source and implementation ledger](foundation/README.md) records the next direction and reconciles current code with proposed native discovery, working knowledge, resident agency, culture and operations. It preserves historical decisions and explicitly marks existing/partial/planned capabilities. No runtime deployment is implied by this documentation checkpoint.
+
 **Human signup update, 4 November 2026:** [provider-started Bluesky signup](signup-2026-11-04.md) now implements verified return/enrollment and configurable open/invite/closed admission. The owner selected open signup. Community, institution and agent permissions stay independent. Older invitation-only checkpoints below describe their release dates; the [signup release receipt](release-2026-11-04-signup.md) records the deployed version and qualification.
 
 **Current alpha preparation:** see [alpha-20.md](alpha-20.md) for the consolidated feature/test matrix and remaining gates. The table below records earlier foundation checkpoints; later implemented content/DM/UI features must not be classified as missing from it alone.

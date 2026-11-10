@@ -1,0 +1,2368 @@
+{
+  "review_date": "2026-11-11",
+  "baseline": {
+    "engine": "3a6ed617b7a3f5038f542cd548d28e502306fe27",
+    "ui": "f489846",
+    "runtime_changes_in_this_checkpoint": false
+  },
+  "status_meanings": {
+    "planned": "Not implemented as a complete capability",
+    "partial": "Relevant existing implementation; acceptance not yet met",
+    "implemented-unqualified": "Implementation exists but release qualification is outstanding",
+    "qualified": "Acceptance and release evidence recorded",
+    "blocked": "Specific blocker documented; feature retained in scope"
+  },
+  "features": [
+    {
+      "id": "F01",
+      "title": "Engine + connected UI distribution",
+      "source_sections": [
+        4,
+        22,
+        29
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [],
+      "current_evidence": "Strata README.md; Honai apps/strata/UPSTREAM.md: separate buildable connected app, not embedded legacy Photon",
+      "acceptance": "One canonical UI source, attributed donor snapshot, reproducible same-origin build and matched release manifest",
+      "release_gate": "Donor notices and build parity before source relocation",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D03",
+        "D04",
+        "D14",
+        "D27",
+        "D28",
+        "D31",
+        "D32",
+        "D33",
+        "D34",
+        "D36",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "Six-step instance onboarding",
+      "source_sections": [
+        18,
+        19
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F01",
+        "F09",
+        "F24",
+        "F47"
+      ],
+      "current_evidence": "Public signup exists; complete operator setup wizard does not",
+      "acceptance": "Operator configures identity/reach, participation, sources, intelligence, stewardship and previews actual eligible content before activation",
+      "release_gate": "Trusted operator identity; secrets server-side",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D13",
+        "D14",
+        "D26",
+        "D34",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "Open provider signup and account continuity",
+      "source_sections": [
+        6,
+        18,
+        24
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [],
+      "current_evidence": "docs/signup-2026-11-04.md; live /auth/options: open Bluesky provider flow",
+      "acceptance": "New user creates provider account, returns through verified OAuth and enrolls without invite or automatic private membership",
+      "release_gate": "Second real-user completion and recovery qualification",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D08",
+        "D11",
+        "D12",
+        "D13",
+        "D14",
+        "D24",
+        "D25",
+        "D26",
+        "D34",
+        "D35",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "Compact five-anchor responsive shell",
+      "source_sections": [
+        5,
+        6,
+        7
+      ],
+      "workstream": "F",
+      "status": "partial",
+      "depends_on": [
+        "F01"
+      ],
+      "current_evidence": "Honai apps/strata/src/styles/conversation.css and existing shell/routes",
+      "acceptance": "Compact readable desktop/mobile sidebar, Settings near account footer, reachable menu, no extra Home hero/Lajur, all bottom content clears navbar",
+      "release_gate": "Preserve 40px-or-larger menu targets and reduced motion",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D07",
+        "D08",
+        "D09",
+        "D10",
+        "D11",
+        "D12",
+        "D29"
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "Separate contexts, feeds and identity",
+      "source_sections": [
+        2,
+        6,
+        7,
+        16
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [
+        "F04"
+      ],
+      "current_evidence": "docs/decision-002-groups-knowledge-and-regional-surfaces.md; existing context/group services",
+      "acceptance": "Topics, places and languages are accurately labeled; switching lens changes discovery without switching actor or granting authority",
+      "release_gate": "No automatic ethnic/region membership or private roster inference",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D05",
+        "D06",
+        "D08",
+        "D11",
+        "D12",
+        "D28",
+        "D29",
+        "D30",
+        "D31"
+      ]
+    },
+    {
+      "id": "F06",
+      "title": "Native artifact cards and contextual panels",
+      "source_sections": [
+        6,
+        7,
+        15
+      ],
+      "workstream": "F",
+      "status": "partial",
+      "depends_on": [
+        "F04",
+        "F43"
+      ],
+      "current_evidence": "Existing post/news/Wiki routes and same-origin detail navigation",
+      "acceptance": "Typed cards expose relevant actions; desktop panels and mobile sheets preserve origin, scroll and back without multiple feed columns",
+      "release_gate": "Keyboard, focus and direct-link fallback",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D05",
+        "D08",
+        "D11",
+        "D12",
+        "D25",
+        "D26",
+        "D27",
+        "D29",
+        "D30",
+        "D31"
+      ]
+    },
+    {
+      "id": "F07",
+      "title": "Composable communities and ordinary language rooms",
+      "source_sections": [
+        3,
+        7,
+        11
+      ],
+      "workstream": "D",
+      "status": "partial",
+      "depends_on": [
+        "F05",
+        "F43"
+      ],
+      "current_evidence": "docs/commons-implementation.md: local Groups/Spaces and community tabs",
+      "acceptance": "Enabled modules compose one community; tabs scroll; empty/disabled modules do not overwhelm casual posting or language conversation",
+      "release_gate": "Space audience enforced independently of public group identity",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D07",
+        "D08",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D29"
+      ]
+    },
+    {
+      "id": "F08",
+      "title": "Human, collective and institutional profiles",
+      "source_sections": [
+        2,
+        7,
+        13
+      ],
+      "workstream": "D",
+      "status": "partial",
+      "depends_on": [
+        "F06",
+        "F32"
+      ],
+      "current_evidence": "Existing author profiles and local Groups; no verified institution onboarding",
+      "acceptance": "Profiles show real identity/operator/status, contributions and optional docs/work/shop without fabricated verification or banner initials",
+      "release_gate": "Separate representation and posting grants",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D06",
+        "D08",
+        "D10",
+        "D29",
+        "D30",
+        "D35"
+      ]
+    },
+    {
+      "id": "F09",
+      "title": "Configurable source registry",
+      "source_sections": [
+        9,
+        18
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F43"
+      ],
+      "current_evidence": "src/news.ts is fixed WPW reader; Watch content/news-sources.json is reusable registry evidence",
+      "acceptance": "Operator adds source role, language, scope, cadence, terms and index/news/review mode and sees sample results",
+      "release_gate": "Permission to add sources; no truth score from priority",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D13",
+        "D14",
+        "D18",
+        "D26",
+        "D34",
+        "D36"
+      ]
+    },
+    {
+      "id": "F10",
+      "title": "Safe discovery and source egress",
+      "source_sections": [
+        9,
+        22,
+        23
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F09"
+      ],
+      "current_evidence": "Watch services/watch-engine/src/sources/discover.ts uses trusted fixed sources; arbitrary intake is unqualified",
+      "acceptance": "Feed/page fetch bounds bytes, redirects, types, time and host reach; denied internal/credential-bearing targets cannot fetch",
+      "release_gate": "SSRF/DNS/redirect qualification or constrained broker",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D13",
+        "D14",
+        "D18",
+        "D23",
+        "D27",
+        "D28",
+        "D31",
+        "D32",
+        "D33",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F11",
+      "title": "Acquisition snapshots, provenance and rights",
+      "source_sections": [
+        9,
+        10,
+        11
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F10",
+        "F69"
+      ],
+      "current_evidence": "Watch ingest/process.ts records source/archive provenance; Strata has custody fixture only",
+      "acceptance": "Every acquired resource has canonical source/time/hash, evidence kind, terms, excerpt/media use and retention; unauthorized body storage is refused",
+      "release_gate": "Source licenses and image rights; archive storage cap",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24"
+      ]
+    },
+    {
+      "id": "F12",
+      "title": "Deduplication and syndication",
+      "source_sections": [
+        9
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F11"
+      ],
+      "current_evidence": "Watch ingest/process.ts and cluster modules implement normalization/dedup for Watch",
+      "acceptance": "Duplicate URLs/content/syndicated copies resolve to linked evidence without pretending each copy is independent confirmation",
+      "release_gate": "Canonicalization changes preserve provenance",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D13",
+        "D14",
+        "D18"
+      ]
+    },
+    {
+      "id": "F13",
+      "title": "Developments, Issues and optional decision models",
+      "source_sections": [
+        9,
+        10,
+        22
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F12",
+        "F27"
+      ],
+      "current_evidence": "src/worker-decisions.ts supplies bounded decision adapter; no native Strata source clustering",
+      "acceptance": "Headlines work without model; grouped developments and longer issues retain sources, uncertainty and editable membership; model abstains when unsuitable",
+      "release_gate": "Validate current free endpoint/model availability; no assumed free generation quota",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D27",
+        "D28",
+        "D32",
+        "D33",
+        "D34"
+      ]
+    },
+    {
+      "id": "F14",
+      "title": "Native news pages and social discussion",
+      "source_sections": [
+        5,
+        9,
+        24
+      ],
+      "workstream": "B",
+      "status": "partial",
+      "depends_on": [
+        "F06",
+        "F13"
+      ],
+      "current_evidence": "Existing fixed-WPW news reader, Explore cards and news-linked posts",
+      "acceptance": "Native configurable sources render cards, source comparisons, discussions, graceful padded photo fallback and complete mobile footer",
+      "release_gate": "Preserve WPW editorial identity and attribution",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D09",
+        "D10",
+        "D13",
+        "D14",
+        "D18",
+        "D24",
+        "D25",
+        "D35",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F15",
+      "title": "Public literature and knowledge bootstrap",
+      "source_sections": [
+        9,
+        10,
+        18,
+        24
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F11",
+        "F16"
+      ],
+      "current_evidence": "Current Wiki supports manually reviewed proposals; no source bootstrap",
+      "acceptance": "A permitted publication yields source-linked working candidates and a visible review queue before people arrive",
+      "release_gate": "Public access does not imply republication or training license",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D24",
+        "D25",
+        "D26",
+        "D34",
+        "D35",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F16",
+      "title": "Working knowledge contributions",
+      "source_sections": [
+        8,
+        10
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F43",
+        "F44"
+      ],
+      "current_evidence": "Public posts and Wiki proposals exist; no distinct working-page lifecycle",
+      "acceptance": "People add a note, memory, question, correction or source with minimal ceremony; unresolved/plural accounts remain valid",
+      "release_gate": "No automatic promotion to accepted Wiki or official claim",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D20",
+        "D21",
+        "D22",
+        "D30",
+        "D35"
+      ]
+    },
+    {
+      "id": "F17",
+      "title": "Reviewed Wiki revision experience",
+      "source_sections": [
+        10,
+        21
+      ],
+      "workstream": "B",
+      "status": "partial",
+      "depends_on": [
+        "F16",
+        "F19"
+      ],
+      "current_evidence": "src/wiki.ts: public-only pages, proposals, digest/base review, revisions/history",
+      "acceptance": "Reader sees readable page, sources and history; editor reviews diff, rebases conflict and accepts the exact current digest",
+      "release_gate": "No stale-base overwrite; human editorial acceptance per policy",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D32",
+        "D37"
+      ]
+    },
+    {
+      "id": "F18",
+      "title": "Open, reviewed and restricted editorial policies",
+      "source_sections": [
+        7,
+        10,
+        17
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F17",
+        "F44"
+      ],
+      "current_evidence": "Current Wiki acceptance model is narrower; policy variants not implemented",
+      "acceptance": "Each mode has explicit server-derived available actions and audit history; UI cannot bypass review by submitting another action",
+      "release_gate": "Current editorial role; policy migration does not expose private content",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D06",
+        "D08",
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D29",
+        "D30",
+        "D31",
+        "D37"
+      ]
+    },
+    {
+      "id": "F19",
+      "title": "Evidence kinds, claims and plurality",
+      "source_sections": [
+        8,
+        10,
+        17
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F43"
+      ],
+      "current_evidence": "Existing source digests and Wiki references are partial provenance, not a complete claim model",
+      "acceptance": "Document, observation and permitted oral account can coexist; claims show uncertainty/contradiction without popularity-to-truth conversion",
+      "release_gate": "Interviews/recordings require source-specific consent/use policy",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D06",
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D30",
+        "D31",
+        "D35",
+        "D37"
+      ]
+    },
+    {
+      "id": "F20",
+      "title": "Corrections and dependency invalidation",
+      "source_sections": [
+        10,
+        16,
+        21,
+        23
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F17",
+        "F45"
+      ],
+      "current_evidence": "Existing withdrawal fixture/outbox model; no full source-to-summary dependency propagation",
+      "acceptance": "Correcting or withdrawing source flags affected pages/drafts/cards/jobs and blocks stale publication; public recall limits are stated",
+      "release_gate": "Retain lawful minimal receipt; no promise of internet-wide erasure",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D11",
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D23",
+        "D28",
+        "D29",
+        "D31",
+        "D32",
+        "D37"
+      ]
+    },
+    {
+      "id": "F21",
+      "title": "Wiki reader, atlas and linked contexts",
+      "source_sections": [
+        5,
+        10
+      ],
+      "workstream": "F",
+      "status": "partial",
+      "depends_on": [
+        "F17",
+        "F05"
+      ],
+      "current_evidence": "Existing Wiki/detail/context routes",
+      "acceptance": "Related pages, translations, source links and place/language journeys connect naturally with reading continuity and accessible media",
+      "release_gate": "Avoid duplicating sensitive metadata in public related-page lists",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D09",
+        "D10",
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18"
+      ]
+    },
+    {
+      "id": "F22",
+      "title": "Explore curiosity modules",
+      "source_sections": [
+        5,
+        6,
+        24
+      ],
+      "workstream": "F",
+      "status": "partial",
+      "depends_on": [
+        "F14",
+        "F21"
+      ],
+      "current_evidence": "Existing Explore news, community voice and Wiki sections",
+      "acceptance": "Featured page, on-this-day, permitted media and did-you-know cards use real eligible content; sections have clean single dividers",
+      "release_gate": "No invented anniversaries, top-read counts or cultural authority",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D08",
+        "D09",
+        "D10",
+        "D11",
+        "D12",
+        "D13",
+        "D24",
+        "D25",
+        "D35",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F23",
+      "title": "Explicit For You and continued reading",
+      "source_sections": [
+        5,
+        6,
+        25
+      ],
+      "workstream": "F",
+      "status": "planned",
+      "depends_on": [
+        "F22",
+        "F46"
+      ],
+      "current_evidence": "Current following/latest feeds and bookmarks are partial inputs; no For You explanation contract",
+      "acceptance": "Person selects interests/languages, resumes reading and sees why a recommendation appears; chronological feed remains available",
+      "release_gate": "No inferred ethnicity or protected participation signals",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D08",
+        "D09",
+        "D10",
+        "D11",
+        "D12",
+        "D38"
+      ]
+    },
+    {
+      "id": "F24",
+      "title": "Embedded resident durable jobs",
+      "source_sections": [
+        14,
+        15,
+        21,
+        22
+      ],
+      "workstream": "C",
+      "status": "planned",
+      "depends_on": [
+        "F43",
+        "F44",
+        "F45"
+      ],
+      "current_evidence": "src/agent-access.ts supplies entrance; no resident scheduler/lease/checkpoint loop",
+      "acceptance": "Event/request resumes bounded work across restart, with lease generation, durable checkpoint and terminal receipt",
+      "release_gate": "Stale generations cannot act; bounded time/steps and kill switch",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D03",
+        "D12",
+        "D14",
+        "D25",
+        "D26",
+        "D27",
+        "D28",
+        "D30",
+        "D31",
+        "D32",
+        "D33",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F25",
+      "title": "One resident identity with specialist skills",
+      "source_sections": [
+        14,
+        15,
+        24
+      ],
+      "workstream": "C",
+      "status": "planned",
+      "depends_on": [
+        "F24",
+        "F28"
+      ],
+      "current_evidence": "Agent actors/mandates exist, no deployed model acting as resident",
+      "acceptance": "One labeled resident performs source/question/digest skills with operator identity; additional personas are optional",
+      "release_gate": "No synthetic crowd, false humanity or unconditional institutional voice",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D03",
+        "D07",
+        "D12",
+        "D13",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D30",
+        "D31",
+        "D35",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F26",
+      "title": "Tool registry and runtime port",
+      "source_sections": [
+        14,
+        15,
+        22
+      ],
+      "workstream": "C",
+      "status": "planned",
+      "depends_on": [
+        "F24"
+      ],
+      "current_evidence": "Aksara packages/runtime-pi and runtime-mastra illustrate bounded runtime boundaries",
+      "acceptance": "Built-in runner and external harness use one typed tool/job/artifact interface with explicit capability budget",
+      "release_gate": "No arbitrary shell or global database/network tool by default",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D03",
+        "D12",
+        "D14",
+        "D25",
+        "D26",
+        "D27",
+        "D28",
+        "D30",
+        "D31",
+        "D32",
+        "D33",
+        "D34"
+      ]
+    },
+    {
+      "id": "F27",
+      "title": "Model providers, secrets and measured budgets",
+      "source_sections": [
+        9,
+        14,
+        19
+      ],
+      "workstream": "C",
+      "status": "partial",
+      "depends_on": [
+        "F26"
+      ],
+      "current_evidence": "Cloudflare decision binding exists; embedded generation and provider quota accounting absent",
+      "acceptance": "Operator chooses qualified model/provider, server-side secret, per-job/account budget and model-free fallback; failures remain actionable",
+      "release_gate": "Workers AI shared quota or separately verified free endpoint; no paid fallback",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D03",
+        "D13",
+        "D14",
+        "D18",
+        "D25",
+        "D26",
+        "D27",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F28",
+      "title": "Eligible mentions and public agent profiles",
+      "source_sections": [
+        2,
+        15
+      ],
+      "workstream": "C",
+      "status": "partial",
+      "depends_on": [
+        "F08",
+        "F05"
+      ],
+      "current_evidence": "Actor-kind and agent access metadata exist; no full mention eligibility resolver",
+      "acceptance": "Mention suggestions show only discoverable agents eligible in current scope, with operator/role/actions and clear unavailable states",
+      "release_gate": "No hidden membership, operator credential or institution spoofing leak",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D05",
+        "D06",
+        "D12",
+        "D25",
+        "D26",
+        "D27",
+        "D29",
+        "D30",
+        "D31"
+      ]
+    },
+    {
+      "id": "F29",
+      "title": "Native agent artifact outputs",
+      "source_sections": [
+        6,
+        15
+      ],
+      "workstream": "C",
+      "status": "planned",
+      "depends_on": [
+        "F24",
+        "F06",
+        "F16"
+      ],
+      "current_evidence": "Agent posting/editorial endpoints exist; no real resident execution",
+      "acceptance": "Real job yields source comparison, diff, digest or question with trace/receipt in its destination feature",
+      "release_gate": "Evidence and audience revalidated at result use",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D08",
+        "D11",
+        "D12",
+        "D25",
+        "D26",
+        "D27",
+        "D30",
+        "D31"
+      ]
+    },
+    {
+      "id": "F30",
+      "title": "Current authority, anti-loop and effect controls",
+      "source_sections": [
+        15,
+        17,
+        21,
+        23
+      ],
+      "workstream": "C",
+      "status": "partial",
+      "depends_on": [
+        "F24",
+        "F44"
+      ],
+      "current_evidence": "Existing expiring posting/editorial mandates and budgets, transactional outbox",
+      "acceptance": "Revoked grant/source or stale job cannot publish; repeated triggers do not duplicate effects; stop control cancels eligible work",
+      "release_gate": "Boundary tests for revoke-after-read, timeout, replay and uncertain remote success",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D06",
+        "D12",
+        "D19",
+        "D20",
+        "D23",
+        "D25",
+        "D26",
+        "D27",
+        "D30",
+        "D31",
+        "D32",
+        "D37"
+      ]
+    },
+    {
+      "id": "F31",
+      "title": "External Aksara and compatible agents",
+      "source_sections": [
+        4,
+        15,
+        16
+      ],
+      "workstream": "C",
+      "status": "partial",
+      "depends_on": [
+        "F26",
+        "F30"
+      ],
+      "current_evidence": "Agent entrance exists; Aksara optional feat/etnos-public-reader branch is not main/live write integration",
+      "acceptance": "Authorized external deployment reads allowed sources and posts a typed proposal through actual pipeline with separate credential and receipt",
+      "release_gate": "No access to institution private memory; credential issuance by legitimate operator",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D04",
+        "D11",
+        "D12",
+        "D14",
+        "D25",
+        "D26",
+        "D27",
+        "D28",
+        "D29",
+        "D30",
+        "D31",
+        "D33"
+      ]
+    },
+    {
+      "id": "F32",
+      "title": "Verified representatives and response classes",
+      "source_sections": [
+        2,
+        12,
+        15,
+        17
+      ],
+      "workstream": "D",
+      "status": "planned",
+      "depends_on": [
+        "F43",
+        "F44"
+      ],
+      "current_evidence": "Local groups/sponsor work exist; auth options institutionalAccess false",
+      "acceptance": "Human operator control is verified; institution grants scoped expiring authority; responses distinguish personal, draft and official",
+      "release_gate": "Real organizational verification; device attestation alone insufficient",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D05",
+        "D06",
+        "D10",
+        "D12",
+        "D19",
+        "D20",
+        "D25",
+        "D26",
+        "D27",
+        "D29",
+        "D30",
+        "D31",
+        "D37"
+      ]
+    },
+    {
+      "id": "F33",
+      "title": "Questions, discussion and simple polls",
+      "source_sections": [
+        5,
+        12
+      ],
+      "workstream": "D",
+      "status": "partial",
+      "depends_on": [
+        "F07"
+      ],
+      "current_evidence": "Current forum polls/Suara/replies are implemented per docs/forum-rich-content-checkpoint.md",
+      "acceptance": "Casual question and poll are easy; accessible results and discussion do not imply binding mandate or factual truth",
+      "release_gate": "Current community membership/vote eligibility",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D07",
+        "D09",
+        "D10",
+        "D30"
+      ]
+    },
+    {
+      "id": "F34",
+      "title": "Consultations, proposals, amendments and accountability",
+      "source_sections": [
+        5,
+        12,
+        21
+      ],
+      "workstream": "D",
+      "status": "planned",
+      "depends_on": [
+        "F33",
+        "F44",
+        "F32"
+      ],
+      "current_evidence": "Existing Suara poll slice does not implement complete Decidim-style lifecycle",
+      "acceptance": "Question accepts amendments/meetings, responsible response and action/no-action report; formal decisions have separate eligibility/quorum",
+      "release_gate": "Actual decision authority and participant rules; no vote-to-official shortcut",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D07",
+        "D09",
+        "D10",
+        "D30",
+        "D32",
+        "D37"
+      ]
+    },
+    {
+      "id": "F35",
+      "title": "Sponsored PublicWork and follow-through",
+      "source_sections": [
+        2,
+        12
+      ],
+      "workstream": "D",
+      "status": "partial",
+      "depends_on": [
+        "F34",
+        "F32"
+      ],
+      "current_evidence": "Existing sponsored PublicWork service and local group work flows",
+      "acceptance": "Commitment has responsible sponsor, milestones, volunteer contributions, progress/report and public receipt; personal task remains distinct",
+      "release_gate": "Sponsor role and work closure approval",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D06",
+        "D10",
+        "D29",
+        "D30"
+      ]
+    },
+    {
+      "id": "F36",
+      "title": "Canonical offers, shops and contact flow",
+      "source_sections": [
+        5,
+        13,
+        21
+      ],
+      "workstream": "D",
+      "status": "planned",
+      "depends_on": [
+        "F43",
+        "F44",
+        "F08"
+      ],
+      "current_evidence": "No native canonical offer/order workflow in current Strata baseline",
+      "acceptance": "Seller creates one offer with price/status/location granularity/contact; same record projects to profile/community/Explore; contact works",
+      "release_gate": "Seller identity, abuse/reporting and sensitive location controls",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D09",
+        "D10",
+        "D32",
+        "D35",
+        "D37"
+      ]
+    },
+    {
+      "id": "F37",
+      "title": "Payments, disputes and disclosed economics",
+      "source_sections": [
+        13,
+        24,
+        26
+      ],
+      "workstream": "D",
+      "status": "planned",
+      "depends_on": [
+        "F36",
+        "F49"
+      ],
+      "current_evidence": "No payment provider, escrow or dispute integration configured",
+      "acceptance": "Provider test-mode order/refund states and disclosed fees produce genuine receipts; live payment only after provider onboarding",
+      "release_gate": "Payment credentials, consumer/dispute policy and provider availability; not CF tier",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D07",
+        "D10",
+        "D13",
+        "D24",
+        "D25",
+        "D35",
+        "D36",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F38",
+      "title": "Public collections and cultural items",
+      "source_sections": [
+        8,
+        11,
+        20
+      ],
+      "workstream": "E",
+      "status": "planned",
+      "depends_on": [
+        "F11",
+        "F43",
+        "F69"
+      ],
+      "current_evidence": "Custody/release development fixture is not a public collection product",
+      "acceptance": "Collection/item describes permitted object, lineage, custodian and media/rights; finding aid does not imply access to original",
+      "release_gate": "Per-item rights and source attribution",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D15",
+        "D17",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D30",
+        "D32",
+        "D35"
+      ]
+    },
+    {
+      "id": "F39",
+      "title": "Protected Wiki, collections and page existence",
+      "source_sections": [
+        8,
+        11,
+        23
+      ],
+      "workstream": "E",
+      "status": "planned",
+      "depends_on": [
+        "F46",
+        "F38",
+        "F18"
+      ],
+      "current_evidence": "src/wiki.ts explicitly restricts Wiki to public communities; private media checks exist",
+      "acceptance": "Scoped participant reads page/item; outsider and revoked participant cannot learn existence/title/count or fetch history/media/export",
+      "release_gate": "All projection boundaries qualified before real sensitive data",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D15",
+        "D17",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D30",
+        "D31",
+        "D35",
+        "D37"
+      ]
+    },
+    {
+      "id": "F40",
+      "title": "Independent custody and approved derivatives",
+      "source_sections": [
+        4,
+        8,
+        11,
+        15
+      ],
+      "workstream": "E",
+      "status": "partial",
+      "depends_on": [
+        "F39",
+        "F20"
+      ],
+      "current_evidence": "Custody fixture has digest/release/withdrawal semantics, disabled by default; not Aksara grant evaluator",
+      "acceptance": "Separate custodian approves exact public derivative with different ID; forum receives authorized output or refusal and respects withdrawal",
+      "release_gate": "Real institutional SharingGrant integration, not fixture credentials",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D04",
+        "D12",
+        "D14",
+        "D15",
+        "D17",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D30",
+        "D31",
+        "D33",
+        "D35"
+      ]
+    },
+    {
+      "id": "F41",
+      "title": "Living language tools",
+      "source_sections": [
+        3,
+        8,
+        11,
+        26
+      ],
+      "workstream": "E",
+      "status": "planned",
+      "depends_on": [
+        "F07",
+        "F38",
+        "F39"
+      ],
+      "current_evidence": "Ordinary community conversation exists; structured lexicon/lesson/audio flow does not",
+      "acceptance": "People converse, add opted-in lexicon/translation/lesson/audio items and control their audience without corpus enrollment",
+      "release_gate": "Language/custodian policy, accessible media and no automatic extraction",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D07",
+        "D15",
+        "D17",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D30",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F42",
+      "title": "Opt-in corpus, dataset and evaluation program",
+      "source_sections": [
+        11,
+        26
+      ],
+      "workstream": "E",
+      "status": "planned",
+      "depends_on": [
+        "F41",
+        "F40",
+        "F69"
+      ],
+      "current_evidence": "No implemented private dataset/training program",
+      "acceptance": "Contributor-purpose permission creates versioned reviewed dataset with retention/withdrawal/evaluation policy; training scope is explicit",
+      "release_gate": "Program governance, source rights and separately provisioned training compute",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F43",
+      "title": "Seven common primitives over typed domains",
+      "source_sections": [
+        20,
+        22,
+        1
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [],
+      "current_evidence": "Existing typed actors/communities/groups/contexts/posts/wiki/work; no common artifact/relation envelope",
+      "acceptance": "Stable Actor/Scope/Artifact/Activity/Relation/Policy/Projection contracts link typed domains while preserving current storage and APIs",
+      "release_gate": "No destructive universal-blob migration",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D01",
+        "D02",
+        "D07",
+        "D14",
+        "D24",
+        "D27",
+        "D28",
+        "D32",
+        "D33",
+        "D34"
+      ]
+    },
+    {
+      "id": "F44",
+      "title": "Shared transition checks and domain lifecycles",
+      "source_sections": [
+        20,
+        21
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [
+        "F43"
+      ],
+      "current_evidence": "Existing optimistic Wiki review, mandate and outbox checks provide patterns",
+      "acceptance": "Expected revision/action/request key/current authority and receipt are shared; each domain owns its states and available actions",
+      "release_gate": "Atomic writes and concurrency/replay tests",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D24",
+        "D32",
+        "D37"
+      ]
+    },
+    {
+      "id": "F45",
+      "title": "Events, outbox and dependency index",
+      "source_sections": [
+        20,
+        21,
+        22
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [
+        "F43"
+      ],
+      "current_evidence": "Existing public post/outbox transaction and reconciliation model",
+      "acceptance": "Domain change and authorized event intent commit together; consumers are idempotent and source dependencies inspectable",
+      "release_gate": "No sensitive payload in public notifications/events; retention explicit",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D14",
+        "D24",
+        "D27",
+        "D28",
+        "D32",
+        "D33",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F46",
+      "title": "Permission-filtered projections everywhere",
+      "source_sections": [
+        11,
+        15,
+        17,
+        23
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [
+        "F43"
+      ],
+      "current_evidence": "Feed/search/private media enforce local checks; new private Wiki/prompts/embeddings absent",
+      "acceptance": "Reads, search, cards, counts, caches, exports, prompts, model tools and media independently apply current audience; revocation invalidates derived views",
+      "release_gate": "Adversarial tests for public tools, hidden membership and cross-scope reuse",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D06",
+        "D12",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D30",
+        "D31",
+        "D37"
+      ]
+    },
+    {
+      "id": "F47",
+      "title": "Role-aware Operator Studio",
+      "source_sections": [
+        18,
+        19
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F43",
+        "F44"
+      ],
+      "current_evidence": "Scattered management controls exist; no unified role-separated Studio",
+      "acceptance": "Infra operators, source editors and community mods see relevant actions; setup/review/jobs/quotas/recovery link to real objects",
+      "release_gate": "No DevOps secrets or cross-community mod access",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D13",
+        "D14",
+        "D26",
+        "D34",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F48",
+      "title": "Measured health, quotas and alerts",
+      "source_sections": [
+        19,
+        25
+      ],
+      "workstream": "G",
+      "status": "partial",
+      "depends_on": [
+        "F47",
+        "F24",
+        "F09"
+      ],
+      "current_evidence": "Current /health and /v1/capabilities exist; full measured usage/backup health absent",
+      "acceptance": "Studio shows actual job state, freshness/errors, cost/storage headroom and backup age; unknown is visibly unknown",
+      "release_gate": "Cloudflare connector reauth/account telemetry permission; redact sensitive logs",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D34",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F49",
+      "title": "Moderation, report queue, appeals and reversal",
+      "source_sections": [
+        17,
+        19,
+        23
+      ],
+      "workstream": "G",
+      "status": "partial",
+      "depends_on": [
+        "F44",
+        "F47"
+      ],
+      "current_evidence": "Existing local hide/report/block flows; complete appeal/case lifecycle missing",
+      "acceptance": "Assigned case captures allowed evidence, reason, decision, notice, appeal and reversible action with audit receipt",
+      "release_gate": "Honai donor behavior adapted to Strata authority, not legacy JWT API",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D06",
+        "D19",
+        "D20",
+        "D23",
+        "D30",
+        "D31",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F50",
+      "title": "Plural governance, succession and roster privacy",
+      "source_sections": [
+        2,
+        17,
+        23
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F32",
+        "F49",
+        "F64"
+      ],
+      "current_evidence": "Existing owner/mod/member roles; no full succession/representation dispute flow",
+      "acceptance": "Group can transfer authority, document contested representation, dissent and leave without exposing private roster or implying pan-Papuan gatekeeper",
+      "release_gate": "Legitimate current grant and recipient acceptance; anti-lockout recovery",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D05",
+        "D06",
+        "D19",
+        "D20",
+        "D23",
+        "D29",
+        "D30",
+        "D31",
+        "D37"
+      ]
+    },
+    {
+      "id": "F51",
+      "title": "Backups, restore and key/media recovery",
+      "source_sections": [
+        19,
+        21,
+        23
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F45",
+        "F47"
+      ],
+      "current_evidence": "DO/Node restart tests exist; complete backup/restore qualification remains absent",
+      "acceptance": "Synthetic backup restores relations, permissions, media and effect receipts without reissuing uncertain effects; key requirements documented",
+      "release_gate": "Restore evidence, protected export storage and operator custody",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D23",
+        "D31",
+        "D32",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F52",
+      "title": "Owned AT records and live PDS reconciliation",
+      "source_sections": [
+        16,
+        21,
+        22
+      ],
+      "workstream": "G",
+      "status": "partial",
+      "depends_on": [
+        "F44",
+        "F45",
+        "F56"
+      ],
+      "current_evidence": "Official SDK/Lexicon/outbox fixtures exist; liveFederation false",
+      "acceptance": "Owned test account publishes/readbacks/updates/deletes canonical record and reconciles URI/CID after lost reply",
+      "release_gate": "Owned namespace, verified PDS credentials and live qualification",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D04",
+        "D11",
+        "D14",
+        "D27",
+        "D28",
+        "D29",
+        "D31",
+        "D32",
+        "D33",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F53",
+      "title": "Public ingestion cursor and index lifecycle",
+      "source_sections": [
+        16,
+        22
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F52",
+        "F46"
+      ],
+      "current_evidence": "Current capability ingestion false; no qualified live indexer",
+      "acceptance": "Cursor resumes public events/deletions/deactivation and rebuilds public indexes without private metadata",
+      "release_gate": "Protocol subscription/replay and deactivation tests",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D04",
+        "D11",
+        "D14",
+        "D27",
+        "D28",
+        "D29",
+        "D31",
+        "D32",
+        "D33",
+        "D34"
+      ]
+    },
+    {
+      "id": "F54",
+      "title": "AT Groups and GroupHost identity",
+      "source_sections": [
+        2,
+        7,
+        16
+      ],
+      "workstream": "G",
+      "status": "partial",
+      "depends_on": [
+        "F32",
+        "F52"
+      ],
+      "current_evidence": "Local Groups/Spaces are implemented; native Groups interop not qualified",
+      "acceptance": "Qualified synthetic/owned group maps collective identity and role grants without treating context as group",
+      "release_gate": "Experimental protocol compatibility and actual authority-host control",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D05",
+        "D06",
+        "D08",
+        "D11",
+        "D28",
+        "D29",
+        "D30",
+        "D31"
+      ]
+    },
+    {
+      "id": "F55",
+      "title": "Spaces delegated backend sync",
+      "source_sections": [
+        11,
+        16,
+        23
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F54",
+        "F46"
+      ],
+      "current_evidence": "Local Spaces lab fixtures exist; live private federation false",
+      "acceptance": "Backend receives only delegated eligible streams, filters every viewer, handles revocation/cache TTL and uses space+author+collection+rkey identity",
+      "release_gate": "Protocol prototype qualification; no E2EE claim or real sensitive sync before isolation",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D11",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D28",
+        "D29",
+        "D31",
+        "D37"
+      ]
+    },
+    {
+      "id": "F56",
+      "title": "PDS provider, handles and migration options",
+      "source_sections": [
+        4,
+        16,
+        22
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [
+        "F03"
+      ],
+      "current_evidence": "docs/pds-hosting.md and optional experimental Worker PDS; hostedAccounts false",
+      "acceptance": "External provider remains default; native DNS/HTTP handle proof and migration plan survive host change without changing DID or community authority",
+      "release_gate": "Domain control, recovery and production qualification before hosted accounts",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D03",
+        "D04",
+        "D11",
+        "D14",
+        "D27",
+        "D28",
+        "D29",
+        "D31",
+        "D32",
+        "D33",
+        "D34"
+      ]
+    },
+    {
+      "id": "F57",
+      "title": "Low-bandwidth, offline and local node behavior",
+      "source_sections": [
+        16,
+        22,
+        26
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [
+        "F45",
+        "F51"
+      ],
+      "current_evidence": "Local Node API exists; offlineSync/Iroh false",
+      "acceptance": "Small payloads, resumable reading and explicit pending effects work offline; reconnect reconciles rather than blind-replaying",
+      "release_gate": "Independent local-node deployment/security profile; PDS offline limits shown",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D04",
+        "D11",
+        "D14",
+        "D24",
+        "D27",
+        "D28",
+        "D29",
+        "D31",
+        "D32",
+        "D33",
+        "D34",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F58",
+      "title": "Maps, place relations and safe observations",
+      "source_sections": [
+        8,
+        20,
+        26
+      ],
+      "workstream": "F",
+      "status": "planned",
+      "depends_on": [
+        "F05",
+        "F43",
+        "F46"
+      ],
+      "current_evidence": "Public contexts exist; full geospatial/observation experience absent",
+      "acceptance": "Related place/region views accept provenance and appropriate precision; contested maps can coexist",
+      "release_gate": "No exposure of protected sites or inferred ethnic boundaries",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D15",
+        "D17",
+        "D20",
+        "D21",
+        "D22",
+        "D24",
+        "D30",
+        "D32",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F59",
+      "title": "Reproducible public research and science",
+      "source_sections": [
+        8,
+        22,
+        26
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F19",
+        "F45",
+        "F51"
+      ],
+      "current_evidence": "No qualified scientific execution adapter; current capability scientific computation is not implied",
+      "acceptance": "Research artifact records input hashes, method/version and inspectable output; external computation has explicit authority and receipt",
+      "release_gate": "Compute/runtime and scientific validation; no proof claim from schema",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D04",
+        "D14",
+        "D15",
+        "D17",
+        "D20",
+        "D21",
+        "D22",
+        "D24",
+        "D27",
+        "D28",
+        "D30",
+        "D32",
+        "D33",
+        "D34",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F60",
+      "title": "Voice, channels and local-language access",
+      "source_sections": [
+        3,
+        11,
+        26
+      ],
+      "workstream": "E",
+      "status": "planned",
+      "depends_on": [
+        "F41",
+        "F46"
+      ],
+      "current_evidence": "Current public media/DM slices do not supply a complete voice/channel program",
+      "acceptance": "Permitted recording/voice item has accessible playback/transcript fallback, audience and contributor controls",
+      "release_gate": "Storage/processing budgets, rights and actual device/network evaluation",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D07",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F61",
+      "title": "Low-resource retrieval and semantic evaluation",
+      "source_sections": [
+        10,
+        11,
+        15,
+        26
+      ],
+      "workstream": "C",
+      "status": "planned",
+      "depends_on": [
+        "F27",
+        "F42"
+      ],
+      "current_evidence": "Decision adapter exists; no qualified low-resource semantic corpus index",
+      "acceptance": "Eligible corpus retrieves with provenance; language tests measure failure/abstention and private data stays isolated",
+      "release_gate": "Dataset scope and model suitability; no blanket vendor-training permission",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D04",
+        "D12",
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D30",
+        "D31",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F62",
+      "title": "CARE, contested knowledge and source-use policy",
+      "source_sections": [
+        3,
+        10,
+        11,
+        17
+      ],
+      "workstream": "E",
+      "status": "partial",
+      "depends_on": [
+        "F19",
+        "F69"
+      ],
+      "current_evidence": "Existing source/release boundaries encode part of model; full cultural governance UX absent",
+      "acceptance": "Public posting stays simple; sensitive use requests honor source-specific rights, plural authority and refusal",
+      "release_gate": "No centralized ethnicity verification or truth-by-engagement",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D06",
+        "D07",
+        "D13",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D30",
+        "D31",
+        "D37"
+      ]
+    },
+    {
+      "id": "F63",
+      "title": "Genuine public seeding and resident introductions",
+      "source_sections": [
+        18,
+        24
+      ],
+      "workstream": "B",
+      "status": "planned",
+      "depends_on": [
+        "F15",
+        "F25"
+      ],
+      "current_evidence": "Real existing human posts/news reader; no native reviewed bootstrap jobs",
+      "acceptance": "Friend link opens useful sourced content and clearly labeled resident outputs; no fabricated humans, offices or sales",
+      "release_gate": "Rights/editorial review and honest test fixture labels",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D13",
+        "D14",
+        "D24",
+        "D25",
+        "D26",
+        "D34",
+        "D35",
+        "D36",
+        "D37"
+      ]
+    },
+    {
+      "id": "F64",
+      "title": "Export, exit and platform portability",
+      "source_sections": [
+        16,
+        17,
+        19
+      ],
+      "workstream": "G",
+      "status": "partial",
+      "depends_on": [
+        "F46"
+      ],
+      "current_evidence": "AT identities are portable; full content/role/media export/exit not qualified",
+      "acceptance": "Actor/group exports allowed data with rights/relations and leaves without handing private originals to platform/public export",
+      "release_gate": "Revocation/audience-aware export and successor/import test",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D06",
+        "D11",
+        "D19",
+        "D20",
+        "D28",
+        "D29",
+        "D30",
+        "D31",
+        "D34",
+        "D37"
+      ]
+    },
+    {
+      "id": "F65",
+      "title": "Sustainable support, training and fees",
+      "source_sections": [
+        13,
+        23,
+        24,
+        26
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F36",
+        "F48"
+      ],
+      "current_evidence": "No demonstrated operational cost/revenue program",
+      "acceptance": "Actual hosting/model burden and optional support/training/fees are transparent and independent of editorial authority",
+      "release_gate": "No purchased verification, source prominence or institutional legitimacy",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D04",
+        "D07",
+        "D10",
+        "D13",
+        "D23",
+        "D24",
+        "D25",
+        "D31",
+        "D35",
+        "D36",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F66",
+      "title": "Field validation and meaningful measures",
+      "source_sections": [
+        8,
+        25,
+        30
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F48",
+        "F62"
+      ],
+      "current_evidence": "No field study or success metrics established by source document",
+      "acceptance": "Collect consented feedback on legitimacy, language, refusal, cost and completed actions; publish uncertainty and correction diversity",
+      "release_gate": "Privacy-conscious telemetry; no vanity engagement or invented results",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D15",
+        "D17",
+        "D20",
+        "D21",
+        "D22",
+        "D30",
+        "D35",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F67",
+      "title": "Eight human stories and threat fixtures",
+      "source_sections": [
+        8,
+        23,
+        24,
+        30
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F30",
+        "F39",
+        "F35",
+        "F36",
+        "F51"
+      ],
+      "current_evidence": "Existing policy/browser suites provide baseline, not all new stories",
+      "acceptance": "A-H stories and five connected demo loops exercise real outcomes, stale authority, private probes, duplicate effects and source withdrawal",
+      "release_gate": "No fixture presented as production or verified real institution",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D13",
+        "D15",
+        "D17",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D30",
+        "D31",
+        "D35",
+        "D36",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F68",
+      "title": "Reproducible release and dependency provenance",
+      "source_sections": [
+        4,
+        22,
+        28,
+        29,
+        30,
+        27
+      ],
+      "workstream": "A",
+      "status": "partial",
+      "depends_on": [
+        "F01"
+      ],
+      "current_evidence": "Engine main 3a6ed61; UI f489846; deployment receipts in docs",
+      "acceptance": "One release manifest pins engine/UI/schema/providers/notices, checks and rollback/restore evidence; capability claims match deployed build",
+      "release_gate": "No unreviewed dependency license or secret in source",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D02",
+        "D03",
+        "D04",
+        "D14",
+        "D27",
+        "D28",
+        "D31",
+        "D32",
+        "D33",
+        "D34",
+        "D36",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F69",
+      "title": "Rights, custody and Local Contexts references",
+      "source_sections": [
+        8,
+        11,
+        17,
+        20
+      ],
+      "workstream": "E",
+      "status": "planned",
+      "depends_on": [
+        "F43"
+      ],
+      "current_evidence": "Development custody fixture is narrow; no complete catalog rights model",
+      "acceptance": "Rights state names permitted use, custodian, audience, protocol/label references and derivative/release obligations per item",
+      "release_gate": "Labels are references, not automatic consent or legal certification",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D06",
+        "D15",
+        "D17",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D30",
+        "D31",
+        "D32",
+        "D35",
+        "D37"
+      ]
+    },
+    {
+      "id": "F70",
+      "title": "Actionable outages and incident notices",
+      "source_sections": [
+        19,
+        23,
+        25
+      ],
+      "workstream": "G",
+      "status": "planned",
+      "depends_on": [
+        "F48",
+        "F49"
+      ],
+      "current_evidence": "Health endpoint exists; unified incident/affected-job notices absent",
+      "acceptance": "Provider/source failures pause affected work with honest status, next action and recovery receipt without blocking ordinary reading",
+      "release_gate": "No exposed credentials/private evidence or fabricated green status",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D23",
+        "D31",
+        "D34",
+        "D37",
+        "D38"
+      ]
+    },
+    {
+      "id": "F71",
+      "title": "Education and domain profiles without replacing systems of record",
+      "source_sections": [
+        2,
+        4,
+        26
+      ],
+      "workstream": "D",
+      "status": "planned",
+      "depends_on": [
+        "F07",
+        "F35",
+        "F38"
+      ],
+      "current_evidence": "Generic groups/work exist; specialized profiles remain exploratory",
+      "acceptance": "School/NGO domain enables relevant lessons/docs/work while independent institutional systems retain custody and execution authority",
+      "release_gate": "Explicit domain owner/purpose, no accidental records-system migration",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D03",
+        "D04",
+        "D05",
+        "D06",
+        "D14",
+        "D24",
+        "D29",
+        "D30",
+        "D31",
+        "D33",
+        "D35",
+        "D38"
+      ]
+    },
+    {
+      "id": "F72",
+      "title": "Route completion, accessibility and demo recording",
+      "source_sections": [
+        5,
+        6,
+        24,
+        29,
+        30
+      ],
+      "workstream": "F",
+      "status": "planned",
+      "depends_on": [
+        "F06",
+        "F22",
+        "F67",
+        "F68"
+      ],
+      "current_evidence": "Current responsive app and prior browser journeys exist; new routes not built",
+      "acceptance": "Every shipped route has loading/empty/error/denied/success states; mobile keyboard/tabs/nav/theme work; Nov14 video records connected build",
+      "release_gate": "Manual device checks and exact recording build receipt",
+      "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
+      "completion_evidence": [],
+      "decisions": [
+        "D07",
+        "D08",
+        "D09",
+        "D10",
+        "D11",
+        "D12",
+        "D13",
+        "D24",
+        "D25",
+        "D33",
+        "D35",
+        "D36",
+        "D37",
+        "D38"
+      ]
+    }
+  ]
+}

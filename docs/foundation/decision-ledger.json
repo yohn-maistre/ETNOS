@@ -1,0 +1,367 @@
+{
+  "source_sha256": "dafd2ef03407443d0647f0d391bd26f08e9a731e7cf549ed9bb31a4c0eb2440a",
+  "original_decisions": [
+    {
+      "id": "D01",
+      "question": "Are we building a Wiki, a forum, a cultural network, or a civic platform?",
+      "source_block": 556,
+      "original_text": "D01 — Are we building a Wiki, a forum, a cultural network, or a civic platform?\nCurrent working answer — SELECTED DESIGN. We are building a living commons: ordinary social participation that can connect to knowledge, culture, collective decisions and action. None of those experiences should be a compulsory prerequisite for the others. A beautiful read-only Wiki plus bot feed would fall short; a social network without memory and action would also fall short.\nKeep asking: Does the experience still feel inviting when a person arrives for something casual, not educational?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D02",
+      "question": "Could ETNOS be a communal harness in its own right?",
+      "source_block": 557,
+      "original_text": "D02 — Could ETNOS be a communal harness in its own right?\nCurrent working answer — SELECTED DESIGN. Yes. Strata should offer optional built-in resident intelligence that can bootstrap sources, seed candidate knowledge, post questions, summarize and assist community work. Aksara remains an independent deeper/internal system. We no longer require an administrator to install Aksara Core to obtain the default public steward.\nKeep asking: Which resident tasks can be handled by a small job runner, and which genuinely need a durable agent framework?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D03",
+      "question": "Would that undermine the Strata–Aksara separation?",
+      "source_block": 558,
+      "original_text": "D03 — Would that undermine the Strata–Aksara separation?\nCurrent working answer — SELECTED DESIGN. No, provided we separate public participation/authority from independent custodial memory and institutional execution. The resident Strata agent does not inherit Aksara's internal source estate or authority. Aksara can be a first-class participant through the same public agent contract.\nKeep asking: Are any resident tools quietly becoming a second private institutional kernel?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D04",
+      "question": "Is Papua the product's ontology or its first setting?",
+      "source_block": 559,
+      "original_text": "D04 — Is Papua the product's ontology or its first setting?\nCurrent working answer — SELECTED DESIGN. Papua is ETNOS's beginning and the field that reveals real requirements; Strata is a reusable platform. No one actor, company, region or local government is appointed as the cultural authority for all Papua.\nKeep asking: Does a regional filter accidentally imply political or cultural ownership?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D05",
+      "question": "Should government institutions, NGOs, schools and organizations be modeled as communities and actors?",
+      "source_block": 560,
+      "original_text": "D05 — Should government institutions, NGOs, schools and organizations be modeled as communities and actors?\nCurrent working answer — SELECTED DESIGN, with existing Group foundation. Absolutely. They should have public profiles, authorized representatives, spaces, source collections, questions, projects and agent integrations. But an institutional actor has a verification/statement contract distinct from a person's social profile and from a customary community.\nKeep asking: What evidence is sufficient to verify each type of organizational representative in the first deployment?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D06",
+      "question": "Can community representation be inferred from votes, engagement or group membership?",
+      "source_block": 561,
+      "original_text": "D06 — Can community representation be inferred from votes, engagement or group membership?\nCurrent working answer — REJECTED as default. No. Participation and approval are useful information; they do not automatically confer communal, customary, legal or governmental mandate. Formal claims require the appropriate local decision-making process and attribution.\nKeep asking: How do participants discover what kind of statement they are reading without excessive badges and institutional ceremony?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D07",
+      "question": "Will the product become too serious for ordinary people?",
+      "source_block": 563,
+      "original_text": "D07 — Will the product become too serious for ordinary people?\nCurrent working answer — SELECTED DESIGN. Ordinary posts, music, humor, sports, market offers and conversations remain the front door. Culture is contemporary and evolving. Knowledge and governance pathways are invitations, not requirements.\nKeep asking: Does Home look like a living public square or a government dashboard?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D08",
+      "question": "Do we need a new page for news, research, commerce, agent actions and deliberation?",
+      "source_block": 564,
+      "original_text": "D08 — Do we need a new page for news, research, commerce, agent actions and deliberation?\nCurrent working answer — SELECTED DESIGN. Typed features can have deep-linked pages, but the primary navigation should stay small. Home, Explore, Communities, Wiki and personal continuity are strong anchors; other experiences compose into those views.\nKeep asking: Which features people search for directly deserve first-class navigation as usage grows?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D09",
+      "question": "Could the Wikipedia Android redesign inform ETNOS rather than merely its Wiki?",
+      "source_block": 565,
+      "original_text": "D09 — Could the Wikipedia Android redesign inform ETNOS rather than merely its Wiki?\nCurrent working answer — SELECTED DESIGN. Yes. The Community/For You split, featured article, On This Day, news, top read, picture, did-you-know and article navigation all inspire the discovery layer. Adapt their underlying information jobs rather than reproduce the UI literally.\nKeep asking: Which modules generate genuine daily curiosity with local sources, and which merely add homepage weight?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D10",
+      "question": "What do Nextdoor and Decidim add?",
+      "source_block": 566,
+      "original_text": "D10 — What do Nextdoor and Decidim add?\nCurrent working answer — SELECTED DESIGN. Nextdoor contributes local usefulness, offers, events and neighborhood-like social economy; Decidim contributes optional deliberation, proposals, amendments, institutional response and accountability. Neither should dominate the entire visual model.\nKeep asking: Can a person move from a casual discussion to an organized process without feeling they've left the community?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D11",
+      "question": "Is a context switcher another account switcher?",
+      "source_block": 567,
+      "original_text": "D11 — Is a context switcher another account switcher?\nCurrent working answer — SELECTED DESIGN. No. Context chooses place/language/topic; feed filters choose activity perspective; actor/account switching is identity and permission. Preserve distinct semantics with clear UI.\nKeep asking: How does this behave on mobile when the drawer, tab scroll and browser Back compete?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D12",
+      "question": "Should agent artifacts appear in a generic chat transcript?",
+      "source_block": 568,
+      "original_text": "D12 — Should agent artifacts appear in a generic chat transcript?\nCurrent working answer — SELECTED DESIGN. Prefer inline, typed native outputs in the feature where the work matters: a Wiki diff, consultation digest, source comparison, draft question or public report. Chat is useful for interaction, not the only rendering system.\nKeep asking: Can users inspect and modify the result without understanding the model's tool calls?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D13",
+      "question": "Can the initial Wiki be seeded with real information before users arrive?",
+      "source_block": 570,
+      "original_text": "D13 — Can the initial Wiki be seeded with real information before users arrive?\nCurrent working answer — SELECTED DESIGN. Yes, via a source-aware bootstrap that discovers public references, drafts knowledge candidates and invites humans to correct. No invented conversations, fictional sources or auto-declared historical truths.\nKeep asking: Which initial collections are most useful and least burdensome to review?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D14",
+      "question": "Does Strata need its own news engine instead of a fixed WPW integration?",
+      "source_block": 571,
+      "original_text": "D14 — Does Strata need its own news engine instead of a fixed WPW integration?\nCurrent working answer — SELECTED DESIGN. Yes, with configurable local sources during deployment. Reuse Watch's ingestion, extraction, provenance and clustering primitives; retain Watch's independent editorial identity. The current Strata news adapter is read-only and WPW-specific.\nKeep asking: Where should source watching run by default, what are affordable rate limits, and what are the licensing requirements for each publisher?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D15",
+      "question": "What if the source material is sparse, especially for culture?",
+      "source_block": 572,
+      "original_text": "D15 — What if the source material is sparse, especially for culture?\nCurrent working answer — SELECTED DESIGN. Agents should post open research questions, link available sources and invite memories rather than fabricate complete Wiki pages. Working knowledge can remain unresolved.\nKeep asking: How do we distinguish firsthand recollection from documented chronology in ways users understand and accept?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D16",
+      "question": "Have we made Wiki editing too bureaucratic?",
+      "source_block": 573,
+      "original_text": "D16 — Have we made Wiki editing too bureaucratic?\nCurrent working answer — CORRECTED DESIGN. Yes, our first version of the blueprint risked that. We now distinguish conversation, working pages, published Wiki and custodial collections, with proportionate open/reviewed/restricted policies. The shipped Wiki currently has reviewed proposals; fluid working pages are proposed.\nKeep asking: How do we allow easy contributions without making moderation and conflict resolution impossible?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D17",
+      "question": "Should a poll settle an uncertain historical or cultural question?",
+      "source_block": 574,
+      "original_text": "D17 — Should a poll settle an uncertain historical or cultural question?\nCurrent working answer — NO. A poll can surface recognition, preferences or discussion themes. It is not a substitute for provenance, evidence or legitimate source authority. We can retain its result as part of the conversation.\nKeep asking: How should the UI explain polls, consultations and formal votes differently?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D18",
+      "question": "Should source ingestion automatically produce a public article?",
+      "source_block": 575,
+      "original_text": "D18 — Should source ingestion automatically produce a public article?\nCurrent working answer — GENERALLY NO. Public news cards may be automatically eligible under an explicit operator policy; an enduring Wiki revision, a sensitive allegation or an institution's position needs the appropriate editorial or publication workflow.\nKeep asking: Can we reduce unnecessary review friction for low-risk corrections without weakening meaningful gates?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D19",
+      "question": "Does CARE risk becoming another external bureaucracy imposed on daily Papuan life?",
+      "source_block": 577,
+      "original_text": "D19 — Does CARE risk becoming another external bureaucracy imposed on daily Papuan life?\nCurrent working answer — CORRECTED DESIGN. CARE should inform technical and social capabilities, not be forced into every posting action. Public material stays accessible with provenance/correction; protected collections receive the richer rights and governance workflow. Field experience should shape the next iteration.\nKeep asking: Do people actually understand and value the selected controls, and do they return benefits rather than administrative labor?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D20",
+      "question": "Could we put all Papuan knowledge under one controlled Wiki?",
+      "source_block": 578,
+      "original_text": "D20 — Could we put all Papuan knowledge under one controlled Wiki?\nCurrent working answer — NO. A broad public Wiki is valuable, but no one controls all Papuan histories, voices or archives. Allow plural accounts and independent sources. Protected material stays with its source holder unless approved for public release.\nKeep asking: How do we visibly credit multiple perspectives without fragmenting discovery into isolated silos?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D21",
+      "question": "How do private language spaces become useful for preservation without automatic harvesting?",
+      "source_block": 579,
+      "original_text": "D21 — How do private language spaces become useful for preservation without automatic harvesting?\nCurrent working answer — SELECTED DESIGN. Make the language room socially useful first. A separate, voluntary corpus or collection program can review permitted contributions, versions and use rights; a community Aksara Node can assist but isn't mandatory.\nKeep asking: What retention/entry notices are actually appropriate for different communities and programs?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D22",
+      "question": "Should material from an ethnic/private space ever leak into the global Wiki?",
+      "source_block": 580,
+      "original_text": "D22 — Should material from an ethnic/private space ever leak into the global Wiki?\nCurrent working answer — NO AUTOMATIC FLOW. A deliberate approved public derivative may cross when source and release rules permit. A public cultural space can still intentionally share its own material, so the governing property is audience and purpose, not an ethnic label.\nKeep asking: Are all search, media, thumbnail, agent and federation pathways enforcing the same release boundary?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D23",
+      "question": "Can we make a published page 'Papuans-only' later?",
+      "source_block": 581,
+      "original_text": "D23 — Can we make a published page 'Papuans-only' later?\nCurrent working answer — TECHNICALLY LIMITED. No reliable ethnicity proof or retroactive deletion of all federated copies. Support restriction requests, local removal, forward-looking protected storage, membership rules and realistic notices.\nKeep asking: Which groups can legitimate an access request and how are appeals handled without one universal gatekeeper?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D24",
+      "question": "Are cultural catalog rights needed in the first alpha?",
+      "source_block": 582,
+      "original_text": "D24 — Are cultural catalog rights needed in the first alpha?\nCurrent working answer — PRIMITIVES NOW, FULL PROGRAM LATER. Prepare Collection, Item, source lineage, audience, custody and rights hooks. Do not claim an implemented private archive, automatic training consent, or complete rights evaluator.\nKeep asking: Which initial collections offer immediate, community-requested benefit without expanding the risk surface unnecessarily?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D25",
+      "question": "Should the site ship three or more distinct agent identities?",
+      "source_block": 584,
+      "original_text": "D25 — Should the site ship three or more distinct agent identities?\nCurrent working answer — REFINED. One primary resident steward with specialist skills is the simpler starting experience. Distinct named agents are optional when different identities, operators or authority actually matter.\nKeep asking: At what point does one public agent become confusing or overly powerful?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D26",
+      "question": "Should that resident be proactive and playful?",
+      "source_block": 585,
+      "original_text": "D26 — Should that resident be proactive and playful?\nCurrent working answer — YES, WITH BOUNDS. Weekly public questions, discovered facts, anniversaries, research gaps and follow-up digests are strong default behaviors when configured. It needs a visible operator, flexible local voice, source links, rate limits and an abstention option.\nKeep asking: Do its contributions lead to more meaningful human participation, or simply more content?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D27",
+      "question": "Do we need to freeze on Mastra, Pi, Flue or another agent harness?",
+      "source_block": 586,
+      "original_text": "D27 — Do we need to freeze on Mastra, Pi, Flue or another agent harness?\nCurrent working answer — NOT YET. Freeze the runtime-facing contracts and state/receipt requirements. Benchmark the actual deployment tasks and choose the smallest capable system. Don't repackage every framework inside Strata.\nKeep asking: What operational complexity or reliability does each candidate add?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D28",
+      "question": "Should we use AT Groups and Spaces now even though they're experimental?",
+      "source_block": 587,
+      "original_text": "D28 — Should we use AT Groups and Spaces now even though they're experimental?\nCurrent working answer — NATIVE-FIRST, QUALIFIED. Embrace the protocol direction and official SDK semantics; limit custom adapter layers. Keep a narrow policy/privacy boundary and run synthetic cross-PDS tests before sensitive production use.\nKeep asking: What changed upstream, and do membership removal, sync and client cache semantics meet this deployment's real threat model?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D29",
+      "question": "Does every ethnic group or administrative region need a DID?",
+      "source_block": 588,
+      "original_text": "D29 — Does every ethnic group or administrative region need a DID?\nCurrent working answer — NO. Contexts are discoverable subjects; governed collectives choose when they want shared identity. Government offices, NGOs and other organizations can have real organization/group identities based on their own representatives.\nKeep asking: How are shared-identity keys, succession and verification managed without creating single-person failure modes?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D30",
+      "question": "Can an institutional agent reply to a citizen's question as the institution?",
+      "source_block": 589,
+      "original_text": "D30 — Can an institutional agent reply to a citizen's question as the institution?\nCurrent working answer — CONDITIONALLY. It needs a legitimate operator, current institutional mandate, clearly labeled status, source/review policy and a statement class appropriate to its authority. A model label isn't institutional verification.\nKeep asking: Which official statements require a named human release or administrative procedure rather than automated drafting?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D31",
+      "question": "Can the public platform inspect every private Aksara source to improve a public answer?",
+      "source_block": 590,
+      "original_text": "D31 — Can the public platform inspect every private Aksara source to improve a public answer?\nCurrent working answer — NO. An independent institution accepts a scoped request and returns only authorized results, possibly with a refusal. Strata does not inherit private source rights through social connectivity.\nKeep asking: Which public capabilities can be advertised without exposing sensitive partners, member rosters or infrastructure endpoints?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D32",
+      "question": "Should we build a universal state machine for every feature?",
+      "source_block": 592,
+      "original_text": "D32 — Should we build a universal state machine for every feature?\nCurrent working answer — NO. Share transition checks, receipts, available actions and recovery, but keep Wiki, polls, commerce, agents, membership and federation as domain-specific lifecycles.\nKeep asking: Can we demonstrate the same abstraction across at least two real domains before expanding it?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D33",
+      "question": "Should we rebuild the UI from scratch to achieve the ambition?",
+      "source_block": 593,
+      "original_text": "D33 — Should we rebuild the UI from scratch to achieve the ambition?\nCurrent working answer — NOT BY DEFAULT. The connected Svelte app has a substantial real shell and pages. Preserve working components, consolidate information architecture, and refine the highest-impact interactions with real populated-state and mobile tests.\nKeep asking: Where does the existing UI fail actual user tasks badly enough to justify a redesign rather than a targeted refactor?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D34",
+      "question": "Do community administrators also need DevOps-level views?",
+      "source_block": 594,
+      "original_text": "D34 — Do community administrators also need DevOps-level views?\nCurrent working answer — YES. Build a role-aware Operator Studio for community moderation, sources, agents, deployment health, quotas, backups and recovery. Avoid presenting infrastructure access to every community steward.\nKeep asking: What can a nontechnical operator actually understand and fix without us on a call?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D35",
+      "question": "Does the marketplace belong inside ETNOS?",
+      "source_block": 595,
+      "original_text": "D35 — Does the marketplace belong inside ETNOS?\nCurrent working answer — YES AS A COMPOSABLE CAPABILITY. Offers live on people/group profiles and project into Explore, community pages and search; operator fees or partner models can support sustainability without making commerce the purpose of the commons.\nKeep asking: What is the smallest honest transaction/contact flow with appropriate seller protection and transparent fees?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D36",
+      "question": "Should ETNOS launch with an empty feed and wait for users?",
+      "source_block": 596,
+      "original_text": "D36 — Should ETNOS launch with an empty feed and wait for users?\nCurrent working answer — NO. Public-source knowledge, real news and a small set of reviewed/clearly labeled agent prompts can make it useful before the social graph matures. Don't fabricate people, comments, endorsements or institutional partners.\nKeep asking: Can new visitors understand and contribute within minutes without trusting an AI-generated local history?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D37",
+      "question": "How much of the threat model belongs in alpha?",
+      "source_block": 597,
+      "original_text": "D37 — How much of the threat model belongs in alpha?\nCurrent working answer — IMPLEMENT THE SAFETY FLOOR OF SHIPPED POWERS. Every real private/read/write/agent capability needs its own enforced boundary, even if richer federation, corpus, appeals and marketplaces are still deferred. The full threat model stays in the document as a roadmap.\nKeep asking: Have we enabled a new power before its ability to stop, review and recover it is tested?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    },
+    {
+      "id": "D38",
+      "question": "Should this document be the final frozen specification?",
+      "source_block": 598,
+      "original_text": "D38 — Should this document be the final frozen specification?\nCurrent working answer — LIVING FOUNDATION. Freeze the meanings, boundaries, selected directions and source evidence sufficiently to guide development. Keep open hypotheses, alternatives and field findings visible. Each later milestone can update its implementation ledger without rewriting the origin story.\nKeep asking: Can someone new understand why a decision exists and what evidence would justify changing it?",
+      "status": "original working decision; see amendments",
+      "amendments": []
+    }
+  ],
+  "amendments": [
+    {
+      "id": "A01",
+      "date": "2026-11-11",
+      "source": "Owner answered demo clarification in this conversation",
+      "decision": "Full-scope implementation planning; public link for close friends and video by Nov 14; use current free infrastructure and report actual blockers. No silent feature deferral.",
+      "affects": [
+        "D24",
+        "D36",
+        "D37",
+        "D38"
+      ],
+      "interpretation": "Older alpha-only sequencing does not authorize dropping collections, commerce or language work. Exploratory research and external authority still require honest qualification."
+    },
+    {
+      "id": "A02",
+      "date": "2026-11-11",
+      "source": "Owner previously selected Open signup through Bluesky; live /health and /auth/options checked Nov 11",
+      "decision": "Open external-provider signup remains selected. Do not restore invite-only enrollment from older foundation/status text.",
+      "affects": [
+        "D36"
+      ],
+      "interpretation": "A site account grants no private community membership, institution mandate or agent capability."
+    },
+    {
+      "id": "A03",
+      "date": "2026-11-11",
+      "source": "Owner requests reuse/repurpose of Photon/Honai moderation/media and embedded communal harness",
+      "decision": "Reuse the connected Svelte app and proven donor behaviors; plan an integrated distribution rather than a UI rewrite.",
+      "affects": [
+        "D02",
+        "D33"
+      ],
+      "interpretation": "Proposed apps/web consolidation is an implementation recommendation pending source/notices and build parity, not already shipped."
+    },
+    {
+      "id": "A04",
+      "date": "2026-11-11",
+      "source": "Owner latest tool instruction",
+      "decision": "Use Exa for further web research; Firecrawl has exhausted credits.",
+      "affects": [
+        "D38"
+      ],
+      "interpretation": "Research failure must not be treated as runtime infrastructure outage."
+    },
+    {
+      "id": "A05",
+      "date": "2026-11-11",
+      "source": "Existing owner instructions on visual refinement",
+      "decision": "Keep user-selected sky-blue accent, Gabarito with Geist Serif where appropriate, gradual automatic themes, compact sidebar and simple Home; no banner initials or Lajur.",
+      "affects": [
+        "D08",
+        "D11",
+        "D33"
+      ],
+      "interpretation": "Contextual detail panels are permitted; resurrecting multi-feed columns under a new name is not."
+    }
+  ]
+}
