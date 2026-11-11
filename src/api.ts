@@ -117,6 +117,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/communities') result = store.listCommunities(actor?.id)
         else if (path === '/v1/topics') result=social.topics()
         else if (path === '/v1/wiki') result=wiki.all(actor?.id)
+        else if (path === '/v1/wiki/discover') result=wiki.discover()
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])

@@ -101,6 +101,15 @@ export class Wiki {
     if(s.community(communityId).visibility!=='public')throw new Fault(404,'Not found')
     return this.all(actorId,communityId)
   }
+  /** Public discovery is built only from accepted revisions. Never include a
+   * draft snippet, private room, proposal identity or inferred popularity. */
+  discover(){
+    return this.store.all<{id:string;community_id:string;title:string;revision_id:string;text:string;created:number;language:string;citations:string}>("SELECT w.id,w.community_id,w.title,w.revision_id,r.text,r.created,r.language,r.citations FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 ORDER BY r.created DESC,w.id DESC LIMIT 100").map(row=>{
+      const {text,created,citations,...page}=row
+      const excerpt=text.replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/^\s{0,3}#{1,6}\s+.*$/gm,' ').replace(/[*_`~>|]/g,'').replace(/\s+/g,' ').trim().slice(0,360)
+      return {...page,excerpt,updated:created,citationCount:(JSON.parse(citations) as string[]).length,sectionCount:(text.match(/^#{1,4}\s+/gm)??[]).length}
+    })
+  }
   all(actorId?:string,communityId?:string){return this.store.all<Page>("SELECT w.* FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND (? IS NULL OR w.community_id=?) AND (w.draft=0 OR w.revision_id IS NOT NULL OR (EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=w.community_id AND m.actor_id=? AND m.active=1) AND (EXISTS(SELECT 1 FROM wiki_proposals p WHERE p.page_id=w.id AND p.author_id=?) OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=w.community_id AND m.actor_id=? AND m.active=1 AND m.role IN ('owner','moderator') AND (NOT EXISTS(SELECT 1 FROM wiki_policies wp WHERE wp.community_id=w.community_id AND wp.reviewer_group_id IS NOT NULL) OR EXISTS(SELECT 1 FROM wiki_policies wp JOIN group_members gm ON gm.group_id=wp.reviewer_group_id WHERE wp.community_id=w.community_id AND gm.actor_id=m.actor_id AND gm.active=1)))))) ORDER BY w.created DESC,w.id DESC LIMIT 100",communityId??null,communityId??null,actorId??null,actorId??null,actorId??null)}
   proposals(actorId:string,pageId:string){
     const s=this.store,page=this.page(pageId);s.requireMember(actorId,page.community_id);this.draftAccess(page,actorId)

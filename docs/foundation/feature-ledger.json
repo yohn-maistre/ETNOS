@@ -30,7 +30,8 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding.",
-        "2026-11-11 hosted checkpoint: canonical apps/web deployed on the existing same-origin Strata Worker; Honai main connected UI build passed. Receipt: docs/release-2026-11-11-commons-checkpoint.md."
+        "2026-11-11 hosted checkpoint: canonical apps/web deployed on the existing same-origin Strata Worker; Honai main connected UI build passed. Receipt: docs/release-2026-11-11-commons-checkpoint.md.",
+        "2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned."
       ],
       "decisions": [
         "D02",
@@ -67,7 +68,9 @@
       "acceptance": "Operator configures identity/reach, participation, sources, intelligence, stewardship and previews actual eligible content before activation",
       "release_gate": "Trusted operator identity; secrets server-side",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned."
+      ],
       "decisions": [
         "D13",
         "D14",
@@ -190,7 +193,9 @@
       "acceptance": "Typed cards expose relevant actions; desktop panels and mobile sheets preserve origin, scroll and back without multiple feed columns",
       "release_gate": "Keyboard, focus and direct-link fallback",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification."
+      ],
       "decisions": [
         "D03",
         "D05",
@@ -541,7 +546,9 @@
       "acceptance": "Reader sees readable page, sources and history; editor reviews diff, rebases conflict and accepts the exact current digest",
       "release_gate": "No stale-base overwrite; human editorial acceptance per policy",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test."
+      ],
       "decisions": [
         "D13",
         "D15",
@@ -570,7 +577,9 @@
       "acceptance": "Each mode has explicit server-derived available actions and audit history; UI cannot bypass review by submitting another action",
       "release_gate": "Current editorial role; policy migration does not expose private content",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11: Wiki accepted-public discovery projection, excerpts/revision metadata and populated browse/recent cards; device-local continue reading and reader text size. Public/draft/protected migration fixtures verify no draft/private metadata enters discovery."
+      ],
       "decisions": [
         "D05",
         "D06",
@@ -679,7 +688,8 @@
       "release_gate": "Avoid duplicating sensitive metadata in public related-page lists",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete."
+        "Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete.",
+        "2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test."
       ],
       "decisions": [
         "D07",
@@ -710,7 +720,9 @@
       "acceptance": "Featured page, on-this-day, permitted media and did-you-know cards use real eligible content; sections have clean single dividers",
       "release_gate": "No invented anniversaries, top-read counts or cultural authority",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification."
+      ],
       "decisions": [
         "D07",
         "D08",
@@ -735,7 +747,7 @@
         25
       ],
       "workstream": "F",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F22",
         "F46"
@@ -744,7 +756,9 @@
       "acceptance": "Person selects interests/languages, resumes reading and sees why a recommendation appears; chronological feed remains available",
       "release_gate": "No inferred ethnicity or protected participation signals",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11: Wiki accepted-public discovery projection, excerpts/revision metadata and populated browse/recent cards; device-local continue reading and reader text size. Public/draft/protected migration fixtures verify no draft/private metadata enters discovery."
+      ],
       "decisions": [
         "D07",
         "D08",
@@ -816,7 +830,8 @@
       "release_gate": "No synthetic crowd, false humanity or unconditional institutional voice",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "Local checkpoint 2026-11-11: Owner selected one Aksara identity and scoped specialists; local source/knowledge/question skills plus Pi helper. Mentions/weekly review incomplete."
+        "Local checkpoint 2026-11-11: Owner selected one Aksara identity and scoped specialists; local source/knowledge/question skills plus Pi helper. Mentions/weekly review incomplete.",
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
       ],
       "decisions": [
         "D02",
@@ -853,7 +868,8 @@
       "release_gate": "No arbitrary shell or global database/network tool by default",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending."
+        "Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending.",
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
       ],
       "decisions": [
         "D02",
@@ -888,7 +904,9 @@
       "acceptance": "Operator chooses qualified model/provider, server-side secret, per-job/account budget and model-free fallback; failures remain actionable",
       "release_gate": "Workers AI shared quota or separately verified free endpoint; no paid fallback",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
+      ],
       "decisions": [
         "D02",
         "D03",
@@ -1176,7 +1194,9 @@
       "acceptance": "Seller creates one offer with price/status/location granularity/contact; same record projects to profile/community/Explore; contact works",
       "release_gate": "Seller identity, abuse/reporting and sensitive location controls",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
+      ],
       "decisions": [
         "D07",
         "D09",
@@ -1814,7 +1834,9 @@
       "acceptance": "External provider remains default; native DNS/HTTP handle proof and migration plan survive host change without changing DID or community authority",
       "release_gate": "Domain control, recovery and production qualification before hosted accounts",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned."
+      ],
       "decisions": [
         "D02",
         "D03",
@@ -1848,7 +1870,9 @@
       "acceptance": "Small payloads, resumable reading and explicit pending effects work offline; reconnect reconciles rather than blind-replaying",
       "release_gate": "Independent local-node deployment/security profile; PDS offline limits shown",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned."
+      ],
       "decisions": [
         "D02",
         "D04",
@@ -1991,7 +2015,9 @@
       "acceptance": "Eligible corpus retrieves with provenance; language tests measure failure/abstention and private data stays isolated",
       "release_gate": "Dataset scope and model suitability; no blanket vendor-training permission",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
+      ],
       "decisions": [
         "D03",
         "D04",
@@ -2072,7 +2098,9 @@
       "acceptance": "Friend link opens useful sourced content and clearly labeled resident outputs; no fabricated humans, offices or sales",
       "release_gate": "Rights/editorial review and honest test fixture labels",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
+      ],
       "decisions": [
         "D07",
         "D13",
@@ -2246,7 +2274,9 @@
       "acceptance": "One release manifest pins engine/UI/schema/providers/notices, checks and rollback/restore evidence; capability claims match deployed build",
       "release_gate": "No unreviewed dependency license or secret in source",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned."
+      ],
       "decisions": [
         "D02",
         "D03",
@@ -2385,7 +2415,9 @@
       "acceptance": "Every shipped route has loading/empty/error/denied/success states; mobile keyboard/tabs/nav/theme work; Nov14 video records connected build",
       "release_gate": "Manual device checks and exact recording build receipt",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification."
+      ],
       "decisions": [
         "D07",
         "D08",

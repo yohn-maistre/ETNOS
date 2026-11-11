@@ -398,6 +398,19 @@
         "D33"
       ],
       "interpretation": "Sky accent and gradual clock themes remain. Use actual source thumbnails; participant avatars need real currently public participant data. Durable inbox/inline validation are not disposable toast content. This is locally implemented, not yet deployed."
+    },
+    {
+      "id": "A09",
+      "date": "2026-11-11",
+      "source": "Owner reading/layout polish and follow-up on photo ratios, badge, muted avatars, portable install, OpenCode and e-means",
+      "decision": "Default to Plus Jakarta Sans + Geist Serif, preserving saved choices. Use original ratios for news-reader/single-photo images, accepted-public Wiki discovery, clearer badges and restrained ID-based avatar tints. Keep optional installer/Watch extraction/OpenCode/e-means behind portable capability boundaries.",
+      "affects": [
+        "D08",
+        "D11",
+        "D33",
+        "D38"
+      ],
+      "interpretation": "Supersedes A08 font default only. Current official OpenCode free-chat restriction and e-means numerical clustering benchmarks are documented, not assumed as keyless hosted entitlement or authority over regional/institutional structure. Details: ../portable-commons-and-watch-plan-2026-11-11.md and ../agent-seeding-and-clustering-2026-11-11.md."
     }
   ]
 }

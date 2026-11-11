@@ -26,7 +26,7 @@ Reviewed 11 November 2026. Every entry is in scope; status describes actual evid
 | [F20](#f20) | Corrections and dependency invalidation | B | partial | F17, F45 |
 | [F21](#f21) | Wiki reader, atlas and linked contexts | F | partial | F17, F05 |
 | [F22](#f22) | Explore curiosity modules | F | partial | F14, F21 |
-| [F23](#f23) | Explicit For You and continued reading | F | planned | F22, F46 |
+| [F23](#f23) | Explicit For You and continued reading | F | partial | F22, F46 |
 | [F24](#f24) | Embedded resident durable jobs | C | partial | F43, F44, F45 |
 | [F25](#f25) | One resident identity with specialist skills | C | partial | F24, F28 |
 | [F26](#f26) | Tool registry and runtime port | C | partial | F24 |
@@ -89,7 +89,7 @@ Acceptance: One canonical UI source, attributed donor snapshot, reproducible sam
 
 Release gate: Donor notices and build parity before source relocation.
 
-Dependencies: existing baseline. Completion evidence: Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding.; 2026-11-11 hosted checkpoint: canonical apps/web deployed on the existing same-origin Strata Worker; Honai main connected UI build passed. Receipt: docs/release-2026-11-11-commons-checkpoint.md..
+Dependencies: existing baseline. Completion evidence: Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding.; 2026-11-11 hosted checkpoint: canonical apps/web deployed on the existing same-origin Strata Worker; Honai main connected UI build passed. Receipt: docs/release-2026-11-11-commons-checkpoint.md.; 2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned..
 
 <a id="f02"></a>
 
@@ -103,7 +103,7 @@ Acceptance: Operator configures identity/reach, participation, sources, intellig
 
 Release gate: Trusted operator identity; secrets server-side.
 
-Dependencies: F01, F09, F24, F47. Completion evidence: not yet recorded.
+Dependencies: F01, F09, F24, F47. Completion evidence: 2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned..
 
 <a id="f03"></a>
 
@@ -159,7 +159,7 @@ Acceptance: Typed cards expose relevant actions; desktop panels and mobile sheet
 
 Release gate: Keyboard, focus and direct-link fallback.
 
-Dependencies: F04, F43. Completion evidence: not yet recorded.
+Dependencies: F04, F43. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification..
 
 <a id="f07"></a>
 
@@ -313,7 +313,7 @@ Acceptance: Reader sees readable page, sources and history; editor reviews diff,
 
 Release gate: No stale-base overwrite; human editorial acceptance per policy.
 
-Dependencies: F16, F19. Completion evidence: not yet recorded.
+Dependencies: F16, F19. Completion evidence: 2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test..
 
 <a id="f18"></a>
 
@@ -327,7 +327,7 @@ Acceptance: Each mode has explicit server-derived available actions and audit hi
 
 Release gate: Current editorial role; policy migration does not expose private content.
 
-Dependencies: F17, F44. Completion evidence: not yet recorded.
+Dependencies: F17, F44. Completion evidence: 2026-11-11: Wiki accepted-public discovery projection, excerpts/revision metadata and populated browse/recent cards; device-local continue reading and reader text size. Public/draft/protected migration fixtures verify no draft/private metadata enters discovery..
 
 <a id="f19"></a>
 
@@ -369,7 +369,7 @@ Acceptance: Related pages, translations, source links and place/language journey
 
 Release gate: Avoid duplicating sensitive metadata in public related-page lists.
 
-Dependencies: F17, F05. Completion evidence: Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete..
+Dependencies: F17, F05. Completion evidence: Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete.; 2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test..
 
 <a id="f22"></a>
 
@@ -383,13 +383,13 @@ Acceptance: Featured page, on-this-day, permitted media and did-you-know cards u
 
 Release gate: No invented anniversaries, top-read counts or cultural authority.
 
-Dependencies: F14, F21. Completion evidence: not yet recorded.
+Dependencies: F14, F21. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification..
 
 <a id="f23"></a>
 
 ## F23 — Explicit For You and continued reading
 
-**planned · Stream F · Source sections 5, 6, 25 · Decisions D07, D08, D09, D10, D11, D12, D38**
+**partial · Stream F · Source sections 5, 6, 25 · Decisions D07, D08, D09, D10, D11, D12, D38**
 
 Current evidence: Current following/latest feeds and bookmarks are partial inputs; no For You explanation contract.
 
@@ -397,7 +397,7 @@ Acceptance: Person selects interests/languages, resumes reading and sees why a r
 
 Release gate: No inferred ethnicity or protected participation signals.
 
-Dependencies: F22, F46. Completion evidence: not yet recorded.
+Dependencies: F22, F46. Completion evidence: 2026-11-11: Wiki accepted-public discovery projection, excerpts/revision metadata and populated browse/recent cards; device-local continue reading and reader text size. Public/draft/protected migration fixtures verify no draft/private metadata enters discovery..
 
 <a id="f24"></a>
 
@@ -425,7 +425,7 @@ Acceptance: One labeled resident performs source/question/digest skills with ope
 
 Release gate: No synthetic crowd, false humanity or unconditional institutional voice.
 
-Dependencies: F24, F28. Completion evidence: Local checkpoint 2026-11-11: Owner selected one Aksara identity and scoped specialists; local source/knowledge/question skills plus Pi helper. Mentions/weekly review incomplete..
+Dependencies: F24, F28. Completion evidence: Local checkpoint 2026-11-11: Owner selected one Aksara identity and scoped specialists; local source/knowledge/question skills plus Pi helper. Mentions/weekly review incomplete.; 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
 
 <a id="f26"></a>
 
@@ -439,7 +439,7 @@ Acceptance: Built-in runner and external harness use one typed tool/job/artifact
 
 Release gate: No arbitrary shell or global database/network tool by default.
 
-Dependencies: F24. Completion evidence: Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending..
+Dependencies: F24. Completion evidence: Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending.; 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
 
 <a id="f27"></a>
 
@@ -453,7 +453,7 @@ Acceptance: Operator chooses qualified model/provider, server-side secret, per-j
 
 Release gate: Workers AI shared quota or separately verified free endpoint; no paid fallback.
 
-Dependencies: F26. Completion evidence: not yet recorded.
+Dependencies: F26. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
 
 <a id="f28"></a>
 
@@ -579,7 +579,7 @@ Acceptance: Seller creates one offer with price/status/location granularity/cont
 
 Release gate: Seller identity, abuse/reporting and sensitive location controls.
 
-Dependencies: F43, F44, F08. Completion evidence: not yet recorded.
+Dependencies: F43, F44, F08. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
 
 <a id="f37"></a>
 
@@ -859,7 +859,7 @@ Acceptance: External provider remains default; native DNS/HTTP handle proof and 
 
 Release gate: Domain control, recovery and production qualification before hosted accounts.
 
-Dependencies: F03. Completion evidence: not yet recorded.
+Dependencies: F03. Completion evidence: 2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned..
 
 <a id="f57"></a>
 
@@ -873,7 +873,7 @@ Acceptance: Small payloads, resumable reading and explicit pending effects work 
 
 Release gate: Independent local-node deployment/security profile; PDS offline limits shown.
 
-Dependencies: F45, F51. Completion evidence: not yet recorded.
+Dependencies: F45, F51. Completion evidence: 2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned..
 
 <a id="f58"></a>
 
@@ -929,7 +929,7 @@ Acceptance: Eligible corpus retrieves with provenance; language tests measure fa
 
 Release gate: Dataset scope and model suitability; no blanket vendor-training permission.
 
-Dependencies: F27, F42. Completion evidence: not yet recorded.
+Dependencies: F27, F42. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
 
 <a id="f62"></a>
 
@@ -957,7 +957,7 @@ Acceptance: Friend link opens useful sourced content and clearly labeled residen
 
 Release gate: Rights/editorial review and honest test fixture labels.
 
-Dependencies: F15, F25. Completion evidence: not yet recorded.
+Dependencies: F15, F25. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
 
 <a id="f64"></a>
 
@@ -1027,7 +1027,7 @@ Acceptance: One release manifest pins engine/UI/schema/providers/notices, checks
 
 Release gate: No unreviewed dependency license or secret in source.
 
-Dependencies: F01. Completion evidence: not yet recorded.
+Dependencies: F01. Completion evidence: 2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned..
 
 <a id="f69"></a>
 
@@ -1083,4 +1083,4 @@ Acceptance: Every shipped route has loading/empty/error/denied/success states; m
 
 Release gate: Manual device checks and exact recording build receipt.
 
-Dependencies: F06, F22, F67, F68. Completion evidence: not yet recorded.
+Dependencies: F06, F22, F67, F68. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification..

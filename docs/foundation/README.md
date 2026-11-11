@@ -4,6 +4,8 @@ This is the working home of the owner's complete **ETNOS / Strata — A Living C
 
 - [Read the complete foundation](living-commons.md).
 - [Build order, architecture, demo and infrastructure](execution-plan.md).
+- [Portable Linux/Docker/Cloudflare distribution and Watch transplant plan](../portable-commons-and-watch-plan-2026-11-11.md).
+- [Optional OpenCode seeding, Jev decisions and e-means clustering research](../agent-seeding-and-clustering-2026-11-11.md).
 - [Full feature ledger](feature-ledger.md) and [machine-readable records](feature-ledger.json).
 - [Original decision entries and current overrides](decision-ledger.json).
 - [Repository evidence, donor boundaries and research](review-notes.md).
