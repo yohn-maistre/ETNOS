@@ -1,6 +1,6 @@
-# Living commons source checkpoint
+# Living commons release checkpoint
 
-11 November 2026. Source is pushed directly to `main`, as requested. **This is not a hosted deployment receipt.**
+11 November 2026. Source is pushed directly to `main`, as requested. The connected UI, Strata, optional Pi runtime and private WPW model bridge are now deployed to the existing account. Hosted model inference is still awaiting an authenticated operator setup; a connected binding is not evidence of an actual model call.
 
 | Repository | Source checkpoint | Remote checks |
 | --- | --- | --- |
@@ -9,10 +9,18 @@
 
 Strata `apps/web` is the canonical connected frontend. Honai Metro's public `main` now includes the connected UI and current polish in `apps/strata`, with a current quickstart and preserved historical Photon/PieFed donor. Its old Pages deployment is manual, so promoting this branch does not accidentally publish the historical backend client. The connected ETNOS app must ship with its same-origin Strata Worker, not as an unrelated static site.
 
-Local evidence: 113 core tests; nine UI unit tests; root types/worker types and generated binding check; real workerd engine access/rollback/restart and web-origin tests; two native Pi model/tool/helper tests and a real Pi SQLite/named-entrypoint authority test. Focused browser journeys pass source → working note → restricted Wiki proposal, sound/mute/font persistence, safe image failure, reader contents, responsive layout at 320–1920 px, and the 24-case navigation/gradual-theme/private-parent check. Fixtures are explicitly synthetic. No live hosted inference is implied.
+Local evidence: 114 core tests; nine UI unit tests; root types/worker types and generated binding check; real workerd engine access/rollback/restart and web-origin tests; two native Pi model/tool/helper tests and a real Pi SQLite/named-entrypoint authority test. Focused browser journeys pass source → working note → restricted Wiki proposal, sound/mute/font persistence, safe image failure, reader contents, responsive layout at 320–1920 px, and the 24-case navigation/gradual-theme/private-parent check. Fixtures are explicitly synthetic. No live hosted inference is implied.
 
 The optional **embedded Pi resident remains an active foundation deliverable**. Operators should be able to test Strata's own resident without an external harness. The optional external Aksara Core/Node entrance remains separately authorized. Context corrections and revocation fence model use/publication from outside Pi. Source/model provider routes use the configured WPW gateway through a private service entrypoint; no keys were copied into this repository.
 
-Cloudflare plugin was retried and returns `UNAUTHORIZED` / “requires reauthentication”; local Wrangler also reports signed out. Reconnect the existing account before inspecting bindings, backing up hosted state, migrating schema24 and deploying. No temporary account/deployment was created. Qualify the hosted Strata ↔ Pi ↔ WPW binding/bootstrap path and a real resident run after reconnection; keep private language/cultural rooms excluded from the public resident. The WPW bridge has local tests/build evidence but remains an undeployed integration change in its own checkout.
+Cloudflare reauthentication succeeded. Existing Strata durable state was encrypted before deployment: 63 tables, 125 rows and two image blobs. A local restore passed SQLite integrity/foreign-key checks and the real schema19 → schema24 migration; temporary plaintext was removed. Recovery material is ignored and not published. No existing identity, private room or provider key was copied into source.
+
+Deployment receipts (before the native setup follow-up):
+
+- Strata `0cd74dc0-1256-4bf6-9b92-83e0dbe4c34c`, immediate deployment `0197a668-899f-4ca9-ab87-27cfc95da394`; same Strata namespace and OAuth secrets retained. Live `/health` confirms OAuth/open signup/schema-backed Durable Object runtime. Explicit immediate deployment was needed to refresh the old DO environment after a staged closed-signup recovery version.
+- `strata-resident-pi`: deployment `b133dec2d0aa4f8880a64d4bbc8cd0bf`, authority bound to Strata and model gateway to WPW's named private entrypoint; public fetch remains 404.
+- WPW bridge: deployment `8fa60fdd235c4f60b7ce920cca9f6659`. Kept the incumbent live router and appended only the named bridge module, preserving workflows, routes, resources and secrets. Configured gateway routes are reused without reading provider credentials. Source changes remain local in the WPW checkout pending selective publication; its unrelated investigative branch was not pushed.
+
+The Studio native setup follow-up registers/adopts a labelled Aksara through actual AgentAccess checks, limits posting/editorial permissions to 24 hours, caps work at three tasks/day and leaves Wiki acceptance to humans. The operator must already manage a public community with automation enabled. An optional ANTARA Papua RSS source uses title/link-only rights; choosing it requests an initial source-backed job. This action requires the operator's ETNOS application session, not Cloudflare administrative access. Local browser provider responses are synthetic and explicitly labelled as such. No live resident identity, grant or public model-generated post was fabricated for qualification.
 
 The full scope and current refinement remain in [the foundation](foundation/README.md), [implementation checkpoint](implementation-checkpoint-2026-11-11.md) and [post-first design](post-first-design-2026-11-11.md). Next work should use common post/reply interactions for questions, polls, events and offers, connect readable Wiki/discovery to actual eligible content, and complete the native resident/mention path. The X/Lemmy material is a sourced recommender design, not an already deployed For You algorithm.

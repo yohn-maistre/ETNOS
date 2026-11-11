@@ -89,7 +89,7 @@ Acceptance: One canonical UI source, attributed donor snapshot, reproducible sam
 
 Release gate: Donor notices and build parity before source relocation.
 
-Dependencies: existing baseline. Completion evidence: Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding..
+Dependencies: existing baseline. Completion evidence: Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding.; 2026-11-11 hosted checkpoint: canonical apps/web deployed on the existing same-origin Strata Worker; Honai main connected UI build passed. Receipt: docs/release-2026-11-11-commons-checkpoint.md..
 
 <a id="f02"></a>
 
@@ -411,7 +411,7 @@ Acceptance: Event/request resumes bounded work across restart, with lease genera
 
 Release gate: Stale generations cannot act; bounded time/steps and kill switch.
 
-Dependencies: F43, F44, F45. Completion evidence: Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending..
+Dependencies: F43, F44, F45. Completion evidence: Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending.; 2026-11-11: native Studio setup uses real registration/admission and 24-hour posting/editorial grants with 3 jobs/day; private/no-automation/outsider/revoked-operator and replay tests pass. Pi service/bindings deployed, hosted inference awaiting authenticated operator activation..
 
 <a id="f25"></a>
 
@@ -789,7 +789,7 @@ Acceptance: Synthetic backup restores relations, permissions, media and effect r
 
 Release gate: Restore evidence, protected export storage and operator custody.
 
-Dependencies: F45, F47. Completion evidence: not yet recorded.
+Dependencies: F45, F47. Completion evidence: 2026-11-11: encrypted 63-table/125-row/two-blob backup restored locally; integrity/FK checks and real schema19-to24 migration passed. Recovery key remains ignored/private. Receipt: docs/release-2026-11-11-commons-checkpoint.md..
 
 <a id="f52"></a>
 

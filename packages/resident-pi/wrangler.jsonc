@@ -12,5 +12,5 @@
   {"binding":"AUTHORITY","service":"strata-preview","entrypoint":"ResidentAuthority"},
   {"binding":"MODEL_GATEWAY","service":"westpapua-watch-engine","entrypoint":"CommonsIntelligence"}
  ],
- "observability":{"enabled":true,"head_sampling_rate":0.1,"traces":{"enabled":true,"head_sampling_rate":0.1}}
+ "observability":{"enabled":false}
 }

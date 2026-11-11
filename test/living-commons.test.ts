@@ -122,3 +122,24 @@ test('context invalidation shares mutation rollback and does not affect an unrel
   assert.equal(contextEpoch(f.s,f.c.id),0);assert.equal(contextEpoch(f.s,other.id),1)
  }finally{f.s.close()}
 })
+
+test('native resident setup uses real registration, admission and bounded grants without deployment keys, and rolls back denial',async()=>{
+ const now=Date.now(),s=new Strata(':memory:','https://native-setup.example.org',()=>now),owner=s.provision('did:web:native-operator.example','Synthetic operator'),outsider=s.provision('did:web:native-outsider.example','Outside'),room=s.createCommunity(owner.actor.id,'Native resident fixture','Public','public',true,'open'),access=new AgentAccess(s),r=new Resident(s,access,{label:'pi:test',draft:async()=>({text:'A public source-backed finding.',model:'synthetic-route'})}),requestKey=randomUUID()
+ try{
+  const first=r.setup(owner.actor.id,{communityId:room.id,consent:true,includeSource:true,requestKey}),again=r.setup(owner.actor.id,{communityId:room.id,consent:true,includeSource:true,requestKey})
+  assert.equal(first.agentId,again.agentId);assert.equal(s.actor(first.agentId).kind,'agent');assert.equal(s.actor(first.agentId).operator_id,owner.actor.id)
+  assert.equal(s.get<{n:number}>('SELECT count(*) n FROM agent_deployments WHERE agent_id=?',first.agentId)!.n,0)
+  assert.equal(first.expires,s.clock()+86400000);assert.equal(s.get<{role:string}>('SELECT role FROM memberships WHERE community_id=? AND actor_id=?',room.id,first.agentId)!.role,'member')
+  assert.equal(first.config!.daily_limit,3);assert.equal(first.config!.mentions_enabled,0);assert.equal(first.config!.enabled,1)
+  assert.equal(new Discovery(s).sources(owner.actor.id,room.id)[0].rights,'link-only')
+  assert.throws(()=>r.setup(outsider.actor.id,{communityId:room.id,consent:true,requestKey:randomUUID()}),/permission|member|steward|Not found/i)
+  assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,requestKey:randomUUID()}),/consent/)
+  assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,consent:true,requestKey:randomUUID()}),/already configured/)
+  const privateRoom=s.createCommunity(owner.actor.id,'Protected native fixture','Private language data','hidden-private',true),paused=s.createCommunity(owner.actor.id,'No automation','Public','public',false)
+  for(const c of [privateRoom,paused])assert.throws(()=>r.setup(owner.actor.id,{communityId:c.id,consent:true,requestKey:randomUUID()}))
+  assert.equal(s.get<{n:number}>('SELECT count(*) n FROM agent_registrations')!.n,1)
+  assert.equal(s.get<{n:number}>('SELECT count(*) n FROM resident_configs')!.n,1)
+  s.run('UPDATE memberships SET active=0 WHERE community_id=? AND actor_id=?',room.id,owner.actor.id)
+  assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,consent:true,includeSource:true,requestKey}))
+ }finally{s.close()}
+})

@@ -32,6 +32,31 @@ export class Resident{
   else if(skill)s.checkWrite(c.agent_id,c.community_id,c.posting_mandate_id,false)
  }
  get(actorId:string,communityId:string){publicSteward(this.store,actorId,communityId);const config=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId)??null;let ready=false,reason:string|null=null;if(config)try{this.current(config);ready=true}catch(error){reason=error instanceof Fault?error.message:'Resident unavailable'}return {config,ready,reason,provider:this.provider?.label??'source-linked, model-free',skills}}
+ /** Native installation uses the same registration, admission and grant checks
+  * as external agents. No deployment key, private source or review authority. */
+ setup(actorId:string,b:Record<string,unknown>){
+  const communityId=text(b.communityId,100),includeSource=b.includeSource===true
+  if(b.consent!==true)throw new Fault(400,'Explicit resident setup consent required')
+  return transition(this.store,actorId,b.requestKey,'resident.setup',{communityId,includeSource},()=>{
+   publicSteward(this.store,actorId,communityId)
+   if(!this.provider)throw new Fault(503,'The built-in resident runtime is not configured')
+   if(!this.store.community(communityId).automation)throw new Fault(409,'Enable community automation in community settings first')
+  },()=>{
+   const s=this.store
+   if(s.get('SELECT 1 FROM resident_configs WHERE community_id=?',communityId))throw new Fault(409,'A resident is already configured; manage its current identity and grants')
+   const agent=this.access.enroll(actorId,{communityId,name:'Aksara',family:'aksara',role:'steward'}),expires=s.clock()+86400000
+   this.access.admit(actorId,agent.agent_id)
+   const posting=this.access.grant(actorId,agent.agent_id,{kind:'posting',purpose:'Built-in resident: source-linked public conversation',expires,hourlyLimit:3}),editorial=this.access.grant(actorId,agent.agent_id,{kind:'editorial',purpose:'Built-in resident: working knowledge proposals; human review remains required',expires,hourlyLimit:3})
+   let sourceId:string|null=null
+   if(includeSource){
+    const d=new Discovery(s),url='https://papua.antaranews.com/rss/terkini.xml',prior=s.get<{id:string}>('SELECT id FROM discovery_sources WHERE community_id=? AND url=? AND state!=?',communityId,url,'withdrawn')
+    sourceId=prior?.id??d.add(actorId,{communityId,title:'ANTARA Papua',url,rights:'link-only',mode:'news',kind:'news',requestKey:hash(key(b.requestKey))+':source'}).id
+   }
+   const configured=this.configure(actorId,{communityId,agentId:agent.agent_id,enabled:true,dailyLimit:3,intervalMinutes:360,postingMandateId:posting.id,editorialMandateId:editorial.id,requestKey:hash(key(b.requestKey))+':config'})
+   emit(s,actorId,'resident.setup',{kind:'agent-job',id:communityId,revision:configured.config!.revision,communityId})
+   return {agentId:agent.agent_id,expires,sourceId,...configured}
+  })
+ }
  configure(actorId:string,b:Record<string,unknown>){
   const communityId=text(b.communityId,100),agentId=text(b.agentId,100),dailyLimit=Number(b.dailyLimit??3),interval=Number(b.intervalMinutes??360)
   if(typeof b.enabled!=='boolean'||!Number.isInteger(dailyLimit)||dailyLimit<1||dailyLimit>5||!Number.isInteger(interval)||interval<60||interval>10080)throw new Fault(400,'Choose 1–5 jobs/day and an interval of at least one hour')

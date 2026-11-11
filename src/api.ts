@@ -165,6 +165,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='edit')result=knowledge.update(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='withdraw')result=knowledge.withdraw(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='promote')result=knowledge.promote(caller,parts[2],b)
+      else if(path==='/v1/resident/setup')result=resident.setup(caller,b)
       else if(path==='/v1/resident/config')result=resident.configure(caller,b)
       else if(path==='/v1/resident/jobs')result=resident.enqueue(caller,string(b.communityId),string(b.skill) as ResidentSkill,string(b.requestKey))
       else if(parts.length===5&&parts[1]==='resident'&&parts[2]==='jobs'&&parts[4]==='run'){resident.job(caller,parts[3]);result=await resident.run(parts[3],()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req);resident.job(caller,parts[3])})}
