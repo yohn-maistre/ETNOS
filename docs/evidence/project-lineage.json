@@ -1,0 +1,157 @@
+{
+  "retrieved": "2026-11-11",
+  "timezone": "Asia/Bangkok",
+  "source": "Authenticated GitHub repository metadata and commit API; no history mutations",
+  "publication": "Contains private repository metadata; keep in the private evidence ledger and redact from any public export unless separately authorized",
+  "repositories": [
+    {
+      "name": "etnos-landing-page",
+      "html_url": "https://github.com/yohn-maistre/etnos-landing-page",
+      "description": null,
+      "created_at": "2023-08-20T03:09:50Z",
+      "pushed_at": "2023-08-20T03:10:46Z",
+      "default_branch": "main",
+      "private": false,
+      "fork": false,
+      "size": 14137,
+      "historyQueryUntil": "2024-01-01T00:00:00Z",
+      "commits": [
+        {
+          "sha": "7b8af782cbd59a9cf91e551750d9bc565f4c53c9",
+          "authored": "2023-06-18T22:08:15Z",
+          "committed": "2023-06-18T22:08:15Z",
+          "subject": "starters: add google_tag_manager and microsoft_clarity to default config (#2955)",
+          "url": "https://github.com/yohn-maistre/etnos-landing-page/commit/7b8af782cbd59a9cf91e551750d9bc565f4c53c9"
+        },
+        {
+          "sha": "521f33f37808fe10af6bf7525a812d797eef5679",
+          "authored": "2023-05-01T16:15:13Z",
+          "committed": "2023-05-01T16:15:13Z",
+          "subject": "fix: GitHub deprecated GH Actions Node version",
+          "url": "https://github.com/yohn-maistre/etnos-landing-page/commit/521f33f37808fe10af6bf7525a812d797eef5679"
+        },
+        {
+          "sha": "0f502721c0c14ab064b98916992fa9c5e6595637",
+          "authored": "2022-09-25T21:05:15Z",
+          "committed": "2022-09-25T21:05:15Z",
+          "subject": "docs: fix broken links",
+          "url": "https://github.com/yohn-maistre/etnos-landing-page/commit/0f502721c0c14ab064b98916992fa9c5e6595637"
+        },
+        {
+          "sha": "540c3f7262a13c57ea7ab8dfc43501e286d15d18",
+          "authored": "2022-09-16T18:42:25Z",
+          "committed": "2022-09-16T18:42:25Z",
+          "subject": "feat: add GitHub Discussions as a comment provider via Giscus (#2830)",
+          "url": "https://github.com/yohn-maistre/etnos-landing-page/commit/540c3f7262a13c57ea7ab8dfc43501e286d15d18"
+        }
+      ]
+    },
+    {
+      "name": "basehub-etnos-landing-page",
+      "html_url": "https://github.com/yohn-maistre/basehub-etnos-landing-page",
+      "description": null,
+      "created_at": "2024-11-18T06:58:53Z",
+      "pushed_at": "2024-11-18T06:58:59Z",
+      "default_branch": "main",
+      "private": true,
+      "fork": false,
+      "size": 135
+    },
+    {
+      "name": "meepago-etnos",
+      "html_url": "https://github.com/yohn-maistre/meepago-etnos",
+      "description": "A custom web client for Meepago's Lemmy instance, based on xyphyn/photon.",
+      "created_at": "2025-03-04T22:30:14Z",
+      "pushed_at": "2025-03-09T18:57:08Z",
+      "default_branch": "main",
+      "private": true,
+      "fork": false,
+      "size": 1078,
+      "historyQueryUntil": "2025-04-01T00:00:00Z",
+      "commits": [
+        {
+          "sha": "fa6f794f8b57f106a962e394fdb81e931418a624",
+          "authored": "2025-03-09T18:56:59Z",
+          "committed": "2025-03-09T18:56:59Z",
+          "subject": "pruned code",
+          "url": "https://github.com/yohn-maistre/meepago-etnos/commit/fa6f794f8b57f106a962e394fdb81e931418a624"
+        },
+        {
+          "sha": "9a8c51e876cab0b9f0f9ea858462c9a0e84ba82a",
+          "authored": "2025-03-05T18:16:48Z",
+          "committed": "2025-03-05T18:16:48Z",
+          "subject": "instance_url fix",
+          "url": "https://github.com/yohn-maistre/meepago-etnos/commit/9a8c51e876cab0b9f0f9ea858462c9a0e84ba82a"
+        },
+        {
+          "sha": "ea7d686e1617bd6e3eb08146478b05dd0fb7b7a7",
+          "authored": "2025-03-05T17:34:28Z",
+          "committed": "2025-03-05T17:34:28Z",
+          "subject": "instance_url fix",
+          "url": "https://github.com/yohn-maistre/meepago-etnos/commit/ea7d686e1617bd6e3eb08146478b05dd0fb7b7a7"
+        },
+        {
+          "sha": "14615242b8e4265655aad6b52cb8f9b27d2ac5f5",
+          "authored": "2025-03-05T10:32:46Z",
+          "committed": "2025-03-05T10:32:46Z",
+          "subject": "polishing",
+          "url": "https://github.com/yohn-maistre/meepago-etnos/commit/14615242b8e4265655aad6b52cb8f9b27d2ac5f5"
+        }
+      ]
+    },
+    {
+      "name": "saireri-etnos",
+      "html_url": "https://github.com/yohn-maistre/saireri-etnos",
+      "description": null,
+      "created_at": "2025-03-09T19:09:37Z",
+      "pushed_at": "2025-03-09T19:16:29Z",
+      "default_branch": "main",
+      "private": false,
+      "fork": false,
+      "size": 1067,
+      "historyQueryUntil": "2025-04-01T00:00:00Z",
+      "commits": [
+        {
+          "sha": "2637f83139e0f51ccbf82efb6332e5336b7b9c7c",
+          "authored": "2025-03-09T19:14:11Z",
+          "committed": "2025-03-09T19:14:11Z",
+          "subject": "init",
+          "url": "https://github.com/yohn-maistre/saireri-etnos/commit/2637f83139e0f51ccbf82efb6332e5336b7b9c7c"
+        }
+      ]
+    },
+    {
+      "name": "honai-metro",
+      "html_url": "https://github.com/yohn-maistre/honai-metro",
+      "description": "A Papua-themed fediverse client, forked from Photon.",
+      "created_at": "2026-03-17T19:49:09Z",
+      "pushed_at": "2026-11-11T12:39:08Z",
+      "default_branch": "main",
+      "private": false,
+      "fork": false,
+      "size": 19951
+    },
+    {
+      "name": "etnos-infra",
+      "html_url": "https://github.com/yohn-maistre/etnos-infra",
+      "description": "Reproducible Oracle Cloud and PieFed infrastructure for ETNOS",
+      "created_at": "2026-07-21T00:26:06Z",
+      "pushed_at": "2026-07-21T02:14:22Z",
+      "default_branch": "main",
+      "private": true,
+      "fork": false,
+      "size": 22
+    },
+    {
+      "name": "strata",
+      "html_url": "https://github.com/yohn-maistre/strata",
+      "description": null,
+      "created_at": "2026-10-31T16:59:39Z",
+      "pushed_at": "2026-11-11T12:42:57Z",
+      "default_branch": "main",
+      "private": true,
+      "fork": false,
+      "size": 2052
+    }
+  ]
+}

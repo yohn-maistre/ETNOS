@@ -411,6 +411,86 @@
         "D38"
       ],
       "interpretation": "Supersedes A08 font default only. Current official OpenCode free-chat restriction and e-means numerical clustering benchmarks are documented, not assumed as keyless hosted entitlement or authority over regional/institutional structure. Details: ../portable-commons-and-watch-plan-2026-11-11.md and ../agent-seeding-and-clustering-2026-11-11.md."
+    },
+    {
+      "id": "A10",
+      "date": "2026-11-11",
+      "source": "Owner selects Paper default, clearer private messages icon and softer compose entries",
+      "decision": "Paper becomes the fresh base; retain Jakarta + Geist Serif, sky accent, saved choices and gradual themes. Use MessagesSquare for private inbox and softer tinted/outlined compose entry buttons.",
+      "affects": [
+        "D08",
+        "D11",
+        "D33"
+      ],
+      "interpretation": "Selected next UI work, not deployed by this documentation pass. Final submit can stay strong; preserve accessible targets."
+    },
+    {
+      "id": "A11",
+      "date": "2026-11-11",
+      "source": "Owner requests popped-out login/welcome with optional place illustration and planning before artwork",
+      "decision": "Reuse accessible Dialog/LoginForm and real AT provider OAuth for dismissible Home welcome/auth. Preserve public deep links, direct login/recovery and safe callback returns. Optional original landscape print after forthcoming references; no-art fallback.",
+      "affects": [
+        "D09",
+        "D33",
+        "D36"
+      ],
+      "interpretation": "No new email/password identity backend, mandatory image generator or artwork generated in this planning pass. Small portable branding asset contract rather than per-visitor generation."
+    },
+    {
+      "id": "A12",
+      "date": "2026-11-11",
+      "source": "Owner living-culture and sustainability side chat, preserved verbatim with SHA256 manifest",
+      "decision": "Support contemporary everyday participation, attributed working knowledge, reviewed Wiki and method-labelled community reports. Free basic offers and requests; validate managed hosting/setup/support, optional merchant tools and disclosed contextual placements.",
+      "affects": [
+        "D01",
+        "D06",
+        "D13",
+        "D16",
+        "D17",
+        "D20",
+        "D26",
+        "D35",
+        "D36"
+      ],
+      "interpretation": "Source-backed starting points can appear under explicit community policy without line-by-line review; accepted Wiki remains human-reviewed. Self-selected polls are not representative surveys. Revenue hypotheses are not paying-customer evidence or authority for private-data targeting."
+    },
+    {
+      "id": "A13",
+      "date": "2026-11-11",
+      "source": "Owner explicitly requests e-means implementation right away after earlier recommendation to defer",
+      "decision": "Implement actual optional upstream Faiss CPU e-means now behind the clustering port, with versioned public embeddings and fit/assign receipts; retain current authority and evidence checks.",
+      "affects": [
+        "D14",
+        "D29",
+        "D32",
+        "D38"
+      ],
+      "interpretation": "Supersedes timing in the earlier clustering note, not the governance model. No k-means stage currently exists to swap. Native training requires an explicit CPU host/batch; no compulsory GPU/paid container. Not installed by this planning pass."
+    },
+    {
+      "id": "A14",
+      "date": "2026-11-11",
+      "source": "Owner allows experimental OpenCode or omission and suggests authenticated MCP instead",
+      "decision": "Use the existing authenticated MCP entrance as the harness-neutral external agent port; OpenCode stays optional/experimental and may be omitted. Retain optional embedded Pi and independent institutional Aksara custody.",
+      "affects": [
+        "D02",
+        "D03",
+        "D25",
+        "D27",
+        "D31"
+      ],
+      "interpretation": "A harness/free model does not grant source, community or institutional authority. No keyless entitlement or external successful job is assumed."
+    },
+    {
+      "id": "A15",
+      "date": "2026-11-11",
+      "source": "Owner clarifies continuing project since 2023/2025 and requests a concise evidence selection without landing/Basehub links",
+      "decision": "Present the continuing ETNOS project with March Honai artifacts, a small optional 2025 forum-fork reference and the current demo/engine. Keep landing/Basehub links out of the judge-facing selection and detailed metadata internal.",
+      "affects": [
+        "D33",
+        "D38"
+      ],
+      "interpretation": "Credit Photon and other actual upstream reuse; preserve original dated records. Use a small project-index repo/page if useful, without a monorepo migration or automatic publication. No new index repository or invitations in this pass."
     }
   ]
 }

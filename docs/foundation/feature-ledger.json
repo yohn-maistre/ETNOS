@@ -95,7 +95,9 @@
       "acceptance": "New user creates provider account, returns through verified OAuth and enrolls without invite or automatic private membership",
       "release_gate": "Second real-user completion and recovery qualification",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 owner-selected plan (not implementation qualification): Existing provider OAuth to accessible dismissible welcome/login dialog; direct login/recovery and public deep links retained. No new PDS/account backend. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
+      ],
       "decisions": [
         "D07",
         "D08",
@@ -130,7 +132,8 @@
       "release_gate": "Preserve 40px-or-larger menu targets and reduced motion",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass."
+        "Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Paper fresh default, distinct MessagesSquare private inbox and softer compose entry buttons; preserve saved choices, Jakarta + Geist Serif, sky accent and gradual themes. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D05",
@@ -514,7 +517,8 @@
       "release_gate": "No automatic promotion to accepted Wiki or official claim",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "Local checkpoint 2026-11-11: Local knowledge.ts notes/revisions/private membership filters and human Wiki promotion; source-to-note browser flow passes."
+        "Local checkpoint 2026-11-11: Local knowledge.ts notes/revisions/private membership filters and human Wiki promotion; source-to-note browser flow passes.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Make existing source-backed working notes visible as provisional starting points, with attributed contributions and the human-reviewed promotion path. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D13",
@@ -614,7 +618,9 @@
       "acceptance": "Document, observation and permitted oral account can coexist; claims show uncertainty/contradiction without popularity-to-truth conversion",
       "release_gate": "Interviews/recordings require source-specific consent/use policy",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 owner-selected plan (not implementation qualification): Distinguish source-linked working notes, attributed accounts, reviewed reference and participation reports; preserve temporal scope, disagreement and correction. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
+      ],
       "decisions": [
         "D06",
         "D13",
@@ -689,7 +695,8 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete.",
-        "2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test."
+        "2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Contemporary culture/period pages reuse Wiki revisions and dated evidence; avoid a duplicate page per year or accepted discovery containing provisional drafts. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D07",
@@ -869,7 +876,8 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending.",
-        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Existing authenticated MCP is the harness-neutral external port; OpenCode is experimental/omittable; embedded Pi remains selected. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D02",
@@ -1109,7 +1117,8 @@
       "release_gate": "Current community membership/vote eligibility",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "Local checkpoint 2026-11-11: Owner refined to ordinary typed posts and shared replies; current polls remain. No separate mandatory Discussion product; event/question slices remain pending."
+        "Local checkpoint 2026-11-11: Owner refined to ordinary typed posts and shared replies; current polls remain. No separate mandatory Discussion product; event/question slices remain pending.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Weekly questions/reports reuse posts/polls/replies, preserve method, response scope, disagreements and actual follow-through; no claim of population representativeness. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D05",
@@ -1195,7 +1204,8 @@
       "release_gate": "Seller identity, abuse/reporting and sensitive location controls",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Canonical offers and requests share provider/place/contact/status data and existing post/reply projections; basic listings free, actual contact before payments claims. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D07",
@@ -2016,7 +2026,8 @@
       "release_gate": "Dataset scope and model suitability; no blanket vendor-training permission",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled."
+        "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Immediate real upstream CPU Faiss e-means adapter selected, replacing the earlier wait-for-scale timing. Public versioned embeddings, actual fit/assign receipt, current eligibility and human corrections; no inferred institutional/region authority. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D03",
@@ -2165,7 +2176,9 @@
       "acceptance": "Actual hosting/model burden and optional support/training/fees are transparent and independent of editorial authority",
       "release_gate": "No purchased verification, source prominence or institutional legitimacy",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-11 owner-selected plan (not implementation qualification): Validate paid setup/support and managed spaces, optional merchant tools and disclosed contextual placements around a free commons. Track human operating costs; no invented revenue or pay-for-authority. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
+      ],
       "decisions": [
         "D04",
         "D07",
@@ -2275,7 +2288,8 @@
       "release_gate": "No unreviewed dependency license or secret in source",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned."
+        "2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned.",
+        "2026-11-11 owner-selected plan (not implementation qualification): Concise continuing-project evidence: March Honai changes plus optional credited 2025 forum forks and current build; omit landing/Basehub links from judge-facing selection; retain detailed internal provenance. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
       ],
       "decisions": [
         "D02",

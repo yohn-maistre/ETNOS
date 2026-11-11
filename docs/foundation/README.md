@@ -4,6 +4,8 @@ This is the working home of the owner's complete **ETNOS / Strata — A Living C
 
 - [Read the complete foundation](living-commons.md).
 - [Build order, architecture, demo and infrastructure](execution-plan.md).
+- [Current living-culture, sustainability, welcome/auth and e-means selection](living-culture-refinement-2026-11-11.md).
+- [ETNOS project lineage and concise demonstration evidence](../evidence/README.md).
 - [Portable Linux/Docker/Cloudflare distribution and Watch transplant plan](../portable-commons-and-watch-plan-2026-11-11.md).
 - [Optional OpenCode seeding, Jev decisions and e-means clustering research](../agent-seeding-and-clustering-2026-11-11.md).
 - [Full feature ledger](feature-ledger.md) and [machine-readable records](feature-ledger.json).
@@ -25,4 +27,6 @@ Run `python scripts/check-foundation.py` after edits. Run repository-required ch
 
 After editing the canonical feature JSON, regenerate its readable index with `python scripts/render-foundation.py`. To export an updated DOCX and a review bundle, install optional `python-docx`/`lxml` in the document tooling environment, then run `python scripts/export-foundation.py --source /path/to/unchanged-original.docx --output-dir /path/to/review-bundle`. The exporter verifies the original hash and preserves every original body element before appending the current plan. It does not deploy or publish anything.
 
-The initial planning branch is `plan/living-commons-2026-11-11`, based on engine `3a6ed617b7a3f5038f542cd548d28e502306fe27`. The connected UI baseline is Honai `f489846`. No runtime deployment is implied by this planning checkpoint. Publishing the complete uploaded strategy to a public repository is separate from maintaining this local, reviewable edition.
+Historical starting point: the initial planning branch was `plan/living-commons-2026-11-11`, based on engine `3a6ed617b7a3f5038f542cd548d28e502306fe27`. The connected UI baseline is Honai `f489846`. No runtime deployment is implied by this planning checkpoint. Publishing the complete uploaded strategy to a public repository is separate from maintaining this local, reviewable edition.
+
+Current canonical UI: Strata `apps/web`, mirrored to Honai Metro main `apps/strata`. [Latest deployed reading pass](../ui-reading-pass-2026-11-11.md) records matched engine/UI and focused qualification. The living execution plan identifies the next unimplemented selections separately. The supplied [sustainability side chat](supplements/2026-11-11-sustainability-side-chat.txt) is preserved verbatim with its own [hash manifest](supplements/2026-11-11-sustainability-side-chat.manifest.json).

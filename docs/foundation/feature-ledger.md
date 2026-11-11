@@ -117,7 +117,7 @@ Acceptance: New user creates provider account, returns through verified OAuth an
 
 Release gate: Second real-user completion and recovery qualification.
 
-Dependencies: existing baseline. Completion evidence: not yet recorded.
+Dependencies: existing baseline. Completion evidence: 2026-11-11 owner-selected plan (not implementation qualification): Existing provider OAuth to accessible dismissible welcome/login dialog; direct login/recovery and public deep links retained. No new PDS/account backend. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f04"></a>
 
@@ -131,7 +131,7 @@ Acceptance: Compact readable desktop/mobile sidebar, Settings near account foote
 
 Release gate: Preserve 40px-or-larger menu targets and reduced motion.
 
-Dependencies: F01. Completion evidence: Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass..
+Dependencies: F01. Completion evidence: Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass.; 2026-11-11 owner-selected plan (not implementation qualification): Paper fresh default, distinct MessagesSquare private inbox and softer compose entry buttons; preserve saved choices, Jakarta + Geist Serif, sky accent and gradual themes. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f05"></a>
 
@@ -299,7 +299,7 @@ Acceptance: People add a note, memory, question, correction or source with minim
 
 Release gate: No automatic promotion to accepted Wiki or official claim.
 
-Dependencies: F43, F44. Completion evidence: Local checkpoint 2026-11-11: Local knowledge.ts notes/revisions/private membership filters and human Wiki promotion; source-to-note browser flow passes..
+Dependencies: F43, F44. Completion evidence: Local checkpoint 2026-11-11: Local knowledge.ts notes/revisions/private membership filters and human Wiki promotion; source-to-note browser flow passes.; 2026-11-11 owner-selected plan (not implementation qualification): Make existing source-backed working notes visible as provisional starting points, with attributed contributions and the human-reviewed promotion path. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f17"></a>
 
@@ -341,7 +341,7 @@ Acceptance: Document, observation and permitted oral account can coexist; claims
 
 Release gate: Interviews/recordings require source-specific consent/use policy.
 
-Dependencies: F43. Completion evidence: not yet recorded.
+Dependencies: F43. Completion evidence: 2026-11-11 owner-selected plan (not implementation qualification): Distinguish source-linked working notes, attributed accounts, reviewed reference and participation reports; preserve temporal scope, disagreement and correction. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f20"></a>
 
@@ -369,7 +369,7 @@ Acceptance: Related pages, translations, source links and place/language journey
 
 Release gate: Avoid duplicating sensitive metadata in public related-page lists.
 
-Dependencies: F17, F05. Completion evidence: Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete.; 2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test..
+Dependencies: F17, F05. Completion evidence: Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete.; 2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test.; 2026-11-11 owner-selected plan (not implementation qualification): Contemporary culture/period pages reuse Wiki revisions and dated evidence; avoid a duplicate page per year or accepted discovery containing provisional drafts. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f22"></a>
 
@@ -439,7 +439,7 @@ Acceptance: Built-in runner and external harness use one typed tool/job/artifact
 
 Release gate: No arbitrary shell or global database/network tool by default.
 
-Dependencies: F24. Completion evidence: Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending.; 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
+Dependencies: F24. Completion evidence: Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending.; 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.; 2026-11-11 owner-selected plan (not implementation qualification): Existing authenticated MCP is the harness-neutral external port; OpenCode is experimental/omittable; embedded Pi remains selected. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f27"></a>
 
@@ -537,7 +537,7 @@ Acceptance: Casual question and poll are easy; accessible results and discussion
 
 Release gate: Current community membership/vote eligibility.
 
-Dependencies: F07. Completion evidence: Local checkpoint 2026-11-11: Owner refined to ordinary typed posts and shared replies; current polls remain. No separate mandatory Discussion product; event/question slices remain pending..
+Dependencies: F07. Completion evidence: Local checkpoint 2026-11-11: Owner refined to ordinary typed posts and shared replies; current polls remain. No separate mandatory Discussion product; event/question slices remain pending.; 2026-11-11 owner-selected plan (not implementation qualification): Weekly questions/reports reuse posts/polls/replies, preserve method, response scope, disagreements and actual follow-through; no claim of population representativeness. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f34"></a>
 
@@ -579,7 +579,7 @@ Acceptance: Seller creates one offer with price/status/location granularity/cont
 
 Release gate: Seller identity, abuse/reporting and sensitive location controls.
 
-Dependencies: F43, F44, F08. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
+Dependencies: F43, F44, F08. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.; 2026-11-11 owner-selected plan (not implementation qualification): Canonical offers and requests share provider/place/contact/status data and existing post/reply projections; basic listings free, actual contact before payments claims. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f37"></a>
 
@@ -929,7 +929,7 @@ Acceptance: Eligible corpus retrieves with provenance; language tests measure fa
 
 Release gate: Dataset scope and model suitability; no blanket vendor-training permission.
 
-Dependencies: F27, F42. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled..
+Dependencies: F27, F42. Completion evidence: 2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.; 2026-11-11 owner-selected plan (not implementation qualification): Immediate real upstream CPU Faiss e-means adapter selected, replacing the earlier wait-for-scale timing. Public versioned embeddings, actual fit/assign receipt, current eligibility and human corrections; no inferred institutional/region authority. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f62"></a>
 
@@ -985,7 +985,7 @@ Acceptance: Actual hosting/model burden and optional support/training/fees are t
 
 Release gate: No purchased verification, source prominence or institutional legitimacy.
 
-Dependencies: F36, F48. Completion evidence: not yet recorded.
+Dependencies: F36, F48. Completion evidence: 2026-11-11 owner-selected plan (not implementation qualification): Validate paid setup/support and managed spaces, optional merchant tools and disclosed contextual placements around a free commons. Track human operating costs; no invented revenue or pay-for-authority. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f66"></a>
 
@@ -1027,7 +1027,7 @@ Acceptance: One release manifest pins engine/UI/schema/providers/notices, checks
 
 Release gate: No unreviewed dependency license or secret in source.
 
-Dependencies: F01. Completion evidence: 2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned..
+Dependencies: F01. Completion evidence: 2026-11-11 plan: docs/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned.; 2026-11-11 owner-selected plan (not implementation qualification): Concise continuing-project evidence: March Honai changes plus optional credited 2025 forum forks and current build; omit landing/Basehub links from judge-facing selection; retain detailed internal provenance. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
 
 <a id="f69"></a>
 
