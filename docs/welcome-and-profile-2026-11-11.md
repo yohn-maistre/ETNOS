@@ -22,7 +22,7 @@ Tigi is first. The next actual page visit that opens auth chooses the next curat
 
 ## Composer and profile
 
-Paper is the fresh base; saved explicit choices and Jakarta + Geist Serif remain. Private inbox/profile message actions use MessagesSquare. Compose entry buttons use a restrained tinted/outlined treatment while final submit remains strong. The composer has a spring entrance, clearer identity/destination grouping, a grounded toolbar with accessible labels and a direct native event action. Polls/events retain their existing typed post payloads and permissions.
+Paper is the fresh base; saved explicit choices and Jakarta + Geist Serif remain. Private inbox/profile message actions use MessagesSquare. The latest owner refinement restores solid accent compose entry buttons, with a compact desktop sidebar footprint; final submit remains strong. The composer has a spring entrance, clearer identity/destination grouping, a grounded toolbar with accessible labels and a direct native event action. Polls/events retain their existing typed post payloads and permissions.
 
 Profiles use deterministic decorative print covers without inferring a home/ethnicity, existing public bio/place/website fields and the existing real profile editor. No fabricated statistics or new profile publishing rights. Feed and profile ends reuse the existing decorative landscape, with additional space outside rounded reading frames and mobile safe-area clearance.
 
@@ -38,3 +38,5 @@ Local qualification passed:
 Build retains the existing large-chunk and upstream crypto annotations warnings. Encryption libraries were not changed by this UI slice. Browser evidence is retained under `/tmp/strata-browser-evidence/`; it contains synthetic local records only. Exact source/deployment revisions follow the release. Synthetic browser people/content remain local and never provision a hosted account. The real-provider signup fixture uses the official OAuth SDK with a synthetic provider; it does not claim a newly created live Bluesky account.
 
 12 November follow-up: removed the inherited global Ctrl/Cmd+B sidebar toggle and exposed the actual formatting editor as a front-row Format action. Targeted production browser checks verified real selected-text bold formatting without collapsing navigation, actual native event creation, and component scrollbar activity/idle reset with zero page errors. Main-page scroll position stays visible. Full editor/rail redesign and the remaining connected demo are in [writing/context](writing-and-context-plan-2026-11-12.md) and [demo sequence](demo-release-next-2026-11-12.md).
+
+Final 12 November appearance refinement: solid accent compose actions are restored. The desktop sidebar action is compact rather than stretched; mobile keeps its touch target. A focused production-build probe checks solid colour and overflow at 320, 390, 768, 1100, 1440 and 1920px.

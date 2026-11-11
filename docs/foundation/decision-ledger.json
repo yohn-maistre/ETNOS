@@ -505,6 +505,18 @@
         "D36"
       ],
       "interpretation": "Reduced motion skips the morph, dismissal/public deep links remain usable, and existing provider OAuth/admission checks remain authoritative. Art does not autoplay or imply the profile owner comes from a depicted place. Source photos are reference inputs; generated illustrations ship as local assets, with optional operator/no-art configuration."
+    },
+    {
+      "id": "A17",
+      "date": "2026-11-12",
+      "source": "Owner clarifies solid compose buttons were preferred; the concern was elongated size. Final scrollbar clarification preserves main-page position and permits component auto-hide.",
+      "decision": "Restore solid accent compose actions and use a compact desktop sidebar entry. Main-page scrollbar keeps a translucent thumb and transparent track with native arrows where available; component thumbs return on hover, focus or scroll and may hide when idle.",
+      "affects": [
+        "D08",
+        "D11",
+        "D33"
+      ],
+      "interpretation": "Supersedes A10’s tinted/outlined compose treatment only. Preserve Paper, Jakarta pairing, saved appearance, welcome/profile artwork and the existing real editor. Do not revert unrelated implemented flows."
     }
   ]
 }
