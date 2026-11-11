@@ -14,6 +14,7 @@ import {Decisions,type DecisionProvider} from './decisions.ts'
 import {AgentAccess} from './agent-access.ts'
 import { capabilities } from './capabilities.ts'
 import {Discovery,type SourceFetcher} from './discovery.ts'
+import {Ranking} from './ranking.ts'
 import {Clustering} from './clustering.ts'
 import {Knowledge} from './knowledge.ts'
 import {Resident,type ResidentProvider,type ResidentSkill} from './resident.ts'
@@ -80,6 +81,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/discovery/sources')result=discovery.sources(authenticated(),string(url.searchParams.get('community')))
         else if(path==='/v1/discovery/items')result=discovery.items(actor?.id,url.searchParams.get('community')??undefined,url.searchParams.get('review')==='true')
         else if(parts.length===4&&parts[1]==='discovery'&&parts[2]==='items')result=discovery.item(parts[3],actor?.id,url.searchParams.get('review')==='true')
+        else if(path==='/v1/discovery/posts')result=new Ranking(store).explore({sort:url.searchParams.get('sort')??undefined,limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined,communityId:url.searchParams.get('community')??undefined})
         else if(path==='/v1/clustering/snapshot')result=clustering.snapshot(authenticated(),string(url.searchParams.get('community')))
         else if(parts.length===4&&parts[1]==='discovery'&&parts[2]==='related')result=clustering.related(parts[3])
         else if(path==='/v1/knowledge')result=knowledge.list(actor?.id,url.searchParams.get('community')??undefined)

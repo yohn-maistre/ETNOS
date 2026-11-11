@@ -124,7 +124,7 @@ export class Resident{
     recheckSession();const config=this.recheck(job),references=evidence.map(e=>e.url),body=safe+'\n\nSumber:\n'+references.join('\n')
     let resultKind:string,resultId:string
     if(job.skill==='knowledge-draft'){
-     const note=new Knowledge(s).create(job.agent_id,{communityId:job.community_id,title:evidence[0].title,text:body,kind:'source-comparison',citations:references,language:'id',evidenceIds:evidence.map(e=>e.id),editorialMandateId:config.editorial_mandate_id,requestKey:'resident-note:'+id})
+     const note=new Knowledge(s).create(job.agent_id,{communityId:job.community_id,title:evidence[0].title,text:safe,kind:'source-comparison',citations:references,language:'id',evidenceIds:evidence.map(e=>e.id),editorialMandateId:config.editorial_mandate_id,requestKey:'resident-note:'+id})
      if(config.announce_knowledge){
       // Note, native announcement/outbox and job result commit atomically.
       const link=s.base+'/wiki/notes/'+note.id

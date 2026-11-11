@@ -14,6 +14,7 @@ test('actual web Worker: canonical API, recovery-only legacy surface, no legacy 
 
   const fixture=JSON.parse(await(await mf.getDurableObjectNamespace('STRATA')).getByName('test-only').seed())
   const growing=await (await fetch(canonical+'/v1/wiki/growing')).json();assert.equal(growing.length,1);assert.equal(growing[0].review,'provisional');assert.equal(growing[0].id,fixture.note.id);assert.doesNotMatch(JSON.stringify(growing),/Protected language|Never public protected/)
+  const ranked=await (await fetch(canonical+'/v1/discovery/posts?sort=balanced&limit=4')).json();assert.equal(ranked.recipe,'commons-explore-v1');assert.equal(ranked.items.length,1);assert.equal(ranked.items[0].id,fixture.post.id);assert.doesNotMatch(JSON.stringify(ranked),/Never public runtime secret/)
   for(const [path,title] of [['/square/'+fixture.post.id,'Runtime public conversation'],['/people/'+fixture.owner.actor.id,'Runtime author'],['/communities/'+fixture.pub.id,'Public runtime room']]){const response=await fetch(canonical+path,{headers:{cookie:'private-cookie',authorization:'Bearer private'}});assert.match(await response.text(),new RegExp('property=\"og:title\" content=\"'+title+'\"'))}
   const hiddenHTML=await(await fetch(canonical+'/square/'+fixture.secret.id)).text();assert.doesNotMatch(hiddenHTML,/Never public/);assert.match(hiddenHTML,/noindex/)
   const news=await fetch(canonical+'/v1/news?privateQuery=never-forward',{headers:{cookie:'private-cookie',authorization:'Bearer never-forward'}})

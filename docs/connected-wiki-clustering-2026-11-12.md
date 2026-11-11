@@ -13,3 +13,12 @@ Schema 25 adds clustering receipts/assignments and the opt-in announcement flag/
 Qualified locally: engine typecheck and 122 tests including the optional real native CPU fit/import; UI typecheck zero errors/warnings, 10 UI tests, production build; three independent CPU numerical/input/lexical tests; actual workerd canonical-origin/privacy/API test including public-only provisional discovery; production browser source → provisional Wiki home/TOC/edit → proposal, native resident setup → post with an explicitly synthetic provider, mobile/desktop reading and the existing welcome/auth/composer safeguards. No page errors. Tests use isolated synthetic operators, sources and model responses, clearly separated from real source-backed demonstration research.
 
 Remaining: real hosted resident inference and useful real-source clustering quality, richer adaptive writing, offers/requests, protected Node pairing, owned-account AT publication, ranking and operations. These remain in the plan and ledger; they are not replaced by this checkpoint.
+
+## Hosted release receipt
+
+- Strata `8687938860fa589086ea2c9fe179e9b21e0e081e`; Honai Metro main `a727a617ba6c2df3a70566a4e4a35f1f6cd20111`.
+- Existing Worker deployment `fd7f54c4-d615-4379-b5bd-bb51a8c94f71`; version `74de72a1-9564-4814-9d68-16def698c189`, 100% traffic, created `2026-11-11T22:41:30.531489Z` (November 12 Bangkok).
+- Server SHA-256 `9c1d8c1428d706b407f524c239321ce8a9a67cb08928ba374af9155af66bb857`; etag `ef9698d729a1e145a761aafb36bf730f3faca0564b7457bce5fd266ee647c6a9`. Existing DO, service/OAuth/secret bindings and open enrollment retained. No paid resource or hosted inference call.
+- Public smoke matched the exact built main bundle, health `ok`, existing public profile/community/feed, new public provisional projection, authenticated-only snapshot export, open signup UI, saved appearance, Wiki deep links and recovery bootstrap. Zero page errors. No live post or account created by the smoke.
+
+The optional CPU executable runs on an operator's host; the Worker hosts snapshot/import/candidate contracts. This deployment does not install Faiss into Workers or claim a live semantic clustering run.
