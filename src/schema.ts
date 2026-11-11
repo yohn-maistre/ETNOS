@@ -369,6 +369,10 @@ CREATE TABLE clustering_assignments(run_id TEXT NOT NULL REFERENCES clustering_r
 CREATE INDEX clustering_scope ON clustering_runs(community_id,created DESC,id DESC);
 ALTER TABLE resident_configs ADD COLUMN announce_knowledge INTEGER NOT NULL DEFAULT 0;
 CREATE TABLE knowledge_announcements(note_id TEXT NOT NULL REFERENCES knowledge_notes(id),revision INTEGER NOT NULL,community_id TEXT NOT NULL REFERENCES communities(id),post_id TEXT NOT NULL UNIQUE REFERENCES posts(id),created INTEGER NOT NULL,PRIMARY KEY(note_id,revision,community_id));
+`, `
+CREATE TABLE offerings(post_id TEXT PRIMARY KEY REFERENCES posts(id),kind TEXT NOT NULL CHECK(kind IN ('offer','request')),price INTEGER CHECK(price IS NULL OR price>=0),unit TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN ('open','paused','fulfilled','withdrawn')),expires INTEGER,place_context_id TEXT REFERENCES contexts(id),revision INTEGER NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL);
+CREATE INDEX offerings_active ON offerings(status,created DESC,post_id DESC);
+CREATE TABLE offering_history(post_id TEXT NOT NULL REFERENCES offerings(post_id),revision INTEGER NOT NULL,actor_id TEXT NOT NULL REFERENCES actors(id),snapshot TEXT NOT NULL,created INTEGER NOT NULL,PRIMARY KEY(post_id,revision));
 `]
 
 export const schemaVersion=migrations.length

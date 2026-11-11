@@ -1,0 +1,3 @@
+export type OfferingRow={post_id:string;kind:'offer'|'request';price:number|null;unit:string;status:'open'|'paused'|'fulfilled'|'withdrawn';expires:number|null;place_context_id:string|null;revision:number;created:number;updated:number}
+export type OfferingView={kind:OfferingRow['kind'];price:number|null;currency:'IDR';unit:string;status:OfferingRow['status']|'expired';expiresAt:number|null;place:{id:string;title:string}|null;revision:number;updated:number;canManage:boolean;canContact:boolean}
+export function offeringState(row:OfferingRow,now:number):OfferingView['status']{return (row.status==='open'||row.status==='paused')&&row.expires!==null&&row.expires<=now?'expired':row.status}

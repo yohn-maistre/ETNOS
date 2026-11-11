@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto'
 import {StrataCore,Fault} from './core.ts'
 import {canonical} from './transport.ts'
 
-export type ArtifactKind='post'|'wiki'|'work'|'knowledge'|'news'|'source'|'agent-job'
+export type ArtifactKind='post'|'offering'|'wiki'|'work'|'knowledge'|'news'|'source'|'agent-job'
 export type ArtifactRef={kind:ArtifactKind;id:string;revision:number;communityId:string}
 export const hash=(value:unknown)=>createHash('sha256').update(typeof value==='string'?value:canonical(value)).digest('hex')
 export function text(value:unknown,max=2000,allowEmpty=false){

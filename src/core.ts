@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID, createHash } from 'node:crypto'
 import { Buffer } from 'node:buffer'
+import {offeringState,type OfferingRow,type OfferingView} from './offering-contract.ts'
 import { Media, type MediaView } from './media.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
 import {agentLabels} from './agent-labels.ts'
@@ -253,11 +254,15 @@ export class StrataCore {
     const media=this.all<MediaView&{post_id:string}>('SELECT id,post_id,alt,width,height FROM media WHERE post_id IN(SELECT value FROM json_each(?)) ORDER BY position',ids)
     const jobs=new Map(this.all<{post_id:string;state:string}>("SELECT post_id,state FROM outbox WHERE operation='put' AND post_id IN(SELECT value FROM json_each(?))",ids).map(j=>[j.post_id,j.state]))
     const pollVotes=this.all<{post_id:string;choice:number;n:number;mine:number}>('SELECT post_id,choice,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM poll_votes WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,choice',viewer??null,ids)
+    const offerings=new Map(this.all<OfferingRow>('SELECT * FROM offerings WHERE post_id IN(SELECT value FROM json_each(?))',ids).map(o=>[o.post_id,o]))
+    const places=new Map(this.all<{id:string;title:string}>("SELECT id,title FROM contexts WHERE active=1 AND id IN(SELECT place_context_id FROM offerings WHERE post_id IN(SELECT value FROM json_each(?)))",ids).map(c=>[c.id,c]))
     const responses=this.all<{post_id:string;response:string;n:number;mine:number}>('SELECT post_id,response,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM event_responses WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,response',viewer??null,ids)
     return posts.map(p=>{
       const author=authors.get(p.author_id)!,content=p.deleted?{}:contentOf(p.content),votes=pollVotes.filter(v=>v.post_id===p.id),rsvp=responses.filter(v=>v.post_id===p.id)
+      const offering=offerings.get(p.id),state=offering?offeringState(offering,this.clock()):null
+      const offeringView:OfferingView|null=!p.deleted&&offering?{kind:offering.kind,price:offering.price,currency:'IDR',unit:offering.unit,status:state!,expiresAt:offering.expires,place:offering.place_context_id?places.get(offering.place_context_id)??null:null,revision:offering.revision,updated:offering.updated,canManage:human&&viewer===p.author_id&&roles.has(p.community_id)&&!p.uri,canContact:human&&viewer!==p.author_id&&state==='open'}:null
       return{id:p.id,author_id:p.author_id,community_id:p.community_id,parent_id:p.parent_id,text:p.deleted?'':p.text,created:p.created,uri:p.uri,actorKind:author.kind,author:{id:author.id,did:author.did,name:author.name,kind:author.kind,...(author.kind==='agent'?{agent:attribution.get(author.id)??{role:'guest',family:'external',official:false}}:{})},rootId:p.root_id,
-        content,revision:p.revision,updated:p.updated,deleted:!!p.deleted,locked:!!p.locked,pinned:!!p.pinned,
+        offering:offeringView,content,revision:p.revision,updated:p.updated,deleted:!!p.deleted,locked:!!p.locked,pinned:!!p.pinned,
         permissions:{edit:human&&viewer===p.author_id&&roles.has(p.community_id)&&!p.uri&&!p.deleted&&!p.release_id,moderate:human&&['owner','moderator'].includes(roles.get(p.community_id)??'')},
         contexts:p.deleted?[]:contexts.filter(c=>c.post_id===p.id).map(({id,slug,title,kind})=>({id,slug,title,kind})),
         replies:rootCounts.get(p.root_id)??0,directReplies:directCounts.get(p.id)??0,

@@ -141,7 +141,8 @@
         "2026-11-11 welcome/composer/profile implementation checkpoint: docs/welcome-and-profile-2026-11-11.md. Continuous fullscreen-to-dialog welcome over the current page, real provider form, local accent-aware prints/coded locations, existing profile editor and landscape footers; Local engine/UI/build and targeted production browser qualification passed; exact source/deployment receipts are maintained in that checkpoint. No change to membership or institutional authority.",
         "2026-11-12 deployed welcome/profile/writing slice: matched main source, real provider form, visible existing rich editor/Ctrl+B fix, final solid compact compose buttons, quiet scrollbars and public browser qualification. Exact code/CI/version/deployment and remaining scope: docs/release-2026-11-12-welcome-writing.md. No claim of full foundation or hosted inference completion.",
         "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.",
-        "2026-11-12 visual slice qualified locally: neutral shadow-free compact actions; outlined Jakarta startup, preloaded body font; abstract profile/seamless tabs; masked public community prints; semantic image hover/captions; monotonic request activity; mixed image/text Explore cards labelled newest. apps/web/tests/browser/commons-refinement.mjs plus welcome/signup journeys pass; engine 116 and UI 10 tests, Svelte 0 errors/warnings, production build. Ranking, custom photo persistence, Node bundle and integrated provisional Wiki are not qualified by this slice."
+        "2026-11-12 visual slice qualified locally: neutral shadow-free compact actions; outlined Jakarta startup, preloaded body font; abstract profile/seamless tabs; masked public community prints; semantic image hover/captions; monotonic request activity; mixed image/text Explore cards labelled newest. apps/web/tests/browser/commons-refinement.mjs plus welcome/signup journeys pass; engine 116 and UI 10 tests, Svelte 0 errors/warnings, production build. Ranking, custom photo persistence, Node bundle and integrated provisional Wiki are not qualified by this slice.",
+        "2026-11-12 canonical offering implementation: docs/offers-and-writing-2026-11-12.md. One post ID across composer, feed, community/profile/browse; current price/status, private/expiry/moderation isolation, real inquiry and existing DM entrance. Local 130 engine tests, ten UI tests, typechecks/build, actual workerd and production-browser journeys pass. Synthetic businesses only; exact deployment receipt and remaining writing scope are separate."
       ],
       "decisions": [
         "D05",
@@ -211,7 +212,8 @@
         "2026-11-11 welcome/composer/profile implementation checkpoint: docs/welcome-and-profile-2026-11-11.md. Continuous fullscreen-to-dialog welcome over the current page, real provider form, local accent-aware prints/coded locations, existing profile editor and landscape footers; Local engine/UI/build and targeted production browser qualification passed; exact source/deployment receipts are maintained in that checkpoint. No change to membership or institutional authority.",
         "2026-11-12 deployed welcome/profile/writing slice: matched main source, real provider form, visible existing rich editor/Ctrl+B fix, final solid compact compose buttons, quiet scrollbars and public browser qualification. Exact code/CI/version/deployment and remaining scope: docs/release-2026-11-12-welcome-writing.md. No claim of full foundation or hosted inference completion.",
         "2026-11-12 visual slice qualified locally: neutral shadow-free compact actions; outlined Jakarta startup, preloaded body font; abstract profile/seamless tabs; masked public community prints; semantic image hover/captions; monotonic request activity; mixed image/text Explore cards labelled newest. apps/web/tests/browser/commons-refinement.mjs plus welcome/signup journeys pass; engine 116 and UI 10 tests, Svelte 0 errors/warnings, production build. Ranking, custom photo persistence, Node bundle and integrated provisional Wiki are not qualified by this slice.",
-        "2026-11-12 ranking/steward follow-up: docs/ranking-and-steward-demo-2026-11-12.md; real isolated source/Knowledge/announcement pipeline with researched Crocodylus halli draft and explicitly simulated acquisition/provider; transparent bounded public Explore recipe and actual sort controls. Local 126 engine tests and focused browser/runtime qualification; exact release receipts distinguish hosted features from local simulation. No fabricated hosted model, partner or community acceptance."
+        "2026-11-12 ranking/steward follow-up: docs/ranking-and-steward-demo-2026-11-12.md; real isolated source/Knowledge/announcement pipeline with researched Crocodylus halli draft and explicitly simulated acquisition/provider; transparent bounded public Explore recipe and actual sort controls. Local 126 engine tests and focused browser/runtime qualification; exact release receipts distinguish hosted features from local simulation. No fabricated hosted model, partner or community acceptance.",
+        "2026-11-12 canonical offering implementation: docs/offers-and-writing-2026-11-12.md. One post ID across composer, feed, community/profile/browse; current price/status, private/expiry/moderation isolation, real inquiry and existing DM entrance. Local 130 engine tests, ten UI tests, typechecks/build, actual workerd and production-browser journeys pass. Synthetic businesses only; exact deployment receipt and remaining writing scope are separate."
       ],
       "decisions": [
         "D03",
@@ -1224,19 +1226,20 @@
         21
       ],
       "workstream": "D",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F43",
         "F44",
         "F08"
       ],
-      "current_evidence": "No native canonical offer/order workflow in current Strata baseline",
+      "current_evidence": "src/offerings.ts; src/offering-contract.ts; canonical post projection in src/core.ts; apps/web OfferingCard/OfferingCatalog/PostComposer; test/offerings.test.ts and browser/offerings.mjs. Price/status/history/contact are real local/Worker flows; no payment or live-business verification claim.",
       "acceptance": "Seller creates one offer with price/status/location granularity/contact; same record projects to profile/community/Explore; contact works",
       "release_gate": "Seller identity, abuse/reporting and sensitive location controls",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "2026-11-11 research/plan: docs/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.",
-        "2026-11-11 owner-selected plan (not implementation qualification): Canonical offers and requests share provider/place/contact/status data and existing post/reply projections; basic listings free, actual contact before payments claims. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md."
+        "2026-11-11 owner-selected plan (not implementation qualification): Canonical offers and requests share provider/place/contact/status data and existing post/reply projections; basic listings free, actual contact before payments claims. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.",
+        "2026-11-12 canonical offering implementation: docs/offers-and-writing-2026-11-12.md. One post ID across composer, feed, community/profile/browse; current price/status, private/expiry/moderation isolation, real inquiry and existing DM entrance. Local 130 engine tests, ten UI tests, typechecks/build, actual workerd and production-browser journeys pass. Synthetic businesses only; exact deployment receipt and remaining writing scope are separate."
       ],
       "decisions": [
         "D07",
@@ -1478,7 +1481,8 @@
       "release_gate": "No destructive universal-blob migration",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "Local checkpoint 2026-11-11: Local commons.ts adds typed receipts/events/context epochs over domain tables; no universal blob replacement."
+        "Local checkpoint 2026-11-11: Local commons.ts adds typed receipts/events/context epochs over domain tables; no universal blob replacement.",
+        "2026-11-12 canonical offering implementation: docs/offers-and-writing-2026-11-12.md. One post ID across composer, feed, community/profile/browse; current price/status, private/expiry/moderation isolation, real inquiry and existing DM entrance. Local 130 engine tests, ten UI tests, typechecks/build, actual workerd and production-browser journeys pass. Synthetic businesses only; exact deployment receipt and remaining writing scope are separate."
       ],
       "decisions": [
         "D01",
@@ -1509,7 +1513,9 @@
       "acceptance": "Expected revision/action/request key/current authority and receipt are shared; each domain owns its states and available actions",
       "release_gate": "Atomic writes and concurrency/replay tests",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "2026-11-12 canonical offering implementation: docs/offers-and-writing-2026-11-12.md. One post ID across composer, feed, community/profile/browse; current price/status, private/expiry/moderation isolation, real inquiry and existing DM entrance. Local 130 engine tests, ten UI tests, typechecks/build, actual workerd and production-browser journeys pass. Synthetic businesses only; exact deployment receipt and remaining writing scope are separate."
+      ],
       "decisions": [
         "D24",
         "D32",
@@ -2218,7 +2224,8 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "2026-11-11 owner-selected plan (not implementation qualification): Validate paid setup/support and managed spaces, optional merchant tools and disclosed contextual placements around a free commons. Track human operating costs; no invented revenue or pay-for-authority. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.",
-        "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained."
+        "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.",
+        "2026-11-12 canonical offering implementation: docs/offers-and-writing-2026-11-12.md. One post ID across composer, feed, community/profile/browse; current price/status, private/expiry/moderation isolation, real inquiry and existing DM entrance. Local 130 engine tests, ten UI tests, typechecks/build, actual workerd and production-browser journeys pass. Synthetic businesses only; exact deployment receipt and remaining writing scope are separate."
       ],
       "decisions": [
         "D04",
@@ -2476,7 +2483,8 @@
         "2026-11-12 deployed welcome/profile/writing slice: matched main source, real provider form, visible existing rich editor/Ctrl+B fix, final solid compact compose buttons, quiet scrollbars and public browser qualification. Exact code/CI/version/deployment and remaining scope: docs/release-2026-11-12-welcome-writing.md. No claim of full foundation or hosted inference completion.",
         "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.",
         "2026-11-12 visual slice qualified locally: neutral shadow-free compact actions; outlined Jakarta startup, preloaded body font; abstract profile/seamless tabs; masked public community prints; semantic image hover/captions; monotonic request activity; mixed image/text Explore cards labelled newest. apps/web/tests/browser/commons-refinement.mjs plus welcome/signup journeys pass; engine 116 and UI 10 tests, Svelte 0 errors/warnings, production build. Ranking, custom photo persistence, Node bundle and integrated provisional Wiki are not qualified by this slice.",
-        "2026-11-12 ranking/steward follow-up: docs/ranking-and-steward-demo-2026-11-12.md; real isolated source/Knowledge/announcement pipeline with researched Crocodylus halli draft and explicitly simulated acquisition/provider; transparent bounded public Explore recipe and actual sort controls. Local 126 engine tests and focused browser/runtime qualification; exact release receipts distinguish hosted features from local simulation. No fabricated hosted model, partner or community acceptance."
+        "2026-11-12 ranking/steward follow-up: docs/ranking-and-steward-demo-2026-11-12.md; real isolated source/Knowledge/announcement pipeline with researched Crocodylus halli draft and explicitly simulated acquisition/provider; transparent bounded public Explore recipe and actual sort controls. Local 126 engine tests and focused browser/runtime qualification; exact release receipts distinguish hosted features from local simulation. No fabricated hosted model, partner or community acceptance.",
+        "2026-11-12 canonical offering implementation: docs/offers-and-writing-2026-11-12.md. One post ID across composer, feed, community/profile/browse; current price/status, private/expiry/moderation isolation, real inquiry and existing DM entrance. Local 130 engine tests, ten UI tests, typechecks/build, actual workerd and production-browser journeys pass. Synthetic businesses only; exact deployment receipt and remaining writing scope are separate."
       ],
       "decisions": [
         "D07",

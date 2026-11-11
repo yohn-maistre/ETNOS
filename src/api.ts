@@ -14,6 +14,7 @@ import {Decisions,type DecisionProvider} from './decisions.ts'
 import {AgentAccess} from './agent-access.ts'
 import { capabilities } from './capabilities.ts'
 import {Discovery,type SourceFetcher} from './discovery.ts'
+import {Offerings} from './offerings.ts'
 import {Ranking} from './ranking.ts'
 import {Clustering} from './clustering.ts'
 import {Knowledge} from './knowledge.ts'
@@ -81,6 +82,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/discovery/sources')result=discovery.sources(authenticated(),string(url.searchParams.get('community')))
         else if(path==='/v1/discovery/items')result=discovery.items(actor?.id,url.searchParams.get('community')??undefined,url.searchParams.get('review')==='true')
         else if(parts.length===4&&parts[1]==='discovery'&&parts[2]==='items')result=discovery.item(parts[3],actor?.id,url.searchParams.get('review')==='true')
+        else if(path==='/v1/offerings')result=new Offerings(store).list(actor?.id,{communityId:url.searchParams.get('community')??undefined,authorId:url.searchParams.get('author')??undefined,kind:url.searchParams.get('kind')??undefined,includeClosed:url.searchParams.get('closed')==='true'})
+        else if(parts.length===3&&parts[1]==='offerings')result=new Offerings(store).read(parts[2],actor?.id)
         else if(path==='/v1/discovery/posts')result=new Ranking(store).explore({sort:url.searchParams.get('sort')??undefined,limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined,communityId:url.searchParams.get('community')??undefined})
         else if(path==='/v1/clustering/snapshot')result=clustering.snapshot(authenticated(),string(url.searchParams.get('community')))
         else if(parts.length===4&&parts[1]==='discovery'&&parts[2]==='related')result=clustering.related(parts[3])
@@ -168,6 +171,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='sources'&&parts[4]==='state')result=discovery.state(caller,parts[3],b)
       else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='sources'&&parts[4]==='refresh')result=await discovery.refresh(caller,parts[3],()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='items'&&parts[4]==='state')result=discovery.decide(caller,parts[3],b)
+      else if(path==='/v1/offerings')result=new Offerings(store).create(caller,b)
+      else if(parts.length===4&&parts[1]==='offerings'&&parts[3]==='edit')result=new Offerings(store).update(caller,parts[2],b)
       else if(path==='/v1/clustering/runs')result=clustering.accept(caller,b)
       else if(path==='/v1/knowledge')result=knowledge.create(caller,b)
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='edit')result=knowledge.update(caller,parts[2],b)
