@@ -1,5 +1,7 @@
 # Implementation plan — 11–14 November 2026
 
+**Owner refinement, 12 November:** [Integrated Wiki, AT/Node/language boundaries and current UI build sequence](commons-experience-2026-11-12.md) supplements this plan. Provisional public knowledge belongs inside Wiki; original source and accepted-review safeguards remain intact. The optional distribution couples Strata and Aksara Node without merging custody.
+
 This plan covers the complete foundation, not only the news and agent headline features. The owner wants a publicly accessible friend-testing link and a video by 14 November, using current free infrastructure where possible. Dates below use Asia/Bangkok. They are build targets, not evidence of completion. Scope stays in the feature ledger; a failed qualification or missing external authority is reported explicitly rather than replaced by a pretend success.
 
 ## Product direction

@@ -1,5 +1,7 @@
 # Living commons foundation
 
+**Owner refinement, 12 November:** [Integrated Wiki, AT/Node/language boundaries and current UI build sequence](commons-experience-2026-11-12.md) supplements this plan. Provisional public knowledge belongs inside Wiki; original source and accepted-review safeguards remain intact. The optional distribution couples Strata and Aksara Node without merging custody.
+
 This is the working home of the owner's complete **ETNOS / Strata — A Living Commons** foundation, reviewed on 11 November 2026. The uploaded document remains unchanged in the workspace archive. Its complete extracted text, all 30 sections, both appendices and all 38 decisions are retained here; the execution plan supplements it rather than replacing it with a shorter specification.
 
 - [Read the complete foundation](living-commons.md).

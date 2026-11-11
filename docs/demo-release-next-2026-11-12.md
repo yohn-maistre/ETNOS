@@ -1,5 +1,7 @@
 # Connected demo release — remaining implementation
 
+**Owner refinement, 12 November:** [Integrated Wiki, AT/Node/language boundaries and current UI build sequence](foundation/commons-experience-2026-11-12.md) supplements this plan. Provisional public knowledge belongs inside Wiki; original source and accepted-review safeguards remain intact. The optional distribution couples Strata and Aksara Node without merging custody.
+
 12 November 2026, Asia/Bangkok. The owner retains the accessible friend-testing build and video target of November 14. Continue the full [72-feature foundation](foundation/feature-ledger.md); the sequence below groups connected implementation, without silently dropping features or treating future research as shipped. Prior-project evidence is already indexed and does not take development priority.
 
 ## The useful loop to finish

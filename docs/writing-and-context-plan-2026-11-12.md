@@ -1,5 +1,7 @@
 # Writing, editing and community context
 
+**Owner refinement, 12 November:** [Integrated Wiki, AT/Node/language boundaries and current UI build sequence](foundation/commons-experience-2026-11-12.md) supplements this plan. Provisional public knowledge belongs inside Wiki; original source and accepted-review safeguards remain intact. The optional distribution couples Strata and Aksara Node without merging custody.
+
 12 November 2026, Asia/Bangkok. Owner follow-up during the welcome/profile release. Finish and deploy that qualified slice, including the small Ctrl+B/formatting-discovery fix, then continue this writing redesign against existing primitives.
 
 ## Immediate correction

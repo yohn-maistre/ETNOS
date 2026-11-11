@@ -517,6 +517,51 @@
         "D33"
       ],
       "interpretation": "Supersedes A10’s tinted/outlined compose treatment only. Preserve Paper, Jakarta pairing, saved appearance, welcome/profile artwork and the existing real editor. Do not revert unrelated implemented flows."
+    },
+    {
+      "id": "A18",
+      "date": "2026-11-12",
+      "source": "Owner visual refinements, 12 November 2026",
+      "decision": "Use compact shadow-free neutral primary actions, abstract linework for profile fallbacks and curated surface-masked community prints. Stable Jakarta outlines replace fallback-font startup; secondary movement stays subtle.",
+      "affects": [
+        "D08",
+        "D11",
+        "D33"
+      ],
+      "interpretation": "Supersedes the colour portion of A17 and profile-cover default in A16 only. Preserve saved appearance, compact solid shape, optional art and accessible reduced-motion flows."
+    },
+    {
+      "id": "A19",
+      "date": "2026-11-12",
+      "source": "Owner AT/Node/language architecture and Wiki refinement, 12 November 2026",
+      "decision": "One integrated Wiki home includes explicitly publishable provisional pages with sources/review labels; the steward seeds and makes bounded relevant announcements. Bundle Strata with optional independently authorized Aksara Node; contexts describe, communities govern and spaces gate access.",
+      "affects": [
+        "D03",
+        "D09",
+        "D11",
+        "D13",
+        "D16",
+        "D21",
+        "D22",
+        "D28",
+        "D29",
+        "D31"
+      ],
+      "interpretation": "No relaxation of accepted human review or exposure of private proposals. Standard PDS is public; AT Spaces is alpha access control, not encryption. Bundle selection is not implementation/production qualification."
+    },
+    {
+      "id": "A20",
+      "date": "2026-11-12",
+      "source": "Owner Explore/community/loading/thread follow-up, 12 November 2026",
+      "decision": "Polish text-led accessible conversations and retain community Suara plus Explore aggregation; document real ranking candidates and curved root/reply previews. Replace repeated laser activity with capped monotonic progress and slow palette gradient.",
+      "affects": [
+        "D07",
+        "D08",
+        "D17",
+        "D33",
+        "D36"
+      ],
+      "interpretation": "Newest is not trending. Thread previews are documented pending reference screenshots. No fabricated stats, private aggregate leakage or measured-percent claim."
     }
   ]
 }
