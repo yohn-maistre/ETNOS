@@ -159,3 +159,34 @@ test('native resident setup uses real registration, admission and bounded grants
   assert.equal(s.community(room.id).automation,1);assert.equal(result.ready,true)
  }finally{s.close()}
  })
+
+test('provisional Wiki discovery is public-only and does not expose private notes, pending proposals or withdrawn text',async()=>{
+ const f=fixture();try{
+  const note=f.k.create(f.owner.actor.id,{communityId:f.c.id,title:'Public provisional page',text:'## Context\nA source-linked starting point.',citations:['https://news.example.org/story'],requestKey:randomUUID()})
+  const privateRoom=f.s.createCommunity(f.owner.actor.id,'Hidden language','Private','hidden-private')
+  f.k.create(f.owner.actor.id,{communityId:privateRoom.id,title:'Private language title',text:'Private recording summary',requestKey:randomUUID()})
+  new Wiki(f.s).createDraft(f.owner.actor.id,f.c.id,'Unaccepted proposal title',{text:'Restricted proposal body',citations:[],language:'id',perspective:'Draft'})
+  const handler=api(f.s),res=await handler(new Request(f.s.base+'/v1/wiki/growing',{headers:{authorization:'Bearer '+f.owner.token}})),rows=await res.json() as {id:string;review:string}[]
+  assert.equal(res.status,200);assert.equal(rows.length,1);assert.equal(rows[0].id,note.id);assert.equal(rows[0].review,'provisional')
+  assert.doesNotMatch(JSON.stringify(rows),/Private language|Private recording|Unaccepted proposal|Restricted proposal|editorial_mandate_id|evidenceIds/)
+  f.k.withdraw(f.owner.actor.id,note.id,{revision:note.revision,requestKey:randomUUID()});assert.deepEqual(f.k.discoverPublic(),[])
+ }finally{f.s.close()}
+})
+test('opt-in resident Wiki announcements commit once with the note and require a current posting grant',async()=>{
+ const f=fixture();try{
+  await publish(f);const current=f.configure().config!
+  f.r.configure(f.owner.actor.id,{communityId:f.c.id,agentId:f.agent.agent_id,postingMandateId:f.postGrant,editorialMandateId:current.editorial_mandate_id,enabled:true,announceKnowledge:true,revision:current.revision,requestKey:randomUUID()})
+  const job=f.r.enqueue(f.owner.actor.id,f.c.id,'knowledge-draft',randomUUID()),results=await Promise.allSettled([f.r.run(job.id),f.r.run(job.id)])
+  assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.equal(f.s.get<{n:number}>('SELECT count(*) n FROM knowledge_announcements')!.n,1)
+  const note=f.k.list()[0],posts=f.s.feed();assert.equal(posts.length,1);assert.ok(posts[0].text.includes('/wiki/notes/'+note.id));assert.match(posts[0].text,/belum ditinjau/);assert.equal(f.s.actor(posts[0].author_id).kind,'agent')
+  await assert.rejects(f.r.run(job.id));assert.equal(f.s.get<{n:number}>('SELECT count(*) n FROM knowledge_announcements')!.n,1)
+  const next=f.r.enqueue(f.owner.actor.id,f.c.id,'knowledge-draft',randomUUID());f.s.run('UPDATE mandates SET revoked=1 WHERE id=?',f.postGrant)
+  await assert.rejects(f.r.run(next.id));assert.equal(f.k.list().length,1);assert.equal(f.s.feed().length,1)
+ }finally{f.s.close()}
+})
+test('unchanged source read-sets do not produce repeated Wiki pages or announcements',async()=>{
+ const f=fixture();try{
+  await publish(f);f.configure();const first=f.r.enqueue(f.owner.actor.id,f.c.id,'knowledge-draft',randomUUID());assert.equal((await f.r.run(first.id)).state,'succeeded')
+  const second=f.r.enqueue(f.owner.actor.id,f.c.id,'knowledge-draft',randomUUID());const result=await f.r.run(second.id);assert.equal(result.state,'abstained');assert.match('error' in result?result.error:'',/already have a Wiki/);assert.equal(f.k.list().length,1)
+ }finally{f.s.close()}
+})

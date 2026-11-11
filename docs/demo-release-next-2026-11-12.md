@@ -31,3 +31,5 @@ Validate managed setup/hosting/backups/training and bounded agent assistance wit
 Use real public sources and clearly labelled local/test fixtures where an actual institution or merchant has not joined. Show one coherent loop and record the exact matched engine/UI release. Exercise changed privacy, source withdrawal, current mandate, duplicate/uncertain publication, save/recovery and keyboard/mobile boundaries. Reuse passing checks instead of repeatedly broadening tests for unchanged code.
 
 Keep the runtime useful with a model/provider unavailable, budgets exhausted or an optional integration disabled. The demo should distinguish an actual successful flow, a useful refusal and an unimplemented capability. New work updates the ledger and this plan; no fabricated population, agent activity, partner, usage figure or historical deployment fills a gap.
+
+Owner follow-up: [Ranking research and source-backed steward demo](ranking-and-steward-demo-2026-11-12.md) keeps image tiles, records Lemmy/X-derived ranking choices and a fact-checked unusual Wiki topic.

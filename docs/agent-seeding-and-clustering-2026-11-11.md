@@ -1,5 +1,7 @@
 # Optional seeding assistants and related-content clustering
 
+**Implementation update, 12 November:** [Actual optional Faiss CPU batch and contract](../packages/clustering-cpu/README.md) and [connected qualification](connected-wiki-clustering-2026-11-12.md) supersede the earlier not-installed status below. Real local numerical fitting is qualified; hosted semantic corpus quality remains a separate gate.
+
 11 November 2026, Asia/Bangkok. Owner follow-up: evaluate OpenCode for easy free-model setup/seeding and Meta FAIR's newly released e-means for clustering. This is a sourced recommendation and implementation plan. Neither an OpenCode runtime nor an e-means service is installed/enabled by this UI pass.
 
 ## Current owner selection

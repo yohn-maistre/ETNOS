@@ -8,7 +8,7 @@ import {Knowledge} from './knowledge.ts'
 import {text,key,transition,expected,emit,hash,publicSteward,contextEpoch} from './commons.ts'
 import type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
 export type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
-export type ResidentConfig={community_id:string;agent_id:string;operator_id:string;posting_mandate_id:string|null;editorial_mandate_id:string|null;enabled:number;revision:number;daily_limit:number;interval_minutes:number;next_run:number|null;updated:number;mentions_enabled:number}
+export type ResidentConfig={community_id:string;agent_id:string;operator_id:string;posting_mandate_id:string|null;editorial_mandate_id:string|null;enabled:number;revision:number;daily_limit:number;interval_minutes:number;next_run:number|null;updated:number;mentions_enabled:number;announce_knowledge:number}
 export type ResidentJob={id:string;community_id:string;agent_id:string;operator_id:string;config_revision:number;skill:ResidentSkill;request_key:string;state:'queued'|'running'|'succeeded'|'abstained'|'failed'|'cancelled';generation:number;lease_until:number|null;checkpoint:string;evidence:string;result_kind:string|null;result_id:string|null;error:string|null;created:number;updated:number;model:string|null;input_tokens:number;output_tokens:number;runtime_ticket_hash:string|null;context_epoch:number;trigger_post_id:string|null;requester_id:string|null}
 export function parseResidentWork(value:unknown):ResidentWork{
  if(!value||typeof value!=='object')throw new Fault(400,'Runtime work envelope required')
@@ -28,7 +28,7 @@ export class Resident{
   const registration=this.access.assertCurrent(c.agent_id),agent=s.actor(c.agent_id)
   if(registration.community_id!==c.community_id||registration.family!=='aksara'||registration.role==='guest'||agent.operator_id!==c.operator_id)throw new Fault(403,'Current resident operator and registration required')
   s.requireMember(c.agent_id,c.community_id)
-  if(skill==='knowledge-draft')new Wiki(s).checkProposalAuthority(c.agent_id,c.community_id,c.editorial_mandate_id??'')
+  if(skill==='knowledge-draft'){new Wiki(s).checkProposalAuthority(c.agent_id,c.community_id,c.editorial_mandate_id??'');if(c.announce_knowledge)s.checkWrite(c.agent_id,c.community_id,c.posting_mandate_id,false)}
   else if(skill)s.checkWrite(c.agent_id,c.community_id,c.posting_mandate_id,false)
  }
  get(actorId:string,communityId:string){publicSteward(this.store,actorId,communityId);const config=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId)??null;let ready=false,reason:string|null=null;if(config)try{this.current(config);ready=true}catch(error){reason=error instanceof Fault?error.message:'Resident unavailable'}return {config,ready,reason,provider:this.provider?.label??'source-linked, model-free',skills}}
@@ -62,12 +62,12 @@ export class Resident{
  configure(actorId:string,b:Record<string,unknown>){
   const communityId=text(b.communityId,100),agentId=text(b.agentId,100),dailyLimit=Number(b.dailyLimit??3),interval=Number(b.intervalMinutes??360)
   if(typeof b.enabled!=='boolean'||!Number.isInteger(dailyLimit)||dailyLimit<1||dailyLimit>5||!Number.isInteger(interval)||interval<60||interval>10080)throw new Fault(400,'Choose 1–5 jobs/day and an interval of at least one hour')
-  const input={communityId,agentId,enabled:b.enabled,dailyLimit,interval,postingMandateId:b.postingMandateId??null,editorialMandateId:b.editorialMandateId??null,revision:b.revision??0,mentionsEnabled:b.mentionsEnabled===true}
+  const input={communityId,agentId,enabled:b.enabled,dailyLimit,interval,postingMandateId:b.postingMandateId??null,editorialMandateId:b.editorialMandateId??null,revision:b.revision??0,mentionsEnabled:b.mentionsEnabled===true,announceKnowledge:b.announceKnowledge===true}
   return transition(this.store,actorId,b.requestKey,'resident.configure',input,()=>{publicSteward(this.store,actorId,communityId);const a=this.store.actor(agentId);if(a.operator_id!==actorId||a.kind!=='agent')throw new Fault(403,'Resident agent operator required');if(b.enabled)this.access.assertCurrent(agentId)},()=>{
    const s=this.store,prior=s.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId);expected(input.revision,prior?.revision??0)
-   const config:ResidentConfig={community_id:communityId,agent_id:agentId,operator_id:actorId,posting_mandate_id:input.postingMandateId?text(input.postingMandateId,100):null,editorial_mandate_id:input.editorialMandateId?text(input.editorialMandateId,100):null,enabled:Number(b.enabled),revision:(prior?.revision??0)+1,daily_limit:dailyLimit,interval_minutes:interval,next_run:b.enabled?s.clock()+interval*60000:null,updated:s.clock(),mentions_enabled:Number(input.mentionsEnabled)}
+   const config:ResidentConfig={community_id:communityId,agent_id:agentId,operator_id:actorId,posting_mandate_id:input.postingMandateId?text(input.postingMandateId,100):null,editorial_mandate_id:input.editorialMandateId?text(input.editorialMandateId,100):null,enabled:Number(b.enabled),revision:(prior?.revision??0)+1,daily_limit:dailyLimit,interval_minutes:interval,next_run:b.enabled?s.clock()+interval*60000:null,updated:s.clock(),mentions_enabled:Number(input.mentionsEnabled),announce_knowledge:Number(input.announceKnowledge)}
    if(b.enabled)this.current(config)
-   s.run('INSERT INTO resident_configs(community_id,agent_id,operator_id,posting_mandate_id,editorial_mandate_id,enabled,revision,daily_limit,interval_minutes,next_run,updated,mentions_enabled) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(community_id) DO UPDATE SET agent_id=excluded.agent_id,operator_id=excluded.operator_id,posting_mandate_id=excluded.posting_mandate_id,editorial_mandate_id=excluded.editorial_mandate_id,enabled=excluded.enabled,revision=excluded.revision,daily_limit=excluded.daily_limit,interval_minutes=excluded.interval_minutes,next_run=excluded.next_run,updated=excluded.updated,mentions_enabled=excluded.mentions_enabled',config.community_id,config.agent_id,config.operator_id,config.posting_mandate_id,config.editorial_mandate_id,config.enabled,config.revision,config.daily_limit,config.interval_minutes,config.next_run,config.updated,config.mentions_enabled)
+   s.run('INSERT INTO resident_configs(community_id,agent_id,operator_id,posting_mandate_id,editorial_mandate_id,enabled,revision,daily_limit,interval_minutes,next_run,updated,mentions_enabled,announce_knowledge) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(community_id) DO UPDATE SET agent_id=excluded.agent_id,operator_id=excluded.operator_id,posting_mandate_id=excluded.posting_mandate_id,editorial_mandate_id=excluded.editorial_mandate_id,enabled=excluded.enabled,revision=excluded.revision,daily_limit=excluded.daily_limit,interval_minutes=excluded.interval_minutes,next_run=excluded.next_run,updated=excluded.updated,mentions_enabled=excluded.mentions_enabled,announce_knowledge=excluded.announce_knowledge',config.community_id,config.agent_id,config.operator_id,config.posting_mandate_id,config.editorial_mandate_id,config.enabled,config.revision,config.daily_limit,config.interval_minutes,config.next_run,config.updated,config.mentions_enabled,config.announce_knowledge)
    s.run("UPDATE resident_jobs SET state='cancelled',generation=generation+1,lease_until=NULL,error='Resident configuration changed',updated=? WHERE community_id=? AND state IN ('queued','running')",s.clock(),communityId)
    emit(s,actorId,'resident.configure',{kind:'agent-job',id:communityId,revision:config.revision,communityId});return this.get(actorId,communityId)
   })
@@ -109,6 +109,7 @@ export class Resident{
   try{
    const evidence=JSON.parse(job.evidence) as ResidentEvidence[],community=s.community(job.community_id)
    if(!evidence.length)throw new Fault(422,'No current public source evidence; resident abstained')
+   if(job.skill==='knowledge-draft'&&s.get("SELECT 1 FROM resident_jobs j JOIN knowledge_notes n ON n.id=j.result_id WHERE j.community_id=? AND j.skill='knowledge-draft' AND j.state='succeeded' AND j.evidence=? AND n.state!='withdrawn' LIMIT 1",job.community_id,job.evidence))throw new Fault(422,'These sources already have a Wiki starting point; waiting for new evidence')
    let result:ResidentOutput
    if(this.provider){
     s.tx(()=>{this.recheck(job);if(s.get<{n:number}>('SELECT count(*) n FROM resident_jobs WHERE model IS NOT NULL AND created>?',s.clock()-86400000)!.n>=10)throw new Fault(429,'Daily model-call budget reached');s.run("UPDATE resident_jobs SET checkpoint='model-started',model=? WHERE id=?",this.provider!.label,id)})
@@ -124,6 +125,12 @@ export class Resident{
     let resultKind:string,resultId:string
     if(job.skill==='knowledge-draft'){
      const note=new Knowledge(s).create(job.agent_id,{communityId:job.community_id,title:evidence[0].title,text:body,kind:'source-comparison',citations:references,language:'id',evidenceIds:evidence.map(e=>e.id),editorialMandateId:config.editorial_mandate_id,requestKey:'resident-note:'+id})
+     if(config.announce_knowledge){
+      // Note, native announcement/outbox and job result commit atomically.
+      const link=s.base+'/wiki/notes/'+note.id
+      const post=s.createPost(job.agent_id,job.community_id,'Halo, sa baru saja tambah catatan ini di Wiki. Mohon dicek dan dilengkapi bersama.\n\n'+note.title+'\n'+link+'\n\nDraf awal · belum ditinjau menyeluruh.',undefined,config.posting_mandate_id??undefined)
+      s.run('INSERT INTO knowledge_announcements VALUES(?,?,?,?,?)',note.id,note.revision,job.community_id,post.id,s.clock())
+     }
      resultKind='knowledge';resultId=note.id
     }else{
      const post=s.createPost(job.agent_id,job.community_id,body,undefined,config.posting_mandate_id??undefined)

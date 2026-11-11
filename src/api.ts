@@ -14,6 +14,7 @@ import {Decisions,type DecisionProvider} from './decisions.ts'
 import {AgentAccess} from './agent-access.ts'
 import { capabilities } from './capabilities.ts'
 import {Discovery,type SourceFetcher} from './discovery.ts'
+import {Clustering} from './clustering.ts'
 import {Knowledge} from './knowledge.ts'
 import {Resident,type ResidentProvider,type ResidentSkill} from './resident.ts'
 
@@ -53,7 +54,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const social=new Social(store),search=new Search(store)
   const wiki=new Wiki(store)
   const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups)
-  const discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
+  const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   return async (req: Request): Promise<Response> => {
     try {
       const url=new URL(req.url)
@@ -79,6 +80,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/discovery/sources')result=discovery.sources(authenticated(),string(url.searchParams.get('community')))
         else if(path==='/v1/discovery/items')result=discovery.items(actor?.id,url.searchParams.get('community')??undefined,url.searchParams.get('review')==='true')
         else if(parts.length===4&&parts[1]==='discovery'&&parts[2]==='items')result=discovery.item(parts[3],actor?.id,url.searchParams.get('review')==='true')
+        else if(path==='/v1/clustering/snapshot')result=clustering.snapshot(authenticated(),string(url.searchParams.get('community')))
+        else if(parts.length===4&&parts[1]==='discovery'&&parts[2]==='related')result=clustering.related(parts[3])
         else if(path==='/v1/knowledge')result=knowledge.list(actor?.id,url.searchParams.get('community')??undefined)
         else if(parts.length===3&&parts[1]==='knowledge')result=knowledge.read(parts[2],actor?.id)
         else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='history')result=knowledge.history(parts[2],actor?.id)
@@ -118,6 +121,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/topics') result=social.topics()
         else if (path === '/v1/wiki') result=wiki.all(actor?.id)
         else if (path === '/v1/wiki/discover') result=wiki.discover()
+        else if (path === '/v1/wiki/growing') result=knowledge.discoverPublic()
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])
@@ -162,6 +166,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='sources'&&parts[4]==='state')result=discovery.state(caller,parts[3],b)
       else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='sources'&&parts[4]==='refresh')result=await discovery.refresh(caller,parts[3],()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='items'&&parts[4]==='state')result=discovery.decide(caller,parts[3],b)
+      else if(path==='/v1/clustering/runs')result=clustering.accept(caller,b)
       else if(path==='/v1/knowledge')result=knowledge.create(caller,b)
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='edit')result=knowledge.update(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='withdraw')result=knowledge.withdraw(caller,parts[2],b)

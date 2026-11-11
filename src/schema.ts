@@ -363,6 +363,12 @@ CREATE TABLE resident_inference_calls(
  UNIQUE(job_id,generation,request_key)
 );
 CREATE INDEX resident_inference_budget ON resident_inference_calls(created,job_id);
+`, `
+CREATE TABLE clustering_runs(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),operator_id TEXT NOT NULL REFERENCES actors(id),read_set_hash TEXT NOT NULL,receipt TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE TABLE clustering_assignments(run_id TEXT NOT NULL REFERENCES clustering_runs(id),item_id TEXT NOT NULL REFERENCES discovery_items(id),item_revision INTEGER NOT NULL,label INTEGER NOT NULL,distance REAL NOT NULL,PRIMARY KEY(run_id,item_id));
+CREATE INDEX clustering_scope ON clustering_runs(community_id,created DESC,id DESC);
+ALTER TABLE resident_configs ADD COLUMN announce_knowledge INTEGER NOT NULL DEFAULT 0;
+CREATE TABLE knowledge_announcements(note_id TEXT NOT NULL REFERENCES knowledge_notes(id),revision INTEGER NOT NULL,community_id TEXT NOT NULL REFERENCES communities(id),post_id TEXT NOT NULL UNIQUE REFERENCES posts(id),created INTEGER NOT NULL,PRIMARY KEY(note_id,revision,community_id));
 `]
 
 export const schemaVersion=migrations.length
