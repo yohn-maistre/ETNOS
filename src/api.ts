@@ -13,6 +13,9 @@ import { Media } from './media.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {AgentAccess} from './agent-access.ts'
 import { capabilities } from './capabilities.ts'
+import {Discovery,type SourceFetcher} from './discovery.ts'
+import {Knowledge} from './knowledge.ts'
+import {Resident,type ResidentProvider,type ResidentSkill} from './resident.ts'
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -39,7 +42,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -50,6 +53,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const social=new Social(store),search=new Search(store)
   const wiki=new Wiki(store)
   const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups)
+  const discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   return async (req: Request): Promise<Response> => {
     try {
       const url=new URL(req.url)
@@ -68,7 +72,20 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       if (['sources','releases'].includes(parts[1]) && !options.custodyFixture) throw new Fault(501,'Custody fixture disabled; Aksara adapter is not connected')
       let result: unknown
       if (req.method === 'GET') {
-        if(path==='/v1/agents')result=agents.list(authenticated())
+        if(path==='/v1/studio'){
+          const who=authenticated();if(store.actor(who).kind!=='human')throw new Fault(403,'Human steward required')
+          result={communities:store.all<Community>("SELECT c.* FROM communities c JOIN memberships m ON m.community_id=c.id WHERE m.actor_id=? AND m.active=1 AND m.role IN ('owner','moderator') ORDER BY c.title",who).map(c=>({...c,sourceCount:store.get<{n:number}>('SELECT count(*) n FROM discovery_sources WHERE community_id=?',c.id)!.n,knowledgeCount:store.get<{n:number}>("SELECT count(*) n FROM knowledge_notes WHERE community_id=? AND state!='withdrawn'",c.id)!.n,pendingJobs:store.get<{n:number}>("SELECT count(*) n FROM resident_jobs WHERE community_id=? AND state IN ('queued','running')",c.id)!.n})),acquisitionConfigured:!!options.sourceFetcher,residentProvider:options.residentProvider?.label??'source-linked, model-free',backupStatus:'unqualified'}
+        }
+        else if(path==='/v1/discovery/sources')result=discovery.sources(authenticated(),string(url.searchParams.get('community')))
+        else if(path==='/v1/discovery/items')result=discovery.items(actor?.id,url.searchParams.get('community')??undefined,url.searchParams.get('review')==='true')
+        else if(parts.length===4&&parts[1]==='discovery'&&parts[2]==='items')result=discovery.item(parts[3],actor?.id,url.searchParams.get('review')==='true')
+        else if(path==='/v1/knowledge')result=knowledge.list(actor?.id,url.searchParams.get('community')??undefined)
+        else if(parts.length===3&&parts[1]==='knowledge')result=knowledge.read(parts[2],actor?.id)
+        else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='history')result=knowledge.history(parts[2],actor?.id)
+        else if(path==='/v1/resident/config')result=resident.get(authenticated(),string(url.searchParams.get('community')))
+        else if(path==='/v1/resident/jobs')result=resident.jobs(authenticated(),string(url.searchParams.get('community')))
+        else if(parts.length===4&&parts[1]==='resident'&&parts[2]==='jobs')result=resident.job(authenticated(),parts[3])
+        else if(path==='/v1/agents')result=agents.list(authenticated())
         else if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth':'local-provisioned-credentials', enrollment:options.authMode==='atproto'?(options.enrollmentMode??'invite'):null, atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
@@ -140,7 +157,19 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       const caller = authenticated(), b = await body(req)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
-      if(path==='/v1/agents')result=agents.enroll(caller,b)
+      if(path==='/v1/discovery/sources')result=discovery.add(caller,b)
+      else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='sources'&&parts[4]==='state')result=discovery.state(caller,parts[3],b)
+      else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='sources'&&parts[4]==='refresh')result=await discovery.refresh(caller,parts[3],()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
+      else if(parts.length===5&&parts[1]==='discovery'&&parts[2]==='items'&&parts[4]==='state')result=discovery.decide(caller,parts[3],b)
+      else if(path==='/v1/knowledge')result=knowledge.create(caller,b)
+      else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='edit')result=knowledge.update(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='withdraw')result=knowledge.withdraw(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='promote')result=knowledge.promote(caller,parts[2],b)
+      else if(path==='/v1/resident/config')result=resident.configure(caller,b)
+      else if(path==='/v1/resident/jobs')result=resident.enqueue(caller,string(b.communityId),string(b.skill) as ResidentSkill,string(b.requestKey))
+      else if(parts.length===5&&parts[1]==='resident'&&parts[2]==='jobs'&&parts[4]==='run'){resident.job(caller,parts[3]);result=await resident.run(parts[3],()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req);resident.job(caller,parts[3])})}
+      else if(parts.length===5&&parts[1]==='resident'&&parts[2]==='jobs'&&parts[4]==='cancel')result=resident.cancel(caller,parts[3])
+      else if(path==='/v1/agents')result=agents.enroll(caller,b)
       else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='deployments')result=agents.addDeployment(caller,parts[2],string(b.label),b.jwk)
       else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='suspend')result=agents.suspend(caller,parts[2])
       else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='resume')result=agents.resume(caller,parts[2])

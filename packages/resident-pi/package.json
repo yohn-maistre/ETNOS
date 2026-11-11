@@ -1,0 +1,20 @@
+{
+  "name": "@abstraksi/strata-resident-pi",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "wrangler deploy --dry-run --config wrangler.jsonc --outdir dist",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.ts",
+    "test:worker": "npm run build && node --test test/workerd.test.mjs"
+  },
+  "dependencies": {
+    "agents": "0.33.0",
+    "@earendil-works/chord": "1.5.2",
+    "@earendil-works/pi-ai": "1.5.2",
+    "@earendil-works/pi-schema": "1.5.2",
+    "@earendil-works/pi-durable": "1.5.2"
+  }
+}

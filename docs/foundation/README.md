@@ -7,6 +7,8 @@ This is the working home of the owner's complete **ETNOS / Strata — A Living C
 - [Full feature ledger](feature-ledger.md) and [machine-readable records](feature-ledger.json).
 - [Original decision entries and current overrides](decision-ledger.json).
 - [Repository evidence, donor boundaries and research](review-notes.md).
+- [Current local implementation and remaining integration gates](../implementation-checkpoint-2026-11-11.md).
+- [Post-first refinement, Wikipedia/Nextdoor review, X/Lemmy research and UI polish](../post-first-design-2026-11-11.md).
 - [Source manifest](source-manifest.json) and [verbatim paragraph/table extraction](source-paragraphs.json).
 
 The source is a design exploration, not an executable instruction file. Selected designs, hypotheses, rejected alternatives and long-range possibilities keep their original distinctions. Current user instructions and implemented authority/privacy contracts take precedence over historical or prospective wording. In particular, open Bluesky signup is already selected and deployed; this document does not restore invite-only enrollment.

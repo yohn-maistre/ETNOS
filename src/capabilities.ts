@@ -12,4 +12,5 @@ export const capabilities = {
   knowledge:{publicWiki:true,restrictedProposals:true,reviewedRevisions:true,privateInitialDrafts:true,editorialGroupPolicies:true,privateLibrary:false,publicWork:true,agentProposals:true,agentAcceptance:false},
   publication:{local:true,atIntent:true,liveAT:false,ingestion:false,activityPub:false},
   interop:{aksara:false,a2a:false,iroh:false,hardware:false,offlineSync:false},
+  commons:{typedArtifactRefs:true,durableTransitionReceipts:true,sourceRegistry:true,boundedFeedAcquisition:true,workingKnowledge:true,privateWorkingNotes:true,nativeNews:true,residentJobs:true,residentInference:'provider-dependent',operatorStudio:true,privateWiki:false},
 } as const

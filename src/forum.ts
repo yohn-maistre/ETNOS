@@ -46,16 +46,18 @@ export class Forum {
    checkInlineMedia(c,s.all<{id:string}>('SELECT id FROM media WHERE post_id=?',id).map(m=>m.id))
    if(!b.text.trim()&&!c.title&&!c.url&&!c.poll&&!c.event&&!s.get('SELECT 1 FROM media WHERE post_id=?',id))throw new Fault(400,'Add text, a link or media')
    s.run('UPDATE posts SET text=?,content=?,revision=revision+1,updated=? WHERE id=?',b.text.trim(),JSON.stringify(c),s.clock(),id)
+   s.invalidatePublicContext(p.community_id)
    s.audit(actor,'post.edit',id);return s.getPost(actor,id)
   })
  }
  delete(actor:string,id:string,revision:unknown){
   const s=this.store
   return s.tx(()=>{
-   this.editable(actor,id,revision)
+   const p=this.editable(actor,id,revision)
    s.run("UPDATE posts SET text='',content='{}',deleted=1,pinned=0,revision=revision+1,updated=? WHERE id=?",s.clock(),id)
    for(const table of ['media','poll_votes','event_responses','votes','bookmarks'])s.run(`DELETE FROM ${table} WHERE post_id=?`,id)
    s.run("DELETE FROM record_contexts WHERE record_kind='post' AND record_id=?",id)
+   s.invalidatePublicContext(p.community_id)
    s.audit(actor,'post.delete',id);return s.getPost(actor,id)
   })
  }
@@ -73,6 +75,7 @@ export class Forum {
    else if(action==='restore')s.run('UPDATE posts SET hidden=0 WHERE id=?',id)
    else if(action==='lock'||action==='unlock')s.run('UPDATE posts SET locked=? WHERE id=?',Number(action==='lock'),id)
    else s.run('UPDATE posts SET pinned=? WHERE id=?',Number(action==='pin'),id)
+   if(action!=='hide')s.invalidatePublicContext(p.community_id)
    s.run('INSERT INTO moderation_events VALUES(?,?,?,?,?,?,?)',randomUUID(),p.community_id,id,actor,String(action),reason.trim(),s.clock())
    s.audit(actor,'moderation.'+action,id);return{ok:true}
   })

@@ -8,6 +8,10 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 
 **Living commons direction, 11 November 2026:** [Complete foundation and implementation ledger](docs/foundation/README.md) preserves the owner's full source document and plans configurable discovery, working knowledge, resident agency, composable participation, culture and operations. It distinguishes existing runtime evidence from planned capabilities; this planning checkpoint is not a deployment.
 
+**Current local implementation:** the canonical connected UI is now in `apps/web`; the optional native resident is in `packages/resident-pi`. Source discovery, working knowledge and resident pipelines are locally implemented and tested but not deployed. [Implementation checkpoint and integration gates](docs/implementation-checkpoint-2026-11-11.md) · [Post-first design, UI polish and X/Lemmy research](docs/post-first-design-2026-11-11.md). These updates supersede older phase descriptions below where noted; they do not claim a full production release.
+
+Build the connected surface with `npm ci --prefix apps/web --ignore-scripts`, `npm run check:ui`, `npm run test:ui` and `npm run build:ui`. The web Worker uses `apps/web/dist` on the same origin. See the optional [Pi resident guide](packages/resident-pi/README.md) for its separate install and real local Worker qualification. No model or resident is required for ordinary forum use.
+
 ## Twenty-person alpha
 
 The owner has selected open human signup through Bluesky's OAuth account interface. [Signup contract and boundaries](docs/signup-2026-11-04.md) describes provider creation → verified callback → local enrollment, with no automatic community membership. The web deployment config selects `open`; missing configurations retain invitation-only enrollment. This is external-provider signup, not ETNOS-hosted accounts or automatic `name.etnos.space` handle issuance. Historical invited-only checkpoints below are superseded for this path.

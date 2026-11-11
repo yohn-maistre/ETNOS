@@ -1,18 +1,27 @@
-import { DurableObject } from 'cloudflare:workers'
+import { DurableObject,WorkerEntrypoint } from 'cloudflare:workers'
 import { CloudflareDatabase } from './cloudflare-database.ts'
 import { StrataCore, Fault } from './core.ts'
-import { api, json } from './api.ts'
+import { api, json,body } from './api.ts'
 import {workerDecisions} from './worker-decisions.ts'
 import {AgentAccess} from './agent-access.ts'
 import {agentRoutes} from './agent-mcp.ts'
 import {BrowserAuth} from './oauth.ts'
+import {Discovery,sourceFetcher} from './discovery.ts'
+import {Resident,parseResidentWork,type ResidentWork} from './resident.ts'
+import {piResidentProvider} from './resident-provider.ts'
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
   private handle!: (request: Request) => Promise<Response>
+  private resident?:Resident
+  private discovery?:Discovery
+  private sourceOperatorAllowed:(id:string)=>boolean=()=>false
   constructor(ctx: DurableObjectState, env: Cloudflare.Env) {
     super(ctx,env)
     ctx.blockConcurrencyWhile(async()=>{
       const core=new StrataCore(new CloudflareDatabase(ctx.storage),env.STRATA_ORIGIN,()=>Date.now(),{collection:env.STRATA_COLLECTION})
+      const sourceOrigins=(env.STRATA_SOURCE_ORIGINS??'').split(',').map(x=>x.trim()).filter(Boolean)
+      const acquire=sourceOrigins.length?sourceFetcher(sourceOrigins):undefined
+      const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI):undefined
       core.recoverInterrupted()
       if(env.STRATA_AUTH_MODE==='atproto'){
         if(!env.STRATA_OAUTH_JWK || !env.STRATA_AUTH_SEAL_KEY){
@@ -26,13 +35,49 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
             collection:env.STRATA_COLLECTION,publishingEnabled:env.STRATA_PUBLISHING_ENABLED==='true',
             enrollmentMode,clientName:env.STRATA_CLIENT_NAME})
           const access=new AgentAccess(core,{stewardDid:env.STRATA_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access)
-          const handler=api(core,{agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
+          this.resident=new Resident(core,access,residentProvider)
+          this.discovery=acquire?new Discovery(core,acquire):undefined
+          this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
+          const handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
-      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{agentAccess:access,runtime:'cloudflare-durable-object'});this.handle=async r=>(await routes(r))??handler(r)}
+      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,runtime:'cloudflare-durable-object'});this.resident=new Resident(core,access,residentProvider);this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
     })
   }
-  async request(request: Request): Promise<Response> { return this.handle(request) }
+  private alarmUpdates:Promise<void>=Promise.resolve()
+  private arm(){
+    const update=this.alarmUpdates.then(async()=>{
+      const candidates=[this.resident?.nextWake(),this.discovery?.nextWake()].filter((n):n is number=>typeof n==='number')
+      if(!candidates.length){await this.ctx.storage.deleteAlarm();return}
+      await this.ctx.storage.setAlarm(Math.max(Date.now()+1000,Math.min(...candidates)))
+    })
+    this.alarmUpdates=update.catch(()=>{})
+    return update
+  }
+  async request(request: Request): Promise<Response> { const response=await this.handle(request);await this.arm();return response }
+  async residentAuthority(work:ResidentWork,operation:string,requestKey?:string){
+    if(!this.resident)throw new Fault(503,'Resident authority is unavailable')
+    if(operation==='context')return this.resident.runtimeContext(work)
+    if(operation==='inference')return this.resident.authorizeInference(work,requestKey??'')
+    this.resident.validateRuntime(work);return {valid:true}
+  }
+  async alarm(){
+    // Persist a recovery wake before network work; an exception cannot strand jobs.
+    await this.ctx.storage.setAlarm(Date.now()+60000)
+    try{await this.discovery?.tick(this.sourceOperatorAllowed);await this.resident?.tick()}finally{await this.arm()}
+  }
+}
+
+/** Named binding-only authority for the optional runtime. No public route. */
+export class ResidentAuthority extends WorkerEntrypoint<Cloudflare.Env>{
+ async fetch(request:Request){
+  try{
+   const path=new URL(request.url).pathname
+   if(request.method!=='POST'||!['/work','/context','/inference'].includes(path))return json(404,{error:'Not found'})
+   const input=await body(request,8192),work=parseResidentWork(input.work)
+   return json(200,await this.env.STRATA.getByName(this.env.STRATA_NODE).residentAuthority(work,path.slice(1),typeof input.requestKey==='string'?input.requestKey:undefined))
+  }catch(error){return json(error instanceof Fault?error.status:503,{error:error instanceof Fault?error.message:'Resident authority unavailable'})}
+ }
 }
 
 export default {

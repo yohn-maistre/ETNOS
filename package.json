@@ -9,6 +9,9 @@
   },
   "scripts": {
     "check": "tsc --noEmit",
+    "check:ui": "npm run check --prefix apps/web",
+    "build:ui": "npm run build --prefix apps/web",
+    "test:ui": "npm test --prefix apps/web",
     "test": "node --disable-warning=ExperimentalWarning --test test/*.test.ts",
     "start": "node --disable-warning=ExperimentalWarning src/cli.ts serve",
     "demo": "node --disable-warning=ExperimentalWarning src/cli.ts demo",
@@ -28,6 +31,7 @@
     "@modelcontextprotocol/client": "2.4.0",
     "@modelcontextprotocol/server": "2.4.0",
     "jose": "6.2.15",
+    "saxes": "6.0.0",
     "zod": "4.2.0"
   },
   "devDependencies": {

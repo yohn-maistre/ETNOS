@@ -269,7 +269,103 @@ CREATE TABLE enrollment_invitations (
  created INTEGER NOT NULL, expires INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0,
  used_by TEXT REFERENCES actors(id), used_at INTEGER
 );
+`, `
+CREATE TABLE commons_receipts (
+ actor_id TEXT NOT NULL REFERENCES actors(id), request_key TEXT NOT NULL, action TEXT NOT NULL,
+ digest TEXT NOT NULL, result TEXT NOT NULL, created INTEGER NOT NULL,
+ PRIMARY KEY(actor_id,request_key)
+);
+CREATE TABLE commons_events (
+ sequence INTEGER PRIMARY KEY AUTOINCREMENT, community_id TEXT NOT NULL REFERENCES communities(id),
+ actor_id TEXT NOT NULL REFERENCES actors(id), kind TEXT NOT NULL, artifact_kind TEXT NOT NULL,
+ artifact_id TEXT NOT NULL, revision INTEGER NOT NULL, created INTEGER NOT NULL
+);
+CREATE INDEX commons_events_scope ON commons_events(community_id,sequence DESC);
+`, `
+CREATE TABLE discovery_sources (
+ id TEXT PRIMARY KEY, community_id TEXT NOT NULL REFERENCES communities(id), owner_id TEXT NOT NULL REFERENCES actors(id),
+ title TEXT NOT NULL, url TEXT NOT NULL, kind TEXT NOT NULL CHECK(kind IN ('news','reference')),
+ language TEXT NOT NULL, mode TEXT NOT NULL CHECK(mode IN ('index','review','news')),
+ rights TEXT NOT NULL CHECK(rights IN ('link-only','excerpt-permitted','open')),
+ terms_url TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('active','paused','withdrawn')),
+ revision INTEGER NOT NULL, created INTEGER NOT NULL, updated INTEGER NOT NULL,
+ last_attempt INTEGER, last_success INTEGER, last_error TEXT,
+ UNIQUE(community_id,url)
+);
+CREATE TABLE discovery_attempts (
+ id TEXT PRIMARY KEY, source_id TEXT NOT NULL REFERENCES discovery_sources(id), source_revision INTEGER NOT NULL,
+ actor_id TEXT NOT NULL REFERENCES actors(id), created INTEGER NOT NULL, state TEXT NOT NULL,
+ digest TEXT, item_count INTEGER NOT NULL DEFAULT 0, error TEXT
+);
+CREATE INDEX discovery_attempts_rate ON discovery_attempts(source_id,created DESC);
+CREATE TABLE discovery_items (
+ id TEXT PRIMARY KEY, community_id TEXT NOT NULL REFERENCES communities(id), url TEXT NOT NULL,
+ title TEXT NOT NULL, summary TEXT NOT NULL, published INTEGER, language TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('candidate','published','withdrawn')),
+ revision INTEGER NOT NULL, created INTEGER NOT NULL, updated INTEGER NOT NULL,
+ reviewer_id TEXT REFERENCES actors(id), UNIQUE(community_id,url)
+);
+CREATE TABLE discovery_evidence (
+ item_id TEXT NOT NULL REFERENCES discovery_items(id), source_id TEXT NOT NULL REFERENCES discovery_sources(id),
+ source_revision INTEGER NOT NULL, digest TEXT NOT NULL, observed INTEGER NOT NULL,
+ PRIMARY KEY(item_id,source_id)
+);
+CREATE INDEX discovery_items_scope ON discovery_items(community_id,updated DESC,id DESC);
+`, `
+CREATE TABLE knowledge_notes (
+ id TEXT PRIMARY KEY, community_id TEXT NOT NULL REFERENCES communities(id), author_id TEXT NOT NULL REFERENCES actors(id),
+ title TEXT NOT NULL, text TEXT NOT NULL, kind TEXT NOT NULL CHECK(kind IN ('note','question','memory','source-comparison')),
+ citations TEXT NOT NULL, language TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('working','promoted','withdrawn')),
+ revision INTEGER NOT NULL, created INTEGER NOT NULL, updated INTEGER NOT NULL,
+ editorial_mandate_id TEXT REFERENCES editorial_mandates(id), wiki_page_id TEXT REFERENCES wiki_pages(id)
+);
+CREATE TABLE knowledge_history (
+ id TEXT PRIMARY KEY, note_id TEXT NOT NULL REFERENCES knowledge_notes(id), revision INTEGER NOT NULL,
+ actor_id TEXT NOT NULL REFERENCES actors(id), title TEXT NOT NULL, text TEXT NOT NULL, citations TEXT NOT NULL,
+ kind TEXT NOT NULL, language TEXT NOT NULL, state TEXT NOT NULL, created INTEGER NOT NULL,
+ UNIQUE(note_id,revision)
+);
+CREATE TABLE knowledge_evidence (
+ note_id TEXT NOT NULL REFERENCES knowledge_notes(id), item_id TEXT NOT NULL REFERENCES discovery_items(id),
+ item_revision INTEGER NOT NULL, PRIMARY KEY(note_id,item_id)
+);
+CREATE INDEX knowledge_scope ON knowledge_notes(community_id,updated DESC,id DESC);
+`, `
+CREATE TABLE resident_configs (
+ community_id TEXT PRIMARY KEY REFERENCES communities(id), agent_id TEXT NOT NULL REFERENCES actors(id),
+ operator_id TEXT NOT NULL REFERENCES actors(id), posting_mandate_id TEXT REFERENCES mandates(id),
+ editorial_mandate_id TEXT REFERENCES editorial_mandates(id), enabled INTEGER NOT NULL,
+ revision INTEGER NOT NULL, daily_limit INTEGER NOT NULL, interval_minutes INTEGER NOT NULL,
+ next_run INTEGER, updated INTEGER NOT NULL
+);
+CREATE TABLE resident_jobs (
+ id TEXT PRIMARY KEY, community_id TEXT NOT NULL REFERENCES communities(id), agent_id TEXT NOT NULL REFERENCES actors(id),
+ operator_id TEXT NOT NULL REFERENCES actors(id), config_revision INTEGER NOT NULL,
+ skill TEXT NOT NULL CHECK(skill IN ('source-digest','research-question','knowledge-draft')),
+ request_key TEXT NOT NULL UNIQUE, state TEXT NOT NULL CHECK(state IN ('queued','running','succeeded','abstained','failed','cancelled')),
+ generation INTEGER NOT NULL, lease_until INTEGER, checkpoint TEXT NOT NULL, evidence TEXT NOT NULL,
+ result_kind TEXT, result_id TEXT, error TEXT, created INTEGER NOT NULL, updated INTEGER NOT NULL,
+ model TEXT, input_tokens INTEGER NOT NULL DEFAULT 0, output_tokens INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX resident_jobs_ready ON resident_jobs(state,created);
+CREATE INDEX resident_jobs_budget ON resident_jobs(community_id,created DESC);
+CREATE INDEX discovery_sources_due ON discovery_sources(state,last_attempt);
+`, `
+CREATE TABLE community_context_epochs(community_id TEXT PRIMARY KEY REFERENCES communities(id),epoch INTEGER NOT NULL);
+ALTER TABLE resident_configs ADD COLUMN mentions_enabled INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE resident_jobs ADD COLUMN runtime_ticket_hash TEXT;
+ALTER TABLE resident_jobs ADD COLUMN context_epoch INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE resident_jobs ADD COLUMN trigger_post_id TEXT REFERENCES posts(id);
+ALTER TABLE resident_jobs ADD COLUMN requester_id TEXT REFERENCES actors(id);
+CREATE TABLE resident_inference_calls(
+ id TEXT PRIMARY KEY,job_id TEXT NOT NULL REFERENCES resident_jobs(id),generation INTEGER NOT NULL,
+ request_key TEXT NOT NULL,created INTEGER NOT NULL,state TEXT NOT NULL,
+ UNIQUE(job_id,generation,request_key)
+);
+CREATE INDEX resident_inference_budget ON resident_inference_calls(created,job_id);
 `]
+
+export const schemaVersion=migrations.length
 
 
 /** DO storage has no PRAGMA user_version or SQL BEGIN/COMMIT support.

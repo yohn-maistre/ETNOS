@@ -14,11 +14,32 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run check
       - run: npm test
+      - run: npm ci --prefix apps/web --ignore-scripts
+      - run: npm run check:ui
+      - run: npm run test:ui
+      - run: npm run build:ui
       - run: npm run types:worker -- --check
       - run: npm run check:worker
       - run: npm run build:worker
       - run: npm run test:worker
       - run: npm run test:web
+
+  resident:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24.19.0'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            packages/resident-pi/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm ci --prefix packages/resident-pi --ignore-scripts
+      - run: npm run check --prefix packages/resident-pi
+      - run: npm test --prefix packages/resident-pi
+      - run: npm run test:worker --prefix packages/resident-pi
 
   pds:
     runs-on: ubuntu-latest

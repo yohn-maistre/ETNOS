@@ -1,10 +1,10 @@
-import backend,{StrataNode} from './worker.ts'
+import backend,{StrataNode,ResidentAuthority} from './worker.ts'
 import {json} from './api.ts'
 import {publicNews,publicStory,publicNewsImage,newsQuery} from './news.ts'
 import {publicVideo} from './video.ts'
 import {publicLinkPreview,previewURL} from './link-preview.ts'
 import {resolveShare,shareTags} from './share.ts'
-export {StrataNode}
+export {StrataNode,ResidentAuthority}
 type WebEnv=Cloudflare.Env & {ASSETS:Fetcher;WATCH_NEWS?:Fetcher}
 const legacyOrigin='https://strata-preview.giyaibo.workers.dev'
 const edgeCache=()=> (caches as unknown as {default:Cache}).default

@@ -28,7 +28,9 @@
       "acceptance": "One canonical UI source, attributed donor snapshot, reproducible same-origin build and matched release manifest",
       "release_gate": "Donor notices and build parity before source relocation",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding."
+      ],
       "decisions": [
         "D02",
         "D03",
@@ -123,7 +125,9 @@
       "acceptance": "Compact readable desktop/mobile sidebar, Settings near account footer, reachable menu, no extra Home hero/Lajur, all bottom content clears navbar",
       "release_gate": "Preserve 40px-or-larger menu targets and reduced motion",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass."
+      ],
       "decisions": [
         "D05",
         "D07",
@@ -269,7 +273,7 @@
         18
       ],
       "workstream": "B",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F43"
       ],
@@ -277,7 +281,9 @@
       "acceptance": "Operator adds source role, language, scope, cadence, terms and index/news/review mode and sees sample results",
       "release_gate": "Permission to add sources; no truth score from priority",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local src/discovery.ts source registry, state/rights/revision and Studio source flow; not deployed."
+      ],
       "decisions": [
         "D13",
         "D14",
@@ -296,7 +302,7 @@
         23
       ],
       "workstream": "B",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F09"
       ],
@@ -304,7 +310,9 @@
       "acceptance": "Feed/page fetch bounds bytes, redirects, types, time and host reach; denied internal/credential-bearing targets cannot fetch",
       "release_gate": "SSRF/DNS/redirect qualification or constrained broker",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local bounded allowlisted RSS/Atom/JSON Feed fetch and adversarial egress tests; not deployed or load-qualified."
+      ],
       "decisions": [
         "D02",
         "D13",
@@ -329,7 +337,7 @@
         11
       ],
       "workstream": "B",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F10",
         "F69"
@@ -338,7 +346,9 @@
       "acceptance": "Every acquired resource has canonical source/time/hash, evidence kind, terms, excerpt/media use and retention; unauthorized body storage is refused",
       "release_gate": "Source licenses and image rights; archive storage cap",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local source snapshots/evidence and rights gates; full corpus provenance and rights program incomplete."
+      ],
       "decisions": [
         "D13",
         "D14",
@@ -488,7 +498,7 @@
         10
       ],
       "workstream": "B",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F43",
         "F44"
@@ -497,7 +507,9 @@
       "acceptance": "People add a note, memory, question, correction or source with minimal ceremony; unresolved/plural accounts remain valid",
       "release_gate": "No automatic promotion to accepted Wiki or official claim",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local knowledge.ts notes/revisions/private membership filters and human Wiki promotion; source-to-note browser flow passes."
+      ],
       "decisions": [
         "D13",
         "D15",
@@ -620,7 +632,7 @@
         23
       ],
       "workstream": "B",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F17",
         "F45"
@@ -629,7 +641,9 @@
       "acceptance": "Correcting or withdrawing source flags affected pages/drafts/cards/jobs and blocks stale publication; public recall limits are stated",
       "release_gate": "Retain lawful minimal receipt; no promise of internet-wide erasure",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local source/post/edit/delete/moderation/accepted-Wiki context invalidation fences current and future resident contexts in the mutation transaction; acceptance/source rollback and late publication tests pass. Hosted correction program remains incomplete."
+      ],
       "decisions": [
         "D04",
         "D11",
@@ -663,7 +677,9 @@
       "acceptance": "Related pages, translations, source links and place/language journeys connect naturally with reading continuity and accessible media",
       "release_gate": "Avoid duplicating sensitive metadata in public related-page lists",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete."
+      ],
       "decisions": [
         "D07",
         "D09",
@@ -748,7 +764,7 @@
         22
       ],
       "workstream": "C",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F43",
         "F44",
@@ -758,7 +774,9 @@
       "acceptance": "Event/request resumes bounded work across restart, with lease generation, durable checkpoint and terminal receipt",
       "release_gate": "Stale generations cannot act; bounded time/steps and kill switch",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending."
+      ],
       "decisions": [
         "D02",
         "D03",
@@ -785,7 +803,7 @@
         24
       ],
       "workstream": "C",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F24",
         "F28"
@@ -794,7 +812,9 @@
       "acceptance": "One labeled resident performs source/question/digest skills with operator identity; additional personas are optional",
       "release_gate": "No synthetic crowd, false humanity or unconditional institutional voice",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Owner selected one Aksara identity and scoped specialists; local source/knowledge/question skills plus Pi helper. Mentions/weekly review incomplete."
+      ],
       "decisions": [
         "D02",
         "D03",
@@ -821,7 +841,7 @@
         22
       ],
       "workstream": "C",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F24"
       ],
@@ -829,7 +849,9 @@
       "acceptance": "Built-in runner and external harness use one typed tool/job/artifact interface with explicit capability budget",
       "release_gate": "No arbitrary shell or global database/network tool by default",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending."
+      ],
       "decisions": [
         "D02",
         "D03",
@@ -916,7 +938,7 @@
         15
       ],
       "workstream": "C",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F24",
         "F06",
@@ -926,7 +948,9 @@
       "acceptance": "Real job yields source comparison, diff, digest or question with trace/receipt in its destination feature",
       "release_gate": "Evidence and audience revalidated at result use",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local resident result commit uses actual post/working-note pipelines and atomic terminal receipt; wider artifact types remain incomplete."
+      ],
       "decisions": [
         "D03",
         "D08",
@@ -1063,7 +1087,9 @@
       "acceptance": "Casual question and poll are easy; accessible results and discussion do not imply binding mandate or factual truth",
       "release_gate": "Current community membership/vote eligibility",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Owner refined to ordinary typed posts and shared replies; current polls remain. No separate mandatory Discussion product; event/question slices remain pending."
+      ],
       "decisions": [
         "D05",
         "D07",
@@ -1383,7 +1409,9 @@
       "acceptance": "Stable Actor/Scope/Artifact/Activity/Relation/Policy/Projection contracts link typed domains while preserving current storage and APIs",
       "release_gate": "No destructive universal-blob migration",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local commons.ts adds typed receipts/events/context epochs over domain tables; no universal blob replacement."
+      ],
       "decisions": [
         "D01",
         "D02",
@@ -1437,7 +1465,9 @@
       "acceptance": "Domain change and authorized event intent commit together; consumers are idempotent and source dependencies inspectable",
       "release_gate": "No sensitive payload in public notifications/events; retention explicit",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local idempotent receipts/events and current source invalidation; full dependency invalidation/index incomplete."
+      ],
       "decisions": [
         "D02",
         "D14",
@@ -1495,7 +1525,7 @@
         19
       ],
       "workstream": "G",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F43",
         "F44"
@@ -1504,7 +1534,9 @@
       "acceptance": "Infra operators, source editors and community mods see relevant actions; setup/review/jobs/quotas/recovery link to real objects",
       "release_gate": "No DevOps secrets or cross-community mod access",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local Studio source/knowledge/resident settings and job views, actual local browser journey; role-aware full operations scope incomplete."
+      ],
       "decisions": [
         "D13",
         "D14",
@@ -2271,7 +2303,7 @@
         25
       ],
       "workstream": "G",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F48",
         "F49"
@@ -2280,7 +2312,9 @@
       "acceptance": "Provider/source failures pause affected work with honest status, next action and recovery receipt without blocking ordinary reading",
       "release_gate": "No exposed credentials/private evidence or fabricated green status",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
-      "completion_evidence": [],
+      "completion_evidence": [
+        "Local checkpoint 2026-11-11: Local Ding shared feedback/sound/mute/volume and contextual failure states; incident operations not yet complete."
+      ],
       "decisions": [
         "D23",
         "D31",
@@ -2364,5 +2398,7 @@
         "D38"
       ]
     }
-  ]
+  ],
+  "implementation_checkpoint": "../implementation-checkpoint-2026-11-11.md",
+  "design_amendment": "../post-first-design-2026-11-11.md"
 }

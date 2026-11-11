@@ -1,3 +1,4 @@
+import {schemaVersion} from '../src/schema.ts'
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {mkdtempSync,rmSync} from 'node:fs'
@@ -163,7 +164,7 @@ test('legacy v1 database migrates without exposing old sources or replaying prev
     assert.equal(s.jobs('old')[0].state,'cancelled')
     assert.equal(s.getPost(undefined,'post').text,'Prior intent')
     s.close()
-    const again=new Strata(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,19);again.close()
+    const again=new Strata(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,schemaVersion);again.close()
   } finally {rmSync(dir,{recursive:true,force:true})}
 })
 

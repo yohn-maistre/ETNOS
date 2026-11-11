@@ -362,6 +362,42 @@
         "D33"
       ],
       "interpretation": "Contextual detail panels are permitted; resurrecting multi-feed columns under a new name is not."
+    },
+    {
+      "id": "A06",
+      "date": "2026-11-11",
+      "source": "Owner explicitly selected Pi with limits enforced outside the resident; current runtime investigation",
+      "decision": "Use optional Pi Durable for the embedded public resident. Strata remains the external authority for current scope, sources, budgets, cancellation and publication; preserve independent Aksara custodial authority.",
+      "affects": [
+        "D02",
+        "D03"
+      ],
+      "interpretation": "One resident identity can use isolated specialist/job contexts. Public-only initial runtime does not authorize protected-source access or a second private institutional kernel. Local implementation exists; real hosted inference and Worker qualification remain outstanding."
+    },
+    {
+      "id": "A07",
+      "date": "2026-11-11",
+      "source": "Owner post-first refinement with Wikipedia/Nextdoor references and request to avoid a separate Discussion feature",
+      "decision": "Ordinary questions, polls, events, offers and source shares use posts and the existing reply experience; discussion is participation, not another mandatory product.",
+      "affects": [
+        "D01",
+        "D08",
+        "D11",
+        "D33"
+      ],
+      "interpretation": "Preserve typed canonical event/offer/work/Wiki records and current authorization; project them through native post cards rather than duplicate conversation engines. Detailed design: ../post-first-design-2026-11-11.md."
+    },
+    {
+      "id": "A08",
+      "date": "2026-11-11",
+      "source": "Latest owner font, sidebar, Kabar and Ding instructions; overrides A05 default font only",
+      "decision": "Default to Geist + Geist Serif, add Plus Jakarta Sans + Geist Serif, retain explicit saved choices. Remove static wordmark region dropdown, tighten centered navigation and use native Ding toasts with sound and device mute/volume.",
+      "affects": [
+        "D08",
+        "D11",
+        "D33"
+      ],
+      "interpretation": "Sky accent and gradual clock themes remain. Use actual source thumbnails; participant avatars need real currently public participant data. Durable inbox/inline validation are not disposable toast content. This is locally implemented, not yet deployed."
     }
   ]
 }

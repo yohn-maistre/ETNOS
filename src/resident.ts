@@ -1,0 +1,142 @@
+import {randomUUID,randomBytes,timingSafeEqual} from 'node:crypto'
+import {Buffer} from 'node:buffer'
+import {StrataCore,Fault} from './core.ts'
+import {AgentAccess} from './agent-access.ts'
+import {Wiki} from './wiki.ts'
+import {Discovery} from './discovery.ts'
+import {Knowledge} from './knowledge.ts'
+import {text,key,transition,expected,emit,hash,publicSteward,contextEpoch} from './commons.ts'
+import type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
+export type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
+export type ResidentConfig={community_id:string;agent_id:string;operator_id:string;posting_mandate_id:string|null;editorial_mandate_id:string|null;enabled:number;revision:number;daily_limit:number;interval_minutes:number;next_run:number|null;updated:number;mentions_enabled:number}
+export type ResidentJob={id:string;community_id:string;agent_id:string;operator_id:string;config_revision:number;skill:ResidentSkill;request_key:string;state:'queued'|'running'|'succeeded'|'abstained'|'failed'|'cancelled';generation:number;lease_until:number|null;checkpoint:string;evidence:string;result_kind:string|null;result_id:string|null;error:string|null;created:number;updated:number;model:string|null;input_tokens:number;output_tokens:number;runtime_ticket_hash:string|null;context_epoch:number;trigger_post_id:string|null;requester_id:string|null}
+export function parseResidentWork(value:unknown):ResidentWork{
+ if(!value||typeof value!=='object')throw new Fault(400,'Runtime work envelope required')
+ const b=value as Record<string,unknown>
+ if(!Number.isSafeInteger(b.generation)||Number(b.generation)<1||!Number.isSafeInteger(b.contextEpoch)||Number(b.contextEpoch)<0)throw new Fault(400,'Invalid runtime generation')
+ return {jobId:text(b.jobId,100),generation:Number(b.generation),ticket:text(b.ticket,100),communityId:text(b.communityId,100),agentId:text(b.agentId,100),contextEpoch:Number(b.contextEpoch),sessionKey:text(b.sessionKey,100)}
+}
+export type ResidentProvider={label:string;draft:(input:ResidentInput,signal:AbortSignal)=>Promise<ResidentOutput>}
+const skills:ResidentSkill[]=['source-digest','research-question','knowledge-draft']
+export class Resident{
+ readonly store:StrataCore;readonly access:AgentAccess;readonly provider?:ResidentProvider
+ constructor(store:StrataCore,access=new AgentAccess(store),provider?:ResidentProvider){this.store=store;this.access=access;this.provider=provider}
+ private config(communityId:string){const c=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId);if(!c)throw new Fault(404,'Resident is not configured');return c}
+ private current(c:ResidentConfig,skill?:ResidentSkill){
+  const s=this.store;publicSteward(s,c.operator_id,c.community_id)
+  if(!c.enabled)throw new Fault(409,'Resident is paused')
+  const registration=this.access.assertCurrent(c.agent_id),agent=s.actor(c.agent_id)
+  if(registration.community_id!==c.community_id||registration.family!=='aksara'||registration.role==='guest'||agent.operator_id!==c.operator_id)throw new Fault(403,'Current resident operator and registration required')
+  s.requireMember(c.agent_id,c.community_id)
+  if(skill==='knowledge-draft')new Wiki(s).checkProposalAuthority(c.agent_id,c.community_id,c.editorial_mandate_id??'')
+  else if(skill)s.checkWrite(c.agent_id,c.community_id,c.posting_mandate_id,false)
+ }
+ get(actorId:string,communityId:string){publicSteward(this.store,actorId,communityId);const config=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId)??null;let ready=false,reason:string|null=null;if(config)try{this.current(config);ready=true}catch(error){reason=error instanceof Fault?error.message:'Resident unavailable'}return {config,ready,reason,provider:this.provider?.label??'source-linked, model-free',skills}}
+ configure(actorId:string,b:Record<string,unknown>){
+  const communityId=text(b.communityId,100),agentId=text(b.agentId,100),dailyLimit=Number(b.dailyLimit??3),interval=Number(b.intervalMinutes??360)
+  if(typeof b.enabled!=='boolean'||!Number.isInteger(dailyLimit)||dailyLimit<1||dailyLimit>5||!Number.isInteger(interval)||interval<60||interval>10080)throw new Fault(400,'Choose 1–5 jobs/day and an interval of at least one hour')
+  const input={communityId,agentId,enabled:b.enabled,dailyLimit,interval,postingMandateId:b.postingMandateId??null,editorialMandateId:b.editorialMandateId??null,revision:b.revision??0,mentionsEnabled:b.mentionsEnabled===true}
+  return transition(this.store,actorId,b.requestKey,'resident.configure',input,()=>{publicSteward(this.store,actorId,communityId);const a=this.store.actor(agentId);if(a.operator_id!==actorId||a.kind!=='agent')throw new Fault(403,'Resident agent operator required');if(b.enabled)this.access.assertCurrent(agentId)},()=>{
+   const s=this.store,prior=s.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId);expected(input.revision,prior?.revision??0)
+   const config:ResidentConfig={community_id:communityId,agent_id:agentId,operator_id:actorId,posting_mandate_id:input.postingMandateId?text(input.postingMandateId,100):null,editorial_mandate_id:input.editorialMandateId?text(input.editorialMandateId,100):null,enabled:Number(b.enabled),revision:(prior?.revision??0)+1,daily_limit:dailyLimit,interval_minutes:interval,next_run:b.enabled?s.clock()+interval*60000:null,updated:s.clock(),mentions_enabled:Number(input.mentionsEnabled)}
+   if(b.enabled)this.current(config)
+   s.run('INSERT INTO resident_configs(community_id,agent_id,operator_id,posting_mandate_id,editorial_mandate_id,enabled,revision,daily_limit,interval_minutes,next_run,updated,mentions_enabled) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(community_id) DO UPDATE SET agent_id=excluded.agent_id,operator_id=excluded.operator_id,posting_mandate_id=excluded.posting_mandate_id,editorial_mandate_id=excluded.editorial_mandate_id,enabled=excluded.enabled,revision=excluded.revision,daily_limit=excluded.daily_limit,interval_minutes=excluded.interval_minutes,next_run=excluded.next_run,updated=excluded.updated,mentions_enabled=excluded.mentions_enabled',config.community_id,config.agent_id,config.operator_id,config.posting_mandate_id,config.editorial_mandate_id,config.enabled,config.revision,config.daily_limit,config.interval_minutes,config.next_run,config.updated,config.mentions_enabled)
+   s.run("UPDATE resident_jobs SET state='cancelled',generation=generation+1,lease_until=NULL,error='Resident configuration changed',updated=? WHERE community_id=? AND state IN ('queued','running')",s.clock(),communityId)
+   emit(s,actorId,'resident.configure',{kind:'agent-job',id:communityId,revision:config.revision,communityId});return this.get(actorId,communityId)
+  })
+ }
+ enqueue(actorId:string,communityId:string,skill:ResidentSkill,requestKey:string){
+  if(!skills.includes(skill))throw new Fault(400,'Unknown resident skill')
+  return transition(this.store,actorId,requestKey,'resident.enqueue',{communityId,skill},()=>{publicSteward(this.store,actorId,communityId);this.current(this.config(communityId),skill)},()=>{
+   const s=this.store,c=this.config(communityId)
+   if(s.get<{n:number}>('SELECT count(*) n FROM resident_jobs WHERE community_id=? AND created>?',communityId,s.clock()-86400000)!.n>=c.daily_limit)throw new Fault(429,'Resident daily budget reached')
+   if(s.get("SELECT 1 FROM resident_jobs WHERE community_id=? AND state IN ('queued','running')",communityId))throw new Fault(409,'A resident job is already pending')
+   const id=randomUUID(),now=s.clock();s.run("INSERT INTO resident_jobs(id,community_id,agent_id,operator_id,config_revision,skill,request_key,state,generation,checkpoint,evidence,created,updated) VALUES(?,?,?,?,?,?,?,'queued',0,'queued','[]',?,?)",id,communityId,c.agent_id,c.operator_id,c.revision,skill,key(actorId+':'+requestKey),now,now)
+   emit(s,actorId,'resident.enqueue',{kind:'agent-job',id,revision:1,communityId});return this.job(actorId,id)
+  })
+ }
+ job(actorId:string,id:string){const j=this.store.get<ResidentJob>('SELECT * FROM resident_jobs WHERE id=?',id);if(!j)throw new Fault(404,'Not found');publicSteward(this.store,actorId,j.community_id);const {runtime_ticket_hash:_ticket,...visible}=j;return {...visible,evidence:JSON.parse(j.evidence) as ResidentEvidence[],artifact:{kind:'agent-job' as const,id:j.id,revision:j.generation,communityId:j.community_id}}}
+ jobs(actorId:string,communityId:string){publicSteward(this.store,actorId,communityId);return this.store.all<ResidentJob>('SELECT * FROM resident_jobs WHERE community_id=? ORDER BY created DESC,id DESC LIMIT 50',communityId).map(j=>this.job(actorId,j.id))}
+ cancel(actorId:string,id:string){return this.store.tx(()=>{const j=this.job(actorId,id);if(j.state==='queued'||j.state==='running'){this.store.run("UPDATE resident_jobs SET state='cancelled',generation=generation+1,lease_until=NULL,error='Cancelled by steward',updated=? WHERE id=?",this.store.clock(),id);emit(this.store,actorId,'resident.cancel',{kind:'agent-job',id,revision:j.generation+1,communityId:j.community_id})}return this.job(actorId,id)})}
+ private evidence(communityId:string):ResidentEvidence[]{return new Discovery(this.store).items(undefined,communityId).filter(i=>i.evidence.some(e=>e.state==='active'&&e.sourceRevision===e.currentRevision)).slice(0,5).map(i=>({id:i.id,revision:i.revision,title:i.title,url:i.url,summary:i.summary,sources:i.evidence.filter(e=>e.state==='active'&&e.sourceRevision===e.currentRevision).map(e=>({id:e.sourceId,revision:e.currentRevision}))}))}
+ private recheck(job:ResidentJob){
+  const s=this.store,current=s.get<ResidentJob>('SELECT * FROM resident_jobs WHERE id=?',job.id),config=this.config(job.community_id)
+  if(!current||current.state!=='running'||current.generation!==job.generation||!current.lease_until||current.lease_until<=s.clock())throw new Fault(409,'Resident lease is no longer current')
+  if(config.revision!==job.config_revision)throw new Fault(409,'Resident configuration changed')
+  this.current(config,job.skill)
+  if(contextEpoch(s,job.community_id)!==current.context_epoch)throw new Fault(409,'Public context changed; start a new scoped run')
+  const pinned=JSON.parse(current.evidence) as ResidentEvidence[]
+  for(const e of pinned){const i=new Discovery(s).item(e.id);if(i.community_id!==job.community_id||i.revision!==e.revision||!e.sources.every(src=>i.evidence.some(x=>x.sourceId===src.id&&x.sourceRevision===src.revision&&x.currentRevision===src.revision&&x.state==='active')))throw new Fault(409,'Evidence changed during resident work')}
+  return config
+ }
+ async run(id:string,recheckSession:()=>void=()=>{}){
+  const s=this.store
+  const claim=s.tx(()=>{
+   recheckSession();const j=s.get<ResidentJob>('SELECT * FROM resident_jobs WHERE id=?',id);if(!j)throw new Fault(404,'Not found')
+   if(j.state!=='queued')throw new Fault(409,'Job is not queued; interrupted inference is never blindly replayed')
+   const c=this.config(j.community_id);this.current(c,j.skill);if(c.revision!==j.config_revision)throw new Fault(409,'Resident configuration changed')
+   const evidence=this.evidence(j.community_id),ticket=randomBytes(32).toString('base64url');s.run("UPDATE resident_jobs SET state='running',generation=generation+1,lease_until=?,checkpoint='prepared',evidence=?,updated=?,runtime_ticket_hash=?,context_epoch=? WHERE id=?",s.clock()+90000,JSON.stringify(evidence),s.clock(),hash(ticket),contextEpoch(s,j.community_id),id)
+   return {job:s.get<ResidentJob>('SELECT * FROM resident_jobs WHERE id=?',id)!,ticket}
+  })
+  const {job,ticket}=claim
+  try{
+   const evidence=JSON.parse(job.evidence) as ResidentEvidence[],community=s.community(job.community_id)
+   if(!evidence.length)throw new Fault(422,'No current public source evidence; resident abstained')
+   let result:ResidentOutput
+   if(this.provider){
+    s.tx(()=>{this.recheck(job);if(s.get<{n:number}>('SELECT count(*) n FROM resident_jobs WHERE model IS NOT NULL AND created>?',s.clock()-86400000)!.n>=10)throw new Fault(429,'Daily model-call budget reached');s.run("UPDATE resident_jobs SET checkpoint='model-started',model=? WHERE id=?",this.provider!.label,id)})
+    result=await this.provider.draft({skill:job.skill,community:community.title,language:'id',evidence,work:{jobId:id,generation:job.generation,ticket,communityId:job.community_id,agentId:job.agent_id,contextEpoch:job.context_epoch,sessionKey:job.trigger_post_id??job.skill}},AbortSignal.timeout(65000))
+   }else{
+    const body=evidence.map((e,i)=>`${i+1}. ${e.title}${e.summary?' — '+e.summary:''}`).join('\n')
+    result={model:'model-free:source-index',text:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kita pahami atau tindak lanjuti di ${community.title}?\n\n${body}`:`Catatan sumber untuk ${community.title}\n\n${body}`}
+   }
+   const draft=text(result.text,6000),safe=draft.replace(/https?:\/\/[^\s<>\])]+/g,'').replace(/<think>[\s\S]*?<\/think>/gi,'').trim()
+   if(!safe)throw new Fault(422,'Resident returned no usable draft')
+   return s.tx(()=>{
+    recheckSession();const config=this.recheck(job),references=evidence.map(e=>e.url),body=safe+'\n\nSumber:\n'+references.join('\n')
+    let resultKind:string,resultId:string
+    if(job.skill==='knowledge-draft'){
+     const note=new Knowledge(s).create(job.agent_id,{communityId:job.community_id,title:evidence[0].title,text:body,kind:'source-comparison',citations:references,language:'id',evidenceIds:evidence.map(e=>e.id),editorialMandateId:config.editorial_mandate_id,requestKey:'resident-note:'+id})
+     resultKind='knowledge';resultId=note.id
+    }else{
+     const post=s.createPost(job.agent_id,job.community_id,body,undefined,config.posting_mandate_id??undefined)
+     resultKind='post';resultId=post.id
+    }
+    const inputTokens=Number.isSafeInteger(result.inputTokens)&&result.inputTokens!>=0?result.inputTokens!:0,outputTokens=Number.isSafeInteger(result.outputTokens)&&result.outputTokens!>=0?result.outputTokens!:0
+    s.run("UPDATE resident_jobs SET state='succeeded',checkpoint='effect-committed',lease_until=NULL,result_kind=?,result_id=?,model=?,input_tokens=?,output_tokens=?,updated=? WHERE id=?",resultKind,resultId,text(result.model,200),inputTokens,outputTokens,s.clock(),id)
+    emit(s,job.agent_id,'resident.complete',{kind:'agent-job',id,revision:job.generation,communityId:job.community_id});return {id,state:'succeeded',resultKind,resultId}
+   })
+  }catch(error){
+   const message=error instanceof Fault?error.message:'Model unavailable or invalid output; a new job requires an explicit request',state=error instanceof Fault&&[403,404,409,422,429].includes(error.status)?'abstained':'failed'
+   s.tx(()=>s.run("UPDATE resident_jobs SET state=?,lease_until=NULL,error=?,checkpoint='stopped',updated=? WHERE id=? AND state='running' AND generation=?",state,message,s.clock(),id,job.generation))
+   return {id,state,error:message}
+  }
+ }
+
+ /** Service-binding only. A durable per-run capability never grants publication. */
+ validateRuntime(work:ResidentWork){
+  const s=this.store,j=s.get<ResidentJob>('SELECT * FROM resident_jobs WHERE id=?',work.jobId)
+  if(!j||!j.runtime_ticket_hash||typeof work.ticket!=='string'||work.ticket.length!==43||!timingSafeEqual(Buffer.from(j.runtime_ticket_hash,'hex'),Buffer.from(hash(work.ticket),'hex')))throw new Fault(403,'Invalid runtime work capability')
+  if(j.generation!==work.generation||j.community_id!==work.communityId||j.agent_id!==work.agentId||j.context_epoch!==work.contextEpoch)throw new Fault(409,'Stale runtime work capability')
+  this.recheck(j);return j
+ }
+ runtimeContext(work:ResidentWork){const j=this.validateRuntime(work);return {skill:j.skill,community:this.store.community(j.community_id).title,evidence:JSON.parse(j.evidence) as ResidentEvidence[]}}
+ authorizeInference(work:ResidentWork,requestKey:string){return this.store.tx(()=>{
+  const s=this.store,j=this.validateRuntime(work);key(requestKey)
+  if(s.get('SELECT 1 FROM resident_inference_calls WHERE job_id=? AND generation=? AND request_key=?',j.id,j.generation,requestKey))throw new Fault(409,'Inference outcome may be uncertain; do not replay this request')
+  if(s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE job_id=?',j.id)!.n>=3||s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE created>?',s.clock()-86400000)!.n>=10)throw new Fault(429,'Resident inference budget reached')
+  const id=randomUUID();s.run("INSERT INTO resident_inference_calls VALUES(?,?,?,?,?,'reserved')",id,j.id,j.generation,requestKey,s.clock());return {id,maxOutputTokens:600,contextEpoch:j.context_epoch}
+ })}
+ /** Alarms may replay; queued execution and effect commits remain idempotent.
+  * Interrupted inference consumes its budget and requires an explicit fresh job. */
+ recover(){const s=this.store;s.run("UPDATE resident_jobs SET state='failed',lease_until=NULL,error='Interrupted job; inspect its receipt before requesting another',updated=? WHERE state='running' AND lease_until<=?",s.clock(),s.clock())}
+ async tick(){
+  const s=this.store;this.recover()
+  for(const c of s.all<ResidentConfig>('SELECT * FROM resident_configs WHERE enabled=1 AND next_run<=? ORDER BY next_run LIMIT 3',s.clock())){
+   try{this.enqueue(c.operator_id,c.community_id,'knowledge-draft','schedule:'+hash({scope:c.community_id,at:c.next_run}).slice(0,40))}catch{/* Current authority and quotas can refuse scheduled work. No widening or retry inference. */}
+   s.run('UPDATE resident_configs SET next_run=? WHERE community_id=? AND revision=?',s.clock()+c.interval_minutes*60000,c.community_id,c.revision)
+  }
+  for(const j of s.all<{id:string}>("SELECT id FROM resident_jobs WHERE state='queued' ORDER BY created LIMIT 1"))try{await this.run(j.id)}catch{ s.run("UPDATE resident_jobs SET state='abstained',error='Current authority refused scheduled work',updated=? WHERE id=? AND state='queued'",s.clock(),j.id) }
+ }
+ nextWake(){const s=this.store;const queued=s.get("SELECT 1 FROM resident_jobs WHERE state='queued'");if(queued)return s.clock()+1000;return s.get<{next:number|null}>("SELECT MIN(at) next FROM (SELECT next_run at FROM resident_configs WHERE enabled=1 UNION ALL SELECT lease_until at FROM resident_jobs WHERE state='running')")?.next??null}
+}

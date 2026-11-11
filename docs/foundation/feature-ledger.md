@@ -12,27 +12,27 @@ Reviewed 11 November 2026. Every entry is in scope; status describes actual evid
 | [F06](#f06) | Native artifact cards and contextual panels | F | partial | F04, F43 |
 | [F07](#f07) | Composable communities and ordinary language rooms | D | partial | F05, F43 |
 | [F08](#f08) | Human, collective and institutional profiles | D | partial | F06, F32 |
-| [F09](#f09) | Configurable source registry | B | planned | F43 |
-| [F10](#f10) | Safe discovery and source egress | B | planned | F09 |
-| [F11](#f11) | Acquisition snapshots, provenance and rights | B | planned | F10, F69 |
+| [F09](#f09) | Configurable source registry | B | partial | F43 |
+| [F10](#f10) | Safe discovery and source egress | B | partial | F09 |
+| [F11](#f11) | Acquisition snapshots, provenance and rights | B | partial | F10, F69 |
 | [F12](#f12) | Deduplication and syndication | B | planned | F11 |
 | [F13](#f13) | Developments, Issues and optional decision models | B | planned | F12, F27 |
 | [F14](#f14) | Native news pages and social discussion | B | partial | F06, F13 |
 | [F15](#f15) | Public literature and knowledge bootstrap | B | planned | F11, F16 |
-| [F16](#f16) | Working knowledge contributions | B | planned | F43, F44 |
+| [F16](#f16) | Working knowledge contributions | B | partial | F43, F44 |
 | [F17](#f17) | Reviewed Wiki revision experience | B | partial | F16, F19 |
 | [F18](#f18) | Open, reviewed and restricted editorial policies | B | planned | F17, F44 |
 | [F19](#f19) | Evidence kinds, claims and plurality | B | planned | F43 |
-| [F20](#f20) | Corrections and dependency invalidation | B | planned | F17, F45 |
+| [F20](#f20) | Corrections and dependency invalidation | B | partial | F17, F45 |
 | [F21](#f21) | Wiki reader, atlas and linked contexts | F | partial | F17, F05 |
 | [F22](#f22) | Explore curiosity modules | F | partial | F14, F21 |
 | [F23](#f23) | Explicit For You and continued reading | F | planned | F22, F46 |
-| [F24](#f24) | Embedded resident durable jobs | C | planned | F43, F44, F45 |
-| [F25](#f25) | One resident identity with specialist skills | C | planned | F24, F28 |
-| [F26](#f26) | Tool registry and runtime port | C | planned | F24 |
+| [F24](#f24) | Embedded resident durable jobs | C | partial | F43, F44, F45 |
+| [F25](#f25) | One resident identity with specialist skills | C | partial | F24, F28 |
+| [F26](#f26) | Tool registry and runtime port | C | partial | F24 |
 | [F27](#f27) | Model providers, secrets and measured budgets | C | partial | F26 |
 | [F28](#f28) | Eligible mentions and public agent profiles | C | partial | F08, F05 |
-| [F29](#f29) | Native agent artifact outputs | C | planned | F24, F06, F16 |
+| [F29](#f29) | Native agent artifact outputs | C | partial | F24, F06, F16 |
 | [F30](#f30) | Current authority, anti-loop and effect controls | C | partial | F24, F44 |
 | [F31](#f31) | External Aksara and compatible agents | C | partial | F26, F30 |
 | [F32](#f32) | Verified representatives and response classes | D | planned | F43, F44 |
@@ -50,7 +50,7 @@ Reviewed 11 November 2026. Every entry is in scope; status describes actual evid
 | [F44](#f44) | Shared transition checks and domain lifecycles | A | partial | F43 |
 | [F45](#f45) | Events, outbox and dependency index | A | partial | F43 |
 | [F46](#f46) | Permission-filtered projections everywhere | A | partial | F43 |
-| [F47](#f47) | Role-aware Operator Studio | G | planned | F43, F44 |
+| [F47](#f47) | Role-aware Operator Studio | G | partial | F43, F44 |
 | [F48](#f48) | Measured health, quotas and alerts | G | partial | F47, F24, F09 |
 | [F49](#f49) | Moderation, report queue, appeals and reversal | G | partial | F44, F47 |
 | [F50](#f50) | Plural governance, succession and roster privacy | G | planned | F32, F49, F64 |
@@ -73,7 +73,7 @@ Reviewed 11 November 2026. Every entry is in scope; status describes actual evid
 | [F67](#f67) | Eight human stories and threat fixtures | G | planned | F30, F39, F35, F36, F51 |
 | [F68](#f68) | Reproducible release and dependency provenance | A | partial | F01 |
 | [F69](#f69) | Rights, custody and Local Contexts references | E | planned | F43 |
-| [F70](#f70) | Actionable outages and incident notices | G | planned | F48, F49 |
+| [F70](#f70) | Actionable outages and incident notices | G | partial | F48, F49 |
 | [F71](#f71) | Education and domain profiles without replacing systems of record | D | planned | F07, F35, F38 |
 | [F72](#f72) | Route completion, accessibility and demo recording | F | planned | F06, F22, F67, F68 |
 
@@ -89,7 +89,7 @@ Acceptance: One canonical UI source, attributed donor snapshot, reproducible sam
 
 Release gate: Donor notices and build parity before source relocation.
 
-Dependencies: existing baseline. Completion evidence: not yet recorded.
+Dependencies: existing baseline. Completion evidence: Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding..
 
 <a id="f02"></a>
 
@@ -131,7 +131,7 @@ Acceptance: Compact readable desktop/mobile sidebar, Settings near account foote
 
 Release gate: Preserve 40px-or-larger menu targets and reduced motion.
 
-Dependencies: F01. Completion evidence: not yet recorded.
+Dependencies: F01. Completion evidence: Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass..
 
 <a id="f05"></a>
 
@@ -193,7 +193,7 @@ Dependencies: F06, F32. Completion evidence: not yet recorded.
 
 ## F09 — Configurable source registry
 
-**planned · Stream B · Source sections 9, 18 · Decisions D13, D14, D18, D26, D34, D36**
+**partial · Stream B · Source sections 9, 18 · Decisions D13, D14, D18, D26, D34, D36**
 
 Current evidence: src/news.ts is fixed WPW reader; Watch content/news-sources.json is reusable registry evidence.
 
@@ -201,13 +201,13 @@ Acceptance: Operator adds source role, language, scope, cadence, terms and index
 
 Release gate: Permission to add sources; no truth score from priority.
 
-Dependencies: F43. Completion evidence: not yet recorded.
+Dependencies: F43. Completion evidence: Local checkpoint 2026-11-11: Local src/discovery.ts source registry, state/rights/revision and Studio source flow; not deployed..
 
 <a id="f10"></a>
 
 ## F10 — Safe discovery and source egress
 
-**planned · Stream B · Source sections 9, 22, 23 · Decisions D02, D13, D14, D18, D23, D27, D28, D31, D32, D33, D34, D37**
+**partial · Stream B · Source sections 9, 22, 23 · Decisions D02, D13, D14, D18, D23, D27, D28, D31, D32, D33, D34, D37**
 
 Current evidence: Watch services/watch-engine/src/sources/discover.ts uses trusted fixed sources; arbitrary intake is unqualified.
 
@@ -215,13 +215,13 @@ Acceptance: Feed/page fetch bounds bytes, redirects, types, time and host reach;
 
 Release gate: SSRF/DNS/redirect qualification or constrained broker.
 
-Dependencies: F09. Completion evidence: not yet recorded.
+Dependencies: F09. Completion evidence: Local checkpoint 2026-11-11: Local bounded allowlisted RSS/Atom/JSON Feed fetch and adversarial egress tests; not deployed or load-qualified..
 
 <a id="f11"></a>
 
 ## F11 — Acquisition snapshots, provenance and rights
 
-**planned · Stream B · Source sections 9, 10, 11 · Decisions D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24**
+**partial · Stream B · Source sections 9, 10, 11 · Decisions D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24**
 
 Current evidence: Watch ingest/process.ts records source/archive provenance; Strata has custody fixture only.
 
@@ -229,7 +229,7 @@ Acceptance: Every acquired resource has canonical source/time/hash, evidence kin
 
 Release gate: Source licenses and image rights; archive storage cap.
 
-Dependencies: F10, F69. Completion evidence: not yet recorded.
+Dependencies: F10, F69. Completion evidence: Local checkpoint 2026-11-11: Local source snapshots/evidence and rights gates; full corpus provenance and rights program incomplete..
 
 <a id="f12"></a>
 
@@ -291,7 +291,7 @@ Dependencies: F11, F16. Completion evidence: not yet recorded.
 
 ## F16 — Working knowledge contributions
 
-**planned · Stream B · Source sections 8, 10 · Decisions D13, D15, D16, D17, D18, D20, D21, D22, D30, D35**
+**partial · Stream B · Source sections 8, 10 · Decisions D13, D15, D16, D17, D18, D20, D21, D22, D30, D35**
 
 Current evidence: Public posts and Wiki proposals exist; no distinct working-page lifecycle.
 
@@ -299,7 +299,7 @@ Acceptance: People add a note, memory, question, correction or source with minim
 
 Release gate: No automatic promotion to accepted Wiki or official claim.
 
-Dependencies: F43, F44. Completion evidence: not yet recorded.
+Dependencies: F43, F44. Completion evidence: Local checkpoint 2026-11-11: Local knowledge.ts notes/revisions/private membership filters and human Wiki promotion; source-to-note browser flow passes..
 
 <a id="f17"></a>
 
@@ -347,7 +347,7 @@ Dependencies: F43. Completion evidence: not yet recorded.
 
 ## F20 — Corrections and dependency invalidation
 
-**planned · Stream B · Source sections 10, 16, 21, 23 · Decisions D04, D11, D13, D15, D16, D17, D18, D23, D28, D29, D31, D32, D37**
+**partial · Stream B · Source sections 10, 16, 21, 23 · Decisions D04, D11, D13, D15, D16, D17, D18, D23, D28, D29, D31, D32, D37**
 
 Current evidence: Existing withdrawal fixture/outbox model; no full source-to-summary dependency propagation.
 
@@ -355,7 +355,7 @@ Acceptance: Correcting or withdrawing source flags affected pages/drafts/cards/j
 
 Release gate: Retain lawful minimal receipt; no promise of internet-wide erasure.
 
-Dependencies: F17, F45. Completion evidence: not yet recorded.
+Dependencies: F17, F45. Completion evidence: Local checkpoint 2026-11-11: Local source/post/edit/delete/moderation/accepted-Wiki context invalidation fences current and future resident contexts in the mutation transaction; acceptance/source rollback and late publication tests pass. Hosted correction program remains incomplete..
 
 <a id="f21"></a>
 
@@ -369,7 +369,7 @@ Acceptance: Related pages, translations, source links and place/language journey
 
 Release gate: Avoid duplicating sensitive metadata in public related-page lists.
 
-Dependencies: F17, F05. Completion evidence: not yet recorded.
+Dependencies: F17, F05. Completion evidence: Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete..
 
 <a id="f22"></a>
 
@@ -403,7 +403,7 @@ Dependencies: F22, F46. Completion evidence: not yet recorded.
 
 ## F24 — Embedded resident durable jobs
 
-**planned · Stream C · Source sections 14, 15, 21, 22 · Decisions D02, D03, D12, D14, D25, D26, D27, D28, D30, D31, D32, D33, D34, D37**
+**partial · Stream C · Source sections 14, 15, 21, 22 · Decisions D02, D03, D12, D14, D25, D26, D27, D28, D30, D31, D32, D33, D34, D37**
 
 Current evidence: src/agent-access.ts supplies entrance; no resident scheduler/lease/checkpoint loop.
 
@@ -411,13 +411,13 @@ Acceptance: Event/request resumes bounded work across restart, with lease genera
 
 Release gate: Stale generations cannot act; bounded time/steps and kill switch.
 
-Dependencies: F43, F44, F45. Completion evidence: not yet recorded.
+Dependencies: F43, F44, F45. Completion evidence: Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending..
 
 <a id="f25"></a>
 
 ## F25 — One resident identity with specialist skills
 
-**planned · Stream C · Source sections 14, 15, 24 · Decisions D02, D03, D07, D12, D13, D24, D25, D26, D27, D30, D31, D35, D36, D37**
+**partial · Stream C · Source sections 14, 15, 24 · Decisions D02, D03, D07, D12, D13, D24, D25, D26, D27, D30, D31, D35, D36, D37**
 
 Current evidence: Agent actors/mandates exist, no deployed model acting as resident.
 
@@ -425,13 +425,13 @@ Acceptance: One labeled resident performs source/question/digest skills with ope
 
 Release gate: No synthetic crowd, false humanity or unconditional institutional voice.
 
-Dependencies: F24, F28. Completion evidence: not yet recorded.
+Dependencies: F24, F28. Completion evidence: Local checkpoint 2026-11-11: Owner selected one Aksara identity and scoped specialists; local source/knowledge/question skills plus Pi helper. Mentions/weekly review incomplete..
 
 <a id="f26"></a>
 
 ## F26 — Tool registry and runtime port
 
-**planned · Stream C · Source sections 14, 15, 22 · Decisions D02, D03, D12, D14, D25, D26, D27, D28, D30, D31, D32, D33, D34**
+**partial · Stream C · Source sections 14, 15, 22 · Decisions D02, D03, D12, D14, D25, D26, D27, D28, D30, D31, D32, D33, D34**
 
 Current evidence: Aksara packages/runtime-pi and runtime-mastra illustrate bounded runtime boundaries.
 
@@ -439,7 +439,7 @@ Acceptance: Built-in runner and external harness use one typed tool/job/artifact
 
 Release gate: No arbitrary shell or global database/network tool by default.
 
-Dependencies: F24. Completion evidence: not yet recorded.
+Dependencies: F24. Completion evidence: Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending..
 
 <a id="f27"></a>
 
@@ -473,7 +473,7 @@ Dependencies: F08, F05. Completion evidence: not yet recorded.
 
 ## F29 — Native agent artifact outputs
 
-**planned · Stream C · Source sections 6, 15 · Decisions D03, D08, D11, D12, D25, D26, D27, D30, D31**
+**partial · Stream C · Source sections 6, 15 · Decisions D03, D08, D11, D12, D25, D26, D27, D30, D31**
 
 Current evidence: Agent posting/editorial endpoints exist; no real resident execution.
 
@@ -481,7 +481,7 @@ Acceptance: Real job yields source comparison, diff, digest or question with tra
 
 Release gate: Evidence and audience revalidated at result use.
 
-Dependencies: F24, F06, F16. Completion evidence: not yet recorded.
+Dependencies: F24, F06, F16. Completion evidence: Local checkpoint 2026-11-11: Local resident result commit uses actual post/working-note pipelines and atomic terminal receipt; wider artifact types remain incomplete..
 
 <a id="f30"></a>
 
@@ -537,7 +537,7 @@ Acceptance: Casual question and poll are easy; accessible results and discussion
 
 Release gate: Current community membership/vote eligibility.
 
-Dependencies: F07. Completion evidence: not yet recorded.
+Dependencies: F07. Completion evidence: Local checkpoint 2026-11-11: Owner refined to ordinary typed posts and shared replies; current polls remain. No separate mandatory Discussion product; event/question slices remain pending..
 
 <a id="f34"></a>
 
@@ -677,7 +677,7 @@ Acceptance: Stable Actor/Scope/Artifact/Activity/Relation/Policy/Projection cont
 
 Release gate: No destructive universal-blob migration.
 
-Dependencies: existing baseline. Completion evidence: not yet recorded.
+Dependencies: existing baseline. Completion evidence: Local checkpoint 2026-11-11: Local commons.ts adds typed receipts/events/context epochs over domain tables; no universal blob replacement..
 
 <a id="f44"></a>
 
@@ -705,7 +705,7 @@ Acceptance: Domain change and authorized event intent commit together; consumers
 
 Release gate: No sensitive payload in public notifications/events; retention explicit.
 
-Dependencies: F43. Completion evidence: not yet recorded.
+Dependencies: F43. Completion evidence: Local checkpoint 2026-11-11: Local idempotent receipts/events and current source invalidation; full dependency invalidation/index incomplete..
 
 <a id="f46"></a>
 
@@ -725,7 +725,7 @@ Dependencies: F43. Completion evidence: not yet recorded.
 
 ## F47 — Role-aware Operator Studio
 
-**planned · Stream G · Source sections 18, 19 · Decisions D13, D14, D26, D34, D36, D37**
+**partial · Stream G · Source sections 18, 19 · Decisions D13, D14, D26, D34, D36, D37**
 
 Current evidence: Scattered management controls exist; no unified role-separated Studio.
 
@@ -733,7 +733,7 @@ Acceptance: Infra operators, source editors and community mods see relevant acti
 
 Release gate: No DevOps secrets or cross-community mod access.
 
-Dependencies: F43, F44. Completion evidence: not yet recorded.
+Dependencies: F43, F44. Completion evidence: Local checkpoint 2026-11-11: Local Studio source/knowledge/resident settings and job views, actual local browser journey; role-aware full operations scope incomplete..
 
 <a id="f48"></a>
 
@@ -1047,7 +1047,7 @@ Dependencies: F43. Completion evidence: not yet recorded.
 
 ## F70 — Actionable outages and incident notices
 
-**planned · Stream G · Source sections 19, 23, 25 · Decisions D23, D31, D34, D37, D38**
+**partial · Stream G · Source sections 19, 23, 25 · Decisions D23, D31, D34, D37, D38**
 
 Current evidence: Health endpoint exists; unified incident/affected-job notices absent.
 
@@ -1055,7 +1055,7 @@ Acceptance: Provider/source failures pause affected work with honest status, nex
 
 Release gate: No exposed credentials/private evidence or fabricated green status.
 
-Dependencies: F48, F49. Completion evidence: not yet recorded.
+Dependencies: F48, F49. Completion evidence: Local checkpoint 2026-11-11: Local Ding shared feedback/sound/mute/volume and contextual failure states; incident operations not yet complete..
 
 <a id="f71"></a>
 

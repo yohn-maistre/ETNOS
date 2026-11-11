@@ -385,6 +385,7 @@ export class StrataCore {
       for (const r of this.all<Release>('SELECT * FROM releases WHERE source_id=?', sourceId)) if (r.post_id) {
         this.run('UPDATE posts SET hidden=1 WHERE id=?', r.post_id)
         this.queueDelete(r.post_id)
+        this.invalidatePublicContext(r.community_id)
       }
       this.audit(actorId, 'source.withdraw', sourceId)
     })
@@ -394,11 +395,18 @@ export class StrataCore {
       const p = this.get<Post>('SELECT * FROM posts WHERE id=?', postId) ?? missing()
       this.requireSteward(actorId, p.community_id)
       this.run('UPDATE posts SET hidden=1 WHERE id=?', postId)
+      this.invalidatePublicContext(p.community_id)
       // Moderation suppresses this application's view; it cannot delete another
       // actor's AT repository. A not-yet-sent intent can still be cancelled.
       this.run("UPDATE outbox SET state='cancelled' WHERE post_id=? AND operation='put' AND state='pending'",postId)
       this.audit(actorId, 'post.hide', postId)
     })
+  }
+  /** Rotate retained public agent context in the same transaction as a correction.
+   * An epoch is an internal invalidation token, never a new access grant. */
+  invalidatePublicContext(communityId: string) {
+    if (this.community(communityId).visibility !== 'public') return
+    this.run('INSERT INTO community_context_epochs VALUES(?,1) ON CONFLICT(community_id) DO UPDATE SET epoch=epoch+1', communityId)
   }
   jobs(actorId: string) {
     return this.all<Job>('SELECT o.* FROM outbox o JOIN posts p ON p.id=o.post_id WHERE p.author_id=? ORDER BY o.rowid', actorId)

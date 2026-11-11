@@ -1,0 +1,16 @@
+{
+ "$schema":"../../node_modules/wrangler/config-schema.json",
+ "name":"strata-resident-pi",
+ "main":"src/worker.ts",
+ "compatibility_date":"2026-10-23",
+ "compatibility_flags":["nodejs_compat"],
+ "workers_dev":false,
+ "preview_urls":false,
+ "durable_objects":{"bindings":[{"name":"SESSIONS","class_name":"PiResidentSession"}]},
+ "migrations":[{"tag":"v1","new_sqlite_classes":["PiResidentSession"]}],
+ "services":[
+  {"binding":"AUTHORITY","service":"strata-preview","entrypoint":"ResidentAuthority"},
+  {"binding":"MODEL_GATEWAY","service":"westpapua-watch-engine","entrypoint":"CommonsIntelligence"}
+ ],
+ "observability":{"enabled":true,"head_sampling_rate":0.1,"traces":{"enabled":true,"head_sampling_rate":0.1}}
+}

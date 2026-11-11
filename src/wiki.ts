@@ -139,12 +139,20 @@ export class Wiki {
       }
       // Recheck admission at the effect, not just when a draft was written.
       this.authorizeProposal(proposal.author_id,page.community_id,proposal.editorial_mandate_id,false)
+      // Source-backed working knowledge must still be current at acceptance.
+      // A source correction/withdrawal after draft creation cannot be ignored.
+      if(s.get(`SELECT 1 FROM knowledge_notes n WHERE n.wiki_page_id=? AND (
+        n.state='withdrawn' OR EXISTS(SELECT 1 FROM knowledge_evidence ke JOIN discovery_items i ON i.id=ke.item_id
+          WHERE ke.note_id=n.id AND (i.state!='published' OR i.revision!=ke.item_revision OR NOT EXISTS(
+            SELECT 1 FROM discovery_evidence de JOIN discovery_sources ds ON ds.id=de.source_id
+            WHERE de.item_id=i.id AND ds.state='active' AND ds.revision=de.source_revision))))`,page.id))throw new Fault(409,'Working knowledge evidence changed; review the source and create a current proposal')
       if(page.revision_id!==proposal.base_revision_id)throw new Fault(409,'Wiki changed; proposal must be reviewed against the new base')
       const id=randomUUID()
       s.run('INSERT INTO wiki_revisions VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',id,page.id,page.revision_id,proposalId,proposal.author_id,actorId,
         proposal.text,JSON.stringify(proposal.citations),proposal.language,proposal.perspective,proposal.digest,s.clock())
       s.run('UPDATE wiki_pages SET revision_id=?,draft=0 WHERE id=?',id,page.id)
       s.run("UPDATE wiki_proposals SET state='accepted',decided=? WHERE id=?",s.clock(),proposalId)
+      s.invalidatePublicContext(page.community_id)
       s.audit(actorId,'wiki.accept',page.id)
       return {state:'accepted' as const,revisionId:id}
     })
