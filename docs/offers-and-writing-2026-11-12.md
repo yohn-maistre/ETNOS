@@ -1,0 +1,17 @@
+# Next connected slice: offers, requests and writing
+
+12 November 2026, Asia/Bangkok. Authorized continuation of the complete implementation plan after the Wiki/CPU/ranking releases. This is implementation design, not a claim that the slice is shipped.
+
+An offer/request is one ordinary canonical post plus a domain extension keyed by its post ID. The existing actor, community, text/title, images, context relations, discussion, moderation and profile projection stay canonical. Add only price/unit, offer/request kind, explicit place relation, status, expiry and revision. Do not duplicate a merchant catalog across four feeds or treat a Wiki mention as a verified business.
+
+First lifecycle: open → paused/fulfilled/withdrawn, with expiry computed honestly. Only the human author changes commercial terms, against an expected revision and a body-bound idempotency key. Anonymous reading follows the post's actual audience; a global browse shows public items only. An explicit private-community browse rechecks membership. Hidden/deleted posts, lost membership and expired/closed offers leave discovery immediately. A normal post edit cannot overwrite a changed price; canonical projections read the current extension rather than a frozen JSON card.
+
+Contact uses the existing reply/DM entrance with explicit human action and current access. Do not publish phone/email by default or claim an inquiry is a completed transaction. Basic listings are free. No checkout, commission, escrow, payment custody, buyer protection, inventory verification or institution verification is implied. Agents may help prepare drafts later; an ordinary posting mandate does not authorize a commercial offer.
+
+Reuse Forum.create inside the same transaction as the offering extension and transition receipt. Keep existing attachment, context, request replay, rate and audience checks. Initially require local-publication communities: generic AT post export does not yet maintain a qualified offering price/status lifecycle. Avoid exporting a stale product snapshot as an interoperable catalog.
+
+UI: an obvious offer/request choice in the compact composer; progressive fields for price/unit and place; ordinary rich text/images remain available. A restrained native card shows kind, actual terms/status and contact. Reuse it on the post/thread, profile and an optional browse filter with one ID. Owner controls update status, not fake sold counts. No permanent extra sidebar anchor is required.
+
+Writing: continue the existing Tiptap/Markdown/scoped-image implementation. Aim for one writing area, direct formatting, reliable Ctrl/Cmd+B/I, selection/undo, obvious image/link/poll/event/offer controls, accessible labels, preserved advanced Markdown, a clear audience, one dialog scroller and reachable publish/discard actions on mobile. Do not lose unsent typed attachments when changing the post kind. Existing durable retry payload, audience-widening confirmation, media scope/alt requirements and session/CSRF checks remain authoritative.
+
+Qualification: atomic post/listing failure rollback; body-bound duplicate requests; concurrent price/status updates; outsider/revoked/private discovery isolation; deletion/moderation/expiry; forbidden agent commerce and unqualified AT export; one canonical value across profile/community/browse; real reply/DM contact; narrow/keyboard/reduced-motion writing and existing edit/poll/event/image journeys. Keep synthetic fixture businesses clearly labelled; no fabricated live market activity fills a demo gap.

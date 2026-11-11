@@ -7,6 +7,7 @@ This is the working home of the owner's complete **ETNOS / Strata — A Living C
 - [Read the complete foundation](living-commons.md).
 - [Build order, architecture, demo and infrastructure](execution-plan.md).
 - [Current connected demo implementation sequence](../demo-release-next-2026-11-12.md) and [writing/context refinements](../writing-and-context-plan-2026-11-12.md).
+- [Latest public ranking release and sourced steward simulation](../ranking-and-steward-demo-2026-11-12.md).
 - [Connected Wiki/CPU implementation checkpoint](../connected-wiki-clustering-2026-11-12.md).
 - [Current deployed commons polish](../release-2026-11-12-commons-polish.md).
 - [Prior deployed welcome/writing release](../release-2026-11-12-welcome-writing.md).

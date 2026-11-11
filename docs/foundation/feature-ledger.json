@@ -2500,8 +2500,8 @@
   "design_amendment": "../post-first-design-2026-11-11.md",
   "latest_release": {
     "date": "2026-11-12",
-    "engine_code": "8687938860fa589086ea2c9fe179e9b21e0e081e",
-    "honai_ui": "a727a617ba6c2df3a70566a4e4a35f1f6cd20111",
-    "receipt": "docs/connected-wiki-clustering-2026-11-12.md"
+    "engine_code": "0509fceea4b39c03d7335dd5049ec54a96e3e8c2",
+    "honai_ui": "54f2921",
+    "receipt": "docs/ranking-and-steward-demo-2026-11-12.md"
   }
 }
