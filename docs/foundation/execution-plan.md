@@ -149,6 +149,14 @@ Run existing required checks once per meaningful slice, then tests for changed b
 
 Release to the existing origin and persistent store only after schema migration/rollback strategy and version manifest review. Back up before migration and prove restore using synthetic data and permission-sensitive media/keys. Keep a deploy receipt and post-deploy public capability checks. Cloudflare connector access is restored and the current reading pass is deployed. Recheck actual account/runtime capabilities for each additional integration rather than inheriting stale reauthentication blockers.
 
+## Remaining demo implementation
+
+The [12 November connected demo sequence](../demo-release-next-2026-11-12.md) links immediate e-means, real source/knowledge/resident qualification, the writing redesign, offers/requests, questions/work, contextual navigation, protected collections/language and portable operations. It keeps the full ledger and November 14 target rather than continuing evidence research.
+
+## Writing and contextual navigation follow-up
+
+The [12 November writing/right-rail plan](../writing-and-context-plan-2026-11-12.md) captures the owner’s composer/editor and independently scrolling contextual rail direction. The small global Ctrl+B correction and visible formatting entry accompany the current release. The full adaptive composer and real permission-filtered community statistics remain implementation work, not a completed redesign.
+
 ## Maintaining this plan
 
 The current checkpoint and next slices above supersede the original first-packet list: canonical packaging, source registry, public working knowledge and optional resident jobs have already landed. Continue from their real implementation and remaining gates rather than restarting them. The complete ledger remains the acceptance surface for subsequent implementation.

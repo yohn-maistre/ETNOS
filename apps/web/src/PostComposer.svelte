@@ -3,6 +3,7 @@
   import { onDestroy, untrack } from 'svelte'
   import {
     ImagePlus,
+    Bold,
     Globe,
     LockKeyhole,
     X,
@@ -458,6 +459,10 @@
             </div>{/each}
         </div>{/if}
       <div class="composer-tools">
+        {#if !compact && destination?.publication === 'local'}<Button
+          variant="ghost" size="icon" aria-label="Format tulisan" title="Format tulisan: tebal, miring, daftar dan Markdown"
+          aria-pressed={format} disabled={busy || !!pending} onclick={() => format = !format}
+        ><Bold size={20}/><span class="composer-tool-label">Format</span></Button>{/if}
         <input
           bind:this={picker}
           type="file"
