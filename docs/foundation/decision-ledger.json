@@ -562,6 +562,24 @@
         "D36"
       ],
       "interpretation": "Newest is not trending. Thread previews are documented pending reference screenshots. No fabricated stats, private aggregate leakage or measured-percent claim."
+    },
+    {
+      "id": "A21",
+      "date": "2026-11-12",
+      "source": "Owner explicitly delegates current-literature research for a communal/Indigenous human-and-bioscape knowledge observatory, with later discussion after the implementation run.",
+      "decision": "Research community-grounded relational knowledge landscapes before selecting an observatory model; compare situated Indigenous/biocultural methods with Wiki knowledge graphs and accessible visual exploration. Preserve local terms, evidence, plural relationships and public/private authority.",
+      "affects": [
+        "D01",
+        "D08",
+        "D09",
+        "D11",
+        "D19",
+        "D20",
+        "D21",
+        "D29",
+        "D38"
+      ],
+      "interpretation": "docs/research/knowledge-observatory-2026-11-12.md is a peer-reviewed-literature-informed planning note, not a universal ontology, community mandate or implemented graph. The owner has additional writing/thoughts to discuss later; research does not overwrite the existing foundation."
     }
   ]
 }

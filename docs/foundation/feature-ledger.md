@@ -145,7 +145,7 @@ Acceptance: Topics, places and languages are accurately labeled; switching lens 
 
 Release gate: No automatic ethnic/region membership or private roster inference.
 
-Dependencies: F04. Completion evidence: 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained..
+Dependencies: F04. Completion evidence: 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.; 2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed..
 
 <a id="f06"></a>
 
@@ -327,7 +327,7 @@ Acceptance: Each mode has explicit server-derived available actions and audit hi
 
 Release gate: Current editorial role; policy migration does not expose private content.
 
-Dependencies: F17, F44. Completion evidence: 2026-11-11: Wiki accepted-public discovery projection, excerpts/revision metadata and populated browse/recent cards; device-local continue reading and reader text size. Public/draft/protected migration fixtures verify no draft/private metadata enters discovery.; 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained..
+Dependencies: F17, F44. Completion evidence: 2026-11-11: Wiki accepted-public discovery projection, excerpts/revision metadata and populated browse/recent cards; device-local continue reading and reader text size. Public/draft/protected migration fixtures verify no draft/private metadata enters discovery.; 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.; 2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed..
 
 <a id="f19"></a>
 
@@ -369,7 +369,7 @@ Acceptance: Related pages, translations, source links and place/language journey
 
 Release gate: Avoid duplicating sensitive metadata in public related-page lists.
 
-Dependencies: F17, F05. Completion evidence: Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete.; 2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test.; 2026-11-11 owner-selected plan (not implementation qualification): Contemporary culture/period pages reuse Wiki revisions and dated evidence; avoid a duplicate page per year or accepted discovery containing provisional drafts. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.; 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.; 2026-11-12 connected implementation in progress: integrated provisional Wiki home/reader under /wiki/notes, public-only preview contract and opt-in atomic steward announcement with unchanged-evidence abstention; optional actual Faiss 1.16 CPU fit/final assign, versioned public source snapshot, stale-result rejection and local lexical preprocessing. Local 122-engine-test suite (including native CPU), three independent numerical tests and actual web Worker isolation test pass. Full live release and useful multilingual/corpus qualification are recorded separately; status retained.; 2026-11-12 ranking/steward follow-up: docs/ranking-and-steward-demo-2026-11-12.md; real isolated source/Knowledge/announcement pipeline with researched Crocodylus halli draft and explicitly simulated acquisition/provider; transparent bounded public Explore recipe and actual sort controls. Local 126 engine tests and focused browser/runtime qualification; exact release receipts distinguish hosted features from local simulation. No fabricated hosted model, partner or community acceptance..
+Dependencies: F17, F05. Completion evidence: Local checkpoint 2026-11-11: Existing Wiki reader has contents/history/sources; local contents clipping repair, Geist default/Jakarta option. Expanded atlas/discovery remains incomplete.; 2026-11-11 reading pass: accepted-public Wiki discovery/excerpts, actual maintained-page/community browse, device-local continue reading and reader text size; docs/ui-reading-pass-2026-11-11.md. Draft/protected-page discovery isolation has a real API test.; 2026-11-11 owner-selected plan (not implementation qualification): Contemporary culture/period pages reuse Wiki revisions and dated evidence; avoid a duplicate page per year or accepted discovery containing provisional drafts. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.; 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.; 2026-11-12 connected implementation in progress: integrated provisional Wiki home/reader under /wiki/notes, public-only preview contract and opt-in atomic steward announcement with unchanged-evidence abstention; optional actual Faiss 1.16 CPU fit/final assign, versioned public source snapshot, stale-result rejection and local lexical preprocessing. Local 122-engine-test suite (including native CPU), three independent numerical tests and actual web Worker isolation test pass. Full live release and useful multilingual/corpus qualification are recorded separately; status retained.; 2026-11-12 ranking/steward follow-up: docs/ranking-and-steward-demo-2026-11-12.md; real isolated source/Knowledge/announcement pipeline with researched Crocodylus halli draft and explicitly simulated acquisition/provider; transparent bounded public Explore recipe and actual sort controls. Local 126 engine tests and focused browser/runtime qualification; exact release receipts distinguish hosted features from local simulation. No fabricated hosted model, partner or community acceptance.; 2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed..
 
 <a id="f22"></a>
 
@@ -383,7 +383,7 @@ Acceptance: Featured page, on-this-day, permitted media and did-you-know cards u
 
 Release gate: No invented anniversaries, top-read counts or cultural authority.
 
-Dependencies: F14, F21. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification..
+Dependencies: F14, F21. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification.; 2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed..
 
 <a id="f23"></a>
 
@@ -621,7 +621,7 @@ Acceptance: Scoped participant reads page/item; outsider and revoked participant
 
 Release gate: All projection boundaries qualified before real sensitive data.
 
-Dependencies: F46, F38, F18. Completion evidence: 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained..
+Dependencies: F46, F38, F18. Completion evidence: 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.; 2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed..
 
 <a id="f40"></a>
 
@@ -649,7 +649,7 @@ Acceptance: People converse, add opted-in lexicon/translation/lesson/audio items
 
 Release gate: Language/custodian policy, accessible media and no automatic extraction.
 
-Dependencies: F07, F38, F39. Completion evidence: 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained..
+Dependencies: F07, F38, F39. Completion evidence: 2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.; 2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed..
 
 <a id="f42"></a>
 
@@ -943,7 +943,7 @@ Acceptance: Public posting stays simple; sensitive use requests honor source-spe
 
 Release gate: No centralized ethnicity verification or truth-by-engagement.
 
-Dependencies: F19, F69. Completion evidence: not yet recorded.
+Dependencies: F19, F69. Completion evidence: 2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed..
 
 <a id="f63"></a>
 
