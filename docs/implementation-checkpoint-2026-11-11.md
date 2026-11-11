@@ -2,6 +2,8 @@
 
 Branch `feat/living-commons`; local work after planning commit `0c3b58d`. Work survived the workspace disconnect. **Hosted deployment pending.** The live public site does not yet contain these changes; Git publication and hosted release are separate receipts. Do not confuse a passing synthetic model/browser fixture with a hosted inference or release receipt.
 
+Source checkpoint is now on Strata `main` at `9320ef3`; Honai Metro's connected UI is on `main` at `68f1d00`. Both remote build/check workflows passed. [Source release receipt](release-2026-11-11-commons-checkpoint.md). Further work follows the owner's direct-to-main, tested, one-line commit convention.
+
 ## Local implementation preserved
 
 - Canonical connected Svelte app copied into `apps/web` with donor attribution; original Honai checkout is a frozen donor. Its dependency symlink has now been replaced by an isolated local install. Do not edit the donor app.
