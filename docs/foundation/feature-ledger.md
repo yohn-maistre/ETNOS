@@ -54,7 +54,7 @@ Reviewed 11 November 2026. Every entry is in scope; status describes actual evid
 | [F48](#f48) | Measured health, quotas and alerts | G | partial | F47, F24, F09 |
 | [F49](#f49) | Moderation, report queue, appeals and reversal | G | partial | F44, F47 |
 | [F50](#f50) | Plural governance, succession and roster privacy | G | planned | F32, F49, F64 |
-| [F51](#f51) | Backups, restore and key/media recovery | G | planned | F45, F47 |
+| [F51](#f51) | Backups, restore and key/media recovery | G | partial | F45, F47 |
 | [F52](#f52) | Owned AT records and live PDS reconciliation | G | partial | F44, F45, F56 |
 | [F53](#f53) | Public ingestion cursor and index lifecycle | G | planned | F52, F46 |
 | [F54](#f54) | AT Groups and GroupHost identity | G | partial | F32, F52 |
@@ -411,7 +411,7 @@ Acceptance: Event/request resumes bounded work across restart, with lease genera
 
 Release gate: Stale generations cannot act; bounded time/steps and kill switch.
 
-Dependencies: F43, F44, F45. Completion evidence: Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending.; 2026-11-11: native Studio setup uses real registration/admission and 24-hour posting/editorial grants with 3 jobs/day; private/no-automation/outsider/revoked-operator and replay tests pass. Pi service/bindings deployed, hosted inference awaiting authenticated operator activation..
+Dependencies: F43, F44, F45. Completion evidence: Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending.; 2026-11-11: native Studio setup uses real registration/admission and 24-hour posting/editorial grants with 3 jobs/day; private/no-automation/outsider/revoked-operator and replay tests pass. Pi service/bindings deployed, hosted inference awaiting authenticated operator activation.; Native activation refinement: explicit owner-only automation opt-in, atomic rollback on registration failure and 100-character idempotency keys covered; actual browser setup with initially disabled automation passes. Hosted Strata deployment a1bf590fe3f44e5e92a3e22f6b3b7a47; authenticated live inference still pending..
 
 <a id="f25"></a>
 
@@ -781,7 +781,7 @@ Dependencies: F32, F49, F64. Completion evidence: not yet recorded.
 
 ## F51 — Backups, restore and key/media recovery
 
-**planned · Stream G · Source sections 19, 21, 23 · Decisions D23, D31, D32, D34, D37**
+**partial · Stream G · Source sections 19, 21, 23 · Decisions D23, D31, D32, D34, D37**
 
 Current evidence: DO/Node restart tests exist; complete backup/restore qualification remains absent.
 

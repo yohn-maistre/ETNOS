@@ -17,7 +17,7 @@ Source checkpoint is now on Strata `main` at `9320ef3`; Honai Metro's connected 
 
 ## Verification evidence
 
-Core `npm run check` passes; `npm test`: **114 passed** (including source egress, current withdrawal/revocation, private working-note projection, resident publication/lease/cancel boundaries). UI `npm run check`: zero errors/warnings; `npm test`: **9 passed**; production build passes. Existing upstream HPKE/Rollup and large-chunk build warnings remain visible; no warning was converted to a claim of failure or full performance qualification.
+Core `npm run check` passes; `npm test`: **115 passed** (including source egress, current withdrawal/revocation, private working-note projection, resident publication/lease/cancel boundaries). UI `npm run check`: zero errors/warnings; `npm test`: **9 passed**; production build passes. Existing upstream HPKE/Rollup and large-chunk build warnings remain visible; no warning was converted to a claim of failure or full performance qualification.
 
 `apps/web/tests/browser/living-commons.mjs` passes through the actual local source → human review → note → pending Wiki proposal pipeline at 390/1280 widths with no page errors. The fixture does not contact a production provider or mutate public data. Focused polish journey is `apps/web/tests/browser/commons-design.mjs`; run it with the UI stable (avoid simultaneous source edits/build-triggered Vite reloads). Captures are under `/workspace/shared/etnos-ui-review-2026-11-11/`.
 

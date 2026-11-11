@@ -35,15 +35,17 @@ export class Resident{
  /** Native installation uses the same registration, admission and grant checks
   * as external agents. No deployment key, private source or review authority. */
  setup(actorId:string,b:Record<string,unknown>){
-  const communityId=text(b.communityId,100),includeSource=b.includeSource===true
+  const communityId=text(b.communityId,100),includeSource=b.includeSource===true,enableAutomation=b.enableAutomation===true
   if(b.consent!==true)throw new Fault(400,'Explicit resident setup consent required')
-  return transition(this.store,actorId,b.requestKey,'resident.setup',{communityId,includeSource},()=>{
+  return transition(this.store,actorId,b.requestKey,'resident.setup',{communityId,includeSource,enableAutomation},()=>{
    publicSteward(this.store,actorId,communityId)
    if(!this.provider)throw new Fault(503,'The built-in resident runtime is not configured')
-   if(!this.store.community(communityId).automation)throw new Fault(409,'Enable community automation in community settings first')
+   if(enableAutomation&&this.store.requireSteward(actorId,communityId).role!=='owner')throw new Fault(403,'Only the community owner can enable agent participation')
+   if(!this.store.community(communityId).automation&&!enableAutomation)throw new Fault(409,'Community owner consent is required to enable agent participation')
   },()=>{
    const s=this.store
    if(s.get('SELECT 1 FROM resident_configs WHERE community_id=?',communityId))throw new Fault(409,'A resident is already configured; manage its current identity and grants')
+   if(!s.community(communityId).automation){s.run('UPDATE communities SET automation=1 WHERE id=?',communityId);s.invalidatePublicContext(communityId);s.audit(actorId,'community.automation.enable',communityId)}
    const agent=this.access.enroll(actorId,{communityId,name:'Aksara',family:'aksara',role:'steward'}),expires=s.clock()+86400000
    this.access.admit(actorId,agent.agent_id)
    const posting=this.access.grant(actorId,agent.agent_id,{kind:'posting',purpose:'Built-in resident: source-linked public conversation',expires,hourlyLimit:3}),editorial=this.access.grant(actorId,agent.agent_id,{kind:'editorial',purpose:'Built-in resident: working knowledge proposals; human review remains required',expires,hourlyLimit:3})

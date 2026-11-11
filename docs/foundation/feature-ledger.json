@@ -777,7 +777,8 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending.",
-        "2026-11-11: native Studio setup uses real registration/admission and 24-hour posting/editorial grants with 3 jobs/day; private/no-automation/outsider/revoked-operator and replay tests pass. Pi service/bindings deployed, hosted inference awaiting authenticated operator activation."
+        "2026-11-11: native Studio setup uses real registration/admission and 24-hour posting/editorial grants with 3 jobs/day; private/no-automation/outsider/revoked-operator and replay tests pass. Pi service/bindings deployed, hosted inference awaiting authenticated operator activation.",
+        "Native activation refinement: explicit owner-only automation opt-in, atomic rollback on registration failure and 100-character idempotency keys covered; actual browser setup with initially disabled automation passes. Hosted Strata deployment a1bf590fe3f44e5e92a3e22f6b3b7a47; authenticated live inference still pending."
       ],
       "decisions": [
         "D02",
@@ -1644,7 +1645,7 @@
         23
       ],
       "workstream": "G",
-      "status": "planned",
+      "status": "partial",
       "depends_on": [
         "F45",
         "F47"

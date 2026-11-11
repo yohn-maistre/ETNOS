@@ -143,3 +143,19 @@ test('native resident setup uses real registration, admission and bounded grants
   assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,consent:true,includeSource:true,requestKey}))
  }finally{s.close()}
 })
+
+ test('native setup changes automation only with explicit owner consent and rolls back failed setup',()=>{
+ const s=new Strata(':memory:','https://native-policy.example.org'),owner=s.provision('did:web:policy-owner.example','Owner'),mod=s.provision('did:web:policy-mod.example','Moderator'),room=s.createCommunity(owner.actor.id,'Native policy','Public','public',false),r=new Resident(s,new AgentAccess(s),{label:'Pi Durable test',draft:async()=>({text:'Synthetic',model:'test'})})
+ try{
+  s.setMember(owner.actor.id,room.id,mod.actor.id,true,'moderator')
+  assert.throws(()=>r.setup(mod.actor.id,{communityId:room.id,consent:true,enableAutomation:true,requestKey:randomUUID()}),/owner/)
+  assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,consent:true,requestKey:randomUUID()}),/consent/)
+  assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,consent:true,enableAutomation:true,includeSource:true,requestKey:'bad'}))
+  assert.equal(s.community(room.id).automation,0);assert.equal(s.get<{n:number}>('SELECT count(*) n FROM agent_registrations')!.n,0)
+  const enroll=r.access.enroll;r.access.enroll=()=>{throw Error('Synthetic registration failure')}
+  assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,consent:true,enableAutomation:true,requestKey:randomUUID()}),/registration failure/)
+  assert.equal(s.community(room.id).automation,0);r.access.enroll=enroll
+  const result=r.setup(owner.actor.id,{communityId:room.id,consent:true,enableAutomation:true,includeSource:true,requestKey:'a'.repeat(100)})
+  assert.equal(s.community(room.id).automation,1);assert.equal(result.ready,true)
+ }finally{s.close()}
+ })
