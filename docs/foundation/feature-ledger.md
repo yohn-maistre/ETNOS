@@ -117,7 +117,7 @@ Acceptance: New user creates provider account, returns through verified OAuth an
 
 Release gate: Second real-user completion and recovery qualification.
 
-Dependencies: existing baseline. Completion evidence: 2026-11-11 owner-selected plan (not implementation qualification): Existing provider OAuth to accessible dismissible welcome/login dialog; direct login/recovery and public deep links retained. No new PDS/account backend. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
+Dependencies: existing baseline. Completion evidence: 2026-11-11 owner-selected plan (not implementation qualification): Existing provider OAuth to accessible dismissible welcome/login dialog; direct login/recovery and public deep links retained. No new PDS/account backend. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.; 2026-11-11 welcome/composer/profile implementation checkpoint: docs/welcome-and-profile-2026-11-11.md. Continuous fullscreen-to-dialog welcome over the current page, real provider form, local accent-aware prints/coded locations, existing profile editor and landscape footers; Local engine/UI/build and targeted production browser qualification passed; exact source/deployment receipts are maintained in that checkpoint. No change to membership or institutional authority..
 
 <a id="f04"></a>
 
@@ -131,7 +131,7 @@ Acceptance: Compact readable desktop/mobile sidebar, Settings near account foote
 
 Release gate: Preserve 40px-or-larger menu targets and reduced motion.
 
-Dependencies: F01. Completion evidence: Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass.; 2026-11-11 owner-selected plan (not implementation qualification): Paper fresh default, distinct MessagesSquare private inbox and softer compose entry buttons; preserve saved choices, Jakarta + Geist Serif, sky accent and gradual themes. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md..
+Dependencies: F01. Completion evidence: Local checkpoint 2026-11-11: Local bounded centered shell, removed static region dropdown, restrained shared surface depth and floating labelled mobile dock; responsive checks at 320–1920 px and gradual theme/navigation paths pass.; 2026-11-11 owner-selected plan (not implementation qualification): Paper fresh default, distinct MessagesSquare private inbox and softer compose entry buttons; preserve saved choices, Jakarta + Geist Serif, sky accent and gradual themes. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.; 2026-11-11 welcome/composer/profile implementation checkpoint: docs/welcome-and-profile-2026-11-11.md. Continuous fullscreen-to-dialog welcome over the current page, real provider form, local accent-aware prints/coded locations, existing profile editor and landscape footers; Local engine/UI/build and targeted production browser qualification passed; exact source/deployment receipts are maintained in that checkpoint. No change to membership or institutional authority..
 
 <a id="f05"></a>
 
@@ -159,7 +159,7 @@ Acceptance: Typed cards expose relevant actions; desktop panels and mobile sheet
 
 Release gate: Keyboard, focus and direct-link fallback.
 
-Dependencies: F04, F43. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification..
+Dependencies: F04, F43. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification.; 2026-11-11 welcome/composer/profile implementation checkpoint: docs/welcome-and-profile-2026-11-11.md. Continuous fullscreen-to-dialog welcome over the current page, real provider form, local accent-aware prints/coded locations, existing profile editor and landscape footers; Local engine/UI/build and targeted production browser qualification passed; exact source/deployment receipts are maintained in that checkpoint. No change to membership or institutional authority..
 
 <a id="f07"></a>
 
@@ -1083,4 +1083,4 @@ Acceptance: Every shipped route has loading/empty/error/denied/success states; m
 
 Release gate: Manual device checks and exact recording build receipt.
 
-Dependencies: F06, F22, F67, F68. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification..
+Dependencies: F06, F22, F67, F68. Completion evidence: 2026-11-11 reading pass: Jakarta/Geist Serif default, aligned Studio, original-ratio news/single-post images, single news discussion CTA, clear unread badges, stable muted avatar tints and static thread-end landscape; docs/ui-reading-pass-2026-11-11.md records screenshots and qualification.; 2026-11-11 welcome/composer/profile implementation checkpoint: docs/welcome-and-profile-2026-11-11.md. Continuous fullscreen-to-dialog welcome over the current page, real provider form, local accent-aware prints/coded locations, existing profile editor and landscape footers; Local engine/UI/build and targeted production browser qualification passed; exact source/deployment receipts are maintained in that checkpoint. No change to membership or institutional authority..

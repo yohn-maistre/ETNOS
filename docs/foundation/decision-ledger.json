@@ -491,6 +491,20 @@
         "D38"
       ],
       "interpretation": "Credit Photon and other actual upstream reuse; preserve original dated records. Use a small project-index repo/page if useful, without a monorepo migration or automatic publication. No new index repository or invitations in this pass."
+    },
+    {
+      "id": "A16",
+      "date": "2026-11-11",
+      "source": "Owner landscape ZIP and follow-ups: Tigi origin, concise welcome copy, per-visit artwork, profile polish and continuous fullscreen-to-dialog morph",
+      "decision": "First welcome is one fullscreen surface with a centered ETNOS wordmark, morphing into the accessible form/art dialog over blurred Home. Use only the requested opening sentence; Tigi first, coded location captions, one static print per visit, accent-aware rendering, decorative profile covers and landscape footers with outer frame clearance.",
+      "affects": [
+        "D08",
+        "D09",
+        "D11",
+        "D33",
+        "D36"
+      ],
+      "interpretation": "Reduced motion skips the morph, dismissal/public deep links remain usable, and existing provider OAuth/admission checks remain authoritative. Art does not autoplay or imply the profile owner comes from a depicted place. Source photos are reference inputs; generated illustrations ship as local assets, with optional operator/no-art configuration."
     }
   ]
 }

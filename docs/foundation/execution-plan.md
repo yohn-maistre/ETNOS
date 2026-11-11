@@ -23,6 +23,8 @@ The current reading pass is deployed: canonical Strata UI `apps/web` at engine/U
 
 The [living-culture and sustainability refinement](living-culture-refinement-2026-11-11.md) is the current detailed selection. It preserves the [verbatim side-chat reference](supplements/2026-11-11-sustainability-side-chat.txt), adds acceptance criteria and extends the complete feature ledger. The [project evidence index](../evidence/README.md) maintains the continuing ETNOS lineage and a concise judge-facing selection. Do not treat the current engine's creation date as the origin of the project.
 
+The [welcome/composer/profile checkpoint](../welcome-and-profile-2026-11-11.md) records the current implementation of Paper, provider-dialog presentation, generated print assets and profile/reading-frame polish. It does not qualify e-means or hosted inference.
+
 Next selected slices, with no feature silently removed:
 
 1. **Real e-means adapter and appearance:** implement the upstream CPU Faiss backend now behind a portable clustering port; Paper fresh default, MessagesSquare private inbox and softer compose entries. Saved appearance choices, Jakarta + Geist Serif, sky accent and gradual themes remain.

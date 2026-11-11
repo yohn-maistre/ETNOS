@@ -14,6 +14,7 @@ import './styles/living-commons.css'
 import './styles/commons-polish.css'
 import './styles/feedback.css'
 import './styles/reading-pass.css'
+import './styles/welcome.css'
 import { restoreAppearance } from './appearance.svelte'
 import { restoreNotificationPreferences } from './notifications.svelte'
 restoreAppearance()

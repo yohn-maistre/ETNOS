@@ -4,6 +4,7 @@ This is the working home of the owner's complete **ETNOS / Strata — A Living C
 
 - [Read the complete foundation](living-commons.md).
 - [Build order, architecture, demo and infrastructure](execution-plan.md).
+- [Welcome, print artwork, composer and profile implementation](../welcome-and-profile-2026-11-11.md).
 - [Current living-culture, sustainability, welcome/auth and e-means selection](living-culture-refinement-2026-11-11.md).
 - [ETNOS project lineage and concise demonstration evidence](../evidence/README.md).
 - [Portable Linux/Docker/Cloudflare distribution and Watch transplant plan](../portable-commons-and-watch-plan-2026-11-11.md).
