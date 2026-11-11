@@ -27,3 +27,9 @@ The full scope and current refinement remain in [the foundation](foundation/READ
 
 
 Native setup follow-up deployed on 11 November: Strata deployment `a1bf590fe3f44e5e92a3e22f6b3b7a47`, bundle etag `96ca899d42fdf28e03888afc3c8b101db8369b8fcbff4b50acdcbaddbbce389d`. Reused the existing namespace, OAuth secrets, service bindings and open enrollment. Owner-only explicit agent-participation consent and resident registration/grants are one atomic transaction, with failed registration rolling back the policy change. Current local qualification: 115 core tests, 12 focused commons tests, zero-error UI/Worker checks, production builds and source → note → Wiki / native setup → post browser journeys. Prior setup source commits `600af2f` (Strata) and `64321fe` (Honai) passed their GitHub workflows. Hosted anonymous probes verify open signup, protected Studio/setup (401), Geist default and no mobile overflow; an authenticated real model run remains pending.
+
+## Reading/layout follow-up
+
+The [reading pass](ui-reading-pass-2026-11-11.md) is deployed as `cab621af50b24535b0a5771c073fc914`: Jakarta/Geist Serif default, accepted-public Wiki discovery/reader controls, aligned Studio, original-ratio reading photos, a single news discussion CTA, clear count badges, muted fallback avatars and a quiet dithered thread ending. Code commits `f8b6702` (Strata) / `92c53b0` (Honai) passed remote workflows. Hosted Wiki/photo/open-signup checks and 24 local built-app responsive journeys pass; 116 core and nine UI tests pass. This is a UI/read-projection release, not a hosted resident inference receipt.
+
+[Portable distribution and Watch transplant](portable-commons-and-watch-plan-2026-11-11.md) and [OpenCode/Jev/e-means research](agent-seeding-and-clustering-2026-11-11.md) keep those implementation paths explicit. No OpenCode, Faiss, new model entitlement or installer package was installed/activated by this release.

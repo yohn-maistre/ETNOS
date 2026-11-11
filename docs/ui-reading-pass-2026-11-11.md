@@ -27,3 +27,13 @@ A screenshot review cannot establish full accessibility compliance or real-user 
 - Finish operator recovery/usage/incident affordances and remaining canonical event/offer/organization/context work in the foundation ledger. Existing tests do not make the whole 72-feature programme production-ready.
 
 [Portable install and Watch transplant](portable-commons-and-watch-plan-2026-11-11.md) records the shared CLI/browser setup plan and actual Node/Worker adapter gaps. [Seeding and clustering](agent-seeding-and-clustering-2026-11-11.md) records current OpenCode/Jev terms and where e-means could help without redefining governance or exposing protected cultural data.
+
+## Release evidence
+
+Deployed to the existing `strata-preview` Worker at https://etnos.space, deployment `cab621af50b24535b0a5771c073fc914`, script etag `8d43072dc447a0cc421d1c101308c366c81f5e3963a21c155af06b98cca7a845`. Same namespace, OAuth secrets, gateway/service bindings and open enrollment retained; no schema migration, new paid resource or model call.
+
+Code: Strata `f8b67029196a52947146ad0c09ac5f8efda25709`; mirrored Honai `92c53b0788b3d556820cb5a9ceef4f440d11d412`. Both remote workflows passed: [Strata](https://github.com/yohn-maistre/strata/actions/runs/43022118751), [Honai](https://github.com/yohn-maistre/honai-metro/actions/runs/43022186641).
+
+Local checks: 116 core tests, nine UI unit tests, core/UI/Worker type checks, production UI/Worker builds, 24 production-build responsive journeys and the source → note → Wiki / native setup → post browser pipeline passed. The authenticated/model fixture remains explicitly synthetic. Earlier development runs interrupted by concurrent Vite reload/build activity were rejected and rerun serially against the stable production build.
+
+Hosted anonymous checks: open signup, fresh `jakarta` default, one accepted Wiki preview with its real excerpt, uniform outer ground, no 390px overflow and no page errors. News item 1347 has a natural 683×1024 image and rendered at 590×884.5625 with no height cap; original ratio is preserved and one discussion CTA is present. Live captures `live-wiki-after.png`, `live-news-after.png`, `live-wiki-mobile-after.png` were inspected. The current Wiki has one accepted page; further cards appear only when real accepted content exists.
