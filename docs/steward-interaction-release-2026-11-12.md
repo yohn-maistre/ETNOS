@@ -45,3 +45,8 @@ Final local checks: TypeScript and all 144 engine tests pass, including optional
 - Public live Chromium smoke matched `/assets/index-v703W28A.js`, health `ok`, Paper/Jakarta/welcome/signup/repeat/deep-link behavior, profile/community art, Wiki/growing, ranking/Sorotan, offers and mobile/desktop fit with zero page errors. The public resident-status endpoint returns only its minimal projection; anonymous choices/sitewide/destination controls return 401. Legacy recovery remains available. This smoke performs no live account/post/model action.
 
 The owner confirmed availability for a real Studio task. The deployed instructions request one source digest (or the initial setup task), then its actual activity state/model/result link. That live qualification is pending the owner's result; the synthetic model outputs above must not be presented as its receipt. Continue the remaining intelligence/observatory plan while preserving this distinction.
+
+
+## Owner’s hosted attempt
+
+The first source digest failed with the generic model/runtime message. No hosted success is claimed. The [reproduced tool-protocol repair and safer Studio diagnostics](resident-runtime-fix-2026-11-12.md) record the follow-up and next qualification.

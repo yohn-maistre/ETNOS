@@ -9,6 +9,7 @@ import {Forum} from './forum.ts'
 import {Groups} from './groups.ts'
 import {ResidentRouting} from './resident-routing.ts'
 import {ResidentQuestions} from './resident-question.ts'
+import {residentFailureCode} from './resident-failure.ts'
 import {text,key,transition,expected,emit,hash,publicSteward,contextEpoch} from './commons.ts'
 import type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
 export type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
@@ -187,7 +188,7 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
     emit(s,job.agent_id,'resident.complete',{kind:'agent-job',id,revision:job.generation,communityId:job.community_id});return {id,state:'succeeded',resultKind,resultId}
    })
   }catch(error){
-   const message=error instanceof Fault?error.message:'Model unavailable or invalid output; a new job requires an explicit request',state=error instanceof Fault&&[403,404,409,422,429].includes(error.status)?'abstained':'failed'
+   const code=residentFailureCode(error),message=error instanceof Fault?error.message:code?'resident:'+code:'resident:runtime-unavailable',state=error instanceof Fault&&[403,404,409,422,429].includes(error.status)||code&&['authority-changed','provider-quota','runtime-budget','runtime-abstained'].includes(code)?'abstained':'failed'
    s.tx(()=>s.run("UPDATE resident_jobs SET state=?,lease_until=NULL,error=?,checkpoint='stopped',updated=? WHERE id=? AND state='running' AND generation=?",state,message,s.clock(),id,job.generation))
    return {id,state,error:message}
   }

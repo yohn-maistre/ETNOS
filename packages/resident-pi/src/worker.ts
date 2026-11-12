@@ -6,6 +6,8 @@ import {Lifecycle} from 'agents/lifecycle'
 import type {ResidentInput,ResidentWork} from '../../../src/resident-contract.ts'
 import {redactPublicModelText} from '../../../src/redaction.ts'
 import {residentPromptContext} from '../../../src/resident-prompt.ts'
+import {ResidentFailure,residentFailureCode,type ResidentFailureCode} from '../../../src/resident-failure.ts'
+import type {ProtocolSignature} from './protocol-replay.ts'
 import {authority,type ServicePort} from './authority.ts'
 import {jobProvider,type UsageReceipt} from './gateway-models.ts'
 import {residentRegistry} from './extensions.ts'
@@ -33,6 +35,8 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
  private registry=residentRegistry(id=>{const work=this.works.get(id);if(!work)throw Error('Unknown runtime work');return work},this.env.AUTHORITY)
  harness=new PiHarness({harness:async({storage,context,onWake})=>{
   this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_work(id TEXT PRIMARY KEY,work TEXT NOT NULL,digest TEXT NOT NULL,model TEXT NOT NULL,input_tokens INTEGER NOT NULL,output_tokens INTEGER NOT NULL)')
+  this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_tool_replay(job_id TEXT NOT NULL,tool_call_id TEXT NOT NULL,name TEXT NOT NULL,arguments_hash TEXT NOT NULL,model TEXT NOT NULL,signature TEXT NOT NULL,PRIMARY KEY(job_id,tool_call_id))')
+  this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_failures(job_id TEXT PRIMARY KEY,code TEXT NOT NULL)')
   for(const row of this.ctx.storage.sql.exec<StoredWork>('SELECT * FROM strata_pi_work ORDER BY rowid DESC LIMIT 100').toArray())this.install(JSON.parse(row.work) as ResidentWork)
   return Harness.open(storage,{models:this.models,registry:this.registry,onWake,identity:{attribution:{name:'Strata / ETNOS resident',url:'https://etnos.space'}},settings:{documentRetentionMs:0,contextRetentionMs:0,retry:{enabled:false,maxRetries:0},stream:{maxRetries:0,timeoutMs:20000},restartLimit:2,afterFailedRun:'withdraw',toolExecution:'sequential',compaction:{enabled:true,reserveTokens:2048,keepRecentTokens:2048,backgroundTokens:0}},onReport:report=>{console.warn(JSON.stringify({event:'strata.resident.runtime',kind:report.kind}))}},context)
  },defaults:{thinkingLevel:'off',maxTurns:3}})
@@ -40,9 +44,25 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
  private install(work:ResidentWork){
   const p=jobProvider(work,{authority:this.env.AUTHORITY,gateway:this.env.MODEL_GATEWAY},(usage:UsageReceipt)=>{
    this.ctx.storage.sql.exec('UPDATE strata_pi_work SET model=?,input_tokens=input_tokens+?,output_tokens=output_tokens+? WHERE id=?',usage.model,Number.isSafeInteger(usage.input)?Math.max(0,usage.input):0,Number.isSafeInteger(usage.output)?Math.max(0,usage.output):0,work.jobId)
-  });this.works.set(p.id,work);this.models.setProvider(p);return p.id
+  },{
+   get:id=>this.ctx.storage.sql.exec<ProtocolSignature>('SELECT tool_call_id id,name,arguments_hash argumentsHash,model,signature FROM strata_pi_tool_replay WHERE job_id=? AND tool_call_id=?',work.jobId,id).toArray()[0],
+   put:row=>{
+    const old=this.ctx.storage.sql.exec<{arguments_hash:string;signature:string}>('SELECT arguments_hash,signature FROM strata_pi_tool_replay WHERE job_id=? AND tool_call_id=?',work.jobId,row.id).toArray()[0]
+    if(old&&(old.arguments_hash!==row.argumentsHash||old.signature!==row.signature))throw new ResidentFailure('runtime-protocol')
+    if(!old&&this.ctx.storage.sql.exec<{n:number}>('SELECT count(*) n FROM strata_pi_tool_replay WHERE job_id=?',work.jobId).one().n>=6)throw new ResidentFailure('runtime-budget')
+    this.ctx.storage.sql.exec('INSERT OR IGNORE INTO strata_pi_tool_replay VALUES(?,?,?,?,?,?)',work.jobId,row.id,row.name,row.argumentsHash,row.model,row.signature)
+   },
+  },code=>{this.ctx.storage.sql.exec('INSERT OR REPLACE INTO strata_pi_failures VALUES(?,?)',work.jobId,code)})
+  this.works.set(p.id,work);this.models.setProvider(p);return p.id
  }
  async generate(input:ResidentInput){
+  try{return await this.perform(input)}catch(error){
+   let recorded:ResidentFailureCode|undefined
+   try{recorded=residentFailureCode(this.ctx.storage.sql.exec<{code:string}>('SELECT code FROM strata_pi_failures WHERE job_id=?',input.work.jobId).toArray()[0]?.code)}catch{/* Runtime initialization may have failed before its tables exist. */}
+   return {failure:residentFailureCode(error)??recorded??'runtime-unavailable' as ResidentFailureCode}
+  }
+ }
+ private async perform(input:ResidentInput){
   // Ensures Lifecycle has opened storage before any local SQL access.
   await this.harness.pi();await authority(this.env.AUTHORITY,'work',input.work)
   const encoded=JSON.stringify(input),inputDigest=await digest(encoded),previous=this.ctx.storage.sql.exec<StoredWork>('SELECT * FROM strata_pi_work WHERE id=?',input.work.jobId).toArray()[0]
@@ -57,7 +77,12 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
   if(!previous)await session.setModel({provider,id:input.skill==='knowledge-draft'?'synthesis':'fast'})
   const prompt=JSON.stringify(residentPromptContext(input))
   const result=await session.prompt(prompt,{operationId:input.work.jobId,whenBusy:'reject'})
-  if(result.status!=='done'||!result.text?.trim()||result.text.trim()==='ABSTAIN')throw Error('Resident abstained or stopped within its limits')
+  if(result.status!=='done'||!result.text?.trim()){
+   console.warn(JSON.stringify({event:'strata.resident.stop',status:result.status,reason:typeof result.reason==='string'&&/^[a-z_]{1,50}$/.test(result.reason)?result.reason:'unspecified'}))
+   const code=residentFailureCode(this.ctx.storage.sql.exec<{code:string}>('SELECT code FROM strata_pi_failures WHERE job_id=?',input.work.jobId).toArray()[0]?.code)
+   throw new ResidentFailure(code??'runtime-budget')
+  }
+  if(result.text.trim()==='ABSTAIN')throw new ResidentFailure('runtime-abstained')
   const usage=this.ctx.storage.sql.exec<StoredWork>('SELECT * FROM strata_pi_work WHERE id=?',input.work.jobId).one()
   return {text:redactPublicModelText(result.text).text.slice(0,6000),model:'pi:'+usage.model,inputTokens:usage.input_tokens,outputTokens:usage.output_tokens,...(input.question?{questionReceipt:{postId:input.question.postId,revision:input.question.revision}}:{})}
  }
@@ -68,8 +93,10 @@ export class ResidentRuntime extends WorkerEntrypoint<RuntimeEnv>{
   if(request.method!=='POST'||new URL(request.url).pathname!=='/draft')return json({error:'Not found'},404)
   try{const input=await parse(request);await authority(this.env.AUTHORITY,'work',input.work)
    const sessionName=await digest([input.work.communityId,input.work.agentId,input.work.contextEpoch,input.work.sessionKey].join(':'))
-   return json(await this.env.SESSIONS.getByName(sessionName).generate(input))
-  }catch{return json({error:'Resident runtime unavailable, refused or abstained'},503)}
+   const result=await this.env.SESSIONS.getByName(sessionName).generate(input)
+   if('failure' in result)return json({error:'Resident work stopped',code:result.failure},result.failure==='provider-quota'?429:result.failure==='runtime-abstained'?422:503)
+   return json(result)
+  }catch(error){return json({error:'Resident work stopped',code:residentFailureCode(error)??'runtime-unavailable'},503)}
  }
 }
 export default {fetch:()=>json({error:'Not found'},404)}
