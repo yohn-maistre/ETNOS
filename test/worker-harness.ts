@@ -113,7 +113,8 @@ export class TestNode extends StrataNode {
     const samples:number[]=[];let queryCount=0,count=0
     for(let i=0;i<50;i++){queries=0;const start=performance.now(),feed=s.feedPage(undefined,{limit:30,rootsOnly:true});samples.push(performance.now()-start);queryCount=queries;count=feed.items.length}
     samples.sort((a,b)=>a-b)
-    return JSON.stringify({voted,lockDenied,deleted,roots:count,replies:150,iterations:50,queriesPerFeed:queryCount,p50Ms:samples[25],p95Ms:samples[47]})
+    queries=0;s.feedPage(undefined,{limit:1,rootsOnly:true});const queriesForSinglePost=queries
+    return JSON.stringify({voted,lockDenied,deleted,roots:count,replies:150,iterations:50,queriesPerFeed:queryCount,queriesForSinglePost,p50Ms:samples[25],p95Ms:samples[47]})
   }
   async authContract(){
     const{auth,state}=await fixture(this.core())

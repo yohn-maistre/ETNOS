@@ -35,3 +35,9 @@ Keep the runtime useful with a model/provider unavailable, budgets exhausted or 
 Owner follow-up: [Ranking research and source-backed steward demo](ranking-and-steward-demo-2026-11-12.md) keeps image tiles, records Lemmy/X-derived ranking choices and a fact-checked unusual Wiki topic.
 
 Next implementation design: [canonical offers/requests and adaptive writing](offers-and-writing-2026-11-12.md).
+
+## Current intelligence cut
+
+The [current code/catalogue audit](research/strata-intelligence-catalogue-2026-11-12.md) retains the planned **@aksara identity picker**, followed by a pinned public question and actual sourced child reply. Daily sitewide initiative is also selected: findings, curiosity, reviews, questions/native polls, interactions and bounded admin assistance. Build these over existing jobs/alarms with versioned policies, task-selected evidence, explicit destination grants, occurrence dedupe and follow-through; do not mistake current `knowledge-draft` scheduling or unused mention fields for those completed interactions. The sitewide actor needs a real home scope and deliberate additional community admission. Independent Aksara memory/custody is not a shared public model memory. The older catalogue supplies possible missing context without overriding current session decisions.
+
+The writing/editor slice now has its own [implementation and release checkpoint](writing-release-2026-11-12.md); canonical offerings are already deployed.
