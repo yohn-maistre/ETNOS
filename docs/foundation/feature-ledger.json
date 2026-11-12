@@ -2550,8 +2550,8 @@
   "design_amendment": "../post-first-design-2026-11-11.md",
   "latest_release": {
     "date": "2026-11-12",
-    "engine_code": "23d77ad",
-    "honai_ui": "9d01af1",
-    "receipt": "docs/writing-release-2026-11-12.md"
+    "engine_code": "66b24e0",
+    "honai_ui": "7c95573",
+    "receipt": "docs/shell-sorotan-2026-11-12.md"
   }
 }
