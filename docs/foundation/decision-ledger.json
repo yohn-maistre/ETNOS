@@ -605,6 +605,22 @@
         "D38"
       ],
       "interpretation": "docs/research/strata-intelligence-catalogue-2026-11-12.md audits current code and specifies missing seams. Existing scheduling is real but knowledge-draft-only; mention/reply, task-selected questions/sources, multi-community sitewide participation, typed poll effects and independent release bridge are not implied by their schema fields. Daily initiative is selected; tasks, outputs and admin actions retain distinct current grants and review rules. The owner will supply earlier schema thoughts before cultural ontology is frozen."
+    },
+    {
+      "id": "A23",
+      "date": "2026-11-12",
+      "source": "Owner sees apparently segmented/missing mobile progress and asks for one app-wide line, sticky context rail, compact mosaic post highlights called Sorotan, a more visible dithered mountain footer and a fading blur beneath the floating mobile navbar.",
+      "decision": "Use one root-mounted viewport progress line; retain true request completion. Keep the desktop rail on the backdrop with a bounded independent sticky scroll region. Show up to nine compact public image/text Sorotan cards using existing ranking. Strengthen the decorative mountain footer and add a pointer-transparent mobile dock fade.",
+      "affects": [
+        "D05",
+        "D06",
+        "D09",
+        "D12",
+        "D33",
+        "D36",
+        "D37"
+      ],
+      "interpretation": "docs/shell-sorotan-2026-11-12.md records this incremental UI pass. Public ranking already exists; naming/layout do not replace it or imply private personalization. Community statistics, steward interaction/daily policy and the observatory remain active work, not silently dropped by these quick fixes."
     }
   ]
 }
