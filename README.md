@@ -8,7 +8,7 @@ An AT-oriented community engine for public conversation, source-backed knowledge
 
 **Living commons direction, 11 November 2026:** [Complete foundation and implementation ledger](docs/foundation/README.md) preserves the owner's full source document and plans configurable discovery, working knowledge, resident agency, composable participation, culture and operations. It distinguishes existing runtime evidence from planned capabilities; this planning checkpoint is not a deployment.
 
-**Latest UI release:** [Commons polish and exact deployment receipt](docs/release-2026-11-12-commons-polish.md). [Prior welcome/writing release](docs/release-2026-11-12-welcome-writing.md).
+**Latest UI release:** [Adaptive writing/editor and exact deployment receipt](docs/writing-release-2026-11-12.md). [Canonical offers/requests](docs/offers-and-writing-2026-11-12.md) · [Prior commons polish](docs/release-2026-11-12-commons-polish.md).
 
 **Current refinements:** [Living culture, sustainability and welcome/auth design](docs/foundation/living-culture-refinement-2026-11-11.md) · [Build order](docs/foundation/execution-plan.md) · [Project lineage and demonstration evidence](docs/evidence/README.md). These selected next slices preserve the full foundation and distinguish planning from the deployed build.
 

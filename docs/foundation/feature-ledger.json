@@ -2546,8 +2546,8 @@
   "design_amendment": "../post-first-design-2026-11-11.md",
   "latest_release": {
     "date": "2026-11-12",
-    "engine_code": "06f22ef",
-    "honai_ui": "6140f66",
-    "receipt": "docs/offers-and-writing-2026-11-12.md"
+    "engine_code": "23d77ad",
+    "honai_ui": "9d01af1",
+    "receipt": "docs/writing-release-2026-11-12.md"
   }
 }
