@@ -28,6 +28,8 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
   let mf=runtime(dir)
   try {
     const ns=await mf.getDurableObjectNamespace('STRATA'),stub=ns.getByName('preview')
+    assert.deepEqual(JSON.parse(await ns.getByName('resident-upgrade-node').residentMigrationContract()),{version:schemaVersion,jobs:2,hosted:1,index:0,receipts:1,foreignKey:true})
+    assert.deepEqual(JSON.parse(await ns.getByName('resident-question-node').residentQuestionContract()),{rolledBack:true,created:200,retry:200,oneJob:true,calls:1,state:'succeeded',actualChild:true,answered:true,hiddenAnswerOmitted:true,explicitAdmission:true})
     const f=JSON.parse(await stub.seed())
     assert.equal((await call(mf,'/health')).status,200)
     assert.equal((await (await call(mf,'/health')).json()).runtime,'cloudflare-durable-object')

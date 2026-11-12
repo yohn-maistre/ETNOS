@@ -108,6 +108,8 @@ export class AgentAccess {
   }
   /** Server-side runtime boundary; never grants capabilities by itself. */
   assertCurrent(id: string) { return this.current(id) }
+  /** Current enrollment only; this grants neither membership nor agent-operation rights. */
+  assertHumanCurrent(id:string){return this.human(id)}
   enroll(operator: string, b: Record<string, unknown>) {
     return this.store.tx(() => {
       const s = this.store;

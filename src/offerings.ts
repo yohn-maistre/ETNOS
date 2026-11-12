@@ -24,6 +24,7 @@ export class Offerings {
   return {items:ids.map(r=>this.read(r.post_id,actorId)),pagination:'bounded-selection' as const}
  }
  create(actorId:string,b:Record<string,unknown>){
+  if(b.agentMention!==undefined)throw new Fault(400,'Ask Aksara in a discussion post or reply, separately from an offering')
   const communityId=text(b.communityId,100)
   if(b.currency!==undefined&&b.currency!=='IDR')throw new Fault(400,'This deployment currently supports IDR terms')
   const result=transition(this.store,actorId,b.requestKey,'offering.create',{...b,requestKey:undefined},()=>{

@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS audit (
 );
 `;
 
-const migrations = [schema, `
+export const migrations = [schema, `
 ALTER TABLE communities ADD COLUMN admission TEXT NOT NULL DEFAULT 'approval' CHECK(admission IN ('open','approval','invite'));
 UPDATE communities SET admission='invite' WHERE visibility!='public';
 CREATE TABLE join_requests (
@@ -373,6 +373,17 @@ CREATE TABLE knowledge_announcements(note_id TEXT NOT NULL REFERENCES knowledge_
 CREATE TABLE offerings(post_id TEXT PRIMARY KEY REFERENCES posts(id),kind TEXT NOT NULL CHECK(kind IN ('offer','request')),price INTEGER CHECK(price IS NULL OR price>=0),unit TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN ('open','paused','fulfilled','withdrawn')),expires INTEGER,place_context_id TEXT REFERENCES contexts(id),revision INTEGER NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL);
 CREATE INDEX offerings_active ON offerings(status,created DESC,post_id DESC);
 CREATE TABLE offering_history(post_id TEXT NOT NULL REFERENCES offerings(post_id),revision INTEGER NOT NULL,actor_id TEXT NOT NULL REFERENCES actors(id),snapshot TEXT NOT NULL,created INTEGER NOT NULL,PRIMARY KEY(post_id,revision));
+`, `
+CREATE TABLE resident_sitewide(id INTEGER PRIMARY KEY CHECK(id=1),agent_id TEXT NOT NULL REFERENCES actors(id),home_community_id TEXT NOT NULL REFERENCES communities(id),operator_id TEXT NOT NULL REFERENCES actors(id),enabled INTEGER NOT NULL,coverage TEXT NOT NULL,revision INTEGER NOT NULL,updated INTEGER NOT NULL);
+ALTER TABLE resident_jobs ADD COLUMN work_kind TEXT NOT NULL DEFAULT 'editorial' CHECK(work_kind IN ('editorial','thread-reply'));
+ALTER TABLE resident_jobs ADD COLUMN inference_started INTEGER NOT NULL DEFAULT 0 CHECK(inference_started IN(0,1));
+ALTER TABLE resident_jobs ADD COLUMN inference_started_at INTEGER;
+UPDATE resident_jobs SET inference_started=1,inference_started_at=updated WHERE model IS NOT NULL AND model NOT LIKE 'model-free:%';
+CREATE INDEX resident_model_budget ON resident_jobs(inference_started_at);
+CREATE TABLE resident_destinations(agent_id TEXT NOT NULL REFERENCES actors(id),community_id TEXT NOT NULL REFERENCES communities(id),posting_mandate_id TEXT NOT NULL REFERENCES mandates(id),enabled INTEGER NOT NULL,revision INTEGER NOT NULL,updated INTEGER NOT NULL,PRIMARY KEY(agent_id,community_id));
+CREATE TABLE resident_job_inputs(job_id TEXT PRIMARY KEY REFERENCES resident_jobs(id),config_community_id TEXT NOT NULL REFERENCES communities(id),target_post_id TEXT NOT NULL UNIQUE REFERENCES posts(id),target_revision INTEGER NOT NULL,target_digest TEXT NOT NULL,snapshot TEXT NOT NULL,posting_mandate_id TEXT NOT NULL REFERENCES mandates(id),global_revision INTEGER NOT NULL,route_revision INTEGER NOT NULL,coverage TEXT NOT NULL,created INTEGER NOT NULL);
+CREATE INDEX resident_request_budget ON resident_jobs(requester_id,created);
+CREATE INDEX resident_actor_budget ON resident_jobs(agent_id,created);
 `]
 
 export const schemaVersion=migrations.length

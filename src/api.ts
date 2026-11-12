@@ -91,6 +91,10 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===3&&parts[1]==='knowledge')result=knowledge.read(parts[2],actor?.id)
         else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='history')result=knowledge.history(parts[2],actor?.id)
         else if(path==='/v1/resident/config')result=resident.get(authenticated(),string(url.searchParams.get('community')))
+        else if(path==='/v1/resident/choices')result=resident.routing.choices(authenticated(),string(url.searchParams.get('community')))
+        else if(path==='/v1/resident/requests')result=resident.questions.statuses(string(url.searchParams.get('post')),actor?.id)
+        else if(path==='/v1/resident/sitewide')result=resident.routing.globalInfo(authenticated())
+        else if(path==='/v1/resident/destinations')result=resident.routing.participation(authenticated(),string(url.searchParams.get('community')))
         else if(path==='/v1/resident/jobs')result=resident.jobs(authenticated(),string(url.searchParams.get('community')))
         else if(parts.length===4&&parts[1]==='resident'&&parts[2]==='jobs')result=resident.job(authenticated(),parts[3])
         else if(path==='/v1/agents')result=agents.list(authenticated())
@@ -180,6 +184,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='promote')result=knowledge.promote(caller,parts[2],b)
       else if(path==='/v1/resident/setup')result=resident.setup(caller,b)
       else if(path==='/v1/resident/config')result=resident.configure(caller,b)
+      else if(path==='/v1/resident/sitewide')result=resident.routing.setGlobal(caller,b)
+      else if(path==='/v1/resident/destinations')result=resident.routing.setDestination(caller,b)
       else if(path==='/v1/resident/jobs')result=resident.enqueue(caller,string(b.communityId),string(b.skill) as ResidentSkill,string(b.requestKey))
       else if(parts.length===5&&parts[1]==='resident'&&parts[2]==='jobs'&&parts[4]==='run'){resident.job(caller,parts[3]);result=await resident.run(parts[3],()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req);resident.job(caller,parts[3])})}
       else if(parts.length===5&&parts[1]==='resident'&&parts[2]==='jobs'&&parts[4]==='cancel')result=resident.cancel(caller,parts[3])
@@ -251,7 +257,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         if (typeof b.active !== 'boolean') throw new Fault(400,'Boolean required')
         result = store.setMember(caller,parts[2],string(b.actorId),b.active,b.role === undefined ? 'member' : string(b.role) as 'member'|'moderator')
       }
-      else if (path === '/v1/posts') result=forum.create(caller,b,groups)
+      else if (path === '/v1/posts') result=b.agentMention===undefined?forum.create(caller,b,groups):resident.createMentionPost(caller,b,groups)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='edit')result=forum.edit(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='delete')result=forum.delete(caller,parts[2],b.revision)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='moderate')result=forum.moderate(caller,parts[2],b)

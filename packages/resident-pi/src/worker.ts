@@ -5,6 +5,7 @@ import {PiHarness} from 'agents/harness/pi'
 import {Lifecycle} from 'agents/lifecycle'
 import type {ResidentInput,ResidentWork} from '../../../src/resident-contract.ts'
 import {redactPublicModelText} from '../../../src/redaction.ts'
+import {residentPromptContext} from '../../../src/resident-prompt.ts'
 import {authority,type ServicePort} from './authority.ts'
 import {jobProvider,type UsageReceipt} from './gateway-models.ts'
 import {residentRegistry} from './extensions.ts'
@@ -14,9 +15,14 @@ const json=(value:unknown,status=200)=>Response.json(value,{status,headers:{'cac
 async function digest(value:string){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))].map(b=>b.toString(16).padStart(2,'0')).join('')}
 async function parse(request:Request){
  const reader=request.body?.getReader();if(!reader)throw Error();let n=0;const parts:Uint8Array[]=[]
- try{while(true){const r=await reader.read();if(r.done)break;n+=r.value.length;if(n>20000)throw Error();parts.push(r.value)}}finally{await reader.cancel().catch(()=>{});reader.releaseLock()}
+ try{while(true){const r=await reader.read();if(r.done)break;n+=r.value.length;if(n>65536)throw Error();parts.push(r.value)}}finally{await reader.cancel().catch(()=>{});reader.releaseLock()}
  const bytes=new Uint8Array(n);let at=0;for(const p of parts){bytes.set(p,at);at+=p.length}const input=JSON.parse(new TextDecoder().decode(bytes)) as ResidentInput,w=input.work
  if(!w||typeof w.ticket!=='string'||w.ticket.length!==43||typeof w.jobId!=='string'||!Number.isSafeInteger(w.generation)||!Number.isSafeInteger(w.contextEpoch)||typeof w.communityId!=='string'||typeof w.agentId!=='string'||typeof w.sessionKey!=='string'||w.sessionKey.length>100||typeof input.community!=='string'||!Array.isArray(input.evidence)||input.evidence.length>5)throw Error()
+ if(!['source-digest','research-question','knowledge-draft','thread-reply'].includes(input.skill))throw Error()
+ if(input.skill==='thread-reply'){
+  const q=input.question
+  if(!q||typeof q.postId!=='string'||q.postId.length>100||!Number.isSafeInteger(q.revision)||q.revision<1||typeof q.text!=='string'||q.text.length>4000||typeof q.title!=='string'||q.title.length>180||!Array.isArray(q.context)||q.context.length>3||q.context.some(p=>typeof p.postId!=='string'||p.postId.length>100||!Number.isSafeInteger(p.revision)||p.revision<1||typeof p.text!=='string'||p.text.length>700))throw Error()
+ }else if(input.question!==undefined)throw Error()
  return input
 }
 /** Runtime storage is separate from forum authority. No public HTTP route, shell,
@@ -49,11 +55,11 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
   }
   const provider=this.install(input.work)
   if(!previous)await session.setModel({provider,id:input.skill==='knowledge-draft'?'synthesis':'fast'})
-  const prompt=redactPublicModelText(JSON.stringify({skill:input.skill,community:input.community,language:input.language,evidence:input.evidence.map((e,i)=>({reference:'S'+(i+1),title:e.title,summary:e.summary}))})).text
+  const prompt=JSON.stringify(residentPromptContext(input))
   const result=await session.prompt(prompt,{operationId:input.work.jobId,whenBusy:'reject'})
   if(result.status!=='done'||!result.text?.trim()||result.text.trim()==='ABSTAIN')throw Error('Resident abstained or stopped within its limits')
   const usage=this.ctx.storage.sql.exec<StoredWork>('SELECT * FROM strata_pi_work WHERE id=?',input.work.jobId).one()
-  return {text:redactPublicModelText(result.text).text.slice(0,6000),model:'pi:'+usage.model,inputTokens:usage.input_tokens,outputTokens:usage.output_tokens}
+  return {text:redactPublicModelText(result.text).text.slice(0,6000),model:'pi:'+usage.model,inputTokens:usage.input_tokens,outputTokens:usage.output_tokens,...(input.question?{questionReceipt:{postId:input.question.postId,revision:input.question.revision}}:{})}
  }
 }
 /** Explicit service binding only. The default Worker has no public entry route. */

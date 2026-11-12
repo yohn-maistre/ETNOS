@@ -7,6 +7,7 @@ This is the working home of the owner's complete **ETNOS / Strata — A Living C
 - [Read the complete foundation](living-commons.md).
 - [Build order, architecture, demo and infrastructure](execution-plan.md).
 - [Current connected demo implementation sequence](../demo-release-next-2026-11-12.md) and [writing/context refinements](../writing-and-context-plan-2026-11-12.md).
+- [Explicit Aksara interaction implementation/release](../steward-interaction-release-2026-11-12.md) and [competition demo rehearsal](../competition-demo-rehearsal-2026-11-12.md).
 - [Concrete intelligence: daily steward, @aksara picker, scoped memory and catalogue gap audit](../research/strata-intelligence-catalogue-2026-11-12.md).
 - [App progress, compact Sorotan, sticky context and mobile dock release](../shell-sorotan-2026-11-12.md).
 - [Adaptive writing/editor release](../writing-release-2026-11-12.md).

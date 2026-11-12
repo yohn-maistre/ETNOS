@@ -12,7 +12,14 @@ export class Forum {
   if(typeof b.communityId!=='string'||typeof b.text!=='string')throw new Fault(400,'Community and text required')
   const community=b.communityId,text=b.text,key=b.requestKey
   if(key!==undefined&&(typeof key!=='string'||!/^[a-f0-9-]{36}$/.test(key)))throw new Fault(400,'Invalid request key')
-  const digest=createHash('sha256').update(JSON.stringify([community,text,b.parentId??null,b.mandateId??null,b.content??{},b.mediaIds??[],b.contextIds??[]])).digest('hex')
+  const input:unknown[]=[community,text,b.parentId??null,b.mandateId??null,b.content??{},b.mediaIds??[],b.contextIds??[]]
+  if(b.agentMention!==undefined){
+   const mention=b.agentMention as Record<string,unknown>
+   if(s.actor(actor).kind!=='human'||!key||!mention||typeof mention!=='object'||Array.isArray(mention)||Object.keys(mention).some(k=>!['actorId','choiceKey'].includes(k))||typeof mention.actorId!=='string'||mention.actorId.length>100||typeof mention.choiceKey!=='string'||!/^[a-f0-9]{64}$/.test(mention.choiceKey))throw new Fault(400,'Choose one available Aksara identity for this question')
+   // Preserve historical request digests when no explicit agent request exists.
+   input.push(['agent-reply',mention.actorId,mention.choiceKey])
+  }
+  const digest=createHash('sha256').update(JSON.stringify(input)).digest('hex')
   return s.tx(()=>{
    // A replay still needs current membership, not only knowledge of its key.
    s.requireMember(actor,community)

@@ -26,6 +26,8 @@ A visitor can read something current, join through the provider, participate in 
 
 Validate managed setup/hosting/backups/training and bounded agent assistance with prospective operators. Free basic exchange can lead to optional merchant tools and disclosed local placements chosen by a host community. Sponsorship buys service or funds work, not Wiki acceptance, institutional status or control over findings. Include human moderation/curation costs and keep export/exit practical. These are business hypotheses, not claims of paying customers.
 
+The [competition rehearsal guide](competition-demo-rehearsal-2026-11-12.md) makes the end-to-end sequence, recording checks and real hosted operator step concrete. [The current interaction cut](steward-interaction-release-2026-11-12.md) records implementation/qualification and its separate deployment receipt.
+
 ## Demo assembly and focused qualification
 
 Use real public sources and clearly labelled local/test fixtures where an actual institution or merchant has not joined. Show one coherent loop and record the exact matched engine/UI release. Exercise changed privacy, source withdrawal, current mandate, duplicate/uncertain publication, save/recovery and keyboard/mobile boundaries. Reuse passing checks instead of repeatedly broadening tests for unchanged code.

@@ -12,9 +12,45 @@ import {Forum} from '../src/forum.ts'
 import {Activity} from '../src/activity.ts'
 import {DirectMessages} from '../src/dm.ts'
 import {fixture,issuer,did} from './oauth-fixture.ts'
+import {AgentAccess} from '../src/agent-access.ts'
+import {Resident} from '../src/resident.ts'
+import {Discovery,sourceFetcher} from '../src/discovery.ts'
+import {api} from '../src/api.ts'
+import {migrations} from '../src/schema.ts'
 
 export class TestNode extends StrataNode {
   private core() { return new StrataCore(new CloudflareDatabase(this.ctx.storage),this.env.STRATA_ORIGIN) }
+  async residentMigrationContract(){
+    // Dedicated test-only DO: discard the constructor's fresh schema before
+    // installing the populated v26 fixture. Never available in a deployed class.
+    await this.ctx.storage.deleteAll()
+    const db=new CloudflareDatabase(this.ctx.storage)
+    db.transaction(()=>{
+      db.exec('CREATE TABLE strata_migrations(version INTEGER PRIMARY KEY)')
+      for(let i=0;i<26;i++){db.exec(migrations[i]);db.run('INSERT INTO strata_migrations VALUES(?)',i+1)}
+      db.run("INSERT INTO actors(id,did,name,kind) VALUES('owner','did:web:upgrade-owner.example','Synthetic owner','human')");db.run("INSERT INTO actors(id,did,name,kind,operator_id) VALUES('agent','did:web:upgrade-agent.example','Synthetic agent','agent','owner')");db.run("INSERT INTO communities(id,title,description,visibility) VALUES('home','Synthetic home','Synthetic','public')")
+      for(const [id,model] of [['hosted','pi:old'],['index','model-free:source-index']])db.run("INSERT INTO resident_jobs(id,community_id,agent_id,operator_id,config_revision,skill,request_key,state,generation,checkpoint,evidence,created,updated,model) VALUES(?,'home','agent','owner',1,'source-digest',?,'queued',0,'queued','[]',1,1,?)",id,id,model)
+      db.run("INSERT INTO resident_inference_calls VALUES('receipt','hosted',1,'once',1,'reserved')")
+    })
+    const s=this.core();let foreignKey=false;try{s.run("DELETE FROM resident_jobs WHERE id='hosted'")}catch{foreignKey=true}
+    return JSON.stringify({version:s.get<{n:number}>('SELECT MAX(version) n FROM strata_migrations')!.n,jobs:s.get<{n:number}>('SELECT count(*) n FROM resident_jobs')!.n,hosted:s.get<{inference_started:number}>("SELECT inference_started FROM resident_jobs WHERE id='hosted'")!.inference_started,index:s.get<{inference_started:number}>("SELECT inference_started FROM resident_jobs WHERE id='index'")!.inference_started,receipts:s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls')!.n,foreignKey})
+  }
+  async residentQuestionContract(){
+    const s=this.core(),owner=s.provision('did:web:workerd-question.example','Synthetic question operator'),home=s.createCommunity(owner.actor.id,'Public reference home','Synthetic','public',true,'open'),target=s.createCommunity(owner.actor.id,'Public question room','Synthetic','public',true,'open'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),agent=access.enroll(owner.actor.id,{communityId:home.id,name:'Synthetic global Aksara',role:'steward',family:'aksara'})
+    access.admit(owner.actor.id,agent.agent_id);let calls=0
+    const provider={label:'synthetic-workerd-question',draft:async(input:import('../src/resident-contract.ts').ResidentInput)=>{calls++;return {text:'A synthetic answer through actual workerd.',model:'synthetic-workerd-question',questionReceipt:{postId:input.question!.postId,revision:input.question!.revision}}}},resident=new Resident(s,access,provider),grant=s.mandate(owner.actor.id,agent.agent_id,home.id,'Synthetic questions',s.clock()+86400000)
+    resident.configure(owner.actor.id,{communityId:home.id,agentId:agent.agent_id,postingMandateId:grant,enabled:true,mentionsEnabled:true,requestKey:crypto.randomUUID()})
+    const d=new Discovery(s,sourceFetcher(['https://reference.example.org'],async()=>new Response('<rss><channel><item><title>Synthetic current reference</title><link>https://reference.example.org/report</link></item></channel></rss>',{headers:{'content-type':'application/rss+xml'}}))),source=d.add(owner.actor.id,{communityId:home.id,title:'Synthetic reference',url:'https://reference.example.org/rss',mode:'news',requestKey:crypto.randomUUID()});await d.refresh(owner.actor.id,source.id)
+    resident.routing.setGlobal(owner.actor.id,{agentId:agent.agent_id,homeCommunityId:home.id,coverage:[home.id],enabled:true,revision:0,requestKey:crypto.randomUUID()})
+    resident.routing.setDestination(owner.actor.id,{agentId:agent.agent_id,communityId:target.id,enabled:true,issueGrant:true,admitAgent:true,durationHours:1,hourlyLimit:2,revision:0,requestKey:crypto.randomUUID()})
+    const handler=api(s,{agentAccess:access,residentProvider:provider}),choice=resident.routing.choices(owner.actor.id,target.id)[0],body={communityId:target.id,text:'What does this public source say?',requestKey:crypto.randomUUID(),agentMention:{actorId:agent.agent_id,choiceKey:choice.choiceKey}},call=()=>handler(new Request(s.base+'/v1/posts',{method:'POST',headers:{authorization:'Bearer '+owner.token,'content-type':'application/json',origin:s.base},body:JSON.stringify(body)}))
+    s.db.exec("CREATE TRIGGER synthetic_question_failure BEFORE INSERT ON resident_job_inputs BEGIN SELECT RAISE(ABORT,'Synthetic failure'); END")
+    const failed=await call(),rolledBack=failed.status===500&&s.all('SELECT id FROM posts').length===0&&s.all('SELECT id FROM resident_jobs').length===0&&s.all('SELECT * FROM post_requests').length===0
+    s.db.exec('DROP TRIGGER synthetic_question_failure');const response=await call(),question=await response.json() as {id:string},retry=await call(),id=s.get<{job_id:string}>('SELECT job_id FROM resident_job_inputs WHERE target_post_id=?',question.id)!.job_id,result=await resident.run(id)
+    const child=s.get<{id:string;parent_id:string;community_id:string}>('SELECT id,parent_id,community_id FROM posts WHERE author_id=?',agent.agent_id)!,status=resident.questions.statuses(question.id)
+    s.hidePost(owner.actor.id,child.id);const hiddenAnswer=resident.questions.statuses(question.id)[0]
+    return JSON.stringify({rolledBack,created:response.status,retry:retry.status,oneJob:s.all('SELECT id FROM resident_jobs').length===1,calls,state:result.state,actualChild:child.parent_id===question.id&&child.community_id===target.id,answered:status[0].state==='answered',hiddenAnswerOmitted:hiddenAnswer.state==='unavailable'&&hiddenAnswer.replyId===null,explicitAdmission:!!s.membership(agent.agent_id,target.id)})
+  }
   seed() {
     const s=this.core()
     const owner=s.provision('did:web:owner.example','Owner')
