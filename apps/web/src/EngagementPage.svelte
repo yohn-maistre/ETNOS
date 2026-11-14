@@ -182,8 +182,7 @@
           Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'}
         </h2>
         <p>
-          Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'} yang
-          dimuat.
+          Pertanyaan dari komunitas tampil di sini.
         </p>
       </div>{/if}
     {#if !compact && cursor}<Button
