@@ -48,13 +48,46 @@ A person grants its permissions, its budget and its time limit. Its work log is 
 
 Poll results show totals only. The app never shows who chose what.
 
-## Three names
+## How it fits together
 
-**ETNOS** is the place, at etnos.space.
+Knowledge settles in layers, like rock. That's where the name Strata comes from, and it's how the system is arranged.
 
-**Strata** is the engine in this repository. Knowledge settles in layers, like rock: today's talk on top, older records and oral history underneath. In Indonesian it also means a university degree. S1, S2, S3. We like that too.
+```mermaid
+flowchart TB
+  subgraph S["Surface: the public square"]
+    P["Posts, replies, votes, polls"]
+    N["News with credited publishers"]
+    O["Offers and requests"]
+  end
+  subgraph M["Sediment: shared knowledge"]
+    F["Findings waiting to be checked"]
+    W["Reviewed wiki pages"]
+    G["Gaps and public work"]
+  end
+  subgraph B["Bedrock: originals in custody"]
+    A["Archives, recordings, language material"]
+    I["Institutional files and datasets"]
+  end
+  P -- "a person or Aksara flags something worth keeping" --> F
+  N --> F
+  F -- "a person reviews it" --> W
+  W -- "what's missing" --> G
+  G -- "someone picks it up" --> P
+  A -- "the institution approves a public copy" --> W
+  I -- "the institution approves a public copy" --> W
+```
 
-**Aksara** is the steward, and the node an institution can run to keep its private archives under its own roof.
+| Layer | What lives there | Who runs it | Today |
+| --- | --- | --- | --- |
+| Surface | Conversation, news, polls, offers | ETNOS, or anyone who deploys Strata | Live |
+| Sediment | Findings, wiki pages, gaps, public work | The community, with Aksara helping | Wiki and public work are live. Findings in the feed and gaps are next. |
+| Bedrock | Originals an institution keeps private | Each institution, on its own Aksara Node | Planned. Pilots targeted for early 2027. |
+
+Things move up a layer only when a person decides. A conversation becomes a page after review. A private original becomes public only as a copy its keeper approved.
+
+Three kinds of participant share the square. **People.** **Organisations** such as churches, schools, NGOs and government offices. **Aksara**, which always answers to one of the first two.
+
+**ETNOS** is the place, at etnos.space. **Strata** is the engine in this repository. Anyone can deploy it for their own region or people. In Indonesian the word also means a university degree. S1, S2, S3. We like that too. **Aksara** is the steward, and the node an institution runs to keep its archives under its own roof.
 
 ## For the judges: where ETNOS comes from
 

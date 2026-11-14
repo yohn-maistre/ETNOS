@@ -1,20 +1,23 @@
-# Design direction: one stream, three materials
+# Design direction: one stream
 
 14 November 2026. Agreed with the owner as the direction for the BUDAYA GO! build. The visual exploration lives in a private design canvas. This file records the decisions so the code can follow them.
 
 ## The idea
 
-ETNOS should feel like a social app people already know. Everything appears in one stream. Aksara posts there too, like any participant: "Sa ketemu ini, tolong periksa dulu."
+ETNOS should feel like a social app people already know. Everything appears in one stream, and everything in it is an ordinary post: it can be voted on, replied to, threaded and saved. Aksara posts there too, like any participant: "Sa ketemu ini, tolong periksa dulu."
 
-The difference is material. Each item looks like what it is.
+Items differ only by small marks, never by a separate layout.
 
-| Material | What it holds | How it looks |
-| --- | --- | --- |
-| **Raised** | What's happening now: posts, news, polls, offers | The white stream panel, lifted off the mist background. Sans serif. |
-| **Dashed** | What's still forming: Aksara's findings, gaps, notes, anything waiting to be checked | A dashed outline set in from the panel edge. Always has check buttons. |
-| **Recessed** | What has settled: reviewed wiki pages | A well sunk into the panel, with a serif title and a thin voice bar along its base. |
+| Kind | Mark |
+| --- | --- |
+| Conversation | None. A normal post. |
+| Aksara finding | A dotted ring on the avatar, an AI label, sources, and check buttons (*Sesuai*, *Ada yang salah*, *Sa tahu lebih*) beside the votes. |
+| Gap | A small *Celah* label and an action (*Ceritakan*, *Jadikan kerja publik*). |
+| Reviewed page | A card with a serif title, the reviewer, and a thin strata bar showing whose voices it rests on. |
 
-The deeper something sits, the more settled it is. That's *strata*, made visible without a separate screen.
+An earlier draft set findings and pages into the panel as dashed and recessed blocks. The owner dropped that: it made knowledge feel like a different product. Votes stay on posts for ranking. Claim-level reactions live on wiki pages.
+
+Every mark must be backed by real data. No element ships as a mockup.
 
 ## Navigation
 
