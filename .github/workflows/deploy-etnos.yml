@@ -1,0 +1,28 @@
+name: Deploy ETNOS
+# Manual only. Runs the same checks as a local release, then deploys the web profile.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: deploy-etnos
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --ignore-scripts
+      - run: npm ci --prefix apps/web --ignore-scripts
+      - run: npm run check
+      - run: npm test
+      - run: npm run check:worker
+      - run: npm run build:ui
+      - run: npx wrangler deploy --config wrangler.web.jsonc
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
