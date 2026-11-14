@@ -173,10 +173,19 @@
             </small>{/if}
         </div>
         <ArrowUpRight size={16} />
-      </a>{/each}{#if !displayed.length}<p class="engagement-empty">
+      </a>{/each}{#if !displayed.length && compact}<p class="engagement-empty">
         Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'} yang
         dimuat.
-      </p>{/if}
+      </p>{:else if !displayed.length}<div class="strata-nodata">
+        <MessageCircle size={28} />
+        <h2>
+          Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'}
+        </h2>
+        <p>
+          Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'} yang
+          dimuat.
+        </p>
+      </div>{/if}
     {#if !compact && cursor}<Button
         variant="ghost"
         disabled={moreBusy}

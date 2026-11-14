@@ -24,7 +24,8 @@
   }
   let selected = $state(0),
     open = $state(false),
-    showAlt = $state(false)
+    showAlt = $state(false),
+    failed = $state<Record<string, boolean>>({})
   function move(step: number) {
     selected = (selected + step + images.length) % images.length
     showAlt = false
@@ -55,7 +56,11 @@
           height={image.height}
           loading="lazy"
           decoding="async"
+          onerror={() => (failed[image.id] = true)}
         />
+        {#if failed[image.id]}<span class="image-failed-label"
+            >Gambar tidak dapat dimuat</span
+          >{/if}
         {#if image.alt}<span class="image-alt-label">ALT</span>{/if}
       </button>
     {/each}

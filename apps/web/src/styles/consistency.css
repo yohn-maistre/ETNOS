@@ -1,0 +1,67 @@
+/* Consistency pass: later than every other stylesheet, so it overrides cleanly. */
+
+/* 1. /explore chip row wraps on desktop instead of clipping (mobile keeps its grid). */
+@media (min-width: 768px) {
+  .discovery-nav {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+}
+
+/* 2. Scrolling tab rows: hidden scrollbar and a fade on the trailing edge.
+   The end padding keeps the last tab clear of the fade once scrolled to the end. */
+.search-query-summary + .search-filters,
+.directory-controls .directory-tabs,
+.news-desk-tabs {
+  scrollbar-width: none;
+  padding-inline-end: 32px;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+}
+.search-query-summary + .search-filters::-webkit-scrollbar,
+.directory-controls .directory-tabs::-webkit-scrollbar,
+.news-desk-tabs::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 768px) {
+  /* These two only overflow on mobile; leave them untouched on desktop. */
+  .directory-controls .directory-tabs,
+  .news-desk-tabs {
+    padding-inline-end: 0;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .news-desk-tabs {
+    padding-inline-end: 24px;
+  }
+}
+
+/* 3. Right rail: it scrolls inside itself (overflow-y: auto) but showed no cue, so the
+   Komunitas list looked sliced. Fade the bottom edge; the bottom padding keeps the
+   last item clear of the fade at the end of the scroll. */
+@media (min-width: 1360px) {
+  .context-scroll {
+    padding-bottom: 36px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent);
+  }
+}
+
+/* 5. Failed post image: a muted centred label instead of a blank box. */
+.post-image:has(.image-failed-label) {
+  min-height: 120px;
+}
+.post-image:has(.image-failed-label) img {
+  visibility: hidden;
+}
+.image-failed-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
