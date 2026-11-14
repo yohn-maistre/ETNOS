@@ -23,6 +23,7 @@
   import * as Tabs from '$lib/components/ui/tabs/index.js'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import Choice from './Choice.svelte'
+  import PlaceStrata from './PlaceStrata.svelte'
   import ContentSkeleton from './ContentSkeleton.svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
@@ -73,6 +74,7 @@
   type ContextDetail = Context & {
     groups: Group[]
     pages: { id: string; title: string }[]
+    newsPlaces?: string[]
   }
   type Result = {
     id: string
@@ -104,7 +106,7 @@
   let group = $state<Group | null>(null),
     work = $state<Work | null>(null),
     context = $state<
-      | (Context & { groups: Group[]; pages: { id: string; title: string }[] })
+      | ContextDetail
       | null
     >(null),
     posts = $state<Post[]>([]),
@@ -683,6 +685,14 @@
         </article>{/each}
     </Card.Root>{/if}
 {:else if segments[0] === 'contexts' && context}
+  <PlaceStrata
+    contextId={context.id}
+    title={context.title}
+    places={context.newsPlaces ?? []}
+    posts={posts.length}
+    pages={context.pages.length}
+    works={works.length}
+  />
   <div class="cx-detail-head context-detail-heading">
     {#if context.kind !== 'topic'}<Badge variant="secondary">
         {kinds[context.kind]}

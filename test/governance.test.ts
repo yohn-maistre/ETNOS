@@ -601,3 +601,27 @@ test("private work proposals can be rejected by current human stewards without p
     s.close();
   }
 });
+
+test("only a node steward sets a context's news places, and malformed slugs are ignored", () => {
+  const f = fixture(),
+    { s, groups, owner, admin } = f;
+  try {
+    const c = groups.createContext(admin.actor.id, {
+      slug: "meepago",
+      title: "Meepago",
+      kind: "region",
+      description: "Declared discovery context",
+      language: "id",
+      aliases: [],
+    });
+    assert.deepEqual(groups.contextDetail(c.id).newsPlaces, ["meepago"]);
+    assert.throws(() => groups.setContextAliases(owner.actor.id, c.id, ["kabar:nabire"]));
+    assert.deepEqual(groups.contextDetail(c.id).newsPlaces, ["meepago"]);
+    groups.setContextAliases(admin.actor.id, c.id, ["kabar:nabire", "kabar:paniai", "kabar:../admin", "Mee Pago", "kabar:nabire"]);
+    assert.deepEqual(groups.contextDetail(c.id).newsPlaces, ["nabire", "paniai"]);
+    const topic = groups.createContext(admin.actor.id, { slug: "reggae", title: "Reggae", kind: "topic", description: "Music", language: "id", aliases: [] });
+    assert.deepEqual(groups.contextDetail(topic.id).newsPlaces, []);
+  } finally {
+    s.close();
+  }
+});

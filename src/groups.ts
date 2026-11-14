@@ -369,6 +369,17 @@ export class Groups implements GroupAuthority {
       return this.context(id);
     });
   }
+  /** Node stewards may correct a public context's alternative names. `kabar:<slug>` names a news-desk place. */
+  setContextAliases(actorId: string, contextId: string, value: unknown) {
+    return this.store.tx(() => {
+      this.nodeSteward(actorId);
+      const c = this.context(contextId),
+        aliases = [...new Set(strings(value, 20).map((a) => text(a, 100)))];
+      this.store.run("UPDATE contexts SET aliases=? WHERE id=?", JSON.stringify(aliases), c.id);
+      this.store.audit(actorId, "context.aliases", c.id);
+      return this.context(c.id);
+    });
+  }
   contextLinks(kind: "post" | "group" | "wiki" | "work", recordId: string) {
     return this.store
       .all<ContextRow>(
@@ -482,6 +493,16 @@ export class Groups implements GroupAuthority {
       `SELECT w.id,w.title,w.community_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND w.revision_id IS NOT NULL AND EXISTS(SELECT 1 FROM record_contexts l WHERE l.record_kind='wiki' AND l.record_id=w.id AND l.context_id=?) ORDER BY w.title LIMIT 50`,
       c.id,
     );
-    return { ...c, groups, pages };
+    return { ...c, groups, pages, newsPlaces: newsPlaces(c) };
   }
+}
+
+/** Public news-desk place slugs for a context: explicit `kabar:` aliases, else the slug of a place or region. */
+export function newsPlaces(c: Pick<Context, "slug" | "kind" | "aliases">) {
+  const explicit = c.aliases.flatMap((a) => {
+    const slug = a.startsWith("kabar:") ? a.slice(6) : "";
+    return /^[-a-z0-9]{1,100}$/.test(slug) ? [slug] : [];
+  });
+  if (explicit.length) return [...new Set(explicit)].slice(0, 8);
+  return c.kind === "place" || c.kind === "region" ? [c.slug] : [];
 }

@@ -41,3 +41,11 @@ test('news listing forwards only bounded public filters and preserves real pagin
  assert.equal(result.status,200);assert.equal(fetched,chosen)
  assert.equal((await publicNewsImage('42',async()=>Response.json(detail(first)),fetch,asset)).status,404)
 })
+test('news retries one upstream failure and never retries a definite miss',async()=>{
+ let calls=0
+ const flaky:typeof fetch=async()=>{calls++;return calls===1?new Response('busy',{status:503}):Response.json({items:[{id:7,title:{id:'Pulih'}}]})}
+ const ok=await publicNews(flaky);assert.equal(ok.status,200);assert.equal(calls,2);assert.equal((await ok.json()).items.length,1)
+ calls=0
+ const down:typeof fetch=async()=>{calls++;return new Response('busy',{status:503})}
+ const failed=await publicNews(down);assert.equal(failed.status,503);assert.equal(calls,2)
+})

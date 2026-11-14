@@ -39,7 +39,11 @@ async function bounded(response:Response,limit:number){
  try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>limit){await reader.cancel();throw Error('size')}chunks.push(part.value)}}finally{reader.releaseLock()}
  const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length}return bytes
 }
+// The upstream desk fails intermittently. One immediate retry, never for a definite 404.
 async function read(path:string,fetcher:typeof fetch){
+ try{return await readOnce(path,fetcher)}catch(error){if(error instanceof Error&&error.message==='missing')throw error;return readOnce(path,fetcher)}
+}
+async function readOnce(path:string,fetcher:typeof fetch){
  const response=await fetcher('https://westpapua.watch/api/'+path,{headers:{accept:'application/json'},redirect:'manual',signal:AbortSignal.timeout(8000)})
  if(!response.ok)throw Error(response.status===404?'missing':'upstream')
  if(!response.headers.get('content-type')?.includes('json'))throw Error('format')

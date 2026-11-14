@@ -46,10 +46,17 @@ export function loadNews() {
   inflight = (async () => {
     const done = beginRequest()
     try {
-      const res = await fetch('/v1/news', {
-        credentials: 'omit',
-        signal: AbortSignal.timeout(10000),
-      })
+      const request = () =>
+        fetch('/v1/news', {
+          credentials: 'omit',
+          signal: AbortSignal.timeout(10000),
+        })
+      let res = await request().catch(() => null)
+      // The desk recovers quickly; one quiet retry avoids a false "unavailable".
+      if (!res?.ok) {
+        await new Promise((resolve) => setTimeout(resolve, 1200))
+        res = await request()
+      }
       if (!res.ok) throw Error('unavailable')
       const feed = (await res.json()) as NewsFeed
       if (!Array.isArray(feed.items)) throw Error('invalid feed')
