@@ -50,16 +50,16 @@
     }
   })
 
-  const radius = (mag: number) => Math.max(0.6, Math.min(2, 1.7 - mag * 0.35))
+  const radius = (mag: number) => Math.max(0.7, Math.min(2.4, 2.1 - mag * 0.42))
 </script>
 
 <svg class="sky-strip" role="img" aria-label={description} focusable="false">
   <rect width="100%" height="100%" style="opacity: {wash}" class="wash" />
-  {#each sky.placed as p, i (p.star.name ?? i)}
+  {#each sky.placed as p, i (p.star.ra + ':' + p.star.dec)}
     <circle
       class="star"
       class:twinkle={!reduced && i % 7 === 0}
-      style="animation-delay: {(i % 5) * 0.9}s; opacity: {Math.max(0.12, p.fade * Math.min(0.55, 0.5 - p.star.mag * 0.06))}"
+      style="animation-delay: {(i % 5) * 0.9}s; opacity: {Math.max(0.18, p.fade * Math.min(0.8, 0.72 - p.star.mag * 0.12))}"
       cx="{p.x * 100}%"
       cy="{6 + p.y * 88}%"
       r={radius(p.star.mag)}
