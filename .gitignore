@@ -16,3 +16,6 @@ dist-web/
 
 .strata-pds/
 pds.env
+
+# Local agent worktrees
+.claude/worktrees/
