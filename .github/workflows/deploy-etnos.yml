@@ -1,7 +1,11 @@
 name: Deploy ETNOS
-# Manual only. Runs the same checks as a local release, then deploys the web profile.
+# Runs the same checks as a local release, then deploys the web profile.
+# Deploys on manual dispatch, or when deploy/etnos.txt changes on main.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [deploy/etnos.txt]
 permissions:
   contents: read
 concurrency:
