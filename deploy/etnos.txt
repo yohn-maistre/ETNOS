@@ -1,1 +1,1 @@
-2026-11-14 place cross-section, news linked to places, news retry
+2026-11-14b steward form for a place's news places

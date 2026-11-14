@@ -75,6 +75,7 @@
     groups: Group[]
     pages: { id: string; title: string }[]
     newsPlaces?: string[]
+    aliases?: string[]
   }
   type Result = {
     id: string
@@ -101,6 +102,7 @@
     memberships = $state<Membership[]>([])
   let groups = $state<Group[]>([]),
     contexts = $state<Context[]>([]),
+    newsPlacesDraft = $state(''),
     works = $state<Work[]>([]),
     roles = $state<{ group_id: string; role: string }[]>([])
   let group = $state<Group | null>(null),
@@ -239,6 +241,7 @@
         )
         if (mine !== generation) return
         context = c
+        newsPlacesDraft = (c.aliases ?? []).some((a) => a.startsWith('kabar:')) ? (c.newsPlaces ?? []).join(', ') : ''
         onContextResolved?.(c.kind)
         posts = feed.items
         works = ws.filter((w) => w.contexts.some((x) => x.id === c.id))
@@ -699,6 +702,42 @@
       </Badge>{/if}
     <h1>{context.title}</h1>
     <p>{context.description}</p>
+    {#if auth.steward}<details class="place-news-setup">
+        <summary>Atur tempat kabar</summary>
+        <form
+          onsubmit={async (e) => {
+            e.preventDefault()
+            if (!context) return
+            const slugs = newsPlacesDraft
+              .split(',')
+              .map((x) => x.trim().toLowerCase().replace(/\s+/g, '-'))
+              .filter((x) => /^[-a-z0-9]{1,100}$/.test(x))
+            try {
+              await request('/v1/contexts/' + context.id + '/aliases', {
+                aliases: [
+                  ...(context.aliases ?? []).filter((a) => !a.startsWith('kabar:')),
+                  ...slugs.map((x) => 'kabar:' + x),
+                ],
+              })
+              const next = await request<ContextDetail>('/v1/contexts/' + context.id)
+              context = next
+              newsPlacesDraft = (next.newsPlaces ?? []).join(', ')
+            } catch (error) {
+              onError(error instanceof Error ? error.message : 'Tempat kabar belum tersimpan.')
+            }
+          }}
+        >
+          <Label for="place-news-slugs">Nama tempat di meja kabar, dipisah koma</Label>
+          <Input
+            id="place-news-slugs"
+            bind:value={newsPlacesDraft}
+            placeholder="nabire, paniai, deiyai"
+            autocomplete="off"
+          />
+          <p class="cx-hint">Kabar dari tempat-tempat ini tampil di halaman {context.title}. Kosongkan untuk memakai nama halaman ini saja.</p>
+          <Button type="submit" size="sm">Simpan</Button>
+        </form>
+      </details>{/if}
   </div>
   {#if context.pages.length || context.groups.length || works.length}<nav
       class="context-relations section-tab-scroll"
