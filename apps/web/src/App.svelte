@@ -36,6 +36,7 @@
   import SearchPage from './SearchPage.svelte'
   import ThreadView from './ThreadView.svelte'
   import PostComposer from './PostComposer.svelte'
+  import SkyStrip from './SkyStrip.svelte'
   import PostCard from './PostCard.svelte'
   import PlatformShell from './PlatformShell.svelte'
   import SpacesLab from './SpacesLab.svelte'
@@ -1470,6 +1471,7 @@
         </div>{:else if path === '/find'}<div class="cx-page-head">
           <h1>Hasil pencarian</h1>
         </div>{:else}<h1 class="sr-only">Beranda</h1>
+        <SkyStrip />
         <div class="cx-composer-bar">
           <span class="cx-avatar sage avatar-tinted" style={avatarTone(auth.actor?.id??'visitor')}>
             {auth.actor ? initials(auth.actor.name) : '+'}
