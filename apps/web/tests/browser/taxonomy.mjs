@@ -116,10 +116,15 @@ try {
       .locator('.community-directory')
       .getByText('Jayapura', { exact: true })
       .waitFor()
+    // The places map ends with topics as lenses; the Topik tab shows only topics.
+    await p
+      .locator('.community-directory #topik')
+      .getByText('Musik Reggae', { exact: true })
+      .waitFor()
     assert.equal(
       await p
-        .locator('.community-directory')
-        .getByText('Musik Reggae', { exact: true })
+        .locator('.community-directory #topik')
+        .getByText('Jayapura', { exact: true })
         .count(),
       0,
     )

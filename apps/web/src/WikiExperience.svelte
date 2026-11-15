@@ -71,9 +71,11 @@
     section = $state('read'),
     context = $state(''),
     contexts = $state<
-      { id: string; slug: string; title: string; kind: string }[]
+      { id: string; slug: string; title: string; kind: string; facet?: string; parents?: string[] }[]
     >([]),
     contextPages = $state<string[] | null>(null)
+  // A catalogue can hold hundreds of contexts; the lens strip keeps to the top of the hierarchy.
+  const lensContexts = $derived(contexts.filter((c) => c.kind !== 'language' && !c.parents?.length && c.facet !== 'province').slice(0, 24))
   type Growing={id:string;community_id:string;title:string;excerpt:string;updated:number;citationCount:number;author:{id:string;name:string;kind:string};evidenceStatus:string}
   let growing=$state<Growing[]>([]),growingError=$state('')
   const growingMatches=$derived(growing.filter(p=>p.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())&&(!communityFilter||p.community_id===communityFilter)&&!context))
@@ -369,7 +371,7 @@
       <div class="wiki-discovery-actions">{#if memberships.length}<a class="commons-quiet-link" href="/wiki/notes/new">Tambah catatan <Plus size={14}/></a>{/if}{#if memberships.some(m=>m.role!=='member')}<Button variant="outline" onclick={onCreate}><Plus size={15}/>Tulis halaman</Button>{/if}</div>
     </header>
     <div class="wiki-discovery-controls"><label class="atlas-search"><Search size={18}/><Input bind:value={query} aria-label="Cari pengetahuan" placeholder="Cari dalam Wiki…"/></label>
-      {#if contexts.length}<nav class="atlas-lenses" aria-label="Jelajahi pengetahuan"><button aria-pressed={!context} onclick={()=>context=''}>Semua</button>{#each contexts as c}<button aria-pressed={context===c.slug} onclick={()=>context=c.slug}>{#if c.kind==='place'||c.kind==='region'}<MapPin size={14}/>{/if}{c.title}</button>{/each}</nav>{/if}
+      {#if contexts.length}<nav class="atlas-lenses" aria-label="Jelajahi pengetahuan"><button aria-pressed={!context} onclick={()=>context=''}>Semua</button>{#each lensContexts as c}<button aria-pressed={context===c.slug} onclick={()=>context=c.slug}>{#if c.kind==='place'||c.kind==='region'}<MapPin size={14}/>{/if}{c.title}</button>{/each}</nav>{/if}
     </div>
     {#if discovering}<div class="wiki-discovery-loading" role="status">Menyiapkan bacaan…</div>{:else if discoveryError}<div class="wiki-draft-state"><p>{discoveryError}</p><Button variant="outline" onclick={()=>discover()}>Coba lagi</Button></div>{:else}
       {#if continued&&!query&&!context&&!communityFilter}<a class="wiki-continue" href={'/wiki/'+continued.id}><Clock3 size={17}/><div><small>Lanjutkan membaca · di perangkat ini</small><strong>{continued.title}</strong></div><ArrowRight size={18}/></a>{/if}

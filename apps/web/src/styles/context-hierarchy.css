@@ -1,0 +1,88 @@
+/* Context hierarchy: the places directory as a browsable map, and a context's
+   parents and children. Mobile first; every link is a 44px touch target. */
+.context-map { padding: 0 24px 32px; }
+.context-map-jump {
+  display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 8px;
+  scrollbar-width: none;
+}
+.context-map-jump::-webkit-scrollbar { display: none; }
+.context-map-jump a {
+  flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 1px solid var(--border); border-radius: 999px; font-size: 14px; font-weight: 550;
+  color: var(--foreground); background: var(--card);
+}
+.context-map-jump a:hover { border-color: var(--brand); color: var(--brand); }
+.context-map-section { padding-top: 20px; scroll-margin-top: 56px; }
+.context-map-section > h2 {
+  display: flex; align-items: baseline; gap: 8px; margin: 0 0 4px;
+  font-size: 18px; font-weight: 650; color: var(--foreground);
+}
+.context-map-section > h2 span { font-size: 13px; font-weight: 500; color: var(--muted-foreground); }
+.context-map-note { margin: 0 0 12px; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
+.context-branch { border-bottom: 1px solid var(--reading-line, var(--border)); }
+.context-branch > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 52px; cursor: pointer; list-style: none;
+}
+.context-branch > summary::-webkit-details-marker { display: none; }
+.context-branch > summary::after {
+  content: ''; flex: none; width: 8px; height: 8px; margin-right: 6px;
+  border-right: 1.5px solid var(--muted-foreground); border-bottom: 1.5px solid var(--muted-foreground);
+  transform: rotate(45deg); transition: transform .15s ease;
+}
+.context-branch[open] > summary::after { transform: rotate(225deg); }
+.context-branch > summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+.context-branch-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.context-branch-title svg { flex: none; color: var(--brand); }
+.context-branch-title strong { font-size: 16px; font-weight: 620; overflow-wrap: anywhere; }
+.context-branch > summary small { margin-left: auto; font-size: 13px; color: var(--muted-foreground); }
+.context-branch > .context-chips { padding-bottom: 16px; }
+.context-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.context-chips a {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--card);
+  font-size: 14px; color: var(--foreground); max-width: 100%; overflow-wrap: anywhere;
+}
+.context-chips a:hover { border-color: var(--brand); color: var(--brand); }
+.context-chips a svg { flex: none; color: var(--muted-foreground); }
+.context-chips a.context-chip-parent { background: var(--brand-soft); border-color: transparent; color: var(--brand); font-weight: 600; }
+.context-chips a.context-chip-parent svg { color: var(--brand); }
+.context-map-filter {
+  display: flex; align-items: center; gap: 8px; margin: 8px 0 12px; padding: 0 12px;
+  border: 1px solid var(--input); border-radius: var(--radius-lg); background: var(--card);
+}
+.context-map-filter svg { flex: none; color: var(--muted-foreground); }
+.context-map-filter input { flex: 1; min-width: 0; min-height: 44px; border: 0; box-shadow: none; background: transparent; padding-inline: 0; }
+.context-map-filter input:focus-visible { box-shadow: none; outline: none; }
+.context-map-filter:focus-within { border-color: var(--brand); }
+.context-map .context-map-more { margin-top: 12px; min-height: 44px; }
+
+/* A context page: "Bagian dari" and its children. */
+.context-parents {
+  display: flex; flex-wrap: wrap; align-items: center; column-gap: 4px; margin: 4px 0 0;
+  font-size: 14px; color: var(--muted-foreground);
+}
+.context-parents a {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px;
+  color: var(--brand); font-weight: 550; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--brand) 35%, transparent); text-underline-offset: 3px;
+}
+.context-parents span[aria-hidden] { padding: 0 2px; }
+.context-children { padding: 0 24px 8px; }
+.context-children h2 { display: flex; align-items: baseline; gap: 6px; margin: 8px 0 10px; font-size: 14px; font-weight: 600; color: var(--muted-foreground); }
+.context-children h2 span { font-weight: 500; }
+
+@media (min-width: 768px) {
+  .context-map-section { padding-top: 28px; }
+}
+@media (max-width: 767px) {
+  .context-map, .context-children { padding-left: 16px; padding-right: 16px; }
+}
+
+/* Studio: a node steward loads the deployment catalogue. */
+.studio-catalogue { border-bottom: 1px solid var(--border); }
+.studio-catalogue-body { display: grid; justify-items: start; gap: 12px; padding: 0 1.5rem 1.25rem; }
+.studio-catalogue-body p { margin: 0; max-width: 60ch; }
+.studio-catalogue-body button { min-height: 44px; }
+.studio-catalogue-result { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--muted-foreground); }
+.studio-catalogue-result strong { color: var(--foreground); font-variant-numeric: tabular-nums; }
+@media (max-width: 767px) { .studio-catalogue-body { padding: 0 1rem 1rem; } }

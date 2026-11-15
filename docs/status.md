@@ -1,5 +1,7 @@
 # Foundation status
 
+**Context catalogue, 15 November 2026 (local, not deployed):** contexts can now have several parents (`context_parents`, loops refused) and a `facet`. A node steward loads the deployment catalogue named by `STRATA_CATALOGUE` from Studio or `POST /v1/contexts/catalogue`; loading is idempotent, fills only empty fields and never deletes. The shipped [`tanah-papua`](../src/catalogues/tanah-papua.json) catalogue holds 7 generalised reference regions (not customary-land boundaries), 6 provinces, 42 regencies and cities, 256 Glottolog 5.3 languages and 19 topic lenses and institution kinds; its `sources` and `notes` record provenance and gaps.
+
 **Living commons planning, 11 November 2026:** [Complete source and implementation ledger](foundation/README.md) records the next direction and reconciles current code with proposed native discovery, working knowledge, resident agency, culture and operations. It preserves historical decisions and explicitly marks existing/partial/planned capabilities. No runtime deployment is implied by this documentation checkpoint.
 
 **Human signup update, 4 November 2026:** [provider-started Bluesky signup](signup-2026-11-04.md) now implements verified return/enrollment and configurable open/invite/closed admission. The owner selected open signup. Community, institution and agent permissions stay independent. Older invitation-only checkpoints below describe their release dates; the [signup release receipt](release-2026-11-04-signup.md) records the deployed version and qualification.

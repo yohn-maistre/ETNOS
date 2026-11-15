@@ -20,7 +20,7 @@ try {
     const url = new URL(store.base)
     if (!['127.0.0.1','localhost','[::1]'].includes(url.hostname)) throw Error('Foundation host is loopback-only; production enrollment/TLS is not qualified')
     store.recoverInterrupted()
-    const app = server(store,{custodyFixture:process.env.STRATA_ENABLE_CUSTODY_FIXTURE === 'true'})
+    const app = server(store,{custodyFixture:process.env.STRATA_ENABLE_CUSTODY_FIXTURE === 'true',catalogue:process.env.STRATA_CATALOGUE})
     app.requestTimeout = 15000; app.headersTimeout = 10000; app.keepAliveTimeout = 3000
     app.listen(Number(url.port || 7342),'127.0.0.1',()=>console.log(`Strata foundation: ${store.base} (JSON API; local credentials; live AT writes disabled)`))
     const stop = () => app.close(()=>{store.close();process.exit(0)})

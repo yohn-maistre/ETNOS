@@ -26,6 +26,7 @@
   import PlaceStrata from './PlaceStrata.svelte'
   import CoreSample from './CoreSample.svelte'
   import { openWorkStates } from './place-layers'
+  import { facetNames, orderedParents } from './context-tree'
   import ContentSkeleton from './ContentSkeleton.svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
@@ -73,7 +74,12 @@
     contexts: Context[]
     result: { id: string; text: string; citations: string[] } | null
   }
+  type ContextRef = { id: string; slug: string; title: string; kind: string; facet?: string }
   type ContextDetail = Context & {
+    facet?: string
+    parents?: ContextRef[]
+    children?: ContextRef[]
+    childCount?: number
     groups: Group[]
     pages: { id: string; title: string }[]
     newsPlaces?: string[]
@@ -733,10 +739,14 @@
     works={works.filter((w) => openWorkStates.has(w.state)).length}
   />
   <div class="cx-detail-head context-detail-heading">
-    {#if context.kind !== 'topic'}<Badge variant="secondary">
-        {kinds[context.kind]}
+    {#if context.kind !== 'topic' || context.facet}<Badge variant="secondary">
+        {facetNames[context.facet ?? ''] ?? kinds[context.kind]}
       </Badge>{/if}
     <h1>{context.title}</h1>
+    {#if context.parents?.length}<p class="context-parents">
+        Bagian dari:
+        {#each orderedParents(context.parents) as p, i (p.id)}{#if i}<span aria-hidden="true">·</span>{/if}<a href={'/contexts/' + p.slug}>{p.title}</a>{/each}
+      </p>{/if}
     <p>{context.description}</p>
     {#if auth.steward}<details class="place-news-setup" ontoggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) void loadPlaceOptions() }}>
         <summary>Atur tempat kabar</summary>
@@ -787,6 +797,18 @@
         </form>
       </details>{/if}
   </div>
+  {#if context.children?.length}<section
+      class="context-children"
+      aria-labelledby="context-children-heading"
+    >
+      <h2 id="context-children-heading">
+        {context.children.every((c) => c.kind === 'place') ? 'Kabupaten & kota' : context.facet === 'institution-kind' ? 'Jenis lembaga' : 'Di dalamnya'}
+        <span>{context.childCount ?? context.children.length}</span>
+      </h2>
+      <div class="context-chips">
+        {#each context.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}
+      </div>
+    </section>{/if}
   {#if context.pages.length || context.groups.length || works.length}<nav
       class="context-relations section-tab-scroll"
       aria-label={'Terhubung dengan ' + context.title}

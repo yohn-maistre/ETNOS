@@ -19,6 +19,7 @@ import {Ranking} from './ranking.ts'
 import {Clustering} from './clustering.ts'
 import {Knowledge} from './knowledge.ts'
 import {Resident,type ResidentProvider,type ResidentSkill} from './resident.ts'
+import {catalogue,catalogueSummary} from './catalogue.ts'
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -45,7 +46,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -119,6 +120,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='spaces')result=groups.spaces(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
+        else if(path==='/v1/contexts/catalogue')result=catalogueSummary(options.catalogue)
         else if(parts.length===3&&parts[1]==='contexts')result={...groups.contextDetail(parts[2]),work:work.list({contextId:parts[2]})}
         else if(path==='/v1/work')result=work.list({groupId:url.searchParams.get('group')??undefined,contextId:url.searchParams.get('context')??undefined})
         else if(parts.length===3&&parts[1]==='work')result=work.read(parts[2])
@@ -231,8 +233,10 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         result=groups.recognize(caller,parts[2],b.enabled)
       }
       else if(parts.length===4&&parts[1]==='actors'&&parts[3]==='follow'){if(typeof b.following!=='boolean')throw new Fault(400,'Boolean required');result=social.follow(caller,parts[2],b.following)}
-      else if(path==='/v1/contexts')result=groups.createContext(caller,{slug:string(b.slug),title:string(b.title),kind:string(b.kind) as Context['kind'],description:string(b.description),language:string(b.language),aliases:strings(b.aliases??[],20)})
+      else if(path==='/v1/contexts')result=groups.createContext(caller,{slug:string(b.slug),title:string(b.title),kind:string(b.kind) as Context['kind'],description:string(b.description),language:string(b.language),aliases:strings(b.aliases??[],20),facet:b.facet===undefined?undefined:string(b.facet)})
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='aliases')result=groups.setContextAliases(caller,parts[2],b.aliases)
+      else if(path==='/v1/contexts/catalogue'){const c=catalogue(options.catalogue);result={catalogue:c.key,...groups.importCatalogue(caller,c.catalogue)}}
+      else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='parents')result=b.remove===true?groups.unlinkContext(caller,parts[2],string(b.parentId)):groups.linkContext(caller,parts[2],string(b.parentId))
       else if(parts.length===4&&['posts','groups','wiki'].includes(parts[1])&&parts[3]==='contexts'){
         const kind=parts[1]==='posts'?'post':parts[1]==='groups'?'group':'wiki'
         result=b.remove===true?groups.detach(caller,kind,parts[2],string(b.contextId)):groups.attach(caller,kind,parts[2],string(b.contextId))
