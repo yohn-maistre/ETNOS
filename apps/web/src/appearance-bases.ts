@@ -1,6 +1,12 @@
 /** Complete surface ramps. Base and accent are independent presentation choices. */
 export const bases = [
   {
+    id: 'kabut',
+    name: 'Kabut',
+    light: ['#e8eae4', '#fbfbf8', '#eceee7', '#d6dbd2', '#1a211e', '#5a635e'],
+    dark: ['#0e1110', '#161a18', '#202522', '#2d332f', '#eef1ec', '#a4ada7'],
+  },
+  {
     id: 'graphite',
     name: 'Grafit',
     light: ['#fafafa', '#ffffff', '#f2f2f2', '#e5e5e5', '#171717', '#666666'],

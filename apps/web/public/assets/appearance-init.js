@@ -9,8 +9,8 @@
     ? saved.themeMode
     : ['light', 'dark'].includes(saved?.theme || legacy) ? saved?.theme || legacy : 'clock'
   const hour = new Date().getHours(), dark = mode === 'dark' || mode === 'clock' && (hour < 6 || hour >= 18)
-  const grounds = {paper:['#f1eee8','#12110f'],graphite:['#fafafa','#0a0a0a'],stone:['#eeefec','#10120f'],ink:['#edf0f4','#0c1015']}
-  const base = Object.hasOwn(grounds, saved?.base) ? saved.base : 'paper'
+  const grounds = {kabut:['#e8eae4','#0e1110'],paper:['#f1eee8','#12110f'],graphite:['#fafafa','#0a0a0a'],stone:['#eeefec','#10120f'],ink:['#edf0f4','#0c1015']}
+  const base = Object.hasOwn(grounds, saved?.base) ? saved.base : 'kabut'
   const root = document.documentElement
   root.style.setProperty('--page-ground', grounds[base][dark ? 1 : 0])
   root.style.backgroundColor = 'var(--page-ground)'

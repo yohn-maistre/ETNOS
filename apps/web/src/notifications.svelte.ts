@@ -1,8 +1,8 @@
 /** Ephemeral feedback only. The activity inbox remains a durable, access-checked record. */
 import { toast } from '@yusufceng1z/ding-svelte'
 
-export const notificationPreferences = $state({ sound: true, volume: 0.35 })
-const storageKey = 'strata.ui.notifications'
+export const notificationPreferences = $state({ sound: false, volume: 0.35 })
+const storageKey = 'strata.ui.notifications.v2'
 
 export function configureNotifications() {
   toast.configure({

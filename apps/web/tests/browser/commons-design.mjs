@@ -32,7 +32,7 @@ try {
   await p.goto(origin,{waitUntil:'networkidle'})
   await p.getByText('Synthetic post: one shared conversation surface.').waitFor()
   assert.equal(await p.locator('.workspace-picker').count(),0)
-  assert.equal(await p.locator('html').getAttribute('data-font-pair'),'jakarta')
+  assert.equal(await p.locator('html').getAttribute('data-font-pair'),'geist')
   assert.equal(await p.locator('.news-section.compact .news-compact-thumbnail').count(),1)
   assert.equal(await p.locator('.news-section.compact .news-compact-fallback').count(),1)
   const gap=await p.evaluate(()=>document.querySelector('.cx-main').getBoundingClientRect().left-document.querySelector('.etnos-sidebar').getBoundingClientRect().right)

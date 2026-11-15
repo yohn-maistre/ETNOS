@@ -185,7 +185,7 @@ try {
   await page.reload({ waitUntil: 'networkidle' })
   assert.equal(
     await page.evaluate(() => document.documentElement.dataset.base),
-    'paper',
+    'kabut',
   )
   assert.equal(
     await page.evaluate(() => document.documentElement.dataset.texture),

@@ -19,7 +19,7 @@ try{
  await p.goto(origin+'/');await p.locator('.welcome-dialog').waitFor();
  const frames=await p.locator('.welcome-dialog').evaluate(async el=>{const out=[];await new Promise(resolve=>{const tick=()=>{out.push({width:el.getBoundingClientRect().width,progress:Number(el.style.getPropertyValue('--welcome-morph'))});if(el.dataset.arriving==='false')resolve();else requestAnimationFrame(tick)};tick()});return out})
  assert.ok(frames.some(f=>f.width>1100),'begins as a fullscreen surface');assert.ok(frames.some(f=>f.width>950&&f.width<1300),'physically morphs through intermediate sizes')
- await p.locator('.welcome-dialog[data-arriving="false"]').waitFor();assert.equal(await p.locator('html').getAttribute('data-base'),'paper');assert.match(await p.locator('.welcome-art figcaption').innerText(),/Danau Tigi/)
+ await p.locator('.welcome-dialog[data-arriving="false"]').waitFor();assert.equal(await p.locator('html').getAttribute('data-base'),'kabut');assert.match(await p.locator('.welcome-art figcaption').innerText(),/Danau Tigi/)
  await p.locator('.welcome-art img').evaluate(el=>el.decode());await p.screenshot({path:artifactDir+'/welcome-desktop-dark.png'})
  await p.keyboard.press('Tab');assert.equal(await p.evaluate(()=>!!document.activeElement?.closest('[role="dialog"]')),true)
  await p.getByRole('button',{name:'Jelajahi dulu',exact:true}).click();await p.locator('.welcome-dialog').waitFor({state:'detached'});await p.reload({waitUntil:'networkidle'});assert.equal(await p.locator('.welcome-dialog').count(),0)

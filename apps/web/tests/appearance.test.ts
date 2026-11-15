@@ -4,6 +4,11 @@ import { accentRoles, contrast } from '../src/appearance-color.ts'
 
 test('palette presets and custom seeds retain readable accent text and button labels in both themes', () => {
   const seeds = [
+    '#1f4e8c',
+    '#3d6a3f',
+    '#9a6b1f',
+    '#5b4b8a',
+    '#1e6a72',
     '#c5b0e2',
     '#aa8bd5',
     '#b7775c',
