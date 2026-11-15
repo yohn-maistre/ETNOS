@@ -5,8 +5,10 @@
   import LandscapePrint from './LandscapePrint.svelte'
   import { communityArtwork } from './site-branding'
   import { newsDate, type NewsItem } from './news.svelte'
+  import { placeNews, corePath } from './place-layers'
   let {
     contextId,
+    slug,
     title,
     places,
     posts,
@@ -14,6 +16,7 @@
     works,
   }: {
     contextId: string
+    slug: string
     title: string
     places: string[]
     posts: number
@@ -26,34 +29,16 @@
     pending = $state(true),
     failed = $state(false)
   $effect(() => {
-    const slugs = places.slice(0, 8),
+    const list = places,
       abort = new AbortController()
     items = []
     failed = false
-    pending = slugs.length > 0
-    if (!slugs.length) return
-    // One bounded public request per declared place; merged newest first.
-    Promise.allSettled(
-      slugs.map((slug) =>
-        fetch('/v1/news?limit=6&place=' + encodeURIComponent(slug), {
-          credentials: 'omit',
-          signal: abort.signal,
-        }).then((r) => (r.ok ? (r.json() as Promise<{ items: NewsItem[] }>) : Promise.reject())),
-      ),
-    ).then((results) => {
+    pending = list.length > 0
+    if (!list.length) return
+    placeNews(list, abort.signal).then((result) => {
       if (abort.signal.aborted) return
-      const seen = new Set<string>(),
-        merged: NewsItem[] = []
-      for (const result of results)
-        if (result.status === 'fulfilled')
-          for (const item of result.value.items ?? [])
-            if (!seen.has(item.id)) {
-              seen.add(item.id)
-              merged.push(item)
-            }
-      merged.sort((a, b) => Date.parse(b.publishedAt ?? '') - Date.parse(a.publishedAt ?? ''))
-      items = merged.slice(0, 6)
-      failed = results.every((r) => r.status === 'rejected')
+      items = result.items
+      failed = result.failed
       pending = false
     })
     return () => abort.abort()
@@ -70,12 +55,13 @@
 <div class="place-cover">
   {#if artwork}<LandscapePrint {artwork} decorative />{/if}
 </div>
+<a class="place-strata-open" href={corePath(slug)} aria-label={'Buka inti lapisan ' + title}>
 <svg
   class="place-strata"
   viewBox="0 0 680 168"
   preserveAspectRatio="none"
-  role="img"
-  aria-label={'Penampang ' + title + ': ' + (pending ? '' : 'hari ini ' + today + '; ') + works + ' kerja publik berjalan; ' + pages + ' halaman ditinjau; arsip dan cerita lama belum terindeks.'}
+  aria-hidden="true"
+  focusable="false"
 >
   <defs>
     <pattern id={'ps-dense-' + uid} width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" /></pattern>
@@ -91,7 +77,9 @@
   <path class="ps-line" d="M0 73 C90 66 190 78 300 71 C430 62 540 78 680 70" />
   <path class="ps-line dashed" d="M0 116 C100 108 200 122 320 113 C420 104 560 118 680 112" />
 </svg>
-<ul class="place-strata-key">
+<span class="place-strata-hint" aria-hidden="true">Buka inti lapisan</span>
+</a>
+<ul class="place-strata-key" aria-label={'Penampang ' + title}>
   <li><span>Hari ini</span>{pending ? 'memuat kabar' : today}</li>
   <li><span>Sedang dikerjakan</span>{works ? works + ' kerja publik' : 'belum ada kerja publik'}</li>
   <li><span>Sudah ditinjau</span>{pages ? pages + ' halaman' : 'belum ada halaman'}</li>
@@ -135,6 +123,10 @@
   .place-cover :global(.landscape-print) { width: 100%; height: 190%; object-fit: cover; object-position: 50% 62%; display: block; }
   .place-strata { display: block; width: 100%; height: clamp(96px, 16vw, 150px); color: var(--brand); fill: currentColor; }
   .ps-paper { fill: #f4f0e5; }
+  .place-strata-open { position: relative; display: block; color: var(--brand); text-decoration: none; }
+  .place-strata-open:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+  .place-strata-hint { position: absolute; right: 12px; bottom: 10px; min-height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; background: #f4f0e5; color: #1a211e; font-size: 13px; font-weight: 600; box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 40%, transparent); }
+  .place-strata-open:hover .place-strata-hint { box-shadow: 0 0 0 2px var(--brand); }
   .ps-settled { fill: color-mix(in srgb, var(--brand) 12%, #f4f0e5); }
   .ps-line { fill: none; stroke: currentColor; stroke-width: 1; vector-effect: non-scaling-stroke; }
   .ps-line.dashed { stroke-dasharray: 4 4; }

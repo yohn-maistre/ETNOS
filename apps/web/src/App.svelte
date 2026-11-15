@@ -1071,6 +1071,7 @@
       onContextResolved={(kind) => {
         contextHeading = { path, kind }
       }}
+      onCompose={() => open('compose')}
     />
   {:else if parts[0] === 'wiki'}
     {#if loading}<ContentSkeleton

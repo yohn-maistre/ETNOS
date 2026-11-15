@@ -5,6 +5,15 @@ import {canonical} from './transport.ts'
 type Page={id:string;community_id:string;title:string;revision_id:string|null;created:number;draft:number}
 type Proposal={id:string;page_id:string;author_id:string;base_revision_id:string|null;text:string;citations:string;language:string;perspective:string;digest:string;state:'pending'|'accepted'|'rejected';created:number;editorial_mandate_id:string|null}
 type Revision={id:string;page_id:string;parent_id:string|null;proposal_id:string;author_id:string;reviewer_id:string;text:string;citations:string;language:string;perspective:string;digest:string;created:number}
+export type TrailStep={kind:'sources'|'note'|'announced'|'earlier'|'proposed'|'page'|'work';at:number|null;label:string;actor?:{id:string;name:string;kind:string};href?:string;detail?:string;state?:string;items?:{href:string;label:string;news:boolean}[];contexts?:{slug:string;title:string}[]}
+/** A citation that names a news-desk story: this node's own /news/:id link or the desk's public story link. */
+export function newsStoryId(url:string,base:string){
+  try{const u=new URL(url),own=new URL(base)
+    if(u.origin===own.origin){const m=u.pathname.match(/^\/news\/(\d{1,12})\/?$/);return m?m[1]:null}
+    if(u.hostname==='westpapua.watch'&&/^\/story\/?$/.test(u.pathname)){const id=u.searchParams.get('id')??'';return /^\d{1,12}$/.test(id)?id:null}
+  }catch{}
+  return null
+}
 function text(value:string,max:number) {if(typeof value!=='string'||!value.trim()||value.length>max)throw new Fault(400,'Invalid input');return value.trim()}
 function citations(values:string[]) {
   if(!Array.isArray(values)||values.length>20) throw new Fault(400,'At most 20 public citations')
@@ -104,10 +113,10 @@ export class Wiki {
   /** Public discovery is built only from accepted revisions. Never include a
    * draft snippet, private room, proposal identity or inferred popularity. */
   discover(){
-    return this.store.all<{id:string;community_id:string;title:string;revision_id:string;text:string;created:number;language:string;citations:string}>("SELECT w.id,w.community_id,w.title,w.revision_id,r.text,r.created,r.language,r.citations FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 ORDER BY r.created DESC,w.id DESC LIMIT 100").map(row=>{
-      const {text,created,citations,...page}=row
+    return this.store.all<{id:string;community_id:string;title:string;revision_id:string;text:string;created:number;language:string;citations:string;author_id:string;reviewer_id:string}>("SELECT w.id,w.community_id,w.title,w.revision_id,r.text,r.created,r.language,r.citations,r.author_id,r.reviewer_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 ORDER BY r.created DESC,w.id DESC LIMIT 100").map(row=>{
+      const {text,created,citations,author_id,reviewer_id,...page}=row,cited=JSON.parse(citations) as string[]
       const excerpt=text.replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/^\s{0,3}#{1,6}\s+.*$/gm,' ').replace(/[*_`~>|]/g,'').replace(/\s+/g,' ').trim().slice(0,360)
-      return {...page,excerpt,updated:created,citationCount:(JSON.parse(citations) as string[]).length,sectionCount:(text.match(/^#{1,4}\s+/gm)??[]).length}
+      return {...page,excerpt,updated:created,citationCount:cited.length,newsCitations:cited.filter(url=>newsStoryId(url,this.store.base)).length,sectionCount:(text.match(/^#{1,4}\s+/gm)??[]).length,authorKind:this.store.actor(author_id).kind,reviewer:this.attribution(reviewer_id)}
     })
   }
   all(actorId?:string,communityId?:string){return this.store.all<Page>("SELECT w.* FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND (? IS NULL OR w.community_id=?) AND (w.draft=0 OR w.revision_id IS NOT NULL OR (EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=w.community_id AND m.actor_id=? AND m.active=1) AND (EXISTS(SELECT 1 FROM wiki_proposals p WHERE p.page_id=w.id AND p.author_id=?) OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=w.community_id AND m.actor_id=? AND m.active=1 AND m.role IN ('owner','moderator') AND (NOT EXISTS(SELECT 1 FROM wiki_policies wp WHERE wp.community_id=w.community_id AND wp.reviewer_group_id IS NOT NULL) OR EXISTS(SELECT 1 FROM wiki_policies wp JOIN group_members gm ON gm.group_id=wp.reviewer_group_id WHERE wp.community_id=w.community_id AND gm.actor_id=m.actor_id AND gm.active=1)))))) ORDER BY w.created DESC,w.id DESC LIMIT 100",communityId??null,communityId??null,actorId??null,actorId??null,actorId??null)}
@@ -165,6 +174,45 @@ export class Wiki {
       s.audit(actorId,'wiki.accept',page.id)
       return {state:'accepted' as const,revisionId:id}
     })
+  }
+  /** Where an accepted page came from and where it leads, built only from
+   * public, accepted records: the current revision's citations, a promoted
+   * working note and its public announcement, accepted revision history and
+   * open public work in the page's public contexts. Drafts, proposals,
+   * mandates, resident jobs and private rooms never contribute. */
+  trail(pageId:string){
+    const s=this.store,page=this.page(pageId)
+    if(page.draft||!page.revision_id)throw new Fault(404,'Not found')
+    const current=s.get<Revision>('SELECT * FROM wiki_revisions WHERE id=? AND page_id=?',page.revision_id,page.id)
+    if(!current)throw new Fault(404,'Not found')
+    const steps:TrailStep[]=[]
+    const sources=(JSON.parse(current.citations) as string[]).map(url=>{const story=newsStoryId(url,s.base);return {href:story?'/news/'+story:url,label:story?'Kabar':new URL(url).hostname.replace(/^www\./,''),news:!!story}})
+    if(sources.length)steps.push({kind:'sources',at:null,label:sources.length+' sumber dikutip',items:sources})
+    const note=s.get<{id:string;title:string;author_id:string;created:number;kind:string}>("SELECT id,title,author_id,created,kind FROM knowledge_notes WHERE wiki_page_id=? AND community_id=? AND state='promoted' ORDER BY created LIMIT 1",page.id,page.community_id)
+    if(note){
+      steps.push({kind:'note',at:note.created,label:note.title,actor:this.attribution(note.author_id),href:'/wiki/notes/'+note.id})
+      const told=s.get<{id:string;created:number}>("SELECT p.id,p.created FROM knowledge_announcements a JOIN posts p ON p.id=a.post_id JOIN communities c ON c.id=p.community_id WHERE a.note_id=? AND p.hidden=0 AND p.deleted=0 AND c.visibility='public' ORDER BY a.created LIMIT 1",note.id)
+      if(told)steps.push({kind:'announced',at:told.created,label:'Diumumkan di percakapan',href:'/square/'+told.id})
+    }
+    const revisions=s.all<{author_id:string;reviewer_id:string;created:number}>('SELECT author_id,reviewer_id,created FROM wiki_revisions WHERE page_id=? ORDER BY created,id LIMIT 100',page.id)
+    if(revisions.length>1)steps.push({kind:'earlier',at:revisions[0].created,label:(revisions.length-1)+' revisi diterima sebelumnya',actor:this.attribution(revisions[0].author_id)})
+    steps.push({kind:'proposed',at:null,label:'Ditulis',actor:this.attribution(current.author_id)})
+    const contexts=s.all<{id:string;slug:string;title:string}>('SELECT c.id,c.slug,c.title FROM record_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.record_kind=? AND l.record_id=? AND c.active=1 ORDER BY c.title LIMIT 10','wiki',page.id)
+    steps.push({kind:'page',at:current.created,label:page.title,actor:this.attribution(current.reviewer_id),href:'/wiki/'+page.id,contexts:contexts.map(({slug,title})=>({slug,title}))})
+    if(contexts.length){
+      const marks=contexts.map(()=>'?').join(',')
+      for(const w of s.all<{id:string;title:string;state:string;updated:number;sponsor:string}>(`SELECT w.id,w.title,w.state,w.updated,g.title sponsor FROM public_work w JOIN groups g ON g.id=w.group_id JOIN communities c ON c.id=w.community_id WHERE g.visibility='public' AND c.visibility='public' AND w.state IN ('proposed','adopted','active','blocked') AND EXISTS(SELECT 1 FROM record_contexts l WHERE l.record_kind='work' AND l.record_id=w.id AND l.context_id IN (${marks})) ORDER BY w.updated DESC,w.id LIMIT 3`,...contexts.map(c=>c.id)))
+        steps.push({kind:'work',at:w.updated,label:w.title,detail:w.sponsor,state:w.state,href:'/work/'+w.id})
+    }
+    return {pageId:page.id,title:page.title,steps}
+  }
+  /** Deterministic public gaps: active contexts without an accepted public
+   * page, and accepted pages whose current revision cites nothing. Pending
+   * drafts and private rooms neither fill nor reveal a gap. */
+  gaps(){
+    const contexts=this.store.all<{id:string;slug:string;title:string;kind:string}>(`SELECT x.id,x.slug,x.title,x.kind FROM contexts x WHERE x.active=1 AND NOT EXISTS(SELECT 1 FROM record_contexts l JOIN wiki_pages w ON w.id=l.record_id JOIN communities c ON c.id=w.community_id WHERE l.record_kind='wiki' AND l.context_id=x.id AND c.visibility='public' AND w.draft=0 AND w.revision_id IS NOT NULL) ORDER BY x.kind,x.title LIMIT 50`)
+    const uncited=this.store.all<{id:string;title:string;community_id:string}>(`SELECT w.id,w.title,w.community_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 AND r.citations='[]' ORDER BY r.created DESC,w.id LIMIT 20`)
+    return {contexts,uncited}
   }
   history(pageId:string) {
     this.page(pageId)
