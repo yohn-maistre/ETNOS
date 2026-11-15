@@ -4,7 +4,8 @@ import {randomUUID} from 'node:crypto'
 import {Strata} from '../src/store.ts'
 import {AgentAccess} from '../src/agent-access.ts'
 import {Resident} from '../src/resident.ts'
-import {ResidentRouting} from '../src/resident-routing.ts'
+import {ResidentRouting,unavailableReason} from '../src/resident-routing.ts'
+import {Fault} from '../src/core.ts'
 function fixture(){let now=Date.now();const s=new Strata(':memory:','https://commons.example.org',()=>now),owner=s.provision('did:web:routing-owner.example','Synthetic operator'),other=s.provision('did:web:routing-member.example','Synthetic neighbor'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),r=new Resident(s,access),routes=new ResidentRouting(s,access),home=s.createCommunity(owner.actor.id,'Public home','Synthetic','public',true,'open'),target=s.createCommunity(owner.actor.id,'Public destination','Synthetic','public',true,'open'),hidden=s.createCommunity(owner.actor.id,'Protected room','Synthetic','hidden-private',true);s.join(other.actor.id,target.id)
  const configure=(communityId:string,name:string)=>{const a=access.enroll(owner.actor.id,{communityId,name,role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);const mandate=s.mandate(owner.actor.id,a.agent_id,communityId,'Public conversation',now+86400000);r.configure(owner.actor.id,{communityId,agentId:a.agent_id,postingMandateId:mandate,enabled:true,mentionsEnabled:true,dailyLimit:5,requestKey:randomUUID()});return a.agent_id}
  const site=configure(home.id,'Aksara ETNOS'),local=configure(target.id,'Aksara community')
@@ -49,5 +50,27 @@ test('explicit destination admission and grant are atomic, body-bound and remain
   s.db.exec('DROP TRIGGER synthetic_destination_failure');const result=routes.setDestination(owner.actor.id,body);assert.deepEqual(routes.setDestination(owner.actor.id,body),result);assert.equal(s.all('SELECT id FROM mandates').length,before+1);assert.equal(s.membership(site,target.id)!.active,1)
   assert.throws(()=>routes.setDestination(owner.actor.id,{...body,hourlyLimit:2}),/another change/i)
   const info=routes.participation(owner.actor.id,target.id);assert.equal(info.destination!.hourlyLimit,3);assert.equal(info.destination!.expires,s.clock()+86400000);assert.doesNotMatch(JSON.stringify(info),/posting_mandate|ticket|coverage/);assert.throws(()=>routes.participation(other.actor.id,target.id),/steward/)
+ }finally{f.s.close()}
+})
+test('unavailable reasons are classified centrally and shown only to the operator or node steward',()=>{
+ const f=fixture();try{const {s,owner,other,routes,r,target,local,site}=f
+  assert.equal(unavailableReason(new Fault(409,'Conversation requests are not enabled')),'requests-off')
+  assert.equal(unavailableReason(new Fault(403,'Current agent mandate required')),'no-posting-mandate')
+  assert.equal(unavailableReason(new Fault(429,'Agent budget exceeded')),'budget')
+  assert.equal(unavailableReason(new Fault(403,'Sitewide binding changed')),'binding-changed')
+  assert.equal(unavailableReason(new Fault(403,'Destination has not enabled this steward')),'not-admitted-here')
+  assert.equal(unavailableReason(new Error('x')),'other')
+  const pick=(viewer:string)=>routes.choices(viewer,target.id).find(c=>c.actor.id===local)!
+  assert.equal(pick(owner.actor.id).available,true);assert.equal(pick(owner.actor.id).reason,null)
+  // sitewide steward not enabled at this destination
+  routes.setGlobal(owner.actor.id,f.globalBody)
+  assert.equal(routes.choices(owner.actor.id,target.id).find(c=>c.actor.id===site)!.reason,'not-admitted-here');assert.equal(routes.choices(other.actor.id,target.id).find(c=>c.actor.id===site)!.reason,null)
+  const cfg=routes.config(target.id)
+  r.configure(owner.actor.id,{communityId:target.id,agentId:local,postingMandateId:cfg.posting_mandate_id,enabled:true,mentionsEnabled:false,dailyLimit:5,revision:cfg.revision,requestKey:randomUUID()})
+  assert.equal(pick(owner.actor.id).reason,'requests-off');assert.equal(pick(other.actor.id).reason,null);assert.equal(pick(other.actor.id).available,false)
+  r.configure(owner.actor.id,{communityId:target.id,agentId:local,postingMandateId:cfg.posting_mandate_id,enabled:true,mentionsEnabled:true,dailyLimit:5,revision:cfg.revision+1,requestKey:randomUUID()})
+  f.advance()
+  assert.equal(pick(owner.actor.id).reason,'no-posting-mandate');assert.equal(pick(other.actor.id).reason,null)
+  assert.doesNotMatch(JSON.stringify(pick(other.actor.id)),/mandate|budget/i)
  }finally{f.s.close()}
 })

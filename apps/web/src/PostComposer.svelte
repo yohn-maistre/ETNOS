@@ -119,6 +119,7 @@
   const destination = $derived(communities.find((c) => c.id === communityId))
   let mentionChoices=$state<ResidentChoice[]>([]),mentionLoading=$state(false),mentionError=$state(''),selectedMention=$state<(ResidentChoice&{communityId:string})|null>(null)
   const mentionEligible=$derived(destination?.visibility==='public'&&destination?.publication==='local'&&actor.kind==='human'&&kind!=='offering'&&!warning.trim())
+  const strayAksara=$derived(mentionEligible&&!selectedMention&&/@aksara/i.test(text))
   const textLimit=$derived(selectedMention?4000:destination?.publication==='atproto'?6000:20000)
   $effect(()=>{
     const id=communityId,enabled=mentionEligible,controller=new AbortController()
@@ -332,6 +333,7 @@
       </div>
       {#if preview}<div class="composer-preview post-markdown">{#if format}{@html markdown(text)}{:else}<PostText {text}/>{/if}</div>{/if}
       {#if text.length>textLimit}<p role="alert" class="document-editor-error">Tulisan melewati batas {textLimit.toLocaleString('id')} karakter.</p>{/if}
+      {#if strayAksara}<p class="composer-aksara-hint" role="status">Ini akan jadi posting biasa. Pilih Aksara dari daftar untuk meminta jawaban.</p>{/if}
       {#if selectedMention}<div class="composer-aksara-request" role="group" aria-label="Permintaan balasan Aksara"><Bot size={16}/><span><strong>{selectedMention.actor.name}</strong><small>{selectedMention.scope==='sitewide'?'Aksara ETNOS':'Aksara komunitas'} akan diminta membalas di sini · publik</small></span><button type="button" disabled={busy||!!pending} aria-label="Kirim tanpa meminta balasan Aksara" title="Kirim tanpa meminta balasan Aksara" onclick={()=>selectedMention=null}><X size={16}/></button></div>{/if}
       {#if showUrl}<Input
           aria-label="Tautan posting"

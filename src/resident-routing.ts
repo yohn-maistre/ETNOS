@@ -5,6 +5,18 @@ import type {ResidentConfig} from './resident.ts'
 
 export type SitewideResident={id:number;agent_id:string;home_community_id:string;operator_id:string;enabled:number;coverage:string;revision:number;updated:number}
 export type ResidentDestination={agent_id:string;community_id:string;posting_mandate_id:string;enabled:number;revision:number;updated:number}
+export type ResidentUnavailableReason='requests-off'|'not-admitted-here'|'no-posting-mandate'|'budget'|'binding-changed'|'other'
+/** Single place that classifies route failures; reasons never carry ids, counts or other private detail. */
+export function unavailableReason(e:unknown):ResidentUnavailableReason{
+ if(!(e instanceof Fault))return 'other'
+ if(e.status===429)return 'budget'
+ if(e.status===409&&e.message==='Conversation requests are not enabled')return 'requests-off'
+ if(e.status===403&&e.message==='Current agent mandate required')return 'no-posting-mandate'
+ if(e.status===403&&e.message==='Sitewide binding changed')return 'binding-changed'
+ if(e.status===403&&e.message==='Destination has not enabled this steward')return 'not-admitted-here'
+ if(e.status===404)return 'not-admitted-here'
+ return 'other'
+}
 export type ResidentRoute={config:ResidentConfig;communityId:string;postingMandateId:string;scope:'community'|'sitewide';globalRevision:number;routeRevision:number;coverage:string[];choiceKey:string}
 /** Explicit participation over existing roles, admission and mandates; never a superuser flag. */
 export class ResidentRouting {
@@ -99,13 +111,15 @@ export class ResidentRouting {
  choices(actorId:string,communityId:string){
   const s=this.store;this.access.assertHumanCurrent(actorId)
   const room=s.community(communityId);if(room.visibility!=='public'||room.publication!=='local')throw new Fault(404,'Not found');s.requireMember(actorId,communityId)
+  let isNodeSteward=false;try{this.access.groups.nodeSteward(actorId);isNodeSteward=true}catch{/* ordinary viewer */}
   const local=s.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId),global=this.global(),ids=[...new Set([local?.agent_id,global?.enabled?global.agent_id:undefined].filter((id):id is string=>!!id))]
   return ids.flatMap(id=>{
    const r=s.get<{community_id:string;family:string}>('SELECT community_id,family FROM agent_registrations WHERE agent_id=?',id),home=r?s.get<{visibility:string}>('SELECT visibility FROM communities WHERE id=?',r.community_id):null
    if(!r||r.family!=='aksara'||home?.visibility!=='public')return[]
    const a=s.actor(id),operator=a.operator_id?s.actor(a.operator_id):null;if(a.kind!=='agent'||!operator)return[]
-   let route:ResidentRoute|undefined;try{route=this.resolve(id,communityId)}catch{/* Public identity may be visible while its permission is unavailable. */}
-   return [{actor:{id:a.id,name:a.name},operator:{id:operator.id,name:operator.name},scope:route?.scope??(global?.enabled&&global.agent_id===id?'sitewide':'community'),available:!!route,choiceKey:route?.choiceKey??null,description:route?'Pertanyaan dan jawaban terlihat di percakapan ini.':'Belum aktif untuk percakapan ini.'}]
+   let route:ResidentRoute|undefined,reason:ResidentUnavailableReason|null=null;try{route=this.resolve(id,communityId)}catch(e){/* Public identity may be visible while its permission is unavailable. */reason=unavailableReason(e)}
+   const mayDiagnose=a.operator_id===actorId||isNodeSteward
+   return [{actor:{id:a.id,name:a.name},operator:{id:operator.id,name:operator.name},scope:route?.scope??(global?.enabled&&global.agent_id===id?'sitewide':'community'),available:!!route,reason:route||!mayDiagnose?null:reason,choiceKey:route?.choiceKey??null,description:route?'Pertanyaan dan jawaban terlihat di percakapan ini.':'Belum aktif untuk percakapan ini.'}]
   }).sort((a,b)=>Number(b.scope==='community')-Number(a.scope==='community')||a.actor.name.localeCompare(b.actor.name))
  }
 }

@@ -25,11 +25,13 @@ export type Community = {
   publication: 'local' | 'atproto'
   automation: number
 }
+export type ResidentUnavailableReason = 'requests-off'|'not-admitted-here'|'no-posting-mandate'|'budget'|'binding-changed'|'other'
 export type ResidentChoice = {
   actor: {id:string;name:string}
   operator: {id:string;name:string}
   scope: 'community'|'sitewide'
   available: boolean
+  reason?: ResidentUnavailableReason|null
   choiceKey: string|null
   description: string
 }

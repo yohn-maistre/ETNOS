@@ -107,6 +107,9 @@
   let groups = $state<Group[]>([]),
     contexts = $state<Context[]>([]),
     newsPlacesDraft = $state(''),
+    placeOptions = $state<{ slug: string; name: string }[]>([]),
+    placeFilter = $state(''),
+    placeOptionsLoaded = false,
     works = $state<Work[]>([]),
     roles = $state<{ group_id: string; role: string }[]>([])
   let group = $state<Group | null>(null),
@@ -376,6 +379,32 @@
         memberId = ''
       }
     })
+  }
+
+  const parsePlaces = (v: string) =>
+    v.split(',').map((x) => x.trim().toLowerCase().replace(/\s+/g, '-')).filter((x) => /^[-a-z0-9]{1,100}$/.test(x))
+  const draftSlugs = $derived(parsePlaces(newsPlacesDraft))
+  const extraSlugs = $derived(draftSlugs.filter((x) => !placeOptions.some((p) => p.slug === x)))
+  const visiblePlaces = $derived.by(() => {
+    const q = placeFilter.trim().toLowerCase()
+    return q ? placeOptions.filter((p) => p.name.toLowerCase().includes(q) || p.slug.includes(q)) : placeOptions
+  })
+  function togglePlace(slug: string, on: boolean) {
+    const rest = draftSlugs.filter((x) => x !== slug)
+    newsPlacesDraft = (on ? [...rest, slug] : rest).join(', ')
+  }
+  function setExtraPlaces(v: string) {
+    newsPlacesDraft = [...draftSlugs.filter((x) => placeOptions.some((p) => p.slug === x)), ...parsePlaces(v)].join(', ')
+  }
+  async function loadPlaceOptions() {
+    if (placeOptionsLoaded) return
+    placeOptionsLoaded = true
+    try {
+      const r = await fetch('/v1/news', { credentials: 'omit' })
+      if (r.ok) placeOptions = ((await r.json()) as { placeOptions?: { slug: string; name: string }[] }).placeOptions ?? []
+    } catch {
+      placeOptionsLoaded = false
+    }
   }
 </script>
 
@@ -709,7 +738,7 @@
       </Badge>{/if}
     <h1>{context.title}</h1>
     <p>{context.description}</p>
-    {#if auth.steward}<details class="place-news-setup">
+    {#if auth.steward}<details class="place-news-setup" ontoggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) void loadPlaceOptions() }}>
         <summary>Atur tempat kabar</summary>
         <form
           onsubmit={async (e) => {
@@ -734,13 +763,25 @@
             }
           }}
         >
-          <Label for="place-news-slugs">Nama tempat di meja kabar, dipisah koma</Label>
-          <Input
-            id="place-news-slugs"
-            bind:value={newsPlacesDraft}
-            placeholder="nabire, paniai, deiyai"
-            autocomplete="off"
-          />
+          {#if placeOptions.length}
+            <Label for="place-news-filter">Pilih tempat di meja kabar</Label>
+            <Input id="place-news-filter" type="search" bind:value={placeFilter} placeholder="Cari tempat" autocomplete="off" />
+            <div class="place-news-list" role="group" aria-label="Tempat di meja kabar">
+              {#each visiblePlaces as p (p.slug)}
+                <label class="place-news-option">
+                  <input type="checkbox" checked={draftSlugs.includes(p.slug)} onchange={(e) => togglePlace(p.slug, e.currentTarget.checked)} />
+                  <span>{p.name}</span>
+                </label>
+              {:else}
+                <p class="cx-hint">Tidak ada tempat yang cocok.</p>
+              {/each}
+            </div>
+            <Label for="place-news-slugs">Tempat lain (nama pendek, dipisah koma)</Label>
+            <Input id="place-news-slugs" value={extraSlugs.join(', ')} onchange={(e) => setExtraPlaces(e.currentTarget.value)} placeholder="nabire, paniai" autocomplete="off" />
+          {:else}
+            <Label for="place-news-slugs">Nama tempat di meja kabar, dipisah koma</Label>
+            <Input id="place-news-slugs" bind:value={newsPlacesDraft} placeholder="nabire, paniai, deiyai" autocomplete="off" />
+          {/if}
           <p class="cx-hint">Kabar dari tempat-tempat ini tampil di halaman {context.title}. Kosongkan untuk memakai nama halaman ini saja.</p>
           <Button type="submit" size="sm">Simpan</Button>
         </form>
