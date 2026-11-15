@@ -384,6 +384,10 @@ CREATE TABLE resident_destinations(agent_id TEXT NOT NULL REFERENCES actors(id),
 CREATE TABLE resident_job_inputs(job_id TEXT PRIMARY KEY REFERENCES resident_jobs(id),config_community_id TEXT NOT NULL REFERENCES communities(id),target_post_id TEXT NOT NULL UNIQUE REFERENCES posts(id),target_revision INTEGER NOT NULL,target_digest TEXT NOT NULL,snapshot TEXT NOT NULL,posting_mandate_id TEXT NOT NULL REFERENCES mandates(id),global_revision INTEGER NOT NULL,route_revision INTEGER NOT NULL,coverage TEXT NOT NULL,created INTEGER NOT NULL);
 CREATE INDEX resident_request_budget ON resident_jobs(requester_id,created);
 CREATE INDEX resident_actor_budget ON resident_jobs(agent_id,created);
+`, `
+CREATE TABLE resident_tool_calls(id TEXT PRIMARY KEY,job_id TEXT NOT NULL REFERENCES resident_jobs(id),generation INTEGER NOT NULL,tool TEXT NOT NULL CHECK(tool IN ('search_reviewed_wiki','web_search','web_fetch')),request_key TEXT NOT NULL,state TEXT NOT NULL CHECK(state IN ('reserved','observed')),created INTEGER NOT NULL,UNIQUE(job_id,generation,request_key));
+CREATE INDEX resident_tool_budget ON resident_tool_calls(created,tool);
+CREATE TABLE resident_job_citations(job_id TEXT NOT NULL REFERENCES resident_jobs(id),generation INTEGER NOT NULL,url TEXT NOT NULL,origin TEXT NOT NULL CHECK(origin IN ('wiki','web')),title TEXT NOT NULL,call_id TEXT NOT NULL REFERENCES resident_tool_calls(id),created INTEGER NOT NULL,PRIMARY KEY(job_id,generation,url));
 `]
 
 export const schemaVersion=migrations.length

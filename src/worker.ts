@@ -55,11 +55,9 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
     return update
   }
   async request(request: Request): Promise<Response> { const response=await this.handle(request);await this.arm();return response }
-  async residentAuthority(work:ResidentWork,operation:string,requestKey?:string){
+  async residentAuthority(work:ResidentWork,operation:string,input:Record<string,unknown>={}){
     if(!this.resident)throw new Fault(503,'Resident authority is unavailable')
-    if(operation==='context')return this.resident.runtimeContext(work)
-    if(operation==='inference')return this.resident.authorizeInference(work,requestKey??'')
-    this.resident.validateRuntime(work);return {valid:true}
+    return this.resident.authority(operation,work,input)
   }
   async alarm(){
     // Persist a recovery wake before network work; an exception cannot strand jobs.
@@ -73,9 +71,11 @@ export class ResidentAuthority extends WorkerEntrypoint<Cloudflare.Env>{
  async fetch(request:Request){
   try{
    const path=new URL(request.url).pathname
-   if(request.method!=='POST'||!['/work','/context','/inference'].includes(path))return json(404,{error:'Not found'})
+   if(request.method!=='POST'||!['/work','/context','/inference','/wiki-search','/web-call','/web-read'].includes(path))return json(404,{error:'Not found'})
    const input=await body(request,8192),work=parseResidentWork(input.work)
-   return json(200,await this.env.STRATA.getByName(this.env.STRATA_NODE).residentAuthority(work,path.slice(1),typeof input.requestKey==='string'?input.requestKey:undefined))
+   // Only these bounded fields cross the binding; the work capability is re-validated by the node.
+   const fields={requestKey:input.requestKey,query:input.query,tool:input.tool,page:input.page}
+   return json(200,await this.env.STRATA.getByName(this.env.STRATA_NODE).residentAuthority(work,path.slice(1),fields))
   }catch(error){return json(error instanceof Fault?error.status:503,{error:error instanceof Fault?error.message:'Resident authority unavailable'})}
  }
 }
