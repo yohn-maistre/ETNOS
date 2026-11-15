@@ -77,3 +77,17 @@ test('a revoked mandate before the claim publishes nothing and a scheduler sweep
   await assert.rejects(f.r.run(job));await f.r.tick();assert.equal(f.r.job(f.owner.actor.id,job).state,'abstained');assert.equal(f.replies().length,0)
  }finally{f.s.close()}
 })
+
+test('only the operator learns why a question got no reply, as a fixed code',async()=>{
+ const provider:ResidentProvider={label:'synthetic:gateway-down',researchTools:true,draft:async()=>{throw new ResidentFailure('gateway-unconfigured')}}
+ const f=fixture(provider);try{
+  const {post,job}=f.ask()
+  await f.r.run(job).catch(()=>{})
+  const forOperator=f.r.questions.statuses(post.id,f.owner.actor.id),forMember=f.r.questions.statuses(post.id,f.person.actor.id),forVisitor=f.r.questions.statuses(post.id)
+  assert.equal(forOperator[0].state,'unavailable')
+  assert.equal(forOperator[0].reason,'gateway-unconfigured')
+  assert.equal('reason' in forMember[0],false)
+  assert.equal('reason' in forVisitor[0],false)
+  assert.equal(JSON.stringify(forOperator).includes('resident:'),false)
+ }finally{f.s.close()}
+})

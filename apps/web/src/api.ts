@@ -39,6 +39,8 @@ export type ResidentRequest = {
   postId:string
   agentId:string
   state:'queued'|'running'|'answered'|'cancelled'|'unavailable'
+  /** Operator only: why no reply came. */
+  reason?:string|null
   replyId:string|null
 }
 export type MediaAttachment = {

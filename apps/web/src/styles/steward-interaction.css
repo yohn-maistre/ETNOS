@@ -58,3 +58,4 @@
 .place-news-option { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; cursor: pointer; }
 .place-news-option input { width: 20px; height: 20px; flex-shrink: 0; }
 .place-news-option:hover { background: var(--secondary); }
+.resident-reason { display: block; flex-basis: 100%; margin-top: 4px; font-size: 12px; color: var(--muted-foreground); }

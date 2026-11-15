@@ -4,6 +4,7 @@ import {hash} from './commons.ts'
 import {ResidentRouting,type ResidentRoute} from './resident-routing.ts'
 import type {ResidentJob} from './resident.ts'
 import type {ResidentQuestion} from './resident-contract.ts'
+import {residentFailureCode} from './resident-failure.ts'
 export type ResidentQuestionRecord={job_id:string;config_community_id:string;target_post_id:string;target_revision:number;target_digest:string;snapshot:string;posting_mandate_id:string;global_revision:number;route_revision:number;coverage:string;created:number}
 /** Public, explicitly addressed questions. Protected rooms and execution logs never enter this projection. */
 export class ResidentQuestions {
@@ -43,14 +44,17 @@ export class ResidentQuestions {
  statuses(postId:string,actorId?:string){
   const s=this.store,post=s.getPost(actorId,postId),room=s.community(post.community_id)
   if(room.visibility!=='public'||room.publication!=='local')throw new Fault(404,'Not found')
-  const rows=s.all<{job_id:string;target_post_id:string;agent_id:string;state:string;result_id:string|null;result_kind:string|null}>("SELECT i.job_id,i.target_post_id,j.agent_id,j.state,j.result_id,j.result_kind FROM resident_job_inputs i JOIN resident_jobs j ON j.id=i.job_id JOIN posts p ON p.id=i.target_post_id WHERE p.root_id=? AND p.community_id=? AND p.hidden=0 AND p.deleted=0 ORDER BY j.created DESC,j.id DESC LIMIT 20",post.rootId,room.id)
+  const rows=s.all<{job_id:string;target_post_id:string;agent_id:string;state:string;result_id:string|null;result_kind:string|null;operator_id:string;error:string|null}>("SELECT i.job_id,i.target_post_id,j.agent_id,j.state,j.result_id,j.result_kind,j.operator_id,j.error FROM resident_job_inputs i JOIN resident_jobs j ON j.id=i.job_id JOIN posts p ON p.id=i.target_post_id WHERE p.root_id=? AND p.community_id=? AND p.hidden=0 AND p.deleted=0 ORDER BY j.created DESC,j.id DESC LIMIT 20",post.rootId,room.id)
   return rows.map(row=>{
    let replyId:string|null=null
    // An honest abstention note is a real reply; Studio still sees state 'abstained'.
    const note=row.state==='abstained'&&row.result_kind==='abstention-reply'
    if((row.state==='succeeded'&&row.result_kind==='post'||note)&&row.result_id){try{const reply=s.getPost(actorId,row.result_id);if(!reply.deleted&&reply.community_id===room.id&&reply.parent_id===row.target_post_id)replyId=reply.id}catch{/* Never reveal a hidden/deleted answer identifier. */}}
    const state=row.state==='succeeded'||note?(replyId?'answered':'unavailable'):['queued','running','cancelled'].includes(row.state)?row.state:'unavailable'
-   return {postId:row.target_post_id,agentId:row.agent_id,state,replyId}
+   // Only the agent's operator learns why a request produced no reply: a
+   // fixed code, never the stored message, provider body or prompt.
+   const reason=state==='unavailable'&&actorId&&actorId===row.operator_id?(row.state==='abstained'?'abstained':residentFailureCode(row.error)??(row.state==='failed'?'other':null)):null
+   return {postId:row.target_post_id,agentId:row.agent_id,state,replyId,...(reason?{reason}:{})}
   })
  }
 }
