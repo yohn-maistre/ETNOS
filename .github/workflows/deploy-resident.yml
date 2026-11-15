@@ -1,0 +1,35 @@
+name: Deploy Aksara resident
+# Deploys packages/resident-pi (strata-resident-pi) when deploy/resident.txt
+# changes on main, or on manual dispatch. Deploy the site first whenever the
+# engine's ResidentAuthority contract changed: the resident binds to it.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [deploy/resident.txt]
+permissions:
+  contents: read
+concurrency:
+  group: deploy-resident
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --ignore-scripts
+      - run: npm ci --ignore-scripts
+        working-directory: packages/resident-pi
+      - run: npm run check
+        working-directory: packages/resident-pi
+      - run: npm test
+        working-directory: packages/resident-pi
+      - run: npx wrangler deploy
+        working-directory: packages/resident-pi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
