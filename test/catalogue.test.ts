@@ -137,3 +137,34 @@ test("a loop a steward made by hand is refused by the import, not repaired", () 
     s.close();
   }
 });
+
+test("an import replaces only a description it wrote earlier, never a steward's wording", () => {
+  const s = new Strata(":memory:", "https://strata.example", () => Date.parse("2026-11-15T00:00:00Z")),
+    admin = s.provision("did:web:admin.example", "Node steward"),
+    groups = new Groups(s, { stewardDid: admin.actor.did });
+  try {
+    const entry = (slug: string, description: string, previous?: string[]) => ({ slug, title: slug, kind: "topic" as const, description, language: "id", aliases: [], parents: [], previous });
+    const load = (entries: ReturnType<typeof entry>[]) => groups.importCatalogue(admin.actor.id, { name: "Synthetic", sources: [], notes: [], entries });
+    load([entry("first", "Old wording"), entry("second", "Old wording")]);
+    s.run("UPDATE contexts SET description='Steward wording' WHERE slug='second'");
+    const counts = load([entry("first", "New wording", ["Old wording"]), entry("second", "New wording", ["Old wording"])]);
+    assert.equal(groups.context("first").description, "New wording");
+    assert.equal(groups.context("second").description, "Steward wording");
+    assert.deepEqual([counts.updated, counts.skipped], [1, 1]);
+    assert.equal(load([entry("first", "New wording", ["Old wording"])]).updated, 0);
+  } finally {
+    s.close();
+  }
+});
+
+test("community kinds are shipped as labels with defaults a form can use", () => {
+  const { catalogue: shipped } = catalogue();
+  const kinds = catalogueSummary().communityKinds;
+  assert.ok(kinds.length >= 8 && kinds.length <= 12);
+  for (const k of kinds) {
+    const e = shipped.entries.find((x) => x.slug === k.slug)!;
+    assert.deepEqual([e.facet, e.parents], ["community-kind", ["jenis-komunitas"]], k.slug);
+    assert.ok(k.examples.length > 0 && k.description.length > 0);
+  }
+  for (const e of shipped.entries) assert.doesNotMatch(e.description, /West Papua Watch/);
+});

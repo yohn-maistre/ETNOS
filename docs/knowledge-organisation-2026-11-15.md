@@ -97,15 +97,107 @@ The conversation, in order: where are you, which levels of place matter, which l
 
 Aksara can't yet draft a catalogue. The loader, the idempotent import and the "never rewrite what a steward edited" rule exist.
 
-## Community kinds to seed
+## Community kinds
 
-Twelve kinds are in the [catalogue doc](sitemap-and-communities-2026-11-15.md). For seeding, three groups are enough:
+A kind says **how people gather**. Labels say **what about** and **where**. That split keeps the list short. "Klub baca Nabire" is the kind Belajar with the labels Buku & tulisan and Nabire. "Hip hop bawah tanah" is Minat with Musik & seni.
 
-- **Seven regional rooms,** one per wilayah adat, run by the node steward until local moderators take over. These are the only rooms we create.
-- **Rooms by place,** started by anyone from a place page.
-- **Rooms by interest or institution,** started by their own people: language, reading, school, congregation, music, market, forest, government, masyarakat adat, perantau.
+The eleven kinds are in the catalogue file with defaults, and the create form now asks "Komunitas seperti apa?". A kind is also a label, so its page lists every community of that kind.
 
-Consolidation: "Kabupaten atau kota" and "Ruang wilayah" are the same kind at two levels. "Musik dan seni" and "Olahraga" can share one kind, "Minat", with a ranah budaya label doing the sorting.
+| Kind | How people gather | Examples | Default door |
+| --- | --- | --- | --- |
+| Tempat | They share a place | Nabire, Obrolan Mee Pago, Mahasiswa Papua di Yogyakarta | Open |
+| Minat | They like the same thing | Film Papua, hip hop bawah tanah, Persipura, gim | Open |
+| Belajar | They learn and practise together | Belajar bahasa Mee, klub baca, belajar ngoding | Open |
+| Karya | They show work and give feedback | Seni rupa masa kini, musisi, penulis muda | Open |
+| Tanya jawab | Questions get answered with sources | Tanya sains, tanya peneliti, tanya hukum | Open |
+| Kabar & peluang | A notice board | Beasiswa & lowongan, acara | Approval |
+| Pasar & usaha | They buy, sell and trade | Pasar Mama-Mama, kopi Papua | Open |
+| Lembaga | A room that belongs to a body | A campus, a congregation, an office, an NGO | Approval |
+| Kerja bersama | They have a goal | Forest watchers, a festival committee, a research team | Approval |
+| Musyawarah | They deliberate on one issue and record the result | Air bersih di Dogiyai, usulan kampung | Approval |
+| Lingkar | They belong to each other | A clan, a people, speakers of one language, alumni | Members only, made by its own members |
+
+The list follows a typology used in community studies: communities of place, interest, practice, action and circumstance (from memory, to re-check). Lembaga and Musyawarah are added because organisations and public deliberation behave differently on a platform.
+
+Not kinds: families, couples, friendships. Those are private messages.
+
+**Seeding.** Seven Tempat rooms, one per wilayah adat, run by the node steward until local moderators take over. Everything else is started by its own people.
+
+## Topics
+
+Topics now sit in three groups so no list runs long. New ones are marked.
+
+| Group | Topics |
+| --- | --- |
+| Hidup bersama | Pemerintahan, Hak & keadilan, Kesehatan, Pendidikan, Penghidupan, Hutan & tanah, Laut & pesisir, Iman & gereja, Kerja & beasiswa (new), Jalan, listrik & internet (new), Iklim & bencana (new), Pemuda (new) |
+| Pengetahuan | Sejarah, Bahasa, Sains & alam (new), Teknologi & pemrograman (new), Riset & data (new) |
+| Budaya & hiburan | Musik & seni (now names hip hop and contemporary art), Film & layar (new), Buku & tulisan (new), Olahraga (new), Makanan & masak (new), Hobi & buat sendiri (new) |
+| Ranah budaya | The ten objects in UU 5/2017 |
+
+Open: "Iman & gereja" leaves out Muslim communities on the coast, such as Fakfak and Kaimana. "Iman & agama" would be fairer. A steward can rename it in Studio.
+
+The found-themes path is how the list grows. When people keep posting about something that has no topic, the theme shows up, and a steward can keep it.
+
+## Voices that can reach policy
+
+Proposal. Today a poll shows totals after five answers, labelled "dari N penjawab di ETNOS".
+
+**What a result can honestly be.** A signal from the people who answered. It is never a survey of a population. Every export says so in its first line.
+
+**A result page worth citing.**
+
+- The question, the options, N, the dates it ran and who could answer.
+- A breakdown by place or label only where each cell has at least ten answers. No cross-tabs. In a kampung of eighty people, a table is a list of names.
+- A permanent link and a hash of the result, so a quoted figure can be checked.
+- Export as CSV and as one printable page.
+
+**Anonymity, in three levels.**
+
+1. *Today:* the node knows who answered what and never shows it. You trust the operator.
+2. *Next:* keep "this account has answered" and the running totals, and store no row that ties an account to a choice. A database reader can't recover a vote. The cost is that nobody can change an answer or audit a single vote.
+3. *Later:* anonymous credentials, so even the "has answered" record can't be tied to a person. This is research-grade work. We don't claim it.
+
+**One person, one voice.** We can't prove residency without identity papers, and we shouldn't collect those. Honest options: account age and community membership as a floor, and later an organisation vouching for its members without naming them.
+
+**Deliberation over polling.** Polis lets people write short statements and mark agree, disagree or pass. It then shows where groups differ and which statements every group accepts (Small et al. 2021, from memory). That fits the Musyawarah kind and reuses the clustering path. The output is a list of statements with broad support, which is more useful to an office than a percentage.
+
+**A real door into policy.** Indonesia's planning law has a bottom-up forum, Musrenbang, from kampung to regency (UU 25/2004, from memory). A Musyawarah room could export its result in the shape of a Musrenbang proposal: the problem, the place, who is affected, what is asked. That is a document an office already knows how to receive.
+
+**Safety.** Some questions put people at risk in Papua. Stewards decide which topics may be polled in public. Results carry no time finer than a day and no place finer than a regency. Raw rows are never exported.
+
+## Research and open science
+
+Proposal.
+
+- **Literature gaps.** OpenAlex is an open index of scholarly works with a free API. For each language, place and topic we can count published works by year and set that beside what the commons holds and what people ask. "Bahasa X: three papers, none since 1998, eleven questions here" is a research agenda nobody else has.
+- **Questions as an agenda.** Unanswered questions, grouped by theme, published each month for researchers.
+- **Tanya peneliti.** A researcher answers questions in a Tanya jawab room for a week. The answers become page proposals.
+- **A project page for research about a community.** The question, who consented, what data is collected, and what comes back to the community and when. This puts the CARE principles into one form.
+- **Papers in plain Indonesian.** Aksara drafts a summary of an open-access paper. A person checks it. The summary links the original and carries its licence.
+- **Citable pages.** A reviewed revision already has a digest. Add citation export and, later, a DOI for a frozen revision.
+
+## What decision models could do
+
+Clef-flash is already wired in `src/decisions.ts` as a pilot that compares a post with news titles. Jev is a similar kind of model: it answers typed questions (yes or no, pick one, score) and can decline. Neither writes prose, which makes them cheap and easy to check.
+
+Uses that fit organising knowledge:
+
+1. **Suggest a kind and labels** for a new community or post, from the catalogue, with "none of these" allowed. The person accepts or dismisses.
+2. **Same, related or different?** For near-duplicate pages, and for kampung names spelled five ways.
+3. **Does this source support this sentence?** Yes, no, or can't tell. This is the base of claim checks.
+4. **Where should this question go?** Pick a community or an Aksara.
+5. **Does a person need to look now?** For sorting what comes in.
+
+Rules: the model proposes and a person decides. Every decision keeps a receipt. A score is not a probability until we've measured it against answers people gave. The first experiment should be the first use above, because every accept or dismiss gives us that measurement for free.
+
+Jev's licence, cost and data handling are still unverified.
+
+## Terrain tiles
+
+- **Today:** EOX Terrain Light, loaded from EOX with credit. Free to use, no uptime promise.
+- **Outlines:** Badan Informasi Geospasial, credited on the map. Decided.
+- **Alternatives:** Natural Earth shaded relief is public domain and fine up to the zoom we use. OpenTopoMap is CC BY-SA with a fair-use limit. Stadia's Stamen Terrain needs an account and has usage tiers. Esri's hillshade has its own terms.
+- **Our own:** the map is one fixed picture. We can render it once from open elevation data (Copernicus DEM, 30 m) with a hillshade and our own ink treatment, and ship it as a single image of about 150 KB. That is half a day of work and removes the outside dependency. It also lets the terrain match the engraved look of the place covers.
 
 ## Ideas, from sensible to strange
 
@@ -126,13 +218,16 @@ Each is a proposal. None is built.
 
 1. Done today: the regency map, communities on place pages, ranah budaya in the catalogue, a period on wiki pages, and `/lini-masa`. The timeline is empty until reviewers set periods on real pages.
 2. "When" on kept items and news. Lini masa by place, so a place page can open its own history.
-3. Families declared in the catalogue file, so the directory reads them.
+3. Community kinds and the wider topic list are in the catalogue file. The create form asks for a kind. Next: families declared in the file, so the directory reads them.
+3a. A suggested kind and labels from a decision model, with accept and dismiss recorded.
 4. Page kinds and typed links.
 5. The collection view, with protocol on each item.
 6. Found themes, once there are enough public posts to cluster.
 7. Aksara drafting a catalogue in a setup conversation.
 
 ## Sources
+
+From memory, to re-check, added later the same day: the place/interest/practice typology of communities; Small et al. 2021 on Polis; UU 25/2004 on Musrenbang; OpenAlex terms.
 
 Checked today:
 

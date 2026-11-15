@@ -506,7 +506,10 @@ export class Groups implements GroupAuthority {
             .slice(0, Math.max(0, 20 - aliases.length)),
           facet = row.facet || e.facet || "",
           title = row.title.trim() ? row.title : text(e.title, 100),
-          description = row.description.trim() ? row.description : text(e.description, 2000);
+          // A description is replaced only when it is still, word for word, one this
+          // catalogue wrote earlier. Anything a steward typed never matches.
+          earlier = Array.isArray(e.previous) && e.previous.includes(row.description),
+          description = row.description.trim() && !earlier ? row.description : text(e.description, 2000);
         if (!additions.length && facet === row.facet && title === row.title && description === row.description) {
           skipped++;
           continue;

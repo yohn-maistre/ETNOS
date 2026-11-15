@@ -68,6 +68,7 @@
   import { Textarea } from '$lib/components/ui/textarea/index.js'
   import { Label } from '$lib/components/ui/label/index.js'
   import Choice from './Choice.svelte'
+  import CommunityKindPicker from './CommunityKindPicker.svelte'
   import * as Card from '$lib/components/ui/card/index.js'
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js'
   import * as Dialog from '$lib/components/ui/dialog/index.js'
@@ -141,6 +142,7 @@
   let composePlace = $state<{ id: string; title: string } | null>(null)
   let communityPlace = $state<{ id: string; title: string } | null>(null)
   let communityAdmission = $state<'open' | 'approval'>('approval')
+  let communityKind = $state('')
   let composeState = $state({ dirty: false, busy: false, canSubmit: false }),
     discardDraft = $state(false)
   function closeModal() {
@@ -617,6 +619,7 @@
     composePlace = null
     communityPlace = null
     communityAdmission = 'approval'
+    communityKind = ''
     modal = kind
     wikiRequestKey = crypto.randomUUID()
     const contextual=kind==='compose'?(parts[0]==='communities'?community?.id:parts[0]==='square'?selectedPost?.community_id:undefined):undefined
@@ -708,6 +711,10 @@
           await request('/v1/communities/' + c.id + '/contexts', { contextId: place.id }).catch(() =>
             notify('Komunitas dibuat. Tempatnya belum tertandai; tambahkan dari halaman komunitas.'),
           )
+        if (communityKind && visibility !== 'hidden-private')
+          await request<{ id: string }>('/v1/contexts/' + communityKind)
+            .then((k) => request('/v1/communities/' + c.id + '/contexts', { contextId: k.id }))
+            .catch(() => notify('Komunitas dibuat. Jenisnya belum tertandai; tambahkan dari halaman komunitas.'))
         navigate('/communities/' + c.id)
       } else if (modal === 'join') {
         await request(`/v1/communities/${communityId}/requests`, {
@@ -1899,6 +1906,14 @@
                 .map((c) => ({ value: c.id, label: c.title + ' · Publik' }))}
             />
           </Label>{/if}
+        {#if modal === 'community'}<CommunityKindPicker
+            bind:value={communityKind}
+            onPick={(k) => {
+              if (!k) return
+              visibility = k.visibility
+              if (k.admission !== 'invite') communityAdmission = k.admission
+            }}
+          />{/if}
         {#if modal === 'community' && communityPlace && visibility !== 'hidden-private'}<div class="compose-place" style="margin-inline:0">
             <MapPin size={15} /><span>Di <strong>{communityPlace.title}</strong></span>
             <button type="button" aria-label={'Lepas tempat ' + communityPlace.title} onclick={() => (communityPlace = null)}>×</button>

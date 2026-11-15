@@ -11,6 +11,8 @@ export type CatalogueEntry = {
   language: string
   aliases: string[]
   parents: string[]
+  /** Earlier wordings of the description that an import may replace. */
+  previous?: string[]
 }
 export type Catalogue = {
   name: string
@@ -18,6 +20,8 @@ export type Catalogue = {
   sources: { title: string; url: string; [field: string]: string | undefined }[]
   notes: string[]
   entries: CatalogueEntry[]
+  /** Forms of association offered when someone starts a community. Each slug is also an entry. */
+  communityKinds?: { slug: string; title: string; description: string; examples: string[]; visibility: 'public' | 'listed-private'; admission: 'open' | 'approval' | 'invite' }[]
 }
 
 /** Deployment catalogues bundled at build time. The engine knows none of their
@@ -36,5 +40,5 @@ export function catalogueSummary(key = defaultCatalogue) {
   const { catalogue: c } = catalogue(key)
   const kinds: Record<string, number> = {}
   for (const e of c.entries) kinds[e.kind] = (kinds[e.kind] ?? 0) + 1
-  return { key, name: c.name, version: c.version ?? null, entries: c.entries.length, kinds, sources: c.sources, notes: c.notes }
+  return { key, name: c.name, version: c.version ?? null, entries: c.entries.length, kinds, sources: c.sources, notes: c.notes, communityKinds: c.communityKinds ?? [] }
 }
