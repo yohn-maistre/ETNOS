@@ -149,6 +149,14 @@
     }
   })
 
+  // Colour a noise field: alpha follows the noise, so only its peaks show,
+  // which reads as pastel grain catching the paper's tooth.
+  const tint = (hex: string, gain: number, bias: number) => {
+    const [r, g, b] = [1, 3, 5].map((i) => (parseInt(hex.slice(i, i + 2), 16) / 255).toFixed(3))
+    return `0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} ${gain} 0 0 0 ${bias}`
+  }
+  const region = { filterUnits: 'userSpaceOnUse', x: -10, y: 0, width: W + 20, height: H } as const
+
   const radius = (mag: number) => Math.max(0.9, Math.min(2.8, 2.4 - mag * 0.5))
 </script>
 
@@ -170,32 +178,30 @@
         <stop offset="0.35" stop-color="#fff3d6" stop-opacity=".9" />
         <stop offset="1" stop-color="#fff3d6" stop-opacity="0" />
       </radialGradient>
-      <linearGradient id={'haze-' + uid} x1="0" y1="40" x2="0" y2={H} gradientUnits="userSpaceOnUse">
-        <stop offset="0" stop-color="#fff" stop-opacity=".25" />
-        <stop offset="1" stop-color="#fff" stop-opacity="1" />
-      </linearGradient>
-      <mask id={'mist-' + uid} maskUnits="userSpaceOnUse" x="-10" y="0" width={W + 20} height={H}>
-        <rect x="-10" y="0" width={W + 20} height={H} fill={'url(#haze-' + uid + ')'} />
-      </mask>
+      <filter id={'rough-' + uid} {...region}>
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3" result="n" />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+      <filter id={'sky-grain-' + uid} {...region}>
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.11" numOctaves="2" seed="9" result="n" />
+        <feColorMatrix in="n" type="matrix" values={tint('#ffffff', 5, -2.4)} />
+      </filter>
+      <filter id={'fleck-' + uid} {...region}>
+        <feTurbulence type="fractalNoise" baseFrequency="0.07 0.55" numOctaves="2" seed="11" result="n" />
+        <feColorMatrix in="n" type="matrix" values={tint(gradient.bottom, 7, -3.6)} result="c" />
+        <feComposite in="c" in2="SourceGraphic" operator="in" />
+      </filter>
       {#each layer as r, i}
-        <pattern
-          id={'dot-' + uid + '-' + i}
-          width={r.spacing}
-          height={r.spacing}
-          patternUnits="userSpaceOnUse"
-        >
-          <circle
-            cx={r.spacing / 2}
-            cy={r.spacing / 2}
-            r={r.spacing * 0.22}
-            fill={r.ink}
-            fill-opacity={r.inkOpacity}
-          />
-        </pattern>
+        <filter id={'streak-' + uid + '-' + i} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency={(0.028 + i * 0.006) + ' ' + (0.16 + i * 0.04)} numOctaves="2" seed={3 + i * 7} result="n" />
+          <feColorMatrix in="n" type="matrix" values={tint(r.ink, 7, -3.1)} result="c" />
+          <feComposite in="c" in2="SourceGraphic" operator="in" />
+        </filter>
       {/each}
     </defs>
 
     <rect width={W} height={H} fill={'url(#sky-' + uid + ')'} />
+    <rect width={W} height={H} filter={'url(#sky-grain-' + uid + ')'} opacity={0.26 * (1 - dark) + 0.06 * dark} />
 
     {#if sunAt}
       <circle cx={sunAt.x * W} cy={y(sunAt.y)} r="26" fill={'url(#sun-' + uid + ')'} />
@@ -226,16 +232,20 @@
     {/each}
 
     {#each layer as r, i}
-      <path d={r.d} fill={r.fill} />
-      <path d={r.d} fill={'url(#dot-' + uid + '-' + i + ')'} mask={'url(#mist-' + uid + ')'} />
-      <path
-        d={r.crest}
-        fill="none"
-        stroke={r.ink}
-        stroke-opacity={(0.28 + i * 0.12) * (1 - dark * 0.7)}
-        stroke-width="0.8"
-        vector-effect="non-scaling-stroke"
-      />
+      <g filter={'url(#rough-' + uid + ')'}>
+        <path d={r.d} fill={r.fill} />
+        <path d={r.d} fill="#000" filter={'url(#streak-' + uid + '-' + i + ')'} opacity={r.inkOpacity} />
+        <path d={r.d} fill="#000" filter={'url(#fleck-' + uid + ')'} opacity={0.55 * (1 - dark) + 0.12 * dark} />
+        <path
+          d={r.crest}
+          fill="none"
+          stroke={r.ink}
+          stroke-opacity={(0.32 + i * 0.12) * (1 - dark * 0.7)}
+          stroke-width="1.1"
+          stroke-linecap="round"
+          vector-effect="non-scaling-stroke"
+        />
+      </g>
     {/each}
   </svg>
 </div>

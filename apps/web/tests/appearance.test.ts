@@ -50,21 +50,29 @@ test('every base ramp has readable body and secondary text in both themes', () =
     }
 })
 
-import { scheduledTheme } from '../src/appearance-schedule.ts'
+import { scheduledTheme, solarDarkness } from '../src/appearance-schedule.ts'
 import { themeFrame, THEME_SHIFT_MS } from '../src/appearance-transition.ts'
-test('automatic theme follows local clock boundaries and manual choices override the clock', () => {
-  for (const [hour, minute, expected] of [
-    [5, 59, 'dark'],
-    [6, 0, 'light'],
-    [17, 59, 'light'],
-    [18, 0, 'dark'],
-    [23, 59, 'dark'],
+test('automatic theme follows the sun over the site, blends through twilight, and manual choices override it', () => {
+  // Jayapura (UTC+9). Sunset on 15 Nov 2026 is close to 08:45 UTC.
+  for (const [iso, expected] of [
+    ['2026-11-15T01:30:00Z', 'light'], // 10:30 local
+    ['2026-11-15T07:30:00Z', 'light'], // 16:30 local
+    ['2026-11-15T13:00:00Z', 'dark'], // 22:00 local
+    ['2026-11-15T19:00:00Z', 'dark'], // 04:00 local
   ] as const) {
-    const now = new Date(2026, 10, 4, hour, minute)
+    const now = new Date(iso)
     assert.equal(scheduledTheme('clock', now), expected)
     assert.equal(scheduledTheme('light', now), 'light')
     assert.equal(scheduledTheme('dark', now), 'dark')
   }
+  assert.equal(solarDarkness(new Date('2026-11-15T03:00:00Z')), 0)
+  assert.equal(solarDarkness(new Date('2026-11-15T13:00:00Z')), 1)
+  // Around sunset the blend is partial and only grows as the sun sinks.
+  const steps = [8.6, 8.75, 8.9, 9.05].map((h) =>
+    solarDarkness(new Date(Date.UTC(2026, 10, 15, 0, h * 60))),
+  )
+  assert.ok(steps.some((d) => d > 0.05 && d < 0.95))
+  for (let i = 1; i < steps.length; i++) assert.ok(steps[i] >= steps[i - 1])
 })
 test('slow automatic shifts preserve body and action contrast through both directions on every base', () => {
   assert.ok(THEME_SHIFT_MS >= 30000)
