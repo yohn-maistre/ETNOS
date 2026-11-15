@@ -99,13 +99,32 @@ export class Wiki {
       s.run('INSERT INTO wiki_policies VALUES(?,?,?) ON CONFLICT(community_id) DO UPDATE SET contributor_group_id=excluded.contributor_group_id,reviewer_group_id=excluded.reviewer_group_id',communityId,contributor,reviewer);s.audit(actorId,'wiki.policy',communityId);return this.policy(actorId,communityId)})
   }
   private reviewer(actorId:string,communityId:string){const s=this.store;s.requireSteward(actorId,communityId);this.human(actorId);const group=this.policy(actorId,communityId).reviewer_group_id;if(group&&!s.get('SELECT 1 FROM group_members WHERE group_id=? AND actor_id=? AND active=1',group,actorId))throw new Fault(403,'Current reviewer group membership required')}
+  /** The period a page is about, as years (negative is BCE). Not when it was written. */
+  private timeOf(pageId:string){
+    const t=this.store.get<{from_year:number;to_year:number;precision:string;note:string}>("SELECT from_year,to_year,precision,note FROM record_times WHERE record_kind='wiki' AND record_id=?",pageId)
+    return t?{from:t.from_year,to:t.to_year,precision:t.precision,note:t.note}:null
+  }
+  setTime(actorId:string,pageId:string,when:{from:number;to:number;precision:string;note:string}|null){
+    return this.store.tx(()=>{const s=this.store,page=this.page(pageId)
+      try{this.reviewer(actorId,page.community_id)}catch{throw new Fault(404,'Not found')}
+      if(when===null){s.run("DELETE FROM record_times WHERE record_kind='wiki' AND record_id=?",page.id);s.audit(actorId,'wiki.time.clear',page.id);return {time:null}}
+      const limit=new Date(s.clock()).getUTCFullYear()
+      if(!Number.isSafeInteger(when.from)||!Number.isSafeInteger(when.to)||when.from>when.to||when.from<-5_000_000_000||when.to>limit||!['year','decade','century','millennium','deep'].includes(when.precision)||typeof when.note!=='string'||when.note.length>200)throw new Fault(400,'Invalid period')
+      s.run("INSERT INTO record_times VALUES('wiki',?,?,?,?,?,?,?) ON CONFLICT(record_kind,record_id) DO UPDATE SET from_year=excluded.from_year,to_year=excluded.to_year,precision=excluded.precision,note=excluded.note,issuer_id=excluded.issuer_id,created=excluded.created",page.id,when.from,when.to,when.precision,when.note.trim(),actorId,s.clock())
+      s.audit(actorId,'wiki.time',page.id);return {time:this.timeOf(page.id)}})
+  }
+  /** Reviewed pages in public communities that carry a period, newest period first. */
+  timeline(){
+    return this.store.all<{id:string;community_id:string;title:string;text:string;from_year:number;to_year:number;precision:string;note:string}>("SELECT w.id,w.community_id,w.title,r.text,t.from_year,t.to_year,t.precision,t.note FROM record_times t JOIN wiki_pages w ON w.id=t.record_id JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE t.record_kind='wiki' AND c.visibility='public' AND w.draft=0 ORDER BY t.from_year DESC,t.to_year DESC,w.title LIMIT 500")
+      .map(({text,from_year,to_year,...row})=>({...row,from:from_year,to:to_year,excerpt:plainWikiText(text).slice(0,200)}))
+  }
   read(pageId:string,actorId?:string) {
     const page=this.page(pageId)
     this.draftAccess(page,actorId)
     const revision=page.revision_id?this.store.get<Revision>('SELECT * FROM wiki_revisions WHERE id=?',page.revision_id):null
-    if(!revision)return {...page,revision:null}
+    if(!revision)return {...page,revision:null,time:this.timeOf(page.id)}
     const {proposal_id:_privateProposal,...accepted}=revision
-    return {...page,revision:{...accepted,authorKind:this.store.actor(revision.author_id).kind,author:this.attribution(revision.author_id),reviewer:this.attribution(revision.reviewer_id),citations:JSON.parse(revision.citations) as string[]}}
+    return {...page,time:this.timeOf(page.id),revision:{...accepted,authorKind:this.store.actor(revision.author_id).kind,author:this.attribution(revision.author_id),reviewer:this.attribution(revision.reviewer_id),citations:JSON.parse(revision.citations) as string[]}}
   }
   list(communityId:string,actorId?:string) {
     const s=this.store

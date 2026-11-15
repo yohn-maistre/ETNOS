@@ -134,6 +134,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/wiki/discover') result=wiki.discover()
         else if (path === '/v1/wiki/growing') result=knowledge.discoverPublic()
         else if (path === '/v1/wiki/gaps') result=wiki.gaps()
+        else if (path === '/v1/wiki/timeline') result=wiki.timeline()
         else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'trail') result=wiki.trail(parts[2])
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
@@ -287,6 +288,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         if(b.draft!==undefined){const d=b.draft as Record<string,unknown>;if(!d||typeof d!=='object'||!Array.isArray(d.citations)||d.citations.some(c=>typeof c!=='string'))throw new Fault(400,'Draft and citations required');result=wiki.createDraft(caller,parts[2],string(b.title),{text:string(d.text),citations:d.citations as string[],language:string(d.language),perspective:string(d.perspective)},b.requestKey===undefined?undefined:string(b.requestKey))}
         else result=wiki.create(caller,parts[2],string(b.title))
       }
+      else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'time') result=wiki.setTime(caller,parts[2],b.remove===true?null:{from:Number(b.from),to:Number(b.to),precision:string(b.precision),note:b.note===undefined?'':string(b.note)})
       else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'proposals') {
         if(!Array.isArray(b.citations) || b.citations.some(c=>typeof c!=='string')) throw new Fault(400,'Citation URLs required')
         result=wiki.propose(caller,parts[2],b.baseRevision===null?null:string(b.baseRevision),string(b.text),b.citations as string[],string(b.language),string(b.perspective),b.editorialMandateId===undefined?undefined:string(b.editorialMandateId))

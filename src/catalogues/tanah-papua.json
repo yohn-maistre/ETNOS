@@ -35,6 +35,13 @@
       "credit": "Glottolog 5.3 (CLDF v5.3), CC BY 4.0. Atribusi seperti di West Papua Watch.",
       "languoid": "https://glottolog.org/resource/languoid/id/{glottocode}",
       "used": "language names, glottocodes and families"
+    },
+    {
+      "title": "Undang-Undang Nomor 5 Tahun 2017 tentang Pemajuan Kebudayaan, Pasal 5 dan penjelasannya",
+      "url": "https://dapobud.kemenbud.go.id/docs/dasar-hukum/uu-5-2017.pdf",
+      "retrieved": "2026-11-15",
+      "rights": "Peraturan perundang-undangan; daftar objek dipakai sebagai fakta.",
+      "used": "cultural-domain entries"
     }
   ],
   "notes": [
@@ -44,7 +51,8 @@
     "Alias kabar: hanya ditambahkan bila slug itu ada di registri tempat West Papua Watch. Untuk wilayah acuan dengan lebih dari delapan anggota (La Pago, Domberai) hanya delapan yang dipakai, mendahulukan tempat kanonis WPW.",
     "Bahasa tidak diberi induk wilayah karena datanya hanya memuat titik acuan, bukan wilayah. Kode ISO 639-3, jumlah penutur dan status keterancaman tidak ada di sumber.",
     "Kelompok suku belum menjadi konteks tersendiri. PROVINCE_META menyebut beberapa suku sebagai daftar pilihan yang tidak lengkap.",
-    "Topik dan jenis lembaga adalah lensa editorial, bukan data. Organisasi terdaftar tampil di bawah jenisnya setelah bergabung."
+    "Topik dan jenis lembaga adalah lensa editorial, bukan data. Organisasi terdaftar tampil di bawah jenisnya setelah bergabung.",
+    "Ranah budaya mengikuti sepuluh objek pemajuan kebudayaan. Uraian tiap ranah diringkas dari penjelasan Pasal 5, kecuali contoh pada teknologi tradisional yang kami tambahkan. Seni dan bahasa tidak dibuat ganda: lensa 'Musik & seni' dan 'Bahasa' menjadi anggota ranah ini."
   ],
   "entries": [
     {"slug":"mamta-tabi","title":"Mamta (Tabi)","kind":"region","facet":"customary-region","description":"Wilayah acuan yang digeneralisasi dari RPJMN 2020–2024 (Bappenas), seperti dipakai West Papua Watch. Ini bukan batas tanah adat. Mencakup 5 kabupaten/kota.","language":"id","aliases":["Mamta / Tabi","Mamta","Tabi","kabar:jayapura","kabar:kabupaten-jayapura","kabar:keerom","kabar:mamberamo-raya","kabar:sarmi"],"parents":[]},
@@ -359,8 +367,8 @@
     {"slug":"bahasa-yetfa","title":"Yetfa","kind":"language","description":"Belum diklasifikasikan menurut Glottolog 5.3. Titik acuannya bukan batas wilayah bahasa.","language":"id","aliases":["glottocode:yetf1238"],"parents":[]},
     {"slug":"bahasa-yoke","title":"Yoke","kind":"language","description":"Rumpun Austronesian menurut Glottolog 5.3. Titik acuannya bukan batas wilayah bahasa.","language":"id","aliases":["glottocode:yoke1238"],"parents":[]},
     {"slug":"sejarah","title":"Sejarah","kind":"topic","description":"Lensa: Peristiwa, ingatan dan arsip tentang Tanah Papua.","language":"id","aliases":[],"parents":[]},
-    {"slug":"bahasa","title":"Bahasa","kind":"topic","description":"Lensa: Bahasa daerah, penamaan, penerjemahan dan pelestarian bahasa.","language":"id","aliases":[],"parents":[]},
-    {"slug":"musik-seni","title":"Musik & seni","kind":"topic","description":"Lensa: Lagu, tari, ukiran, lukisan, film dan karya lain.","language":"id","aliases":[],"parents":[]},
+    {"slug":"bahasa","title":"Bahasa","kind":"topic","description":"Lensa: Bahasa daerah, penamaan, penerjemahan dan pelestarian bahasa.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"musik-seni","title":"Musik & seni","kind":"topic","description":"Lensa: Lagu, tari, ukiran, lukisan, film dan karya lain.","language":"id","aliases":[],"parents":["ranah-budaya"]},
     {"slug":"hutan-tanah","title":"Hutan & tanah","kind":"topic","description":"Lensa: Hutan, tanah adat, sungai dan perubahan bentang alam.","language":"id","aliases":[],"parents":[]},
     {"slug":"laut-pesisir","title":"Laut & pesisir","kind":"topic","description":"Lensa: Kampung pesisir, pulau, perikanan dan laut.","language":"id","aliases":[],"parents":[]},
     {"slug":"iman-gereja","title":"Iman & gereja","kind":"topic","description":"Lensa: Kehidupan beriman, gereja dan lembaga keagamaan.","language":"id","aliases":[],"parents":[]},
@@ -376,6 +384,15 @@
     {"slug":"dewan-adat","title":"Dewan adat","kind":"topic","facet":"institution-kind","description":"Dewan dan lembaga adat. Organisasi terdaftar tampil di sini setelah bergabung.","language":"id","aliases":[],"parents":["lembaga"]},
     {"slug":"lsm","title":"LSM","kind":"topic","facet":"institution-kind","description":"Lembaga swadaya masyarakat dan organisasi warga. Organisasi terdaftar tampil di sini setelah bergabung.","language":"id","aliases":[],"parents":["lembaga"]},
     {"slug":"usaha","title":"Usaha","kind":"topic","facet":"institution-kind","description":"Usaha, koperasi dan badan usaha. Organisasi terdaftar tampil di sini setelah bergabung.","language":"id","aliases":[],"parents":["lembaga"]},
-    {"slug":"media","title":"Media","kind":"topic","facet":"institution-kind","description":"Media, redaksi dan penerbit. Organisasi terdaftar tampil di sini setelah bergabung.","language":"id","aliases":[],"parents":["lembaga"]}
+    {"slug":"media","title":"Media","kind":"topic","facet":"institution-kind","description":"Media, redaksi dan penerbit. Organisasi terdaftar tampil di sini setelah bergabung.","language":"id","aliases":[],"parents":["lembaga"]},
+    {"slug":"ranah-budaya","title":"Ranah budaya","kind":"topic","facet":"cultural-domain","description":"Sepuluh objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5. Seni dan bahasa memakai lensa yang sudah ada.","language":"id","aliases":[],"parents":[]},
+    {"slug":"tradisi-lisan","title":"Tradisi lisan","kind":"topic","facet":"cultural-domain","description":"Tuturan yang diwariskan turun-temurun: sejarah lisan, dongeng, pantun dan cerita rakyat. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"manuskrip","title":"Manuskrip","kind":"topic","facet":"cultural-domain","description":"Naskah dan informasi di dalamnya yang bernilai budaya dan sejarah. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"adat-istiadat","title":"Adat istiadat","kind":"topic","facet":"cultural-domain","description":"Kebiasaan yang diwariskan, antara lain tata kelola lingkungan dan cara menyelesaikan sengketa. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"ritus","title":"Ritus","kind":"topic","facet":"cultural-domain","description":"Tata cara upacara: perayaan, kelahiran, perkawinan, kematian dan perlengkapannya. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"pengetahuan-tradisional","title":"Pengetahuan tradisional","kind":"topic","facet":"cultural-domain","description":"Kerajinan, busana, cara menyehatkan, makanan dan minuman, serta pengetahuan tentang alam dan semesta. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"teknologi-tradisional","title":"Teknologi tradisional","kind":"topic","facet":"cultural-domain","description":"Sarana dan keterampilan untuk hidup: perahu, rumah, alat berkebun dan berburu. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"permainan-rakyat","title":"Permainan rakyat","kind":"topic","facet":"cultural-domain","description":"Permainan yang diwariskan dan dimainkan bersama. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]},
+    {"slug":"olahraga-tradisional","title":"Olahraga tradisional","kind":"topic","facet":"cultural-domain","description":"Kegiatan fisik dan mental yang diwariskan untuk menyehatkan diri. Objek pemajuan kebudayaan menurut UU 5/2017 tentang Pemajuan Kebudayaan, Pasal 5.","language":"id","aliases":[],"parents":["ranah-budaya"]}
   ]
 }

@@ -108,6 +108,7 @@ export type Membership = {
   role: 'owner' | 'moderator' | 'member'
 }
 export type WikiPage = {
+  time?: { from: number; to: number; precision: 'year' | 'decade' | 'century' | 'millennium' | 'deep'; note: string } | null
   id: string
   community_id: string
   title: string

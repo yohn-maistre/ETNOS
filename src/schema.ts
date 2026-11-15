@@ -395,6 +395,9 @@ ALTER TABLE contexts ADD COLUMN facet TEXT NOT NULL DEFAULT '';
 `, `
 CREATE TABLE community_contexts(community_id TEXT NOT NULL REFERENCES communities(id),context_id TEXT NOT NULL REFERENCES contexts(id),issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(community_id,context_id));
 CREATE INDEX community_context_lookup ON community_contexts(context_id,community_id);
+`,`
+CREATE TABLE record_times(record_kind TEXT NOT NULL CHECK(record_kind IN ('wiki')),record_id TEXT NOT NULL,from_year INTEGER NOT NULL,to_year INTEGER NOT NULL,precision TEXT NOT NULL CHECK(precision IN ('year','decade','century','millennium','deep')),note TEXT NOT NULL,issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(record_kind,record_id));
+CREATE INDEX record_time_order ON record_times(record_kind,from_year);
 `]
 
 export const schemaVersion=migrations.length

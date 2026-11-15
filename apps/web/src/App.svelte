@@ -284,6 +284,8 @@
       ? 'Agen & koneksi'
       : parts[0] === 'tentang'
         ? 'Tentang ETNOS'
+      : parts[0] === 'lini-masa'
+        ? 'Lini masa'
       : parts[0] === 'voices'
         ? 'Suara komunitas'
         : parts[0] === 'news'
@@ -956,6 +958,7 @@
         }}
       />{/await}
   {:else if path === '/tentang'}{#await import('./AboutPage.svelte') then module}<module.default />{/await}
+  {:else if path === '/lini-masa'}{#await import('./Timeline.svelte') then module}<module.default />{/await}
   {:else if path === '/news'}{#await import('./NewsIndex.svelte') then module}<module.default
         {search}
         {navigate}

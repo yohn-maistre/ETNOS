@@ -32,6 +32,7 @@
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiTrail from './WikiTrail.svelte'
+  import WikiPeriod from './WikiPeriod.svelte'
   import { voices as pageVoices } from './wiki-sources'
   import LandscapePrint from './LandscapePrint.svelte'
   import { communityArtwork } from './site-branding'
@@ -241,6 +242,7 @@
           {@html markdown(page.revision.text, [], 'wiki-' + page.id)}
         </div>
         <WikiSourceNotes citations={page.revision.citations} />
+        <WikiPeriod pageId={page.id} time={page.time ?? null} {steward} />
         <WikiTrail pageId={page.id} canPropose={member} {onPropose} />
       {:else}<div class="wiki-draft-state">
           <FileText size={26} />
@@ -379,7 +381,7 @@
         <div class="wiki-front-cover">{#if art}<LandscapePrint artwork={art} decorative/>{/if}
           <a class="wiki-front-card" href={'/wiki/'+featured.id}><small>Untuk dibaca · {communities.find(c=>c.id===featured.community_id)?.title??'Pengetahuan bersama'}</small><h2>{featured.title}</h2>{#if featured.excerpt}<p>{featured.excerpt.length>180?featured.excerpt.slice(0,177).trimEnd()+'…':featured.excerpt}</p>{/if}<span class="wiki-featured-meta">{languageName(featured.language)} · {featured.citationCount?featured.citationCount+' sumber':'Sumber belum ditautkan'}{featured.reviewer?' · ditinjau '+featured.reviewer.name:''}</span></a>
         </div>
-        {#if accepted.length>1}<div class="wiki-front-tools"><button onclick={surprise}><Shuffle size={15}/>Halaman acak</button></div>{/if}
+        {#if accepted.length}<div class="wiki-front-tools">{#if accepted.length>1}<button onclick={surprise}><Shuffle size={15}/>Halaman acak</button>{/if}<a class="commons-quiet-link" href="/lini-masa">Lini masa</a></div>{/if}
       </section>
       {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru ditinjau</h2><span>Revisi diterima</span></div>{#each recent as p,i}<a class="wiki-rank-row" href={'/wiki/'+p.id}><span class="wiki-rank" aria-hidden="true">{i+1}</span><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+', ':'Diterima '}{relativeDate(p.updated)} · {communities.find(c=>c.id===p.community_id)?.title??''}{p.authorKind==='agent'?' · ditulis agen':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}

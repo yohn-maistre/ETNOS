@@ -20,6 +20,7 @@ export const facetNames: Record<string, string> = {
   regency: 'Kabupaten',
   city: 'Kota',
   'institution-kind': 'Jenis lembaga',
+  'cultural-domain': 'Ranah budaya',
 }
 
 const byTitle = (a: ContextNode, b: ContextNode) => a.title.localeCompare(b.title, 'id')
