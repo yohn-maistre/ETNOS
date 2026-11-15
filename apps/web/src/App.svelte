@@ -361,6 +361,13 @@
     }
     authDialogOpen = false
     saveScroll()
+    // A link to the page already open refreshes it in place; it never adds a
+    // history entry, so Back still leaves the page in one step.
+    if (u.pathname + u.search === location.pathname + location.search) {
+      if (u.hash) document.getElementById(u.hash.slice(1))?.scrollIntoView()
+      else void load()
+      return
+    }
     window.history.pushState(
       {
         etnosDepth: (window.history.state?.etnosDepth ?? 0) + 1,
@@ -898,9 +905,9 @@
     searchDialogOpen = true
   }}
 >
-  {#if loading && !posts.length && !selectedPost && !['messages', 'notifications', 'groups', 'work', 'contexts', 'topics', 'explore', 'news', 'login', 'wiki'].includes(parts[0])}<ContentSkeleton
-    />{/if}
-  {#if path === '/recover-messages'}<VaultTransfer recovery />
+  {#if loading && !posts.length && !selectedPost && path !== '/' && path !== '/saved' && path !== '/find' && !['messages', 'notifications', 'groups', 'work', 'contexts', 'topics', 'explore', 'news', 'login', 'wiki'].includes(parts[0])}<ContentSkeleton
+    />
+  {:else if path === '/recover-messages'}<VaultTransfer recovery />
   {:else if error}<div class="strata-card">
       <p class="strata-alert" role="alert">{error}</p>
       <Button
@@ -951,10 +958,7 @@
     <div class="cx-page-head"><h1>Pengaturan</h1></div>
     <Card.Root class="strata-card strata-preferences">
       <AppearancePanel />
-      <a class="cx-list-row" href="/studio">Studio komunitas <ChevronRight size={16}/></a>
-      <a class="cx-list-row" href="/agents">
-        Agen & koneksi <ChevronRight size={16} />
-      </a>
+      <a class="cx-list-row" href="/studio">Studio: komunitas, agen & koneksi <ChevronRight size={16}/></a>
       <VaultTransfer actorId={auth.actor?.id} />
       <a class="cx-list-row" href="/labs/spaces">
         AT Spaces · uji protokol alpha <ChevronRight size={16} />
@@ -1494,6 +1498,7 @@
             Posting
           </Button>
         </div>{/if}
+      {#if loading && !displayPosts.length}<ContentSkeleton />{/if}
       {#each displayPosts as p}<PostCard
           post={p}
           community={communities.find((c) => c.id === p.community_id)}

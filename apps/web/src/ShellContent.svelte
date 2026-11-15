@@ -148,7 +148,7 @@
       {/if}{/each}
   </Sidebar.Content>
   <Sidebar.Footer class="p-4 gap-3">
-    {#if auth.actor}<a href="/studio" class="preview-label sidebar-studio" onclick={() => sidebar.setOpenMobile(false)}>Studio komunitas</a>{/if}
+    {#if auth.actor}<a href="/studio" class="preview-label sidebar-studio" onclick={() => sidebar.setOpenMobile(false)}>Studio</a>{/if}
     <Button
       href="/preferences"
       variant="ghost"
@@ -181,13 +181,6 @@
       >
         Masuk
       </Button>{/if}
-    <a
-      href="/agents"
-      class="preview-label"
-      onclick={() => sidebar.setOpenMobile(false)}
-    >
-      Agen & koneksi
-    </a>
     <span class="preview-label">ETNOS · Alpha</span>
   </Sidebar.Footer>
 </Sidebar.Root>

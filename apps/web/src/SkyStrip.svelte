@@ -13,9 +13,7 @@
   } from './sky-math.ts'
   import { SKY_STARS } from './sky-stars.ts'
   import { sitePlace } from './site-place.ts'
-  import { appearance } from './appearance.svelte.ts'
-  import { mixColor } from './appearance-transition.ts'
-
+    
   let {
     latitude = sitePlace.latitude,
     longitude = sitePlace.longitude,
@@ -27,44 +25,20 @@
   let reduced = $state(true)
 
   const W = 1000,
-    H = 120,
-    SKY_TOP = 6,
-    SKY_BOTTOM = 78
-  const accent = $derived(
-    /^#[0-9a-f]{6}$/i.test(appearance.accent) ? appearance.accent : '#1f4e8c',
-  )
+    H = 110,
+    SKY_TOP = 8,
+    SKY_BOTTOM = 66
   const sky = $derived(visibleStars(SKY_STARS, now, latitude, longitude))
   const sun = $derived(sunAltAz(julianDate(now), latitude, longitude))
   const dark = $derived(darkness(sun.alt))
+  // Horizon glow peaks around sunset and sunrise, nothing at noon or midnight.
+  const glow = $derived(Math.max(0, 1 - Math.abs(sun.alt + 2) / 8))
 
-  // Sky colours at four sun altitudes, interpolated between neighbours.
-  const keys = $derived([
-    { alt: 12, top: mixColor(accent, '#ffffff', 0.74), bottom: mixColor(accent, '#ffffff', 0.9) },
-    { alt: 3, top: mixColor(accent, '#ffffff', 0.62), bottom: mixColor('#f1d2a6', '#ffffff', 0.25) },
-    { alt: -4, top: mixColor(accent, '#1a2238', 0.6), bottom: mixColor('#e3a274', accent, 0.38) },
-    { alt: -12, top: mixColor(accent, '#05070d', 0.86), bottom: mixColor(accent, '#0c1324', 0.74) },
-  ])
-  const gradient = $derived.by(() => {
-    const k = keys,
-      a = sun.alt
-    if (a >= k[0].alt) return k[0]
-    if (a <= k[3].alt) return k[3]
-    for (let i = 0; i < 3; i++)
-      if (a <= k[i].alt && a >= k[i + 1].alt) {
-        const t = (k[i].alt - a) / (k[i].alt - k[i + 1].alt)
-        return {
-          top: mixColor(k[i].top, k[i + 1].top, t),
-          bottom: mixColor(k[i].bottom, k[i + 1].bottom, t),
-        }
-      }
-    return k[0]
-  })
-
-  // Three ridges, far to near, from a fixed seed so the land never shifts.
-  // Rolling hills plus a few soft peaks, in the spirit of the Tigi print.
-  function ridge(base: number, amp: number, seed: number, peaks: [number, number, number][]) {
+  // Engraved ridges: each range is cut as contour lines that follow its own
+  // crest, like a woodblock. Fixed seed, so the land never shifts.
+  function crest(base: number, amp: number, seed: number, peaks: [number, number, number][]) {
     const pts: [number, number][] = []
-    for (let x = -10; x <= W + 10; x += 8) {
+    for (let x = -10; x <= W + 10; x += 6) {
       let y =
         base -
         amp *
@@ -75,26 +49,26 @@
         y -= height * Math.exp(-(((x - at) / width) ** 2))
       pts.push([x, y])
     }
-    const crest = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x} ${y.toFixed(1)}`).join(' ')
-    return { crest, d: crest + ` L${W + 10} ${H} L-10 ${H} Z` }
+    return pts
   }
-  const ridges = [
-    { ...ridge(70, 7, 1.7, [[170, 26, 70], [520, 34, 95], [860, 22, 60]]), day: 0.84, night: 0.8, dot: 0.34, spacing: 5.5 },
-    { ...ridge(88, 7, 4.2, [[330, 16, 80], [700, 20, 85]]), day: 0.74, night: 0.86, dot: 0.52, spacing: 4.2 },
-    { ...ridge(104, 5, 7.9, [[90, 8, 60], [620, 9, 70], [960, 7, 50]]), day: 0.6, night: 0.92, dot: 0.74, spacing: 3.2 },
+  const line = (pts: [number, number][], dy: number, wobble: number, phase: number) =>
+    pts
+      .map(([x, y], i) => `${i ? 'L' : 'M'}${x} ${(y + dy + wobble * Math.sin(x / 23 + phase)).toFixed(1)}`)
+      .join(' ')
+  function range(pts: [number, number][], gap: number, count: number, seed: number) {
+    const shape = line(pts, 0, 0, 0) + ` L${W + 10} ${H} L-10 ${H} Z`
+    const hatch = Array.from({ length: count }, (_, k) => ({
+      d: line(pts, 1.6 + k * gap, 0.35 + k * 0.05, seed + k * 1.9),
+      width: Math.max(0.6, 1.6 - k * 0.07),
+      dash: `${18 + ((k * 7 + seed * 3) % 23)} ${1.2 + (k % 3) * 0.8}`,
+      offset: (k * 13 + seed * 5) % 31,
+    }))
+    return { shape, crest: line(pts, 0, 0, 0), hatch }
+  }
+  const ranges = [
+    range(crest(74, 6, 1.7, [[170, 26, 70], [520, 36, 95], [860, 22, 60]]), 3.1, 14, 1),
+    range(crest(96, 5, 4.2, [[330, 13, 80], [700, 16, 85]]), 2.6, 7, 4),
   ]
-  const layer = $derived(
-    ridges.map((r) => ({
-      ...r,
-      fill: mixColor(
-        mixColor(accent, '#ffffff', r.day),
-        mixColor(accent, '#04060c', r.night),
-        dark,
-      ),
-      ink: mixColor(accent, mixColor(accent, '#ffffff', 0.4), dark),
-      inkOpacity: r.dot * (1 - dark) + r.dot * 0.26 * dark,
-    })),
-  )
 
   const sunAt = $derived(
     sun.alt > -1 && sun.alt < 80 ? panorama(Math.max(sun.alt, 10), sun.az) : null,
@@ -149,15 +123,7 @@
     }
   })
 
-  // Colour a noise field: alpha follows the noise, so only its peaks show,
-  // which reads as pastel grain catching the paper's tooth.
-  const tint = (hex: string, gain: number, bias: number) => {
-    const [r, g, b] = [1, 3, 5].map((i) => (parseInt(hex.slice(i, i + 2), 16) / 255).toFixed(3))
-    return `0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} ${gain} 0 0 0 ${bias}`
-  }
-  const region = { filterUnits: 'userSpaceOnUse', x: -10, y: 0, width: W + 20, height: H } as const
-
-  const radius = (mag: number) => Math.max(0.9, Math.min(2.8, 2.4 - mag * 0.5))
+  const radius = (mag: number) => Math.max(0.9, Math.min(2.6, 2.3 - mag * 0.45))
 </script>
 
 <div class="sky-window">
@@ -169,43 +135,59 @@
     focusable="false"
   >
     <defs>
-      <linearGradient id={'sky-' + uid} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color={gradient.top} />
-        <stop offset="1" stop-color={gradient.bottom} />
+      <pattern id={'dither-' + uid} width="4" height="4" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r=".75" fill="currentColor" />
+      </pattern>
+      <pattern id={'fine-' + uid} width="2.6" height="2.6" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r=".7" fill="currentColor" />
+      </pattern>
+      <linearGradient id={'land-' + uid} x2="0" y2="1">
+        <stop stop-color="white" />
+        <stop offset=".35" stop-color="white" />
+        <stop offset=".62" stop-color="white" stop-opacity=".55" />
+        <stop offset=".84" stop-color="white" stop-opacity=".15" />
+        <stop offset="1" stop-color="black" />
       </linearGradient>
-      <radialGradient id={'sun-' + uid}>
-        <stop offset="0" stop-color="#fffaf0" />
-        <stop offset="0.35" stop-color="#fff3d6" stop-opacity=".9" />
-        <stop offset="1" stop-color="#fff3d6" stop-opacity="0" />
+      <mask id={'fade-' + uid} maskContentUnits="objectBoundingBox">
+        <rect width="1" height="1" fill={'url(#land-' + uid + ')'} />
+      </mask>
+      <radialGradient id={'halo-' + uid}>
+        <stop stop-color="white" />
+        <stop offset=".45" stop-color="white" stop-opacity=".55" />
+        <stop offset="1" stop-color="black" />
       </radialGradient>
-      <filter id={'rough-' + uid} {...region}>
-        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3" result="n" />
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-      <filter id={'sky-grain-' + uid} {...region}>
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.11" numOctaves="2" seed="9" result="n" />
-        <feColorMatrix in="n" type="matrix" values={tint('#ffffff', 5, -2.4)} />
-      </filter>
-      <filter id={'fleck-' + uid} {...region}>
-        <feTurbulence type="fractalNoise" baseFrequency="0.07 0.55" numOctaves="2" seed="11" result="n" />
-        <feColorMatrix in="n" type="matrix" values={tint(gradient.bottom, 7, -3.6)} result="c" />
-        <feComposite in="c" in2="SourceGraphic" operator="in" />
-      </filter>
-      {#each layer as r, i}
-        <filter id={'streak-' + uid + '-' + i} {...region}>
-          <feTurbulence type="fractalNoise" baseFrequency={(0.028 + i * 0.006) + ' ' + (0.16 + i * 0.04)} numOctaves="2" seed={3 + i * 7} result="n" />
-          <feColorMatrix in="n" type="matrix" values={tint(r.ink, 7, -3.1)} result="c" />
-          <feComposite in="c" in2="SourceGraphic" operator="in" />
-        </filter>
-      {/each}
+      <mask id={'sunmask-' + uid} maskContentUnits="objectBoundingBox">
+        <rect width="1" height="1" fill={'url(#halo-' + uid + ')'} />
+      </mask>
+      <linearGradient id={'dusk-' + uid} x2="0" y2="1">
+        <stop stop-color="black" />
+        <stop offset=".7" stop-color="white" />
+        <stop offset="1" stop-color="black" />
+      </linearGradient>
+      <mask id={'duskmask-' + uid} maskContentUnits="objectBoundingBox">
+        <rect width="1" height="1" fill={'url(#dusk-' + uid + ')'} />
+      </mask>
     </defs>
 
-    <rect width={W} height={H} fill={'url(#sky-' + uid + ')'} />
-    <rect width={W} height={H} filter={'url(#sky-grain-' + uid + ')'} opacity={0.26 * (1 - dark) + 0.06 * dark} />
+    {#if glow > 0.02}
+      <rect
+        x="0"
+        y="34"
+        width={W}
+        height="44"
+        fill={'url(#dither-' + uid + ')'}
+        mask={'url(#duskmask-' + uid + ')'}
+        opacity={0.35 * glow}
+      />
+    {/if}
 
     {#if sunAt}
-      <circle cx={sunAt.x * W} cy={y(sunAt.y)} r="26" fill={'url(#sun-' + uid + ')'} />
-      <circle cx={sunAt.x * W} cy={y(sunAt.y)} r="5.5" fill="#fffaf0" />
+      <g class="sun">
+        <circle cx={sunAt.x * W} cy={y(sunAt.y)} r="7" class="sun-core" />
+        {#each [11, 15, 19.5, 24.5] as r, k}
+          <circle cx={sunAt.x * W} cy={y(sunAt.y)} {r} stroke-width={1 - k * 0.18} stroke-dasharray={k ? '2 ' + (1.5 + k) : 'none'} />
+        {/each}
+      </g>
     {/if}
 
     {#each figures as l, i (i)}
@@ -222,48 +204,42 @@
 
     {#each sky.placed as p, i (p.star.ra + ':' + p.star.dec)}
       <circle
-        class="star"
         class:twinkle={!reduced && i % 6 === 0}
-        style="animation-delay: {(i % 7) * 0.8}s; opacity: {Math.max(0.25, p.fade * Math.min(0.95, 0.85 - p.star.mag * 0.12))}"
+        style="animation-delay: {(i % 7) * 0.8}s"
+        fill="currentColor"
+        opacity={Math.max(0.3, p.fade * Math.min(1, 0.95 - p.star.mag * 0.12))}
         cx={p.x * W}
         cy={y(p.y)}
         r={radius(p.star.mag)}
       />
     {/each}
 
-    {#each layer as r, i}
-      <g filter={'url(#rough-' + uid + ')'}>
-        <path d={r.d} fill={r.fill} />
-        <path d={r.d} fill="#000" filter={'url(#streak-' + uid + '-' + i + ')'} opacity={r.inkOpacity} />
-        <path d={r.d} fill="#000" filter={'url(#fleck-' + uid + ')'} opacity={0.55 * (1 - dark) + 0.12 * dark} />
-        <path
-          d={r.crest}
-          fill="none"
-          stroke={r.ink}
-          stroke-opacity={(0.32 + i * 0.12) * (1 - dark * 0.7)}
-          stroke-width="1.1"
-          stroke-linecap="round"
-          vector-effect="non-scaling-stroke"
-        />
-      </g>
-    {/each}
+    <g mask={'url(#fade-' + uid + ')'}>
+      {#each ranges as r, i}
+        <clipPath id={'cut-' + uid + '-' + i}><path d={r.shape} /></clipPath>
+        <path d={r.shape} class="land" />
+        <g clip-path={'url(#cut-' + uid + '-' + i + ')'} class="hatch">
+          {#each r.hatch as h}
+            <path d={h.d} stroke-width={h.width} stroke-dasharray={h.dash} stroke-dashoffset={h.offset} />
+          {/each}
+        </g>
+        <path d={r.crest} class="crest" />
+      {/each}
+    </g>
   </svg>
 </div>
 
 <style>
   .sky-window {
-    height: 60px;
-    overflow: hidden;
-    border-bottom: 1px solid var(--reading-line);
+    height: 76px;
+    margin-bottom: -10px;
+    color: var(--brand);
     pointer-events: none;
     user-select: none;
   }
   @media (min-width: 768px) {
     .sky-window {
-      height: 76px;
-      border-radius: inherit;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+      height: 104px;
     }
   }
   svg {
@@ -271,14 +247,34 @@
     width: 100%;
     height: 100%;
   }
-  .star {
-    fill: #f6f3ea;
+  .land {
+    fill: var(--card, var(--background));
+  }
+  .hatch path,
+  .crest {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .crest {
+    stroke-width: 1.8;
+  }
+  .sun circle {
+    fill: none;
+    stroke: currentColor;
+    vector-effect: non-scaling-stroke;
+  }
+  .sun .sun-core {
+    fill: currentColor;
+    opacity: 0.85;
   }
   .figure {
-    stroke: #f6f3ea;
-    stroke-width: 1.1;
+    stroke: currentColor;
+    stroke-width: 1.5;
     stroke-linecap: round;
-    opacity: 0.32;
+    stroke-dasharray: 0.1 3.4;
+    opacity: 0.55;
   }
   .breathe {
     animation: sky-breathe 9s ease-in-out infinite;
@@ -286,10 +282,10 @@
   @keyframes sky-breathe {
     0%,
     100% {
-      opacity: 0.16;
+      opacity: 0.25;
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.75;
     }
   }
   .twinkle {

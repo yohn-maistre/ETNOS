@@ -30,6 +30,6 @@
 
 {#if rows.length||error}<section class="resident-requests" aria-label="Balasan Aksara">
   <header><span><Bot size={16}/>Aksara di percakapan ini</span><button type="button" aria-label="Periksa balasan Aksara" disabled={busy} onclick={()=>refresh()}><RefreshCw size={14} class={busy?'animate-spin':''}/></button></header>
-  {#each rows as row (row.postId)}<div class="resident-request-row"><span role="status">{#if row.state==='running'}<LoaderCircle size={14} class="animate-spin"/>{/if}{labels[row.state]}</span><a href={'/square/'+(row.replyId??row.postId)}>{row.replyId?'Lihat balasan':'Lihat pertanyaan'}<ArrowUpRight size={13}/></a></div>{/each}
+  {#each rows as row (row.postId)}<div class="resident-request-row"><span role="status">{#if row.state==='running'}<LoaderCircle size={14} class="animate-spin"/>{/if}{labels[row.state]}</span>{#if row.replyId}<a href={'#post-'+row.replyId}>Lihat balasan<ArrowUpRight size={13}/></a>{:else if row.postId!==postId}<a href={'/square/'+row.postId}>Lihat pertanyaan<ArrowUpRight size={13}/></a>{/if}</div>{/each}
   {#if error}<p role="status">{error}</p>{/if}
 </section>{/if}

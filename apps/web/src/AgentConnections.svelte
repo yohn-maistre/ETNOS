@@ -1,4 +1,5 @@
 <script lang="ts">
+  import StudioTabs from './StudioTabs.svelte'
   import {
     Bot,
     Plus,
@@ -161,6 +162,7 @@
 </script>
 
 <section class="agent-connections">
+{#if auth.actor}<StudioTabs current="agents" />{/if}
   <header>
     <Bot size={22} />
     <div>
