@@ -25,7 +25,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
       core.recoverInterrupted()
       if(env.STRATA_AUTH_MODE==='atproto'){
         if(!env.STRATA_OAUTH_JWK || !env.STRATA_AUTH_SEAL_KEY){
-          const publicApi=api(core,{runtime:'cloudflare-durable-object',principal:()=>undefined,writeGuard:()=>{throw new Fault(503,'Enrollment unavailable')}})
+          const publicApi=api(core,{runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE,principal:()=>undefined,writeGuard:()=>{throw new Fault(503,'Enrollment unavailable')}})
           const routes=agentRoutes(core,new AgentAccess(core,{operatorAllowed:()=>false}))
           this.handle=async request=>(await routes(request))??(new URL(request.url).pathname.startsWith('/auth/')?json(503,{error:'Sign-in is being configured'}):publicApi(request))
         }else{
@@ -38,10 +38,10 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           this.resident=new Resident(core,access,residentProvider)
           this.discovery=acquire?new Discovery(core,acquire):undefined
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
-          const handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
+          const handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
-      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,runtime:'cloudflare-durable-object'});this.resident=new Resident(core,access,residentProvider);this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
+      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
     })
   }
   private alarmUpdates:Promise<void>=Promise.resolve()

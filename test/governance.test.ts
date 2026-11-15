@@ -625,3 +625,55 @@ test("only a node steward sets a context's news places, and malformed slugs are 
     s.close();
   }
 });
+
+test("context hierarchy: only node stewards link, loops are refused, and detail lists public parents and children", async () => {
+  const f = fixture(),
+    { s, groups, owner, admin } = f;
+  try {
+    const make = (slug: string, kind: "place" | "region" | "topic", facet = "") =>
+      groups.createContext(admin.actor.id, { slug, title: slug.toUpperCase(), kind, facet, description: "Synthetic " + slug, language: "id", aliases: [] });
+    const region = make("wilayah-uji", "region", "customary-region"),
+      province = make("provinsi-uji", "region", "province"),
+      regency = make("kabupaten-uji", "place", "regency"),
+      district = make("distrik-uji", "place");
+    assert.equal(region.facet, "customary-region");
+    assert.throws(() => groups.linkContext(owner.actor.id, regency.id, province.id), /Node steward required/);
+    const handler = api(s, { stewardDid: admin.actor.did }),
+      post = (token: string, path: string, body: unknown) =>
+        handler(new Request(s.base + path, { method: "POST", headers: { authorization: "Bearer " + token, "content-type": "application/json" }, body: JSON.stringify(body) }));
+    assert.equal((await post(owner.token, "/v1/contexts/" + regency.id + "/parents", { parentId: province.id })).status, 403);
+    assert.equal(s.all("SELECT * FROM context_parents").length, 0);
+    assert.equal((await post(admin.token, "/v1/contexts/" + regency.slug + "/parents", { parentId: province.slug })).status, 200);
+    groups.linkContext(admin.actor.id, regency.id, region.id);
+    groups.linkContext(admin.actor.id, regency.id, region.id); // replay is a no-op
+    groups.linkContext(admin.actor.id, district.id, regency.id);
+    assert.equal(s.all("SELECT * FROM context_parents").length, 3);
+    // Direct and transitive loops are refused, as is a self-link.
+    assert.throws(() => groups.linkContext(admin.actor.id, province.id, regency.id), /cannot loop/);
+    assert.throws(() => groups.linkContext(admin.actor.id, region.id, district.id), /cannot loop/);
+    assert.throws(() => groups.linkContext(admin.actor.id, region.id, region.id), /cannot loop/);
+    assert.equal((await post(admin.token, "/v1/contexts/" + province.id + "/parents", { parentId: district.id })).status, 409);
+    assert.equal(s.all("SELECT * FROM context_parents").length, 3);
+    const detail = groups.contextDetail(regency.slug);
+    assert.deepEqual(detail.parents.map((p) => p.slug), ["provinsi-uji", "wilayah-uji"]);
+    assert.deepEqual(detail.children.map((c) => c.slug), ["distrik-uji"]);
+    assert.deepEqual(groups.contextDetail(region.id).children.map((c) => [c.slug, c.facet]), [["kabupaten-uji", "regency"]]);
+    assert.equal(groups.contextDetail(province.id).childCount, 1);
+    const listed = groups.contexts().find((c) => c.id === regency.id)!;
+    assert.deepEqual([...listed.parents].sort(), [province.id, region.id].sort());
+    const read = (await (await handler(new Request(s.base + "/v1/contexts/" + region.slug))).json()) as { children: { slug: string }[] };
+    assert.deepEqual(read.children.map((c) => c.slug), ["kabupaten-uji"]);
+    // A retired context leaves both lists; only a node steward may unlink.
+    s.run("UPDATE contexts SET active=0 WHERE id=?", district.id);
+    assert.deepEqual(groups.contextDetail(regency.id).children, []);
+    assert.equal(groups.contextDetail(regency.id).childCount, 0);
+    assert.throws(() => groups.unlinkContext(owner.actor.id, regency.id, region.id), /Node steward required/);
+    assert.equal((await post(admin.token, "/v1/contexts/" + regency.id + "/parents", { parentId: region.id, remove: true })).status, 200);
+    assert.deepEqual(groups.contextDetail(regency.id).parents.map((p) => p.slug), ["provinsi-uji"]);
+    assert.deepEqual(groups.contextDetail(region.id).children, []);
+    assert.equal(s.all("SELECT * FROM audit WHERE action='context.link'").length, 3);
+    assert.equal(s.all("SELECT * FROM audit WHERE action='context.unlink'").length, 1);
+  } finally {
+    s.close();
+  }
+});

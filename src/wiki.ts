@@ -223,10 +223,11 @@ export class Wiki {
     return {pageId:page.id,title:page.title,steps}
   }
   /** Deterministic public gaps: active contexts without an accepted public
-   * page, and accepted pages whose current revision cites nothing. Pending
+   * page (regions and places before topics and languages, so a large language
+   * catalogue does not crowd out places), and accepted pages whose current revision cites nothing. Pending
    * drafts and private rooms neither fill nor reveal a gap. */
   gaps(){
-    const contexts=this.store.all<{id:string;slug:string;title:string;kind:string}>(`SELECT x.id,x.slug,x.title,x.kind FROM contexts x WHERE x.active=1 AND NOT EXISTS(SELECT 1 FROM record_contexts l JOIN wiki_pages w ON w.id=l.record_id JOIN communities c ON c.id=w.community_id WHERE l.record_kind='wiki' AND l.context_id=x.id AND c.visibility='public' AND w.draft=0 AND w.revision_id IS NOT NULL) ORDER BY x.kind,x.title LIMIT 50`)
+    const contexts=this.store.all<{id:string;slug:string;title:string;kind:string}>(`SELECT x.id,x.slug,x.title,x.kind FROM contexts x WHERE x.active=1 AND NOT EXISTS(SELECT 1 FROM record_contexts l JOIN wiki_pages w ON w.id=l.record_id JOIN communities c ON c.id=w.community_id WHERE l.record_kind='wiki' AND l.context_id=x.id AND c.visibility='public' AND w.draft=0 AND w.revision_id IS NOT NULL) ORDER BY CASE x.kind WHEN 'region' THEN 0 WHEN 'place' THEN 1 WHEN 'topic' THEN 2 ELSE 3 END,x.title LIMIT 50`)
     const uncited=this.store.all<{id:string;title:string;community_id:string}>(`SELECT w.id,w.title,w.community_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 AND r.citations='[]' ORDER BY r.created DESC,w.id LIMIT 20`)
     return {contexts,uncited}
   }

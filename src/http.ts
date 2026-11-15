@@ -6,7 +6,7 @@ import {agentRoutes} from './agent-mcp.ts'
 import type { StrataCore } from './core.ts'
 
 /** Loopback HTTP transport; the application handler is shared with Workers. */
-export function server(store: StrataCore, options: { custodyFixture?: boolean } = {}) {
+export function server(store: StrataCore, options: { custodyFixture?: boolean; catalogue?: string } = {}) {
   const access=new AgentAccess(store),routes=agentRoutes(store,access),app=api(store,{...options,agentAccess:access})
   const handle=async(req:Request)=>(await routes(req))??app(req)
   return createServer(async(req,res)=>{

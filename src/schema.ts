@@ -388,6 +388,10 @@ CREATE INDEX resident_actor_budget ON resident_jobs(agent_id,created);
 CREATE TABLE resident_tool_calls(id TEXT PRIMARY KEY,job_id TEXT NOT NULL REFERENCES resident_jobs(id),generation INTEGER NOT NULL,tool TEXT NOT NULL CHECK(tool IN ('search_reviewed_wiki','web_search','web_fetch')),request_key TEXT NOT NULL,state TEXT NOT NULL CHECK(state IN ('reserved','observed')),created INTEGER NOT NULL,UNIQUE(job_id,generation,request_key));
 CREATE INDEX resident_tool_budget ON resident_tool_calls(created,tool);
 CREATE TABLE resident_job_citations(job_id TEXT NOT NULL REFERENCES resident_jobs(id),generation INTEGER NOT NULL,url TEXT NOT NULL,origin TEXT NOT NULL CHECK(origin IN ('wiki','web')),title TEXT NOT NULL,call_id TEXT NOT NULL REFERENCES resident_tool_calls(id),created INTEGER NOT NULL,PRIMARY KEY(job_id,generation,url));
+`, `
+CREATE TABLE context_parents(context_id TEXT NOT NULL REFERENCES contexts(id),parent_id TEXT NOT NULL REFERENCES contexts(id),issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(context_id,parent_id),CHECK(context_id<>parent_id));
+CREATE INDEX context_children ON context_parents(parent_id,context_id);
+ALTER TABLE contexts ADD COLUMN facet TEXT NOT NULL DEFAULT '';
 `]
 
 export const schemaVersion=migrations.length

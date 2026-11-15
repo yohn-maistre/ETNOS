@@ -10,7 +10,10 @@
     LockKeyhole,
     MapPin,
     Hash,
+    Languages,
+    Landmark,
   } from '@lucide/svelte'
+  import { contextTree, facetNames, type ContextNode, type ContextBranch } from './context-tree'
   import {
     request,
     initials,
@@ -24,13 +27,7 @@
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
   type View = 'rooms' | 'organizations' | 'places' | 'topics' | 'joined'
-  type Place = {
-    id: string
-    slug: string
-    title: string
-    description: string
-    kind: string
-  }
+  type Place = ContextNode
   type Group = {
     id: string
     title: string
@@ -126,10 +123,28 @@
   const placesList = $derived(
     places.filter(
       (p) =>
-        (view === 'topics' ? p.kind === 'topic' : p.kind !== 'topic') &&
+        (view !== 'topics' || p.kind === 'topic') &&
         (!placeKind || p.kind === placeKind) &&
-        match(p.title, p.description),
+        match(p.title, p.description + ' ' + (p.aliases ?? []).filter((a) => !a.includes(':')).join(' ')),
     ),
+  )
+  // Without a search or kind filter the directory reads as a map: regions with
+  // their regencies, provinces, languages, then topics and kinds of institution.
+  const browsing = $derived(!query.trim() && !placeKind)
+  const tree = $derived(contextTree(places))
+  const otherPlaces = $derived(tree.other.filter((o) => o.kind !== 'topic')),
+    otherTopics = $derived(tree.other.filter((o) => o.kind === 'topic'))
+  let languageQuery = $state(''),
+    allLanguages = $state(false)
+  const languageMatches = $derived(
+    tree.languages.filter((l) =>
+      (l.title + ' ' + l.description)
+        .toLocaleLowerCase()
+        .includes(languageQuery.trim().toLocaleLowerCase()),
+    ),
+  )
+  const shownLanguages = $derived(
+    allLanguages || languageQuery.trim() ? languageMatches : languageMatches.slice(0, 40),
   )
   function create() {
     if (!auth.actor) {
@@ -211,7 +226,6 @@
         items={[
           { value: '', label: 'Semua jenis' },
           ...Object.entries(kindNames)
-            .filter(([value]) => value !== 'topic')
             .map(([value, label]) => ({
               value,
               label,
@@ -243,25 +257,89 @@
       >
         Belum ada organisasi yang cocok.
       </p>{/if}
+  {:else if (view === 'places' || view === 'topics') && browsing && places.length}
+    <div class="context-map">
+      {#if view === 'places' && (tree.regions.length || tree.provinces.length || tree.languages.length)}<nav
+          class="context-map-jump"
+          aria-label="Bagian direktori"
+        >
+          {#if tree.regions.length}<a href="#wilayah-adat">Wilayah adat</a>{/if}
+          {#if tree.provinces.length}<a href="#provinsi">Provinsi</a>{/if}
+          {#if tree.languages.length}<a href="#bahasa">Bahasa</a>{/if}
+          {#if tree.lenses.length || tree.topicGroups.length}<a href="#topik">Topik</a>{/if}
+        </nav>{/if}
+      {#if view === 'places' && tree.regions.length}<section
+          id="wilayah-adat"
+          class="context-map-section"
+          aria-labelledby="wilayah-adat-heading"
+        >
+          <h2 id="wilayah-adat-heading">Wilayah adat</h2>
+          <p class="context-map-note">
+            Wilayah acuan yang digeneralisasi, bukan batas tanah adat.
+          </p>
+          {#each tree.regions as branch (branch.node.id)}{@render branchBlock(branch, true)}{/each}
+        </section>{/if}
+      {#if view === 'places' && tree.provinces.length}<section
+          id="provinsi"
+          class="context-map-section"
+          aria-labelledby="provinsi-heading"
+        >
+          <h2 id="provinsi-heading">Provinsi</h2>
+          {#each tree.provinces as branch (branch.node.id)}{@render branchBlock(branch, false)}{/each}
+        </section>{/if}
+      {#if view === 'places' && otherPlaces.length}<section
+          class="context-map-section"
+          aria-labelledby="tempat-lain-heading"
+        >
+          <h2 id="tempat-lain-heading">
+            {tree.regions.length || tree.provinces.length ? 'Tempat lain' : 'Tempat & wilayah'}
+          </h2>
+          {#each otherPlaces as place (place.id)}{@render contextRow(place)}{/each}
+        </section>{/if}
+      {#if view === 'places' && tree.languages.length}<section
+          id="bahasa"
+          class="context-map-section"
+          aria-labelledby="bahasa-heading"
+        >
+          <h2 id="bahasa-heading">
+            Bahasa <span>{tree.languages.length}</span>
+          </h2>
+          <label class="context-map-filter">
+            <Languages size={17} /><Input
+              type="search"
+              aria-label="Cari bahasa"
+              placeholder={'Cari di antara ' + tree.languages.length + ' bahasa atau rumpun…'}
+              bind:value={languageQuery}
+              autocomplete="off"
+            />
+          </label>
+          <div class="context-chips">
+            {#each shownLanguages as l (l.id)}<a href={'/contexts/' + l.slug}>{l.title}</a>{/each}
+          </div>
+          {#if !languageMatches.length}<p class="context-map-note">
+              Belum ada bahasa yang cocok.
+            </p>{:else if shownLanguages.length < languageMatches.length}<Button
+              variant="outline"
+              class="context-map-more"
+              onclick={() => (allLanguages = true)}
+            >
+              Tampilkan semua {languageMatches.length} bahasa
+            </Button>{/if}
+        </section>{/if}
+      {#if tree.lenses.length || tree.topicGroups.length || otherTopics.length}<section
+          id="topik"
+          class="context-map-section"
+          aria-labelledby="topik-heading"
+        >
+          <h2 id="topik-heading">Topik</h2>
+          {#if tree.lenses.length || otherTopics.length}<div class="context-chips">
+              {#each [...tree.lenses, ...otherTopics] as t (t.id)}<a href={'/contexts/' + t.slug}><Hash size={14} />{t.title}</a>{/each}
+            </div>{/if}
+          {#each tree.topicGroups as branch (branch.node.id)}{@render branchBlock(branch, true)}{/each}
+        </section>{/if}
+    </div>
   {:else if view === 'places' || view === 'topics'}
-    {#each placesList as place}<a
-        href={'/contexts/' + place.slug}
-        class="directory-row"
-      >
-        <span class="directory-avatar avatar-tinted" style={avatarTone(place.id)}>
-          {#if place.kind === 'topic'}<Hash size={22} />{:else}<MapPin
-              size={22}
-            />{/if}
-        </span>
-        <div>
-          <strong>{place.title}</strong>
-          {#if place.description}<p>{place.description}</p>{/if}
-          {#if view !== 'topics'}<small>
-              {kindNames[place.kind] ?? place.kind}
-            </small>{/if}
-        </div>
-        <ArrowUpRight size={17} />
-      </a>{/each}
+    {#each placesList as place (place.id)}{@render contextRow(place)}{/each}
     {#if !placesList.length && !pending && !error}<div
         class="search-state directory-empty"
       >
@@ -317,4 +395,36 @@
     </div>
     <ArrowUpRight size={17} />
   </a>
+{/snippet}
+{#snippet contextRow(place: Place)}
+  <a href={'/contexts/' + place.slug} class="directory-row">
+    <span class="directory-avatar avatar-tinted" style={avatarTone(place.id)}>
+      {#if place.kind === 'topic'}<Hash size={22} />{:else if place.kind === 'language'}<Languages
+          size={22}
+        />{:else}<MapPin size={22} />{/if}
+    </span>
+    <div>
+      <strong>{place.title}</strong>
+      {#if place.description}<p>{place.description}</p>{/if}
+      {#if view !== 'topics'}<small>
+          {facetNames[place.facet ?? ''] ?? kindNames[place.kind] ?? place.kind}
+        </small>{/if}
+    </div>
+    <ArrowUpRight size={17} />
+  </a>
+{/snippet}
+{#snippet branchBlock(branch: ContextBranch, open: boolean)}
+  <details class="context-branch" {open}>
+    <summary>
+      <span class="context-branch-title">
+        {#if branch.node.kind === 'topic'}<Landmark size={17} />{:else}<MapPin size={17} />{/if}
+        <strong>{branch.node.title}</strong>
+      </span>
+      <small>{branch.children.length}</small>
+    </summary>
+    <div class="context-chips">
+      <a class="context-chip-parent" href={'/contexts/' + branch.node.slug}>Buka {branch.node.title}<ArrowUpRight size={14} /></a>
+      {#each branch.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}
+    </div>
+  </details>
 {/snippet}

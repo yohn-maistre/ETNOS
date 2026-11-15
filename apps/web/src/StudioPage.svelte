@@ -2,7 +2,7 @@
  import StudioTabs from './StudioTabs.svelte'
  import {notify} from './notifications.svelte'
  import {untrack} from 'svelte'
- import {Radio,Rss,Bot,Pause,Play,Plus,ArrowUpRight,RefreshCw,BookOpen,CheckCircle2} from '@lucide/svelte'
+ import {Radio,Rss,Bot,Pause,Play,Plus,ArrowUpRight,RefreshCw,BookOpen,CheckCircle2,MapPin} from '@lucide/svelte'
  import {request,ApiError,relativeDate,type Auth,type Community} from './api'
  import {residentJobMessage} from './resident-job-ui'
  import {Button} from '$lib/components/ui/button/index.js'
@@ -25,6 +25,12 @@
  let mentionsEnabled=$state(false)
  let includeDefaultSource=$state(true),enableAutomation=$state(false)
  let generation=0
+ // Node stewards load the deployment's shipped catalogue of places, languages and topics.
+ type CatalogueInfo={name:string;entries:number;kinds:Record<string,number>}
+ type CatalogueResult={created:number;updated:number;linked:number;skipped:number;refused:number}
+ let catalogueInfo=$state<CatalogueInfo|null>(null),catalogueResult=$state<CatalogueResult|null>(null),catalogueBusy=$state(false),catalogueError=$state('')
+ $effect(()=>{if(!auth.steward)return;const controller=new AbortController();request<CatalogueInfo>('/v1/contexts/catalogue',undefined,controller.signal,true).then(c=>{if(!controller.signal.aborted)catalogueInfo=c}).catch(()=>{/* No catalogue for this deployment. */});return()=>controller.abort()})
+ async function loadCatalogue(){if(catalogueBusy)return;catalogueBusy=true;catalogueError='';try{catalogueResult=await request<CatalogueResult>('/v1/contexts/catalogue',{});notify(catalogueResult.created||catalogueResult.linked||catalogueResult.updated?'Katalog dimuat.':'Katalog sudah lengkap. Tidak ada yang diubah.')}catch(e){catalogueError=e instanceof Error?e.message:'Katalog belum dapat dimuat.'}finally{catalogueBusy=false}}
  async function load(){const mine=++generation;loading=true;error=''
   try{const info=await request<{communities:Room[];residentProvider:string;acquisitionConfigured:boolean}>('/v1/studio');if(mine!==generation)return;rooms=info.communities;provider=info.residentProvider;acquisition=info.acquisitionConfigured;scope=rooms.some(r=>r.id===scope)?scope:rooms.find(r=>r.visibility==='public')?.id??'';await loadScope(scope,mine)}catch(e){error=e instanceof Error?e.message:'Studio belum dapat dimuat.'}finally{if(mine===generation)loading=false}}
  async function loadScope(id:string,mine=++generation){error='';resident=null;sources=[];items=[];jobs=[];entries=[]
@@ -53,6 +59,12 @@
 {:else if loading}<ContentSkeleton/>{:else}
  <div class="commons-page-head"><div><h1>Studio</h1><p class="cx-hint">Sumber, pengetahuan & penghuni komunitas.</p></div><a class="commons-quiet-link" href="/wiki"><BookOpen size={16}/>Catatan bersama</a></div>
  {#if error}<p class="commons-alert" role="alert">{error}</p>{/if}
+ {#if auth.steward}<section class="studio-catalogue" aria-labelledby="studio-catalogue-heading"><div class="commons-section-heading"><h2 id="studio-catalogue-heading">Katalog tempat</h2><a class="commons-quiet-link" href="/contexts">Lihat tempat<ArrowUpRight size={14}/></a></div><div class="studio-catalogue-body">
+  <p class="cx-hint">{catalogueInfo?catalogueInfo.entries+' konteks: wilayah, provinsi, kabupaten dan kota, bahasa, serta topik. ':''}Yang belum ada akan dibuat. Judul dan keterangan yang sudah disunting tidak diubah, dan tidak ada yang dihapus.</p>
+  <Button variant="outline" disabled={catalogueBusy||!catalogueInfo} onclick={()=>void loadCatalogue()}><MapPin size={15}/>{catalogueBusy?'Memuat…':'Muat katalog '+(catalogueInfo?.name??'')}</Button>
+  {#if catalogueResult}<p class="studio-catalogue-result" role="status"><span><strong>{catalogueResult.created}</strong> dibuat</span><span><strong>{catalogueResult.linked}</strong> tautan induk</span><span><strong>{catalogueResult.updated}</strong> dilengkapi</span><span><strong>{catalogueResult.skipped}</strong> sudah ada</span>{#if catalogueResult.refused}<span><strong>{catalogueResult.refused}</strong> tidak ditautkan</span>{/if}</p>{/if}
+  {#if catalogueError}<p class="commons-inline-error" role="alert">{catalogueError}</p>{/if}
+ </div></section>{/if}
  {#if !rooms.length}<div class="strata-nodata"><h2>Ruang untuk para pengelola</h2><p>Studio tersedia untuk komunitas yang kamu kelola.</p><Button variant="outline" href="/communities">Lihat komunitas</Button></div>{:else}
  <div class="commons-scope"><label for="studio-scope">Komunitas</label><select id="studio-scope" disabled={busy} bind:value={scope} onchange={()=>void loadScope(scope)}><option value="">Pilih komunitas publik</option>{#each rooms.filter(r=>r.visibility==='public') as room}<option value={room.id}>{room.title}</option>{/each}</select></div>
  {#if scope}

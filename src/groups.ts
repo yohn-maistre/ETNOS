@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { StrataCore, Fault, type Community } from "./core.ts";
+import type { Catalogue } from "./catalogue.ts";
 
 export type Group = {
   id: string;
@@ -20,11 +21,26 @@ export type Context = {
   slug: string;
   title: string;
   kind: "place" | "region" | "topic" | "language";
+  /** Finer, deployment-defined grouping, e.g. `customary-region` or `province`. Empty when unset. */
+  facet: string;
   description: string;
   language: string;
   aliases: string[];
   created: number;
 };
+export type ContextRef = Pick<Context, "id" | "slug" | "title" | "kind" | "facet">;
+type ContextParams = {
+  slug: string;
+  title: string;
+  kind: Context["kind"];
+  facet?: string;
+  description: string;
+  language: string;
+  aliases: string[];
+};
+const contextKinds = ["place", "region", "topic", "language"];
+const slugRule = /^[a-z0-9][a-z0-9-]{1,63}$/;
+const facetRule = /^(?:[a-z][a-z-]{0,39})?$/;
 type ContextRow = Omit<Context, "aliases"> & {
   aliases: string;
   active: number;
@@ -325,48 +341,199 @@ export class Groups implements GroupAuthority {
     const { active: _active, ...rest } = c;
     return { ...rest, aliases: JSON.parse(c.aliases) as string[] };
   }
+  /** Every public context with its parent ids, so a directory can draw the hierarchy in one read. */
   contexts() {
+    const parents = new Map<string, string[]>();
+    for (const l of this.store.all<{ context_id: string; parent_id: string }>(
+      "SELECT l.context_id,l.parent_id FROM context_parents l JOIN contexts p ON p.id=l.parent_id AND p.active=1 ORDER BY l.created,l.parent_id LIMIT 5000",
+    ))
+      parents.set(l.context_id, [...(parents.get(l.context_id) ?? []), l.parent_id]);
     return this.store
       .all<ContextRow>(
-        "SELECT * FROM contexts WHERE active=1 ORDER BY kind,title LIMIT 200",
+        "SELECT * FROM contexts WHERE active=1 ORDER BY kind,title LIMIT 1000",
       )
-      .map((c) => this.contextView(c));
+      .map((c) => ({ ...this.contextView(c), parents: parents.get(c.id) ?? [] }));
   }
-  createContext(
-    actorId: string,
-    params: {
-      slug: string;
-      title: string;
-      kind: Context["kind"];
-      description: string;
-      language: string;
-      aliases: string[];
-    },
-  ) {
+  createContext(actorId: string, params: ContextParams) {
     return this.store.tx(() => {
       this.nodeSteward(actorId);
-      if (
-        !/^[a-z0-9][a-z0-9-]{1,63}$/.test(params.slug) ||
-        !["place", "region", "topic", "language"].includes(params.kind)
-      )
-        throw new Fault(400, "Invalid public context");
+      this.validContext(params);
       if (this.store.get("SELECT 1 FROM contexts WHERE slug=?", params.slug))
         throw new Fault(409, "Context slug already exists");
-      const id = randomUUID(),
-        aliases = strings(params.aliases, 20).map((a) => text(a, 100));
-      this.store.run(
-        "INSERT INTO contexts VALUES(?,?,?,?,?,?,?,?,1)",
-        id,
-        params.slug,
-        text(params.title, 100),
-        params.kind,
-        text(params.description, 2000),
-        text(params.language, 40),
-        JSON.stringify(aliases),
-        this.store.clock(),
-      );
+      const id = this.insertContext(params);
       this.store.audit(actorId, "context.create", id);
       return this.context(id);
+    });
+  }
+  private validContext(params: ContextParams) {
+    if (
+      !params ||
+      typeof params.slug !== "string" ||
+      !slugRule.test(params.slug) ||
+      !contextKinds.includes(params.kind) ||
+      typeof (params.facet ?? "") !== "string" ||
+      !facetRule.test(params.facet ?? "")
+    )
+      throw new Fault(400, "Invalid public context");
+  }
+  private insertContext(params: ContextParams) {
+    this.validContext(params);
+    const id = randomUUID(),
+      aliases = strings(params.aliases, 20).map((a) => text(a, 100));
+    this.store.run(
+      "INSERT INTO contexts(id,slug,title,kind,description,language,aliases,created,active,facet) VALUES(?,?,?,?,?,?,?,?,1,?)",
+      id,
+      params.slug,
+      text(params.title, 100),
+      params.kind,
+      text(params.description, 2000),
+      text(params.language, 40),
+      JSON.stringify(aliases),
+      this.store.clock(),
+      params.facet ?? "",
+    );
+    return id;
+  }
+  /** True when `parentId` already descends from `childId`, so linking would close a loop. */
+  private wouldCycle(childId: string, parentId: string) {
+    return !!this.store.get(
+      "WITH RECURSIVE up(id,depth) AS (SELECT ?,0 UNION SELECT l.parent_id,up.depth+1 FROM context_parents l JOIN up ON l.context_id=up.id WHERE up.depth<64) SELECT 1 FROM up WHERE id=? LIMIT 1",
+      parentId,
+      childId,
+    );
+  }
+  private linked(childId: string, parentId: string) {
+    return !!this.store.get(
+      "SELECT 1 FROM context_parents WHERE context_id=? AND parent_id=?",
+      childId,
+      parentId,
+    );
+  }
+  private insertLink(actorId: string, childId: string, parentId: string) {
+    if (childId === parentId || this.wouldCycle(childId, parentId))
+      throw new Fault(409, "Context hierarchy cannot loop");
+    if (
+      this.store.get<{ n: number }>(
+        "SELECT count(*) n FROM context_parents WHERE context_id=?",
+        childId,
+      )!.n >= 20
+    )
+      throw new Fault(400, "At most 20 parent contexts");
+    this.store.run(
+      "INSERT INTO context_parents(context_id,parent_id,issuer_id,created) VALUES(?,?,?,?)",
+      childId,
+      parentId,
+      actorId,
+      this.store.clock(),
+    );
+  }
+  /** Node stewards place a public context under another; a regency may sit under a province and a region. */
+  linkContext(actorId: string, contextId: string, parentId: string) {
+    return this.store.tx(() => {
+      this.nodeSteward(actorId);
+      const child = this.context(contextId),
+        parent = this.context(parentId);
+      if (!this.linked(child.id, parent.id)) {
+        this.insertLink(actorId, child.id, parent.id);
+        this.store.audit(actorId, "context.link", child.id);
+      }
+      return this.contextDetail(child.id);
+    });
+  }
+  unlinkContext(actorId: string, contextId: string, parentId: string) {
+    return this.store.tx(() => {
+      this.nodeSteward(actorId);
+      const child = this.context(contextId),
+        parent = this.context(parentId);
+      if (this.linked(child.id, parent.id)) {
+        this.store.run(
+          "DELETE FROM context_parents WHERE context_id=? AND parent_id=?",
+          child.id,
+          parent.id,
+        );
+        this.store.audit(actorId, "context.unlink", child.id);
+      }
+      return this.contextDetail(child.id);
+    });
+  }
+  /** Idempotent catalogue load. Creates missing contexts and adds missing aliases
+   * and parent links; fills only empty fields; never deletes, renames or rewrites
+   * what a steward edited. Retired contexts stay retired, and records attached to
+   * contexts are not touched. */
+  importCatalogue(actorId: string, catalogue: Catalogue) {
+    return this.store.tx(() => {
+      this.nodeSteward(actorId);
+      if (!catalogue || !Array.isArray(catalogue.entries) || catalogue.entries.length > 2000)
+        throw new Fault(400, "Invalid catalogue");
+      const seen = new Set<string>();
+      for (const e of catalogue.entries) {
+        this.validContext(e);
+        if (seen.has(e.slug) || !Array.isArray(e.parents) || e.parents.some((p) => typeof p !== "string"))
+          throw new Fault(400, "Invalid catalogue entry");
+        seen.add(e.slug);
+      }
+      let created = 0,
+        updated = 0,
+        skipped = 0,
+        linked = 0,
+        refused = 0;
+      for (const e of catalogue.entries) {
+        const row = this.store.get<ContextRow>("SELECT * FROM contexts WHERE slug=?", e.slug);
+        if (!row) {
+          this.insertContext(e);
+          created++;
+          continue;
+        }
+        if (!row.active) {
+          skipped++;
+          continue;
+        }
+        const aliases = JSON.parse(row.aliases) as string[],
+          additions = strings(e.aliases, 20)
+            .map((a) => text(a, 100))
+            .filter((a) => !aliases.includes(a))
+            .slice(0, Math.max(0, 20 - aliases.length)),
+          facet = row.facet || e.facet || "",
+          title = row.title.trim() ? row.title : text(e.title, 100),
+          description = row.description.trim() ? row.description : text(e.description, 2000);
+        if (!additions.length && facet === row.facet && title === row.title && description === row.description) {
+          skipped++;
+          continue;
+        }
+        this.store.run(
+          "UPDATE contexts SET title=?,description=?,facet=?,aliases=? WHERE id=?",
+          title,
+          description,
+          facet,
+          JSON.stringify([...aliases, ...additions]),
+          row.id,
+        );
+        updated++;
+      }
+      const active = (slug: string) =>
+        this.store.get<{ id: string }>("SELECT id FROM contexts WHERE slug=? AND active=1", slug)?.id;
+      for (const e of catalogue.entries) {
+        const child = active(e.slug);
+        for (const slug of e.parents) {
+          const parent = active(slug);
+          if (child && parent && this.linked(child, parent)) continue;
+          if (!child || !parent) {
+            refused++;
+            continue;
+          }
+          try {
+            this.insertLink(actorId, child, parent);
+            linked++;
+          } catch (error) {
+            // A steward's own link already points the other way, or the context is full.
+            if (!(error instanceof Fault)) throw error;
+            refused++;
+          }
+        }
+      }
+      if (created || updated || linked)
+        this.store.audit(actorId, "context.catalogue", text(catalogue.name, 100));
+      return { created, updated, linked, skipped, refused };
     });
   }
   /** Node stewards may correct a public context's alternative names. `kabar:<slug>` names a news-desk place. */
@@ -493,7 +660,19 @@ export class Groups implements GroupAuthority {
       `SELECT w.id,w.title,w.community_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND w.revision_id IS NOT NULL AND EXISTS(SELECT 1 FROM record_contexts l WHERE l.record_kind='wiki' AND l.record_id=w.id AND l.context_id=?) ORDER BY w.title LIMIT 50`,
       c.id,
     );
-    return { ...c, groups, pages, newsPlaces: newsPlaces(c) };
+    const parents = this.store.all<ContextRef>(
+      "SELECT p.id,p.slug,p.title,p.kind,p.facet FROM context_parents l JOIN contexts p ON p.id=l.parent_id WHERE l.context_id=? AND p.active=1 ORDER BY l.created,p.title LIMIT 20",
+      c.id,
+    );
+    const children = this.store.all<ContextRef>(
+      "SELECT x.id,x.slug,x.title,x.kind,x.facet FROM context_parents l JOIN contexts x ON x.id=l.context_id WHERE l.parent_id=? AND x.active=1 ORDER BY x.title LIMIT 200",
+      c.id,
+    );
+    const childCount = this.store.get<{ n: number }>(
+      "SELECT count(*) n FROM context_parents l JOIN contexts x ON x.id=l.context_id WHERE l.parent_id=? AND x.active=1",
+      c.id,
+    )!.n;
+    return { ...c, groups, pages, parents, children, childCount, newsPlaces: newsPlaces(c) };
   }
 }
 

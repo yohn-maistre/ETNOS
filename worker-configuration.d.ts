@@ -14,6 +14,7 @@ interface __BaseEnv_Env {
 	STRATA_OAUTH_HOSTS: string;
 	STRATA_DECISIONS_ENABLED: string;
 	STRATA_RESIDENT_RESEARCH?: string;
+	STRATA_CATALOGUE?: string;
 	STRATA_SOURCE_ORIGINS: string;
 	STRATA_OAUTH_JWK: string;
 	STRATA_AUTH_SEAL_KEY: string;
@@ -33,7 +34,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "STRATA_ORIGIN" | "STRATA_NODE" | "STRATA_AUTH_MODE" | "STRATA_ENROLLMENT_MODE" | "STRATA_CLIENT_NAME" | "STRATA_STEWARD_DID" | "STRATA_COLLECTION" | "STRATA_PUBLISHING_ENABLED" | "STRATA_OAUTH_HOSTS" | "STRATA_DECISIONS_ENABLED" | "STRATA_SOURCE_ORIGINS" | "STRATA_OAUTH_JWK" | "STRATA_AUTH_SEAL_KEY">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "STRATA_ORIGIN" | "STRATA_NODE" | "STRATA_AUTH_MODE" | "STRATA_ENROLLMENT_MODE" | "STRATA_CLIENT_NAME" | "STRATA_STEWARD_DID" | "STRATA_COLLECTION" | "STRATA_PUBLISHING_ENABLED" | "STRATA_OAUTH_HOSTS" | "STRATA_DECISIONS_ENABLED" | "STRATA_SOURCE_ORIGINS" | "STRATA_CATALOGUE" | "STRATA_OAUTH_JWK" | "STRATA_AUTH_SEAL_KEY">> {}
 }
 declare module "*.txt" {
 	const value: string;
