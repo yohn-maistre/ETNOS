@@ -147,7 +147,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (parts.length === 3 && parts[1] === 'communities') {
           const c = store.community(parts[2])
           if (c.visibility === 'hidden-private' && !store.canRead(actor?.id,c)) throw new Fault(404,'Not found')
-          result = c // Listed-private metadata is intentionally public; no membership or counts.
+          result = {...c,contexts:groups.communityContexts(c.id)} // Listed-private metadata is intentionally public; no membership or counts.
         }
         else if (path === '/v1/feed') result = store.feed(actor?.id, url.searchParams.get('q') ?? '')
         else if (path === '/v1/feed/page') result=store.feedPage(actor?.id,{
@@ -251,6 +251,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='work-grants'&&parts[3]==='revoke')result=work.revoke(caller,parts[2])
       else if(path==='/v1/editorial-mandates')result=wiki.grant(caller,string(b.agentId),string(b.communityId),string(b.purpose),Number(b.expires),b.hourlyLimit===undefined?3:Number(b.hourlyLimit))
       else if(parts.length===4&&parts[1]==='editorial-mandates'&&parts[3]==='revoke')result=wiki.revoke(caller,parts[2])
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'contexts') result=groups.labelCommunity(caller,parts[2],string(b.contextId),b.remove===true)
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'join') result = store.join(caller,parts[2])
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'requests') result = store.requestJoin(caller,parts[2],string(b.message))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'decide') {

@@ -392,6 +392,9 @@ CREATE TABLE resident_job_citations(job_id TEXT NOT NULL REFERENCES resident_job
 CREATE TABLE context_parents(context_id TEXT NOT NULL REFERENCES contexts(id),parent_id TEXT NOT NULL REFERENCES contexts(id),issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(context_id,parent_id),CHECK(context_id<>parent_id));
 CREATE INDEX context_children ON context_parents(parent_id,context_id);
 ALTER TABLE contexts ADD COLUMN facet TEXT NOT NULL DEFAULT '';
+`, `
+CREATE TABLE community_contexts(community_id TEXT NOT NULL REFERENCES communities(id),context_id TEXT NOT NULL REFERENCES contexts(id),issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(community_id,context_id));
+CREATE INDEX community_context_lookup ON community_contexts(context_id,community_id);
 `]
 
 export const schemaVersion=migrations.length

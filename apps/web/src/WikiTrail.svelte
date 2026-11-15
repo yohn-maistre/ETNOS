@@ -76,7 +76,7 @@
               <strong>{step.label}</strong>
               <ul>
                 {#each step.items ?? [] as item}
-                  <li><a href={item.href} target={item.news ? undefined : '_blank'} rel={item.news ? undefined : 'noreferrer'}>{item.news ? (titles[item.href] ?? 'Kabar dari meja kabar') : item.label}</a></li>
+                  <li><a href={item.href} target={item.news ? undefined : '_blank'} rel={item.news ? undefined : 'noreferrer'}>{item.news ? (titles[item.href] ?? 'Kabar') : item.label}</a></li>
                 {/each}
               </ul>
             {:else if step.kind === 'note'}

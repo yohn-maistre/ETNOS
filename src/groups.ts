@@ -646,6 +646,87 @@ export class Groups implements GroupAuthority {
       return this.contextLinks(kind, recordId);
     });
   }
+  /** Public labels a community carries. A hidden community has none to show, whatever is stored. */
+  communityContexts(communityId: string) {
+    if (this.store.community(communityId).visibility === "hidden-private") return [];
+    return this.store
+      .all<ContextRow>(
+        "SELECT c.* FROM community_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.community_id=? AND c.active=1 ORDER BY c.kind,c.title LIMIT 10",
+        communityId,
+      )
+      .map((c) => this.contextView(c));
+  }
+  /**
+   * A human steward of a listed community says where it belongs. The label is
+   * public, so a hidden community can never carry one; it grants no membership.
+   */
+  labelCommunity(actorId: string, communityId: string, contextId: string, remove = false) {
+    return this.store.tx(() => {
+      if (this.store.actor(actorId).kind !== "human")
+        throw new Fault(403, "Context disclosure needs a human steward");
+      this.store.requireSteward(actorId, communityId);
+      if (this.store.community(communityId).visibility === "hidden-private")
+        throw new Fault(400, "Hidden communities cannot carry public contexts");
+      const c = this.context(contextId);
+      if (remove)
+        this.store.run(
+          "DELETE FROM community_contexts WHERE community_id=? AND context_id=?",
+          communityId,
+          c.id,
+        );
+      else {
+        const held = this.store.all<{ context_id: string }>(
+          "SELECT context_id FROM community_contexts WHERE community_id=?",
+          communityId,
+        );
+        if (held.length >= 10 && !held.some((h) => h.context_id === c.id))
+          throw new Fault(400, "At most 10 public contexts");
+        this.store.run(
+          "INSERT OR IGNORE INTO community_contexts VALUES(?,?,?,?)",
+          communityId,
+          c.id,
+          actorId,
+          this.store.clock(),
+        );
+      }
+      this.store.audit(actorId, remove ? "community.unlabel" : "community.label", communityId);
+      return this.communityContexts(communityId);
+    });
+  }
+  /**
+   * Listed communities labelled with this context or anything beneath it, so a
+   * region lists what its regencies hold. Visibility is read now, not when the
+   * label was made. No member lists or counts.
+   */
+  communitiesIn(contextId: string) {
+    const rows = this.store.all<{
+      id: string;
+      title: string;
+      description: string;
+      visibility: Community["visibility"];
+      admission: Community["admission"];
+      via_id: string;
+      via_slug: string;
+      via_title: string;
+      depth: number;
+    }>(
+      `WITH RECURSIVE down(id,depth) AS (SELECT ?,0 UNION SELECT l.context_id,down.depth+1 FROM context_parents l JOIN down ON l.parent_id=down.id WHERE down.depth<8)
+       SELECT c.id,c.title,c.description,c.visibility,c.admission,x.id via_id,x.slug via_slug,x.title via_title,min(d.depth) depth
+       FROM (SELECT id,min(depth) depth FROM down GROUP BY id) d JOIN community_contexts l ON l.context_id=d.id
+       JOIN contexts x ON x.id=l.context_id AND x.active=1 JOIN communities c ON c.id=l.community_id
+       WHERE c.visibility!='hidden-private' GROUP BY c.id ORDER BY c.title LIMIT 100`,
+      contextId,
+    );
+    return rows.map(({ via_id, via_slug, via_title, depth, ...c }) => ({
+      ...c,
+      via: depth ? { id: via_id, slug: via_slug, title: via_title } : null,
+      kinds: this.store.all<{ id: string; slug: string; title: string }>(
+        "SELECT x.id,x.slug,x.title FROM community_contexts l JOIN contexts x ON x.id=l.context_id WHERE l.community_id=? AND x.active=1 AND x.kind='topic' AND x.id!=? ORDER BY x.facet DESC,x.title LIMIT 3",
+        c.id,
+        contextId,
+      ),
+    }));
+  }
   contextDetail(id: string) {
     const c = this.context(id);
     const groups = this.store.all<Group>(
@@ -672,7 +753,7 @@ export class Groups implements GroupAuthority {
       "SELECT count(*) n FROM context_parents l JOIN contexts x ON x.id=l.context_id WHERE l.parent_id=? AND x.active=1",
       c.id,
     )!.n;
-    return { ...c, groups, pages, parents, children, childCount, newsPlaces: newsPlaces(c) };
+    return { ...c, groups, pages, parents, children, childCount, communities: this.communitiesIn(c.id), newsPlaces: newsPlaces(c) };
   }
 }
 

@@ -134,9 +134,7 @@
   </div>{/if}
 {#if story}<article class="news-reader">
     <div class="news-reader-meta">
-      <a href="https://westpapua.watch/news/" target="_blank" rel="noreferrer">
-        West Papua Watch <ArrowUpRight size={13} />
-      </a>
+      <a href="/news">Kabar</a>
       <span>{newsDate(story.publishedAt)} · {story.sourceCount} sumber</span>
     </div>
     <h1>{story.title}</h1>
@@ -151,7 +149,7 @@
         <figcaption>{story.imageCredit}</figcaption>
       </figure>{:else}<div class="news-reader-photo-fallback"><BookOpen size={24}/><span>Foto belum tersedia</span></div>{/if}
     <div class="news-reader-summary">
-      <span class="news-summary-label">Ringkasan WPW</span>
+      <span class="news-summary-label">Ringkasan otomatis</span>
       <p>{story.summary}</p>
       {#if story.keyPoints.length}<ul>
           {#each story.keyPoints as point}<li>{point}</li>{/each}
@@ -185,9 +183,6 @@
       >
         <Share2 size={17} />
       </Button>
-      <a href={story.url} target="_blank" rel="noreferrer">
-        Buka WPW <ArrowUpRight size={14} />
-      </a>
     </div>
     <section class="news-sources">
       <h2>Sumber liputan</h2>

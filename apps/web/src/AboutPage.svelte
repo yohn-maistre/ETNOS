@@ -7,7 +7,7 @@
     'Moderasi dan laporan.',
     'Masuk dengan Bluesky.',
     'Wiki dengan tinjauan dan riwayat perubahan.',
-    'Meja berita.',
+    'Kabar dari banyak penerbit, dengan ringkasan otomatis.',
     'Sumber berita dengan hak per sumber.',
     'Catatan kerja.',
     'Penawaran dan permintaan.',

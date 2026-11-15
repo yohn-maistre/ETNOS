@@ -24,6 +24,7 @@
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import Choice from './Choice.svelte'
   import PlaceStrata from './PlaceStrata.svelte'
+  import PlaceCommunities, { type PlaceCommunity } from './PlaceCommunities.svelte'
   import CoreSample from './CoreSample.svelte'
   import { openWorkStates } from './place-layers'
   import { facetNames, orderedParents } from './context-tree'
@@ -81,6 +82,7 @@
     children?: ContextRef[]
     childCount?: number
     groups: Group[]
+    communities?: PlaceCommunity[]
     pages: { id: string; title: string }[]
     newsPlaces?: string[]
     aliases?: string[]
@@ -774,9 +776,9 @@
           }}
         >
           {#if placeOptions.length}
-            <Label for="place-news-filter">Pilih tempat di meja kabar</Label>
+            <Label for="place-news-filter">Pilih tempat kabar</Label>
             <Input id="place-news-filter" type="search" bind:value={placeFilter} placeholder="Cari tempat" autocomplete="off" />
-            <div class="place-news-list" role="group" aria-label="Tempat di meja kabar">
+            <div class="place-news-list" role="group" aria-label="Tempat kabar">
               {#each visiblePlaces as p (p.slug)}
                 <label class="place-news-option">
                   <input type="checkbox" checked={draftSlugs.includes(p.slug)} onchange={(e) => togglePlace(p.slug, e.currentTarget.checked)} />
@@ -789,7 +791,7 @@
             <Label for="place-news-slugs">Tempat lain (nama pendek, dipisah koma)</Label>
             <Input id="place-news-slugs" value={extraSlugs.join(', ')} onchange={(e) => setExtraPlaces(e.currentTarget.value)} placeholder="nabire, paniai" autocomplete="off" />
           {:else}
-            <Label for="place-news-slugs">Nama tempat di meja kabar, dipisah koma</Label>
+            <Label for="place-news-slugs">Nama tempat kabar, dipisah koma</Label>
             <Input id="place-news-slugs" bind:value={newsPlacesDraft} placeholder="nabire, paniai, deiyai" autocomplete="off" />
           {/if}
           <p class="cx-hint">Kabar dari tempat-tempat ini tampil di halaman {context.title}. Kosongkan untuk memakai nama halaman ini saja.</p>
@@ -809,6 +811,7 @@
         {#each context.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}
       </div>
     </section>{/if}
+  <PlaceCommunities communities={context.communities ?? []} title={context.title} />
   {#if context.pages.length || context.groups.length || works.length}<nav
       class="context-relations section-tab-scroll"
       aria-label={'Terhubung dengan ' + context.title}

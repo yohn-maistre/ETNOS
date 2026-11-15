@@ -113,7 +113,7 @@
           </li>
         {/each}
       </ol>
-      <p class="place-news-credit">Dari West Papua Watch. Setiap kabar mencantumkan penerbitnya.</p>
+      <p class="place-news-credit">Setiap kabar mencantumkan penerbitnya.</p>
     {/if}
   </section>
 {/if}

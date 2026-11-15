@@ -75,9 +75,6 @@
 <section class="news-index" aria-busy={pending}>
   <header class="news-desk-heading">
     <h1>Kabar Papua</h1>
-    <a href="https://westpapua.watch/news/" target="_blank" rel="noreferrer">
-      West Papua Watch <ArrowUpRight size={14} />
-    </a>
   </header>
   <nav
     class="news-desk-tabs section-tab-scroll"

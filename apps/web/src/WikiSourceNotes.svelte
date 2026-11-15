@@ -31,7 +31,7 @@
           <span class="wiki-note-number" aria-hidden="true">{i + 1}</span>
           <div>
             {#if note.story}
-              <a href={'/news/' + note.story}>{h?.title ?? 'Kabar dari meja kabar'}</a>
+              <a href={'/news/' + note.story}>{h?.title ?? 'Kabar'}</a>
               <small>Kabar{h?.publishedAt ? ', ' + newsDate(h.publishedAt) : ''}. Penerbit asli dicantumkan di halaman kabar.</small>
             {:else}
               <a href={note.url} target="_blank" rel="noreferrer">{sourceLabel(note.url)}<ArrowUpRight size={13} aria-hidden="true" /></a>

@@ -44,6 +44,7 @@
   import ActivityPage from './ActivityPage.svelte'
   import AppearancePanel from './AppearancePanel.svelte'
   import WelcomeDialog from './WelcomeDialog.svelte'
+  import CommunityPlaces from './CommunityPlaces.svelte'
   import LandscapePrint from './LandscapePrint.svelte'
   import ThreadEnd from './ThreadEnd.svelte'
   import ProfileCover from './ProfileCover.svelte'
@@ -1144,6 +1145,7 @@
         </div>
         <h1>{community.title}</h1>
         <p>{community.description}</p>
+        <CommunityPlaces communityId={community.id} steward={isSteward(community.id)} hidden={community.visibility === 'hidden-private'} />
         <div class="strata-caption">
           {#if community.visibility === 'public'}<Globe
               size={13}

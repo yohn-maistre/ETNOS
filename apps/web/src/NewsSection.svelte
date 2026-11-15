@@ -14,7 +14,7 @@
 <section
   class="news-section"
   class:compact
-  aria-label="Kabar dari West Papua Watch"
+  aria-label="Kabar"
 >
   <div class="news-section-head">
     <h2>Kabar</h2>
@@ -68,12 +68,6 @@
             </small>{/if}
         </a>{/each}
     </div>{:else}<p class="news-unavailable">
-      Kabar belum dapat dimuat. <a
-        href="https://westpapua.watch/news/"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Buka WPW <ArrowUpRight size={12} />
-      </a>
+      Kabar belum dapat dimuat. Coba lagi sebentar.
     </p>{/if}
 </section>
