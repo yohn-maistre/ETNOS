@@ -15,10 +15,11 @@ function quake(row:unknown):Quake|null{
 
 /** Recent earthquakes inside the deployment's bounds, newest first. A feed that fails is skipped, not guessed. */
 export async function publicQuakes(bounds:Bounds,fetcher:typeof fetch=fetch):Promise<Response>{
- const found=new Map<string,Quake>();let reached=0
+ const found=new Map<string,Quake>(),seen:string[]=[];let reached=0
  await Promise.all(feeds.map(async url=>{
   try{
-   const response=await fetcher(url,{headers:{accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(6000)})
+   const response=await fetcher(url,{headers:{accept:'application/json','user-agent':'Mozilla/5.0 (compatible; public-feed-reader)'},redirect:'error',signal:AbortSignal.timeout(6000)})
+   seen.push(String(response.status))
    if(!response.ok)return
    const body=await response.json() as {Infogempa?:{gempa?:unknown}},rows=body?.Infogempa?.gempa
    if(!Array.isArray(rows))return
@@ -28,8 +29,8 @@ export async function publicQuakes(bounds:Bounds,fetcher:typeof fetch=fetch):Pro
     if(!q||q.longitude<bounds.west||q.longitude>bounds.east||q.latitude<bounds.south||q.latitude>bounds.north)continue
     const earlier=found.get(q.at);found.set(q.at,earlier?{...earlier,felt:earlier.felt||q.felt}:q)
    }
-  }catch{/* one feed down leaves the other */}
+  }catch(error){seen.push(error instanceof Error?error.name:'error')/* one feed down leaves the other */}
  }))
  const items=[...found.values()].sort((a,b)=>b.at.localeCompare(a.at)).slice(0,12)
- return Response.json({source,available:reached>0,items},{status:reached?200:503,headers:{'cache-control':reached?'public, max-age=300, s-maxage=600':'no-store','x-content-type-options':'nosniff'}})
+ return Response.json({source,available:reached>0,items},{status:reached?200:503,headers:{'cache-control':reached?'public, max-age=300, s-maxage=600':'no-store','x-content-type-options':'nosniff','x-upstream':seen.join(',')}})
 }

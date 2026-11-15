@@ -1,1 +1,1 @@
-2026-11-15q Label families with sources, formal kind names, recent quakes on the map
+2026-11-15r Quake feed: send a user agent, report upstream status
