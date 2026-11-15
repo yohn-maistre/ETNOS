@@ -24,6 +24,8 @@
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import Choice from './Choice.svelte'
   import PlaceStrata from './PlaceStrata.svelte'
+  import CoreSample from './CoreSample.svelte'
+  import { openWorkStates } from './place-layers'
   import ContentSkeleton from './ContentSkeleton.svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
@@ -91,11 +93,13 @@
     onError,
     navigate,
     onContextResolved,
+    onCompose,
   }: {
     path: string
     auth: Auth
     onError: (s: string) => void
     onContextResolved?: (kind: string) => void
+    onCompose?: () => void
     navigate: (s: string) => void
   } = $props()
   let communities = $state<Community[]>([]),
@@ -687,14 +691,17 @@
             </Button>{/if}
         </article>{/each}
     </Card.Root>{/if}
+{:else if segments[0] === 'contexts' && context && segments[2] === 'lapisan'}
+  <CoreSample {context} {posts} {works} {auth} {onCompose} />
 {:else if segments[0] === 'contexts' && context}
   <PlaceStrata
     contextId={context.id}
+    slug={context.slug}
     title={context.title}
     places={context.newsPlaces ?? []}
     posts={posts.length}
     pages={context.pages.length}
-    works={works.length}
+    works={works.filter((w) => openWorkStates.has(w.state)).length}
   />
   <div class="cx-detail-head context-detail-heading">
     {#if context.kind !== 'topic'}<Badge variant="secondary">
