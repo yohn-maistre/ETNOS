@@ -26,6 +26,7 @@
   import PlaceStrata from './PlaceStrata.svelte'
   import PlaceCommunities, { type PlaceCommunity } from './PlaceCommunities.svelte'
   import CoreSample from './CoreSample.svelte'
+  import Literature from './Literature.svelte'
   import { openWorkStates } from './place-layers'
   import { facetNames, orderedParents } from './context-tree'
   import ContentSkeleton from './ContentSkeleton.svelte'
@@ -881,6 +882,7 @@
           Belum ada halaman wiki tertaut.
         </p>{/if}
     </section>{/if}
+  <Literature slug={context.slug} />
   {#if works.length}
     <section id="context-work" class="context-relation-section">
       {#if works.length}<div class="strata-card"><h2>Kerja publik</h2></div>

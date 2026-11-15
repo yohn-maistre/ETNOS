@@ -26,6 +26,8 @@ export type Catalogue = {
   bounds?: { west: number; south: number; east: number; north: number }
   families?: CatalogueFamily[]
   familyAliases?: Record<string, string>
+  /** Which labels get a published-research search, the area words added to it, and search terms per slug. */
+  literature?: { scope: string; families: string[]; skip?: string[]; terms?: Record<string, string> }
   /** Forms of association offered when someone starts a community. Each slug is also an entry. */
   communityKinds?: { slug: string; title: string; description: string; examples: string[]; visibility: 'public' | 'listed-private'; admission: 'open' | 'approval' | 'invite' }[]
 }

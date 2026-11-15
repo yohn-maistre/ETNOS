@@ -2,6 +2,7 @@ import backend,{StrataNode,ResidentAuthority} from './worker.ts'
 import {json} from './api.ts'
 import {publicNews,publicStory,publicNewsImage,newsQuery} from './news.ts'
 import {publicQuakes} from './ambient.ts'
+import {publicLiterature,literatureQuery} from './literature.ts'
 import {catalogue} from './catalogue.ts'
 import {publicVideo} from './video.ts'
 import {publicLinkPreview,previewURL} from './link-preview.ts'
@@ -60,6 +61,20 @@ export default {
       const key=new Request(url.origin+url.pathname),cached=await edgeCache().match(key)
       if(cached)return cached
       const response=await publicQuakes(bounds)
+      if(response.ok)await edgeCache().put(key,response.clone())
+      return response
+    }
+    const literatureRoute=url.pathname.match(/^\/v1\/literature\/([-a-z0-9]{1,100})$/)
+    if(literatureRoute){
+      if(request.method!=='GET')return json(405,{error:'Method not allowed'})
+      const key=new Request(url.origin+url.pathname),cached=await edgeCache().match(key)
+      if(cached)return cached
+      // An anonymous read: only a label the public can see gets a search.
+      let label:{slug:string;title:string;kind:string;facet?:string}
+      try{label=await boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+'/v1/contexts/'+literatureRoute[1]),env))}catch{return json(404,{error:'Not found'})}
+      const query=literatureQuery(label,catalogue((env as {STRATA_CATALOGUE?:string}).STRATA_CATALOGUE).catalogue)
+      if(!query)return json(404,{error:'Not found'})
+      const response=await publicLiterature(query,(env as {OPENALEX_API_KEY?:string}).OPENALEX_API_KEY)
       if(response.ok)await edgeCache().put(key,response.clone())
       return response
     }
