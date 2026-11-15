@@ -102,12 +102,14 @@
     navigate,
     onContextResolved,
     onCompose,
+    onStartCommunity,
   }: {
     path: string
     auth: Auth
     onError: (s: string) => void
     onContextResolved?: (kind: string) => void
     onCompose?: (place?: { id: string; title: string }) => void
+    onStartCommunity?: (place: { id: string; title: string }) => void
     navigate: (s: string) => void
   } = $props()
   let communities = $state<Community[]>([]),
@@ -811,7 +813,7 @@
         {#each context.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}
       </div>
     </section>{/if}
-  <PlaceCommunities communities={context.communities ?? []} title={context.title} />
+  <PlaceCommunities communities={context.communities ?? []} title={context.title} onStart={onStartCommunity ? () => onStartCommunity({ id: context!.id, title: context!.title }) : undefined} />
   {#if context.pages.length || context.groups.length || works.length}<nav
       class="context-relations section-tab-scroll"
       aria-label={'Terhubung dengan ' + context.title}

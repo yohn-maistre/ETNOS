@@ -16,7 +16,7 @@
   // for a place that has none.
   import { avatarTone } from './avatar-tone'
   import { initials } from './api'
-  let { communities, title }: { communities: PlaceCommunity[]; title: string } = $props()
+  let { communities, title, onStart }: { communities: PlaceCommunity[]; title: string; onStart?: () => void } = $props()
   const uid = $props.id()
   const entry = { open: 'Terbuka', approval: 'Minta bergabung', invite: 'Dengan undangan' }
 </script>
@@ -45,6 +45,7 @@
   {:else}
     <p>Belum ada komunitas yang menandai {title}. Pengurus komunitas bisa menambahkannya dari halaman komunitasnya.</p>
   {/if}
+  {#if onStart}<button type="button" class="pc-start" onclick={onStart}>Mulai komunitas di sini</button>{/if}
 </section>
 
 <style>
@@ -65,6 +66,8 @@
   small:empty { display: none; }
   .pc-entry { flex: none; min-height: 32px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; font-size: 13px; font-weight: 600; }
   li a:hover .pc-entry { border-color: var(--brand); color: var(--brand); }
+  .pc-start { min-height: 44px; margin: 4px 0 8px; padding: 0 16px; border: 1px solid var(--border); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .pc-start:hover { border-color: var(--brand); color: var(--brand); }
   p { margin: 0; padding: 6px 0 12px; font-size: 14px; color: var(--muted-foreground); max-width: 60ch; }
   @media (max-width: 640px) {
     .place-communities { padding-inline: 16px; }

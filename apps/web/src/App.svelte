@@ -139,6 +139,8 @@
   let wikiRequestKey = $state('')
   // A story started from a place lands in that place once published.
   let composePlace = $state<{ id: string; title: string } | null>(null)
+  let communityPlace = $state<{ id: string; title: string } | null>(null)
+  let communityAdmission = $state<'open' | 'approval'>('approval')
   let composeState = $state({ dirty: false, busy: false, canSubmit: false }),
     discardDraft = $state(false)
   function closeModal() {
@@ -611,6 +613,8 @@
     composeUrl = ''
     composeKind = ''
     composePlace = null
+    communityPlace = null
+    communityAdmission = 'approval'
     modal = kind
     wikiRequestKey = crypto.randomUUID()
     const contextual=kind==='compose'?(parts[0]==='communities'?community?.id:parts[0]==='square'?selectedPost?.community_id:undefined):undefined
@@ -693,9 +697,15 @@
           title,
           description,
           visibility,
-          admission: visibility === 'public' ? 'approval' : 'invite',
+          admission: visibility === 'public' ? communityAdmission : 'invite',
         })
+        const place = communityPlace
+        communityPlace = null
         modal = null
+        if (place && visibility !== 'hidden-private')
+          await request('/v1/communities/' + c.id + '/contexts', { contextId: place.id }).catch(() =>
+            notify('Komunitas dibuat. Tempatnya belum tertandai; tambahkan dari halaman komunitas.'),
+          )
         navigate('/communities/' + c.id)
       } else if (modal === 'join') {
         await request(`/v1/communities/${communityId}/requests`, {
@@ -1090,6 +1100,10 @@
       onCompose={(place) => {
         open('compose')
         composePlace = place ?? null
+      }}
+      onStartCommunity={(place) => {
+        open('community')
+        if (auth.actor) communityPlace = place
       }}
     />
   {:else if parts[0] === 'wiki'}
@@ -1882,6 +1896,10 @@
                 .map((c) => ({ value: c.id, label: c.title + ' · Publik' }))}
             />
           </Label>{/if}
+        {#if modal === 'community' && communityPlace && visibility !== 'hidden-private'}<div class="compose-place" style="margin-inline:0">
+            <MapPin size={15} /><span>Di <strong>{communityPlace.title}</strong></span>
+            <button type="button" aria-label={'Lepas tempat ' + communityPlace.title} onclick={() => (communityPlace = null)}>×</button>
+          </div>{/if}
         {#if modal === 'community' || modal === 'wiki'}<Label>
             Nama
             <Input bind:value={title} maxlength={160} required />
@@ -1915,6 +1933,17 @@
               ]}
             />
           </Label>
+          {#if visibility === 'public'}<Label>
+              Siapa yang dapat bergabung?
+              <Choice
+                bind:value={communityAdmission}
+                aria-label="Siapa yang dapat bergabung?"
+                items={[
+                  { value: 'approval', label: 'Dengan persetujuan pengelola' },
+                  { value: 'open', label: 'Siapa saja langsung bergabung' },
+                ]}
+              />
+            </Label>{/if}
           {#if visibility}<div class="audience-notice" role="status">
               <strong>
                 {visibility === 'public'
@@ -1925,7 +1954,9 @@
               </strong>
               <p>
                 {visibility === 'public'
-                  ? 'Bergabung perlu persetujuan pengelola. Persetujuan ini tidak membatasi pembaca.'
+                  ? communityAdmission === 'open'
+                    ? 'Siapa saja yang sudah masuk dapat langsung bergabung dan menulis.'
+                    : 'Bergabung perlu persetujuan pengelola. Persetujuan ini tidak membatasi pembaca.'
                   : 'Anggota baru hanya masuk melalui undangan.'}
               </p>
             </div>{/if}{/if}
