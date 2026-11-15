@@ -99,7 +99,7 @@
     auth: Auth
     onError: (s: string) => void
     onContextResolved?: (kind: string) => void
-    onCompose?: () => void
+    onCompose?: (place?: { id: string; title: string }) => void
     navigate: (s: string) => void
   } = $props()
   let communities = $state<Community[]>([]),

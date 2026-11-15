@@ -102,3 +102,8 @@
 .wiki-module { padding: 20px 24px 24px; border-top: 1px solid var(--commons-hairline, var(--reading-line)); }
 .wiki-module .wiki-module-heading { margin-bottom: 8px; }
 @media (max-width: 640px) { .wiki-module { padding: 16px 16px 20px; } .wiki-front-cover { min-height: 280px; padding: 10px; } }
+
+/* A story started from a place says so, and can be unlinked before posting. */
+.compose-place { display: flex; align-items: center; gap: 8px; margin: 8px 16px 10px; padding: 6px 6px 6px 12px; width: max-content; max-width: 100%; border-radius: 999px; background: var(--secondary); color: var(--foreground); font-size: 13px; }
+.compose-place button { width: 32px; height: 32px; border: 0; border-radius: 50%; background: transparent; color: var(--muted-foreground); font-size: 18px; line-height: 1; cursor: pointer; }
+.compose-place button:hover { background: var(--background); color: var(--foreground); }

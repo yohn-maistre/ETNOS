@@ -136,6 +136,8 @@
   >(null)
   let composerApi = $state<PostComposer | null>(null)
   let wikiRequestKey = $state('')
+  // A story started from a place lands in that place once published.
+  let composePlace = $state<{ id: string; title: string } | null>(null)
   let composeState = $state({ dirty: false, busy: false, canSubmit: false }),
     discardDraft = $state(false)
   function closeModal() {
@@ -607,6 +609,7 @@
     composeState = { dirty: false, busy: false, canSubmit: false }
     composeUrl = ''
     composeKind = ''
+    composePlace = null
     modal = kind
     wikiRequestKey = crypto.randomUUID()
     const contextual=kind==='compose'?(parts[0]==='communities'?community?.id:parts[0]==='square'?selectedPost?.community_id:undefined):undefined
@@ -1083,7 +1086,10 @@
       onContextResolved={(kind) => {
         contextHeading = { path, kind }
       }}
-      onCompose={() => open('compose')}
+      onCompose={(place) => {
+        open('compose')
+        composePlace = place ?? null
+      }}
     />
   {:else if parts[0] === 'wiki'}
     {#if loading}<ContentSkeleton
@@ -1827,7 +1833,10 @@
             Belum ada tindakan moderator.
           </p>{/if}
       </details>
-    {:else if modal === 'compose' && auth.actor}<PostComposer
+    {:else if modal === 'compose' && auth.actor}{#if composePlace}<div class="compose-place">
+          <MapPin size={15} /><span>Tentang <strong>{composePlace.title}</strong></span>
+          <button type="button" aria-label={'Lepas tempat ' + composePlace.title} onclick={() => (composePlace = null)}>×</button>
+        </div>{/if}<PostComposer
         bind:this={composerApi}
         onStateChange={(state) => (composeState = state)}
         actor={auth.actor}
@@ -1835,9 +1844,17 @@
         initialCommunity={communityId}
         initialUrl={composeUrl}
         initialKind={composeKind}
-        onPosted={(post) => {
+        onPosted={async (post) => {
           composeState = { dirty: false, busy: false, canSubmit: false }
+          const place = composePlace
           modal = null
+          composePlace = null
+          if (place)
+            try {
+              await request('/v1/posts/' + post.id + '/contexts', { contextId: place.id })
+            } catch {
+              notify('Posting terkirim. Tempat hanya bisa ditautkan ke posting di komunitas publik.')
+            }
           navigate('/square/' + post.id)
         }}
       />{:else}<form

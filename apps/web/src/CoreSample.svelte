@@ -19,7 +19,7 @@
     posts: Post[]
     works: { id: string; title: string; state: string; updated: number; sponsor: { title: string } }[]
     auth: Auth
-    onCompose?: () => void
+    onCompose?: (place?: { id: string; title: string }) => void
   } = $props()
   type Reviewed = { id: string; updated: number; reviewer?: { name: string; kind: string } }
   const week = 7 * 86400000,
@@ -137,7 +137,7 @@
       <p class="core-unindexed">Belum terindeks.</p>
       <p class="core-note">Tulisan lama, rekaman, foto dan cerita orang tua tentang {context.title} belum tercatat di sini. Setiap cerita dan sumber yang ditambahkan ikut mengisi lapisan ini.</p>
       <div class="core-actions">
-        {#if auth.actor && onCompose}<button type="button" class="core-chip primary" onclick={onCompose}>Ceritakan</button>
+        {#if auth.actor && onCompose}<button type="button" class="core-chip primary" onclick={() => onCompose?.({ id: context.id, title: context.title })}>Ceritakan</button>
         {:else}<a class="core-chip primary" href="/login">Ceritakan</a>{/if}
         <a class="core-chip" href={auth.actor ? '/wiki/notes/new' : '/login'}>Tambahkan sumber <ArrowUpRight size={14} /></a>
       </div>
