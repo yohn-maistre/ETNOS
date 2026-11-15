@@ -12,6 +12,10 @@
     'Catatan kerja.',
     'Penawaran dan permintaan.',
     'Pertanyaan untuk @aksara.',
+    'Halaman tempat dengan kabar dari wilayahnya, penampang, dan inti lapisan.',
+    'Jejak setiap halaman wiki: dari sumber, ke tinjauan, ke kerja yang terbuka.',
+    'Bilah suara di tiap halaman wiki dan celah yang bisa diisi komunitas.',
+    'Langit di atas Papua saat ini, dihitung dari jam, tanpa data lokasi.',
     'Studio untuk pengurus.',
     'Penghubung baca-saja untuk agen AI dari luar.',
   ]
@@ -33,9 +37,8 @@
     },
   ]
   const next = [
-    'Halaman untuk setiap tempat dan bahasa, berisi kabar, obrolan, jajak pendapat, dan wiki.',
-    'Celah pengetahuan yang bisa diisi komunitas.',
-    'Bilah di tiap halaman wiki yang menunjukkan suara siapa yang menjadi dasarnya.',
+    'Temuan Aksara sebagai posting yang bisa diperiksa bersama.',
+    'Tanggapan pada kalimat wiki, termasuk "jangan disebarkan".',
     'Ruang bagi dua catatan untuk berdampingan saat orang mengingat hal yang berbeda.',
     'Ringkasan mingguan "apa artinya bagi kita".',
   ]
