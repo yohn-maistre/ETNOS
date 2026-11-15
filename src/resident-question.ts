@@ -46,8 +46,10 @@ export class ResidentQuestions {
   const rows=s.all<{job_id:string;target_post_id:string;agent_id:string;state:string;result_id:string|null;result_kind:string|null}>("SELECT i.job_id,i.target_post_id,j.agent_id,j.state,j.result_id,j.result_kind FROM resident_job_inputs i JOIN resident_jobs j ON j.id=i.job_id JOIN posts p ON p.id=i.target_post_id WHERE p.root_id=? AND p.community_id=? AND p.hidden=0 AND p.deleted=0 ORDER BY j.created DESC,j.id DESC LIMIT 20",post.rootId,room.id)
   return rows.map(row=>{
    let replyId:string|null=null
-   if(row.state==='succeeded'&&row.result_kind==='post'&&row.result_id){try{const reply=s.getPost(actorId,row.result_id);if(!reply.deleted&&reply.community_id===room.id&&reply.parent_id===row.target_post_id)replyId=reply.id}catch{/* Never reveal a hidden/deleted answer identifier. */}}
-   const state=row.state==='succeeded'?(replyId?'answered':'unavailable'):['queued','running','cancelled'].includes(row.state)?row.state:'unavailable'
+   // An honest abstention note is a real reply; Studio still sees state 'abstained'.
+   const note=row.state==='abstained'&&row.result_kind==='abstention-reply'
+   if((row.state==='succeeded'&&row.result_kind==='post'||note)&&row.result_id){try{const reply=s.getPost(actorId,row.result_id);if(!reply.deleted&&reply.community_id===room.id&&reply.parent_id===row.target_post_id)replyId=reply.id}catch{/* Never reveal a hidden/deleted answer identifier. */}}
+   const state=row.state==='succeeded'||note?(replyId?'answered':'unavailable'):['queued','running','cancelled'].includes(row.state)?row.state:'unavailable'
    return {postId:row.target_post_id,agentId:row.agent_id,state,replyId}
   })
  }

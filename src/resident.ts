@@ -9,7 +9,7 @@ import {Forum} from './forum.ts'
 import {Groups} from './groups.ts'
 import {ResidentRouting} from './resident-routing.ts'
 import {ResidentQuestions} from './resident-question.ts'
-import {residentFailureCode} from './resident-failure.ts'
+import {residentFailureCode,ResidentFailure} from './resident-failure.ts'
 import {text,key,transition,expected,emit,hash,publicSteward,contextEpoch} from './commons.ts'
 import type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
 export type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
@@ -21,8 +21,23 @@ export function parseResidentWork(value:unknown):ResidentWork{
  if(!Number.isSafeInteger(b.generation)||Number(b.generation)<1||!Number.isSafeInteger(b.contextEpoch)||Number(b.contextEpoch)<0)throw new Fault(400,'Invalid runtime generation')
  return {jobId:text(b.jobId,100),generation:Number(b.generation),ticket:text(b.ticket,100),communityId:text(b.communityId,100),agentId:text(b.agentId,100),contextEpoch:Number(b.contextEpoch),sessionKey:text(b.sessionKey,100)}
 }
-export type ResidentProvider={label:string;draft:(input:ResidentInput,signal:AbortSignal)=>Promise<ResidentOutput>}
+/** `researchTools`: the runtime can look for evidence itself (reviewed Wiki,
+ * and for thread replies the web) through this authority, so a thread question
+ * without configured-source evidence may still reach the model. */
+export type ResidentProvider={label:string;researchTools?:boolean;draft:(input:ResidentInput,signal:AbortSignal)=>Promise<ResidentOutput>}
 const skills:ResidentSkill[]=['source-digest','research-question','knowledge-draft']
+/** Fixed, model-free copy for an honest thread abstention. It never quotes or
+ * answers the question; it only asks the community for sources. */
+export const residentAbstentionText='Sa belum menemukan sumber yang bisa sa pakai untuk menjawab ini. Ada yang tahu, atau punya tulisan, rekaman, atau orang yang bisa ditanya? Ceritakan di sini.\n\n— Aksara (AI) · catatan otomatis: belum ada sumber'
+const noEvidence='No current public source evidence; resident abstained'
+/** Per-job and daily tool ceilings, enforced here rather than in the runtime. */
+const toolLimits={job:6,daily:60,search_reviewed_wiki:3,web_search:3,web_fetch:4} as const
+type ResidentTool='search_reviewed_wiki'|'web_search'|'web_fetch'
+/** Canonical form for comparing a cited URL with one a tool returned. */
+export function citationUrl(raw:unknown){
+ if(typeof raw!=='string'||raw.length>2000)return null
+ try{const u=new URL(raw.replace(/[.,;:!?'"”’]+$/,''));if((u.protocol!=='https:'&&u.protocol!=='http:')||u.username||u.password)return null;u.hash='';return u.href}catch{return null}
+}
 export class Resident{
  readonly store:StrataCore;readonly access:AgentAccess;readonly provider?:ResidentProvider;readonly routing:ResidentRouting;readonly questions:ResidentQuestions
  constructor(store:StrataCore,access=new AgentAccess(store),provider?:ResidentProvider){this.store=store;this.access=access;this.provider=provider;this.routing=new ResidentRouting(store,access);this.questions=new ResidentQuestions(store,this.routing)}
@@ -148,7 +163,7 @@ export class Resident{
   const {job,ticket}=claim
   try{
    const evidence=JSON.parse(job.evidence) as ResidentEvidence[],community=s.community(job.community_id),thread=this.thread(job),skill=this.effectiveSkill(job)
-   if(!evidence.length)throw new Fault(422,'No current public source evidence; resident abstained')
+   if(!evidence.length&&!(thread&&this.provider?.researchTools))throw new Fault(422,noEvidence)
    if(job.skill==='knowledge-draft'&&s.get("SELECT 1 FROM resident_jobs j JOIN knowledge_notes n ON n.id=j.result_id WHERE j.community_id=? AND j.skill='knowledge-draft' AND j.state='succeeded' AND j.evidence=? AND n.state!='withdrawn' LIMIT 1",job.community_id,job.evidence))throw new Fault(422,'These sources already have a Wiki starting point; waiting for new evidence')
    let result:ResidentOutput
    if(this.provider){
@@ -161,10 +176,26 @@ export class Resident{
 ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kita pahami atau tindak lanjuti di ${community.title}?\n\n${body}`:`Catatan sumber untuk ${community.title}\n\n${body}`}
    }
    if(thread&&this.provider&&(result.questionReceipt?.postId!==thread.question.postId||result.questionReceipt?.revision!==thread.question.revision))throw new Fault(422,'Connected runtime did not acknowledge the current question')
-   const draft=text(result.text,6000),safe=draft.replace(/https?:\/\/[^\s<>\])]+/g,'').replace(/<think>[\s\S]*?<\/think>/gi,'').trim()
+   const draft=text(result.text,6000)
+   if(draft.trim()==='ABSTAIN')throw new ResidentFailure('runtime-abstained')
+   // Only URLs a tool returned to this job generation (or pinned evidence) may
+   // stay as inline thread citations. Anything else, including invented links,
+   // is removed. Editorial artifacts keep Strata-attached links only.
+   const evidenceUrls=new Set(evidence.map(e=>citationUrl(e.url)).filter((u):u is string=>!!u)),returned=thread?new Map(s.all<{url:string;origin:'wiki'|'web'}>('SELECT url,origin FROM resident_job_citations WHERE job_id=? AND generation=?',id,job.generation).map(r=>[r.url,r.origin])):new Map<string,'wiki'|'web'>()
+   const cited={wiki:new Set<string>(),web:new Set<string>()}
+   const safe=draft.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/https?:\/\/[^\s<>\])]+/g,match=>{
+    const url=citationUrl(match),tail=match.match(/[.,;:!?'"”’]+$/)?.[0]??''
+    if(!thread||!url)return ''
+    if(evidenceUrls.has(url))return url+tail
+    const origin=returned.get(url);if(!origin)return ''
+    cited[origin].add(url);return url+tail
+   }).trim()
    if(!safe)throw new Fault(422,'Resident returned no usable draft')
    return s.tx(()=>{
-    recheckSession();const config=this.recheck(job),references=[...new Set(evidence.map(e=>e.url))],body=safe+'\n\nSumber:\n'+references.join('\n')
+    recheckSession();const config=this.recheck(job),references=[...new Set(evidence.map(e=>e.url))]
+    // Reviewed ETNOS knowledge and unreviewed web pages stay visibly separate.
+    const sections=[references.length?'Sumber:\n'+references.join('\n'):'',cited.wiki.size?'Wiki ETNOS (sudah ditinjau):\n'+[...cited.wiki].join('\n'):'',cited.web.size?'Dari web (belum ditinjau ETNOS):\n'+[...cited.web].join('\n'):''].filter(Boolean)
+    const body=safe+(sections.length?'\n\n'+sections.join('\n\n'):'')
     let resultKind:string,resultId:string
     const question=this.thread(job)
     if(question){
@@ -189,11 +220,26 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
    })
   }catch(error){
    const code=residentFailureCode(error),message=error instanceof Fault?error.message:code?'resident:'+code:'resident:runtime-unavailable',state=error instanceof Fault&&[403,404,409,422,429].includes(error.status)||code&&['authority-changed','provider-quota','runtime-budget','runtime-abstained'].includes(code)?'abstained':'failed'
+   if(job.work_kind==='thread-reply'&&(error instanceof Fault&&error.message===noEvidence||code==='runtime-abstained')){
+    try{return this.abstentionReply(job,message,recheckSession)}catch{/* Current mandate, budget, lock, membership or question state refuses a public note; record a silent abstention as before. */}
+   }
    s.tx(()=>s.run("UPDATE resident_jobs SET state=?,lease_until=NULL,error=?,checkpoint='stopped',updated=? WHERE id=? AND state='running' AND generation=?",state,message,s.clock(),id,job.generation))
    return {id,state,error:message}
   }
  }
 
+ /** An honest "no source yet" reply, committed with the job result exactly once
+  * through the ordinary post/outbox path and under the same current checks. */
+ private abstentionReply(job:ResidentJob,message:string,recheckSession:()=>void){
+  const s=this.store
+  return s.tx(()=>{
+   recheckSession();this.recheck(job);const question=this.questions.check(job)
+   const post=s.createPost(job.agent_id,job.community_id,residentAbstentionText,question.question.postId,question.route.postingMandateId)
+   s.run("UPDATE resident_jobs SET state='abstained',checkpoint='effect-committed',lease_until=NULL,error=?,result_kind='abstention-reply',result_id=?,updated=? WHERE id=? AND state='running' AND generation=?",message,post.id,s.clock(),job.id,job.generation)
+   emit(s,job.agent_id,'resident.abstain',{kind:'agent-job',id:job.id,revision:job.generation,communityId:job.community_id})
+   return {id:job.id,state:'abstained' as const,error:message,resultKind:'abstention-reply',resultId:post.id}
+  })
+ }
  /** Service-binding only. A durable per-run capability never grants publication. */
  validateRuntime(work:ResidentWork){
   const s=this.store,j=s.get<ResidentJob>('SELECT * FROM resident_jobs WHERE id=?',work.jobId)
@@ -207,6 +253,49 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
   if(s.get('SELECT 1 FROM resident_inference_calls WHERE job_id=? AND generation=? AND request_key=?',j.id,j.generation,requestKey))throw new Fault(409,'Inference outcome may be uncertain; do not replay this request')
   if(s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE job_id=?',j.id)!.n>=3||s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE created>?',s.clock()-86400000)!.n>=10)throw new Fault(429,'Resident inference budget reached')
   const id=randomUUID();s.run("INSERT INTO resident_inference_calls VALUES(?,?,?,?,?,'reserved')",id,j.id,j.generation,requestKey,s.clock());return {id,maxOutputTokens:600,contextEpoch:j.context_epoch}
+ })}
+ /** One dispatch for the private runtime authority entrypoint. Every operation
+  * re-validates the work capability and current authorization first. */
+ authority(operation:string,work:ResidentWork,input:Record<string,unknown>={}){
+  if(operation==='context')return this.runtimeContext(work)
+  if(operation==='inference')return this.authorizeInference(work,typeof input.requestKey==='string'?input.requestKey:'')
+  if(operation==='wiki-search')return this.searchWiki(work,input.query)
+  if(operation==='web-call')return this.authorizeWebTool(work,input.tool,input.requestKey)
+  if(operation==='web-read')return this.recordWebRead(work,input.requestKey,input.page)
+  if(operation==='work'){this.validateRuntime(work);return {valid:true}}
+  throw new Fault(404,'Not found')
+ }
+ private toolBudget(j:ResidentJob,tool:ResidentTool){
+  const s=this.store,count=(sql:string,...args:(string|number)[])=>s.get<{n:number}>(sql,...args)!.n
+  if(count('SELECT count(*) n FROM resident_tool_calls WHERE job_id=?',j.id)>=toolLimits.job||count('SELECT count(*) n FROM resident_tool_calls WHERE job_id=? AND tool=?',j.id,tool)>=toolLimits[tool]||count('SELECT count(*) n FROM resident_tool_calls WHERE created>?',s.clock()-86400000)>=toolLimits.daily)throw new Fault(429,'Resident tool budget reached')
+ }
+ /** Accepted public Wiki revisions only; results become citable for this job. */
+ searchWiki(work:ResidentWork,query:unknown){return this.store.tx(()=>{
+  const s=this.store,j=this.validateRuntime(work),q=text(query,200);this.toolBudget(j,'search_reviewed_wiki')
+  const callId=randomUUID(),results=new Wiki(s).searchAccepted(q,5)
+  s.run("INSERT INTO resident_tool_calls VALUES(?,?,?,'search_reviewed_wiki',?,'observed',?)",callId,j.id,j.generation,callId,s.clock())
+  for(const r of results){const url=citationUrl(r.url);if(url)s.run("INSERT OR IGNORE INTO resident_job_citations VALUES(?,?,?,'wiki',?,?,?)",j.id,j.generation,url,r.title.slice(0,200),callId,s.clock())}
+  return {results}
+ })}
+ /** Reserve one outward web call before it happens. A reserved key is never
+  * re-authorized: an uncertain call needs a fresh request, inside the budget. */
+ authorizeWebTool(work:ResidentWork,tool:unknown,requestKey:unknown){return this.store.tx(()=>{
+  const s=this.store,j=this.validateRuntime(work)
+  if(j.work_kind!=='thread-reply')throw new Fault(403,'Web tools are only available for thread replies')
+  if(tool!=='web_search'&&tool!=='web_fetch')throw new Fault(400,'Unknown resident tool')
+  const k=key(requestKey)
+  if(s.get('SELECT 1 FROM resident_tool_calls WHERE job_id=? AND generation=? AND request_key=?',j.id,j.generation,k))throw new Fault(409,'Tool outcome may be uncertain; do not replay this request')
+  this.toolBudget(j,tool);const callId=randomUUID()
+  s.run("INSERT INTO resident_tool_calls VALUES(?,?,?,?,?,'reserved',?)",callId,j.id,j.generation,tool,k,s.clock());return {callId}
+ })}
+ /** A page web_fetch actually read (2xx) becomes citable for this job generation. */
+ recordWebRead(work:ResidentWork,requestKey:unknown,page:unknown){return this.store.tx(()=>{
+  const s=this.store,j=this.validateRuntime(work),k=key(requestKey),call=s.get<{id:string;tool:string;state:string}>('SELECT id,tool,state FROM resident_tool_calls WHERE job_id=? AND generation=? AND request_key=?',j.id,j.generation,k)
+  if(!call||call.tool!=='web_fetch'||call.state!=='reserved')throw new Fault(409,'Unknown or completed web read')
+  const p=(page&&typeof page==='object'?page:{}) as Record<string,unknown>,status=Number(p.status),title=typeof p.title==='string'?p.title.slice(0,200):''
+  const urls=Number.isInteger(status)&&status>=200&&status<300?[...new Set([citationUrl(p.url),citationUrl(p.finalUrl)].filter((u):u is string=>!!u))]:[]
+  for(const url of urls)s.run("INSERT OR IGNORE INTO resident_job_citations VALUES(?,?,?,'web',?,?,?)",j.id,j.generation,url,title,call.id,s.clock())
+  s.run("UPDATE resident_tool_calls SET state='observed' WHERE id=?",call.id);return {citable:urls.length}
  })}
  /** Alarms may replay; queued execution and effect commits remain idempotent.
   * Interrupted inference consumes its budget and requires an explicit fresh job. */

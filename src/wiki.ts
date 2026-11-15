@@ -30,6 +30,8 @@ function citations(values:string[]) {
  * Proposals are restricted; human acceptance creates a separate public revision.
  * No network fetch, automatic source ingestion, AT export or training consent.
  */
+/** Markdown/HTML-stripped prose for public excerpts. */
+function plainWikiText(text:string){return text.replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/^\s{0,3}#{1,6}\s+.*$/gm,' ').replace(/[*_`~>|]/g,'').replace(/\s+/g,' ').trim()}
 export class Wiki {
   private store:StrataCore
   constructor(store:StrataCore) {this.store=store}
@@ -115,8 +117,22 @@ export class Wiki {
   discover(){
     return this.store.all<{id:string;community_id:string;title:string;revision_id:string;text:string;created:number;language:string;citations:string;author_id:string;reviewer_id:string}>("SELECT w.id,w.community_id,w.title,w.revision_id,r.text,r.created,r.language,r.citations,r.author_id,r.reviewer_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 ORDER BY r.created DESC,w.id DESC LIMIT 100").map(row=>{
       const {text,created,citations,author_id,reviewer_id,...page}=row,cited=JSON.parse(citations) as string[]
-      const excerpt=text.replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/^\s{0,3}#{1,6}\s+.*$/gm,' ').replace(/[*_`~>|]/g,'').replace(/\s+/g,' ').trim().slice(0,360)
+      const excerpt=plainWikiText(text).slice(0,360)
       return {...page,excerpt,updated:created,citationCount:cited.length,newsCitations:cited.filter(url=>newsStoryId(url,this.store.base)).length,sectionCount:(text.match(/^#{1,4}\s+/gm)??[]).length,authorKind:this.store.actor(author_id).kind,reviewer:this.attribution(reviewer_id)}
+    })
+  }
+  /** Resident evidence lookup over current accepted revisions of public pages
+   * only. Never drafts, pending/rejected proposals, earlier revisions or
+   * protected rooms. Callers re-check their own authority before use. */
+  searchAccepted(query:string,limit=5){
+    const terms=[...new Set(query.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(t=>Array.from(t).length>=3))].slice(0,6)
+    if(!terms.length)return []
+    const score=terms.map(()=>"(instr(lower(w.title||' '||r.text),?)>0)").join('+')
+    const rows=this.store.all<{id:string;title:string;text:string;score:number}>(`SELECT w.id,w.title,r.text,(${score}) score FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 AND (${score})>0 ORDER BY score DESC,r.created DESC,w.id DESC LIMIT ?`,...terms,...terms,Math.max(1,Math.min(limit,5)))
+    return rows.map(row=>{
+      const plain=plainWikiText(row.text),lower=plain.toLowerCase(),first=Math.min(...terms.map(t=>{const i=lower.indexOf(t);return i<0?Infinity:i}))
+      const start=Number.isFinite(first)?Math.max(0,first-80):0,excerpt=(start>0?'…':'')+plain.slice(start,start+280).trim()+(start+280<plain.length?'…':'')
+      return {pageId:row.id,title:row.title,excerpt,url:this.store.base+'/wiki/'+row.id}
     })
   }
   all(actorId?:string,communityId?:string){return this.store.all<Page>("SELECT w.* FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND (? IS NULL OR w.community_id=?) AND (w.draft=0 OR w.revision_id IS NOT NULL OR (EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=w.community_id AND m.actor_id=? AND m.active=1) AND (EXISTS(SELECT 1 FROM wiki_proposals p WHERE p.page_id=w.id AND p.author_id=?) OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=w.community_id AND m.actor_id=? AND m.active=1 AND m.role IN ('owner','moderator') AND (NOT EXISTS(SELECT 1 FROM wiki_policies wp WHERE wp.community_id=w.community_id AND wp.reviewer_group_id IS NOT NULL) OR EXISTS(SELECT 1 FROM wiki_policies wp JOIN group_members gm ON gm.group_id=wp.reviewer_group_id WHERE wp.community_id=w.community_id AND gm.actor_id=m.actor_id AND gm.active=1)))))) ORDER BY w.created DESC,w.id DESC LIMIT 100",communityId??null,communityId??null,actorId??null,actorId??null,actorId??null)}

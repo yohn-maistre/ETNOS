@@ -20,7 +20,7 @@ export function gatewayResidentProvider(binding:ModelBinding):ResidentProvider{
  }}
 }
 export function piResidentProvider(binding:ModelBinding):ResidentProvider{
- return {label:'Pi Durable · WPW AI Gateway',async draft(input,signal){
+ return {label:'Pi Durable · WPW AI Gateway',researchTools:true,async draft(input,signal){
   const response=await binding.fetch(new Request('https://resident.internal/draft',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(input),signal}))
   if(!response.ok)throw await serviceFailure(response,'runtime-unavailable')
   // The private runtime caps its output at 6 KB; still bound transport independently.
