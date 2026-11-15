@@ -26,6 +26,14 @@ const input = (s: string, max = 6000) => {
   if (typeof s !== 'string' || !s.trim() || s.length > max) throw new Fault(400, 'Invalid input')
   return s.trim()
 }
+/** Poll results stay withheld until this many people have answered, so tiny polls cannot expose one person's choice. */
+export const POLL_MIN_RESPONDENTS = 5
+type PollVoteRow = { choice: number; n: number; mine: number }
+function pollView(poll: { options: string[]; closesAt: number }, votes: PollVoteRow[], closed: boolean) {
+  const respondents = votes.reduce((n, v) => n + v.n, 0), shown = respondents >= POLL_MIN_RESPONDENTS
+  return { options: poll.options.map((label, i) => ({ label, votes: shown ? votes.find(v => v.choice === i)?.n ?? 0 : null })), closesAt: poll.closesAt, closed,
+    results: shown ? 'shown' as const : 'withheld' as const, total: shown ? respondents : null, myVote: votes.find(v => v.mine)?.choice ?? null }
+}
 function missing(): never { throw new Fault(404, 'Not found') }
 
 export class StrataCore {
@@ -269,7 +277,7 @@ export class StrataCore {
         media:p.deleted?[]:media.filter(m=>m.post_id===p.id).map(({id,alt,width,height})=>({id,alt,width,height,url:'/v1/media/'+id})),
         publicationState:p.uri?jobs.get(p.id)??'unknown':policy.get(p.community_id)?.visibility==='public'?'local':'private',
         score:p.deleted?0:scores.get(p.id)?.score??0,myVote:p.deleted?0:scores.get(p.id)?.mine??0,bookmarked:!p.deleted&&bookmarks.has(p.id),
-        poll:content.poll?{options:content.poll.options.map((label,i)=>({label,votes:votes.find(v=>v.choice===i)?.n??0})),closesAt:content.poll.closesAt,closed:this.clock()>=content.poll.closesAt||!!p.locked,total:votes.reduce((n,v)=>n+v.n,0),myVote:votes.find(v=>v.mine)?.choice??null}:null,
+        poll:content.poll?pollView(content.poll,votes,this.clock()>=content.poll.closesAt||!!p.locked):null,
         event:content.event?{...content.event,going:rsvp.find(v=>v.response==='going')?.n??0,interested:rsvp.find(v=>v.response==='interested')?.n??0,myResponse:rsvp.find(v=>v.mine)?.response??null}:null}
     })
   }

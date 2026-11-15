@@ -127,7 +127,10 @@
               <span
                 class="poll-fill"
                 style={'width:' +
-                  (post.poll.total ? option.votes / post.poll.total : 0) * 100 +
+                  (post.poll.total && option.votes !== null
+                    ? option.votes / post.poll.total
+                    : 0) *
+                    100 +
                   '%'}
               ></span>
               <span>
@@ -135,16 +138,19 @@
                     size={14}
                   />{/if}
               </span>
-              <small>{option.votes}</small>
+              {#if option.votes !== null}<small>{option.votes}</small>{/if}
             </button>{/each}
           <small>
-            {post.poll.total} suara · {post.poll.closed
+            {#if post.poll.results === 'shown'}Hasil dari {post.poll.total}
+              penjawab di ETNOS{:else}Hasil tampil setelah 5 orang menjawab.{/if}
+            · {post.poll.closed
               ? 'Ditutup'
               : new Date(post.poll.closesAt).toLocaleString(
                   'id-ID',
                 )}{#if !canVote && !post.poll.closed}
               · Gabung untuk memilih{/if}
           </small>
+          <small>Pilihanmu tidak ditampilkan ke siapa pun.</small>
         </div>{/if}
       {#if post.event}<div class="post-event">
           <CalendarDays size={20} />

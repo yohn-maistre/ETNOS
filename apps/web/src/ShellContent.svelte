@@ -181,7 +181,7 @@
       >
         Masuk
       </Button>{/if}
-    <span class="preview-label">ETNOS · Alpha</span>
+    <a class="preview-label" href="/tentang" onclick={() => sidebar.setOpenMobile(false)}>Tentang ETNOS · Alpha</a>
   </Sidebar.Footer>
 </Sidebar.Root>
 <Sidebar.Inset class="platform-inset">
