@@ -12,5 +12,10 @@
   {"binding":"AUTHORITY","service":"strata-preview","entrypoint":"ResidentAuthority"},
   {"binding":"MODEL_GATEWAY","service":"westpapua-watch-engine","entrypoint":"CommonsIntelligence"}
  ],
+ // Optional. Enables the Agents SDK web_search (Cloudflare Web Search API, billed
+ // through the account's AI Gateway) and web_fetch (Workers AI Markdown
+ // conversion) tools for thread replies only. Without this binding the runtime
+ // offers no web tools. Requires AI Gateway credits or a provider key.
+ "ai":{"binding":"AI"},
  "observability":{"enabled":false}
 }

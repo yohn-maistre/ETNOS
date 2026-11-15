@@ -10,8 +10,9 @@ import {ResidentFailure,residentFailureCode,type ResidentFailureCode} from '../.
 import type {ProtocolSignature} from './protocol-replay.ts'
 import {authority,type ServicePort} from './authority.ts'
 import {jobProvider,type UsageReceipt} from './gateway-models.ts'
-import {residentRegistry} from './extensions.ts'
-interface RuntimeEnv{AUTHORITY:Fetcher;MODEL_GATEWAY:Fetcher;SESSIONS:DurableObjectNamespace<PiResidentSession>}
+import {residentRegistry,webExtension} from './extensions.ts'
+/** AI is optional: without it the runtime offers no web tools (see wrangler.jsonc). */
+interface RuntimeEnv{AUTHORITY:Fetcher;MODEL_GATEWAY:Fetcher;SESSIONS:DurableObjectNamespace<PiResidentSession>;AI?:Ai}
 type StoredWork={id:string;work:string;digest:string;model:string;input_tokens:number;output_tokens:number}
 const json=(value:unknown,status=200)=>Response.json(value,{status,headers:{'cache-control':'no-store'}})
 async function digest(value:string){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))].map(b=>b.toString(16).padStart(2,'0')).join('')}
@@ -32,11 +33,17 @@ async function parse(request:Request){
 export class PiResidentSession extends DurableObject<RuntimeEnv>{
  private models=createModels()
  private works=new Map<string,ResidentWork>()
- private registry=residentRegistry(id=>{const work=this.works.get(id);if(!work)throw Error('Unknown runtime work');return work},this.env.AUTHORITY)
+ private lookup=(id:string)=>{const work=this.works.get(id);if(!work)throw Error('Unknown runtime work');return work}
+ private registry=residentRegistry(this.lookup,this.env.AUTHORITY)
+ /** Web research is installed only into thread-reply sessions. A session's
+  * name includes its thread key, so one object never mixes work kinds. */
+ private web=this.env.AI?webExtension(this.lookup,this.env.AUTHORITY,{binding:this.env.AI}):undefined
  harness=new PiHarness({harness:async({storage,context,onWake})=>{
   this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_work(id TEXT PRIMARY KEY,work TEXT NOT NULL,digest TEXT NOT NULL,model TEXT NOT NULL,input_tokens INTEGER NOT NULL,output_tokens INTEGER NOT NULL)')
   this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_tool_replay(job_id TEXT NOT NULL,tool_call_id TEXT NOT NULL,name TEXT NOT NULL,arguments_hash TEXT NOT NULL,model TEXT NOT NULL,signature TEXT NOT NULL,PRIMARY KEY(job_id,tool_call_id))')
   this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_failures(job_id TEXT PRIMARY KEY,code TEXT NOT NULL)')
+  this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_session_kind(id INTEGER PRIMARY KEY CHECK(id=1),kind TEXT NOT NULL)')
+  if(this.web&&this.ctx.storage.sql.exec<{kind:string}>('SELECT kind FROM strata_pi_session_kind').toArray()[0]?.kind==='thread-reply')this.registry.install(this.web)
   for(const row of this.ctx.storage.sql.exec<StoredWork>('SELECT * FROM strata_pi_work ORDER BY rowid DESC LIMIT 100').toArray())this.install(JSON.parse(row.work) as ResidentWork)
   return Harness.open(storage,{models:this.models,registry:this.registry,onWake,identity:{attribution:{name:'Strata / ETNOS resident',url:'https://etnos.space'}},settings:{documentRetentionMs:0,contextRetentionMs:0,retry:{enabled:false,maxRetries:0},stream:{maxRetries:0,timeoutMs:20000},restartLimit:2,afterFailedRun:'withdraw',toolExecution:'sequential',compaction:{enabled:true,reserveTokens:2048,keepRecentTokens:2048,backgroundTokens:0}},onReport:report=>{console.warn(JSON.stringify({event:'strata.resident.runtime',kind:report.kind}))}},context)
  },defaults:{thinkingLevel:'off',maxTurns:3}})
@@ -65,6 +72,10 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
  private async perform(input:ResidentInput){
   // Ensures Lifecycle has opened storage before any local SQL access.
   await this.harness.pi();await authority(this.env.AUTHORITY,'work',input.work)
+  const kind=input.skill==='thread-reply'?'thread-reply':'editorial',storedKind=this.ctx.storage.sql.exec<{kind:string}>('SELECT kind FROM strata_pi_session_kind').toArray()[0]?.kind
+  if(storedKind&&storedKind!==kind)throw Error('Runtime session kind changed')
+  if(!storedKind)this.ctx.storage.sql.exec('INSERT INTO strata_pi_session_kind VALUES(1,?)',kind)
+  if(kind==='thread-reply'&&this.web)this.registry.install(this.web)
   const encoded=JSON.stringify(input),inputDigest=await digest(encoded),previous=this.ctx.storage.sql.exec<StoredWork>('SELECT * FROM strata_pi_work WHERE id=?',input.work.jobId).toArray()[0]
   if(previous&&previous.digest!==inputDigest)throw Error('Runtime request changed')
   if(!previous&&this.ctx.storage.sql.exec<{n:number}>('SELECT count(*) n FROM strata_pi_work').one().n>=100)throw Error('Resident thread retention limit; start a new thread')
