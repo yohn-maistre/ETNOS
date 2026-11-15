@@ -6,7 +6,7 @@ import {catalogue} from '../src/catalogue.ts'
 const c=catalogue('tanah-papua').catalogue
 
 test('a label search adds the area, uses catalogue terms, and skips labels that are not subjects',()=>{
- assert.equal(literatureQuery({slug:'nabire',title:'Nabire',kind:'place',facet:'regency'},c),'("Nabire") AND (Papua OR "New Guinea" OR "Irian Jaya")')
+ assert.equal(literatureQuery({slug:'nabire',title:'Nabire',kind:'place',facet:'regency'},c),'("Nabire") AND (Papua OR "Irian Jaya" OR "West New Guinea" OR "Dutch New Guinea") NOT "Papua New Guinea"')
  assert.equal(literatureQuery({slug:'papua-tengah',title:'Papua Tengah',kind:'region',facet:'province'},c),'"Papua Tengah"')
  assert.match(literatureQuery({slug:'kesehatan',title:'Kesehatan',kind:'topic'},c)!,/^\(health OR kesehatan\) AND \(Papua/)
  assert.match(literatureQuery({slug:'x',title:'Mee (Ekagi) "x"',kind:'language'},c)!,/^\("Mee Ekagi x" AND \(language OR bahasa\)\) AND/)

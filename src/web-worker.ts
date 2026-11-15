@@ -67,7 +67,7 @@ export default {
     const literatureRoute=url.pathname.match(/^\/v1\/literature\/([-a-z0-9]{1,100})$/)
     if(literatureRoute){
       if(request.method!=='GET')return json(405,{error:'Method not allowed'})
-      const key=new Request(url.origin+url.pathname),cached=await edgeCache().match(key)
+      const key=new Request(url.origin+url.pathname+'?v=2'),cached=await edgeCache().match(key)
       if(cached)return cached
       // An anonymous read: only a label the public can see gets a search.
       let label:{slug:string;title:string;kind:string;facet?:string}
