@@ -31,6 +31,7 @@
   import ContentSkeleton from './ContentSkeleton.svelte'
   import FeedRefresh from './FeedRefresh.svelte'
   import NewsSection from './NewsSection.svelte'
+  import WikiSourceNotes from './WikiSourceNotes.svelte'
   import VaultTransfer from './messaging/VaultTransfer.svelte'
   import SearchDialog from './SearchDialog.svelte'
   import SearchPage from './SearchPage.svelte'
@@ -1549,7 +1550,8 @@
       <Button href="/" class="cx-button" variant="outline">Beranda</Button>
     </div>{/if}
   {#snippet rail()}
-    {#if !['explore', 'news', 'communities', 'people', 'wiki'].includes(parts[0])}<NewsSection
+    {#if parts[0] === 'wiki' && selectedPage?.revision}<WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
+    {:else if !['explore', 'news', 'communities', 'people', 'wiki'].includes(parts[0])}<NewsSection
         compact
       />
     {:else if parts[0] !== 'news'}<div

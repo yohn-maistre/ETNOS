@@ -150,7 +150,7 @@
   .core-sample { --paper: #f4f0e5; --ink: var(--brand); --surface: #fbfbf8; --core-text: #1a211e; --core-muted: #5a635e; background: var(--paper); color: var(--core-text); overflow: hidden; }
   :global(.dark) .core-sample { --paper: color-mix(in srgb, var(--brand) 10%, var(--background)); --surface: var(--card, var(--secondary)); --core-text: var(--foreground); --core-muted: var(--muted-foreground); }
   .core-cover { position: relative; height: clamp(150px, 26vw, 220px); overflow: hidden; background: #f4f0e5; }
-  .core-cover :global(.landscape-print) { width: 100%; height: 200%; object-fit: cover; object-position: 50% 34%; display: block; }
+  .core-cover :global(.landscape-print) { width: 100%; height: 200%; object-fit: cover; object-position: 50% 62%; display: block; }
   .core-cover h1 { position: absolute; left: 16px; bottom: 12px; margin: 0; padding: 0 10px; border-radius: 6px; background: #f4f0e5; color: #1a211e; font-family: var(--font-editorial); font-weight: 400; font-size: clamp(28px, 6vw, 38px); line-height: 1.15; letter-spacing: -.5px; max-width: calc(100% - 32px); overflow-wrap: anywhere; }
   .core-back { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 16px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 45%, transparent); font-size: 13px; }
   .core-back a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--core-text); text-decoration: none; font-weight: 600; }
