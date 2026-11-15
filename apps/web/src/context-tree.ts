@@ -10,6 +10,7 @@ export type ContextNode = {
   facet?: string
   aliases?: string[]
   parents?: string[]
+  indexed?: number
 }
 export type ContextBranch = { node: ContextNode; children: ContextNode[] }
 

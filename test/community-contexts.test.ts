@@ -95,3 +95,20 @@ test("the label route needs sign-in and the community page carries its labels", 
     w.s.close();
   }
 });
+
+test("the public index counts only what is public right now", () => {
+  const w = world();
+  try {
+    const open = w.s.createCommunity(w.owner.actor.id, "Terbuka", "Synthetic", "public"),
+      listed = w.s.createCommunity(w.owner.actor.id, "Terdaftar", "Synthetic", "listed-private");
+    w.groups.labelCommunity(w.owner.actor.id, open.id, w.nabire.id);
+    w.groups.labelCommunity(w.owner.actor.id, listed.id, w.nabire.id);
+    w.groups.labelCommunity(w.owner.actor.id, listed.id, w.paniai.id);
+    const indexed = Object.fromEntries(w.groups.contexts().map((c) => [c.slug, c.indexed]));
+    assert.equal(indexed.nabire, 1);
+    assert.equal(indexed.paniai, 0);
+    assert.equal(indexed["mee-pago"], 0);
+  } finally {
+    w.s.close();
+  }
+});

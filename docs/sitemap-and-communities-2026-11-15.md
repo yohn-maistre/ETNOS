@@ -35,7 +35,9 @@ flowchart LR
 - A place page has a **Komunitas** section. It lists communities labelled with that place, or with anything beneath it. A community labelled Nabire appears on Nabire, Mee Pago and Papua Tengah, with "Nabire" shown on the two upper pages.
 - The same section appears on language, topic and institution-kind pages. "Sekolah & universitas" lists every community that carries it, across all places.
 - Hidden communities can never carry a label. The list shows a title, description, admission and labels. It shows no members and no counts.
-- Tests cover the inheritance, the steward check and the hidden-community rule.
+- A place page has a **Mulai komunitas di sini** button. It opens the create form with the place attached and asks who may join.
+- `/contexts` opens with a map of the 42 regencies and cities on terrain tiles. Each outline links to its page. Hatching marks a place that has a reviewed page, a public community or a public organisation. It is never a score.
+- Tests cover the inheritance, the steward check, the hidden-community rule and the public count behind the hatching.
 
 ## Sitemap
 
@@ -129,12 +131,14 @@ Rules that go with the table:
 2. **Kinds.** Community templates in the same file. Proposed above. Not built.
 3. **Starter rooms.** The sitewide rooms plus one per top-level region. A steward decision. Not done.
 4. **Labels.** Stewards label their rooms. Built today.
-5. **Start here.** The create form opens from a place page with labels attached. Not built.
+5. **Start here.** The create form opens from a place page with the place attached. Built today. Choosing a kind waits for step 2.
 6. **Aksara per region.** Each regional room gets an Aksara that reads the sources for its regencies and posts findings to be checked. Depends on Aksara answering reliably.
 7. **Handover.** A regional room moves to local moderators when two active members accept the role. Ownership transfer isn't implemented in the engine yet.
 
 ## Open questions for the owner
 
+- **Regency outlines.** They come from Badan Informasi Geospasial's public Satu Peta service, simplified. The service states no licence. Keep them with credit, or redraw from Natural Earth and OpenStreetMap?
+- **Terrain tiles.** EOX allows free use with credit and a link, on a demo service with no uptime promise. Browsers load them straight from EOX. For the pilot we should render our own.
 - **Olahraga and Pemuda** aren't in the topic list. Add them?
 - **Places outside Papua.** Students and families in Yogyakarta, Makassar, Jakarta or Port Moresby have no place to label. Add a short "Perantauan" branch to the catalogue?
 - **Kampung and distrik.** The catalogue stops at regencies. Villages matter most to people, and there are thousands. Proposal: let a community name its kampung as free text under its regency, and add districts only where a community asks.

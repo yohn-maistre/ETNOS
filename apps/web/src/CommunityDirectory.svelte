@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PlaceMap from './PlaceMap.svelte'
   import {avatarTone} from './avatar-tone'
   import {
     Users,
@@ -268,6 +269,7 @@
           {#if tree.languages.length}<a href="#bahasa">Bahasa</a>{/if}
           {#if tree.lenses.length || tree.topicGroups.length}<a href="#topik">Topik</a>{/if}
         </nav>{/if}
+      {#if view === 'places'}<PlaceMap nodes={places} />{/if}
       {#if view === 'places' && tree.regions.length}<section
           id="wilayah-adat"
           class="context-map-section"

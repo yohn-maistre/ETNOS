@@ -348,11 +348,22 @@ export class Groups implements GroupAuthority {
       "SELECT l.context_id,l.parent_id FROM context_parents l JOIN contexts p ON p.id=l.parent_id AND p.active=1 ORDER BY l.created,l.parent_id LIMIT 5000",
     ))
       parents.set(l.context_id, [...(parents.get(l.context_id) ?? []), l.parent_id]);
+    // What a map may shade by: reviewed pages, organisations and communities that
+    // are public right now and carry the label directly. Nothing private is counted.
+    const indexed = new Map<string, number>();
+    for (const r of this.store.all<{ id: string; n: number }>(
+      `SELECT id,SUM(n) n FROM(
+        SELECT l.context_id id,COUNT(*) n FROM record_contexts l JOIN wiki_pages w ON w.id=l.record_id JOIN communities c ON c.id=w.community_id WHERE l.record_kind='wiki' AND c.visibility='public' AND w.revision_id IS NOT NULL GROUP BY l.context_id
+        UNION ALL SELECT l.context_id,COUNT(*) FROM record_contexts l JOIN groups g ON g.id=l.record_id WHERE l.record_kind='group' AND g.visibility='public' GROUP BY l.context_id
+        UNION ALL SELECT l.context_id,COUNT(*) FROM community_contexts l JOIN communities c ON c.id=l.community_id WHERE c.visibility='public' GROUP BY l.context_id
+      ) GROUP BY id`,
+    ))
+      indexed.set(r.id, r.n);
     return this.store
       .all<ContextRow>(
         "SELECT * FROM contexts WHERE active=1 ORDER BY kind,title LIMIT 1000",
       )
-      .map((c) => ({ ...this.contextView(c), parents: parents.get(c.id) ?? [] }));
+      .map((c) => ({ ...this.contextView(c), parents: parents.get(c.id) ?? [], indexed: indexed.get(c.id) ?? 0 }));
   }
   createContext(actorId: string, params: ContextParams) {
     return this.store.tx(() => {
