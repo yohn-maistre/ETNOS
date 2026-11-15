@@ -19,7 +19,7 @@ A family gets in when it has a citable source, stays near a dozen entries at its
 
 | Family | Entries | Source | State |
 | --- | --- | --- | --- |
-| Tempat | 7 wilayah adat, 6 provinces, 42 regencies and cities | Bappenas planning documents, BIG | Live, with a map |
+| Komunitas wilayah | 7 wilayah adat, 6 provinces, 42 regencies and cities | Bappenas planning documents, BIG | Live, with a map |
 | Bahasa | 256 | Glottolog 5.3 | Live |
 | Topik | 11 | Our own list | Live. Weakest source. |
 | Jenis lembaga | 8 | Our own list | Live |
@@ -99,25 +99,27 @@ Aksara can't yet draft a catalogue. The loader, the idempotent import and the "n
 
 ## Community kinds
 
-A kind says **how people gather**. Labels say **what about** and **where**. That split keeps the list short. "Klub baca Nabire" is the kind Belajar with the labels Buku & tulisan and Nabire. "Hip hop bawah tanah" is Minat with Musik & seni.
+A kind says **how people gather**. Labels say **what about** and **where**. That split keeps the list short. "Klub baca Nabire" is the kind Kelompok belajar with the labels Buku & tulisan and Nabire. "Hip hop bawah tanah" is Minat dan hobi with Musik & seni.
 
 The eleven kinds are in the catalogue file with defaults, and the create form now asks "Komunitas seperti apa?". A kind is also a label, so its page lists every community of that kind.
 
 | Kind | How people gather | Examples | Default door |
 | --- | --- | --- | --- |
-| Tempat | They share a place | Nabire, Obrolan Mee Pago, Mahasiswa Papua di Yogyakarta | Open |
-| Minat | They like the same thing | Film Papua, hip hop bawah tanah, Persipura, gim | Open |
-| Belajar | They learn and practise together | Belajar bahasa Mee, klub baca, belajar ngoding | Open |
-| Karya | They show work and give feedback | Seni rupa masa kini, musisi, penulis muda | Open |
+| Komunitas wilayah | They share a place | Nabire, Obrolan Mee Pago, Mahasiswa Papua di Yogyakarta | Open |
+| Minat dan hobi | They like the same thing | Film Papua, hip hop bawah tanah, Persipura, gim | Open |
+| Kelompok belajar | They learn and practise together | Belajar bahasa Mee, klub baca, belajar ngoding | Open |
+| Seni dan karya | They show work and give feedback | Seni rupa masa kini, musisi, penulis muda | Open |
 | Tanya jawab | Questions get answered with sources | Tanya sains, tanya peneliti, tanya hukum | Open |
-| Kabar & peluang | A notice board | Beasiswa & lowongan, acara | Approval |
-| Pasar & usaha | They buy, sell and trade | Pasar Mama-Mama, kopi Papua | Open |
-| Lembaga | A room that belongs to a body | A campus, a congregation, an office, an NGO | Approval |
-| Kerja bersama | They have a goal | Forest watchers, a festival committee, a research team | Approval |
-| Musyawarah | They deliberate on one issue and record the result | Air bersih di Dogiyai, usulan kampung | Approval |
-| Lingkar | They belong to each other | A clan, a people, speakers of one language, alumni | Members only, made by its own members |
+| Pengumuman dan lowongan | A notice board | Beasiswa & lowongan, acara | Approval |
+| Jual beli dan usaha | They buy, sell and trade | Pasar Mama-Mama, kopi Papua | Open |
+| Ruang lembaga | A room that belongs to a body | A campus, a congregation, an office, an NGO | Approval |
+| Kelompok kerja | They have a goal | Forest watchers, a festival committee, a research team | Approval |
+| Forum musyawarah | They deliberate on one issue and record the result | Air bersih di Dogiyai, usulan kampung | Approval |
+| Kelompok tertutup | They belong to each other | A clan, a people, speakers of one language, alumni | Members only, made by its own members |
 
-The list follows a typology used in community studies: communities of place, interest, practice, action and circumstance (from memory, to re-check). Lembaga and Musyawarah are added because organisations and public deliberation behave differently on a platform.
+The list follows a typology used in community studies: communities of place, interest, practice, action and circumstance (from memory, to re-check). Ruang lembaga and Forum musyawarah are added because organisations and public deliberation behave differently on a platform.
+
+Names are plain and descriptive on purpose. Each label family records what it was adapted from; the context page shows it as "Dasar label" and `/tentang#about-basis` lists them all with the references.
 
 Not kinds: families, couples, friendships. Those are private messages.
 

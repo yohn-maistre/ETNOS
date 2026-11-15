@@ -168,3 +168,12 @@ test("community kinds are shipped as labels with defaults a form can use", () =>
   }
   for (const e of shipped.entries) assert.doesNotMatch(e.description, /West Papua Watch/);
 });
+
+test("every shipped label belongs to a family that says what it was adapted from", async () => {
+  const { catalogue: shipped } = catalogue();
+  const { contextFamily } = await import("../src/catalogue.ts");
+  for (const e of shipped.entries) assert.ok(contextFamily(e)?.basis, e.slug);
+  assert.equal(contextFamily({ kind: "place", facet: "city" })?.key, "regency");
+  assert.equal(contextFamily({ kind: "topic", facet: "unknown-facet" }), null);
+  for (const f of catalogueSummary().families) for (const s of f.sources) assert.match(s.url, /^https:\/\//);
+});

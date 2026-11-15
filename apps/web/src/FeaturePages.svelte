@@ -78,6 +78,7 @@
   type ContextRef = { id: string; slug: string; title: string; kind: string; facet?: string }
   type ContextDetail = Context & {
     facet?: string
+    family?: { key: string; title: string; basis: string; sources: { title: string; url: string }[] } | null
     parents?: ContextRef[]
     children?: ContextRef[]
     childCount?: number
@@ -752,6 +753,11 @@
         {#each orderedParents(context.parents) as p, i (p.id)}{#if i}<span aria-hidden="true">·</span>{/if}<a href={'/contexts/' + p.slug}>{p.title}</a>{/each}
       </p>{/if}
     <p>{context.description}</p>
+    {#if context.family}<p class="context-basis">
+        Dasar label: {context.family.basis}
+        {#each context.family.sources as src (src.url)}<a href={src.url} target="_blank" rel="noreferrer">{src.title}</a>{/each}
+        <a href="/tentang#about-basis">Semua dasar</a>
+      </p>{/if}
     {#if auth.steward}<details class="place-news-setup" ontoggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) void loadPlaceOptions() }}>
         <summary>Atur tempat kabar</summary>
         <form

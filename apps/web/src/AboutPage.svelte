@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ArrowUpRight } from '@lucide/svelte'
+  import { request } from './api'
 
   const live = [
     'Komunitas dengan ruang publik dan ruang khusus anggota.',
@@ -41,6 +42,42 @@
     'Tanggapan pada kalimat wiki, termasuk "jangan disebarkan".',
     'Ruang bagi dua catatan untuk berdampingan saat orang mengingat hal yang berbeda.',
     'Ringkasan mingguan "apa artinya bagi kita".',
+  ]
+  type Family = { key: string; title: string; basis: string; sources: { title: string; url: string }[] }
+  let families = $state<Family[]>([])
+  $effect(() => {
+    const abort = new AbortController()
+    request<{ families?: Family[] }>('/v1/contexts/catalogue', undefined, abort.signal, true)
+      .then((r) => (families = r.families ?? []))
+      .catch(() => {})
+    return () => abort.abort()
+  })
+  const references = [
+    {
+      why: 'Penggolongan berfaset: satu hal dilihat dari beberapa sisi, tanpa satu pohon induk.',
+      cite: 'Ranganathan (1933), Colon Classification, Madras Library Association',
+      href: 'https://en.wikipedia.org/wiki/Colon_classification',
+    },
+    {
+      why: 'Label disimpan sebagai skema konsep yang bisa dipetakan ke skema lain.',
+      cite: 'W3C (2009), SKOS Simple Knowledge Organization System Reference',
+      href: 'https://www.w3.org/TR/skos-reference/',
+    },
+    {
+      why: 'Skema baku sering salah menamai pengetahuan masyarakat adat. Komunitas menamai dirinya sendiri.',
+      cite: 'Duarte & Belarde-Lewis (2015), Imagining: Creating Spaces for Indigenous Ontologies, Cataloging & Classification Quarterly 53(5–6)',
+      href: 'https://doi.org/10.1080/01639374.2015.1018396',
+    },
+    {
+      why: 'Data tentang masyarakat adat diatur untuk manfaat bersama dan atas wewenang mereka.',
+      cite: 'Carroll dkk. (2020), The CARE Principles for Indigenous Data Governance, Data Science Journal 19',
+      href: 'https://doi.org/10.5334/dsj-2020-043',
+    },
+    {
+      why: 'Musyawarah daring yang mencari pernyataan yang diterima semua kelompok.',
+      cite: 'Small dkk. (2021), Polis: Scaling Deliberation by Mapping High Dimensional Opinion Spaces, Recerca 26(2)',
+      href: 'https://doi.org/10.6035/recerca.5516',
+    },
   ]
   const principles = [
     'Manusia yang memutuskan. Aksara menyusun draf, merangkum, dan bertanya. Setiap perubahan wiki diterima oleh seseorang.',
@@ -115,6 +152,30 @@
   <section aria-labelledby="about-principles">
     <h2 id="about-principles">Prinsip</h2>
     <ol>{#each principles as item}<li>{item}</li>{/each}</ol>
+  </section>
+
+  <section aria-labelledby="about-basis">
+    <h2 id="about-basis">Dasar penggolongan</h2>
+    <p>
+      Label di ETNOS adalah faset: tempat, bahasa, ranah, topik dan jenis.
+      Sebuah kiriman, halaman atau komunitas boleh membawa beberapa sekaligus.
+      Label tidak pernah dipasang pada orang. Daftarnya bisa bertambah, berubah
+      dan dipensiunkan seiring apa yang dibicarakan.
+    </p>
+    {#if families.length}<ul class="about-basis">
+        {#each families as f (f.key)}<li>
+            <strong>{f.title}</strong>
+            <span>{f.basis}</span>
+            {#each f.sources as src (src.url)}<a href={src.url} target="_blank" rel="noreferrer">{src.title}</a>{/each}
+          </li>{/each}
+      </ul>{/if}
+    <p>Gagasan yang kami ikuti:</p>
+    <ul class="about-basis">
+      {#each references as r (r.href)}<li>
+          <span>{r.why}</span>
+          <a href={r.href} target="_blank" rel="noreferrer">{r.cite}</a>
+        </li>{/each}
+    </ul>
   </section>
 
   <section aria-labelledby="about-origin">
@@ -218,6 +279,10 @@
     gap: 2px;
     margin-left: 4px;
   }
+  .about-basis { list-style: none; padding: 0; display: grid; gap: 12px; }
+  .about-basis li { display: grid; gap: 2px; font-size: 14px; line-height: 1.55; }
+  .about-basis span { color: var(--muted-foreground); }
+  .about-basis a { font-size: 13px; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
   .about-lineage strong {
     margin-right: 6px;
   }

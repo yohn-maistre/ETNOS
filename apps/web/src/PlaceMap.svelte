@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ContextNode } from './context-tree'
+  import { request } from './api'
 
   type Shape = { slug: string; title: string; d: string; x: number; y: number }
   type SiteMap = {
@@ -8,7 +9,11 @@
     height: number
     tiles: { x: number; y: number; left: number; top: number }[]
     places: Shape[]
+    west?: number
+    east?: number
+    north?: number
   }
+  type Quake = { at: string; magnitude: number; depthKm: number | null; latitude: number; longitude: number; where: string; felt: string }
   type Indexed = ContextNode & { indexed?: number }
 
   let { nodes }: { nodes: Indexed[] } = $props()
@@ -21,6 +26,23 @@
     import('./site-map.json').then((m) => (map = m.default as SiteMap)).catch(() => {})
   })
 
+  // Recent earthquakes from BMKG, drawn where they happened. Shown only when the feed answers.
+  let quakes = $state<Quake[]>([])
+  $effect(() => {
+    const abort = new AbortController()
+    request<{ items: Quake[] }>('/v1/ambient/quakes', undefined, abort.signal, true)
+      .then((r) => (quakes = r.items ?? []))
+      .catch(() => {})
+    return () => abort.abort()
+  })
+  const mercator = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360))
+  const point = (q: Quake) => {
+    if (!map || map.west === undefined || map.east === undefined || map.north === undefined) return null
+    const scale = map.width / (map.east - map.west)
+    return { x: (q.longitude - map.west) * scale, y: ((scale * 180) / Math.PI) * (mercator(map.north) - mercator(q.latitude)) }
+  }
+  const dots = $derived(quakes.flatMap((q) => { const p = point(q); return p && p.y >= 0 && p.y <= (map?.height ?? 0) ? [{ ...q, ...p }] : [] }))
+  const day = (iso: string) => new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
   const bySlug = $derived(new Map(nodes.map((n) => [n.slug, n])))
   const shapes = $derived((map?.places ?? []).filter((p) => bySlug.has(p.slug)))
   const count = (slug: string) => bySlug.get(slug)?.indexed ?? 0
@@ -55,6 +77,9 @@
           <path d={p.d} />
         </a>
       {/each}
+      <g class="pm-quakes" aria-hidden="true">
+        {#each dots as q (q.at)}<circle cx={q.x} cy={q.y} r={4 + (q.magnitude - 3) * 3.5} />{/each}
+      </g>
     </svg>
     <figcaption>
       <p class="pm-now" aria-live="polite">
@@ -62,6 +87,12 @@
           {count(current.slug) ? count(current.slug) + ' terindeks' : 'Belum ada yang diindeks'}
         {:else}Pilih kabupaten atau kota. Arsiran menandai tempat yang sudah punya halaman, komunitas atau organisasi.{/if}
       </p>
+      {#if dots.length}<p class="pm-quake">
+          <span class="pm-ring" aria-hidden="true"></span>
+          Gempa terakhir di sekitar sini: M{dots[0].magnitude.toLocaleString('id-ID')}, {day(dots[0].at)}, {dots[0].where}{dots[0].depthKm !== null ? ', kedalaman ' + dots[0].depthKm + ' km' : ''}.
+          {dots.length > 1 ? dots.length + ' gempa tercatat di peta.' : ''}
+          <a href="https://www.bmkg.go.id/gempabumi/gempabumi-terkini" rel="noreferrer" target="_blank">Sumber: BMKG</a>
+        </p>{/if}
       <p class="pm-credit">
         Medan: <a href="https://maps.eox.at" rel="noreferrer" target="_blank">Terrain Light</a>, data © OpenStreetMap
         contributors dan lainnya, rendering © EOX. Garis kabupaten: Badan Informasi Geospasial, disederhanakan. Bukan
@@ -81,6 +112,10 @@
   .indexed path { fill: url(#pm-hatch); }
   a { cursor: pointer; outline: none; }
   a:hover path, a:focus-visible path { stroke: var(--brand); stroke-opacity: 1; stroke-width: 2; fill: color-mix(in oklab, var(--brand) 22%, transparent); }
+  .pm-quakes circle { fill: none; stroke: var(--foreground); stroke-width: 1.5; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .pm-quake { font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
+  .pm-quake a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .pm-ring { display: inline-block; width: 10px; height: 10px; margin-right: 4px; border: 1.5px dashed var(--foreground); border-radius: 50%; vertical-align: -1px; }
   figcaption { display: grid; gap: 4px; padding-top: 8px; }
   p { margin: 0; }
   .pm-now { min-height: 2.9em; font-size: 14px; color: var(--muted-foreground); }

@@ -1,6 +1,8 @@
 import backend,{StrataNode,ResidentAuthority} from './worker.ts'
 import {json} from './api.ts'
 import {publicNews,publicStory,publicNewsImage,newsQuery} from './news.ts'
+import {publicQuakes} from './ambient.ts'
+import {catalogue} from './catalogue.ts'
 import {publicVideo} from './video.ts'
 import {publicLinkPreview,previewURL} from './link-preview.ts'
 import {resolveShare,shareTags} from './share.ts'
@@ -48,6 +50,16 @@ export default {
       const key=new Request(url.origin+url.pathname),cached=await edgeCache().match(key)
       if(cached)return cached
       const response=await publicVideo(videoRoute[1],videoRoute[2],Boolean(videoRoute[3]))
+      if(response.ok)await edgeCache().put(key,response.clone())
+      return response
+    }
+    if(url.pathname==='/v1/ambient/quakes'){
+      if(request.method!=='GET')return json(405,{error:'Method not allowed'})
+      const bounds=catalogue((env as {STRATA_CATALOGUE?:string}).STRATA_CATALOGUE).catalogue.bounds
+      if(!bounds)return json(404,{error:'Not found'})
+      const key=new Request(url.origin+url.pathname),cached=await edgeCache().match(key)
+      if(cached)return cached
+      const response=await publicQuakes(bounds)
       if(response.ok)await edgeCache().put(key,response.clone())
       return response
     }

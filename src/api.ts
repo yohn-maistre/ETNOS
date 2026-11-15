@@ -19,7 +19,7 @@ import {Ranking} from './ranking.ts'
 import {Clustering} from './clustering.ts'
 import {Knowledge} from './knowledge.ts'
 import {Resident,type ResidentProvider,type ResidentSkill} from './resident.ts'
-import {catalogue,catalogueSummary} from './catalogue.ts'
+import {catalogue,catalogueSummary,contextFamily} from './catalogue.ts'
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -121,7 +121,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
         else if(path==='/v1/contexts/catalogue')result=catalogueSummary(options.catalogue)
-        else if(parts.length===3&&parts[1]==='contexts')result={...groups.contextDetail(parts[2]),work:work.list({contextId:parts[2]})}
+        else if(parts.length===3&&parts[1]==='contexts'){const detail=groups.contextDetail(parts[2]);result={...detail,family:contextFamily(detail,options.catalogue),work:work.list({contextId:parts[2]})}}
         else if(path==='/v1/work')result=work.list({groupId:url.searchParams.get('group')??undefined,contextId:url.searchParams.get('context')??undefined})
         else if(parts.length===3&&parts[1]==='work')result=work.read(parts[2])
         else if(parts.length===4&&parts[1]==='work'&&parts[3]==='proposals')result=work.proposals(authenticated(),parts[2])
