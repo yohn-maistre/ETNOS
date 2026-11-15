@@ -68,8 +68,9 @@ export type Post = {
   pinned?: boolean
   permissions?: { edit: boolean; moderate: boolean }
   poll?: {
-    options: { label: string; votes: number }[]
-    total: number
+    options: { label: string; votes: number | null }[]
+    results: 'shown' | 'withheld'
+    total: number | null
     myVote: number | null
     closesAt: number
     closed: boolean

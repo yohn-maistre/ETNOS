@@ -137,7 +137,7 @@ export class TestNode extends StrataNode {
   forumContract(){
     const s=this.core(),a=s.provision('did:web:forum-bench.example','Synthetic forum owner'),c=s.createCommunity(a.actor.id,'Synthetic forum','Synthetic only','public'),forum=new Forum(s)
     const poll=s.createPost(a.actor.id,c.id,'Poll',undefined,undefined,{content:{poll:{options:['Morning','Evening'],closesAt:s.clock()+86400000}}})
-    const voted=forum.poll(a.actor.id,poll.id,0).poll!.total===1
+    const voted=forum.poll(a.actor.id,poll.id,0).poll!.myVote===0
     forum.moderate(a.actor.id,poll.id,{action:'lock',reason:'Synthetic check'})
     let lockDenied=false;try{s.createPost(a.actor.id,c.id,'No reply',poll.id)}catch{lockDenied=true}
     const edited=forum.edit(a.actor.id,poll.id,{revision:1,text:'Updated',content:{title:'New title'}})

@@ -163,7 +163,7 @@
         <div>
           <h2>{post.content?.title || post.text}</h2>
           <p>
-            {post.poll?.total ?? 0} jawaban · {post.poll?.closed
+            {post.poll?.total != null ? post.poll.total + ' penjawab' : 'Hasil belum tampil'} · {post.poll?.closed
               ? 'Ditutup'
               : `Sampai ${new Intl.DateTimeFormat('id', { day: 'numeric', month: 'short' }).format(post.poll!.closesAt)}`}
           </p>

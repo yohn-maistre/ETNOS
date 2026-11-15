@@ -1,6 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {Strata} from '../src/store.ts'
+import {POLL_MIN_RESPONDENTS} from '../src/core.ts'
 import {Forum} from '../src/forum.ts'
 import {Media} from '../src/media.ts'
 import {Groups} from '../src/groups.ts'
@@ -29,7 +30,7 @@ test('edits use revisions, deletion wipes content/media but preserves reply stru
 test('polls and RSVPs require current human membership; no public voter identities; locks block replies',()=>{
  const{s,f,a,b,o,c,advance}=fixture();try{
  const p=s.createPost(a.actor.id,c.id,'Choose',undefined,undefined,{content:{poll:{options:['A','B'],closesAt:s.clock()+1000}}})
- assert.equal(f.poll(b.actor.id,p.id,0).poll!.total,1);assert.equal(f.poll(b.actor.id,p.id,1).poll!.total,1);assert.equal(s.getPost(a.actor.id,p.id).poll!.myVote,null)
+ assert.equal(f.poll(b.actor.id,p.id,0).poll!.myVote,0);assert.equal(f.poll(b.actor.id,p.id,1).poll!.myVote,1);assert.equal(s.getPost(a.actor.id,p.id).poll!.myVote,null)
  assert.throws(()=>f.poll(o.actor.id,p.id,0));s.setMember(a.actor.id,c.id,b.actor.id,false);assert.throws(()=>f.poll(b.actor.id,p.id,0));s.setMember(a.actor.id,c.id,b.actor.id,true)
  const agent=s.provision('did:web:agent.example','Agent',a.actor.id);s.setMember(a.actor.id,c.id,agent.actor.id,true);assert.throws(()=>f.poll(agent.actor.id,p.id,0),/Human/)
  advance(1001);assert.throws(()=>f.poll(b.actor.id,p.id,0),/closed/)
@@ -44,5 +45,29 @@ test('HTTP accepts long posts and bounds publication floods without collapsing p
  for(let i=1;i<20;i++)assert.equal((await send({communityId:c.id,text:'Post '+i})).status,200)
  assert.equal((await send({communityId:c.id,text:'Flood'})).status,429)
  for(const content of[{url:'javascript:alert(1)'},{url:'https://user:password@example.org'},{poll:{options:['Same','same'],closesAt:s.clock()+1000}}])assert.throws(()=>s.createPost(a.actor.id,c.id,'Bad',undefined,undefined,{content}))
+ }finally{s.close()}
+})
+
+test('poll results are withheld below the respondent threshold and never leak counts',()=>{
+ const{s,f,a,b}=fixture();try{
+ const pub=s.createCommunity(a.actor.id,'Open','Open','public');s.setMember(a.actor.id,pub.id,b.actor.id,true)
+ const p=s.createPost(a.actor.id,pub.id,'Pick',undefined,undefined,{content:{poll:{options:['A','B','C'],closesAt:s.clock()+1000000}}})
+ const voters=[a,b];for(let i=0;i<4;i++){const v=s.provision('did:web:v'+i+'.example','V'+i);s.setMember(a.actor.id,pub.id,v.actor.id,true);voters.push(v)}
+ const withheld=(view:ReturnType<typeof s.getPost>['poll'])=>{assert.equal(view!.results,'withheld');assert.equal(view!.total,null);assert.ok(view!.options.every(o=>o.votes===null))}
+ for(let i=0;i<POLL_MIN_RESPONDENTS-1;i++){
+  const mine=f.poll(voters[i].actor.id,p.id,i%2).poll!;withheld(mine);assert.equal(mine.myVote,i%2)
+  withheld(s.getPost(undefined,p.id).poll);assert.equal(s.getPost(undefined,p.id).poll!.myVote,null)
+  withheld(s.getPost(voters[5].actor.id,p.id).poll);assert.equal(s.getPost(voters[5].actor.id,p.id).poll!.myVote,null)
+  withheld(s.feedPage(undefined).items.find(x=>x.id===p.id)!.poll)
+ }
+ // changing and withdrawing a vote below threshold leaks nothing
+ withheld(f.poll(voters[0].actor.id,p.id,2).poll);assert.equal(s.getPost(voters[0].actor.id,p.id).poll!.myVote,2)
+ withheld(f.poll(voters[0].actor.id,p.id,null).poll);assert.equal(s.getPost(voters[0].actor.id,p.id).poll!.myVote,null);withheld(s.getPost(undefined,p.id).poll)
+ // reaching the threshold shows counts to everyone
+ f.poll(voters[0].actor.id,p.id,0);f.poll(voters[4].actor.id,p.id,0)
+ const anon=s.getPost(undefined,p.id).poll!;assert.equal(anon.results,'shown');assert.equal(anon.total,POLL_MIN_RESPONDENTS);assert.deepEqual(anon.options.map(o=>o.votes),[3,2,0]);assert.equal(anon.myVote,null)
+ assert.equal(s.getPost(voters[1].actor.id,p.id).poll!.myVote,1)
+ // dropping back below the threshold withholds again
+ withheld(f.poll(voters[0].actor.id,p.id,null).poll)
  }finally{s.close()}
 })

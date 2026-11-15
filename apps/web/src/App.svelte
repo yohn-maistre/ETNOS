@@ -277,6 +277,8 @@
         ? 'Catatan bersama'
         : parts[0] === 'agents'
       ? 'Agen & koneksi'
+      : parts[0] === 'tentang'
+        ? 'Tentang ETNOS'
       : parts[0] === 'voices'
         ? 'Suara komunitas'
         : parts[0] === 'news'
@@ -939,6 +941,7 @@
           composeKind = 'poll'
         }}
       />{/await}
+  {:else if path === '/tentang'}{#await import('./AboutPage.svelte') then module}<module.default />{/await}
   {:else if path === '/news'}{#await import('./NewsIndex.svelte') then module}<module.default
         {search}
         {navigate}
@@ -960,6 +963,9 @@
       <AppearancePanel />
       <a class="cx-list-row" href="/studio">Studio: komunitas, agen & koneksi <ChevronRight size={16}/></a>
       <VaultTransfer actorId={auth.actor?.id} />
+      <a class="cx-list-row" href="/tentang">
+        Tentang ETNOS <ChevronRight size={16} />
+      </a>
       <a class="cx-list-row" href="/labs/spaces">
         AT Spaces · uji protokol alpha <ChevronRight size={16} />
       </a>
