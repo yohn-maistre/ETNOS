@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { sitePlace } from './site-place.ts'
   import * as Card from '$lib/components/ui/card/index.js'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
@@ -57,7 +58,8 @@
       </Button>
     </div>
     <p class="cx-hint">
-      Otomatis: terang pukul 06.00–18.00, mengikuti waktu perangkat.
+      Otomatis: mengikuti matahari di atas {sitePlace.label}. Saat senja dan
+      fajar, warnanya berubah perlahan.
     </p>
     <div>
       <Label>Warna dasar</Label>

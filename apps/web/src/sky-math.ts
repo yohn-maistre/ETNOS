@@ -45,8 +45,8 @@ export function altAz(jd: number, latitude: number, longitude: number, raHours: 
   return { alt, az: norm360(az) }
 }
 
-/** Sun's geometric altitude in degrees (no refraction). */
-export function sunAltitude(jd: number, latitude: number, longitude: number): number {
+/** Sun's geometric altitude and azimuth in degrees (no refraction). */
+export function sunAltAz(jd: number, latitude: number, longitude: number): AltAz {
   const n = jd - 2451545.0
   const meanLon = 280.46 + 0.9856474 * n
   const g = (357.528 + 0.9856003 * n) * RAD
@@ -54,9 +54,29 @@ export function sunAltitude(jd: number, latitude: number, longitude: number): nu
   const eps = (23.439 - 0.0000004 * n) * RAD
   const ra = Math.atan2(Math.cos(eps) * Math.sin(lambda), Math.cos(lambda)) / RAD
   const dec = Math.asin(Math.sin(eps) * Math.sin(lambda)) / RAD
-  return altAz(jd, latitude, longitude, norm360(ra) / 15, dec).alt
+  return altAz(jd, latitude, longitude, norm360(ra) / 15, dec)
 }
 
+/** Panorama position: azimuth across (south at 0.5), altitude down from ALT_MAX to ALT_MIN. */
+export function panorama(alt: number, az: number) {
+  const d = ((az - 180 + 540) % 360) - 180
+  return { x: 0.5 + d / 360, y: 1 - (alt - ALT_MIN) / (ALT_MAX - ALT_MIN) }
+}
+
+/**
+ * How far into night the sky is, 0 (day) to 1 (night), eased across civil
+ * twilight: full day above +2°, full night below -8°. Near the equator the sun
+ * crosses this band in roughly forty minutes.
+ */
+export function darkness(sunAlt: number): number {
+  const t = Math.max(0, Math.min(1, (2 - sunAlt) / 10))
+  return t * t * (3 - 2 * t)
+}
+
+/** Sun's geometric altitude in degrees (no refraction). */
+export function sunAltitude(jd: number, latitude: number, longitude: number): number {
+  return sunAltAz(jd, latitude, longitude).alt
+}
 export type SkyPhase = 'siang' | 'senja' | 'malam'
 
 export function phaseOf(sunAlt: number): SkyPhase {

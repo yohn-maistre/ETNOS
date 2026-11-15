@@ -23,7 +23,11 @@ export const appearance = $state({
 import { accentRoles } from './appearance-color'
 import { bases, baseRoles } from './appearance-bases'
 import { fontPairs, loadFontPair } from './font-pairs'
-import { scheduledTheme, type ThemeMode } from './appearance-schedule'
+import {
+  scheduledTheme,
+  solarDarkness,
+  type ThemeMode,
+} from './appearance-schedule'
 import { themeFrame, THEME_SHIFT_MS } from './appearance-transition'
 let lastAppearance: {
   theme: 'light' | 'dark'
@@ -39,7 +43,15 @@ export function applyAppearance() {
   const root = document.documentElement,
     dark = appearance.theme === 'dark'
   const previous = lastAppearance
+  // Automatic mode follows the sun: inside twilight the palette is a blend.
+  const twilight =
+    appearance.themeMode === 'clock' &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? solarDarkness()
+      : null
+  const blending = twilight !== null && twilight > 0.001 && twilight < 0.999
   const shift =
+    !blending &&
     previous &&
     previous.theme !== appearance.theme &&
     previous.mode === 'clock' &&
@@ -87,6 +99,13 @@ export function applyAppearance() {
   root.style.setProperty('--brand', roles.ink)
   root.style.setProperty('--brand-foreground', roles.foreground)
   root.style.setProperty('--brand-soft', roles.soft)
+  if (blending) {
+    root.dataset.twilight = twilight.toFixed(3)
+    for (const [name, value] of Object.entries(
+      themeFrame(appearance.base, false, twilight, appearance.accent),
+    ))
+      root.style.setProperty(name, value)
+  } else delete root.dataset.twilight
   if (shift) {
     root.dataset.themeShifting = 'true'
     const start = performance.now()
@@ -167,10 +186,14 @@ export function restoreAppearance() {
 }
 export function startAppearanceClock() {
   const sync = () => {
-    if (!document.hidden && appearance.themeMode === 'clock')
-      appearance.theme = scheduledTheme('clock')
+    if (document.hidden || appearance.themeMode !== 'clock') return
+    const d = solarDarkness()
+    // Inside twilight, or just leaving it, re-blend; otherwise only flip.
+    if ((d > 0.001 && d < 0.999) || document.documentElement.dataset.twilight)
+      applyAppearance()
+    else appearance.theme = scheduledTheme('clock')
   }
-  const timer = setInterval(sync, 60000)
+  const timer = setInterval(sync, 20000)
   document.addEventListener('visibilitychange', sync)
   window.addEventListener('pageshow', sync)
   return () => {
