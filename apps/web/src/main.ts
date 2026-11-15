@@ -1,5 +1,5 @@
 import { mount } from 'svelte'
-import '@fontsource-variable/plus-jakarta-sans'
+import '@fontsource-variable/geist'
 import './styles/geist-serif.css'
 import './styles/ui.css'
 import './styles/conversation.css'

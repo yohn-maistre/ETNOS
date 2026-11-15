@@ -1,5 +1,10 @@
 /** Presentation only. No identity, membership or institution preferences live here. */
 export const palettes = [
+  { id: 'tinta-danau', name: 'Tinta danau', color: '#1f4e8c' },
+  { id: 'lumut', name: 'Lumut', color: '#3d6a3f' },
+  { id: 'oker-tua', name: 'Oker tua', color: '#9a6b1f' },
+  { id: 'senja', name: 'Senja', color: '#5b4b8a' },
+  { id: 'laut-dalam', name: 'Laut dalam', color: '#1e6a72' },
   { id: 'abstraksi', name: 'Abstraksi', color: '#b8b2c1' },
   { id: 'aksara', name: 'Aksara', color: '#aa8bd5' },
   { id: 'clay', name: 'Tanah', color: '#b7775c' },
@@ -13,11 +18,11 @@ export const palettes = [
 export const appearance = $state({
   theme: 'dark' as 'dark' | 'light',
   themeMode: 'clock' as ThemeMode,
-  accent: '#1680fa',
-  base: 'paper',
+  accent: '#1f4e8c',
+  base: 'kabut',
   texture: 'grain',
   textureStrength: 'soft',
-  fontPair: 'jakarta',
+  fontPair: 'geist',
   externalMedia: true,
 })
 import { accentRoles } from './appearance-color'
@@ -38,7 +43,7 @@ let lastAppearance: {
 let stopShift: (() => void) | undefined
 
 export function applyAppearance() {
-  if (!/^#[0-9a-f]{6}$/i.test(appearance.accent)) appearance.accent = '#1680fa'
+  if (!/^#[0-9a-f]{6}$/i.test(appearance.accent)) appearance.accent = '#1f4e8c'
   appearance.theme = scheduledTheme(appearance.themeMode)
   const root = document.documentElement,
     dark = appearance.theme === 'dark'
@@ -76,7 +81,7 @@ export function applyAppearance() {
   }
   if (!shift) finishTheme()
   root.dataset.themeMode = appearance.themeMode
-  if (!bases.some((b) => b.id === appearance.base)) appearance.base = 'paper'
+  if (!bases.some((b) => b.id === appearance.base)) appearance.base = 'kabut'
   if (!['none', 'grain', 'dither'].includes(appearance.texture))
     appearance.texture = 'grain'
   root.dataset.texture = appearance.texture

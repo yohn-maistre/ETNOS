@@ -3097,7 +3097,7 @@ https://github.com/DefinitelyTyped/DefinitelyTyped.git
 
 
 
-@yusufceng1z/ding@0.0.4 — MIT
+@yusufceng1z/ding@0.0.5 — MIT
 
 git+https://github.com/YusufCeng1z/ding.git
 
@@ -3125,7 +3125,7 @@ SOFTWARE.
 
 
 
-@yusufceng1z/ding-svelte@0.0.4 — MIT
+@yusufceng1z/ding-svelte@0.0.5 — MIT
 
 git+https://github.com/YusufCeng1z/ding.git
 

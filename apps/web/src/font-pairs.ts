@@ -1,18 +1,18 @@
 /** Self-hosted, presentation-only choices. Optional faces load when selected. */
 export const fontPairs = [
   {
-    id: 'jakarta',
-    name: 'Plus Jakarta Sans + Geist Serif',
-    sans: 'Plus Jakarta Sans Variable',
-    serif: 'Geist Serif',
-    note: 'Terbuka dan bersahabat, dengan serif untuk membaca.',
-  },
-  {
     id: 'geist',
     name: 'Geist + Geist Serif',
     sans: 'Geist Variable',
     serif: 'Geist Serif',
     note: 'Rapi dan tenang, dengan kontras serif yang tegas.',
+  },
+  {
+    id: 'jakarta',
+    name: 'Plus Jakarta Sans + Geist Serif',
+    sans: 'Plus Jakarta Sans Variable',
+    serif: 'Geist Serif',
+    note: 'Terbuka dan bersahabat, dengan serif untuk membaca.',
   },
   {
     id: 'gabarito',

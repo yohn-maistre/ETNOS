@@ -2,11 +2,17 @@
    type, theme tokens (including the slow clock shift), and header clearance. */
 .etnos-feedback .tst-viewport {
   --tst-pad: 16px;
-  --tst-bg: var(--popover);
+  --tst-bg: var(--background);
   --tst-fg: var(--foreground);
-  --tst-ring: var(--border);
+  --tst-ring: var(--reading-line);
+  --tst-radius: 16px;
   --tst-info: var(--brand);
+  --tst-error: var(--destructive);
   font-family: var(--font-sans);
+}
+.etnos-feedback .tst-desc, .etnos-feedback .tst-meta, .etnos-feedback .tst-count { color: var(--muted-foreground); }
+.etnos-feedback .tst-viewport[data-position^='bottom'] .tst-slot {
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
 }
 .etnos-feedback .tst-viewport[data-position^='top'] .tst-slot {
   top: calc(5.25rem + env(safe-area-inset-top, 0px));
