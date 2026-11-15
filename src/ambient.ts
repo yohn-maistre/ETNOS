@@ -18,7 +18,7 @@ export async function publicQuakes(bounds:Bounds,fetcher:typeof fetch=fetch):Pro
  const found=new Map<string,Quake>(),seen:string[]=[];let reached=0
  await Promise.all(feeds.map(async url=>{
   try{
-   const response=await fetcher(url,{headers:{accept:'application/json','user-agent':'Mozilla/5.0 (compatible; public-feed-reader)'},redirect:'error',signal:AbortSignal.timeout(6000)})
+   const response=await fetcher(url,{headers:{accept:'application/json','user-agent':'Mozilla/5.0 (compatible; public-feed-reader)'},redirect:'manual',signal:AbortSignal.timeout(6000)})
    seen.push(String(response.status))
    if(!response.ok)return
    const body=await response.json() as {Infogempa?:{gempa?:unknown}},rows=body?.Infogempa?.gempa

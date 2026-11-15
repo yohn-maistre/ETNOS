@@ -1,1 +1,1 @@
-2026-11-15r Quake feed: send a user agent, report upstream status
+2026-11-15s Quake feed: manual redirects, which Workers support
