@@ -17,5 +17,7 @@
  // conversion) tools for thread replies only. Without this binding the runtime
  // offers no web tools. Requires AI Gateway credits or a provider key.
  "ai":{"binding":"AI"},
+ // Turn on only after the model gateway accepts search_reviewed_wiki, web_search and web_fetch.
+ "vars":{"RESIDENT_RESEARCH_TOOLS":"off"},
  "observability":{"enabled":false}
 }

@@ -12,7 +12,7 @@ import {authority,type ServicePort} from './authority.ts'
 import {jobProvider,type UsageReceipt} from './gateway-models.ts'
 import {residentRegistry,webExtension} from './extensions.ts'
 /** AI is optional: without it the runtime offers no web tools (see wrangler.jsonc). */
-interface RuntimeEnv{AUTHORITY:Fetcher;MODEL_GATEWAY:Fetcher;SESSIONS:DurableObjectNamespace<PiResidentSession>;AI?:Ai}
+interface RuntimeEnv{AUTHORITY:Fetcher;MODEL_GATEWAY:Fetcher;SESSIONS:DurableObjectNamespace<PiResidentSession>;AI?:Ai;RESIDENT_RESEARCH_TOOLS?:string}
 type StoredWork={id:string;work:string;digest:string;model:string;input_tokens:number;output_tokens:number}
 const json=(value:unknown,status=200)=>Response.json(value,{status,headers:{'cache-control':'no-store'}})
 async function digest(value:string){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))].map(b=>b.toString(16).padStart(2,'0')).join('')}
@@ -34,10 +34,11 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
  private models=createModels()
  private works=new Map<string,ResidentWork>()
  private lookup=(id:string)=>{const work=this.works.get(id);if(!work)throw Error('Unknown runtime work');return work}
- private registry=residentRegistry(this.lookup,this.env.AUTHORITY)
+ private research=this.env.RESIDENT_RESEARCH_TOOLS==='on'
+ private registry=residentRegistry(this.lookup,this.env.AUTHORITY,this.research)
  /** Web research is installed only into thread-reply sessions. A session's
   * name includes its thread key, so one object never mixes work kinds. */
- private web=this.env.AI?webExtension(this.lookup,this.env.AUTHORITY,{binding:this.env.AI}):undefined
+ private web=this.research&&this.env.AI?webExtension(this.lookup,this.env.AUTHORITY,{binding:this.env.AI}):undefined
  harness=new PiHarness({harness:async({storage,context,onWake})=>{
   this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_work(id TEXT PRIMARY KEY,work TEXT NOT NULL,digest TEXT NOT NULL,model TEXT NOT NULL,input_tokens INTEGER NOT NULL,output_tokens INTEGER NOT NULL)')
   this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_tool_replay(job_id TEXT NOT NULL,tool_call_id TEXT NOT NULL,name TEXT NOT NULL,arguments_hash TEXT NOT NULL,model TEXT NOT NULL,signature TEXT NOT NULL,PRIMARY KEY(job_id,tool_call_id))')

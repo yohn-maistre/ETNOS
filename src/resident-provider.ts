@@ -19,8 +19,10 @@ export function gatewayResidentProvider(binding:ModelBinding):ResidentProvider{
   return {text:redactPublicModelText(value).text,model:String(data.model??'gateway:unknown').slice(0,200),inputTokens:data.usage?.prompt_tokens,outputTokens:data.usage?.completion_tokens,...(input.question?{questionReceipt:{postId:input.question.postId,revision:input.question.revision}}:{})}
  }}
 }
-export function piResidentProvider(binding:ModelBinding):ResidentProvider{
- return {label:'Pi Durable · WPW AI Gateway',researchTools:true,async draft(input,signal){
+/** `research`: the runtime offers reviewed-Wiki and web tools. Keep it off
+ * until the model gateway accepts those tools, or every call is refused. */
+export function piResidentProvider(binding:ModelBinding,research=false):ResidentProvider{
+ return {label:'Pi Durable · WPW AI Gateway',researchTools:research,async draft(input,signal){
   const response=await binding.fetch(new Request('https://resident.internal/draft',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(input),signal}))
   if(!response.ok)throw await serviceFailure(response,'runtime-unavailable')
   // The private runtime caps its output at 6 KB; still bound transport independently.

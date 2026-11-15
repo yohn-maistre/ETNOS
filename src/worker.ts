@@ -21,7 +21,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
       const core=new StrataCore(new CloudflareDatabase(ctx.storage),env.STRATA_ORIGIN,()=>Date.now(),{collection:env.STRATA_COLLECTION})
       const sourceOrigins=(env.STRATA_SOURCE_ORIGINS??'').split(',').map(x=>x.trim()).filter(Boolean)
       const acquire=sourceOrigins.length?sourceFetcher(sourceOrigins):undefined
-      const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI):undefined
+      const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI,env.STRATA_RESIDENT_RESEARCH==='on'):undefined
       core.recoverInterrupted()
       if(env.STRATA_AUTH_MODE==='atproto'){
         if(!env.STRATA_OAUTH_JWK || !env.STRATA_AUTH_SEAL_KEY){
