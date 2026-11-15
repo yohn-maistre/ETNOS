@@ -12,14 +12,23 @@
 .aksara-picker strong, .composer-aksara-request strong { display: block; font-size: 13px; line-height: 1.5; font-weight: 600; }
 .aksara-picker small, .composer-aksara-request small { display: block; font-size: 10px; line-height: 1.6; color: var(--muted-foreground); overflow-wrap: anywhere; }
 .aksara-picker > p { display: flex; gap: 6px; padding: 8px; margin: 0; font-size: 10px; line-height: 1.6; color: var(--muted-foreground); }
-.composer-aksara-request { display: flex; align-items: center; gap: 9px; margin-block: 8px 12px; padding: 9px 10px; background: var(--muted); border: 1px solid var(--reading-line); border-radius: 14px; }
+.composer-aksara-request { display: flex; align-items: center; gap: 9px; width: max-content; max-width: 100%; margin-block: 8px 12px; padding: 4px 4px 4px 10px; background: transparent; border: 1.5px dotted var(--brand); border-radius: 999px; color: var(--foreground); }
 .composer-aksara-request > span { min-width: 0; flex: 1; }
 .composer-aksara-request > svg { flex-shrink: 0; }
-.resident-requests { margin: 16px 0; padding: 4px 8px 8px; background: var(--muted); border-radius: 16px; }
-.resident-request-row { display: flex; gap: 12px; align-items: baseline; justify-content: space-between; padding: 7px 8px; font-size: 11px; line-height: 1.6; }
-.resident-request-row > span, .resident-request-row > a { display: inline-flex; gap: 5px; align-items: center; }
-.resident-request-row > span { color: var(--muted-foreground); }
-.resident-request-row > a { white-space: nowrap; }
+.resident-requests { margin: 0; padding: 4px 0; border-top: 1px solid var(--reading-line); border-bottom: 1px solid var(--reading-line); }
+.resident-request-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 8px 16px; font-size: 13px; line-height: 1.5; }
+.resident-mark { width: 24px; height: 24px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; border: 1.5px dotted var(--brand); color: var(--brand); font-size: 11px; font-weight: 600; }
+.resident-line { flex: 1; min-width: 0; color: var(--muted-foreground); }
+.resident-line strong { color: var(--foreground); font-weight: 600; }
+.resident-request-row > a { display: inline-flex; gap: 4px; align-items: center; white-space: nowrap; font-size: 13px; }
+.resident-request-row > button { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--muted-foreground); }
+.resident-request-row > button:hover { background: var(--secondary); }
+.resident-request-row[data-state='answered'] .resident-mark { border-style: solid; }
+.resident-dots { display: inline-flex; gap: 3px; margin-left: 6px; vertical-align: middle; }
+.resident-dots i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .3; animation: resident-dot 1.2s ease-in-out infinite; }
+.resident-dots i:nth-child(2) { animation-delay: .2s; } .resident-dots i:nth-child(3) { animation-delay: .4s; }
+@keyframes resident-dot { 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .resident-dots i { animation: none; opacity: .6; } }
 .resident-requests > p { padding: 6px 8px; font-size: 11px; color: var(--muted-foreground); }
 .aksara-picker button:focus-visible, .resident-requests button:focus-visible, .composer-aksara-request button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .resident-participation > summary { display: flex; align-items: center; gap: 8px; list-style: none; }
@@ -58,4 +67,4 @@
 .place-news-option { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; cursor: pointer; }
 .place-news-option input { width: 20px; height: 20px; flex-shrink: 0; }
 .place-news-option:hover { background: var(--secondary); }
-.resident-reason { display: block; flex-basis: 100%; margin-top: 4px; font-size: 12px; color: var(--muted-foreground); }
+.resident-reason { display: block; flex-basis: 100%; margin: -2px 0 0 34px; font-size: 12px; color: var(--muted-foreground); }

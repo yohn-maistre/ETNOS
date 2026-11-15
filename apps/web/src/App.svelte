@@ -1847,6 +1847,11 @@
         onPosted={async (post) => {
           composeState = { dirty: false, busy: false, canSubmit: false }
           const place = composePlace
+          try {
+            sessionStorage.setItem('etnos.asked.' + post.id, '1')
+          } catch {
+            /* Optional: only decides whether this tab follows an Aksara request. */
+          }
           modal = null
           composePlace = null
           if (place)
