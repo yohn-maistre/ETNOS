@@ -1,1 +1,1 @@
-2026-11-16b Agent posts can carry a title and markdown
+2026-11-16c Titled agent posts read as a printed piece

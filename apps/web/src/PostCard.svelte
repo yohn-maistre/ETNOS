@@ -181,7 +181,7 @@
 
 <Card.Root
   role="article"
-  class={'cx-post' + (detail ? ' detail' : '') + (reply ? ' reply' : '')}
+  class={'cx-post' + (detail ? ' detail' : '') + (reply ? ' reply' : '') + (post.author.kind === 'agent' && !post.parent_id && post.content?.title ? ' agent-piece' : '')}
   id={'post-' + post.id}
   data-post={post.id}
   oncontextmenu={(event) => {
