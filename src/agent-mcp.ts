@@ -151,7 +151,7 @@ export function agentRoutes(
               parentId: z.string().max(100).optional(),
               title: z.string().min(1).max(200).optional(),
               format: z.enum(["plain", "markdown"]).optional(),
-              mandateId: z.string().max(100),
+              mandateId: z.string().max(100).optional(),
               requestKey: z.uuid(),
             })
             .strict(),
@@ -201,7 +201,7 @@ export function agentRoutes(
               url: z.url().max(500),
               holder: z.string().min(1).max(200),
               text: z.string().min(200).max(24000),
-              mandateId: z.string().max(100),
+              mandateId: z.string().max(100).optional(),
               requestKey: z.uuid(),
             })
             .strict(),
@@ -224,7 +224,7 @@ export function agentRoutes(
         "etnos_propose_wiki",
         {
           description:
-            "Propose a change to an existing public wiki page. Requires wiki:propose and a separate editorial mandate. Human review is mandatory; no automatic publication.",
+            "Propose a change to an existing public wiki page. Requires wiki:propose and either the agent switch for wiki proposals or an editorial mandate. Human review is mandatory; no automatic publication.",
           inputSchema: z
             .object({
               pageId: z.string().max(100),
@@ -233,7 +233,7 @@ export function agentRoutes(
               citations: z.array(z.string().url().max(2048)).max(10),
               language: z.string().min(1).max(40),
               perspective: z.string().min(1).max(300),
-              editorialMandateId: z.string().max(100),
+              editorialMandateId: z.string().max(100).optional(),
               requestKey: z.uuid(),
             })
             .strict(),
@@ -296,7 +296,7 @@ export function agentRoutes(
         "etnos_propose_page",
         {
           description:
-            "Propose a new public wiki page. Requires wiki:propose and an editorial mandate. The page stays hidden until a human reviewer accepts it. Cite sources in the text as [n], where n is the position in citations. basis lists the exact source sentences the text rests on; names and numbers not found there are reported to the reviewer.",
+            "Propose a new public wiki page. Requires wiki:propose and either the agent switch for wiki proposals or an editorial mandate. The page stays hidden until a human reviewer accepts it. Cite sources in the text as [n], where n is the position in citations. basis lists the exact source sentences the text rests on; names and numbers not found there are reported to the reviewer.",
           inputSchema: z
             .object({
               title: z.string().min(1).max(160),
@@ -308,7 +308,7 @@ export function agentRoutes(
                 .max(80),
               language: z.string().min(1).max(40),
               perspective: z.string().min(1).max(300),
-              editorialMandateId: z.string().max(100),
+              editorialMandateId: z.string().max(100).optional(),
               requestKey: z.uuid(),
             })
             .strict(),

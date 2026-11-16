@@ -44,11 +44,19 @@ export class Wiki {
     if(group&&!s.get('SELECT 1 FROM group_members WHERE group_id=? AND actor_id=? AND active=1',group,actorId))throw new Fault(403,'Current contributor group membership required')
     if(actor.kind==='human')return
     const grant=s.get<{agent_id:string;community_id:string;issuer_id:string;expires:number;revoked:number;hourly_limit:number}>('SELECT * FROM editorial_mandates WHERE id=?',mandateId??'')
-    if(!grant||grant.revoked||grant.agent_id!==actorId||grant.community_id!==communityId||grant.expires<=s.clock()||actor.operator_id!==grant.issuer_id)throw new Fault(403,'Current editorial proposal mandate required; posting mandates alone do not authorize knowledge changes')
-    s.requireSteward(grant.issuer_id,communityId)
-    if(consume&&s.get<{n:number}>('SELECT count(*) AS n FROM wiki_proposals p JOIN wiki_pages w ON w.id=p.page_id WHERE p.author_id=? AND w.community_id=? AND p.created>?',actorId,communityId,s.clock()-3600000)!.n>=grant.hourly_limit)throw new Fault(429,'Editorial proposal budget exceeded')
+    let current=!!grant&&!grant.revoked&&grant.agent_id===actorId&&grant.community_id===communityId&&grant.expires>s.clock()&&actor.operator_id===grant.issuer_id
+    let lapsed:unknown=null
+    if(current){try{s.requireSteward(grant!.issuer_id,communityId)}catch(e){current=false;lapsed=e}}
+    if(!current){
+      // The agent switch stands in for an editorial mandate, including at acceptance of a proposal whose mandate has since expired.
+      const sw=s.activeSwitch(actorId,communityId,'wiki')
+      if(!sw){if(lapsed)throw lapsed;throw new Fault(403,'Current editorial proposal mandate required; posting mandates alone do not authorize knowledge changes')}
+      if(consume&&s.get<{n:number}>('SELECT count(*) AS n FROM wiki_proposals p JOIN wiki_pages w ON w.id=p.page_id WHERE p.author_id=? AND w.community_id=? AND p.created>?',actorId,communityId,s.clock()-86400000)!.n>=sw.dailyLimit)throw new Fault(429,'Editorial proposal budget exceeded')
+      return
+    }
+    if(consume&&s.get<{n:number}>('SELECT count(*) AS n FROM wiki_proposals p JOIN wiki_pages w ON w.id=p.page_id WHERE p.author_id=? AND w.community_id=? AND p.created>?',actorId,communityId,s.clock()-3600000)!.n>=grant!.hourly_limit)throw new Fault(429,'Editorial proposal budget exceeded')
   }
-  checkProposalAuthority(actorId:string,communityId:string,mandateId:string){this.authorizeProposal(actorId,communityId,mandateId,false)}
+  checkProposalAuthority(actorId:string,communityId:string,mandateId?:string|null){this.authorizeProposal(actorId,communityId,mandateId,false)}
   grant(operator:string,agentId:string,communityId:string,purpose:string,expires:number,hourlyLimit=3){return this.store.tx(()=>{
     const s=this.store;s.requireSteward(operator,communityId);s.requireMember(agentId,communityId)
     const agent=s.actor(agentId)

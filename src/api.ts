@@ -202,6 +202,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='resume')result=agents.resume(caller,parts[2])
       else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='admit')result=agents.admit(caller,parts[2])
       else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='grants')result=agents.grant(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='agents'&&parts[3]==='switch')result=agents.setSwitch(caller,parts[2],b)
       else if(parts.length===6&&parts[1]==='agents'&&parts[3]==='deployments'&&parts[5]==='revoke')result=agents.revokeDeployment(caller,parts[2],parts[4])
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='suggestions') result=await decisions.suggest(caller,parts[2],string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(path==='/v1/profile')result=updateProfile(store,caller,b)

@@ -210,15 +210,48 @@ export class StrataCore {
       this.audit(operator, 'mandate.revoke', mandateId)
     })
   }
+  /** One switch per agent per community, set by the agent's operator while a steward.
+   * It stands in for posting and editorial mandates. It works only while it is on and
+   * its issuer is still the agent's operator and a steward of the community. */
+  setSwitch(operator: string, agentId: string, communityId: string, b: { posts: boolean; wiki: boolean; dailyLimit: number; enabled: boolean }) {
+    return this.tx(() => {
+      const who = this.actor(agentId)
+      if (who.kind !== 'agent' || who.operator_id !== operator) throw new Fault(403, 'Agent operator required')
+      this.requireSteward(operator, communityId)
+      this.requireMember(agentId, communityId)
+      if (typeof b.posts !== 'boolean' || typeof b.wiki !== 'boolean' || typeof b.enabled !== 'boolean' || !Number.isInteger(b.dailyLimit) || b.dailyLimit < 1 || b.dailyLimit > 200) throw new Fault(400, 'Invalid switch')
+      this.run('INSERT INTO agent_switches VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(agent_id,community_id) DO UPDATE SET issuer_id=excluded.issuer_id,posts=excluded.posts,wiki=excluded.wiki,daily_limit=excluded.daily_limit,enabled=excluded.enabled,updated=excluded.updated', agentId, communityId, operator, b.posts ? 1 : 0, b.wiki ? 1 : 0, b.dailyLimit, b.enabled ? 1 : 0, this.clock())
+      this.audit(operator, b.enabled ? 'agent.switch.on' : 'agent.switch.off', agentId)
+      return this.switchView(agentId, communityId)
+    })
+  }
+  switchView(agentId: string, communityId: string) {
+    const r = this.get<{ posts: number; wiki: number; daily_limit: number; enabled: number; updated: number }>('SELECT posts,wiki,daily_limit,enabled,updated FROM agent_switches WHERE agent_id=? AND community_id=?', agentId, communityId)
+    return r ? { posts: !!r.posts, wiki: !!r.wiki, dailyLimit: r.daily_limit, enabled: !!r.enabled, updated: r.updated } : { posts: false, wiki: false, dailyLimit: 10, enabled: false, updated: null }
+  }
+  /** The switch that currently authorizes an agent for one kind of write, or null. */
+  activeSwitch(agentId: string, communityId: string, kind: 'posts' | 'wiki') {
+    const r = this.get<{ issuer_id: string; posts: number; wiki: number; daily_limit: number; enabled: number }>('SELECT * FROM agent_switches WHERE agent_id=? AND community_id=?', agentId, communityId)
+    if (!r || !r.enabled || !r[kind] || this.actor(agentId).operator_id !== r.issuer_id) return null
+    try { this.requireSteward(r.issuer_id, communityId) } catch { return null }
+    return { dailyLimit: r.daily_limit }
+  }
   checkWrite(actorId: string, communityId: string, mandateId?: string | null, newPost = true) {
     this.requireMember(actorId, communityId)
     const actor = this.actor(actorId)
     if (actor.kind === 'agent') {
       const c = this.community(communityId)
       const m = this.get<Mandate>('SELECT * FROM mandates WHERE id=?', mandateId ?? '')
-      if (!c.automation || !m || m.agent_id !== actorId || m.community_id !== communityId || m.revoked || m.expires <= this.clock()) throw new Fault(403, 'Current agent mandate required')
-      const count = this.get<{ n: number }>('SELECT COUNT(*) n FROM posts WHERE author_id=? AND community_id=? AND created>?', actorId, communityId, this.clock()-3600000)!.n
-      if (newPost && count >= m.hourly_limit) throw new Fault(429, 'Agent budget exceeded')
+      const mandated = !!m && m.agent_id === actorId && m.community_id === communityId && !m.revoked && m.expires > this.clock()
+      const sw = mandated ? null : this.activeSwitch(actorId, communityId, 'posts')
+      if (!c.automation || (!mandated && !sw)) throw new Fault(403, 'Current agent mandate required')
+      if (mandated) {
+        const count = this.get<{ n: number }>('SELECT COUNT(*) n FROM posts WHERE author_id=? AND community_id=? AND created>?', actorId, communityId, this.clock()-3600000)!.n
+        if (newPost && count >= m!.hourly_limit) throw new Fault(429, 'Agent budget exceeded')
+      } else {
+        const count = this.get<{ n: number }>('SELECT COUNT(*) n FROM posts WHERE author_id=? AND community_id=? AND created>?', actorId, communityId, this.clock()-86400000)!.n
+        if (newPost && count >= sw!.dailyLimit) throw new Fault(429, 'Agent budget exceeded')
+      }
     }
   }
   createPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string,options:{content?:unknown;mediaIds?:string[]}={}) {

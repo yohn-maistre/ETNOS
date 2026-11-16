@@ -492,3 +492,49 @@ test("an agent proposes a new wiki page only under an editorial mandate; the pag
     f.s.close();
   }
 });
+test("one agent switch replaces mandates: operator-steward only, off stops the next write, daily budget, and it rescues acceptance after a mandate expires", async () => {
+  const f = await fixture();
+  try {
+    const wiki = new Wiki(f.s),
+      token = await f.token(),
+      post = (text: string) => f.call("etnos_create_post", { text, requestKey: randomUUID() }, token);
+    f.access.admit(f.owner.actor.id, f.agent.actor.id);
+    // Nothing granted: refused.
+    assert.match(JSON.stringify((await post("tanpa izin")).data), /mandate required/);
+    // Only the agent's operator, as a steward, can turn it on.
+    assert.throws(() => f.access.setSwitch(f.other.actor.id, f.agent.actor.id, { enabled: true, posts: true, wiki: false, dailyLimit: 2 }));
+    assert.throws(() => f.s.setSwitch(f.other.actor.id, f.agent.actor.id, f.room.id, { enabled: true, posts: true, wiki: false, dailyLimit: 2 }), /operator/);
+    assert.throws(() => f.access.setSwitch(f.owner.actor.id, f.agent.actor.id, { enabled: true, posts: true, wiki: false, dailyLimit: 0 }), /Invalid switch/);
+    const on = f.access.setSwitch(f.owner.actor.id, f.agent.actor.id, { enabled: true, posts: true, wiki: false, dailyLimit: 2 });
+    assert.deepEqual({ ...on, updated: 0 }, { posts: true, wiki: false, dailyLimit: 2, enabled: true, updated: 0 });
+    // Posts work without any mandate id, up to the daily limit.
+    assert.equal((await post("satu")).data.result.isError, undefined);
+    assert.equal((await post("dua")).data.result.isError, undefined);
+    assert.match(JSON.stringify((await post("tiga")).data), /budget/);
+    f.setNow(f.now() + 86400001);
+    const fresh = await f.token(),
+      again = await f.call("etnos_create_post", { text: "hari baru", requestKey: randomUUID() }, fresh);
+    assert.equal(again.data.result.isError, undefined);
+    // Wiki is a separate checkbox.
+    const page = { title: "Moni", text: "Orang Moni tinggal di Intan Jaya [1].", citations: ["https://example.org/moni"], basis: [{ source: 1, text: "Orang Moni tinggal di Intan Jaya." }], language: "id", perspective: "Uji" };
+    assert.match(JSON.stringify((await f.call("etnos_propose_page", { ...page, requestKey: randomUUID() }, fresh)).data), /editorial proposal mandate/);
+    // Off stops the next write at once.
+    f.access.setSwitch(f.owner.actor.id, f.agent.actor.id, { enabled: false, posts: true, wiki: false, dailyLimit: 2 });
+    assert.match(JSON.stringify((await f.call("etnos_create_post", { text: "mati", requestKey: randomUUID() }, fresh)).data), /mandate required/);
+    // A page proposed under a mandate cannot be accepted once the mandate expires, unless the wiki switch is on.
+    const grant = wiki.grant(f.owner.actor.id, f.agent.actor.id, f.room.id, "Seed", f.now() + 3600000, 5),
+      made = (await f.call("etnos_propose_page", { ...page, editorialMandateId: grant.id, requestKey: randomUUID() }, fresh)).data.result.structuredContent.data;
+    f.setNow(f.now() + 3600001);
+    assert.throws(() => wiki.decide(f.owner.actor.id, made.id, made.digest, true), /editorial proposal mandate/);
+    f.access.setSwitch(f.owner.actor.id, f.agent.actor.id, { enabled: true, posts: false, wiki: true, dailyLimit: 5 });
+    wiki.decide(f.owner.actor.id, made.id, made.digest, true);
+    assert.equal(wiki.read(made.pageId).title, "Moni");
+    // The agent sees its switch; suspending the agent turns the switch off.
+    const grants = (await f.call("etnos_my_grants", {}, await f.token())).data.result.structuredContent.data;
+    assert.deepEqual(grants.switch, { posts: false, wiki: true, dailyLimit: 5 });
+    f.access.suspend(f.owner.actor.id, f.agent.actor.id);
+    assert.equal(f.s.switchView(f.agent.actor.id, f.room.id).enabled, false);
+  } finally {
+    f.s.close();
+  }
+});

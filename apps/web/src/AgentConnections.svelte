@@ -16,6 +16,8 @@
   import { Badge } from '$lib/components/ui/badge/index.js'
   import { notify } from './notifications.svelte'
   import Choice from './Choice.svelte'
+  import { Switch } from '$lib/components/ui/switch/index.js'
+  import { Checkbox } from '$lib/components/ui/checkbox/index.js'
   import { request, type Auth, type Community, type Membership } from './api'
   let { auth }: { auth: Auth } = $props()
   type Entry = {
@@ -44,6 +46,12 @@
       expires: number
       revoked: number
     }[]
+    switch?: { posts: boolean; wiki: boolean; dailyLimit: number; enabled: boolean }
+  }
+  type Izin = { posts: boolean; wiki: boolean; dailyLimit: number; enabled: boolean }
+  function saveSwitch(entry: Entry, change: Partial<Izin>) {
+    const next = { ...(entry.switch ?? { posts: true, wiki: false, dailyLimit: 10, enabled: false }), ...change }
+    return act(() => request('/v1/agents/' + entry.agent_id + '/switch', next))
   }
   type Group = {
     id: string
@@ -412,9 +420,54 @@
               </Button>
             </form>
           </details>
+          {#if memberships.some((m) => m.community_id === entry.community.id && ['owner', 'moderator'].includes(m.role))}{@const izin = entry.switch ?? { posts: true, wiki: false, dailyLimit: 10, enabled: false }}<section
+              class="agent-switch"
+              aria-label="Izin menulis"
+            >
+              <div class="agent-switch-head">
+                <span>
+                  <strong>Boleh menulis di {entry.community.title}</strong>
+                  <small>{izin.enabled ? 'Aktif' : 'Mati'}</small>
+                </span>
+                <Switch
+                  checked={izin.enabled}
+                  disabled={busy || !entry.admitted || !entry.community.automation}
+                  aria-label="Izin menulis"
+                  onCheckedChange={(v) => saveSwitch(entry, { enabled: v })}
+                />
+              </div>
+              <div class="agent-switch-options">
+                <label>
+                  <Checkbox
+                    checked={izin.posts}
+                    disabled={busy}
+                    onCheckedChange={(v) => saveSwitch(entry, { posts: v === true })}
+                  /> Posting
+                </label>
+                <label>
+                  <Checkbox
+                    checked={izin.wiki}
+                    disabled={busy}
+                    onCheckedChange={(v) => saveSwitch(entry, { wiki: v === true })}
+                  /> Usulan wiki
+                </label>
+                <Choice
+                  aria-label="Batas per hari"
+                  value={String(izin.dailyLimit)}
+                  items={[
+                    { value: '5', label: '5 sehari' },
+                    { value: '10', label: '10 sehari' },
+                    { value: '20', label: '20 sehari' },
+                    { value: '50', label: '50 sehari' },
+                  ]}
+                  onchange={(v) => saveSwitch(entry, { dailyLimit: Number(v) })}
+                />
+              </div>
+              {#if !entry.admitted}<p class="cx-hint">Terima agen ke komunitas dulu.</p>{:else if !entry.community.automation}<p class="cx-hint">Otomasi komunitas belum aktif.</p>{:else}<p class="cx-hint">Usulan wiki tetap ditinjau manusia.</p>{/if}
+            </section>{/if}
           <details>
             <summary>
-              Mandat menulis & editorial <span>
+              Mandat lama <span>
                 {live(entry.mandates).length + live(entry.editorial).length}
               </span>
             </summary>

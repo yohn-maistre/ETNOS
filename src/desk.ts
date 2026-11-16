@@ -268,7 +268,7 @@ export class Desk {
     const s = this.store.get<ShelfRow>("SELECT id,community_id,added_by,title,url,holder,digest,state,created FROM desk_shelf WHERE id=?", d.shelf_id)!;
     return { id: d.id, kind: d.kind, state: d.state, model: d.model, created: d.created, source: { id: s.id, title: s.title, url: s.url, holder: s.holder, state: s.state }, facts: JSON.parse(d.facts) as DeskFact[], dropped: JSON.parse(d.dropped) as string[], draft: d.draft, check: JSON.parse(d.checks) as DeskCheck };
   }
-  async draft(agentId: string, communityId: string, mandateId: string, b: { kind: DeskKind; title: string; url: string; holder: string; text: string; requestKey: string }) {
+  async draft(agentId: string, communityId: string, mandateId: string | undefined, b: { kind: DeskKind; title: string; url: string; holder: string; text: string; requestKey: string }) {
     const s = this.store;
     if (!this.model) throw new Fault(503, "No desk model is configured on this host");
     const model = this.model,

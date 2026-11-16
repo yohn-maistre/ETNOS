@@ -195,6 +195,7 @@ export class AgentAccess {
         id,
         r.community_id,
       ),
+      switch: s.switchView(id, r.community_id),
     };
   }
   list(operator: string) {
@@ -282,6 +283,7 @@ export class AgentAccess {
       s.run("UPDATE agent_deployments SET revoked=1 WHERE agent_id=?", id);
       s.run("UPDATE mandates SET revoked=1 WHERE agent_id=?", id);
       s.run("UPDATE editorial_mandates SET revoked=1 WHERE agent_id=?", id);
+      s.run("UPDATE agent_switches SET enabled=0 WHERE agent_id=?", id);
       s.run("UPDATE work_grants SET revoked=1 WHERE agent_id=?", id);
       s.run(
         "DELETE FROM agent_tokens WHERE deployment_id IN(SELECT id FROM agent_deployments WHERE agent_id=?)",
@@ -333,6 +335,19 @@ export class AgentAccess {
         );
       s.setMember(steward, r.community_id, id, true);
       return { ok: true };
+    });
+  }
+  /** Turn the agent on or off in its community: one switch with two checkboxes and a daily limit. */
+  setSwitch(operator: string, id: string, b: Record<string, unknown>) {
+    const r = this.owned(operator, id);
+    if (b.enabled === true) this.current(id);
+    if (!this.store.community(r.community_id).automation)
+      throw new Fault(409, "Community automation disabled");
+    return this.store.setSwitch(operator, id, r.community_id, {
+      posts: b.posts === true,
+      wiki: b.wiki === true,
+      dailyLimit: Number(b.dailyLimit ?? 10),
+      enabled: b.enabled === true,
     });
   }
   grant(operator: string, id: string, b: Record<string, unknown>) {
@@ -541,6 +556,11 @@ export class AgentAccess {
         p.communityId,
         s.clock(),
       ),
+      switch: {
+        posts: !!s.activeSwitch(p.actor.id, p.communityId, "posts"),
+        wiki: !!s.activeSwitch(p.actor.id, p.communityId, "wiki"),
+        dailyLimit: s.switchView(p.actor.id, p.communityId).dailyLimit,
+      },
     };
   }
 }
