@@ -344,6 +344,19 @@
               >
                 {url}
               </a>{/each}
+            {#if proposal.basis}<details class="wiki-basis">
+                <summary>Dasar · {proposal.basis.quotes.length} kalimat sumber</summary>
+                {#if !proposal.basis.checks.ok}<p class="cx-hint">
+                    {#if proposal.basis.checks.unknown.length}Tidak ditemukan di kalimat sumber: {proposal.basis.checks.unknown.join(', ')}.{/if}
+                    {#if proposal.basis.checks.uncited}{' '}{proposal.basis.checks.uncited} paragraf tanpa rujukan.{/if}
+                    {#if proposal.basis.checks.unsupported.length}{' '}Rujukan tanpa kalimat sumber: {proposal.basis.checks.unsupported.join(', ')}.{/if}
+                  </p>{:else}<p class="cx-hint">Semua nama dan angka ada di kalimat sumber.</p>{/if}
+                <ul>
+                  {#each proposal.basis.quotes as quote}<li>
+                      <span>[{quote.source}]</span>{quote.text}
+                    </li>{/each}
+                </ul>
+              </details>{/if}
             {#if proposal.state === 'pending' && steward}<div
                 class="wiki-review-actions"
               >

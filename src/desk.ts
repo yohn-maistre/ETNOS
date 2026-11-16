@@ -161,6 +161,41 @@ export function checkDraft(draft: string, facts: DeskFact[]): DeskCheck {
   return { ok: !unknown.size && !uncited && !tooLong && paragraphs.length > 0, unknown: [...unknown].slice(0, 20), uncited, tooLong };
 }
 
+/** Words Indonesian capitalises by convention; they name a kind of thing, not a thing. */
+const generic = new Set(
+  "kabupaten kota provinsi distrik kecamatan kampung desa pulau kepulauan danau sungai gunung pegunungan lembah teluk selat laut samudra tanah suku bahasa orang rumpun undang-undang januari februari maret april mei juni juli agustus september oktober november desember indonesia belanda"
+    .split(" "),
+);
+export type PageBasis = { source: number; text: string };
+export type PageCheck = { ok: boolean; unknown: string[]; uncited: number; unsupported: number[] };
+/** A wiki page cites sources by number. Each cited source must have supplied a quote,
+ * and names and numbers in the prose must appear in the quotes. Headings are skipped. */
+export function checkPage(page: string, basis: PageBasis[], sources: number): PageCheck {
+  const known = fold(basis.map((b) => b.text).join(" ")),
+    backed = new Set(basis.map((b) => b.source)),
+    unknown = new Set<string>(),
+    unsupported = new Set<number>();
+  let uncited = 0;
+  for (const block of page.split(/\n\s*\n/)) {
+    const p = block.split("\n").filter((line) => !/^\s{0,3}#{1,6}\s/.test(line)).join("\n").trim();
+    if (!p) continue;
+    const cites = [...p.matchAll(/\[([\d,\s]+)\]/g)].flatMap((m) => m[1]!.split(",").map((n) => Number(n.trim())));
+    if (!cites.length) uncited++;
+    for (const n of cites) if (!Number.isInteger(n) || n < 1 || n > sources || !backed.has(n)) unsupported.add(n);
+    const body = p.replace(/\[[\d,\s]+\]/g, " ").replace(/[*_`]/g, "");
+    for (const sentence of body.split(/(?<=[.!?:])\s+|\n/)) {
+      sentence.trim().split(/\s+/).forEach((w, i) => {
+        const token = w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+        if (!token || generic.has(token.toLowerCase())) return;
+        const name = i > 0 && /^\p{Lu}/u.test(token),
+          number = /\d/.test(token);
+        if ((name || number) && !known.includes(fold(token))) unknown.add(token);
+      });
+    }
+  }
+  return { ok: !unknown.size && !uncited && !unsupported.size, unknown: [...unknown].slice(0, 40), uncited, unsupported: [...unsupported] };
+}
+
 export async function runDesk(
   model: DeskModel,
   input: { kind: DeskKind; source: string; examples?: string[]; language?: string },

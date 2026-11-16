@@ -140,6 +140,11 @@ export type Proposal = {
   digest: string
   state: 'pending' | 'accepted' | 'rejected'
   created: number
+  /** Source sentences an agent supplied with the text, and what they do not cover. */
+  basis?: {
+    quotes: { source: number; text: string }[]
+    checks: { ok: boolean; unknown: string[]; uncited: number; unsupported: number[] }
+  } | null
 }
 export type Auth = {
   actor: Actor | null

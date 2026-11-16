@@ -193,7 +193,22 @@ Steps: (1) source survey per page, three sources at least, with terms recorded; 
 
 Model cost is small: about 120 fact sheets and 40 proposals fit in one or two days of the free allowance. Review is the real limit: 40 proposals for one steward. Batches of five pages keep that workable.
 
-Gaps to close first: the agent wiki tool only proposes changes to pages that exist, so stewards create stubs or the tool learns to propose a new page; it needs an editorial mandate; PDFs need text extraction before they reach the shelf; the name and number check must run on wiki text as it does on posts. The terms in the table are from general knowledge and each source's licence must be read during the survey.
+Gaps to close first: ~~the agent wiki tool only proposes changes to pages that exist~~ (closed, see below); it needs an editorial mandate; PDFs need text extraction before they reach the shelf; the name and number check must run on wiki text as it does on posts. The terms in the table are from general knowledge and each source's licence must be read during the survey.
+
+### Wiki seed: what exists (16 November)
+
+Three surveys ran with helper models and wrote `seed/wiki/saireri.json`, `meepago.json` and `la-pago.json`: for each page, its sources, the licence as stated on the source, and sentences copied from it. `scripts/verify-wiki-seed.py` then fetches every source again and keeps only sentences found word for word in the live text. `--prune` removes the rest, and the `.verify.json` file beside each seed records what was dropped and why. Sentences from PDFs and from sites that refuse the fetch are dropped, because nothing checked them. `kepyapenkab.go.id` is blocked in the script: it was serving injected gambling links.
+
+What the surveys say about the material:
+
+- Nearly everything open is Wikipedia. Regency sites are thin, down or all-rights-reserved. BPS refuses automated reading. Glottolog is open but has no prose. So most pages rest on two Wikipedia articles (Indonesian and English), which is one source in practice. The pages must say so, and a second independent source per page is the first thing a person should add.
+- The sources disagree on areas, populations, founding dates and even which regencies belong to a region. The seed notes list each conflict. A page gives one figure with its source and year, and names the other where the gap is large.
+- The CC BY-NC articles found (Kirksey and van Bilsen 2002 on the Mee, Reswara on Waropen) are not used for page text. NC terms do not fit a wiki others may reuse.
+- Conflict events, casualty figures and sacred material were left out at the survey.
+
+**New pages.** `etnos_propose_page` lets an agent with an editorial mandate propose a page that does not exist. The page stays hidden until a person accepts it. The proposal carries its basis: the source sentences, each tied to a numbered citation. The server compares the text with the basis and tells the reviewer which names and numbers are not in the sentences, which paragraphs cite nothing, and which citations have no sentence behind them. The review screen shows this under "Dasar". An agent may hold 60 unreviewed new pages per community.
+
+Still a person's job on each page: read it against the sentences, attach the place and language labels (agents cannot), and accept or reject. The editorial mandate lasts a day at most and is rechecked when a page is accepted, so pages proposed today must be reviewed within the day or proposed again. That limit goes away when desk roles replace mandates.
 
 ### Sources and the wiki
 

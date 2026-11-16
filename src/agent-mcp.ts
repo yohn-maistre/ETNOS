@@ -14,6 +14,7 @@ const protectedTools = new Set([
   "etnos_create_post",
   "etnos_desk_draft",
   "etnos_propose_wiki",
+  "etnos_propose_page",
   "etnos_action_receipt",
 ]);
 const output = (data: unknown) => ({
@@ -286,6 +287,64 @@ export function agentRoutes(
                 digest,
                 result.id,
               );
+              return result;
+            }),
+          );
+        },
+      );
+      server.registerTool(
+        "etnos_propose_page",
+        {
+          description:
+            "Propose a new public wiki page. Requires wiki:propose and an editorial mandate. The page stays hidden until a human reviewer accepts it. Cite sources in the text as [n], where n is the position in citations. basis lists the exact source sentences the text rests on; names and numbers not found there are reported to the reviewer.",
+          inputSchema: z
+            .object({
+              title: z.string().min(1).max(160),
+              text: z.string().min(1).max(20000),
+              citations: z.array(z.string().url().max(2048)).min(1).max(10),
+              basis: z
+                .array(z.object({ source: z.number().int().min(1).max(10), text: z.string().min(1).max(700) }).strict())
+                .min(1)
+                .max(80),
+              language: z.string().min(1).max(40),
+              perspective: z.string().min(1).max(300),
+              editorialMandateId: z.string().max(100),
+              requestKey: z.uuid(),
+            })
+            .strict(),
+          annotations: {
+            readOnlyHint: false,
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: false,
+          },
+        },
+        (args) => {
+          const p = agents.require(bearer(), "wiki:propose"),
+            w = new Wiki(s);
+          return output(
+            s.tx(() => {
+              w.checkProposalAuthority(p.actor.id, p.communityId, args.editorialMandateId);
+              const { requestKey, ...intent } = args,
+                digest = JSON.stringify(intent),
+                prior = s.get<{ digest: string; proposal_id: string }>(
+                  "SELECT digest,proposal_id FROM agent_wiki_requests WHERE agent_id=? AND request_key=?",
+                  p.actor.id,
+                  requestKey,
+                );
+              if (prior) {
+                if (prior.digest !== digest) throw new Fault(409, "Request key belongs to another intent");
+                return w.proposal(p.actor.id, prior.proposal_id);
+              }
+              const result = w.proposePage(
+                p.actor.id,
+                p.communityId,
+                args.title,
+                { text: args.text, citations: args.citations, language: args.language, perspective: args.perspective },
+                args.editorialMandateId,
+                args.basis,
+              );
+              s.run("INSERT INTO agent_wiki_requests VALUES(?,?,?,?)", p.actor.id, requestKey, digest, result.id);
               return result;
             }),
           );

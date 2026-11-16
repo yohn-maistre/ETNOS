@@ -436,3 +436,59 @@ test("concurrent assertion exchange mints once and stale operator authority cann
     f.s.close();
   }
 });
+test("an agent proposes a new wiki page only under an editorial mandate; the page stays hidden until a human accepts it", async () => {
+  const f = await fixture();
+  try {
+    const wiki = new Wiki(f.s),
+      token = await f.token(),
+      page = {
+        title: "Nabire",
+        text: "## Letak\n\nNabire berada di pesisir Teluk Cenderawasih [1].\n\nPenduduknya 99.000 jiwa menurut Zeta.",
+        citations: ["https://example.org/nabire"],
+        basis: [{ source: 1, text: "Nabire terletak di pesisir Teluk Cenderawasih." }],
+        language: "id",
+        perspective: "Disusun dari sumber terbuka",
+      };
+    // Not admitted to the community: nothing is revealed.
+    const outside = await f.call("etnos_propose_page", { ...page, editorialMandateId: randomUUID(), requestKey: randomUUID() }, token);
+    assert.match(JSON.stringify(outside.data), /Not found/);
+    f.access.admit(f.owner.actor.id, f.agent.actor.id);
+    const refused = await f.call("etnos_propose_page", { ...page, editorialMandateId: randomUUID(), requestKey: randomUUID() }, token);
+    assert.match(JSON.stringify(refused.data), /editorial proposal mandate/);
+    assert.equal(wiki.all(f.owner.actor.id, f.room.id).length, 0);
+    const grant = wiki.grant(f.owner.actor.id, f.agent.actor.id, f.room.id, "Seed pages", f.now() + 3600000, 5),
+      key = randomUUID(),
+      made = await f.call("etnos_propose_page", { ...page, editorialMandateId: grant.id, requestKey: key }, token),
+      result = made.data.result.structuredContent.data;
+    assert.equal(result.state, "pending");
+    // The reviewer is told what the quotes do not support.
+    assert.deepEqual(result.checks.unknown.sort(), ["99.000", "Zeta"]);
+    assert.equal(result.checks.uncited, 1);
+    // Replay returns the same proposal; a second page with the same title is refused.
+    const again = await f.call("etnos_propose_page", { ...page, editorialMandateId: grant.id, requestKey: key }, token);
+    assert.equal(again.data.result.structuredContent.data.id, result.id);
+    const twin = await f.call("etnos_propose_page", { ...page, editorialMandateId: grant.id, requestKey: randomUUID() }, token);
+    assert.match(JSON.stringify(twin.data), /exists or awaits review/);
+    // Hidden from the public, from other members and from the public tools.
+    assert.throws(() => wiki.read(result.pageId), /Not found/);
+    assert.throws(() => wiki.read(result.pageId, f.other.actor.id), /Not found/);
+    const peek = await f.call("etnos_read_wiki", { pageId: result.pageId });
+    assert.ok(!JSON.stringify(peek.data).includes("Teluk Cenderawasih"));
+    assert.ok(!JSON.stringify(await f.call("etnos_search", { query: "Nabire" })).includes(result.pageId));
+    // The agent cannot accept its own page; the steward can, and sees the basis.
+    assert.throws(() => wiki.decide(f.agent.actor.id, result.id, result.digest, true));
+    const seen = wiki.proposals(f.owner.actor.id, result.pageId)[0]!;
+    assert.equal(seen.basis.quotes[0].text, page.basis[0]!.text);
+    wiki.decide(f.owner.actor.id, result.id, result.digest, true);
+    assert.equal(wiki.read(result.pageId).title, "Nabire");
+    // A basis quote must point at a cited source.
+    const stray = await f.call("etnos_propose_page", { ...page, title: "Paniai", basis: [{ source: 2, text: "Tidak ada sumber kedua." }], editorialMandateId: grant.id, requestKey: randomUUID() }, token);
+    assert.match(JSON.stringify(stray.data), /Basis must name a cited source/);
+    // A revoked mandate stops new pages.
+    wiki.revoke(f.owner.actor.id, grant.id);
+    const late = await f.call("etnos_propose_page", { ...page, title: "Dogiyai", editorialMandateId: grant.id, requestKey: randomUUID() }, token);
+    assert.match(JSON.stringify(late.data), /editorial proposal mandate/);
+  } finally {
+    f.s.close();
+  }
+});

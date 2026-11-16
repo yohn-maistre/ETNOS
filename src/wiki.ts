@@ -1,9 +1,10 @@
 import {randomUUID,createHash} from 'node:crypto'
 import {StrataCore,Fault} from './core.ts'
 import {canonical} from './transport.ts'
+import {checkPage,type PageBasis} from './desk.ts'
 
 type Page={id:string;community_id:string;title:string;revision_id:string|null;created:number;draft:number}
-type Proposal={id:string;page_id:string;author_id:string;base_revision_id:string|null;text:string;citations:string;language:string;perspective:string;digest:string;state:'pending'|'accepted'|'rejected';created:number;editorial_mandate_id:string|null}
+type Proposal={id:string;page_id:string;author_id:string;base_revision_id:string|null;text:string;citations:string;language:string;perspective:string;digest:string;state:'pending'|'accepted'|'rejected';created:number;editorial_mandate_id:string|null;basis:string|null}
 type Revision={id:string;page_id:string;parent_id:string|null;proposal_id:string;author_id:string;reviewer_id:string;text:string;citations:string;language:string;perspective:string;digest:string;created:number}
 export type TrailStep={kind:'sources'|'note'|'announced'|'earlier'|'proposed'|'page'|'work';at:number|null;label:string;actor?:{id:string;name:string;kind:string};href?:string;detail?:string;state?:string;items?:{href:string;label:string;news:boolean}[];contexts?:{slug:string;title:string}[]}
 /** A citation that names a news-desk story: this node's own /news/:id link or the desk's public story link. */
@@ -92,6 +93,31 @@ export class Wiki {
       if(requestKey){const prior=s.get<{digest:string;page_id:string}>('SELECT digest,page_id FROM wiki_requests WHERE actor_id=? AND request_key=?',actorId,requestKey);if(prior){if(prior.digest!==digest)throw new Fault(409,'This request already contains another wiki draft');return this.read(prior.page_id,actorId)}}
       const page=this.create(actorId,communityId,title);s.run('UPDATE wiki_pages SET draft=1 WHERE id=?',page.id);this.propose(actorId,page.id,null,draft.text,draft.citations,draft.language,draft.perspective);if(requestKey)s.run('INSERT INTO wiki_requests VALUES(?,?,?,?)',actorId,requestKey,digest,page.id);return this.read(page.id,actorId)})
   }
+  /** A contributor or a mandated agent proposes a page that does not exist yet.
+   * The page stays a hidden draft until a reviewer accepts the proposal. `basis`
+   * holds the source sentences the text rests on, for the reviewer to compare. */
+  proposePage(actorId:string,communityId:string,title:string,draft:{text:string;citations:string[];language:string;perspective:string},editorialMandateId?:string,basis?:PageBasis[]){
+    const s=this.store
+    return s.tx(()=>{
+      if(s.community(communityId).visibility!=='public')throw new Fault(404,'Not found')
+      this.authorizeProposal(actorId,communityId,editorialMandateId,false)
+      const name=text(title,160),sources=citations(draft.citations)
+      if(s.get("SELECT 1 FROM wiki_pages w WHERE w.community_id=? AND lower(w.title)=lower(?) AND (w.revision_id IS NOT NULL OR w.draft=0 OR EXISTS(SELECT 1 FROM wiki_proposals p WHERE p.page_id=w.id AND p.state='pending'))",communityId,name))throw new Fault(409,'A page with this title exists or awaits review')
+      if(s.get<{n:number}>("SELECT count(*) AS n FROM wiki_pages w JOIN wiki_proposals p ON p.page_id=w.id WHERE w.community_id=? AND w.draft=1 AND w.revision_id IS NULL AND p.author_id=? AND p.state='pending'",communityId,actorId)!.n>=60)throw new Fault(429,'Too many new pages await review')
+      let stored:string|null=null
+      if(basis!==undefined){
+        if(!Array.isArray(basis)||basis.length<1||basis.length>80)throw new Fault(400,'Invalid basis')
+        const quotes=basis.map(b=>{if(!b||!Number.isInteger(b.source)||b.source<1||b.source>sources.length)throw new Fault(400,'Basis must name a cited source');return {source:b.source,text:text(b.text,700)}})
+        stored=JSON.stringify({quotes,checks:checkPage(draft.text,quotes,sources.length)})
+      }
+      const id=randomUUID()
+      s.run('INSERT INTO wiki_pages(id,community_id,title,created,draft) VALUES(?,?,?,?,1)',id,communityId,name,s.clock())
+      const result=this.propose(actorId,id,null,draft.text,draft.citations,draft.language,draft.perspective,editorialMandateId)
+      if(stored)s.run('UPDATE wiki_proposals SET basis=? WHERE id=?',stored,result.id)
+      s.audit(actorId,'wiki.propose.page',id)
+      return {...result,pageId:id,checks:stored?JSON.parse(stored).checks:null}
+    })
+  }
   policy(actorId:string,communityId:string){this.store.requireSteward(actorId,communityId);return this.store.get<{contributor_group_id:string|null;reviewer_group_id:string|null}>('SELECT contributor_group_id,reviewer_group_id FROM wiki_policies WHERE community_id=?',communityId)??{contributor_group_id:null,reviewer_group_id:null}}
   setPolicy(actorId:string,communityId:string,contributor:string|null,reviewer:string|null){
     return this.store.tx(()=>{const s=this.store;s.requireSteward(actorId,communityId);this.human(actorId)
@@ -158,7 +184,7 @@ export class Wiki {
   proposals(actorId:string,pageId:string){
     const s=this.store,page=this.page(pageId);s.requireMember(actorId,page.community_id);this.draftAccess(page,actorId)
     let steward=false;try{this.reviewer(actorId,page.community_id);steward=true}catch{}
-    return s.all<Proposal>('SELECT * FROM wiki_proposals WHERE page_id=? AND (?=1 OR author_id=?) ORDER BY created DESC,id DESC LIMIT 100',pageId,steward?1:0,actorId).map(p=>({...p,authorKind:s.actor(p.author_id).kind,author:this.attribution(p.author_id),citations:JSON.parse(p.citations) as string[]}))
+    return s.all<Proposal>('SELECT * FROM wiki_proposals WHERE page_id=? AND (?=1 OR author_id=?) ORDER BY created DESC,id DESC LIMIT 100',pageId,steward?1:0,actorId).map(p=>({...p,authorKind:s.actor(p.author_id).kind,author:this.attribution(p.author_id),citations:JSON.parse(p.citations) as string[],basis:p.basis?JSON.parse(p.basis):null}))
   }
   propose(actorId:string,pageId:string,baseRevision:string|null,body:string,sourceUrls:string[],language:string,perspective:string,editorialMandateId?:string) {
     const s=this.store
@@ -177,7 +203,7 @@ export class Wiki {
     if(!proposal)throw new Fault(404,'Not found')
     const page=this.page(proposal.page_id);s.requireMember(actorId,page.community_id)
     if(proposal.author_id!==actorId)this.reviewer(actorId,page.community_id)
-    return {...proposal,authorKind:s.actor(proposal.author_id).kind,citations:JSON.parse(proposal.citations) as string[]}
+    return {...proposal,authorKind:s.actor(proposal.author_id).kind,citations:JSON.parse(proposal.citations) as string[],basis:proposal.basis?JSON.parse(proposal.basis):null}
   }
   decide(actorId:string,proposalId:string,expectedDigest:string,accept:boolean) {
     const s=this.store

@@ -402,6 +402,8 @@ CREATE INDEX record_time_order ON record_times(record_kind,from_year);
 CREATE TABLE desk_shelf(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),added_by TEXT NOT NULL REFERENCES actors(id),title TEXT NOT NULL,url TEXT NOT NULL,holder TEXT NOT NULL,text TEXT NOT NULL,digest TEXT NOT NULL,state TEXT NOT NULL CHECK(state IN ('proposed','accepted','withdrawn')),created INTEGER NOT NULL,UNIQUE(community_id,digest));
 CREATE TABLE desk_drafts(id TEXT PRIMARY KEY,shelf_id TEXT NOT NULL REFERENCES desk_shelf(id),community_id TEXT NOT NULL REFERENCES communities(id),agent_id TEXT NOT NULL REFERENCES actors(id),request_key TEXT NOT NULL,kind TEXT NOT NULL,facts TEXT NOT NULL,dropped TEXT NOT NULL,draft TEXT NOT NULL,checks TEXT NOT NULL,model TEXT NOT NULL,state TEXT NOT NULL CHECK(state IN ('pending','draft','failed','released','rejected')),created INTEGER NOT NULL,UNIQUE(agent_id,request_key));
 CREATE INDEX desk_draft_queue ON desk_drafts(community_id,created);
+`,`
+ALTER TABLE wiki_proposals ADD COLUMN basis TEXT;
 `]
 
 export const schemaVersion=migrations.length
