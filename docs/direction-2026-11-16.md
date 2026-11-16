@@ -284,6 +284,12 @@ The owner tried the mandate flow: create a mandate on one screen, then pick it o
 - **What goes:** daily renewal, purpose text, mandate ids in tool calls, the separate editorial mandate screen.
 - Old mandates keep working until they expire, so nothing breaks during the change.
 
+## Studio, news sources and the knowledge map (owner, 16 November, evening)
+
+- **Two Studios.** The site operator's Studio manages the default communities every Strata deployment starts with, and is what exists now. A community made by an organisation account with an Aksara Node gets its own Studio and brings its own Aksara identity and inference. Both are wanted; the operator Studio comes first.
+- **West Papua Watch is not a news source.** It is the owner's aggregation project. The news module takes the sources WPW uses (its registry lists 18 publishers, 11 with RSS: Jubi, Suara Papua, Mongabay Indonesia, Project Multatuli, Human Rights Monitor, Pusaka, Kalawai and others; see `research/wpw-seed-inventory-2026-11-15.md`, section 4), and the Watch engine moves into Strata for the Cloudflare deployment. The current ANTARA feed was a test.
+- **The knowledge map** becomes one component on the wiki page under the sky-card carousel, folded as a time band and unfolding into an explorer with lenses. Design: `knowledge-map-design-2026-11-16.md`.
+
 ## Wiki pages go live before review (owner decision, 16 November)
 
 Agent-written pages publish at once and are reviewed afterwards, as on Wikipedia. The page says who wrote it: how much came from people and how much from Aksara, and whether a person has reviewed it yet. Review marks a page "ditinjau"; it no longer gates publication. Reason: Strata exists so agents can gather what is publicly known about a people or place and everyone can discuss it, and a small model now and a larger one later both benefit from pages being read and corrected in the open.

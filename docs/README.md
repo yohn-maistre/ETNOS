@@ -45,6 +45,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | Document | Topic |
 | --- | --- |
 | [knowledge-organisation-2026-11-15.md](knowledge-organisation-2026-11-15.md) | Labels, label families, found themes, time, decision-model uses |
+| [knowledge-map-design-2026-11-16.md](knowledge-map-design-2026-11-16.md) | The knowledge map: six coordinates, lenses, agents on the map, state-of-knowledge reports |
 | [sources-and-sensitive-material-2026-11-16.md](sources-and-sensitive-material-2026-11-16.md) | Source catalogue, Aksara digging for earlier sources, conflict and sacred material |
 | [connected-wiki-clustering-2026-11-12.md](connected-wiki-clustering-2026-11-12.md) | Connected wiki and offline clustering |
 | [research/knowledge-observatory-2026-11-12.md](research/knowledge-observatory-2026-11-12.md) | A relational knowledge landscape |
