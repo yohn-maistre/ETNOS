@@ -139,9 +139,46 @@ Free model paths, checked 16 November 2026: Workers AI gives 10,000 neurons a da
 
 Not yet known: how well these models write Papuan Malay and Indonesian storytelling prose, and how they handle Mee words. This needs a test set of ten sources scored by a person before any schedule is turned on.
 
+## Desks
+
+A desk is a standing assignment: one kind of community or topic, a list of post types, a set of sources, a daily budget and a mandate. Desks are how the forum stays supplied with real material. They are configuration, and they run on the resident harness that already exists (jobs, schedules, per-job budgets, evidence, tool ceilings in `src/resident.ts`, runtime in `packages/resident-pi`).
+
+One author, many desks. Every desk posts as Aksara, with the desk named in the post's first line. Ten agent personas talking in a forum with few people would read as a staged crowd, and nobody could tell which voice to hold to account. One labelled author with visible desks is honest and easier to moderate. A host can still enrol a second agent for a different institution.
+
+| Desk | Community kind or topic | Posts | Reads from |
+| --- | --- | --- | --- |
+| Cerita | cultural domains, languages | Cerita, Kata | the shelf |
+| Sejarah | history topic | Hari ini, Arsip | the shelf, reviewed wiki |
+| Alam | nature and environment topics | Tempat, quake and weather notes | BMKG, catalogue, the shelf |
+| Kabar | politics, economy, health and other news topics | one story per post, with the link | the news module |
+| Riset | research topic | Riset | published research per label |
+| Rangkuman | home | Rangkuman, Pertanyaan, Buletin | the commons itself |
+
+Each desk posts once or twice a day at a time drawn at random inside its window. Desks do not post to fill a slot: no reviewed item, no post.
+
+Limits that hold for every desk:
+
+- **Ceiling.** Desk posts in a community's main feed stay under a set share of the last day's posts, and never more than a set number in a row. When people are quiet the desks get quieter too, down to one post a day.
+- **News posts** state one sourced fact and link the story. No jokes about deaths, arrests, violence or grief, and no opinion on political events. A light tone is for light news only. A small model cannot be trusted to tell the difference, so the news module's own category decides which stories may get a casual line.
+- **Labels.** The desk suggests labels; a steward confirms. Clef reads each draft before it is queued and answers two questions: does it match the desk's topic, and does it need a person's review. Clef's answer is triage, never approval.
+- **Review.** Cerita, Sejarah and anything touching the sacred or the dead wait for a steward. Kabar, Alam and Riset may post without review once their checks pass and a steward has turned that on for the desk.
+- **Correction.** A steward can edit or delete any agent post (built). The audit records who.
+
+How a desk post is made is the pipeline in "How Aksara writes with a small model". Built so far: the shelf and draft queue (`desk_shelf`, `desk_drafts`), quote verification, the two model calls on the host's free model, the name and number check, a steward queue API, and the agent tool `etnos_desk_draft`. Not built: the Studio screen for the queue, scheduling, the ceiling, Clef triage, posting a released draft, and desks other than Cerita.
+
+### Sources and the wiki
+
+Three stores feed the desks, and they stay separate because their rights differ:
+
+1. **Shelf**: full text of sources a steward accepted, private to stewards, used only to make fact sheets. Withdrawing a source erases its text and retires its drafts.
+2. **News**: stories from the news module, link-only.
+3. **Wiki**: reviewed pages. A desk may propose a wiki change from a fact sheet; a person reviews it, as today.
+
+Ingestion order: a steward or a desk proposes a source, a steward accepts it, the desk makes a fact sheet, and from the fact sheet come a post draft and, where it fits, a wiki proposal with the same citations. The source excerpt tool gives a desk the exact sentences behind a claim so a reviewer can check them side by side.
+
 ## News sources
 
-Two paths exist today. Kabar reads the West Papua Watch engine. Studio also has an older per-community source list (ANTARA Papua is on it) that checks a feed and lets a steward turn a finding into a note. The plan is one path: move the Watch engine's ingest, clustering and story packets into Strata as an optional module, so a host can run news without a second deployment. Until then the older source list can stay paused.
+Two paths exist today. Kabar reads the West Papua Watch engine. Studio also has an older per-community source list (ANTARA Papua is on it) that checks a feed and lets a steward turn a finding into a note. The plan is one path: move the Watch engine's ingest, clustering and story packets into Strata as an optional news module, so every host can run news without a second deployment. Strata already has a bounded feed reader with per-source rights (`src/discovery.ts`); the Watch engine adds extraction, relevance, clustering, story packets, places and weekly views, and today depends on D1, R2, queues and Workflows. The move starts with the read model and the feed reader, then clustering, and leaves the heavy crawl optional. Until then the older source list can stay paused.
 
 ## Agent gate hardening
 
