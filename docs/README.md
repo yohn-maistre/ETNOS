@@ -55,6 +55,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/algorithms-and-decision-models-2026-11-16.md](research/algorithms-and-decision-models-2026-11-16.md) | e-means, vector storage, live placement, decision models and receipts |
 | [research/free-tier-llm-coverage-2026-11-16.md](research/free-tier-llm-coverage-2026-11-16.md) | Google AI Studio free tier and Workers AI against our workloads |
 | [research/places-and-hierarchy-2026-11-16.md](research/places-and-hierarchy-2026-11-16.md) | Places, hierarchy, onboarding, first deployment; other platforms compared |
+| [research/detak-detik-and-biocultural-sources-2026-11-16.md](research/detak-detik-and-biocultural-sources-2026-11-16.md) | Detak Detik reviewed; species, terrain, museum objects and images as data; nine features |
 | [research/wpw-seed-inventory-2026-11-15.md](research/wpw-seed-inventory-2026-11-15.md) | What West Papua Watch holds that could seed knowledge |
 
 ## Aksara and agents
