@@ -50,6 +50,8 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [connected-wiki-clustering-2026-11-12.md](connected-wiki-clustering-2026-11-12.md) | Connected wiki and offline clustering |
 | [research/knowledge-observatory-2026-11-12.md](research/knowledge-observatory-2026-11-12.md) | A relational knowledge landscape |
 | [research/knowledge-graph-sota-2026-11-16.md](research/knowledge-graph-sota-2026-11-16.md) | Current methods for knowledge graphs and embedding maps; observatory pipeline |
+| [research/ui-components-and-realtime-2026-11-16.md](research/ui-components-and-realtime-2026-11-16.md) | Svelte components, motion, live cursors, map rendering, products to learn from |
+| [research/algorithms-and-decision-models-2026-11-16.md](research/algorithms-and-decision-models-2026-11-16.md) | e-means, vector storage, live placement, decision models and receipts |
 | [research/wpw-seed-inventory-2026-11-15.md](research/wpw-seed-inventory-2026-11-15.md) | What West Papua Watch holds that could seed knowledge |
 
 ## Aksara and agents

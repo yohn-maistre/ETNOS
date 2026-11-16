@@ -142,6 +142,27 @@ The place page (the "Penampang" view in the screenshots) shows the same band fil
 - **Drawing.** Canvas 2D up to about 20,000 items, chunks per region for slow connections, WebGL later. The folded band is a small image-like summary that loads first.
 - **Privacy.** The public layout is computed from public items only and must stay identical when a private item is added (a test). A community's map is computed inside its space.
 
+## 9a. Stack, after research (16 November)
+
+From `research/ui-components-and-realtime-2026-11-16.md` and `research/algorithms-and-decision-models-2026-11-16.md`:
+
+| Part | Choice | Not chosen, and why |
+| --- | --- | --- |
+| Components | shadcn-svelte and Bits UI as now; add popover, command, carousel (Embla), trace | vaul-svelte drawer (abandoned); Flowbite; copying React Bits, Animate UI or Aceternity code (their licences forbid it; ideas only) |
+| Motion | Svelte `Spring`, `Tween`, `flip`, `crossfade`, `prefersReducedMotion`; View Transitions for band → explorer and lens switches; `motion-sv` only for drag physics | Large animation libraries |
+| Toasts | Ding (already installed), wrapped behind our own `notify()` so svelte-sonner can replace it | — |
+| Live cursors | One hibernating Durable Object per map room (PartyServer optional). Positions in map coordinates, 20 per second at most, spring smoothing, agents as round pips that glide between items, activity text that morphs in place. People hidden until they opt in | Liveblocks (no Svelte package, 10 connections per room on free); hosted PartyKit (shut down October 2026) |
+| Point cloud | Canvas 2D first; regl-scatterplot when layout transitions and lasso are needed | Three.js 3D as the default view (cheap phones, screen readers); kept for a showcase mode |
+| Place lens | svelte-maplibre-gl | — |
+| Time band | Hand-built SVG with d3-scale and d3-shape | LayerChart until Svelte is upgraded past 5.57 |
+| Vectors | int8, truncated to 256 dimensions, packed many per row in Durable Object SQLite, exact scan inside a routed cell | sqlite-vec (does not load in Durable Objects); Vectorize kept as an option |
+| Live placement | Route to the nearest of 64–256 centroids, place at the similarity-weighted mean of nearest neighbours, flag items far from everything | Recomputing the layout per item |
+| Batch layout | Scheduled GitHub Action: EVōC clusters, UMAP warm-started from the last layout and aligned to it, a logged "how far dots moved" number; graphology Louvain and PageRank on the typed graph | e-means as the map's clustering. It is a faster k-means optimiser (arXiv 2611.09501, FAISS 1.16.0), useful for the fixed centroids above, and its dead-cluster revival can erase small rare groups |
+| Decisions | Clef-flash with an explicit "unsure" band and a receipt per decision; Gemini Decision 1 free tier as a second opinion on public text only | Sending community-held text to any free tier that trains on inputs |
+| Calibration | A labelled set of 100 items per decision type, 30 in Papuan Malay or mixed language, before any threshold is trusted | Vendor benchmark numbers |
+
+Patterns borrowed (from the same research): citations that open the exact sentence (NotebookLM, Consensus); a tally of sources, never a verdict (Consensus) for Beda versi; cluster labels that appear and split with zoom (Nomic Atlas); lasso a selection to start a reading path (Atlas, Latent Scope); Aksara summaries in a fold marked unverified, never replacing the text (lesson from Wikipedia pausing its AI summaries); a short story first, then a trail of images and maps (Te Ara); protocol labels that travel with the item onto share cards (Mukurtu); local names first on the place lens (Native Land); tap a dot to trace what it rests on (Marble); one toast that changes into the next (Ding); agent steps as a short expandable list (shadcn trace).
+
 ## 10. Order
 
 For the showcase (4–5 December):
