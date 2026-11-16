@@ -1,0 +1,256 @@
+{
+ "file": "seed/wiki/meepago.json",
+ "checked": "2026-11-16",
+ "sources": [
+  {
+   "page": "mee-pago",
+   "url": "https://id.wikipedia.org/wiki/Mee_Pago",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mee-pago",
+   "url": "https://en.wikipedia.org/wiki/Central_Papua",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mee-pago",
+   "url": "https://web.archive.org/web/20200609160613/https:/penghubung.papua.go.id/5-wilayah-adat/mee-pago/",
+   "ok": 0,
+   "bad": [],
+   "error": "<urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+   "page": "nabire",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Nabire",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "nabire",
+   "url": "https://en.wikipedia.org/wiki/Nabire_Regency",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "nabire",
+   "url": "https://nabirekab.go.id/sejarah-singkat-kabupaten-nabire/",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "paniai",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Paniai",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "paniai",
+   "url": "https://en.wikipedia.org/wiki/Paniai_Regency",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "paniai",
+   "url": "https://nabirekab.go.id/sejarah-singkat-kabupaten-nabire/",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "deiyai",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Deiyai",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "deiyai",
+   "url": "https://en.wikipedia.org/wiki/Deiyai_Regency",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "deiyai",
+   "url": "https://deiyaikab.go.id/profil/wilayah-kabupaten",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "deiyai",
+   "url": "https://deiyaikab.go.id/profil/sejarah-kabupaten",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dogiyai",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Dogiyai",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dogiyai",
+   "url": "https://en.wikipedia.org/wiki/Dogiyai_Regency",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dogiyai",
+   "url": "https://dogiyaikab.go.id/",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "intan-jaya",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Intan_Jaya",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "intan-jaya",
+   "url": "https://en.wikipedia.org/wiki/Intan_Jaya_Regency",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "intan-jaya",
+   "url": "https://intanjayakab.go.id/profil-daerah",
+   "ok": 3,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mimika",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Mimika",
+   "ok": 9,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mimika",
+   "url": "https://en.wikipedia.org/wiki/Mimika_Regency",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mimika",
+   "url": "https://mimikakab.go.id/pages/sejarah",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mee",
+   "url": "https://id.wikipedia.org/wiki/Suku_Mee",
+   "ok": 9,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mee",
+   "url": "https://en.wikipedia.org/wiki/Mee_(ethnic_group)",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mee",
+   "url": "https://brill.com/downloadpdf/view/journals/bki/158/4/article-p837_13.pdf",
+   "ok": 0,
+   "bad": [],
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "page": "mee",
+   "url": "https://ejournal.uncen.ac.id/index.php/JHCU/article/download/3911/2764/10189",
+   "ok": 0,
+   "bad": [],
+   "error": "<urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+   "page": "ekari-language",
+   "url": "https://id.wikipedia.org/wiki/Bahasa_Ekari",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "ekari-language",
+   "url": "https://en.wikipedia.org/wiki/Ekari_language",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "ekari-language",
+   "url": "https://en.wikipedia.org/wiki/Paniai_Lakes_languages",
+   "ok": 3,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "moni",
+   "url": "https://id.wikipedia.org/wiki/Suku_Moni",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "moni",
+   "url": "https://en.wikipedia.org/wiki/Moni_language",
+   "ok": 1,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "moni",
+   "url": "https://en.wikipedia.org/wiki/Moni_people",
+   "ok": 1,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "amungme",
+   "url": "https://id.wikipedia.org/wiki/Suku_Amungme",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "kamoro",
+   "url": "https://id.wikipedia.org/wiki/Suku_Kamoro",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "kamoro",
+   "url": "https://en.wikipedia.org/wiki/Kamoro_language",
+   "ok": 2,
+   "bad": [],
+   "error": null
+  }
+ ],
+ "totals": {
+  "ok": 189,
+  "bad": 0,
+  "unreachable": 20
+ }
+}

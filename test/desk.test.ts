@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { Strata } from "../src/store.ts";
 import { AgentAccess } from "../src/agent-access.ts";
 import { Forum } from "../src/forum.ts";
-import { Desk, verifyQuotes, checkDraft, parseNumbered, runDesk, type DeskModel } from "../src/desk.ts";
+import { Desk, verifyQuotes, checkDraft, checkPage, parseNumbered, runDesk, type DeskModel } from "../src/desk.ts";
 
 const source =
   "Synthetic field note for tests. In a long season of hunger there lived a poor family in the valley. " +
@@ -146,4 +146,14 @@ test("a steward may edit or delete an agent's post; members and other authors ma
   assert.equal(edited.author.kind, "agent", "authorship does not move to the steward");
   assert.ok(f.s.get("SELECT 1 FROM audit WHERE actor_id=? AND action='post.edit' AND target=?", f.owner.actor.id, post.id));
   assert.equal(forum.delete(f.owner.actor.id, post.id, 2).deleted, true);
+});
+
+test("page check accepts a figure in the other number format and known Indonesian forms, and still catches new ones", () => {
+  const basis = [{ source: 1, text: "The regency covers 6,077.4 km2 and its Austronesian speakers number 70,000 on New Guinea." }];
+  const fine = checkPage("## Letak\n\nLuas kabupaten ini 6.077,4 km2. Penuturnya 70.000 orang dari rumpun Austronesia di Pulau Nugini [1].", basis, 1);
+  assert.deepEqual(fine, { ok: true, unknown: [], uncited: 0, unsupported: [] });
+  const wrong = checkPage("Luasnya 6.077,5 km2 menurut Zeta [1].\n\nTanpa rujukan.\n\nRujukan kosong [2].", basis, 2);
+  assert.deepEqual(wrong.unknown.sort(), ["6.077,5", "Zeta"]);
+  assert.equal(wrong.uncited, 1);
+  assert.deepEqual(wrong.unsupported, [2]);
 });

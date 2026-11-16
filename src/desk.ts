@@ -163,9 +163,31 @@ export function checkDraft(draft: string, facts: DeskFact[]): DeskCheck {
 
 /** Words Indonesian capitalises by convention; they name a kind of thing, not a thing. */
 const generic = new Set(
-  "kabupaten kota provinsi distrik kecamatan kampung desa pulau kepulauan danau sungai gunung pegunungan lembah teluk selat laut samudra tanah suku bahasa orang rumpun undang-undang januari februari maret april mei juni juli agustus september oktober november desember indonesia belanda"
+  "kabupaten kota provinsi distrik kecamatan kampung desa pulau kepulauan danau sungai gunung pegunungan lembah teluk selat laut samudra semenanjung tanah suku bahasa orang rumpun undang-undang januari februari maret april mei juni juli agustus september oktober november desember indonesia belanda"
     .split(" "),
 );
+/** English forms in a source sentence and the Indonesian forms a page may use for them. */
+const glosses: [string, string[]][] = [
+  ["austronesian", ["austronesia"]],
+  ["melanesian", ["melanesia"]],
+  ["papuan", ["papua"]],
+  ["new guinea", ["nugini", "guinea"]],
+  ["bird's head", ["kepala", "burung"]],
+  ["highland papua", ["pegunungan"]],
+  ["central papua", ["tengah"]],
+  ["dutch", ["belanda"]],
+  ["trans-new guinea", ["trans-nugini", "nugini"]],
+  ["christian", ["kristen"]],
+  ["western", ["barat"]],
+  ["eastern", ["timur"]],
+  ["south", ["selatan"]],
+  ["north", ["utara"]],
+  ["malay", ["melayu"]],
+  ["polynesian", ["polinesia"]],
+  ["protestant", ["protestan"]],
+  ["catholic", ["katolik"]],
+];
+const digits = (token: string) => token.replace(/[^\d]/g, "");
 export type PageBasis = { source: number; text: string };
 export type PageCheck = { ok: boolean; unknown: string[]; uncited: number; unsupported: number[] };
 /** A wiki page cites sources by number. Each cited source must have supplied a quote,
@@ -174,7 +196,10 @@ export function checkPage(page: string, basis: PageBasis[], sources: number): Pa
   const known = fold(basis.map((b) => b.text).join(" ")),
     backed = new Set(basis.map((b) => b.source)),
     unknown = new Set<string>(),
-    unsupported = new Set<number>();
+    unsupported = new Set<number>(),
+    glossed = new Set(glosses.filter(([english]) => known.includes(english)).flatMap(([, forms]) => forms)),
+    // 6,077.4 in an English source and 6.077,4 in Indonesian prose are the same figure.
+    figures = new Set((known.match(/\d[\d.,]*\d|\d/g) ?? []).map(digits));
   let uncited = 0;
   for (const block of page.split(/\n\s*\n/)) {
     const p = block.split("\n").filter((line) => !/^\s{0,3}#{1,6}\s/.test(line)).join("\n").trim();
@@ -186,10 +211,14 @@ export function checkPage(page: string, basis: PageBasis[], sources: number): Pa
     for (const sentence of body.split(/(?<=[.!?:])\s+|\n/)) {
       sentence.trim().split(/\s+/).forEach((w, i) => {
         const token = w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
-        if (!token || generic.has(token.toLowerCase())) return;
+        if (!token) return;
         const name = i > 0 && /^\p{Lu}/u.test(token),
           number = /\d/.test(token);
-        if ((name || number) && !known.includes(fold(token))) unknown.add(token);
+        if (!(name || number)) return;
+        const fine = (part: string) =>
+          !part || generic.has(part.toLowerCase()) || glossed.has(part.toLowerCase()) || known.includes(fold(part)) || (/^\d[\d.,]*$/.test(part) && figures.has(digits(part)));
+        // A compound passes when it is known whole or each part is.
+        if (!fine(token) && !token.split(/[-\u2013]/).every(fine)) unknown.add(token);
       });
     }
   }
