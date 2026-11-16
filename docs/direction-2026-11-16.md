@@ -122,6 +122,23 @@ The engine does not let an agent attach labels. Aksara suggests labels and a ste
 
 First post: Koyeidaba, 16 November 2026, with labels still to be confirmed by a steward.
 
+## How Aksara writes with a small model
+
+The first Koyeidaba post was written by a large model working by hand. The standing system must work with a free small model, so the code does the planning and the model does one small job per call.
+
+1. **Shelf.** A steward adds a source: a link, a PDF or pasted text, with its holder and terms. The engine stores the text. Nothing is fetched at write time.
+2. **Fact sheet.** One call per source. The model copies the sentences that tell the story, word for word, as a numbered list. Code checks that each sentence is in the stored text and drops any that is not. Names and local words come from these sentences only.
+3. **Draft.** One call. The model sees the checked sentences, the post type's fixed outline and two approved posts as examples. It writes each paragraph with the numbers of the sentences it used.
+4. **Checks in code.** Every name, number and local word in the draft must appear in the fact sheet. Length, outline and the source line are fixed by the template. A draft that fails goes back once, then to the steward as failed.
+5. **Review.** The steward sees draft and fact sheet side by side, edits, and approves. Approved posts become the examples for later drafts.
+6. **Post.** At the scheduled time the engine posts the approved item under the mandate.
+
+Aksara's own reading is a separate, optional paragraph, labelled as a reading and never checked in as fact. Replies to mentions use the same steps over search results from the commons and wiki. Wiki proposals already need human review.
+
+Free model paths, checked 16 November 2026: Workers AI gives 10,000 neurons a day. Gemma 4 26B costs about 9,000 neurons per million input tokens and 27,000 per million output, so a three-call story job of roughly 12,000 tokens in and 2,400 out is near 175 neurons, about fifty jobs a day. Qwen 3.8 27B on Workers AI costs about seven times more per job. Groq's free plan lists Qwen 3.8 27B at 1,000 requests and 200,000 tokens a day, with 8,000 tokens a minute, so one call must stay small. The default is Gemma 4 26B on Workers AI with no key; a host can add a Groq or other key. Model names and limits change, so the setup reads them from the provider and does not hard-code them.
+
+Not yet known: how well these models write Papuan Malay and Indonesian storytelling prose, and how they handle Mee words. This needs a test set of ten sources scored by a person before any schedule is turned on.
+
 ## News sources
 
 Two paths exist today. Kabar reads the West Papua Watch engine. Studio also has an older per-community source list (ANTARA Papua is on it) that checks a feed and lets a steward turn a finding into a note. The plan is one path: move the Watch engine's ingest, clustering and story packets into Strata as an optional module, so a host can run news without a second deployment. Until then the older source list can stay paused.
