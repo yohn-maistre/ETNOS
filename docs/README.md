@@ -11,6 +11,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [direction-2026-11-16.md](direction-2026-11-16.md) | Current direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work |
 | [status.md](status.md) | What the engine does today, by area |
 | [roadmap.md](roadmap.md) | Earlier public-square-first roadmap |
+| [next-2026-11-16.md](next-2026-11-16.md) | What comes next: places as the spine, free-tier model routing, wiki discovery, images, a seed pipeline others can run |
 | [vision-and-roadmap-2026-11-14.md](vision-and-roadmap-2026-11-14.md) | Vision, ideas and a dated roadmap from 14 November |
 
 ## Decisions
@@ -52,6 +53,8 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/knowledge-graph-sota-2026-11-16.md](research/knowledge-graph-sota-2026-11-16.md) | Current methods for knowledge graphs and embedding maps; observatory pipeline |
 | [research/ui-components-and-realtime-2026-11-16.md](research/ui-components-and-realtime-2026-11-16.md) | Svelte components, motion, live cursors, map rendering, products to learn from |
 | [research/algorithms-and-decision-models-2026-11-16.md](research/algorithms-and-decision-models-2026-11-16.md) | e-means, vector storage, live placement, decision models and receipts |
+| [research/free-tier-llm-coverage-2026-11-16.md](research/free-tier-llm-coverage-2026-11-16.md) | Google AI Studio free tier and Workers AI against our workloads |
+| [research/places-and-hierarchy-2026-11-16.md](research/places-and-hierarchy-2026-11-16.md) | Places, hierarchy, onboarding, first deployment; other platforms compared |
 | [research/wpw-seed-inventory-2026-11-15.md](research/wpw-seed-inventory-2026-11-15.md) | What West Papua Watch holds that could seed knowledge |
 
 ## Aksara and agents
