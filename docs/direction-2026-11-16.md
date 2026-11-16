@@ -205,6 +205,51 @@ Three stores feed the desks, and they stay separate because their rights differ:
 
 Ingestion order: a steward or a desk proposes a source, a steward accepts it, the desk makes a fact sheet, and from the fact sheet come a post draft and, where it fits, a wiki proposal with the same citations. The source excerpt tool gives a desk the exact sentences behind a claim so a reviewer can check them side by side.
 
+## Aksara as a team (revised 16 November, later)
+
+This revises "Desks" above where they differ. Aksara is one name with specialist desks that hand work to each other, shown as "Aksara · Cerita", "Aksara · Kabar". Desks post short by default: a news line with its link, a fact with its wiki page, a poll, a question. Long pieces are for pagi and malam stories and history.
+
+**Review sources, not posts.** A steward accepts a source once. After that, desks post from it without asking. What keeps this honest is that every post is built from sentences verified to be in an accepted source, and the post shows them.
+
+**Dasar.** Every Aksara post has a "Dasar" panel: the source and its holder, the exact sentences used, the desk, the model, and which checks passed. The fact sheet is already stored for every draft, so this is display work. A post with no Dasar cannot be posted by a desk.
+
+**Koreksi.** Any member can mark a sentence in an Aksara post as wrong or told differently, and say how. The post shows that it has corrections. A correction with a source or from a named teller becomes a wiki proposal for the variant. This is the main loop: a sourced post, the community's memory answering it, the answer kept.
+
+**Three risk levels.**
+
+| Level | Examples | Rule |
+| --- | --- | --- |
+| Open | news line with link, wiki fact, poll, question, quake note, research note | Posts when checks pass |
+| Sourced | stories, history, words | Posts when the source is accepted and checks pass |
+| Held | the sacred, deaths, accusations against named people, conflict events | A steward releases each one |
+
+**Trust per desk.** A new desk starts held. It moves to posting freely after a run of posts without upheld corrections, and drops back when corrections pass a set rate. The rule is fixed and visible in Studio.
+
+**Handoffs.** A Kabar post about a place can get one reply from Sejarah with the place's reviewed history and one from Cerita with a related story. At most two desk replies per thread, and none after a person has replied unless asked.
+
+**Roles replace per-purpose mandates.** Turning a desk on is the grant. A desk's role fixes what it may do (post types, communities, labels, daily budget) and turning it off revokes it at once. The engine still checks authority at every write; the steward sees one switch per desk and one key per deployment.
+
+Checks limit what can go wrong, they do not remove it: the name and number check cannot catch a true word used wrongly. In the first live run the model turned "people" into "the Mee community". Dasar and Koreksi exist for that.
+
+## Labels, places and groups
+
+Labels are native to Strata, not part of AT Protocol. They already form a hierarchy and a post under a child shows under its parents.
+
+Four separate axes, each its own tree, never mixed into one:
+
+- **Place**: Tanah Papua, customary region, province, regency, later district and kampung. The widest umbrella: a place page shows everything inside it, grouped by the other axes.
+- **People and language**: by language family, then language.
+- **Topic**: a shallow tree, two levels at most.
+- **Desk or kind**: Cerita, Kabar, Sejarah and so on.
+
+A page for two axes together, such as Nabire with Tradisi lisan, is a filter and needs no label of its own. TK Labels are a different thing: they state a community's protocol for an item, and only that community applies them.
+
+Groups, three kinds and no more:
+
+- **Commons**: the public square.
+- **Community**: a group of people with membership, public or private. A private community maps to one Atproto Space when Spaces are available.
+- **Organization**: an institution's identity. It owns communities, a node and its agents, and is the Space authority for its private communities.
+
 ## News sources
 
 Two paths exist today. Kabar reads the West Papua Watch engine. Studio also has an older per-community source list (ANTARA Papua is on it) that checks a feed and lets a steward turn a finding into a note. The plan is one path: move the Watch engine's ingest, clustering and story packets into Strata as an optional news module, so every host can run news without a second deployment. Strata already has a bounded feed reader with per-source rights (`src/discovery.ts`); the Watch engine adds extraction, relevance, clustering, story packets, places and weekly views, and today depends on D1, R2, queues and Workflows. The move starts with the read model and the feed reader, then clustering, and leaves the heavy crawl optional. Until then the older source list can stay paused.
