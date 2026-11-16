@@ -3,13 +3,15 @@
   import { request } from './api'
   import Choice from './Choice.svelte'
   import { Button } from '$lib/components/ui/button/index.js'
+  import { Switch } from '$lib/components/ui/switch/index.js'
   let { communityId }: { communityId: string } = $props()
   let contributor = $state(''),
     reviewer = $state(''),
     groups = $state<{ id: string; title: string }[]>([]),
     busy = $state(false),
     message = $state(''),
-    ready = $state(false)
+    ready = $state(false),
+    live = $state(false)
   $effect(() => {
     const id = communityId,
       abort = new AbortController()
@@ -19,6 +21,7 @@
         contributor_group_id: string | null
         reviewer_group_id: string | null
       }>('/v1/communities/' + id + '/wiki-policy', undefined, abort.signal),
+      request<{ live: boolean }>('/v1/communities/' + id + '/wiki-live', undefined, abort.signal),
       request<{ id: string; title: string }[]>(
         '/v1/groups',
         undefined,
@@ -30,8 +33,9 @@
         abort.signal,
       ),
     ])
-      .then(([policy, rows, roles]) => {
+      .then(([policy, liveSetting, rows, roles]) => {
         if (abort.signal.aborted) return
+        live = liveSetting.live
         contributor = policy.contributor_group_id ?? ''
         reviewer = policy.reviewer_group_id ?? ''
         groups = rows.filter((g) =>
@@ -44,6 +48,19 @@
       })
     return () => abort.abort()
   })
+  async function setLive(next: boolean) {
+    busy = true
+    message = ''
+    try {
+      await request('/v1/communities/' + communityId + '/wiki-live', { live: next })
+      live = next
+      notify(next ? 'Halaman terbit sebelum ditinjau.' : 'Halaman menunggu tinjauan sebelum terbit.')
+    } catch (e) {
+      message = e instanceof Error ? e.message : 'Belum tersimpan.'
+    } finally {
+      busy = false
+    }
+  }
   async function save() {
     busy = true
     message = ''
@@ -67,6 +84,13 @@
       Keanggotaan komunitas tetap diperlukan. Kelompok tambahan dapat membatasi
       pengusul dan peninjau.
     </p>
+    <div class="wiki-live-setting">
+      <span>
+        <strong>Terbit sebelum ditinjau</strong>
+        <small>Perubahan langsung tampil, ditandai belum ditinjau sampai pengelola memeriksanya.</small>
+      </span>
+      <Switch checked={live} disabled={busy} aria-label="Terbit sebelum ditinjau" onCheckedChange={(v) => setLive(v)} />
+    </div>
     <label>
       Kelompok pengusul<Choice
         bind:value={contributor}

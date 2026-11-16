@@ -141,6 +141,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])
+        else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-unreviewed') result=wiki.unreviewed(authenticated(),parts[2])
+        else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-live') result={live:wiki.isLive(parts[2])}
         else if (parts.length === 3 && parts[1] === 'wiki') result=wiki.read(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'history') {wiki.read(parts[2],actor?.id);result=wiki.history(parts[2])}
         else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'proposals') result=wiki.proposals(authenticated(),parts[2])
@@ -288,6 +290,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'report') result=social.report(caller,parts[2],string(b.reason))
       else if (parts.length === 4 && parts[1] === 'reports' && parts[3] === 'decide') result=social.decideReport(caller,parts[2],string(b.state) as 'resolved'|'dismissed',string(b.decision))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'topics') result=social.addTopic(caller,parts[2],string(b.title))
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-live') result=wiki.setLive(caller,parts[2],b.live as boolean)
+      else if (parts.length === 4 && parts[1] === 'wiki-revisions' && parts[3] === 'review') result=wiki.review(caller,parts[2],b.accept as boolean)
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.setPolicy(caller,parts[2],b.contributorGroupId===null?null:string(b.contributorGroupId),b.reviewerGroupId===null?null:string(b.reviewerGroupId))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') {
         if(b.draft!==undefined){const d=b.draft as Record<string,unknown>;if(!d||typeof d!=='object'||!Array.isArray(d.citations)||d.citations.some(c=>typeof c!=='string'))throw new Fault(400,'Draft and citations required');result=wiki.createDraft(caller,parts[2],string(b.title),{text:string(d.text),citations:d.citations as string[],language:string(d.language),perspective:string(d.perspective)},b.requestKey===undefined?undefined:string(b.requestKey))}

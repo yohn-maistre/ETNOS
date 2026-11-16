@@ -538,3 +538,46 @@ test("one agent switch replaces mandates: operator-steward only, off stops the n
     f.s.close();
   }
 });
+test("live wiki: pages publish before review when the community turns it on; review marks them, revert restores or hides", async () => {
+  const f = await fixture();
+  try {
+    const wiki = new Wiki(f.s),
+      token = await f.token(),
+      page = (title: string) => ({ title, text: "Danau Paniai berada di Paniai [1].", citations: ["https://example.org/p"], basis: [{ source: 1, text: "Danau Paniai berada di Paniai." }], language: "id", perspective: "Uji", requestKey: randomUUID() });
+    f.access.admit(f.owner.actor.id, f.agent.actor.id);
+    f.access.setSwitch(f.owner.actor.id, f.agent.actor.id, { enabled: true, posts: false, wiki: true, dailyLimit: 20 });
+    // Off by default: the page stays hidden.
+    const hidden = (await f.call("etnos_propose_page", page("Paniai"), token)).data.result.structuredContent.data;
+    assert.equal(hidden.state, "pending");
+    assert.throws(() => wiki.read(hidden.pageId), /Not found/);
+    // Only a human steward turns live publishing on.
+    assert.throws(() => wiki.setLive(f.other.actor.id, f.room.id, true));
+    wiki.setLive(f.owner.actor.id, f.room.id, true);
+    const live = (await f.call("etnos_propose_page", page("Deiyai"), token)).data.result.structuredContent.data;
+    assert.equal(live.state, "accepted");
+    const read = wiki.read(live.pageId);
+    assert.equal(read.revision!.review, "unreviewed");
+    assert.equal(read.revision!.reviewer, null);
+    assert.equal(read.revision!.author.kind, "agent");
+    // The queue is for reviewers; the agent and other members cannot review.
+    assert.equal(wiki.unreviewed(f.owner.actor.id, f.room.id).length, 1);
+    assert.throws(() => wiki.unreviewed(f.other.actor.id, f.room.id));
+    assert.throws(() => wiki.review(f.agent.actor.id, live.revisionId, true));
+    // An edit by the agent on top also goes live; reverting it restores the first revision.
+    const edit = (await f.call("etnos_propose_wiki", { pageId: live.pageId, baseRevision: live.revisionId, text: "Teks salah.", citations: ["https://example.org/p"], language: "id", perspective: "Uji", requestKey: randomUUID() }, token)).data.result.structuredContent.data;
+    assert.equal(wiki.read(live.pageId).revision!.text, "Teks salah.");
+    wiki.review(f.owner.actor.id, edit.revisionId, false);
+    assert.equal(wiki.read(live.pageId).revision!.id, live.revisionId);
+    assert.throws(() => wiki.review(f.owner.actor.id, edit.revisionId, true), /Already reviewed/);
+    // Reviewing names the reviewer.
+    wiki.review(f.owner.actor.id, live.revisionId, true);
+    assert.equal(wiki.read(live.pageId).revision!.review, "reviewed");
+    assert.equal(wiki.read(live.pageId).revision!.reviewer!.id, f.owner.actor.id);
+    // Reverting a new page's only revision hides the page again.
+    const lone = (await f.call("etnos_propose_page", page("Dogiyai"), token)).data.result.structuredContent.data;
+    wiki.review(f.owner.actor.id, lone.revisionId, false);
+    assert.throws(() => wiki.read(lone.pageId), /Not found/);
+  } finally {
+    f.s.close();
+  }
+});

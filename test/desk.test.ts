@@ -157,3 +157,9 @@ test("page check accepts a figure in the other number format and known Indonesia
   assert.equal(wrong.uncited, 1);
   assert.deepEqual(wrong.unsupported, [2]);
 });
+
+test("page check accepts an outlet name found in a cited address", () => {
+  const basis = [{ source: 1, text: "Lima warga tewas dalam peristiwa itu." }];
+  assert.equal(checkPage("Menurut Kompas, lima warga tewas [1].", basis, 1, ["https://nasional.kompas.com/read/2020/x"]).ok, true);
+  assert.deepEqual(checkPage("Menurut Tempo, lima warga tewas [1].", basis, 1, ["https://nasional.kompas.com/read/2020/x"]).unknown, ["Tempo"]);
+});

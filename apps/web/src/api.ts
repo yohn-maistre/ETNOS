@@ -123,7 +123,9 @@ export type WikiPage = {
     author_id: string
     reviewer_id: string
     author?: Pick<Actor, 'id' | 'name' | 'kind'>
-    reviewer?: Pick<Actor, 'id' | 'name' | 'kind'>
+    reviewer?: Pick<Actor, 'id' | 'name' | 'kind'> | null
+    /** 'unreviewed' when the page went live before review. */
+    review?: 'reviewed' | 'unreviewed' | 'reverted'
     created: number
   } | null
 }

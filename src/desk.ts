@@ -192,8 +192,10 @@ export type PageBasis = { source: number; text: string };
 export type PageCheck = { ok: boolean; unknown: string[]; uncited: number; unsupported: number[] };
 /** A wiki page cites sources by number. Each cited source must have supplied a quote,
  * and names and numbers in the prose must appear in the quotes. Headings are skipped. */
-export function checkPage(page: string, basis: PageBasis[], sources: number): PageCheck {
-  const known = fold(basis.map((b) => b.text).join(" ")),
+export function checkPage(page: string, basis: PageBasis[], sources: number, citations: string[] = []): PageCheck {
+  // Outlet names may come from the cited address (BBC, Kompas, Jubi) as well as the sentences.
+  const hosts = citations.map((c) => { try { return new URL(c).hostname.replace(/^www\./, ""); } catch { return ""; } }).join(" ");
+  const known = fold(basis.map((b) => b.text).join(" ") + " " + hosts),
     backed = new Set(basis.map((b) => b.source)),
     unknown = new Set<string>(),
     unsupported = new Set<number>(),

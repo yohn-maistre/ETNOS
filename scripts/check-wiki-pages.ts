@@ -12,7 +12,7 @@ for (const file of process.argv.slice(2)) {
     if (!page.basis.length || page.basis.length > 80) problems.push("1 to 80 basis sentences");
     if (page.basis.some((b) => b.text.length > 700)) problems.push("basis sentence over 700 characters");
     if (page.text.length > 20000) problems.push("text over 20000 characters");
-    const check = checkPage(page.text, page.basis, page.citations.length);
+    const check = checkPage(page.text, page.basis, page.citations.length, page.citations);
     if (check.unknown.length) problems.push("not in basis: " + check.unknown.join(", "));
     if (check.uncited) problems.push(check.uncited + " paragraph(s) without citation");
     if (check.unsupported.length) problems.push("citation without basis: " + check.unsupported.join(", "));

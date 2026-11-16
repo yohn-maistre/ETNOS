@@ -36,6 +36,13 @@ function plainWikiText(text:string){return text.replace(/```[\s\S]*?```/g,' ').r
 export class Wiki {
   private store:StrataCore
   constructor(store:StrataCore) {this.store=store}
+  /** Who reviewed a revision: null while a live revision waits for review or after it was reverted. */
+  private reviewerOf(revisionId:string,reviewerId:string){
+    const r=this.store.get<{state:string;reviewer_id:string|null}>('SELECT state,reviewer_id FROM wiki_reviews WHERE revision_id=?',revisionId)
+    if(!r)return this.attribution(reviewerId)
+    return r.state==='reviewed'&&r.reviewer_id?this.attribution(r.reviewer_id):null
+  }
+  private reviewStateOf(revisionId:string){return this.store.get<{state:string}>('SELECT state FROM wiki_reviews WHERE revision_id=?',revisionId)?.state??'reviewed'}
   private attribution(actorId:string){const actor=this.store.actor(actorId);return {id:actor.id,name:actor.name,kind:actor.kind}}
   private human(actorId:string) {if(this.store.actor(actorId).kind!=='human')throw new Fault(403,'Human knowledge contributor required; posting mandates do not authorize Wiki changes')}
   private authorizeProposal(actorId:string,communityId:string,mandateId?:string|null,consume=true){
@@ -116,7 +123,7 @@ export class Wiki {
       if(basis!==undefined){
         if(!Array.isArray(basis)||basis.length<1||basis.length>80)throw new Fault(400,'Invalid basis')
         const quotes=basis.map(b=>{if(!b||!Number.isInteger(b.source)||b.source<1||b.source>sources.length)throw new Fault(400,'Basis must name a cited source');return {source:b.source,text:text(b.text,700)}})
-        stored=JSON.stringify({quotes,checks:checkPage(draft.text,quotes,sources.length)})
+        stored=JSON.stringify({quotes,checks:checkPage(draft.text,quotes,sources.length,sources)})
       }
       const id=randomUUID()
       s.run('INSERT INTO wiki_pages(id,community_id,title,created,draft) VALUES(?,?,?,?,1)',id,communityId,name,s.clock())
@@ -130,7 +137,7 @@ export class Wiki {
   setPolicy(actorId:string,communityId:string,contributor:string|null,reviewer:string|null){
     return this.store.tx(()=>{const s=this.store;s.requireSteward(actorId,communityId);this.human(actorId)
       for(const group of [contributor,reviewer])if(group&&!s.get("SELECT 1 FROM group_members WHERE group_id=? AND actor_id=? AND active=1 AND role IN ('owner','steward')",group,actorId))throw new Fault(403,'Group steward required to bind an editorial group')
-      s.run('INSERT INTO wiki_policies VALUES(?,?,?) ON CONFLICT(community_id) DO UPDATE SET contributor_group_id=excluded.contributor_group_id,reviewer_group_id=excluded.reviewer_group_id',communityId,contributor,reviewer);s.audit(actorId,'wiki.policy',communityId);return this.policy(actorId,communityId)})
+      s.run('INSERT INTO wiki_policies(community_id,contributor_group_id,reviewer_group_id) VALUES(?,?,?) ON CONFLICT(community_id) DO UPDATE SET contributor_group_id=excluded.contributor_group_id,reviewer_group_id=excluded.reviewer_group_id',communityId,contributor,reviewer);s.audit(actorId,'wiki.policy',communityId);return this.policy(actorId,communityId)})
   }
   private reviewer(actorId:string,communityId:string){const s=this.store;s.requireSteward(actorId,communityId);this.human(actorId);const group=this.policy(actorId,communityId).reviewer_group_id;if(group&&!s.get('SELECT 1 FROM group_members WHERE group_id=? AND actor_id=? AND active=1',group,actorId))throw new Fault(403,'Current reviewer group membership required')}
   /** The period a page is about, as years (negative is BCE). Not when it was written. */
@@ -158,7 +165,10 @@ export class Wiki {
     const revision=page.revision_id?this.store.get<Revision>('SELECT * FROM wiki_revisions WHERE id=?',page.revision_id):null
     if(!revision)return {...page,revision:null,time:this.timeOf(page.id)}
     const {proposal_id:_privateProposal,...accepted}=revision
-    return {...page,time:this.timeOf(page.id),revision:{...accepted,authorKind:this.store.actor(revision.author_id).kind,author:this.attribution(revision.author_id),reviewer:this.attribution(revision.reviewer_id),citations:JSON.parse(revision.citations) as string[]}}
+    const review=this.store.get<{state:string;reviewer_id:string|null}>('SELECT state,reviewer_id FROM wiki_reviews WHERE revision_id=?',revision.id)
+    // A live revision names no reviewer until a person has reviewed it.
+    const reviewer=review?(review.reviewer_id&&review.state==='reviewed'?this.attribution(review.reviewer_id):null):this.attribution(revision.reviewer_id)
+    return {...page,time:this.timeOf(page.id),revision:{...accepted,reviewer_id:reviewer?.id??null,review:review?.state??'reviewed',authorKind:this.store.actor(revision.author_id).kind,author:this.attribution(revision.author_id),reviewer,citations:JSON.parse(revision.citations) as string[]}}
   }
   list(communityId:string,actorId?:string) {
     const s=this.store
@@ -171,7 +181,7 @@ export class Wiki {
     return this.store.all<{id:string;community_id:string;title:string;revision_id:string;text:string;created:number;language:string;citations:string;author_id:string;reviewer_id:string}>("SELECT w.id,w.community_id,w.title,w.revision_id,r.text,r.created,r.language,r.citations,r.author_id,r.reviewer_id FROM wiki_pages w JOIN communities c ON c.id=w.community_id JOIN wiki_revisions r ON r.id=w.revision_id AND r.page_id=w.id WHERE c.visibility='public' AND w.draft=0 ORDER BY r.created DESC,w.id DESC LIMIT 100").map(row=>{
       const {text,created,citations,author_id,reviewer_id,...page}=row,cited=JSON.parse(citations) as string[]
       const excerpt=plainWikiText(text).slice(0,360)
-      return {...page,excerpt,updated:created,citationCount:cited.length,newsCitations:cited.filter(url=>newsStoryId(url,this.store.base)).length,sectionCount:(text.match(/^#{1,4}\s+/gm)??[]).length,authorKind:this.store.actor(author_id).kind,reviewer:this.attribution(reviewer_id)}
+      return {...page,excerpt,updated:created,citationCount:cited.length,newsCitations:cited.filter(url=>newsStoryId(url,this.store.base)).length,sectionCount:(text.match(/^#{1,4}\s+/gm)??[]).length,authorKind:this.store.actor(author_id).kind,reviewer:this.reviewerOf(row.revision_id,reviewer_id),review:this.reviewStateOf(row.revision_id)}
     })
   }
   /** Resident evidence lookup over current accepted revisions of public pages
@@ -203,7 +213,65 @@ export class Wiki {
       const digest=createHash('sha256').update(canonical(content)).digest('hex'),id=randomUUID()
       s.run("INSERT INTO wiki_proposals(id,page_id,author_id,base_revision_id,text,citations,language,perspective,digest,state,created,editorial_mandate_id) VALUES(?,?,?,?,?,?,?,?,?,'pending',?,?)",id,pageId,actorId,baseRevision,content.text,JSON.stringify(content.citations),content.language,content.perspective,digest,s.clock(),editorialMandateId??null)
       s.audit(actorId,'wiki.propose',pageId)
+      const revisionId=this.publishLive(id,page)
+      if(revisionId)return {id,digest,state:'accepted' as const,live:true,revisionId,authorKind:s.actor(actorId).kind}
       return {id,digest,state:'pending',authorKind:s.actor(actorId).kind}
+    })
+  }
+  /** Whether a public community publishes wiki changes before review. Off by default. */
+  isLive(communityId:string){return !!this.store.get<{live:number}>('SELECT live FROM wiki_policies WHERE community_id=?',communityId)?.live}
+  setLive(actorId:string,communityId:string,live:boolean){
+    return this.store.tx(()=>{const s=this.store;s.requireSteward(actorId,communityId);this.human(actorId)
+      if(typeof live!=='boolean')throw new Fault(400,'Invalid setting')
+      if(s.community(communityId).visibility!=='public')throw new Fault(400,'Only public communities publish before review')
+      s.run('INSERT INTO wiki_policies(community_id,contributor_group_id,reviewer_group_id,live) VALUES(?,NULL,NULL,?) ON CONFLICT(community_id) DO UPDATE SET live=excluded.live',communityId,live?1:0)
+      s.audit(actorId,live?'wiki.live.on':'wiki.live.off',communityId);return {live}})
+  }
+  /** Publish a just-written proposal at once when its community publishes live.
+   * The revision is marked unreviewed; a reviewer later marks it reviewed or reverts it.
+   * Proposals that rest on working-knowledge notes keep the review-first path. */
+  private publishLive(proposalId:string,page:Page){
+    const s=this.store
+    if(!this.isLive(page.community_id))return null
+    const proposal=s.get<Proposal>('SELECT * FROM wiki_proposals WHERE id=?',proposalId)!
+    if(page.revision_id!==proposal.base_revision_id)return null
+    if(s.get('SELECT 1 FROM knowledge_notes WHERE wiki_page_id=?',page.id))return null
+    const id=randomUUID()
+    s.run('INSERT INTO wiki_revisions VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',id,page.id,page.revision_id,proposalId,proposal.author_id,proposal.author_id,proposal.text,proposal.citations,proposal.language,proposal.perspective,proposal.digest,s.clock())
+    s.run('UPDATE wiki_pages SET revision_id=?,draft=0 WHERE id=?',id,page.id)
+    s.run("UPDATE wiki_proposals SET state='accepted',decided=? WHERE id=?",s.clock(),proposalId)
+    s.run("INSERT INTO wiki_reviews(revision_id,page_id,community_id,state,created) VALUES(?,?,?,'unreviewed',?)",id,page.id,page.community_id,s.clock())
+    s.invalidatePublicContext(page.community_id)
+    s.audit(proposal.author_id,'wiki.publish',page.id)
+    return id
+  }
+  /** Revisions published before review, still waiting, newest first. Reviewers only. */
+  unreviewed(actorId:string,communityId:string){
+    this.reviewer(actorId,communityId)
+    return this.store.all<{revision_id:string;page_id:string;title:string;author_id:string;created:number;current:number}>("SELECT r.revision_id,r.page_id,w.title,v.author_id,r.created,(w.revision_id=r.revision_id) current FROM wiki_reviews r JOIN wiki_pages w ON w.id=r.page_id JOIN wiki_revisions v ON v.id=r.revision_id WHERE r.community_id=? AND r.state='unreviewed' ORDER BY r.created DESC LIMIT 200",communityId)
+      .map(r=>({...r,current:!!r.current,author:this.attribution(r.author_id)}))
+  }
+  /** Mark a live revision reviewed, or revert it. Reverting restores the previous revision,
+   * or hides a page that had none. */
+  review(actorId:string,revisionId:string,accept:boolean){
+    const s=this.store
+    return s.tx(()=>{
+      const r=s.get<{revision_id:string;page_id:string;community_id:string;state:string}>('SELECT * FROM wiki_reviews WHERE revision_id=?',revisionId)
+      if(!r)throw new Fault(404,'Not found')
+      this.reviewer(actorId,r.community_id)
+      if(r.state!=='unreviewed')throw new Fault(409,'Already reviewed')
+      if(typeof accept!=='boolean')throw new Fault(400,'Invalid review')
+      if(!accept){
+        const page=s.get<Page>('SELECT * FROM wiki_pages WHERE id=?',r.page_id)!
+        if(page.revision_id===revisionId){
+          const parent=s.get<{parent_id:string|null}>('SELECT parent_id FROM wiki_revisions WHERE id=?',revisionId)!.parent_id
+          s.run('UPDATE wiki_pages SET revision_id=?,draft=? WHERE id=?',parent,parent?0:1,page.id)
+        }
+        s.invalidatePublicContext(r.community_id)
+      }
+      s.run('UPDATE wiki_reviews SET state=?,reviewer_id=?,decided=? WHERE revision_id=?',accept?'reviewed':'reverted',actorId,s.clock(),revisionId)
+      s.audit(actorId,accept?'wiki.review':'wiki.revert',r.page_id)
+      return {state:accept?'reviewed':'reverted'}
     })
   }
   proposal(actorId:string,proposalId:string) {
@@ -267,7 +335,7 @@ export class Wiki {
     if(revisions.length>1)steps.push({kind:'earlier',at:revisions[0].created,label:(revisions.length-1)+' revisi diterima sebelumnya',actor:this.attribution(revisions[0].author_id)})
     steps.push({kind:'proposed',at:null,label:'Ditulis',actor:this.attribution(current.author_id)})
     const contexts=s.all<{id:string;slug:string;title:string}>('SELECT c.id,c.slug,c.title FROM record_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.record_kind=? AND l.record_id=? AND c.active=1 ORDER BY c.title LIMIT 10','wiki',page.id)
-    steps.push({kind:'page',at:current.created,label:page.title,actor:this.attribution(current.reviewer_id),href:'/wiki/'+page.id,contexts:contexts.map(({slug,title})=>({slug,title}))})
+    steps.push({kind:'page',at:current.created,label:page.title,actor:this.reviewerOf(current.id,current.reviewer_id)??this.attribution(current.author_id),href:'/wiki/'+page.id,contexts:contexts.map(({slug,title})=>({slug,title}))})
     if(contexts.length){
       const marks=contexts.map(()=>'?').join(',')
       for(const w of s.all<{id:string;title:string;state:string;updated:number;sponsor:string}>(`SELECT w.id,w.title,w.state,w.updated,g.title sponsor FROM public_work w JOIN groups g ON g.id=w.group_id JOIN communities c ON c.id=w.community_id WHERE g.visibility='public' AND c.visibility='public' AND w.state IN ('proposed','adopted','active','blocked') AND EXISTS(SELECT 1 FROM record_contexts l WHERE l.record_kind='work' AND l.record_id=w.id AND l.context_id IN (${marks})) ORDER BY w.updated DESC,w.id LIMIT 3`,...contexts.map(c=>c.id)))
@@ -286,6 +354,6 @@ export class Wiki {
   }
   history(pageId:string) {
     this.page(pageId)
-    return this.store.all<Omit<Revision,'text'|'citations'|'proposal_id'>>('SELECT id,page_id,parent_id,author_id,reviewer_id,language,perspective,digest,created FROM wiki_revisions WHERE page_id=? ORDER BY created DESC,id DESC LIMIT 100',pageId).map(r=>({...r,author:this.attribution(r.author_id),reviewer:this.attribution(r.reviewer_id)}))
+    return this.store.all<Omit<Revision,'text'|'citations'|'proposal_id'>>('SELECT id,page_id,parent_id,author_id,reviewer_id,language,perspective,digest,created FROM wiki_revisions WHERE page_id=? ORDER BY created DESC,id DESC LIMIT 100',pageId).map(r=>({...r,author:this.attribution(r.author_id),reviewer:this.reviewerOf(r.id,r.reviewer_id),review:this.reviewStateOf(r.id)}))
   }
 }

@@ -406,6 +406,10 @@ CREATE INDEX desk_draft_queue ON desk_drafts(community_id,created);
 ALTER TABLE wiki_proposals ADD COLUMN basis TEXT;
 `,`
 CREATE TABLE agent_switches(agent_id TEXT NOT NULL REFERENCES actors(id),community_id TEXT NOT NULL REFERENCES communities(id),issuer_id TEXT NOT NULL REFERENCES actors(id),posts INTEGER NOT NULL,wiki INTEGER NOT NULL,daily_limit INTEGER NOT NULL,enabled INTEGER NOT NULL,updated INTEGER NOT NULL,PRIMARY KEY(agent_id,community_id));
+`,`
+ALTER TABLE wiki_policies ADD COLUMN live INTEGER NOT NULL DEFAULT 0;
+CREATE TABLE wiki_reviews(revision_id TEXT PRIMARY KEY REFERENCES wiki_revisions(id),page_id TEXT NOT NULL REFERENCES wiki_pages(id),community_id TEXT NOT NULL REFERENCES communities(id),state TEXT NOT NULL CHECK(state IN ('unreviewed','reviewed','reverted')),reviewer_id TEXT REFERENCES actors(id),created INTEGER NOT NULL,decided INTEGER);
+CREATE INDEX wiki_review_queue ON wiki_reviews(community_id,state,created);
 `]
 
 export const schemaVersion=migrations.length

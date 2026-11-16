@@ -47,6 +47,7 @@
     onCreate,
     onPropose,
     onDecide,
+    onReview,
     busy,
   }: {
     page: WikiPage | null
@@ -58,7 +59,8 @@
       perspective: string
       language: string
       author?: { id: string; name: string; kind: string }
-      reviewer?: { id: string; name: string; kind: string }
+      reviewer?: { id: string; name: string; kind: string } | null
+      review?: string
     }[]
     communities: Community[]
     memberships: Membership[]
@@ -66,6 +68,7 @@
     onCreate: () => void
     onPropose: () => void
     onDecide: (p: Proposal, accept: boolean) => void
+    onReview: (revisionId: string, accept: boolean) => void
     busy: boolean
   } = $props()
   let query = $state(''),
@@ -179,13 +182,19 @@
             {#if page.revision.author?.kind === 'agent'}
               · Agen{/if}
           </span>
-          <span>
+          {#if page.revision.review === 'unreviewed'}<span class="wiki-unreviewed">
+              Belum ditinjau · terbit {relativeDate(page.revision.created)}
+            </span>{:else}<span>
             Ditinjau oleh <strong>
               {page.revision.reviewer?.name ?? 'Pengelola'}
             </strong>
             · {relativeDate(page.revision.created)}
-          </span>
-        </div>{/if}
+          </span>{/if}
+        </div>
+        {#if page.revision.review === 'unreviewed' && steward}<div class="wiki-review-live">
+            <Button variant="outline" disabled={busy} onclick={() => onReview(page.revision!.id, true)}>Tandai sudah ditinjau</Button>
+            <Button variant="ghost" disabled={busy} onclick={() => onReview(page.revision!.id, false)}>Kembalikan</Button>
+          </div>{/if}{/if}
       <div class="wiki-actions">
         {#if headings.length}<details class="wiki-contents">
             <summary>Dalam halaman <ChevronDown size={14} /></summary>
@@ -211,7 +220,7 @@
                     {rev.author?.name ?? 'Kontributor'}{rev.author?.kind ===
                     'agent'
                       ? ' · Agen'
-                      : ''} · ditinjau {rev.reviewer?.name ?? 'pengelola'}
+                      : ''} · {rev.review === 'unreviewed' ? 'belum ditinjau' : rev.review === 'reverted' ? 'dikembalikan' : 'ditinjau ' + (rev.reviewer?.name ?? 'pengelola')}
                   </small>{/if}
               </p>{/each}{#if !history.length}<p>
                 Belum ada revisi diterima.

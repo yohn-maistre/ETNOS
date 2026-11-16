@@ -1360,3 +1360,27 @@ html::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--foreground)
   margin-right: 6px;
   font-variant-numeric: tabular-nums;
 }
+
+.wiki-unreviewed {
+  color: var(--muted-foreground);
+}
+.wiki-review-live {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.wiki-live-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+}
+.wiki-live-setting span {
+  display: grid;
+  gap: 2px;
+}
+.wiki-live-setting small {
+  color: var(--muted-foreground);
+}

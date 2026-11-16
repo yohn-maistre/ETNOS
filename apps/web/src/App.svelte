@@ -840,6 +840,13 @@
       nextCursor = page.nextCursor
     })
   }
+  async function reviewRevision(revisionId: string, accept: boolean) {
+    await mutate(async () => {
+      await request(`/v1/wiki-revisions/${revisionId}/review`, { accept })
+      await load()
+      notify(accept ? 'Ditandai sudah ditinjau.' : 'Perubahan dikembalikan.')
+    })
+  }
   async function decide(p: Proposal, accept: boolean) {
     await mutate(async () => {
       await request(`/v1/wiki-proposals/${p.id}/decide`, {
@@ -1132,6 +1139,7 @@
             open('proposal')
           }}
           onDecide={decide}
+          onReview={reviewRevision}
         />{/await}{/if}
   {:else if parts[0] === 'communities' && parts[1]}
     {#if community}<div class="cx-detail-head community-profile">

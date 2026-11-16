@@ -126,7 +126,7 @@ test("wiki trail and gaps project only accepted public records; drafts, proposal
     const row = wiki.discover().find((x) => x.id === page.id)!;
     assert.equal(row.newsCitations, 2);
     assert.equal(row.authorKind, "agent");
-    assert.equal(row.reviewer.kind, "human");
+    assert.equal(row.reviewer!.kind, "human");
   } finally {
     s.close();
   }
