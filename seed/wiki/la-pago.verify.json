@@ -1,0 +1,256 @@
+{
+ "file": "seed/wiki/la-pago.json",
+ "checked": "2026-11-16",
+ "sources": [
+  {
+   "page": "la-pago",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=La%20Pago",
+   "ok": 4,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "la-pago",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Highland%20Papua",
+   "ok": 11,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "jayawijaya",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Jayawijaya",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "jayawijaya",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Jayawijaya%20Regency",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "lanny-jaya",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Lanny%20Jaya",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "lanny-jaya",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Lanny%20Jaya%20Regency",
+   "ok": 4,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mamberamo-tengah",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Mamberamo%20Tengah",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "mamberamo-tengah",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Mamberamo%20Tengah%20Regency",
+   "ok": 4,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "nduga",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Nduga",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "nduga",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Nduga%20Regency",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "pegunungan-bintang",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Pegunungan%20Bintang",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "pegunungan-bintang",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Pegunungan%20Bintang%20Regency",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "puncak",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Puncak",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "puncak",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Puncak%20Regency",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "puncak-jaya",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Puncak%20Jaya",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "puncak-jaya",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Puncak%20Jaya%20Regency",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "tolikara",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Tolikara",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "tolikara",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Tolikara%20Regency",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yahukimo",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Yahukimo",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yahukimo",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Yahukimo%20Regency",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yalimo",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Yalimo",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yalimo",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Yalimo%20Regency",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dani",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Dani",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dani",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Dani%20people",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dani",
+   "url": "https://ccsenet.org/journal/index.php/jas/article/download/55458/30650",
+   "ok": 0,
+   "bad": [],
+   "error": "PDF: text not extracted"
+  },
+  {
+   "page": "dani-languages",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Dani%20languages",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dani-languages",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Bahasa%20Dani",
+   "ok": 4,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "dani-languages",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Dani%20people",
+   "ok": 1,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "lani",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Lani",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "lani",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Lani%20people",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "lani-language",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Bahasa%20Lani",
+   "ok": 2,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "lani-language",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Western%20Dani%20language",
+   "ok": 0,
+   "bad": [],
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": "lani-language",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Lani",
+   "ok": 2,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yali",
+   "url": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Yali%20people",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yali",
+   "url": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Yali",
+   "ok": 4,
+   "bad": [],
+   "error": null
+  }
+ ],
+ "totals": {
+  "ok": 199,
+  "bad": 0,
+  "unreachable": 7
+ }
+}
