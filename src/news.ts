@@ -4,7 +4,7 @@ export type NewsItem={id:string;title:string;url:string;publishedAt:string|null;
 export type NewsFeed={source:{name:string;url:string};items:NewsItem[];available:boolean;selection?:{desk:string;place:string;total:number|null};pagination?:{page:number;pageSize:number;hasMore:boolean;nextPage:number|null};placeOptions?:{slug:string;name:string}[]}
 export type NewsStory=NewsItem & {keyPoints:string[];sources:{title:string;url:string;publisher:string;summary:string}[]}
 const source={name:'West Papua Watch',url:'https://westpapua.watch/news/'}
-const headers={'cache-control':'public, max-age=60, s-maxage=300','x-content-type-options':'nosniff'}
+const headers={'cache-control':'public, max-age=300, s-maxage=1800','x-content-type-options':'nosniff'}
 const unavailable=(state='unavailable',status=503)=>Response.json({source,items:[],available:false},{status,headers:{...headers,'cache-control':'no-store','x-etnos-news-state':state}})
 const text=(x:unknown,max=300)=>typeof x==='string'?x.trim().slice(0,max):''
 const date=(x:unknown)=>typeof x==='string'&&Number.isFinite(Date.parse(x))?new Date(x).toISOString():null
