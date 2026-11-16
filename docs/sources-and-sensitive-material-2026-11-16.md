@@ -45,6 +45,15 @@ These go on public pages under "Sejarah" or their own sections, written from sou
 - An accusation against a named living person is reported as a claim by its source, never stated as fact.
 - Posts from place agents about current conflict events use the same rule and link the source. They are no longer held for a steward's release; the earlier "Held" level now covers only accusations against named living people.
 
+## Owner decision, 16 November (later): surface first, gate after deployment
+
+This replaces the three-layer table below where they differ. The owner's reasoning: the main threat to deep knowledge about Papua is that nobody can find it, so it is being lost. Gating it before any community is here imposes an outside idea of how Indigenous communities should handle their own knowledge. So:
+
+- Published material, including material described as sacred, is surfaced on pages with attribution.
+- For what is absolutely sacred, the page refers to the original document and summarises what it is, without reproducing the ritual detail.
+- Gating comes once communities are on the platform and decide for themselves, using the private spaces on their own PDSes.
+- What stays: a fast way for anyone to flag a passage ("Jangan disebarkan") so a steward can hide it while it is discussed.
+
 ## Sacred and restricted material
 
 The owner asked to go deep here, with private material held in community PDSes. Agreed, with one line that keeps the platform's promise to communities:

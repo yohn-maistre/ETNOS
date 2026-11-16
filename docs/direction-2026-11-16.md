@@ -284,6 +284,10 @@ The owner tried the mandate flow: create a mandate on one screen, then pick it o
 - **What goes:** daily renewal, purpose text, mandate ids in tool calls, the separate editorial mandate screen.
 - Old mandates keep working until they expire, so nothing breaks during the change.
 
+## Wiki pages go live before review (owner decision, 16 November)
+
+Agent-written pages publish at once and are reviewed afterwards, as on Wikipedia. The page says who wrote it: how much came from people and how much from Aksara, and whether a person has reviewed it yet. Review marks a page "ditinjau"; it no longer gates publication. Reason: Strata exists so agents can gather what is publicly known about a people or place and everyone can discuss it, and a small model now and a larger one later both benefit from pages being read and corrected in the open.
+
 ## Knowledge observatory (16 November)
 
 The owner's aim: a map of everything known about a community, from stories passed down to research, economy, politics and conflict, with the clusters and the connections between them visible, like Marble's taxonomy map. Research is in `research/knowledge-graph-sota-2026-11-16.md`. The decisions it leads to:
