@@ -19,9 +19,12 @@ export function workerDecisions(env:Cloudflare.Env):DecisionProvider|undefined{
 export function workerDesk(env:Cloudflare.Env):DeskModel|undefined{
  if(!env.AI)return undefined
  return async(messages,maxTokens)=>{
-  const raw=await (env.AI.run as (model:string,input:unknown,options?:unknown)=>Promise<unknown>)(deskModel,{messages,max_tokens:Math.min(maxTokens,2000),temperature:0.2},{signal:AbortSignal.timeout(45000),tags:['etnos:desk']}) as {response?:unknown;choices?:{message?:{content?:unknown}}[];usage?:{prompt_tokens?:number;completion_tokens?:number}}
+  type Reply={response?:unknown;choices?:{message?:{content?:unknown};finish_reason?:unknown}[];usage?:{prompt_tokens?:number;completion_tokens?:number}}
+  let raw:Reply
+  try{raw=await (env.AI.run as (model:string,input:unknown,options?:unknown)=>Promise<unknown>)(deskModel,{messages,max_completion_tokens:Math.min(maxTokens,2000),temperature:0.2,chat_template_kwargs:{enable_thinking:false}},{signal:AbortSignal.timeout(90000)}) as Reply}
+  catch(error){throw Error('model-call: '+(error instanceof Error?error.name+' '+error.message:'unknown').replace(/[^\w .:,()@/-]/g,' ').slice(0,160))}
   const text=typeof raw?.response==='string'?raw.response:typeof raw?.choices?.[0]?.message?.content==='string'?raw.choices[0].message.content:''
-  if(!text.trim())throw Error('Empty desk model response')
+  if(!text.trim())throw Error('model-empty: keys '+Object.keys(raw??{}).join(',').slice(0,80)+' finish '+String(raw?.choices?.[0]?.finish_reason??'').slice(0,20))
   return {text,inputTokens:Number(raw.usage?.prompt_tokens??0),outputTokens:Number(raw.usage?.completion_tokens??0)}
  }
 }

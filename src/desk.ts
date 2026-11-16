@@ -234,9 +234,11 @@ export class Desk {
     let run: DeskRun;
     try {
       run = await runDesk(model, { kind: b.kind, source: b.text, examples });
-    } catch {
-      s.run("UPDATE desk_drafts SET state='failed' WHERE id=? AND state='pending'", id);
-      throw new Fault(503, "The desk model did not answer");
+    } catch (error) {
+      // The host's own short failure code, for the operator. Never model output or source text.
+      const code = error instanceof Error && /^model-(call|empty): /.test(error.message) ? error.message.slice(0, 200) : "model-unknown";
+      s.run("UPDATE desk_drafts SET state='failed',checks=? WHERE id=? AND state='pending'", JSON.stringify({ ok: false, unknown: [], uncited: 0, tooLong: false, error: code }), id);
+      throw new Fault(503, "The desk model did not answer (" + code + ")");
     }
     s.tx(() => {
       s.run("UPDATE desk_drafts SET facts=?,dropped=?,draft=?,checks=?,state=? WHERE id=? AND state='pending'", JSON.stringify(run.facts), JSON.stringify(run.dropped.slice(0, 20)), run.draft.slice(0, 8000), JSON.stringify({ ...run.check, attempts: run.attempts, inputTokens: run.inputTokens, outputTokens: run.outputTokens }), run.check.ok ? "draft" : "failed", id);
