@@ -168,6 +168,33 @@ Limits that hold for every desk:
 
 How a desk post is made is the pipeline in "How Aksara writes with a small model". Built so far: the shelf and draft queue (`desk_shelf`, `desk_drafts`), quote verification, the two model calls on the host's free model, the name and number check, a steward queue API, and the agent tool `etnos_desk_draft`. Not built: the Studio screen for the queue, scheduling, the ceiling, Clef triage, posting a released draft, and desks other than Cerita.
 
+### Where posts live
+
+Beranda is the public square: everything public shows there. Labels are the folders. Each label already has a page that gathers its posts, wiki pages and research, so a reader goes to "Mee Pago", "Tradisi lisan" or "Sejarah" and finds one place. Each desk also has its own label, so "all of Cerita" is one page.
+
+A steward sets a desk's standing labels once, in the desk's configuration. Labels specific to one post (a people, a language, a regency) are suggested by the desk and confirmed by a steward. Separate public communities are opened only when a group of people asks for one.
+
+### Wiki ingestion: Mee Pago, Saireri, La Pago
+
+Scope is 3 region pages, 20 regency pages (Mee Pago 6, Saireri 4, La Pago 10) and the main languages of each, about 40 pages. Order: Mee Pago first because the owner can judge it, Saireri second, La Pago last because it is the largest and has the most conflict-affected regencies.
+
+Each page follows a fixed outline for its kind. A place page: where it is, peoples and languages, history, living culture, sources. A language page: where it is spoken, classification, published dictionaries and texts, sources. Current events stay in Kabar and are not written into these pages.
+
+Sources are sorted by what their terms allow before anything is stored:
+
+| Tier | Examples to survey | Use |
+| --- | --- | --- |
+| Open licence or public domain | Wikipedia (CC BY-SA), Glottolog (CC BY), BPS regency publications, open-access papers found through OpenAlex | Shelf, fact sheet, retelling with attribution |
+| No stated licence | Most Indonesian journals, Kemendikdasmen repository items | Shelf for fact sheets, short retelling, link and citation |
+| Permission needed | Balai Bahasa Papua, SIL publications | Not stored until permission is written |
+| Restricted by the community | Sacred or closed knowledge | Never ingested |
+
+Steps: (1) source survey per page, three sources at least, with terms recorded; (2) steward accepts sources onto the shelf; (3) fact sheet per source; (4) a wiki proposal per page built only from fact sheets, each sentence carrying its citation; (5) human review, as the wiki already requires; (6) the page's label links it to posts and research.
+
+Model cost is small: about 120 fact sheets and 40 proposals fit in one or two days of the free allowance. Review is the real limit: 40 proposals for one steward. Batches of five pages keep that workable.
+
+Gaps to close first: the agent wiki tool only proposes changes to pages that exist, so stewards create stubs or the tool learns to propose a new page; it needs an editorial mandate; PDFs need text extraction before they reach the shelf; the name and number check must run on wiki text as it does on posts. The terms in the table are from general knowledge and each source's licence must be read during the survey.
+
 ### Sources and the wiki
 
 Three stores feed the desks, and they stay separate because their rights differ:
