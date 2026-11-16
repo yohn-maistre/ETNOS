@@ -2,7 +2,7 @@ import { DurableObject,WorkerEntrypoint } from 'cloudflare:workers'
 import { CloudflareDatabase } from './cloudflare-database.ts'
 import { StrataCore, Fault } from './core.ts'
 import { api, json,body } from './api.ts'
-import {workerDecisions} from './worker-decisions.ts'
+import {workerDecisions,workerDesk} from './worker-decisions.ts'
 import {AgentAccess} from './agent-access.ts'
 import {agentRoutes} from './agent-mcp.ts'
 import {BrowserAuth} from './oauth.ts'
@@ -34,7 +34,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
             stewardDid:env.STRATA_STEWARD_DID,allowedHosts:env.STRATA_OAUTH_HOSTS.split(',').map(x=>x.trim()).filter(Boolean),
             collection:env.STRATA_COLLECTION,publishingEnabled:env.STRATA_PUBLISHING_ENABLED==='true',
             enrollmentMode,clientName:env.STRATA_CLIENT_NAME})
-          const access=new AgentAccess(core,{stewardDid:env.STRATA_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access)
+          const access=new AgentAccess(core,{stewardDid:env.STRATA_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access,{desk:workerDesk(env)})
           this.resident=new Resident(core,access,residentProvider)
           this.discovery=acquire?new Discovery(core,acquire):undefined
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)

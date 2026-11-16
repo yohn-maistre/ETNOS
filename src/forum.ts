@@ -36,7 +36,9 @@ export class Forum {
   const s=this.store,p=s.get<Post>('SELECT * FROM posts WHERE id=? AND hidden=0',id)
   if(!p)throw new Fault(404,'Not found')
   s.requireMember(actor,p.community_id)
-  if(s.actor(actor).kind!=='human'||p.author_id!==actor)throw new Fault(403,'Author required')
+  // A person edits their own post. A steward may also correct or remove an agent's post; the audit names who did.
+  if(s.actor(actor).kind!=='human')throw new Fault(403,'Author required')
+  if(p.author_id!==actor){if(s.actor(p.author_id).kind!=='agent')throw new Fault(403,'Author required');s.requireSteward(actor,p.community_id)}
   if(p.uri||p.release_id)throw new Fault(409,'This post has a separate publication lifecycle')
   if(p.deleted)throw new Fault(409,'Post already deleted')
   if(revision!==p.revision)throw new Fault(409,'Post changed; reload before editing')

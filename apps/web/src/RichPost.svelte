@@ -65,7 +65,7 @@
   role="presentation"
 >
   {#if post.deleted}<p class="post-tombstone">
-      Posting dihapus oleh penulis.
+      Posting dihapus.
     </p>{:else}
     {#if post.content?.warning && !revealed}<div class="content-warning">
         <span>{post.content.warning}</span>

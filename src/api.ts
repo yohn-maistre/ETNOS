@@ -11,6 +11,7 @@ import {PublicWork} from './public-work.ts'
 import {Forum} from './forum.ts'
 import { Media } from './media.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
+import {Desk} from './desk.ts'
 import {AgentAccess} from './agent-access.ts'
 import { capabilities } from './capabilities.ts'
 import {Discovery,type SourceFetcher} from './discovery.ts'
@@ -50,7 +51,7 @@ export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentP
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
-  const decisions=new Decisions(store,options.decisions)
+  const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
@@ -99,6 +100,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/resident/jobs')result=resident.jobs(authenticated(),string(url.searchParams.get('community')))
         else if(parts.length===4&&parts[1]==='resident'&&parts[2]==='jobs')result=resident.job(authenticated(),parts[3])
         else if(path==='/v1/agents')result=agents.list(authenticated())
+        else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='desk')result=desk.list(authenticated(),parts[2])
         else if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth':'local-provisioned-credentials', enrollment:options.authMode==='atproto'?(options.enrollmentMode??'invite'):null, atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
@@ -268,6 +270,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       }
       else if (path === '/v1/posts') result=b.agentMention===undefined?forum.create(caller,b,groups):resident.createMentionPost(caller,b,groups)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='edit')result=forum.edit(caller,parts[2],b)
+      else if(parts.length===5&&parts[1]==='desk'&&parts[2]==='drafts'&&parts[4]==='review'){if(b.state!=='released'&&b.state!=='rejected')throw new Fault(400,'Release or reject');result=desk.review(caller,parts[3],{state:b.state,draft:b.draft as string|undefined})}
+      else if(parts.length===5&&parts[1]==='desk'&&parts[2]==='shelf'&&parts[4]==='withdraw')result=desk.withdraw(caller,parts[3])
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='delete')result=forum.delete(caller,parts[2],b.revision)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='moderate')result=forum.moderate(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='poll')result=forum.poll(caller,parts[2],b.choice)

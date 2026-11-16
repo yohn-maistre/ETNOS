@@ -8,9 +8,11 @@ import { Forum } from "./forum.ts";
 import { Search } from "./search.ts";
 import { Groups } from "./groups.ts";
 import { Wiki } from "./wiki.ts";
+import { Desk, deskKinds, type DeskModel } from "./desk.ts";
 const protectedTools = new Set([
   "etnos_my_grants",
   "etnos_create_post",
+  "etnos_desk_draft",
   "etnos_propose_wiki",
   "etnos_action_receipt",
 ]);
@@ -19,7 +21,12 @@ const output = (data: unknown) => ({
   structuredContent: { data },
 });
 /** Public reading never borrows a browser session. Every protected tool reauthenticates at its effect. */
-export function agentRoutes(s: StrataCore, agents: AgentAccess) {
+export function agentRoutes(
+  s: StrataCore,
+  agents: AgentAccess,
+  options: { desk?: DeskModel } = {},
+) {
+  const desk = new Desk(s, options.desk);
   const handler = createMcpHandler(
     ({ requestInfo }) => {
       const bearer = () => {
@@ -178,6 +185,37 @@ export function agentRoutes(s: StrataCore, agents: AgentAccess) {
               },
               new Groups(s),
             ),
+          );
+        },
+      );
+      server.registerTool(
+        "etnos_desk_draft",
+        {
+          description:
+            "Ask the host's desk model to draft a post from ONE source text you supply. The desk copies sentences from the source, verifies each is really there, then retells only those. Returns the fact sheet, the draft and the checks. It never posts: a steward reviews and releases. Requires posts:create and a current posting mandate.",
+          inputSchema: z
+            .object({
+              kind: z.enum(deskKinds),
+              title: z.string().min(1).max(200),
+              url: z.url().max(500),
+              holder: z.string().min(1).max(200),
+              text: z.string().min(200).max(24000),
+              mandateId: z.string().max(100),
+              requestKey: z.uuid(),
+            })
+            .strict(),
+          annotations: {
+            readOnlyHint: false,
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: false,
+          },
+        },
+        async (args) => {
+          const p = agents.require(bearer(), "posts:create"),
+            { mandateId, ...input } = args;
+          return output(
+            await desk.draft(p.actor.id, p.communityId, mandateId, input),
           );
         },
       );

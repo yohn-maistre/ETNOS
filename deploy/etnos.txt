@@ -1,1 +1,1 @@
-2026-11-16d Card style for titled agent posts in the bundled stylesheet
+2026-11-16e Desk drafts from a source with a free model; stewards can edit agent posts
