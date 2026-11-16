@@ -142,7 +142,9 @@ export function checkDraft(draft: string, facts: DeskFact[]): DeskCheck {
   const paragraphs = draft.split(/\n\s*\n/).filter((p) => p.trim());
   for (const p of paragraphs) {
     const cites = [...p.matchAll(/\[([\d,\s]+)\]/g)].flatMap((m) => m[1]!.split(",").map((n) => Number(n.trim())));
-    if (!cites.length || cites.some((n) => !facts.some((f) => f.n === n))) uncited++;
+    // The closing question to readers states nothing, so it needs no fact.
+    const closing = p === paragraphs[paragraphs.length - 1] && paragraphs.length > 1 && /\?\s*$/.test(p) && p.split(/\s+/).length <= 25;
+    if (!closing && (!cites.length || cites.some((n) => !facts.some((f) => f.n === n)))) uncited++;
     const body = p.replace(/\[[\d,\s]+\]/g, " ");
     for (const sentence of body.split(/(?<=[.!?:])\s+|\n/)) {
       const words = sentence.trim().split(/\s+/);

@@ -137,6 +137,8 @@ Aksara's own reading is a separate, optional paragraph, labelled as a reading an
 
 Free model paths, checked 16 November 2026: Workers AI gives 10,000 neurons a day. Gemma 4 26B costs about 9,000 neurons per million input tokens and 27,000 per million output, so a three-call story job of roughly 12,000 tokens in and 2,400 out is near 175 neurons, about fifty jobs a day. Qwen 3.8 27B on Workers AI costs about seven times more per job. Groq's free plan lists Qwen 3.8 27B at 1,000 requests and 200,000 tokens a day, with 8,000 tokens a minute, so one call must stay small. The default is Gemma 4 26B on Workers AI with no key; a host can add a Groq or other key. Model names and limits change, so the setup reads them from the provider and does not hard-code them.
 
+First live run, 16 November 2026, Gemma 4 26B on the Koyeidaba article: 30 of 30 copied sentences verified, no invented name or number, the whole story in order, 1,920 tokens in and 1,324 out, about 54 neurons. The prose was faithful and flat: one short sentence per fact, source spellings such as "Koyeidaba/Koheidaba" and "(Ekina)" carried over, and one small shift ("people" became "the Mee community"). There were no approved examples yet to set the voice. So the pipeline holds the facts; the writing needs examples, a steward's edit, or a larger model for the retelling call.
+
 Not yet known: how well these models write Papuan Malay and Indonesian storytelling prose, and how they handle Mee words. This needs a test set of ten sources scored by a person before any schedule is turned on.
 
 ## Desks

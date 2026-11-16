@@ -38,6 +38,8 @@ test("a draft may only use names and numbers that the fact sheet contains", () =
   assert.equal(invented.ok, false);
   assert.deepEqual(invented.unknown.sort(), ["1650", "Marek"]);
   assert.equal(checkDraft("People killed Talo.", facts).uncited, 1);
+  assert.ok(checkDraft("People killed Talo. [2]\n\nHow is this story told where you live?", facts).ok, "the closing question needs no citation");
+  assert.equal(checkDraft("People killed Talo. [2]\n\nDid his uncle Marek know?", facts).ok, false, "a closing question cannot carry a new name");
   assert.equal(checkDraft("People killed Talo. [7]", facts).uncited, 1, "a citation must point at a real fact");
 });
 
