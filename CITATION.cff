@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+title: "ETNOS seed dataset: Mee Pago, Saireri and La Pago"
+message: "If you use this dataset, please cite it as below."
+type: dataset
+version: "0.1"
+date-released: "2026-11-16"
+authors:
+  - name: "ETNOS"
+license: CC-BY-SA-4.0
+repository-code: "https://github.com/yohn-maistre/strata"
+url: "https://etnos.space"
+keywords: [Papua, "Tanah Papua", "Mee Pago", Saireri, "La Pago", "wilayah adat", "Indigenous knowledge", wiki]
