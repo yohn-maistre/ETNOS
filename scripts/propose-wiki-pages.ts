@@ -16,7 +16,8 @@ const client = await connectAgent({ origin, keyFile, deploymentId, scope: "publi
 const data = (r: any) => r.structuredContent?.data ?? r;
 const grants = data(await client.callTool({ name: "etnos_my_grants", arguments: {} })),
   mandate = (grants.editorial ?? []).find((m: any) => !m.revoked && m.expires > Date.now());
-if (!mandate) throw new Error("No current editorial mandate. A steward grants one in the agent's settings.");
+// The agent switch (wiki proposals on) needs no mandate id; an older editorial mandate still works.
+if (!mandate && !grants.switch?.wiki) throw new Error("Turn on wiki proposals in the agent's switch first.");
 for (const page of JSON.parse(readFileSync(file, "utf8")) as SeedPage[]) {
   if (only.length && !only.includes(page.slug)) continue;
   if (receipts[page.slug]?.proposalId) { console.log("done", page.slug); continue; }
@@ -24,7 +25,7 @@ for (const page of JSON.parse(readFileSync(file, "utf8")) as SeedPage[]) {
   writeFileSync(receiptsFile, JSON.stringify(receipts, null, 1));
   const r: any = await client.callTool({
     name: "etnos_propose_page",
-    arguments: { title: page.title, text: page.text, citations: page.citations, basis: page.basis, language: "id", perspective: "Disusun Aksara dari kalimat sumber yang tercantum", editorialMandateId: mandate.id, requestKey },
+    arguments: { title: page.title, text: page.text, citations: page.citations, basis: page.basis, language: "id", perspective: "Disusun Aksara dari kalimat sumber yang tercantum", ...(mandate ? { editorialMandateId: mandate.id } : {}), requestKey },
   });
   if (r.isError) { console.log("FAIL", page.slug, JSON.stringify(r.content).slice(0, 200)); if (/budget/i.test(JSON.stringify(r.content))) break; continue; }
   const result = data(r);
