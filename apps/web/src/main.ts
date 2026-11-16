@@ -33,4 +33,8 @@ if (location.pathname === '/recover-messages') {
   void import('./RecoveryPage.svelte').then(({ default: Recovery }) =>
     mount(Recovery, { target: document.getElementById('app')! }),
   )
-} else mount(App, { target: document.getElementById('app')! })
+} else {
+  // Text rendered by the server for crawlers and readers without JavaScript.
+  document.querySelector('#app > [data-prerender]')?.remove()
+  mount(App, { target: document.getElementById('app')! })
+}
