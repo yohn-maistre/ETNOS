@@ -19,3 +19,4 @@ pds.env
 
 # Local agent worktrees
 .claude/worktrees/
+seed/wiki/pages/*.receipts.json
