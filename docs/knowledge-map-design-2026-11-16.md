@@ -2,6 +2,17 @@
 
 16 November 2026. Design for discussion before implementation. Builds on `research/knowledge-graph-sota-2026-11-16.md` (methods), `sources-and-sensitive-material-2026-11-16.md` (what goes in) and the prototype in `scripts/observatory/`. The owner asked for something braver than a pretty map: a display of everything known about a community that is also the foundation people and agents build the commons on.
 
+## Owner decisions on this design (16 November, later)
+
+- **Keep every way of organising knowledge, side by side.** Domains, the ten cultural objects of UU 5/2017, Western disciplines and community-defined categories are all kept. An item can carry labels from all of them. The map lets a reader switch between schemes, and the Western ones are used to show how the same things are seen here. The domain list below is an illustration of breadth, not a closed list.
+- **Colour by region and by cultural form**, both available.
+- **Time band shows both clocks**, when it happened and when it was recorded.
+- **Penampang layers are right** and match how knowledge is thought of here, without limiting it to those bands.
+- **Build both the state-of-knowledge report and guided reading paths.**
+- **Open dataset now**, not at release.
+- **Editorial names, not poetic ones.** Lens names are renamed (see section 3).
+- Research on components, real-time presence, clustering and decision models comes before implementation: `research/ui-components-and-realtime-2026-11-16.md` and `research/algorithms-and-decision-models-2026-11-16.md`.
+
 ## The idea in one paragraph
 
 Every piece of knowledge in the commons gets coordinates: where it is about, when it is about, what domain of knowledge it belongs to, what cultural form it takes, whose voice it is in, and what source it rests on. The wiki, the stream, the news, the questions and the sources are all items with these coordinates. The map is not one picture; it is a set of lenses, each a projection of the same coordinates. Because every item sits somewhere, the empty places become visible too, and the empty places are where people and Aksara go to work. The map is how you read the commons, how you write into it, how the agents plan their work in public, and how a community measures the state of its own knowledge.
@@ -50,22 +61,24 @@ The honest problem with any such list: it splits what many Papuan knowledge syst
 
 One component, several lenses on the same items. Each lens has a list view for small screens and screen readers.
 
+Names are plain and editorial: Kedekatan isi, Waktu, Tempat, Sumber suara, Asal sumber, Belum tercatat, Beda versi, Bacaan terpandu.
+
 | Lens | Position | Colour | What it answers |
 | --- | --- | --- | --- |
-| **Makna** | Meaning (embedding layout) | Ranah | What is near what? Where are the clusters? |
+| **Kedekatan isi** | Meaning (embedding layout) | Ranah | What is near what? Where are the clusters? |
 | **Waktu** | Height or x-axis by time; switch between "when it happened" and "when it was recorded" | Ranah | How deep does our knowledge go? How long between an event and its first record? |
 | **Tempat** | A real map of Tanah Papua; wilayah adat outlines marked "wilayah acuan, bukan batas tanah adat" | Ranah | What is known where? Which valleys are silent? |
-| **Suara** | Grouped by voice | Voice | Who has been speaking about this people? How much is colonial, academic, government, community? |
-| **Dasar** | A tree from a claim to its sources and their sources | Source age | What is this resting on? What is the earliest root? |
-| **Celah** | A grid of places against domains | Density | Where is nothing recorded yet? |
-| **Berdampingan** | Questions with two or more accounts, shown as pairs | Voice | Where do sources and tellers disagree? |
-| **Jalur** | A path through chosen items, read in order | As the lens it sits on | A guided walk: a story, a lesson, an argument |
+| **Sumber suara** | Grouped by voice | Voice | Who has been speaking about this people? How much is colonial, academic, government, community? |
+| **Asal sumber** | A tree from a claim to its sources and their sources | Source age | What is this resting on? What is the earliest root? |
+| **Belum tercatat** | A grid of places against domains | Density | Where is nothing recorded yet? |
+| **Beda versi** | Questions with two or more accounts, shown as pairs | Voice | Where do sources and tellers disagree? |
+| **Bacaan terpandu** | A path through chosen items, read in order | As the lens it sits on | A guided walk: a story, a lesson, an argument |
 
-The **Waktu** lens with two clocks is the one to build first after Makna, because the gap between the clocks tells the story of how Papua was recorded. Koyeidaba has no date; the Wissel lakes were "found" in 1938; the people living there were not. A sentence like that is what the lens should make obvious without saying it.
+The **Waktu** lens with two clocks is the one to build first after Kedekatan isi, because the gap between the clocks tells the story of how Papua was recorded. Koyeidaba has no date; the Wissel lakes were "found" in 1938; the people living there were not. A sentence like that is what the lens should make obvious without saying it.
 
-The **Suara** lens is the decolonial one. It will show, accurately, that the written record about the highlands is mostly Dutch, missionary, academic and government. That is the case for people adding their own accounts, made by the data.
+The **Sumber suara** lens is the decolonial one. It will show, accurately, that the written record about the highlands is mostly Dutch, missionary, academic and government. That is the case for people adding their own accounts, made by the data.
 
-**Jalur** turns the map into a medium. A teacher makes a path for a class; Aksara makes "Dari Koyeidaba ke Danau Paniai" for the morning post; a researcher shares the path behind a paper. A path is an ordered list of items with a sentence between each, stored like a post, shareable as a link and a card.
+**Bacaan terpandu** turns the map into a medium. A teacher makes a path for a class; Aksara makes "Dari Koyeidaba ke Danau Paniai" for the morning post; a researcher shares the path behind a paper. A path is an ordered list of items with a sentence between each, stored like a post, shareable as a link and a card.
 
 ## 4. Reading, writing, asking, watching
 
@@ -81,7 +94,7 @@ What makes the map the ground of the commons rather than a picture of it:
 
 The map is the shared world model of the Aksara agents and their visible plan.
 
-- **The work queue is the map.** Each place Aksara picks work from its region's map: the thinnest cell in Celah, the claim with one source in Dasar, the voice imbalance in Suara, an open pair in Berdampingan, a news story with no page.
+- **The work queue is the map.** Each place Aksara picks work from its region's map: the thinnest cell in Belum tercatat, the claim with one source in Asal sumber, the voice imbalance in Sumber suara, an open pair in Beda versi, a news story with no page.
 - **Visible cursors.** "Sedang dikerjakan" becomes a mark on the map: Aksara · Mee Pago is reading a 1948 source about Paniai; Aksara · Saireri is looking for a second source for Supiori's area. People can see the swarm working and where.
 - **Handoffs as threads on the map.** When one Aksara adds to another's item, the thread between them is drawn. Agent replies stay capped as the direction document says.
 - **Every action leaves a dot.** Sources found, pages written, questions asked. The map's history is the agents' log.
@@ -106,7 +119,7 @@ No completeness score, as the earlier rule says; numbers and gaps, not a grade. 
 The owner's layout, made concrete:
 
 1. **Untuk dibaca.** The sky cards stay, as a carousel of reviewed or popular pages and new paths. They are the warm front door.
-2. **Peta pengetahuan, folded.** A wide band under the carousel: the Waktu lens laid sideways, earliest on the left and now on the right, one stripe per domain, thickness by number of items. One line under it: "551 kalimat · 39 halaman · paling awal 1857 · 22 sel kosong". It reads as a core sample, which is what Strata means.
+2. **Peta pengetahuan, folded.** A wide band under the carousel: the Waktu lens laid sideways, earliest on the left and now on the right, with both clocks stacked (when it happened above, when it was recorded below), one stripe per domain, thickness by number of items. One line under it: "551 kalimat · 39 halaman · paling awal 1857 · 22 sel kosong". It reads as a core sample, which is what Strata means.
 3. **Unfolded.** Tapping the band opens the full explorer: lens switcher, search, filters for place, domain, form, voice, time, and the reading panel. Full screen on phones.
 4. **Below.** Lini masa, search results and the lists that exist today.
 
@@ -135,12 +148,15 @@ For the showcase (4–5 December):
 
 1. Wiki pages live before review, and the seed published.
 2. Item index and coordinates for the seed; the classifier with receipts.
-3. The component on the wiki page: carousel, folded band, explorer with Makna, Waktu (two clocks) and Tempat; reading panel with Dasar.
+3. The component on the wiki page: carousel, folded band, explorer with Kedekatan isi, Waktu (two clocks) and Tempat; reading panel with Dasar.
 4. Server-rendered pages, sitemap and cards.
 5. Aksara's cursor on the map, and one live dig shown end to end.
 6. The state-of-knowledge report for Mee Pago.
 
-After: Suara, Celah, Berdampingan, Tanya peta, Jalur, AT feeds, community maps in private spaces, the open dataset.
+7. Bacaan terpandu: paths authored by people and by Aksara.
+8. The open dataset, first version.
+
+After: Sumber suara, Belum tercatat, Beda versi, Tanya peta, AT feeds, community maps in private spaces, the open dataset.
 
 ## 11. Risks
 
