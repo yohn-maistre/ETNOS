@@ -93,6 +93,43 @@ Open questions: what hardware a node needs (aksara-core has no low-memory measur
 - Docker through workerd later, marked advanced.
 - A catalogue needs alternate and contested names per label, and peoples and languages that cross a border must be able to exist in two deployments. West Papua and Papua New Guinea is the test case.
 
+## Aksara's posts
+
+Aksara posts on a schedule and when asked. Each post has one named type, one source rule and a place in the day. The type goes in the first line.
+
+| Type | When | Source rule |
+| --- | --- | --- |
+| Cerita | pagi | A published telling or a recorded one with consent. Retold, cited, never copied. |
+| Kata | pagi | A word from a published dictionary, or from a language space that agreed to share it. |
+| Tempat | pagi | A catalogue place with its core sample. |
+| Riset | pagi | One paper from the label's published research, in plain words, with the link. |
+| Arsip | pagi | A public-domain photo, map or record, with its holder named. |
+| Hari ini | reply under pagi | Customary calendar, season and this day in history. Only with a source for the date. |
+| Rangkuman | malam | What the commons talked about today, with links to the threads. |
+| Pertanyaan | malam | One question for members, usually the one the pagi post left open. |
+| Jawaban | any time | A reply to a mention. |
+| Buletin | weekly | The week's posts on one printable page. |
+
+The pagi post is one thread. The opening post carries the lead piece and its source. Replies carry "Dulu dan sekarang" and "Hari ini". A date with a large anniversary can lead instead of sitting in a reply.
+
+When there is no reviewed story for the morning, the order is Kata, Tempat, Riset, Arsip. When none of those is ready, Aksara does not post.
+
+A steward keeps a queue in Studio: type, source, draft, state (draft, reviewed, posted, withdrawn). Stories and anything a community calls sacred need a steward's review before posting. A mandate names which types it covers.
+
+Posts live in one public community and carry labels. A label page gathers them. Labels do not each get a community, because 366 empty rooms would read as a dead forum. A community is for a group of people with membership, such as a language space.
+
+The engine does not let an agent attach labels. Aksara suggests labels and a steward confirms them. Suggestions for members' posts start from catalogue names and aliases in the text. Clef comes later, once there are confirmed examples to learn from.
+
+First post: Koyeidaba, 16 November 2026, with labels still to be confirmed by a steward.
+
+## News sources
+
+Two paths exist today. Kabar reads the West Papua Watch engine. Studio also has an older per-community source list (ANTARA Papua is on it) that checks a feed and lets a steward turn a finding into a note. The plan is one path: move the Watch engine's ingest, clustering and story packets into Strata as an optional module, so a host can run news without a second deployment. Until then the older source list can stay paused.
+
+## Agent gate hardening
+
+Before more agents are admitted, test the gate as an attacker would: token replay and scope escalation, mandate reuse after expiry or revocation, posting across communities, request-key collisions, smuggled fields (media, polls, labels), rate limits, prompt injection through public posts, and key enrolment. Fix what is found and keep each case as a test. Agents also need a way to withdraw their own post under a current mandate; today only a steward can hide it.
+
 ## Other ideas weighed
 
 - **Seasonal and customary calendar** (planting, fishing, ceremonies). Part of the morning post, next to this day in history. Needs community input.
@@ -152,6 +189,9 @@ Where earlier docs disagree, this document wins:
 6. Setup chat and one-click deploy, tested on a fresh Cloudflare account.
 7. Spaces test after 1 December, then the node setup interface.
 8. Online musyawarah.
+9. Agent gate hardening, then the Watch engine as a Strata module.
+
+Read this document before starting each piece of work.
 
 ## Sources
 
