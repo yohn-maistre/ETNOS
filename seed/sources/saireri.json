@@ -1,0 +1,612 @@
+{
+ "region": "saireri",
+ "compiled": "2026-11-16",
+ "sources": [
+  {
+   "title": "Een kort overzigt van het land en volk op de Noord-Oost-kust van Nieuw Guinea (Mansinam, 29 January 1857)",
+   "authors": [
+    "Carl Wilhelm Ottow",
+    "Johann Gottlob Geissler",
+    "trans. and intro. Jan A. Godschalk"
+   ],
+   "year": 1857,
+   "kind": "mission-record",
+   "language": "nl",
+   "about": [
+    "biak",
+    "yapen"
+   ],
+   "topics": [
+    "history",
+    "religion",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated (Univ. of Sydney open journal)",
+   "where": "https://openjournals.library.sydney.edu.au/WOB/article/download/5950/6520/11229 ; manuscripts: Het Utrechts Archief, Raad voor de Zending 1102-1 inv. 2261; Nationaal Archief 2.10.02 inv. 889",
+   "summary": "English translation and introduction of the first Protestant missionaries' survey of Doreh Bay people, written two years after their landing at Mansinam on 5 February 1855. Godschalk calls it the first tentative ethnographic account of a mainland New Guinea society; it includes a reckoning of time from the stars and the first publication of the Manarmakeri 'Old Man' narrative, which is flagged sacred.",
+   "sensitivity": "sacred",
+   "fetched": "https://openjournals.library.sydney.edu.au/WOB/article/download/5950/6520/11229"
+  },
+  {
+   "title": "Zendingsvelden van de Utrechtsche Zendingsvereeniging (Rauws, 1919)",
+   "authors": [
+    "J. Rauws"
+   ],
+   "year": 1919,
+   "kind": "mission-record",
+   "language": "nl",
+   "about": [
+    "biak",
+    "yapen"
+   ],
+   "topics": [
+    "history",
+    "religion"
+   ],
+   "access": "open",
+   "licence": "none stated (scan at Stichting Papua Erfgoed)",
+   "where": "https://www.papuaerfgoed.org/sites/default/files/collectie/files/2004-09/Rauws_1919_Zendingsvelden.pdf",
+   "summary": "Scanned Dutch book on mission fields; the retrieved excerpt only gives the preface fragment and a description of Geelvink Bay. Author name taken from the file name; contents not read in detail.",
+   "sensitivity": "none",
+   "fetched": "https://www.papuaerfgoed.org/sites/default/files/collectie/files/2004-09/Rauws_1919_Zendingsvelden.pdf"
+  },
+  {
+   "title": "Koreri: Messianic Movements in the Biak-Numfor Culture Area (KITLV Translation Series 15)",
+   "authors": [
+    "Freerk Ch. Kamma"
+   ],
+   "year": 1972,
+   "kind": "ethnography",
+   "language": "en",
+   "about": [
+    "biak",
+    "koreri",
+    "yapen"
+   ],
+   "topics": [
+    "religion",
+    "oral-tradition",
+    "history"
+   ],
+   "access": "open",
+   "licence": "none stated (scan hosted by Papua Erfgoed; Brill/Springer sell eBook, Internet Archive lends)",
+   "where": "https://doi.org/10.1163/9789004644250 ; https://www.papuaerfgoed.org/en/BK/40/61 ; https://link.springer.com/book/10.1007/978-94-015-0742-4",
+   "summary": "English edition of Kamma's 1954 Dutch doctoral thesis, from the author's 1932-42 residence among Biak-speakers in Raja Ampat. Contents list: the Manarmakeri myth and its variants, links to Biak mythology, history of the movements 1855-1967, the 1938-43 movements in Biak, Numfor and Japen, historical factors, and an appendix on similar movements elsewhere in West New Guinea. Contains origin narrative and movement detail flagged sacred.",
+   "sensitivity": "sacred",
+   "fetched": "https://brill.com/display/title/23141"
+  },
+  {
+   "title": "Korwar: Northwest New Guinea Ritual Art According to Missionary Sources",
+   "authors": [
+    "Raymond Corbey"
+   ],
+   "year": 2019,
+   "kind": "history",
+   "language": "en",
+   "about": [
+    "biak",
+    "supiori",
+    "yapen"
+   ],
+   "topics": [
+    "art",
+    "religion",
+    "history"
+   ],
+   "access": "open",
+   "licence": "none stated (Leiden scholarly publications)",
+   "where": "https://scholarlypublications.universiteitleiden.nl/handle/1887/135485",
+   "summary": "Study of korwar ritual art and its decline between 1855 and 1942 using missionary sources. The excerpt describes Protestant mission expansion from Mansinam and episodes in 1908-09 (Biak, Supiori), the 1920s-30s (Yapen) and the 1930s (Raja Ampat) when korwars were handed over or purchased by missionaries. Ritual-object content flagged sacred.",
+   "sensitivity": "sacred",
+   "fetched": "https://scholarlypublications.universiteitleiden.nl/handle/1887/135485"
+  },
+  {
+   "title": "Papoea's van Waropen",
+   "authors": [
+    "G.J. Held"
+   ],
+   "year": 1947,
+   "kind": "ethnography",
+   "language": "nl",
+   "about": [
+    "waropen"
+   ],
+   "topics": [
+    "religion",
+    "oral-tradition",
+    "economy"
+   ],
+   "access": "open",
+   "licence": "none stated (scan via Papua Erfgoed)",
+   "where": "https://www.papuaerfgoed.org/en/BK/51/2 ; Leiden: E.J. Brill 1947",
+   "summary": "Social, cultural, mythological and economic description of the Waropen, from a Netherlands Bible Society study. The contents list covers clans, marriage, the Saira life-cycle ritual, Munaba death ritual, raiding and trade, the sacred and profane, and mythology. Ritual and mythological chapters are flagged sacred.",
+   "sensitivity": "sacred",
+   "fetched": "https://adoc.pub/i-feestelijke-ommevaart-van-het-bruidspaar.html"
+  },
+  {
+   "title": "The Papuas of Waropen (English edition)",
+   "authors": [
+    "G.J. Held"
+   ],
+   "year": 1957,
+   "kind": "ethnography",
+   "language": "en",
+   "about": [
+    "waropen"
+   ],
+   "topics": [
+    "religion",
+    "oral-tradition"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "Brill, doi via https://brill.com/display/title/23183 (ebook 2025; hardback 1957 ISBN 978-90-04-24798-7)",
+   "summary": "English edition. The preface says Waropen were chosen as the only coastal tribe in northern New Guinea still non-Christian at the time of research. Chapters: social organisation, marriage, Saira (ritual of life), Munaba (ritual of death), raiding and trading, the sacred and profane, mythology.",
+   "sensitivity": "sacred",
+   "fetched": "https://brill.com/display/title/23183"
+  },
+  {
+   "title": "Biak: a description of an Austronesian language of Papua",
+   "authors": [
+    "Wilco van den Heuvel"
+   ],
+   "year": 2006,
+   "kind": "grammar",
+   "language": "en",
+   "about": [
+    "biak"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated (LOT series 138; OLAC lists online PDF)",
+   "where": "LOT International Series 138; record via http://language-archives.org/language/bhw",
+   "summary": "Grammatical description of Biak listed in OLAC and WALS records. Only the catalogue record was read; no abstract.",
+   "sensitivity": "none",
+   "fetched": "http://language-archives.org/language/bhw"
+  },
+  {
+   "title": "Biak language documentation, University of Oxford with Universitas Cenderawasih and Universitas Papua (on-line texts, dictionary; PARADISEC MD9)",
+   "authors": [
+    "Mary Dalrymple",
+    "Suriel Mofu",
+    "et al."
+   ],
+   "year": 2010,
+   "kind": "dataset",
+   "language": "en",
+   "about": [
+    "biak"
+   ],
+   "topics": [
+    "language",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated (check PARADISEC terms per item)",
+   "where": "https://biak.clp.ox.ac.uk/ ; PARADISEC collection MD9 (via http://language-archives.org/language/bhw)",
+   "summary": "ESRC-funded project (October 2009 to September 2010) creating online audio texts with annotated transcriptions and translations into Indonesian and English for Biak, which it says has 50,000-70,000 speakers. PARADISEC lists recordings from Dalrymple's 2004-2010 fieldwork including stories, songs and a recording titled 'The Great Story of Manarmakeri' (traditional narrative: check with speakers/community before reuse).",
+   "sensitivity": "sacred",
+   "fetched": "https://biak.clp.ox.ac.uk/"
+  },
+  {
+   "title": "Biak-Noemfoorsch Woordenboek; Spraakkunst der Nufoorsche taal; Arthur Capell IJBINUF records (PARADISEC)",
+   "authors": [
+    "F.J.F. van Hasselt",
+    "J.L. van Hasselt",
+    "Arthur Capell"
+   ],
+   "year": 1905,
+   "kind": "dictionary",
+   "language": "nl",
+   "about": [
+    "biak",
+    "yapen"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated (PARADISEC; check item terms)",
+   "where": "https://www.paradisec.org.au/fieldnotes/IJBINUF.htm ; oai:paradisec.org.au:AC2-IJBINUF101",
+   "summary": "PARADISEC holds the Van Hasselts' 1947 Biak-Noemfoorsch dictionary and Capell's Irian Jaya series on Biak, Numfor and parts of Waigeo and Yapen, including a 156-page printed Dutch dictionary-wordlist. OLAC also lists F.J. van Hasselt's 1905 Spraakkunst der Nufoorsche taal.",
+   "sensitivity": "none",
+   "fetched": "https://www.paradisec.org.au/fieldnotes/IJBINUF.htm"
+  },
+  {
+   "title": "Indonesia: Human Rights and Pro-Independence Actions in Irian Jaya (Biak chapter)",
+   "authors": [
+    "Human Rights Watch"
+   ],
+   "year": 1998,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "biak"
+   ],
+   "topics": [
+    "conflict",
+    "casualties",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.hrw.org/legacy/reports/reports98/biak/biak.htm",
+   "summary": "HRW reports that the Morning Star flag flew over a water tower in Biak town from 2 to 6 July 1998 and that troops opened fire at 5 a.m. on 6 July. It reports witness statements that five prone civilians were deliberately shot and that one man died in hospital; other deaths and the military's version are discussed elsewhere in the report.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.hrw.org/legacy/reports/reports98/biak/biak.htm"
+  },
+  {
+   "title": "Names Without Graves, Graves Without Names: a Report of Human Rights Abuses in Biak, Irian Jaya (English translation)",
+   "authors": [
+    "ELSHAM Papua with GKI, GKII and the Catholic Church",
+    "trans. Annie Pohlman"
+   ],
+   "year": 1999,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "biak"
+   ],
+   "topics": [
+    "conflict",
+    "casualties",
+    "displacement"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.biak-tribunal.org/wp-content/uploads/2014/09/Names-Without-Graves_Elsham-Papua-English.pdf",
+   "summary": "ELSHAM and church bodies report 8 killed, 3 disappeared, 4 seriously injured, 33 injured, 50 detained and 32 'mysterious bodies' found in Biak waters after the 6 July 1998 raid. They report authorities attributed the bodies to the 17 July 1998 tsunami in Aitape (PNG). This conflicts with HRW's narrower account of confirmed deaths; Komnas HAM, parliament and PGI teams also investigated.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.biak-tribunal.org/wp-content/uploads/2014/09/Names-Without-Graves_Elsham-Papua-English.pdf"
+  },
+  {
+   "title": "Biak Massacre Citizens Tribunal: Background",
+   "authors": [
+    "Biak Massacre Citizens' Tribunal"
+   ],
+   "year": 2014,
+   "kind": "other",
+   "language": "en",
+   "about": [
+    "biak"
+   ],
+   "topics": [
+    "conflict",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.biak-tribunal.org/background/",
+   "summary": "Background page of a civil-society tribunal on the 1998 events, quoting HRW's account of the flag raising on the water tower on 2 July 1998. Only a snippet was read.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.biak-tribunal.org/background/"
+  },
+  {
+   "title": "Waiting for the End in Biak: Violence, Order, and a Flag Raising",
+   "authors": [
+    "Danilyn Rutherford"
+   ],
+   "year": 1999,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "biak"
+   ],
+   "topics": [
+    "conflict",
+    "politics",
+    "religion"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "https://doi.org/10.2307/3351376",
+   "summary": "Article on the July 1998 flag raising on the Biak water tower; the snippet describes demonstrators' appeal to Kofi Annan and the authorities' ultimatum after negotiations broke down. Abstract not retrieved.",
+   "sensitivity": "conflict",
+   "fetched": "https://doi.org/10.2307/3351376"
+  },
+  {
+   "title": "Citizen media and civil resistance in West Papua",
+   "authors": [
+    "Jason MacLeod"
+   ],
+   "year": 2016,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "biak"
+   ],
+   "topics": [
+    "politics",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated (Pacific Journalism Review)",
+   "where": "https://doi.org/10.24135/pjr.v22i1.8",
+   "summary": "Pacific Journalism Review article. The snippet describes the July 1998 water tower flag raising in Biak City, four days of hymns, prayers and dancing, and the unanswered questions about it. Only a snippet read.",
+   "sensitivity": "conflict",
+   "fetched": "https://doi.org/10.24135/pjr.v22i1.8"
+  },
+  {
+   "title": "Peran perempuan dalam budaya maritim Waropen",
+   "authors": [
+    "Maryone"
+   ],
+   "year": 2018,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "waropen"
+   ],
+   "topics": [
+    "economy",
+    "art"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://doi.org/10.24832/papua.v9i2.214",
+   "summary": "Journal of Archaeological Research Papua and West Papua article on the roles of women in Waropen maritime livelihood, including providing food for the family.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.24832/papua.v9i2.214"
+  },
+  {
+   "title": "Penyebaran Injil dan tinggalannya di Kampung Nau dan Waren, Kabupaten Waropen",
+   "authors": [
+    "Desy Polla Usmany"
+   ],
+   "year": 2017,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "waropen"
+   ],
+   "topics": [
+    "religion",
+    "history"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://doi.org/10.24832/papua.v5i2.48",
+   "summary": "Historical-method study of the Waropen religious system before Christianity and the spread of the gospel in Nau and Waren villages; says elders in Waropen asked the Dutch to send teachers after seeing Wandamen Bay Christians. Possible description of pre-Christian religion.",
+   "sensitivity": "sacred",
+   "fetched": "https://doi.org/10.24832/papua.v5i2.48"
+  },
+  {
+   "title": "Kaipoa: kajian teologi kontekstual tentang filosofi buah bakau terhadap kepemimpinan Kristen masyarakat suku Waropen",
+   "authors": [
+    "Theo Glen Duwiri"
+   ],
+   "year": 2023,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "waropen"
+   ],
+   "topics": [
+    "religion",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://doi.org/10.58983/jmurai.v3i1.96",
+   "summary": "Contextual-theology article using the mangrove fruit (kaipoa) as a Waropen philosophy of Christian leadership, based on a GKI congregation in Nubuai village.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.58983/jmurai.v3i1.96"
+  },
+  {
+   "title": "IDP Update, June 2023: Armed clashes and security raids cause new internal displacements in Nduga, Intan Jaya and Kepulauan Yapen",
+   "authors": [
+    "Human Rights Monitor"
+   ],
+   "year": 2023,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "yapen"
+   ],
+   "topics": [
+    "displacement",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://humanrightsmonitor.org/news/idp-update-june-2023-armed-clashes-and-security-raids-cause-new-internal-displacements-in-regencies-nduga-intan-jaya-and-kepulauan-yapen/",
+   "summary": "HRM update whose title includes Kepulauan Yapen; the snippet read concerned Nduga, so the Yapen content was not verified.",
+   "sensitivity": "conflict",
+   "fetched": "https://humanrightsmonitor.org/news/idp-update-june-2023-armed-clashes-and-security-raids-cause-new-internal-displacements-in-regencies-nduga-intan-jaya-and-kepulauan-yapen/"
+  },
+  {
+   "title": "Inventaris van het archief van het Kantoor voor Bevolkingszaken in Nederlands Nieuw-Guinea: Rapportenarchief, (1852) 1951-1962",
+   "authors": [
+    "P. Nienhuis (compiler of finding aid)"
+   ],
+   "year": 1968,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "language",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "Finding aid states no copyright restrictions on reproduction; some items physically restricted by condition",
+   "where": "Nationaal Archief, Den Haag, toegang 2.10.25 (https://www.nationaalarchief.nl/onderzoeken/archief/2.10.25)",
+   "summary": "Archive of the Office of Population Affairs in Dutch New Guinea, set up in 1951 to study the indigenous population ethnologically, socio-economically and linguistically. It holds notes, reports, handover memoranda (memories van overgave) and literature extracts, 923 inventory numbers over 5.90 m, mostly Dutch with some Malay, with an area breakdown by afdeling including Hollandia. Described as fully public.",
+   "sensitivity": "none",
+   "fetched": "https://www.nationaalarchief.nl/onderzoeken/archief/2.10.25"
+  },
+  {
+   "title": "Collection of Memories van overgave of Dutch New Guinea (KITLV)",
+   "authors": [
+    "KITLV (collection)"
+   ],
+   "year": 1962,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "none stated; conditions on Leiden University Libraries website",
+   "where": "Leiden University Libraries, Bijzondere Collecties, D H 1172 (https://collectionguides.universiteitleiden.nl/resources/ubl415); originals at Nationaal Archief 2.10.39",
+   "summary": "35 items of handover memoranda written by Dutch administrators for their successors, covering 1916-1962, partly originals and partly microfiche. The guide explains that these memoranda gave a general overview of the state of a region and that copies went to the Ministry of Colonies and the Koloniaal Instituut.",
+   "sensitivity": "none",
+   "fetched": "https://collectionguides.universiteitleiden.nl/resources/ubl415"
+  },
+  {
+   "title": "Frans H. Peters collection (KITLV)",
+   "authors": [
+    "F.H. Peters (collector)"
+   ],
+   "year": 1959,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "none stated",
+   "where": "Leiden University Libraries, Bijzondere Collecties, D H 1256 (https://collectionguides.universiteitleiden.nl/resources/ubl358)",
+   "summary": "31 folders (1926-1959) on New Guinea, mainly administrative matters, handover memoranda and the diaries of J. Hoogland. Peters worked as a Dutch administrator in New Guinea from 1952 to 1962; the collection was donated to KITLV in 1992.",
+   "sensitivity": "none",
+   "fetched": "https://collectionguides.universiteitleiden.nl/resources/ubl358"
+  },
+  {
+   "title": "Stichting Papua Erfgoed: collection and document repository",
+   "authors": [
+    "Stichting Papua Erfgoed"
+   ],
+   "year": 2024,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "art",
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated (items individually; check each)",
+   "where": "https://www.papuaerfgoed.org/nl/papua_erfgoed",
+   "summary": "Dutch foundation site cataloguing artefacts from Papua held in Dutch collections and hosting scanned PDFs of many older Dutch-language books and theses. Photographs are on Flickr (papuan_cultures) and sound fragments at papuacollecties.nl.",
+   "sensitivity": "none",
+   "fetched": "https://www.papuaerfgoed.org/nl/papua_erfgoed"
+  },
+  {
+   "title": "A historiography of research on West New Guinea's human past",
+   "authors": [
+    "Dylan Gaffney",
+    "Marlin Tolla"
+   ],
+   "year": 2024,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated (published by ANU Press, Terra Australis 58; check)",
+   "where": "https://doi.org/10.22459/ta58.2024.02",
+   "summary": "Chapter surveying the history of research on West New Guinea. The excerpt describes the 1936 sighting of the Wissel (Paniai) Lakes, the Enarotali outpost, the 1939 Le Roux expedition, the Archbold expedition of 1938-39 to the Baliem Valley, and wartime activity of J.V. de Bruijn.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.22459/ta58.2024.02"
+  },
+  {
+   "title": "IDP Update November 2026: Security operations and new troop deployments trigger further displacements across West Papua",
+   "authors": [
+    "Human Rights Monitor (Documentation Centre)"
+   ],
+   "year": 2026,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "intan-jaya",
+    "nduga",
+    "puncak",
+    "mimika",
+    "paniai",
+    "yahukimo",
+    "pegunungan-bintang"
+   ],
+   "topics": [
+    "displacement",
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://humanrightsmonitor.org/reports/idp-update-november26-security-operations-and-new-troop-deployments-trigger-further-displacements-across-west-papua/",
+   "summary": "Human Rights Monitor reports a running table of internal displacement by regency since 2018, with a total of more than 128,369 IDPs in West Papua as of November 2026. It lists, for example, Nduga 58,981 IDPs since December 2018, Intan Jaya 12,859 since March 2025, Puncak 14,003 from April 2026, Pegunungan Bintang (Kiwirok) 752 and Oksop 4,584, Yahukimo, Mimika (Jila, Tembagapura) and Paniai (Aweida, over 1,056 in late 2026). It cites sources such as the Intan Jaya Student and Youth Movement for school and clinic closures; figures are HRM's compilation of local reports and are not government figures.",
+   "sensitivity": "conflict",
+   "fetched": "https://humanrightsmonitor.org/reports/idp-update-november26-security-operations-and-new-troop-deployments-trigger-further-displacements-across-west-papua/"
+  }
+ ],
+ "unconfirmed": [
+  {
+   "title": "Dit wonderlijk werk: het probleem van de communicatie tussen Oost en West gebaseerd op de ervaringen in het zendingswerk op Nieuw-Guinea (1855-1972)",
+   "authors": [
+    "F.C. Kamma"
+   ],
+   "year": 1976,
+   "why": "Known from memory; cited via Ottow/Geissler intro only as 'Kamma op. cit.'; no record."
+  },
+  {
+   "title": "Raiding the Land of the Foreigners: The Limits of the Nation on an Indonesian Frontier",
+   "authors": [
+    "Danilyn Rutherford"
+   ],
+   "year": 2003,
+   "why": "Known from memory; no record fetched."
+  },
+  {
+   "title": "Arnold Ap and Mambesak (Biak music group, 1978-83) sources",
+   "authors": [
+    "various"
+   ],
+   "year": null,
+   "why": "Known from memory; only the PARADISEC transcriber credit for the Manarmakeri recording was seen."
+  },
+  {
+   "title": "Grammar and lexicon for Yapen languages (e.g. Yawa, Ambai, Wandamen)",
+   "authors": [
+    "various"
+   ],
+   "year": null,
+   "why": "Searched but no verified records retrieved."
+  },
+  {
+   "title": "De Waropensche taal (Held, 1942)",
+   "authors": [
+    "G.J. Held"
+   ],
+   "year": 1942,
+   "why": "Known from memory; no record fetched."
+  }
+ ],
+ "notes": [
+  "Biak 1998 deaths: HRW reports one confirmed hospital death and witness accounts of other shootings; ELSHAM with GKI/GKII/Catholic Church reports 8 killed, 3 disappeared and 32 bodies found in the sea, and says authorities attributed those bodies to a tsunami in PNG. The two reports differ in method and the full figures from Komnas HAM, parliament and PGI teams were not read.",
+  "Coverage gap: Saireri is thin on conflict records beyond Biak 1998. No records were fetched for Supiori, Kepulauan Yapen conflicts, Waropen or coastal Nabire, nor for the Operasi 1960s-70s Biak/Numfor events or Wamena-style incidents; the one HRM item that names Yapen was not verified for Yapen content.",
+  "Missing: Yapen-language and Waropen grammars/ELAR deposits, UNCEN theses, Biak Koreri sources by Papuan authors, Delpher newspaper searches, Utrecht UZV archive finding aid (Het Utrechts Archief 1102-1 appears only through Godschalk's citation), Nationaal Archief 2.10.02 only via the same citation.",
+  "Sacred content: Kamma, Held, Corbey and the Biak recordings describe myths, rites and ritual objects (Manarmakeri/Koreri, Saira, Munaba, korwar). This catalogue records subject only. Sources do not state a formal custodian, but the Oxford Biak project involved Biak-speaking researchers and PARADISEC applies its own access terms.",
+  "Only snippets of many pages were read (search-engine returned page text); treat summaries as catalogue-level. OpenAlex API rate-limited without a key, so no OpenAlex links. Shared archive and displacement entries repeat across region files."
+ ]
+}

@@ -1,0 +1,1282 @@
+{
+ "region": "meepago",
+ "compiled": "2026-11-16",
+ "sources": [
+  {
+   "title": "De Bergpapoea's van Nieuw-Guinea en hun woongebied",
+   "authors": [
+    "C.C.F.M. Le Roux"
+   ],
+   "year": 1948,
+   "kind": "ethnography",
+   "language": "nl",
+   "about": [
+    "mee",
+    "paniai",
+    "moni"
+   ],
+   "topics": [
+    "history",
+    "economy",
+    "religion"
+   ],
+   "access": "open",
+   "licence": "none stated (scan hosted by Stichting Papua Erfgoed)",
+   "where": "https://www.papuaerfgoed.org/sites/default/files/collectie/files/2004-09/Le_Roux%28I%29_1948_Bergpapoea.pdf; Leiden: E.J. Brill 1948",
+   "summary": "Result volume of the 1939 KNAG Wissel Lakes expedition leader. The excerpt contains an overview of exploration of the lakes area (patrols by Van Eechoud, Stutterheim and De Bruijn in 1938-39, including De Bruijn's Feb-March 1939 patrol to the Kemandoga valley inhabited by Ekari and Moni) and ethnographic data on land and people.",
+   "sensitivity": "none",
+   "fetched": "https://www.papuaerfgoed.org/sites/default/files/collectie/files/2004-09/Le_Roux%28I%29_1948_Bergpapoea.pdf"
+  },
+  {
+   "title": "De Expeditie van het KNAG naar het Wisselmerengebied en het Nassau-gebergte op Nederlandsch Nieuw-Guinea in 1939 (journal reports)",
+   "authors": [
+    "C.C.F.M. Le Roux"
+   ],
+   "year": 1939,
+   "kind": "expedition",
+   "language": "nl",
+   "about": [
+    "mee",
+    "paniai",
+    "moni"
+   ],
+   "topics": [
+    "history",
+    "ecology"
+   ],
+   "access": "library",
+   "licence": "copyright",
+   "where": "Tijdschrift van het KNAG LVI no.5 pp.661-679, LVI no.6 pp.766-792 (1939); LVII no.1 pp.38-55, LVII no.2 pp.175-232 (1940), Leiden: Brill",
+   "summary": "Serial reports of the Royal Dutch Geographical Society expedition (June-November 1939) based at Enarotali, with Le Roux as ethnologist and topographer and specialists in zoology, geology, botany and anthropology. The Papua Insects Foundation page lists the citation and notes insect material is held at RMNH Leiden and BMNH London.",
+   "sensitivity": "none",
+   "fetched": "https://www.papua-insects.nl/history/Le%20Roux%20Expedition/Le%20Roux%20Expedition%20(1939-1940).htm"
+  },
+  {
+   "title": "'Het zal echt geen vacantiereisje zijn.' Scientific expeditions to Dutch New Guinea and the articulation of 'race' in the years 1935-1960",
+   "authors": [
+    "Liang de Beer"
+   ],
+   "year": 2013,
+   "kind": "thesis",
+   "language": "en",
+   "about": [
+    "paniai",
+    "mee"
+   ],
+   "topics": [
+    "history"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "http://hdl.handle.net/1887/20519 (Leiden University repository)",
+   "summary": "Leiden repository text that reconstructs the 1939 Wissel Lakes expedition from Le Roux's correspondence and diary, Van Ravenswaay Claassen's police report and Le Roux's later book. It lists team members, the Enarotali base camp, the role of a Catholic missionary as interpreter, and use of 78 convicts as carriers.",
+   "sensitivity": "none",
+   "fetched": "http://hdl.handle.net/1887/20519"
+  },
+  {
+   "title": "Introduction to and translation of 'Paniyai, Kamu-Tigi and Mapiya, Paniai District, Papua' by S. Hylkema",
+   "authors": [
+    "Anton Ploeg (introduction/translation)",
+    "S. Hylkema"
+   ],
+   "year": 2002,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "mee",
+    "paniai",
+    "dogiyai"
+   ],
+   "topics": [
+    "history",
+    "economy",
+    "religion"
+   ],
+   "access": "open",
+   "licence": "CC BY-NC 3.0 (BKI open access; check)",
+   "where": "https://repository.ubn.ru.nl/bitstream/handle/2066/62038/62038.pdf; Bijdragen tot de Taal-, Land- en Volkenkunde 2002",
+   "summary": "Ploeg outlines the colonial-era literature on the Ekagi (Mee) and presents a translation of a Catholic missionary's paper distinguishing three sub-groups (Paniyai, Kamu-Tigi, Mapiya). It contrasts sweet-potato and pig economies of the first two with taro and hunting among the Mapiya, and discusses Ekagi identity within Indonesia.",
+   "sensitivity": "none",
+   "fetched": "https://repository.ubn.ru.nl/bitstream/handle/2066/62038/62038.pdf"
+  },
+  {
+   "title": "The Kapauku Papuans of West New Guinea (Case Studies in Cultural Anthropology; 1963 and 1978 editions)",
+   "authors": [
+    "Leopold J. Pospisil"
+   ],
+   "year": 1963,
+   "kind": "ethnography",
+   "language": "en",
+   "about": [
+    "mee",
+    "paniai",
+    "dogiyai"
+   ],
+   "topics": [
+    "economy",
+    "religion",
+    "land",
+    "politics"
+   ],
+   "access": "library",
+   "licence": "copyright",
+   "where": "Holt, Rinehart and Winston; eHRAF World Cultures oj29 doc 006 (https://ehrafworldcultures.yale.edu/cultures/oj29/documents/006); Internet Archive kapaukupapuansof00posp (lending)",
+   "summary": "Introductory monograph on the Kapauku (Mee) covering economy, social and political organisation, religious and ceremonial life, world view and acculturation, based on fieldwork from 1954-55 before Dutch administration extended there. HRAF's abstract says Pospisil describes a wealth-oriented, individualistic society whose prestige rests on sweet potato cultivation and pig raising. The second edition (1978, 130 pp.) adds later change.",
+   "sensitivity": "sacred",
+   "fetched": "https://ehrafworldcultures.yale.edu/cultures/oj29/documents/006"
+  },
+  {
+   "title": "KAPAUKU 1954/55 - 1959 (16mm film) and Pospisil film notes",
+   "authors": [
+    "Leopold J. Pospisil"
+   ],
+   "year": 1959,
+   "kind": "archive-collection",
+   "language": "en",
+   "about": [
+    "mee",
+    "paniai"
+   ],
+   "topics": [
+    "history",
+    "art"
+   ],
+   "access": "archive-only",
+   "licence": "none stated",
+   "where": "Yale University Library (notes PDF: https://web.library.yale.edu/sites/default/files/files/Kapauku%20Notes.pdf)",
+   "summary": "Yale Library notes describe Pospisil's 13 months of fieldwork in 1954-55 and summer 1959 and the 16mm colour film made from it, which the notes call possibly the first colour film footage of the New Guinea highlands. The notes give his later return visits (1962, 1975, 1979).",
+   "sensitivity": "personal",
+   "fetched": "https://web.library.yale.edu/sites/default/files/files/Kapauku%20Notes.pdf"
+  },
+  {
+   "title": "A road to freedom: Mee articulations and the Trans-Papua Highway",
+   "authors": [
+    "S. Eben Kirksey",
+    "Kiki van Bilsen"
+   ],
+   "year": 2002,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "mee",
+    "nabire",
+    "paniai"
+   ],
+   "topics": [
+    "economy",
+    "migration",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "CC BY-NC 3.0",
+   "where": "https://doi.org/10.1163/22134379-90003769",
+   "summary": "BKI article on how Mee, including the Oge Bage Mee, relate to the Trans-Papua Highway. It argues against portraying the Mee as isolated, citing pre-colonial trade routes, salt expeditions to Moni territory and the arrival of sweet potato by trade, and notes Pospisil as the first anthropologist among the Mee.",
+   "sensitivity": "none",
+   "fetched": "https://brill.com/downloadpdf/view/journals/bki/158/4/article-p837_13.pdf"
+  },
+  {
+   "title": "Revitalisation movements among Me, Damal and Western Dani, Central Highlands, Papua, Indonesia",
+   "authors": [
+    "Anton Ploeg"
+   ],
+   "year": 2007,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "mee",
+    "dani"
+   ],
+   "topics": [
+    "religion",
+    "history",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "http://hdl.handle.net/2066/56586",
+   "summary": "Abstract: documents responses of four western highland ethnic groups to missionisation, mainly in the 1950s-60s, ranging from non-response to conversion and revitalisation movements, and says a syncretistic church organisation flourished among the Me. The paper contains accounts of movement beliefs and is flagged for sacred content.",
+   "sensitivity": "sacred",
+   "fetched": "http://hdl.handle.net/2066/56586"
+  },
+  {
+   "title": "Doctoral study of Mee religion and history (Zakheus Pakage and the Wege community), reviewed as 'Perziarahan Etnografi Mee dalam Disertasi Benny Giay'",
+   "authors": [
+    "Benny Giay (author of dissertation, completed 1991)",
+    "Jubi (review)"
+   ],
+   "year": 2022,
+   "kind": "thesis",
+   "language": "id",
+   "about": [
+    "mee",
+    "paniai"
+   ],
+   "topics": [
+    "religion",
+    "history",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://jubi.id/opini/2022/perziarahan-etnografi-dan-sejarah-orang-mee-dalam-disertasi-benny-giay/",
+   "summary": "Jubi's review states that Papuan theologian Benny Giay completed a doctoral study among the Mee of Paniai in 1991 using combined anthropological, theological and historical methods rather than a 'cargo cult' frame. It reports his conclusion that the Zakheus teaching and Wege community were an indigenous theological response to Christian (ogai) contact, a form of social and political resistance, and an assertion of Mee identity.",
+   "sensitivity": "sacred",
+   "fetched": "https://jubi.id/opini/2022/perziarahan-etnografi-dan-sejarah-orang-mee-dalam-disertasi-benny-giay/"
+  },
+  {
+   "title": "The Me, the Moni, and the Wodani: Three West New Guinea Highland Cultures",
+   "authors": [
+    "Kal Muller"
+   ],
+   "year": 2023,
+   "kind": "ethnography",
+   "language": "en",
+   "about": [
+    "mee",
+    "moni",
+    "wolani",
+    "paniai",
+    "intan-jaya"
+   ],
+   "topics": [
+    "history",
+    "economy",
+    "religion",
+    "land"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "Galda Verlag, 208 pp. (https://www.galda-verlag.de/product/the-me-the-moni-and-the-wodani-three-west-new-guinea-highland-cultures/)",
+   "summary": "Photographic and ethnographic overview from the publisher's description and contents list. Chapters cover early history, Enarotali outpost, WWII and Taskforce Oaktree, competing religions, the Utagame deity and spirits, cowrie wealth and the juwo pig feast, Moni salt, land rights, Wodani murder compensation and a millenarian movement. Some cultural material was written by Mee and Moni authors.",
+   "sensitivity": "sacred",
+   "fetched": "https://www.galda-verlag.de/product/the-me-the-moni-and-the-wodani-three-west-new-guinea-highland-cultures/"
+  },
+  {
+   "title": "The Kamoro (New Guinea Communications vol. 10)",
+   "authors": [
+    "Kal Muller"
+   ],
+   "year": 2022,
+   "kind": "ethnography",
+   "language": "en",
+   "about": [
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "history",
+    "economy",
+    "art"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "Galda Verlag, 192 pp. (https://www.galda-verlag.de/product/the-kamoro-new-guinea-communications-volume-10/)",
+   "summary": "Publisher description of a book on the roughly 18,000 Kamoro of the Arafura coast, partly inside the Freeport contract-of-work area. The author, who says he ran a Freeport-funded Kamoro culture and carving programme for 20 years, draws on explorers, missionaries and anthropologists. Note that Blesia et al. report Mimika informants who dislike the name Kamoro.",
+   "sensitivity": "none",
+   "fetched": "https://www.galda-verlag.de/product/the-kamoro-new-guinea-communications-volume-10/"
+  },
+  {
+   "title": "Enkele aspecten van de Mimika-cultuur (Nederlands Zuidwest Nieuw Guinea)",
+   "authors": [
+    "Jan Pouwer"
+   ],
+   "year": 1955,
+   "kind": "thesis",
+   "language": "nl",
+   "about": [
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "history",
+    "economy",
+    "land",
+    "religion"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.papuaerfgoed.org/en/BK/23/22 (PDF); Den Haag: Staatsdrukkerij 1955",
+   "summary": "Pouwer's PhD thesis from 1951-53 fieldwork (15 months) giving a social-anthropological analysis of Mimika (Kamoro) culture, with emphasis on social structure, sago ground, fish creek and canoe ownership, reciprocity and cultural change. The preface says it is only the first part of an ethnography; Father Zegwaard's recorded myths were consulted.",
+   "sensitivity": "sacred",
+   "fetched": "https://www.papuaerfgoed.org/sites/default/files/collectie/files/2005-07/Pouwer_1955%20Mimika.pdf"
+  },
+  {
+   "title": "Controlling the Dragon: An ethno-historical analysis of social engagement among the Kamoro of South-West New Guinea",
+   "authors": [
+    "Todd S. Harple"
+   ],
+   "year": 2000,
+   "kind": "thesis",
+   "language": "en",
+   "about": [
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "history",
+    "oral-tradition",
+    "economy",
+    "land"
+   ],
+   "access": "open",
+   "licence": "none stated (ANU Open Research)",
+   "where": "https://openresearch-repository.anu.edu.au/items/051d8f71-22b1-46e8-8e7c-0a64d4729184",
+   "summary": "ANU thesis on Kamoro strategies of engagement with outsiders from the seventeenth century, focusing on the twentieth. It argues that amoko-kwere ancestral narratives frame ideas of exchange and the withholding of foreign wealth (kata), which shapes views of the Indonesian state and Freeport's use of Kamoro land for tailings. Contains discussion of origin narratives.",
+   "sensitivity": "sacred",
+   "fetched": "https://openresearch-repository.anu.edu.au/items/051d8f71-22b1-46e8-8e7c-0a64d4729184"
+  },
+  {
+   "title": "Transacting Creations: The Kamoro Arts Festival (1998-2006) in Papua",
+   "authors": [
+    "Karen Jacobs"
+   ],
+   "year": 2011,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "art",
+    "economy"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "https://doi.org/10.1080/14442213.2011.586358 (Asia Pacific Journal of Anthropology)",
+   "summary": "Abstract: examines the annual festival organised by Freeport between 1998 and 2006 to revive Kamoro culture and to buy carvings for invited guests, and how that format shaped carving production. It treats the carvings as testimonies of historical and political change.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.1080/14442213.2011.586358"
+  },
+  {
+   "title": "Collecting (Kamoro research chapter, open access PDF)",
+   "authors": [
+    "author not shown in fetched excerpt"
+   ],
+   "year": 2012,
+   "kind": "history",
+   "language": "en",
+   "about": [
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "art",
+    "history"
+   ],
+   "access": "open",
+   "licence": "none stated (Sidestone Press open access)",
+   "where": "https://www.sidestone.com/openaccess/9789088900884.pdf",
+   "summary": "Introductory chapter of a Kamoro art-history PhD done within a Leiden Museum Volkenkunde project. It notes Pouwer's 1950s ethnography and Kooijman's 1984 overview, says little anthropology followed until Harple's 1996-98 work, and that the author worked from archives and collections in the Netherlands and UK because Papua fieldwork was uncertain.",
+   "sensitivity": "none",
+   "fetched": "https://www.sidestone.com/openaccess/9789088900884.pdf"
+  },
+  {
+   "title": "Towards a Reconstruction of Proto-Paniai Lakes",
+   "authors": [
+    "Sören E. Tebay"
+   ],
+   "year": 2018,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "mee",
+    "moni",
+    "wolani"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://home.uni-leipzig.de/tebay/Tebay2018ProtoPaniai.pdf",
+   "summary": "Reconstructs the consonant system of Proto-Paniai Lakes, the ancestor of Mee, Wodani and Moni (Trans New Guinea), giving each language's consonant inventory from Doble (1987), Larson and Larson (1958, 1972). It argues Moni is the most innovative of the three.",
+   "sensitivity": "none",
+   "fetched": "https://home.uni-leipzig.de/tebay/Tebay2018ProtoPaniai.pdf"
+  },
+  {
+   "title": "Glottolog 5.3: Moni (moni1261) and ASJP Wolani wordlist (wola1243)",
+   "authors": [
+    "Glottolog editors",
+    "ASJP (wordlist compiled by Julia Bischoffberger)"
+   ],
+   "year": 2025,
+   "kind": "dataset",
+   "language": "en",
+   "about": [
+    "moni",
+    "wolani",
+    "intan-jaya"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "CC BY 4.0 (Glottolog; check)",
+   "where": "https://glottolog.org/resource/languoid/id/moni1261 ; https://asjp.clld.org/languages/WOLANI",
+   "summary": "Glottolog lists Moni as threatened (AES 6b*) with sources including Moxness 2003 and Tebay 2019; ASJP gives Wolani about 5,000 speakers, classified Trans-New Guinea, Paniai Lakes, with a wordlist.",
+   "sensitivity": "none",
+   "fetched": "https://asjp.clld.org/languages/WOLANI"
+  },
+  {
+   "title": "TransNewGuinea.org source: Larson & Larson (1972), The Ekagi-Wodani-Moni language family of West Irian",
+   "authors": [
+    "G.F. Larson",
+    "M.O. Larson"
+   ],
+   "year": 1972,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "mee",
+    "moni",
+    "wolani"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated (database CC licence; check)",
+   "where": "http://transnewguinea.org/source/larson-larson-1972?page=4 (original: Irian 1(3):80-95)",
+   "summary": "Database page listing comparative wordlists drawn from the 1972 Irian article for Wolani (Upper Mbijandoga) and Moni (Kemandoga) dialects. Companion pages give Voorhoeve (1975) lexicons for Moni and Wolani.",
+   "sensitivity": "none",
+   "fetched": "http://transnewguinea.org/source/larson-larson-1972?page=4"
+  },
+  {
+   "title": "Suku Mee (tinjauan sosial budaya): penelitian di Desa Idakebo, Kamuu Utara, Dogiyai",
+   "authors": [
+    "Fransiska Tebai",
+    "Resmiyati Yunus",
+    "Yusni Pakaya"
+   ],
+   "year": 2014,
+   "kind": "thesis",
+   "language": "id",
+   "about": [
+    "mee",
+    "dogiyai"
+   ],
+   "topics": [
+    "religion",
+    "land"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://repository.ung.ac.id/skripsi/show/231409101/suku-mee-tinjauan-sosial-budayasuatu-penelitian-di-desa-idakebo-kecamatan-kamuu-utara-kabupaten-dogiyai-propinsi-papua.html",
+   "summary": "Undergraduate thesis (Universitas Negeri Gorontalo, History Education) by a Mee author using a qualitative phenomenological method on Mee socio-cultural life in Idakebo village, Dogiyai. The abstract stresses culture as ancestral heritage guiding life.",
+   "sensitivity": "none",
+   "fetched": "https://repository.ung.ac.id/skripsi/show/231409101/suku-mee-tinjauan-sosial-budayasuatu-penelitian-di-desa-idakebo-kecamatan-kamuu-utara-kabupaten-dogiyai-propinsi-papua.html"
+  },
+  {
+   "title": "Makna teologis noken dalam budaya orang Mee",
+   "authors": [
+    "Silfester Bobii"
+   ],
+   "year": null,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "mee"
+   ],
+   "topics": [
+    "religion",
+    "art"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://ejournal-stfxambon.id/index.php/FeR/article/view/3",
+   "summary": "Literature-based theological article on the meaning of the noken (net bag) in Mee culture, arguing it carries deep theological meaning and criticising the noken voting system. Year not shown in the fetched record.",
+   "sensitivity": "none",
+   "fetched": "https://ejournal-stfxambon.id/index.php/FeR/article/view/3"
+  },
+  {
+   "title": "Witogai Kamuu, Menemukan Wajah Allah yang 'Memanggil Pulang': telaah teologis praktek rekonsiliasi suku Mee",
+   "authors": [
+    "Emanuel Richardus Buang Lela"
+   ],
+   "year": 2019,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "mee"
+   ],
+   "topics": [
+    "religion",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://adityawacana.id/ojs/index.php/jpf/en/article/view/127",
+   "summary": "Theological reading of witogai kamuu, a Mee reconciliation rite, aimed at improving reconciliation practice and addressed to the local Catholic Church. The article discusses the rite's meaning; community-held ritual detail should be checked with Mee custodians before reuse.",
+   "sensitivity": "sacred",
+   "fetched": "https://adityawacana.id/ojs/index.php/jpf/en/article/view/127"
+  },
+  {
+   "title": "Zoological results of the Dutch New Guinea expedition, 1939. No. 51: The Birds",
+   "authors": [
+    "G.C.A. Junge"
+   ],
+   "year": 1953,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "paniai",
+    "mee"
+   ],
+   "topics": [
+    "ecology"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "http://repository.naturalis.nl/record/317787",
+   "summary": "Report on birds collected during the 1939 Wissel Lakes expedition by H. Boschma from mid-August to mid-November, plus a small Van Eechoud collection. It reports that bird collecting relied heavily on help from local people and that the avifauna is nearly related to that of the Snow Mountains.",
+   "sensitivity": "none",
+   "fetched": "http://repository.naturalis.nl/record/317787"
+  },
+  {
+   "title": "Strangers in their own land: impacts of mining felt acutely by an original population",
+   "authors": [
+    "Jhon Blesia et al."
+   ],
+   "year": null,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "mimika",
+    "kamoro",
+    "amungme"
+   ],
+   "topics": [
+    "economy",
+    "land",
+    "displacement"
+   ],
+   "access": "open",
+   "licence": "none stated (University of Canterbury repository)",
+   "where": "https://ir.canterbury.ac.nz/server/api/core/bitstreams/50856f4f-fc89-4470-a7d3-58a020c35755/content",
+   "summary": "Qualitative study based on fieldwork in 2016-17 and 2021-22 with 39 Mimika (Akwere Kamoro) people. Authors report that informants describe territorial, demographic, ethnonymic and culturally genocidal impacts of 60 years of mining and that some prefer the name 'Mimika People' to 'Kamoro'. Researchers could not get permits to visit Amungsa or Tembagapura. Journal and year not shown in fetched text.",
+   "sensitivity": "conflict",
+   "fetched": "https://ir.canterbury.ac.nz/server/api/core/bitstreams/50856f4f-fc89-4470-a7d3-58a020c35755/content"
+  },
+  {
+   "title": "The Amungme, Kamoro & Freeport: How Indigenous Papuans Have Resisted the World's Largest Gold and Copper Mine",
+   "authors": [
+    "Cultural Survival (author not shown)"
+   ],
+   "year": 2010,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "amungme",
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "economy",
+    "land",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.culturalsurvival.org/publications/cultural-survival-quarterly/amungme-kamoro-freeport-how-indigenous-papuans-have",
+   "summary": "Cultural Survival Quarterly article describing Amungme highlanders and Kamoro lowlanders as original landowners of the Freeport operating area at Timika, who numbered several thousand in clan-based villages when Freeport arrived in 1967. Only the opening was read.",
+   "sensitivity": "none",
+   "fetched": "https://www.culturalsurvival.org/publications/cultural-survival-quarterly/amungme-kamoro-freeport-how-indigenous-papuans-have"
+  },
+  {
+   "title": "Indigenous Development and Self-Determination in West Papua: socio-political and economic impacts of mining upon the Amungme and Kamoro communities",
+   "authors": [
+    "Toru Hisada"
+   ],
+   "year": 2007,
+   "kind": "thesis",
+   "language": "en",
+   "about": [
+    "amungme",
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "economy",
+    "politics",
+    "land"
+   ],
+   "access": "open",
+   "licence": "none stated (University of Waikato)",
+   "where": "https://hdl.handle.net/10289/2457",
+   "summary": "Thesis on mining impacts on Amungme and Kamoro communities of Tembagapura and Timika, with population estimates (for example about 13,000 Amungme at time of writing). Only the opening of the record was read.",
+   "sensitivity": "none",
+   "fetched": "https://hdl.handle.net/10289/2457"
+  },
+  {
+   "title": "Freeport, the Environment, and the Amungme: An Environmental History of the Freeport McMoRan Copper and Gold Mine in Papua, Indonesia",
+   "authors": [
+    "Kole A. Dawson"
+   ],
+   "year": null,
+   "kind": "thesis",
+   "language": "en",
+   "about": [
+    "amungme",
+    "kamoro",
+    "mimika"
+   ],
+   "topics": [
+    "ecology",
+    "economy",
+    "history"
+   ],
+   "access": "open",
+   "licence": "none stated (Boise State ScholarWorks)",
+   "where": "https://scholarworks.boisestate.edu/cgi/viewcontent.cgi?article=2936&context=td",
+   "summary": "Master's thesis in environmental history arguing that Freeport's remediation efforts after 1990s NGO criticism were a veneer while social and environmental records worsened. The abstract notes the mine began operating one of the world's largest gold mines in 1988 with almost no environmental regulation. Year not shown in fetched record.",
+   "sensitivity": "none",
+   "fetched": "https://scholarworks.boisestate.edu/cgi/viewcontent.cgi?article=2936&context=td"
+  },
+  {
+   "title": "Paying for Protection: The Freeport mine and the Indonesian security forces",
+   "authors": [
+    "Dave Lipsey (Global Witness)"
+   ],
+   "year": 2005,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "mimika",
+    "amungme",
+    "kamoro"
+   ],
+   "topics": [
+    "conflict",
+    "economy",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://cdn2.globalwitness.org/archive/files/import/missing%20docs/paying%20for%20protection.pdf",
+   "summary": "Global Witness reports that Freeport disclosed paying US$4.7 million (2001) and US$5.6 million (2002) for government-provided security, and that it appears Freeport Indonesia also made payments to individual military and police officers, with a series of payments totalling US$247,705 to one named general between 2001 and 2003. Freeport McMoRan denied suggestions of extortion or corrupt payments. Individual allegations belong to the report and are not established findings.",
+   "sensitivity": "conflict",
+   "fetched": "https://cdn2.globalwitness.org/archive/files/import/missing%20docs/paying%20for%20protection.pdf"
+  },
+  {
+   "title": "Below a Mountain of Wealth, a River of Waste",
+   "authors": [
+    "Jane Perlez",
+    "Raymond Bonner"
+   ],
+   "year": 2005,
+   "kind": "news-investigation",
+   "language": "en",
+   "about": [
+    "mimika",
+    "amungme",
+    "kamoro"
+   ],
+   "topics": [
+    "ecology",
+    "conflict",
+    "economy"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "https://www.nytimes.com/2005/12/27/world/asia/below-a-mountain-of-wealth-a-river-of-waste.html",
+   "summary": "New York Times investigation reporting that almost a billion tons of mine waste had been dumped into a jungle river and describing, from months of reporting, contacts and financial support between Freeport and the Indonesian military.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.nytimes.com/2005/12/27/world/asia/below-a-mountain-of-wealth-a-river-of-waste.html"
+  },
+  {
+   "title": "Executive Summary: External Environmental Management Audit PT Freeport Indonesia 2011",
+   "authors": [
+    "LPPM ITB with MWH (auditors); PT Freeport Indonesia (publisher)"
+   ],
+   "year": 2011,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "mimika",
+    "kamoro",
+    "amungme"
+   ],
+   "topics": [
+    "ecology"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://fcx.com/sites/fcx/files/documents/sustainability/audits/Executive_Summary_Audit_PTFI_2011.pdf",
+   "summary": "Company-commissioned sixth external audit (field work 6-13 June 2011) on tailings, waste rock, biodiversity, waste, water and air. It concludes tailings management improved since 2008 and that tailings disposition met Kepmen LH 431/2008 standards, while noting groundwater links to Timika needed more monitoring; the audit did not address social, economic or cultural issues.",
+   "sensitivity": "none",
+   "fetched": "https://fcx.com/sites/fcx/files/documents/sustainability/audits/Executive_Summary_Audit_PTFI_2011.pdf"
+  },
+  {
+   "title": "PT Freeport Indonesia and its tail of violations in Papua: human, labour and environmental rights",
+   "authors": [
+    "TAPOL"
+   ],
+   "year": 2020,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "mimika",
+    "amungme",
+    "kamoro"
+   ],
+   "topics": [
+    "ecology",
+    "economy",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://tapol.org/sites/default/files/PT_Freeport_Indo_tail_of_violations_in_Papua_Dec20.pdf",
+   "summary": "TAPOL reports that the mine dumps over 200,000 tonnes of tailings per day into the Otomina and Ajkwa rivers, covering 166 sq km, and estimates from satellite imagery that at least 138 sq km is affected. Figures differ from the 2011 company audit's compliance finding and from Mimika's Coastal Dystopia (ACER), which reports 80.7% of tailings deposited in the deposition area.",
+   "sensitivity": "conflict",
+   "fetched": "https://tapol.org/sites/default/files/PT_Freeport_Indo_tail_of_violations_in_Papua_Dec20.pdf"
+  },
+  {
+   "title": "Mimika's Coastal Dystopia: Besieged by Freeport Indonesia's Mine Tailings Slurry",
+   "authors": [
+    "ACER"
+   ],
+   "year": 2018,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "mimika",
+    "kamoro"
+   ],
+   "topics": [
+    "ecology",
+    "health"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://londonminingnetwork.org/wp-content/uploads/2018/04/Mimikas-Coastal-Dystopianew.pdf",
+   "summary": "Report citing the company's RKL-RPL 2009 as saying 80.7% of tailings are deposited in the deposition area, and calculating that at least 19.3% flows to the coast and estuary (200,000 to 280,000 tons in one year). Only a snippet was read.",
+   "sensitivity": "none",
+   "fetched": "https://londonminingnetwork.org/wp-content/uploads/2018/04/Mimikas-Coastal-Dystopianew.pdf"
+  },
+  {
+   "title": "Investigasi: Limbah Freeport 'membunuh' Sungai Ajkwa (Jubi, citing BPK audit of Freeport Contract of Work 2013-2015)",
+   "authors": [
+    "Jubi"
+   ],
+   "year": 2019,
+   "kind": "news-investigation",
+   "language": "id",
+   "about": [
+    "mimika"
+   ],
+   "topics": [
+    "ecology"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://arsip.jubi.id/investigasi-limbah-freeport-aeoemembunuhae%c2%9d-sungai-ajkwa/",
+   "summary": "Jubi reports that the state audit agency BPK said Freeport failed to manage waste flowing into four large rivers, citing the audit titled 'Pemeriksaan dengan Tujuan Tertentu atas Kontrak Karya PT Freeport Indonesia 2013-2015'. Only a snippet was read.",
+   "sensitivity": "none",
+   "fetched": "https://arsip.jubi.id/investigasi-limbah-freeport-aeoemembunuhae%c2%9d-sungai-ajkwa/"
+  },
+  {
+   "title": "Komnas HAM press statement on interim findings, Paniai violence of 7-8 December 2014",
+   "authors": [
+    "Komnas HAM"
+   ],
+   "year": 2014,
+   "kind": "report",
+   "language": "id",
+   "about": [
+    "paniai"
+   ],
+   "topics": [
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated (reposted on lapago.blogspot.com)",
+   "where": "https://lapago.blogspot.com/2015/01/hasil-investigasi-sementara-komnas-ham.html",
+   "summary": "Komnas HAM reports from its 12-15 December 2014 field visit that at least four people were killed by gunfire at Karel Gobay field on 8 December and that live ammunition was used; it reports children were beaten at a Christmas post on 7 December. It says police and military gave inconsistent accounts, that the military declined to speak to its team, and that there was not enough evidence of a threat to justify excessive force. It lists the injured and the police and soldiers hurt by stones.",
+   "sensitivity": "conflict",
+   "fetched": "https://lapago.blogspot.com/2015/01/hasil-investigasi-sementara-komnas-ham.html"
+  },
+  {
+   "title": "Soldiers had role in shooting: Komnas HAM (Paniai)",
+   "authors": [
+    "Margareth S. Aritonang (Jakarta Post)"
+   ],
+   "year": 2014,
+   "kind": "news-investigation",
+   "language": "en",
+   "about": [
+    "paniai"
+   ],
+   "topics": [
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.thejakartapost.com/news/2014/12/23/soldiers-had-role-shooting-komnas-ham",
+   "summary": "Jakarta Post reports Komnas HAM's finding that soldiers were the primary cause of the Paniai incident, which left five civilians dead and about 30 injured according to the paper. TNI spokesman said its own team was investigating and that it had not received a Komnas HAM request. Compare figures: Komnas HAM interim statement says four dead; BBC Indonesia (2022) reports four dead and 21 injured; the 2017 UPR joint submission lists 17 injured.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.thejakartapost.com/news/2014/12/23/soldiers-had-role-shooting-komnas-ham"
+  },
+  {
+   "title": "'Don't bother, just let him die': Killing with impunity in Papua",
+   "authors": [
+    "Amnesty International"
+   ],
+   "year": 2018,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "paniai",
+    "mee",
+    "papua"
+   ],
+   "topics": [
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.amnesty.org/en/wp-content/uploads/2021/05/ASA2181982018ENGLISH.pdf",
+   "summary": "Amnesty International report on killings by security forces in Papua and impunity. The fetched excerpt describes the 8 December 2014 protest at Enarotali after alleged beating of 11 children the day before; the rest of the report was not read.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.amnesty.org/en/wp-content/uploads/2021/05/ASA2181982018ENGLISH.pdf"
+  },
+  {
+   "title": "Komnas HAM Tetapkan Peristiwa Paniai Masuk Pelanggaran HAM Berat; and BBC Indonesia on the Attorney General's suspect designation (2022)",
+   "authors": [
+    "Kompas.com (Haryanti Puspa Sari)",
+    "BBC News Indonesia"
+   ],
+   "year": 2020,
+   "kind": "news-investigation",
+   "language": "id",
+   "about": [
+    "paniai"
+   ],
+   "topics": [
+    "conflict",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://nasional.kompas.com/read/2020/02/15/12412111/komnas-ham-tetapkan-peristiwa-paniai-masuk-pelanggaran-ham-berat ; https://www.bbc.com/indonesia/indonesia-60904780",
+   "summary": "Kompas reports Komnas HAM decided at a special plenary on 3 February 2020 that the 7-8 December 2014 Paniai event was a gross human rights violation. BBC Indonesia (29 March 2022) reports four civilians shot dead and 21 injured and the Attorney General naming a military member as suspect; only snippets were read, and later court outcomes were not verified.",
+   "sensitivity": "conflict",
+   "fetched": "https://nasional.kompas.com/read/2020/02/15/12412111/komnas-ham-tetapkan-peristiwa-paniai-masuk-pelanggaran-ham-berat"
+  },
+  {
+   "title": "Indonesia: Investigate police's use of lethal force against Papuans in Deiyai (Amnesty public statement); Amnesty Indonesia joint statement",
+   "authors": [
+    "Amnesty International",
+    "Amnesty International Indonesia, Imparsial, KontraS, LBH Jakarta"
+   ],
+   "year": 2017,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "deiyai"
+   ],
+   "topics": [
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.amnesty.org/en/wp-content/uploads/2021/05/ASA2168932017ENGLISH.pdf ; https://www.amnesty.id/kabar-terbaru/pernyataan-sikap/pihak-berwenang-harus-menginvestigasi-penggunaan-kekuatan-mematikan-oleh-aparat-kepolisian-di-deiyai/08/2017/",
+   "summary": "Amnesty reports that on 1 August 2017 in Oneibo, Deiyai, police fired into a crowd after unrest at a construction company compound, killing one man and wounding at least ten. It reports the police spokesperson said rubber bullets and warning shots were used, and that the Papua police chief later said his personnel allegedly violated procedure. It calls for an independent investigation.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.amnesty.org/en/wp-content/uploads/2021/05/ASA2168932017ENGLISH.pdf"
+  },
+  {
+   "title": "Deiyai 1 August 2017: coverage by Jakarta Post, Jubi, Asian Human Rights Commission",
+   "authors": [
+    "Nethy Dharma Somba",
+    "Abeth You",
+    "AHRC"
+   ],
+   "year": 2017,
+   "kind": "news-investigation",
+   "language": "en",
+   "about": [
+    "deiyai"
+   ],
+   "topics": [
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.thejakartapost.com/news/2017/08/03/rights-body-investigate-fatal-shooting-deiyai.html ; https://arsip.jubi.id/komnas-ham-sampaikan-kasus-deiyai-ke-kapolri/ ; http://www.humanrights.asia/news/urgent-appeals/AHRC-UAC-106-2017/",
+   "summary": "Jakarta Post reports a pastor's account of at least eight injured and Papua Police saying only rubber bullets were used; Jubi reports Komnas HAM investigated on 8-12 August and that the regional police chief said a sub-district police chief and eight Brimob members allegedly breached procedure; AHRC reports three residents in critical condition. Figures on injured differ (eight, ten, 'some', and 17 in a later Jubi quote attributed to Komnas HAM).",
+   "sensitivity": "conflict",
+   "fetched": "https://www.thejakartapost.com/news/2017/08/03/rights-body-investigate-fatal-shooting-deiyai.html"
+  },
+  {
+   "title": "Scorched Earth: Security Force Raids and Forced Displacement in Intan Jaya, West Papua",
+   "authors": [
+    "Human Rights Monitor"
+   ],
+   "year": 2025,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "intan-jaya",
+    "moni"
+   ],
+   "topics": [
+    "conflict",
+    "displacement",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://humanrightsmonitor.org/wp-content/uploads/2025/01/HRM_Scorched_Earth_Special_Report_2024.pdf",
+   "summary": "HRM reports that human rights defenders documented at least 60 extrajudicial executions in Intan Jaya between February 2020 and June 2024, and that raids on four villages on 9-11 April 2023 killed four villagers, burned 28 houses and displaced over 3,000 people. It says the pattern may amount to crimes against humanity and urges Komnas HAM investigation; it reports military spokespersons denied the allegations and said the TPNPB burned the houses.",
+   "sensitivity": "conflict",
+   "fetched": "https://humanrightsmonitor.org/wp-content/uploads/2025/01/HRM_Scorched_Earth_Special_Report_2024.pdf"
+  },
+  {
+   "title": "Penyelidikan Komnas HAM atas peristiwa kematian Pendeta Yeremia Zanambani di Distrik Hitadipa, Intan Jaya",
+   "authors": [
+    "Komnas HAM"
+   ],
+   "year": 2020,
+   "kind": "report",
+   "language": "id",
+   "about": [
+    "intan-jaya",
+    "moni"
+   ],
+   "topics": [
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.komnasham.go.id/files/20201123-keterangan-pers-no-046-humas-kh-$8VACE.pdf",
+   "summary": "Komnas HAM press statement reports it concluded the Protestant pastor killed on 19 September 2020 was tortured and/or subject to extrajudicial killing, that he was shot at under one metre, and that it suspects members of the army post at Hitadipa; it also reports evidence handling problems. These are Komnas HAM's suspicions, not court findings; the government fact-finding team (TGPF) concluded more cautiously that state personnel may have been involved while allowing third-party involvement.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.komnasham.go.id/files/20201123-keterangan-pers-no-046-humas-kh-$8VACE.pdf"
+  },
+  {
+   "title": "Membandingkan temuan TGPF dan Komnas HAM soal kematian Pendeta Yeremia",
+   "authors": [
+    "Kompas.com (Achmad Nasrudin Yahya)"
+   ],
+   "year": 2020,
+   "kind": "news-investigation",
+   "language": "id",
+   "about": [
+    "intan-jaya"
+   ],
+   "topics": [
+    "conflict",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://nasional.kompas.com/read/2020/11/04/06182121/membandingkan-temuan-tgpf-dan-komnas-ham-soal-kematian-pendeta-yeremia",
+   "summary": "Kompas compares the two inquiries: Komnas HAM explicitly reports suspected involvement of TNI soldiers; the government-formed TGPF reported only 'indications of involvement of apparatus' and also a possibility of third parties. The TGPF questioned 42 witnesses and said no eyewitness had seen the shooting. Jakarta Post separately reports the TPNPB confirmed attacking TGPF members in Mamba village.",
+   "sensitivity": "conflict",
+   "fetched": "https://nasional.kompas.com/read/2020/11/04/06182121/membandingkan-temuan-tgpf-dan-komnas-ham-soal-kematian-pendeta-yeremia"
+  },
+  {
+   "title": "Human Rights and Conflict Escalation in West Papua (ICP report with 2019 editorial update)",
+   "authors": [
+    "International Coalition for Papua (ICP)"
+   ],
+   "year": 2019,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "nduga",
+    "intan-jaya",
+    "mimika",
+    "paniai"
+   ],
+   "topics": [
+    "conflict",
+    "casualties",
+    "displacement"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://perpustakaan.elsam.or.id/repository/HumanRightsPapua2019-ICP.pdf",
+   "summary": "ICP reports that human rights defenders counted 189 civilian fatalities from Nduga between early December 2018 and 10 October 2019 and that the government set up no camp so exact displacement is unknown. Covers 2017-2018 developments in its main body.",
+   "sensitivity": "conflict",
+   "fetched": "https://perpustakaan.elsam.or.id/repository/HumanRightsPapua2019-ICP.pdf"
+  },
+  {
+   "title": "IDP Update November 2026: Security operations and new troop deployments trigger further displacements across West Papua",
+   "authors": [
+    "Human Rights Monitor (Documentation Centre)"
+   ],
+   "year": 2026,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "intan-jaya",
+    "nduga",
+    "puncak",
+    "mimika",
+    "paniai",
+    "yahukimo",
+    "pegunungan-bintang"
+   ],
+   "topics": [
+    "displacement",
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://humanrightsmonitor.org/reports/idp-update-november26-security-operations-and-new-troop-deployments-trigger-further-displacements-across-west-papua/",
+   "summary": "Human Rights Monitor reports a running table of internal displacement by regency since 2018, with a total of more than 128,369 IDPs in West Papua as of November 2026. It lists, for example, Nduga 58,981 IDPs since December 2018, Intan Jaya 12,859 since March 2025, Puncak 14,003 from April 2026, Pegunungan Bintang (Kiwirok) 752 and Oksop 4,584, Yahukimo, Mimika (Jila, Tembagapura) and Paniai (Aweida, over 1,056 in late 2026). It cites sources such as the Intan Jaya Student and Youth Movement for school and clinic closures; figures are HRM's compilation of local reports and are not government figures.",
+   "sensitivity": "conflict",
+   "fetched": "https://humanrightsmonitor.org/reports/idp-update-november26-security-operations-and-new-troop-deployments-trigger-further-displacements-across-west-papua/"
+  },
+  {
+   "title": "2019 Country Reports on Human Rights Practices: Indonesia (Papua sections)",
+   "authors": [
+    "U.S. Department of State (via U.S. Embassy Jakarta)"
+   ],
+   "year": 2019,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "nduga",
+    "jayawijaya",
+    "dogiyai",
+    "paniai"
+   ],
+   "topics": [
+    "conflict",
+    "displacement",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated (US government publication)",
+   "where": "https://id.usembassy.gov/2019-country-reports-on-human-rights-practices-indonesia/",
+   "summary": "The US State Department reports that in December 2018 the OPM killed 19 civilians and one soldier at a road construction site in Nduga, and that officials estimated 53 conflict-related deaths afterwards while civil society estimated far more. It reports the Ministry of Social Affairs confirmed 3,000 displaced while media cited up to 20,000; that 33 died in the 23 September 2019 Wamena riots; and that the NGO Human Rights Defenders claimed at least six protesters were killed at Waghete on 28 August 2019, while the government said security forces acted lawfully.",
+   "sensitivity": "conflict",
+   "fetched": "https://id.usembassy.gov/2019-country-reports-on-human-rights-practices-indonesia/"
+  },
+  {
+   "title": "Inventaris van het archief van het Kantoor voor Bevolkingszaken in Nederlands Nieuw-Guinea: Rapportenarchief, (1852) 1951-1962",
+   "authors": [
+    "P. Nienhuis (compiler of finding aid)"
+   ],
+   "year": 1968,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "language",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "Finding aid states no copyright restrictions on reproduction; some items physically restricted by condition",
+   "where": "Nationaal Archief, Den Haag, toegang 2.10.25 (https://www.nationaalarchief.nl/onderzoeken/archief/2.10.25)",
+   "summary": "Archive of the Office of Population Affairs in Dutch New Guinea, set up in 1951 to study the indigenous population ethnologically, socio-economically and linguistically. It holds notes, reports, handover memoranda (memories van overgave) and literature extracts, 923 inventory numbers over 5.90 m, mostly Dutch with some Malay, with an area breakdown by afdeling including Hollandia. Described as fully public.",
+   "sensitivity": "none",
+   "fetched": "https://www.nationaalarchief.nl/onderzoeken/archief/2.10.25"
+  },
+  {
+   "title": "Collection of Memories van overgave of Dutch New Guinea (KITLV)",
+   "authors": [
+    "KITLV (collection)"
+   ],
+   "year": 1962,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "none stated; conditions on Leiden University Libraries website",
+   "where": "Leiden University Libraries, Bijzondere Collecties, D H 1172 (https://collectionguides.universiteitleiden.nl/resources/ubl415); originals at Nationaal Archief 2.10.39",
+   "summary": "35 items of handover memoranda written by Dutch administrators for their successors, covering 1916-1962, partly originals and partly microfiche. The guide explains that these memoranda gave a general overview of the state of a region and that copies went to the Ministry of Colonies and the Koloniaal Instituut.",
+   "sensitivity": "none",
+   "fetched": "https://collectionguides.universiteitleiden.nl/resources/ubl415"
+  },
+  {
+   "title": "Collection of demographics and anthropology in Dutch New Guinea (KITLV)",
+   "authors": [
+    "KITLV (collection); donated by A.A. Gerbrands"
+   ],
+   "year": 1964,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "migration",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "none stated; conditions on Leiden University Libraries website",
+   "where": "Leiden University Libraries, Bijzondere Collecties, D H 1178 (https://collectionguides.universiteitleiden.nl/resources/ubl335)",
+   "summary": "41 folders (1950-1964) of documents drawn up by Dutch officials for the Office of Population Affairs and for committees and congresses such as the South Pacific Commission and the Pacific Science Congress. Material is in Dutch and English and is consulted in the Leiden reading room.",
+   "sensitivity": "none",
+   "fetched": "https://collectionguides.universiteitleiden.nl/resources/ubl335"
+  },
+  {
+   "title": "Frans H. Peters collection (KITLV)",
+   "authors": [
+    "F.H. Peters (collector)"
+   ],
+   "year": 1959,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "none stated",
+   "where": "Leiden University Libraries, Bijzondere Collecties, D H 1256 (https://collectionguides.universiteitleiden.nl/resources/ubl358)",
+   "summary": "31 folders (1926-1959) on New Guinea, mainly administrative matters, handover memoranda and the diaries of J. Hoogland. Peters worked as a Dutch administrator in New Guinea from 1952 to 1962; the collection was donated to KITLV in 1992.",
+   "sensitivity": "none",
+   "fetched": "https://collectionguides.universiteitleiden.nl/resources/ubl358"
+  },
+  {
+   "title": "Stichting Papua Erfgoed: collection and document repository",
+   "authors": [
+    "Stichting Papua Erfgoed"
+   ],
+   "year": 2024,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "art",
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated (items individually; check each)",
+   "where": "https://www.papuaerfgoed.org/nl/papua_erfgoed",
+   "summary": "Dutch foundation site cataloguing artefacts from Papua held in Dutch collections and hosting scanned PDFs of many older Dutch-language books and theses. Photographs are on Flickr (papuan_cultures) and sound fragments at papuacollecties.nl.",
+   "sensitivity": "none",
+   "fetched": "https://www.papuaerfgoed.org/nl/papua_erfgoed"
+  },
+  {
+   "title": "A historiography of research on West New Guinea's human past",
+   "authors": [
+    "Dylan Gaffney",
+    "Marlin Tolla"
+   ],
+   "year": 2024,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated (published by ANU Press, Terra Australis 58; check)",
+   "where": "https://doi.org/10.22459/ta58.2024.02",
+   "summary": "Chapter surveying the history of research on West New Guinea. The excerpt describes the 1936 sighting of the Wissel (Paniai) Lakes, the Enarotali outpost, the 1939 Le Roux expedition, the Archbold expedition of 1938-39 to the Baliem Valley, and wartime activity of J.V. de Bruijn.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.22459/ta58.2024.02"
+  }
+ ],
+ "unconfirmed": [
+  {
+   "title": "The Kapauku Papuan Economy (Yale University Publications in Anthropology 67)",
+   "authors": [
+    "Leopold J. Pospisil"
+   ],
+   "year": 1963,
+   "why": "Known from memory; no catalogue record fetched."
+  },
+  {
+   "title": "Kapauku Papuans and Their Law",
+   "authors": [
+    "Leopold J. Pospisil"
+   ],
+   "year": 1958,
+   "why": "Known from memory; no record fetched."
+  },
+  {
+   "title": "West Irian: a bibliography (annotated; cited by Ploeg 2002 for Ekagi literature)",
+   "authors": [
+    "J. van Baal",
+    "K.W. Galis",
+    "R.M. Koentjaraningrat"
+   ],
+   "year": 1984,
+   "why": "Seen only as a citation in a fetched article; no catalogue record read."
+  },
+  {
+   "title": "Ekagi grammar (Doble 1987, cited as source of Mee phonology)",
+   "authors": [
+    "Marion Doble"
+   ],
+   "year": 1987,
+   "why": "Seen only as a citation in Tebay 2018; no record fetched."
+  },
+  {
+   "title": "Zakheus Pakage and his communities (Giay, VU Amsterdam, 1995)",
+   "authors": [
+    "Benny Giay"
+   ],
+   "year": 1995,
+   "why": "Cited as 'Giay 1995' in Kirksey and Van Bilsen; exact title/publication details not confirmed."
+  },
+  {
+   "title": "Elusive Justice: Human rights and Freeport / RFK Center report on Mimika",
+   "authors": [
+    "Abigail Abrash"
+   ],
+   "year": 2001,
+   "why": "Known from memory; not found in searches."
+  },
+  {
+   "title": "Drabbe 1947 on Mimika/Kamoro language and name",
+   "authors": [
+    "P. Drabbe"
+   ],
+   "year": 1947,
+   "why": "Cited in Blesia et al.; no record fetched."
+  },
+  {
+   "title": "Freedom in Entangled Worlds: West Papua and the Architecture of Global Power",
+   "authors": [
+    "Eben Kirksey"
+   ],
+   "year": 2012,
+   "why": "Known from memory; no record fetched."
+  }
+ ],
+ "notes": [
+  "Figures disagree. Paniai 7-8 Dec 2014: Komnas HAM interim statement says at least 4 dead; Jakarta Post says 5 dead and about 30 injured; BBC Indonesia says 4 dead and 21 injured; a UPR joint submission says 17 injured. Deiyai 1 Aug 2017: Amnesty says 1 dead and at least 10 wounded; Jakarta Post quotes a pastor saying at least 8 injured; police say only rubber bullets and warning shots were used. Waghete 28 Aug 2019: NGO Human Rights Defenders says at least 6 protesters killed (via US State Dept); government says security forces acted lawfully after an attack.",
+  "Freeport: tailings volume and impact are stated differently by the 2011 company-commissioned audit (compliance with permits), TAPOL 2020 (over 200,000 t/day, 166 sq km covered), ACER (80.7% deposited per RKL-RPL 2009) and Jubi reporting of a BPK audit. Global Witness payment allegations are the NGO's reading of company and other records; Freeport denied extortion or corrupt payments.",
+  "Intan Jaya 2020: Komnas HAM and the government TGPF reached different conclusions on who was responsible; both are reported as suspicions or indications, not court findings.",
+  "Only snippets of many pages were read (search-engine returned page text, not complete documents). Treat every summary as a catalogue-level description and check the source before citing.",
+  "OpenAlex API returned a rate-limit error (no API key; getting one would require an email, so none was requested). No OpenAlex links are given; DOIs are included only where they appeared in fetched records.",
+  "Gaps not reached: Catholic mission (MSC, Franciscan/OFM, Pastor Tillemans, Zegwaard) archives; Delpher newspaper searches; Arsip Nasional RI; UNCEN and UGM theses on Mee, Moni, Wolani (only a Gorontalo thesis was found); ELAR deposits for Mee/Amung/Kamoro; Nabire and Dogiyai specific records; health, sweet potato and sago papers specific to Mee Pago; Amnesty/HRW reports on Mimika killings; OCHA situation reports. Shared archive and displacement entries repeat across the three region files.",
+  "Naming: informants in Blesia et al. report that some lowland people prefer 'Mimika People' to 'Kamoro'; Muller 2022 and Freeport-funded bodies use 'Kamoro'.",
+  "Sacred or restricted: entries flagged 'sacred' contain descriptions of rites, origin narratives or movements; this catalogue does not reproduce them. Where sources state custodianship: Pouwer, Harple and Held-type ethnographies describe clan or ancestor-based narratives (amoko-kwere for Kamoro per Harple); no source in this set states a formal restriction."
+ ]
+}

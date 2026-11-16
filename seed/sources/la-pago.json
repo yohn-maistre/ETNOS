@@ -1,0 +1,820 @@
+{
+ "region": "la-pago",
+ "compiled": "2026-11-16",
+ "sources": [
+  {
+   "title": "Under the Mountain Wall: A Chronicle of Two Seasons in the Stone Age",
+   "authors": [
+    "Peter Matthiessen"
+   ],
+   "year": 1962,
+   "kind": "ethnography",
+   "language": "en",
+   "about": [
+    "dani",
+    "jayawijaya"
+   ],
+   "topics": [
+    "history",
+    "oral-tradition",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated (scan at Stichting Papua Erfgoed; copyright)",
+   "where": "https://www.papuaerfgoed.org/sites/default/files/collectie/files/2005-01/Matthiessen_1962_MountainWall.pdf",
+   "summary": "Narrative account of the 1961 Harvard-Peabody Expedition among the southern Kurelu in the Baliem Valley, from the author's introduction. It says the Baliem was spotted from the air in 1938, no outsider lived there until a government post in 1954, and describes the alliance structure of Kurelu and members of the expedition (Gardner, Heider, Broekhuijse, Rockefeller). Journalistic rather than academic; describes warfare and ritual.",
+   "sensitivity": "sacred",
+   "fetched": "https://www.papuaerfgoed.org/sites/default/files/collectie/files/2005-01/Matthiessen_1962_MountainWall.pdf"
+  },
+  {
+   "title": "Expedition Content and the Harvard Peabody Expedition to Netherlands New Guinea, 1961",
+   "authors": [
+    "MAST/NEMLA (author not shown)"
+   ],
+   "year": 2021,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "dani",
+    "jayawijaya"
+   ],
+   "topics": [
+    "history",
+    "art"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://mast-nemla.org/archive/vol2-no2-2021/expedition_content.pdf",
+   "summary": "Article on the film Dead Birds and the 1961 expedition. The snippet notes the expedition organiser's use of the name 'Dani' and that the group now prefers another name.",
+   "sensitivity": "none",
+   "fetched": "https://mast-nemla.org/archive/vol2-no2-2021/expedition_content.pdf"
+  },
+  {
+   "title": "Archbold Expedition to New Guinea (3rd: 1938-1939), AMNH archives agent record",
+   "authors": [
+    "American Museum of Natural History"
+   ],
+   "year": 1939,
+   "kind": "archive-collection",
+   "language": "en",
+   "about": [
+    "dani",
+    "jayawijaya",
+    "lanny-jaya"
+   ],
+   "topics": [
+    "history",
+    "ecology"
+   ],
+   "access": "archive-only",
+   "licence": "none stated",
+   "where": "American Museum of Natural History archives (https://data.library.amnh.org/archives/agents/corporate_entities/3704)",
+   "summary": "Archive record with a dated chronology of the 1938-39 expedition sponsored by AMNH, the Zoologisch Museum, the Dutch military and Richard Archbold, with camps at Lake Habbema and Bernhard Camp, and Baliem Valley contact with local people in late 1938. It also notes ethnological notes on tribes.",
+   "sensitivity": "none",
+   "fetched": "https://data.library.amnh.org/archives/agents/corporate_entities/3704"
+  },
+  {
+   "title": "A Generous Facilitator (Archbold and the Baliem)",
+   "authors": [
+    "R.A. Morse"
+   ],
+   "year": 2001,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "dani",
+    "jayawijaya"
+   ],
+   "topics": [
+    "history",
+    "ecology"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "https://doi.org/10.1046/j.1523-1739.2001.00093-5.x (Conservation Biology)",
+   "summary": "Biographical article on Richard Archbold. The retrieved opening says the Grand Valley of the Baliem and its large Dani population was seen from the air on 23 June 1938 by the Guba flying boat crew, and that a Baliem camp in December 1938 collected specimens and early observations of inhabitants.",
+   "sensitivity": "none",
+   "fetched": "https://conbio.onlinelibrary.wiley.com/doi/10.1046/j.1523-1739.2001.00093-5.x"
+  },
+  {
+   "title": "Dead Birds: The 'Theater' of War among the Dugum Dani",
+   "authors": [
+    "Paul B. Roscoe"
+   ],
+   "year": 2011,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "dani",
+    "jayawijaya"
+   ],
+   "topics": [
+    "history",
+    "politics"
+   ],
+   "access": "paywalled",
+   "licence": "copyright",
+   "where": "https://doi.org/10.1111/j.1548-1433.2010.01306.x (American Anthropologist)",
+   "summary": "Abstract: argues that battles among the Dugum Dani, often read via the film Dead Birds as ritualised combat, involved real attempts to kill that were blunted by waterlogged terrain, with fighting confined to raised strips. Concerns Dani warfare history, not sacred rites.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.1111/j.1548-1433.2010.01306.x"
+  },
+  {
+   "title": "Some comparative remarks about the Dani of the Baliem valley and the Dani at Bokondini",
+   "authors": [
+    "Anton Ploeg"
+   ],
+   "year": 1966,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "dani",
+    "lanny-jaya"
+   ],
+   "topics": [
+    "history",
+    "language"
+   ],
+   "access": "open",
+   "licence": "CC BY-NC (BKI; check)",
+   "where": "https://doi.org/10.1163/22134379-90002932",
+   "summary": "BKI article comparing Baliem Dani with Dani at Bokondini. Crossref record only; abstract not retrieved.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.1163/22134379-90002932"
+  },
+  {
+   "title": "Revitalisation movements among Me, Damal and Western Dani, Central Highlands, Papua, Indonesia",
+   "authors": [
+    "Anton Ploeg"
+   ],
+   "year": 2007,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "dani",
+    "lani",
+    "mee"
+   ],
+   "topics": [
+    "religion",
+    "history"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "http://hdl.handle.net/2066/56586",
+   "summary": "Abstract: documents how four western highland groups, including the Western Dani, responded to missionisation in the 1950s-60s, ranging from non-response to conversion and revitalisation movements. Flagged for sacred movement content.",
+   "sensitivity": "sacred",
+   "fetched": "http://hdl.handle.net/2066/56586"
+  },
+  {
+   "title": "Glottolog 5.x: Dani family (dani1287) and Lower Grand Valley Dani (lowe1415)",
+   "authors": [
+    "Glottolog editors"
+   ],
+   "year": 2025,
+   "kind": "dataset",
+   "language": "en",
+   "about": [
+    "dani",
+    "jayawijaya"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "CC BY 4.0 (check)",
+   "where": "https://glottolog.org/resource/languoid/id/dani1287 ; https://glottolog.org/resource/languoid/id/lowe1415",
+   "summary": "Glottolog classification pages: the Dani family subclassification cites Larson 1977, and Lower Grand Valley Dani cites Bromley 1966-67 and Giay and Godschalk 1993, with status 'threatened' (AES 6b*).",
+   "sensitivity": "none",
+   "fetched": "https://glottolog.org/resource/languoid/id/lowe1415"
+  },
+  {
+   "title": "TransNewGuinea.org: Yali, Angguruk (Bromley 1967) lexicon",
+   "authors": [
+    "Myron Bromley (source)",
+    "Simon J. Greenhill (database)"
+   ],
+   "year": 1967,
+   "kind": "dataset",
+   "language": "en",
+   "about": [
+    "yali",
+    "yahukimo"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated (database licence; check)",
+   "where": "http://transnewguinea.org/language/yali-angguruk?sort=source_gloss",
+   "summary": "Database page with glottocode angg1239, classified Trans-New Guinea, Dani, Ngalik, listing a wordlist from Bromley (1967).",
+   "sensitivity": "none",
+   "fetched": "http://transnewguinea.org/language/yali-angguruk?sort=source_gloss"
+  },
+  {
+   "title": "Pemetaan bahasa di Kabupaten Yahukimo",
+   "authors": [
+    "Harimansyah",
+    "Syarfina",
+    "Budiono"
+   ],
+   "year": 2023,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "yahukimo",
+    "yali"
+   ],
+   "topics": [
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://doi.org/10.26499/sawer.v29i1.1190",
+   "summary": "Language-mapping article for Yahukimo in the journal Sawerigading. Crossref record only; no abstract retrieved.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.26499/sawer.v29i1.1190"
+  },
+  {
+   "title": "Fragile peace? Reassessing indigenous conflict resolution among the Yali of Yahukimo, Papua",
+   "authors": [
+    "Frank",
+    "Idris"
+   ],
+   "year": 2026,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "yali",
+    "yahukimo"
+   ],
+   "topics": [
+    "conflict",
+    "politics"
+   ],
+   "access": "open",
+   "licence": "none stated (Cogent Arts & Humanities)",
+   "where": "https://doi.org/10.1080/23311983.2026.2741744",
+   "summary": "Crossref record for a 2026 article on Yali conflict resolution in Yahukimo; abstract not retrieved.",
+   "sensitivity": "conflict",
+   "fetched": "https://doi.org/10.1080/23311983.2026.2741744"
+  },
+  {
+   "title": "Rumah pohon suku Momuna, Yahukimo",
+   "authors": [
+    "Maryone"
+   ],
+   "year": 2017,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "yahukimo"
+   ],
+   "topics": [
+    "art",
+    "land"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://doi.org/10.24832/papua.v7i2.20",
+   "summary": "Ethnoarchaeological study of the tree house of the Momuna in Yahukimo: its form, concept, philosophy and cultural values.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.24832/papua.v7i2.20"
+  },
+  {
+   "title": "Studi etnofarmasi dan skrining fitokimia ekstrak kulit batang tumbuhan Nelambo Suon (Rubiaceae), obat tradisional antimalaria",
+   "authors": [
+    "Nelambo",
+    "Chrystomo",
+    "Zebua"
+   ],
+   "year": 2022,
+   "kind": "article",
+   "language": "id",
+   "about": [
+    "yali",
+    "yahukimo"
+   ],
+   "topics": [
+    "health",
+    "ecology"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://doi.org/10.31957/jbp.1302",
+   "summary": "Jurnal Biologi Papua article on a plant used by the Yali of Sabelebi village, Heriapini district, Yahukimo, as an antimalarial traditional medicine; combines ethnopharmacy and phytochemical screening. Medicinal knowledge held by the community.",
+   "sensitivity": "restricted",
+   "fetched": "https://doi.org/10.31957/jbp.1302"
+  },
+  {
+   "title": "Tim Kemanusiaan Nduga rampung verifikasi korban kemanusiaan (ANTARA)",
+   "authors": [
+    "Yuni Arisandy Sinaga (ANTARA)"
+   ],
+   "year": 2019,
+   "kind": "news-investigation",
+   "language": "id",
+   "about": [
+    "nduga"
+   ],
+   "topics": [
+    "casualties",
+    "displacement",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.antaranews.com/berita/1010416/tim-kemanusiaan-nduga-rampung-verifikasi-korban-kemanusiaan",
+   "summary": "ANTARA reports the Nduga Humanitarian Team, which says it was formed by the regency government, verified at least 184 deaths in Nduga between December 2018 and July 2019, most from illness, hunger and cold while displaced; Theo Hesegem says three actors are involved: civilians, TNI/Polri and the OPM. Breakdown given by age and sex.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.antaranews.com/berita/1010416/tim-kemanusiaan-nduga-rampung-verifikasi-korban-kemanusiaan"
+  },
+  {
+   "title": "Temuan soal dampak operasi pengejaran KKB di Nduga; Masyarakat Nduga trauma, ribuan mengungsi",
+   "authors": [
+    "Kompas.com (Devina Halim)",
+    "Kompas (Tim Harian)"
+   ],
+   "year": 2019,
+   "kind": "news-investigation",
+   "language": "id",
+   "about": [
+    "nduga"
+   ],
+   "topics": [
+    "displacement",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://nasional.kompas.com/read/2019/03/29/20323771/temuan-soal-dampak-operasi-pengejaran-kkb-di-nduga-akan-diserahkan-ke-komnas ; https://www.kompas.id/artikel/masyarakat-nduga-trauma-ribuan-mengungsi",
+   "summary": "Kompas reports an independent investigation team (church figures, MRP members, Theo Hesegem) presented preliminary findings on 29 March 2019 at Amnesty Indonesia's office, with per-district displacement counts such as 4,276 in Mapenduma and 5,056 in Jigi, and the missing Pastor Geyimin Nirigi. It reports an emergency school with 697 pupils in Wamena. Armed-group attack in December 2018 on Istaka Karya workers triggered the operation.",
+   "sensitivity": "conflict",
+   "fetched": "https://nasional.kompas.com/read/2019/03/29/20323771/temuan-soal-dampak-operasi-pengejaran-kkb-di-nduga-akan-diserahkan-ke-komnas"
+  },
+  {
+   "title": "Human Rights Investigators: Bombs dropped, hospitals torched and thousands displaced in Nduga",
+   "authors": [
+    "ULMWP (reporting the Nduga Case Investigation Team)"
+   ],
+   "year": 2019,
+   "kind": "news-investigation",
+   "language": "en",
+   "about": [
+    "nduga"
+   ],
+   "topics": [
+    "displacement",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.ulmwp.org/human-rights-investigation-ndgua",
+   "summary": "ULMWP, a pro-independence organisation, reports the investigation team estimated over 32,000 internally displaced, 34 schools damaged and allegations of helicopter bombing; these are the team's claims and the Indonesian government has said otherwise (see US State Dept: 3,000 displaced per Ministry of Social Affairs).",
+   "sensitivity": "conflict",
+   "fetched": "https://www.ulmwp.org/human-rights-investigation-ndgua"
+  },
+  {
+   "title": "OHCHR special procedures communication on forced displacement in Nduga",
+   "authors": [
+    "UN Special Rapporteurs (OHCHR)"
+   ],
+   "year": 2019,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "nduga"
+   ],
+   "topics": [
+    "displacement",
+    "casualties",
+    "conflict"
+   ],
+   "access": "open",
+   "licence": "none stated (public UN communication)",
+   "where": "https://spcommreports.ohchr.org/TMResultsBase/DownLoadPublicCommunicationFile?gId=24508",
+   "summary": "UN experts' communication to Indonesia reports information that security operations began on 4 December 2018 after TPN-PB reportedly killed at least 17 contractors; that at least nine Papuans were killed and five missing; that at least thirteen displaced persons died of exhaustion, hunger and hypothermia; and that about 2,000 people had sought refuge in Jayawijaya by March 2019. It records these as allegations put to the government.",
+   "sensitivity": "conflict",
+   "fetched": "https://spcommreports.ohchr.org/TMResultsBase/DownLoadPublicCommunicationFile?gId=24508"
+  },
+  {
+   "title": "Human Rights and Conflict Escalation in West Papua (ICP, with 2019 update)",
+   "authors": [
+    "International Coalition for Papua (ICP)"
+   ],
+   "year": 2019,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "nduga",
+    "jayawijaya",
+    "puncak-jaya"
+   ],
+   "topics": [
+    "conflict",
+    "casualties",
+    "displacement"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://perpustakaan.elsam.or.id/repository/HumanRightsPapua2019-ICP.pdf",
+   "summary": "ICP reports that human rights defenders counted 189 civilian fatalities from Nduga between December 2018 and 10 October 2019, including at least 41 children, and that no camp was set up so exact displacement is unknown. Compare 184 (Nduga Humanitarian Team, to July 2019), 'officials estimated 53' (US State Dept), and 3,000 to 20,000 displaced (government versus media).",
+   "sensitivity": "conflict",
+   "fetched": "https://perpustakaan.elsam.or.id/repository/HumanRightsPapua2019-ICP.pdf"
+  },
+  {
+   "title": "Indonesia: Investigate Riot Deaths in Papua (Wamena)",
+   "authors": [
+    "Human Rights Watch"
+   ],
+   "year": 2019,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "jayawijaya",
+    "dani"
+   ],
+   "topics": [
+    "conflict",
+    "casualties",
+    "displacement"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.hrw.org/news/2019/10/07/indonesia-investigate-riot-deaths-papua",
+   "summary": "HRW reports at least 33 deaths in Wamena riots from 23 September 2019, and that police listed 8 Papuans and 25 people from elsewhere in Indonesia among the dead. It reports at least 8,000 displaced since 29 September and an internet shutdown from 23 to 29 September, and urges a Komnas HAM investigation.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.hrw.org/news/2019/10/07/indonesia-investigate-riot-deaths-papua"
+  },
+  {
+   "title": "Wamena 2019: Komnas HAM statements (Anadolu Agency, ANTARA, detik)",
+   "authors": [
+    "Anadolu",
+    "ANTARA",
+    "detikcom"
+   ],
+   "year": 2019,
+   "kind": "news-investigation",
+   "language": "id",
+   "about": [
+    "jayawijaya"
+   ],
+   "topics": [
+    "conflict",
+    "casualties",
+    "displacement"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://mobile.aa.com.tr/id/nasional/31-tewas-dan-ribuan-mengungsi-akibat-konflik-di-wamena/1597902 ; https://news.detik.com/berita/d-4751680/temuan-temuan-komnas-ham-dalam-rusuh-wamena ; https://www.antaranews.com/berita/1089998/komnas-ham-yang-dibutuhkan-pengungsi-wamena-solidaritas-kemanusiaan",
+   "summary": "Komnas HAM chair reported 31 deaths and thousands displaced on 30 September 2019 (5,000 at Wamena police, 2,700 at the district military command), then 33 per hospital data and a further 10 unconfirmed deaths buried in home villages. He said an alleged racist remark by a teacher was not confirmed, and that victims included both migrants and local Papuans. The Jayawijaya government recorded 7,278 people in shelters at over 59 points.",
+   "sensitivity": "conflict",
+   "fetched": "https://news.detik.com/berita/d-4751680/temuan-temuan-komnas-ham-dalam-rusuh-wamena"
+  },
+  {
+   "title": "Peace cannot be achieved in Papua if human rights are not respected (Amnesty International Indonesia)",
+   "authors": [
+    "Amnesty International Indonesia"
+   ],
+   "year": 2021,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "pegunungan-bintang"
+   ],
+   "topics": [
+    "displacement",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.amnesty.id/kabar-terbaru/siaran-pers/peace-cannot-be-achieved-in-papua-if-human-rights-are-not-respected/09/2021/",
+   "summary": "Amnesty Indonesia reports that from January to June 2021 at least 6,152 people were forced to leave their homes in Papua and West Papua, and refers to the killing of a nurse in Kiwirok.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.amnesty.id/kabar-terbaru/siaran-pers/peace-cannot-be-achieved-in-papua-if-human-rights-are-not-respected/09/2021/"
+  },
+  {
+   "title": "'Destroy them first... discuss human rights later': Investigation of Indonesian Security Forces' operations in Papua's Kiwirok",
+   "authors": [
+    "Human Rights Monitor"
+   ],
+   "year": 2023,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "pegunungan-bintang",
+    "ngalum"
+   ],
+   "topics": [
+    "conflict",
+    "displacement",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://humanrightsmonitor.org/reports/kiwirok-report-2023/",
+   "summary": "HRM reports that between 13 September and late October 2021 security forces attacked eight villages in Kiwirok, with 206 buildings destroyed per satellite imagery, at least 2,252 Ngalum displaced as of June 2023 and at least 72 IDPs reported dead by 23 July 2023; it reports no direct civilian deaths in the raids. It says armed resisters burned schools and public buildings used as bases and calls for a Komnas HAM inquiry.",
+   "sensitivity": "conflict",
+   "fetched": "https://humanrightsmonitor.org/reports/kiwirok-report-2023/"
+  },
+  {
+   "title": "Displaced and disempowered (Kiwirok, Pegunungan Bintang)",
+   "authors": [
+    "TAPOL"
+   ],
+   "year": 2023,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "pegunungan-bintang",
+    "ngalum"
+   ],
+   "topics": [
+    "displacement",
+    "conflict",
+    "health"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://tapol.org/sites/default/files/2023-10/Displaced%20and%20disempowered%20-%20TAPOL%20-%20Oct%202023.pdf",
+   "summary": "TAPOL reports operations began after a September 2021 attack on a Kiwirok clinic in which two clinic staff were killed, that security forces blamed TPNPB while some local sources attributed it to local political feuds, and that the cause of displacement is disputed: the military says villagers fled armed groups, while people TAPOL spoke to say they fled operations. Three deaths on the journey to Oksibil are reported.",
+   "sensitivity": "conflict",
+   "fetched": "https://tapol.org/sites/default/files/2023-10/Displaced%20and%20disempowered%20-%20TAPOL%20-%20Oct%202023.pdf"
+  },
+  {
+   "title": "Nakes di Papua minta jaminan keamanan setelah serangan Puskesmas oleh KKB (BBC Indonesia) and ANTARA Papua coverage",
+   "authors": [
+    "BBC News Indonesia (Pijar Anugerah)",
+    "ANTARA Papua"
+   ],
+   "year": 2021,
+   "kind": "news-investigation",
+   "language": "id",
+   "about": [
+    "pegunungan-bintang"
+   ],
+   "topics": [
+    "conflict",
+    "health"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://www.bbc.com/indonesia/indonesia-58634025 ; https://papua.antaranews.com/berita/658989/nakes-korban-kekerasan-kkb-kiwirok-minta-dipulangkan-ke-daerahnya",
+   "summary": "BBC Indonesia reports a health worker died in the 13 September 2021 attack on Kiwirok health centre, said to be the first reported attack on a health facility in Papua, that nine of 11 staff were evacuated and health workers elsewhere were withdrawn to Oksibil. ANTARA reports Komnas HAM Papua protecting the health workers and clinic closures.",
+   "sensitivity": "conflict",
+   "fetched": "https://www.bbc.com/indonesia/indonesia-58634025"
+  },
+  {
+   "title": "IDP Update November 2026: Security operations and new troop deployments trigger further displacements across West Papua",
+   "authors": [
+    "Human Rights Monitor (Documentation Centre)"
+   ],
+   "year": 2026,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "intan-jaya",
+    "nduga",
+    "puncak",
+    "mimika",
+    "paniai",
+    "yahukimo",
+    "pegunungan-bintang"
+   ],
+   "topics": [
+    "displacement",
+    "conflict",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated",
+   "where": "https://humanrightsmonitor.org/reports/idp-update-november26-security-operations-and-new-troop-deployments-trigger-further-displacements-across-west-papua/",
+   "summary": "Human Rights Monitor reports a running table of internal displacement by regency since 2018, with a total of more than 128,369 IDPs in West Papua as of November 2026. It lists, for example, Nduga 58,981 IDPs since December 2018, Intan Jaya 12,859 since March 2025, Puncak 14,003 from April 2026, Pegunungan Bintang (Kiwirok) 752 and Oksop 4,584, Yahukimo, Mimika (Jila, Tembagapura) and Paniai (Aweida, over 1,056 in late 2026). It cites sources such as the Intan Jaya Student and Youth Movement for school and clinic closures; figures are HRM's compilation of local reports and are not government figures.",
+   "sensitivity": "conflict",
+   "fetched": "https://humanrightsmonitor.org/reports/idp-update-november26-security-operations-and-new-troop-deployments-trigger-further-displacements-across-west-papua/"
+  },
+  {
+   "title": "2019 Country Reports on Human Rights Practices: Indonesia (Papua sections)",
+   "authors": [
+    "U.S. Department of State (via U.S. Embassy Jakarta)"
+   ],
+   "year": 2019,
+   "kind": "report",
+   "language": "en",
+   "about": [
+    "nduga",
+    "jayawijaya",
+    "dogiyai",
+    "paniai"
+   ],
+   "topics": [
+    "conflict",
+    "displacement",
+    "casualties"
+   ],
+   "access": "open",
+   "licence": "none stated (US government publication)",
+   "where": "https://id.usembassy.gov/2019-country-reports-on-human-rights-practices-indonesia/",
+   "summary": "The US State Department reports that in December 2018 the OPM killed 19 civilians and one soldier at a road construction site in Nduga, and that officials estimated 53 conflict-related deaths afterwards while civil society estimated far more. It reports the Ministry of Social Affairs confirmed 3,000 displaced while media cited up to 20,000; that 33 died in the 23 September 2019 Wamena riots; and that the NGO Human Rights Defenders claimed at least six protesters were killed at Waghete on 28 August 2019, while the government said security forces acted lawfully.",
+   "sensitivity": "conflict",
+   "fetched": "https://id.usembassy.gov/2019-country-reports-on-human-rights-practices-indonesia/"
+  },
+  {
+   "title": "Inventaris van het archief van het Kantoor voor Bevolkingszaken in Nederlands Nieuw-Guinea: Rapportenarchief, (1852) 1951-1962",
+   "authors": [
+    "P. Nienhuis (compiler of finding aid)"
+   ],
+   "year": 1968,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "language",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "Finding aid states no copyright restrictions on reproduction; some items physically restricted by condition",
+   "where": "Nationaal Archief, Den Haag, toegang 2.10.25 (https://www.nationaalarchief.nl/onderzoeken/archief/2.10.25)",
+   "summary": "Archive of the Office of Population Affairs in Dutch New Guinea, set up in 1951 to study the indigenous population ethnologically, socio-economically and linguistically. It holds notes, reports, handover memoranda (memories van overgave) and literature extracts, 923 inventory numbers over 5.90 m, mostly Dutch with some Malay, with an area breakdown by afdeling including Hollandia. Described as fully public.",
+   "sensitivity": "none",
+   "fetched": "https://www.nationaalarchief.nl/onderzoeken/archief/2.10.25"
+  },
+  {
+   "title": "Collection of Memories van overgave of Dutch New Guinea (KITLV)",
+   "authors": [
+    "KITLV (collection)"
+   ],
+   "year": 1962,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "none stated; conditions on Leiden University Libraries website",
+   "where": "Leiden University Libraries, Bijzondere Collecties, D H 1172 (https://collectionguides.universiteitleiden.nl/resources/ubl415); originals at Nationaal Archief 2.10.39",
+   "summary": "35 items of handover memoranda written by Dutch administrators for their successors, covering 1916-1962, partly originals and partly microfiche. The guide explains that these memoranda gave a general overview of the state of a region and that copies went to the Ministry of Colonies and the Koloniaal Instituut.",
+   "sensitivity": "none",
+   "fetched": "https://collectionguides.universiteitleiden.nl/resources/ubl415"
+  },
+  {
+   "title": "Collection of demographics and anthropology in Dutch New Guinea (KITLV)",
+   "authors": [
+    "KITLV (collection); donated by A.A. Gerbrands"
+   ],
+   "year": 1964,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "migration",
+    "politics"
+   ],
+   "access": "archive-only",
+   "licence": "none stated; conditions on Leiden University Libraries website",
+   "where": "Leiden University Libraries, Bijzondere Collecties, D H 1178 (https://collectionguides.universiteitleiden.nl/resources/ubl335)",
+   "summary": "41 folders (1950-1964) of documents drawn up by Dutch officials for the Office of Population Affairs and for committees and congresses such as the South Pacific Commission and the Pacific Science Congress. Material is in Dutch and English and is consulted in the Leiden reading room.",
+   "sensitivity": "none",
+   "fetched": "https://collectionguides.universiteitleiden.nl/resources/ubl335"
+  },
+  {
+   "title": "Stichting Papua Erfgoed: collection and document repository",
+   "authors": [
+    "Stichting Papua Erfgoed"
+   ],
+   "year": 2024,
+   "kind": "archive-collection",
+   "language": "nl",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "art",
+    "language"
+   ],
+   "access": "open",
+   "licence": "none stated (items individually; check each)",
+   "where": "https://www.papuaerfgoed.org/nl/papua_erfgoed",
+   "summary": "Dutch foundation site cataloguing artefacts from Papua held in Dutch collections and hosting scanned PDFs of many older Dutch-language books and theses. Photographs are on Flickr (papuan_cultures) and sound fragments at papuacollecties.nl.",
+   "sensitivity": "none",
+   "fetched": "https://www.papuaerfgoed.org/nl/papua_erfgoed"
+  },
+  {
+   "title": "A historiography of research on West New Guinea's human past",
+   "authors": [
+    "Dylan Gaffney",
+    "Marlin Tolla"
+   ],
+   "year": 2024,
+   "kind": "article",
+   "language": "en",
+   "about": [
+    "history"
+   ],
+   "topics": [
+    "history",
+    "oral-tradition"
+   ],
+   "access": "open",
+   "licence": "none stated (published by ANU Press, Terra Australis 58; check)",
+   "where": "https://doi.org/10.22459/ta58.2024.02",
+   "summary": "Chapter surveying the history of research on West New Guinea. The excerpt describes the 1936 sighting of the Wissel (Paniai) Lakes, the Enarotali outpost, the 1939 Le Roux expedition, the Archbold expedition of 1938-39 to the Baliem Valley, and wartime activity of J.V. de Bruijn.",
+   "sensitivity": "none",
+   "fetched": "https://doi.org/10.22459/ta58.2024.02"
+  }
+ ],
+ "unconfirmed": [
+  {
+   "title": "Grand Valley Dani: Peaceful Warriors",
+   "authors": [
+    "Karl G. Heider"
+   ],
+   "year": 1979,
+   "why": "Known from memory; no record fetched."
+  },
+  {
+   "title": "Gardens of War: Life and Death in the New Guinea Stone Age",
+   "authors": [
+    "Robert Gardner",
+    "Karl G. Heider"
+   ],
+   "year": 1968,
+   "why": "Known from memory."
+  },
+  {
+   "title": "De Wiligiman-Dani",
+   "authors": [
+    "J.J. Broekhuijse"
+   ],
+   "year": 1967,
+   "why": "Known from memory; Broekhuyse appears in Matthiessen's text but his book not found."
+  },
+  {
+   "title": "War and Peace in Jalemo (Yali)",
+   "authors": [
+    "Klaus-Friedrich Koch"
+   ],
+   "year": 1974,
+   "why": "Known from memory; no record fetched."
+  },
+  {
+   "title": "An Ethnographic Grammar of the Eipo Language",
+   "authors": [
+    "Volker Heeschen"
+   ],
+   "year": 1998,
+   "why": "Known from memory; no record fetched."
+  },
+  {
+   "title": "Dead Birds (film)",
+   "authors": [
+    "Robert Gardner"
+   ],
+   "year": 1963,
+   "why": "Referenced in fetched texts, but no catalogue record for the film read."
+  },
+  {
+   "title": "Komnas HAM report on Wamena (April 2003) and Wasior",
+   "authors": [
+    "Komnas HAM"
+   ],
+   "year": 2003,
+   "why": "Known from memory; no record fetched."
+  },
+  {
+   "title": "Human Rights Watch / Amnesty reports on Puncak, Yahukimo and Nduga 2018-2025",
+   "authors": [
+    "various"
+   ],
+   "year": null,
+   "why": "Individual reports other than those listed were not retrieved."
+  },
+  {
+   "title": "Mummification of Dani ancestors (published ethnography)",
+   "authors": [
+    "unknown"
+   ],
+   "year": null,
+   "why": "Searched for but no verified record retrieved; restricted content should be checked with Dani custodians."
+  }
+ ],
+ "notes": [
+  "Nduga 2018-19 figures disagree. Armed-group killing of workers in Dec 2018: UN experts report at least 17; US State Dept reports 19 civilians and one soldier. Deaths since: government officials estimated 53 (US State Dept), the Nduga Humanitarian Team verified 184 to July 2019, ICP reports defenders counting 189 by 10 Oct 2019, the UN communication lists at least 9 killed plus 5 missing by early 2019. Displacement: Ministry of Social Affairs 3,000; media up to 20,000; investigation team over 32,000; HRM counts 58,981 (Nov 2026) for the whole period since 2018.",
+  "Wamena 23 Sept 2019: HRW and US State Dept report 33 deaths (police list 8 Papuans and 25 others per HRW); Komnas HAM first said 31, later 33 per hospital data, plus 10 unconfirmed deaths. Displacement: HRW at least 8,000; Jayawijaya government 7,278 in shelters. Cause: Komnas HAM says the alleged racist remark by a teacher was not confirmed.",
+  "Kiwirok 2021: cause of displacement disputed (military says fear of armed groups; TAPOL's interviewees say operations). Figures for displaced differ: HRM says at least 2,252 Ngalum displaced as of June 2023, while HRM's own November 2026 table lists 752 for Kiwirok.",
+  "Gaps: Eipo, Kimyal, Ngalum, Lani, Yali ethnographies could not be verified; Lani and Nduga language grammars, ELAR deposits and UNCEN/UGM theses were not found; Puncak Jaya, Puncak (Ilaga), Yalimo, Tolikara and Mamberamo Tengah conflict records were not retrieved except through HRM's table; Tolikara Idul Fitri 2015 and Wamena 2003 not covered.",
+  "Sacred and restricted: Matthiessen and Ploeg describe ritual and movement content; ethnopharmacy knowledge (Yali plants) is community knowledge. No fetched source states a formal custodian or restriction.",
+  "Only snippets of many pages were read (search-engine returned page text); summaries are catalogue-level. OpenAlex API rate-limited without a key, so no OpenAlex links. Shared archive and displacement entries repeat across region files."
+ ]
+}
