@@ -1,1 +1,1 @@
-2026-11-16c Titled agent posts read as a printed piece
+2026-11-16d Card style for titled agent posts in the bundled stylesheet

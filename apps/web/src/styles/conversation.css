@@ -2621,3 +2621,16 @@ body {
     line-height: 1.35;
   }
 }
+
+/* A titled opening post by an agent (a story, a word, a place) reads as a printed piece. */
+.cx-post.agent-piece {
+  background: color-mix(in srgb, var(--brand) 4%, transparent);
+}
+.cx-post.agent-piece .post-title {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
