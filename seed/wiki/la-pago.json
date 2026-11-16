@@ -1,0 +1,1413 @@
+{
+ "region": "la-pago",
+ "surveyed": "2026-11-16",
+ "pages": [
+  {
+   "slug": "la-pago",
+   "title": "La Pago",
+   "kind": "region",
+   "sources": [
+    {
+     "title": "La Pago - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/La_Pago",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=La%20Pago",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "La Pago atau Lano Pago adalah sebuah wilayah adat yang terletak di Provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Wilayah adat La Pago meliputi Kabupaten Puncak, Puncak Jaya, Nduga, Jayawijaya, Lanny Jaya, Mamberamo Tengah, Tolikara, Yalimo, Pegunungan Bintang, dan Yahukimo."
+      },
+      {
+       "section": "peoples",
+       "text": "Wilayah adat ini didiami oleh beberapa suku, yaitu Biksi, Dani, Eipo, Hubla, Kembra, Ketengban, Kimki, Kimyal, Kopkaka, Kosare, Lani, Lepki, Mek, Momuna, Murop, Murkim, Nduga, Ngalik, Ngalum, Nggem, Pyu, Taborta, Tofanma, Turu, Una-ukam, Walak, Yali, Yetfa, dan suku lainnya."
+      },
+      {
+       "section": "culture",
+       "text": "Kebanyakan pria dewasa di wilayah adat ini mengenakan koteka, sementara para perempuan mengenakan pakaian rok \"wah\" yang terbuat dari rumput ilalang."
+      }
+     ]
+    },
+    {
+     "title": "Highland Papua (en Wikipedia; the title \"La Pago\" redirects here)",
+     "url": "https://en.wikipedia.org/wiki/Highland_Papua",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Highland%20Papua",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "Highland Papua (Indonesian: Papua Pegunungan, lit. 'Papua Mountains') is a province of Indonesia, which roughly follows the borders of the Papuan customary region of Lano Pago (often shortened to La Pago)."
+      },
+      {
+       "section": "administration",
+       "text": "It covers an area of 52,505.66 km2 (20,272.55 sq mi) and had a population of 1,484,870 according to the official estimates as at mid 2025 (comprising 791,070 males and 693,780 females), and increasing by about 17,000 residents per year."
+      },
+      {
+       "section": "administration",
+       "text": "Formally established on 25 July 2022 from the central and mountainous former part of the province of Papua, it is located on the central highlands of Western New Guinea, where it is the only landlocked province in Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Culturally, Highland Papua roughly covers the customary region of La Pago, which include the unrecognized customary region of Okmekmin."
+      },
+      {
+       "section": "geography",
+       "text": "Highland Papua predominantly consisted of highlands referred to as the New Guinea Highlands, spanning from Central Papua to Papua New Guinea."
+      },
+      {
+       "section": "geography",
+       "text": "Notable peaks within this province include Puncak Trikora, towering at 4,760 meters, and Puncak Mandala, reaching 4,750 meters above sea level."
+      },
+      {
+       "section": "livelihood",
+       "text": "Renowned for their fertility, these valleys serve as location for traditional settlement and agricultural land, primarily cultivating sweet potatoes, a staple food among local tribes."
+      },
+      {
+       "section": "geography",
+       "text": "Examples of such valleys include the Baliem Valley in Jayawijaya Regency and the Toli Valley in Tolikara Regency."
+      },
+      {
+       "section": "history",
+       "text": "In 1920, van Overeem and Kremer led an expedition that successfully discovered the Swart Valley, now known as the Toli Valley in Tolikara Regency, and the Lani people who lived there."
+      },
+      {
+       "section": "history",
+       "text": "Then on 4 January 2008, the remaining Jayawijaya Regency was again divided into Jayawijaya, Lanny Jaya, Nduga, Central Mamberamo (Mamberamo Tengah), and Yalimo Regencies."
+      },
+      {
+       "section": "culture",
+       "text": "Honai is a traditional Papuan house, especially in the mountainous region."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "jayawijaya",
+   "title": "Jayawijaya",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Jayawijaya - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Jayawijaya",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Jayawijaya",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Jayawijaya adalah salah satu kabupaten di Provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibu kota kabupaten ini terletak di Distrik Wamena, dalam kawasan Lembah Baliem."
+      },
+      {
+       "section": "population",
+       "text": "Penduduk kabupaten ini pada pertengahan tahun 2024 berjumlah 275.772 jiwa, dengan kepadatan penduduk 20 jiwa/km2."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Jayawijaya berada di wilayah adat La Pago."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Jayawijaya dibentuk berdasarkan Undang-Undang Nomor 12 Tahun 1969, tentang pembentukan Provinsi Otonom Irian Barat dan Kabupaten-Kabupaten Otonom di Provinsi Irian Barat."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Jayawijaya terdiri atas 40 distrik, 4 kelurahan, dan 328 kampung dengan luas wilayah 8.495,85 km² dan jumlah penduduk 212.811 jiwa (2017)."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Jayawijaya berada di hamparan Lembah Baliem, sebuah lembah aluvial yang terbentang pada areal ketinggian 1500–2000 m di atas permukaan laut."
+      },
+      {
+       "section": "geography",
+       "text": "Lembah Baliem dikelilingi oleh Pegunungan Jayawijaya yang terkenal karena puncak-puncak salju abadinya, antara lain: Puncak Trikora (4.750 m), Puncak Mandala (4.700 m) dan Puncak Yamin (4.595 m)."
+      },
+      {
+       "section": "livelihood",
+       "text": "Mata pencaharian utama masyarakat Jayawijaya adalah bertani, dengan sistem pertanian tradisional. Makanan pokok masyarakat asli Jayawijaya adalah ubi jalar, keladi dan jagung sehingga pada areal pertanian mereka dipenuhi dengan jenis tanaman makanan pokok ini."
+      },
+      {
+       "section": "history",
+       "text": "Lembah Baliem ditemukan secara tidak sengaja, ketika Richard Archbold, ketua tim ekspedisi yang disponsori oleh American Museum of Natural History melihat adanya lembah hijau luas dari kaca jendela pesawat pada tanggal 23 Juni 1938."
+      }
+     ]
+    },
+    {
+     "title": "Jayawijaya Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Jayawijaya_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Jayawijaya%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Jayawijaya Regency is one of the regencies (kabupaten) in the Indonesian province of Highland Papua. It occupies an area of 13,925.31 km2 in the Baliem Valley, situated in the central highlands of the province."
+      },
+      {
+       "section": "population",
+       "text": "It had a population of 196,085 at the 2010 Census, and 269,553 at the 2020 Census; the official estimate as of mid-2023 was 282,497. Its regency seat is the town of Wamena."
+      },
+      {
+       "section": "history",
+       "text": "However, on 11 December 2002 three new Regencies - Bintang Mountains Regency (Kabupaten Pegunungan Bintang), Tolikara Regency, and Yahukimo Regency - were created from parts of Jayawijaya Regency."
+      },
+      {
+       "section": "history",
+       "text": "Subsequently on 4 January 2008 another four new Regencies - Lanny Jaya Regency, Central Mamberamo Regency (Kabupaten Mamberamo Tengah), Nduga Regency, and Yalimo Regency - were created from further parts of Jayawijaya Regency."
+      },
+      {
+       "section": "history",
+       "text": "All eight regencies were brought together again in 2022 in the new province of Highland Papua."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "lanny-jaya",
+   "title": "Lanny Jaya",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Lanny Jaya - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Lanny_Jaya",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Lanny%20Jaya",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Lanny Jaya adalah sebuah kabupaten di Provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten ini dibentuk pada tanggal 4 Januari 2008 berdasarkan Undang-Undang Nomor 5 Tahun 2008, bersama-sama dengan pembentukan 5 kabupaten lainnya di Papua."
+      },
+      {
+       "section": "peoples",
+       "text": "Nama kabupaten ini berasal dari Suku Lani yang mendiami daerah ini."
+      },
+      {
+       "section": "population",
+       "text": "Pada pertengahan tahun 2024, jumlah penduduk Lanny Jaya sebanyak 203.524 jiwa."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Lanny Jaya terdiri atas 39 distrik, 1 kelurahan, dan 354 kampung dengan total luas 2.248,00 km² dan jumlah penduduk sebanyak 197.313 jiwa (2017)."
+      }
+     ]
+    },
+    {
+     "title": "Lanny Jaya Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Lanny_Jaya_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Lanny%20Jaya%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Lanny Jaya Regency is a regency (kabupaten) located in the Indonesian province of Highland Papua."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 6,077.4 km2, and had a population of 148,522 at the 2010 Census and 196,399 at the 2020 Census; the official estimate as at mid 2025 was 211,330 (comprising 113,360 males and 97,460 females)."
+      },
+      {
+       "section": "administration",
+       "text": "The administrative centre is the town of Tiom."
+      },
+      {
+       "section": "administration",
+       "text": "Since 2013, the number of districts has been raised to thirty-nine by the splitting of existing districts."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mamberamo-tengah",
+   "title": "Mamberamo Tengah",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Mamberamo Tengah - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Mamberamo_Tengah",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Mamberamo%20Tengah",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Mamberamo Tengah adalah sebuah kabupaten di Provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten ini dibentuk pada tanggal 4 Januari 2008 berdasarkan Undang-Undang Republik Indonesia Nomor 3 Tahun 2008, bersama-sama dengan pembentukan 5 kabupaten lainnya di Papua."
+      },
+      {
+       "section": "administration",
+       "text": "Untuk lebih mendekatkan pelayanan pemerintahan kepada masyarakat, maka Kabupaten Jayawijaya kemudian dimekarkan menjadi beberapa kabupaten, dan melalui Undang-Undang No.3 Tahun 2008 lahirlah Kabupaten Memberamo Tengah dengan kelurahan Kobakma sebagai ibu kotanya."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Mamberamo Tengah terdiri atas 5 distrik dan 59 kampung dengan luas wilayah 1.275,00 km² dan jumlah penduduk 44.788 jiwa (2017)."
+      },
+      {
+       "section": "population",
+       "text": "Jumlah penduduk kabupaten ini pada tahun 2020 berjumlah 48.201 jiwa, dan pada akhir tahun 2024 berjumlah 50.128 jiwa."
+      },
+      {
+       "section": "peoples",
+       "text": "Suku asli di wilayah ini adalah suku Yali, Lani, Walak, Gem, dan Taborta yang termasuk kedalam masyarakat wilayah adat La Pago."
+      }
+     ]
+    },
+    {
+     "title": "Central Mamberamo Regency (en Wikipedia: Mamberamo Tengah Regency)",
+     "url": "https://en.wikipedia.org/wiki/Mamberamo_Tengah_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Mamberamo%20Tengah%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Central Mamberamo Regency (Indonesian: Kabupaten Mamberamo Tengah) is one of the regencies (kabupaten) in the Indonesian province of Highland Papua."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 3,706.02 km2, and had a population of 39,537 at the 2010 Census and 50,685 at the 2020 Census."
+      },
+      {
+       "section": "population",
+       "text": "The official estimate as at mid 2025 was 54,370. The administrative centre is at Kobakma."
+      },
+      {
+       "section": "geography",
+       "text": "The sparsely populated Megambilis District, with over 59.5% of the regency's area but just 2.3% of its 2023 population, occupies the entire northern portion of the regency."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "nduga",
+   "title": "Nduga",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Nduga - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Nduga",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Nduga",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Nduga adalah sebuah kabupaten yang berada di Provinsi Papua Pegunungan, Indonesia, dengan ibu kota kabupaten berada di distrik Kenyam."
+      },
+      {
+       "section": "population",
+       "text": "Jumlah penduduk kabupaten ini pada akhir tahun 2024 berjumlah 112.173 jiwa dengan kepadatan penduduk 9 jiwa/km2."
+      },
+      {
+       "section": "administration",
+       "text": "Dulunya pernah menjadi bagian dari wilayah Kabupaten Jayawijaya. Kabupaten ini dibentuk pada tanggal 4 Januari 2008 berdasarkan Undang-Undang Nomor 6 Tahun 2008, bersama-sama dengan pembentukan 5 kabupaten lainnya di Papua."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Nduga terdiri atas 32 distrik dan 248 kampung dengan luas wilayah 2.168,00 km² dan jumlah penduduk 106.354 jiwa (2017)."
+      },
+      {
+       "section": "livelihood",
+       "text": "Babi merupakan jenis ternak yang paling banyak dipelihara di Kabupaten Nduga."
+      },
+      {
+       "section": "livelihood",
+       "text": "Jenis tanaman perkebunan yang banyak dibudiadayakn ialah kopi, buah merah, kelapa, tebu, dan sagu."
+      }
+     ]
+    },
+    {
+     "title": "Nduga Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Nduga_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Nduga%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Nduga Regency is one of the regencies (kabupaten) in the Indonesian province of Highland Papua."
+      },
+      {
+       "section": "administration",
+       "text": "Nduga Regency was created on 4 January 2008 by separation from Jayawijaya Regency in accordance with Law No. 6/2008."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 12,941 km2, and had a population of 79,053 at the 2010 Census and 106,533 at the 2020 Census; the official estimate as at mid 2024 was 111,311."
+      },
+      {
+       "section": "administration",
+       "text": "The administrative centre is at the town of Kenyam."
+      },
+      {
+       "section": "administration",
+       "text": "Since 2010, the number of districts has been raised to thirty-two by the splitting of existing districts."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "pegunungan-bintang",
+   "title": "Pegunungan Bintang",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Pegunungan Bintang - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Pegunungan_Bintang",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Pegunungan%20Bintang",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Pegunungan Bintang adalah sebuah kabupaten yang terletak di kawasan Pegunungan Tengah, provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten ini berbatasan langsung dengan negara Papua Nugini."
+      },
+      {
+       "section": "geography",
+       "text": "Nama kabupaten ini diambil dari barisan Pegunungan Bintang (bahasa Belanda: Sterrengebergte; bahasa Inggris: Star Mountains) yang membentang dari kabupaten ini hingga ke Papua Nugini."
+      },
+      {
+       "section": "geography",
+       "text": "Secara pembagian adat Papua, Kabupaten Pegunungan Bintang berada di wilayah adat La Pago."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Pegunungan Bintang dibentuk berdasarkan Undang-undang Nomor 26 Tahun 2002 tanggal 11 Desember 2002 bersama 13 kabupaten lainnya di Provinsi Papua."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Pegunungan Bintang terdiri atas 34 distrik dan 277 kampung dengan luas wilayah 15.683 km² dan jumlah penduduk 73.473 jiwa (2017)."
+      },
+      {
+       "section": "peoples",
+       "text": "Kabupaten ini mayoritas dihuni oleh suku asli/lokal Papua dengan mayoritas 7 suku besar yaitu Ngalum, Ketengban, Murop, Lepki, Arintap, Kimki dan Yefta."
+      },
+      {
+       "section": "livelihood",
+       "text": "Sama dengan suku-suku lain di Papua, sebagian besar masyarakat lokal yang hidup di dataran tinggi ini mengkonsumsi umbi-umbian sebagai makanan pokok."
+      }
+     ]
+    },
+    {
+     "title": "Pegunungan Bintang Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Pegunungan_Bintang_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Pegunungan%20Bintang%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Pegunungan Bintang Regency or Bintang Mountains Regency (\"Bintang\" means \"star\") is a regency in the Indonesian province of Highland Papua."
+      },
+      {
+       "section": "administration",
+       "text": "It was created on 11 December 2002 from the north-eastern districts of Jayawijaya Regency."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 15,683 km2, and had a population of 65,434 at the 2010 Census and 77,872 at the 2020 Census; the official estimate as at mid 2024 was 114,581 – comprising 61,112 males and 53,469 females."
+      },
+      {
+       "section": "administration",
+       "text": "The administrative centre is the town of Oksibil."
+      },
+      {
+       "section": "geography",
+       "text": "Pegunungan Bintang is the Indonesian name for the Star Mountains, a mountain range that is also shared by Papua New Guinea."
+      },
+      {
+       "section": "language",
+       "text": "The Yetfa and Murkim languages are spoken in the eponymous Jetfa and Murkim districts."
+      },
+      {
+       "section": "language",
+       "text": "Other indigenous Papuan languages of Pegunungan Bintang Regency are Lepki (Lepki-Murkim family), Kimki (isolate), Towei (Pauwasi), Emem (Pauwasi), and Burumakok (Ok, Trans-New Guinea)."
+      },
+      {
+       "section": "geography",
+       "text": "Astronomically, Pegunungan Bintang Regency is located between 3°04'00” – 5°20'00” South Latitude and 140°05'00” – 141°00'00” East Longitude."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "puncak",
+   "title": "Puncak",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Puncak - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Puncak",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Puncak",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Puncak adalah sebuah kabupaten yang terletak di kawasan Pegunungan Tengah Provinsi Papua Tengah, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten ini dibentuk pada tanggal 4 Januari 2008 berdasarkan Undang-Undang Nomor 7 Tahun 2008, bersama-sama dengan pembentukan 5 kabupaten lainnya di Papua."
+      },
+      {
+       "section": "population",
+       "text": "Kabupaten Puncak adalah hasil pemekaran dari Kabupaten Puncak Jaya dengan jumlah penduduk pada akhir tahun 2023 berjumlah 177.226 jiwa, dengan kepadatan 22 jiwa/km2."
+      },
+      {
+       "section": "geography",
+       "text": "Secara adat, Kabupaten Puncak berada di wilayah adat La Pago."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Puncak terletak di kawasan tertinggi di Indonesia. Kabupaten ini terletak di antara ketinggian 1.500-4.000 meter di atas permukaan laut."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Puncak merupakan salah satu pintu gerbang untuk mendaki Puncak Cartenz, gunung tertinggi di Indonesia, yakni melalui Ilaga dan Beoga."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Puncak terdiri atas 25 distrik dan 206 kampung dengan luas wilayah 8.055,00 km2 dan jumlah penduduk 158.406 jiwa (2017)."
+      },
+      {
+       "section": "population",
+       "text": "Berdasarkan hasil pencacahan Sensus Penduduk 2010, jumlah penduduk kabupaten Puncak sementara adalah 93.363 orang, yang terdiri atas 49.308 laki-laki dan 44.055 perempuan."
+      }
+     ]
+    },
+    {
+     "title": "Puncak Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Puncak_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Puncak%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Puncak Regency is one of the regencies (kabupaten) in the Indonesian province of Central Papua; it is not to be confused with Puncak Jaya Regency, which is within the same province, and from whose western districts those districts now forming Puncak Papua Regency were separated in 2008."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 7,396.47 km2, and had a population of 93,218 at the 2010 Census and 114,741 at the 2020 Census; the official estimate as of mid 2025 was 179,357."
+      },
+      {
+       "section": "administration",
+       "text": "The administrative centre is at Ilaga."
+      },
+      {
+       "section": "administration",
+       "text": "The name of the regency is currently being changed to Puncak Papua Regency."
+      },
+      {
+       "section": "administration",
+       "text": "By 2018 the number of districts had risen to twenty-five by the splitting of existing districts."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "puncak-jaya",
+   "title": "Puncak Jaya",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Puncak Jaya - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Puncak_Jaya",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Puncak%20Jaya",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Puncak Jaya adalah salah satu kabupaten yang berada di kawasan Pegunungan Tengah, Provinsi Papua Tengah, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibukota kabupaten ini terletak di Distrik Mulia."
+      },
+      {
+       "section": "administration",
+       "text": "Pada tanggal 29 Oktober 2008 Kabupaten Puncak dimekarkan dari kabupaten ini."
+      },
+      {
+       "section": "population",
+       "text": "Pada akhir tahun 2024, Kabupaten Puncak Jaya memiliki penduduk sebanyak 220.393 jiwa, dengan kepadatan penduduk 34 jiwa/km²."
+      },
+      {
+       "section": "geography",
+       "text": "Secara adat, Kabupaten Puncak Jaya berada di wilayah adat La Pago."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Puncak Jaya dibentuk berdasarkan Peraturan Pemerintah Nomor 52 Tahun 1996 tentang Pembentukan Kabupaten Puncak Jaya, Kabupaten Paniai, Perubahan Nama dan Pemindahan Ibu Kota Kabupaten Daerah Tingkat II Paniai di Wilayah Provinsi Daerah Tingkat I Irian Jaya."
+      },
+      {
+       "section": "geography",
+       "text": "Secara geografis Kabupaten Puncak Jaya berada pada posisi 137°26' – 138°21' bujur timur dan 2°58' – 3°55' lintang selatan."
+      },
+      {
+       "section": "geography",
+       "text": "95% Wilayah Kabupaten Puncak Jaya merupakan wilayah yang berbukit-bukit dan bergunung-gunung dengan struktur tanah yang berbatu-batu, dan hanya kurang lebih 5% yang merupakan dataran rendah yaitu Distrik Fawi dan Torere."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Puncak Jaya terdiri atas 26 distrik, 3 kelurahan, dan 302 kampung dengan luas wilayah 5.996,942 km² dan jumlah penduduk 117.047 jiwa (2017)."
+      },
+      {
+       "section": "livelihood",
+       "text": "Mata pencaharian penduduk kabupaten Puncak Jaya utamanya adalah pertanian, peternakan, dan Kerajinan tangan."
+      }
+     ]
+    },
+    {
+     "title": "Puncak Jaya Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Puncak_Jaya_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Puncak%20Jaya%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Puncak Jaya Regency is one of the regencies (kabupaten) in the Indonesian province of Central Papua."
+      },
+      {
+       "section": "geography",
+       "text": "It is an inland highland regency, lying directly east of Paniai Regency and west of Jayawijaya Regency and Tolikara Regency (including those new regencies which have subsequently been created within the former boundaries of those regencies)."
+      },
+      {
+       "section": "population",
+       "text": "The residual Puncak Jaya Regency covers an area of 6,515 km2, and had a population of 101,148 at the 2010 Census which increased to 224,527 at the 2020 Census; the official estimate as of mid 2025 was 221,045 (comprising 118,228 males and 102,817 females)."
+      },
+      {
+       "section": "administration",
+       "text": "The capital of the regency is Mulia."
+      },
+      {
+       "section": "administration",
+       "text": "In 2008 an additional regency - simply named Puncak Regency - was created from the western part of the area of Puncak Jaya Regency."
+      },
+      {
+       "section": "geography",
+       "text": "Mulia, the seat of the regency, has a subtropical highland climate (Köppen Cfb) with cool to pleasant mornings, warm to very warm afternoons, and heavy rainfall year-round."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "tolikara",
+   "title": "Tolikara",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Tolikara - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Tolikara",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Tolikara",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Tolikara adalah salah satu kabupaten yang berada di provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibu kota kabupaten ini terletak di distrik Karubaga."
+      },
+      {
+       "section": "population",
+       "text": "Jumlah penduduk kabupaten Tolikara pada pertengahan tahun 2024 berjumlah 251.661 jiwa, dengan kepadatan penduduk 84 jiwa/km²."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Tolikara memiliki luas wilayah 14.564,00 km² yang terbagi menjadi 46 kecamatan dengan Karubaga sebagai ibu kota kabupaten."
+      },
+      {
+       "section": "geography",
+       "text": "Melalui udara, Distrik Karubaga atau Kanggimi dapat dicapai dari Wamena dalam waktu sekitar 20 menit."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Tolikara terdiri atas 46 distrik, 4 kelurahan, dan 541 kampung dengan luas wilayah 5.588,13 km² dan jumlah penduduk 246.858 jiwa (2017)."
+      }
+     ]
+    },
+    {
+     "title": "Tolikara Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Tolikara_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Tolikara%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Tolikara Regency is one of the regencies (kabupaten) in the Indonesian province of Highland Papua."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 14,564 km2, and had a population of 114,427 at the 2010 Census and 239,543 at the 2020 Census; the official estimate as at mid 2025 was 248,310."
+      },
+      {
+       "section": "administration",
+       "text": "The administrative centre of Tolikara Regency is the town of Karubaga."
+      },
+      {
+       "section": "administration",
+       "text": "Tolikara Regency in 2010 comprised 35 districts (distrik), but the number of districts was increased (by 2018) to 46, subdivided into 545 administrative villages."
+      },
+      {
+       "section": "geography",
+       "text": "Karubaga has a cool tropical rainforest climate (Af) with heavy rainfall year-round."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "yahukimo",
+   "title": "Yahukimo",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Yahukimo - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Yahukimo",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Yahukimo",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Yahukimo adalah sebuah kabupaten yang berada di provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibu kota kabupaten ini secara resminya berada di distrik Sumohai, tetapi karena keterbatasan fasilitas mengakibatkan pusat pemerintahan sementara masih berada di distrik Dekai."
+      },
+      {
+       "section": "population",
+       "text": "Jumlah penduduk kabupaten Yahukimo pada pertengahan 2024 berjumlah 355.612 jiwa, dengan kepadatan 21 jiwa/km2."
+      },
+      {
+       "section": "administration",
+       "text": "Pendirian Yahukimo ditetapkan berdasarkan Undang-Undang (UU) Nomor 26 Tahun 2002 dan diresmikan pada 11 Desember 2003."
+      },
+      {
+       "section": "peoples",
+       "text": "Nama Yahukimo berasal dari nama empat suku yang bermukim di sana, yaitu Yali, Hubla, Kimyal dan Momuna."
+      },
+      {
+       "section": "geography",
+       "text": "Keadaan topografi Kabupaten Yahukimo sangat bervariasi mulai dari dataran rendah dengan lereng yang landai sampai dengan daerah berbukit dengan kemiringan yang terjal."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Yahukimo terdiri atas 51 distrik, 1 kelurahan, dan 510 kampung dengan luas wilayah 17.152,00 km² dan jumlah penduduk 349.410 jiwa (2017)."
+      },
+      {
+       "section": "peoples",
+       "text": "Kabupaten Yahukimo yang berasal dari 3 distrik induk ini dihuni oleh 12 suku-suku berupa Suku Yali (Yalimek), Hupla (Soba), Kimyal, Momuna (Intamaja), Una, Mek (Nalca, Kosarek, Nipsan) , Ngalik (Silimo), Korowai (Arubkor), Diuwe (Obukain), Obini, Kopkaka (Tokuni, Kwer), dan Bese (Awban)"
+      }
+     ]
+    },
+    {
+     "title": "Yahukimo Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Yahukimo_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Yahukimo%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Yahukimo Regency is one of the regencies (kabupaten) in the Indonesian province of Highland Papua."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 17,152 km2, and had a population of 164,512 at the 2010 Census, but this figure more than doubled to reach 350,880 at the 2020 Census; the official estimate as at mid 2025 was 356,899 (comprising 193,466 males and 163,433 females)."
+      },
+      {
+       "section": "administration",
+       "text": "The official administrative centre of Yahukimo Regency is at Sumohai, which is located 25 kilometres north of the town of Dekai, but - due to the lack of infrastructure in Sumohai - the actual administrative centre of the regency is in Dekai."
+      },
+      {
+       "section": "peoples",
+       "text": "The name Yahukimo is a combined word from the names of the tribes living in the area, the Yali, Hubla, Kimyal and Momuna."
+      },
+      {
+       "section": "peoples",
+       "text": "The tribes found in Yahukimo Regency are Yali, Hupla, Kimyal, Momuna, Una-Ukam, Mek, Yalimek, Ngalik, Tokuni, Obini, Karowai, Duwe, Obukain, Kopkaka and Bese."
+      },
+      {
+       "section": "language",
+       "text": "Local Papuan languages are often used in everyday life, in addition to Indonesian."
+      },
+      {
+       "section": "livelihood",
+       "text": "The economy in Yahukimo is largely based on subsistence agriculture, with some people also involved in hunting and forest gathering."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "yalimo",
+   "title": "Yalimo",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Kabupaten Yalimo - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Yalimo",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Kabupaten%20Yalimo",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Yalimo adalah sebuah kabupaten di provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten ini dibentuk pada tanggal 4 Januari 2008 berdasarkan Undang-Undang Nomor 4 Tahun 2008, bersama-sama dengan pembentukan 5 kabupaten lainnya di Papua."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Yalimo dimekarkan dari Kabupaten Jayawijaya, dengan ibukota terletak di distrik Elelim."
+      },
+      {
+       "section": "population",
+       "text": "Jumlah penduduk kabupaten Yalimo pada pertengahan 2024 berjumlah 104.913 jiwa, dengan kepadatan 33 jiwa/km²."
+      },
+      {
+       "section": "peoples",
+       "text": "Nama kabupaten Yalimo diambil dari salah satu suku di wilayah ini, yaitu Suku Yali, dan nama wilayah adatnya Yalimu."
+      },
+      {
+       "section": "geography",
+       "text": "Secara astronomis, Kabupaten Yalimo berada di antara 3°27' hingga 4°06' lintang selatan dan 138°57' hingga 139°55' bujur timur."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten ini terbagi ke dalam lima distrik, yaitu Distrik Abenaho, Distrik Apalapsili, Distrik Benawa, Distrik Elelim, dan Distrik Welarek."
+      },
+      {
+       "section": "geography",
+       "text": "Wilayah Kabupaten Yalimo terbagi menjadi tiga berdasarkan bentuk muka lahannya, yakni daerah pegunungan terjal di sisi timur, selatan, dan barat kabupaten ini, daerah dataran rendah di wilayah utara, serta daerah lembah yang berada di wilayah tengah kabupaten ini."
+      },
+      {
+       "section": "peoples",
+       "text": "Penduduk asli kabupaten Yalimo, adalah suku Yali."
+      },
+      {
+       "section": "livelihood",
+       "text": "Mata pencaharian utama masyarakat Yalimo adalah bertani, dengan sistem pertanian tradisional."
+      }
+     ]
+    },
+    {
+     "title": "Yalimo Regency - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Yalimo_Regency",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Yalimo%20Regency",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Yalimo Regency is one of the regencies (Indonesian: Kabupaten Yalimo) in the Indonesian province of Highland Papua."
+      },
+      {
+       "section": "population",
+       "text": "It covers an area of 4,320.29 km3, and had a population at the 2010 Census of 50,763 which doubled to reach 101,973 at the 2020 Census; the official estimate as at mid 2023 was 106,740 (comprising 56,520 males and 50,230 females)."
+      },
+      {
+       "section": "administration",
+       "text": "The administrative centre is at Elelim. The indigenous inhabitants of this well-forested mountainous area are the Yali people."
+      },
+      {
+       "section": "administration",
+       "text": "At 108 kampung, Abenaho District has the largest number of villages among all the districts of Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "Elelim, the seat of the regency has a tropical rainforest climate (Af) with heavy rainfall all year round."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "dani",
+   "title": "Dani (Hubula)",
+   "kind": "people",
+   "sources": [
+    {
+     "title": "Suku Dani - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Suku_Dani",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Dani",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "Suku Dani atau Hubula adalah suku yang mendiami wilayah Lembah Baliem di Pegunungan Tengah Papua, Kabupaten Jayawijaya, Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "population",
+       "text": "Sebanyak 100.000 jiwa diperkirakan menetap di Lembah Baliem, yang terdiri dari suku-suku Dani bagian hilir dan bagian hulu lembah, masing-masing sebanyak 20.000 jiwa dan 50.000 jiwa di bagian tengah lembah (total 90.000 jiwa)."
+      },
+      {
+       "section": "peoples",
+       "text": "Daerah di bagian sebelah barat Lembah Baliem dihuni oleh sekitar 180.000 jiwa, yaitu dari suku Lani yang sering keliru disebut sebagai suku \"Dani Barat\"."
+      },
+      {
+       "section": "peoples",
+       "text": "Suku Dani adalah salah satu kelompok etnis di Papua yang paling dikenal, karena banyaknya wisatawan yang mengunjungi daerah Lembah Baliem tempat mereka mayoritas."
+      },
+      {
+       "section": "history",
+       "text": "Suku-suku di pegunungan pertama kali diketahui bermigrasi ke Lembah Baliem diperkirakan sekitar ratusan tahun yang lalu."
+      },
+      {
+       "section": "history",
+       "text": "Pengaruh Eropa dibawa ke para misionaris yang membangun pusat Misi Protestan di Hitigima sekitar tahun 1955."
+      },
+      {
+       "section": "livelihood",
+       "text": "kemudian juga telah diketahui bahwa penduduk Suku Dani adalah para petani yang terampil dengan menggunakan kapak batu, alat pengikis, pisau yang terbuat dari tulang binatang, bambu atau tombak kayu dan tongkat galian."
+      },
+      {
+       "section": "culture",
+       "text": "Suku ini dikenal dengan nama Dani karena ekspedisi Eropa menanyakan kepada suku Migani yang menyebut ndani yang artinya 'timur', untuk suku Lani."
+      },
+      {
+       "section": "culture",
+       "text": "Sistem kekerabatan masyarakat Dani ada tiga, yaitu kelompok kekerabatan, paroh masyarakat, dan kelompok teritorial."
+      },
+      {
+       "section": "culture",
+       "text": "Dari cara berpakaian pun, mereka masih banyak mengenakan koteka (penutup kemaluan pria) yang disebut holim/horim terbuat dari kunden/labu kuning."
+      }
+     ]
+    },
+    {
+     "title": "Dani people - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Dani_people",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Dani%20people",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "The Dani (also spelled Ndani) are an ethnic group from the Central Highlands of Western New Guinea in Baliem Valley, Highland Papua, Indonesia."
+      },
+      {
+       "section": "population",
+       "text": "Around 100,000 people live in the Baliem Valley, consisting of representatives of the Dani tribes in the lower and upper parts of the valley each 20,000 and 50,000 in the middle part (with a total of 90,000 people)."
+      },
+      {
+       "section": "peoples",
+       "text": "The areas west of the Baliem Valley are inhabited by approx 180,000, representatives of the Lani people, incorrectly called \"Western Dani\"."
+      },
+      {
+       "section": "peoples",
+       "text": "The Dani are one of the best-known ethnic groups in Papua, due to the relatively numerous tourists who visit the Baliem Valley area where they predominate."
+      },
+      {
+       "section": "history",
+       "text": "The Grand Valley and its inhabitants, the true Dani (Hubula), was only sighted on 23 June 1938 from a PBY Catalina by Richard Archbold, who stumbled upon the valley while studying high-altitude vegetation in the Jayawijaya Mountains."
+      },
+      {
+       "section": "livelihood",
+       "text": "Sweet potatoes are important in their local culture, being the most important tool used in bartering, especially in dowries. Likewise, pig feasts are extremely important to celebrate events communally; the success of a feast, and that of a village big man (man of influence) or organiser, is often gauged by the number of pigs slaughtered."
+      },
+      {
+       "section": "livelihood",
+       "text": "The Dani use an earth oven method (called bakar batu or barapen) to cook pigs and their staple crops such as sweet potato, banana, and cassava."
+      }
+     ]
+    },
+    {
+     "title": "The Nutritional Value of Sweet Potato Tubers [Ipomoea batatas (L.) Lamb.] Consumed by Infants and Children of Dani Tribe in Kurulu District, Baliem-Jayawijaya",
+     "url": "https://ccsenet.org/journal/index.php/jas/article/view/55458",
+     "fetchedVia": "https://ccsenet.org/journal/index.php/jas/article/download/55458/30650",
+     "publisher": "Canadian Center of Science and Education, Journal of Agricultural Science 8(3)",
+     "year": 2016,
+     "language": "en",
+     "licence": "Creative Commons Attribution license (CC BY 3.0, http://creativecommons.org/licenses/by/3.0/); copyright retained by the authors",
+     "licenceEvidence": "\"Copyrights\" paragraph at the end of the PDF: \"This is an open-access article distributed under the terms and conditions of the Creative Commons Attribution license\"",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "livelihood",
+       "text": "Sweet potato is an important staple food crop especially for the local people of Central Highlands Jayawijaya."
+      },
+      {
+       "section": "livelihood",
+       "text": "Traditionally, sweet potato accessions were grouped based on the utilization, such as for animal feed, cultural ceremonies, consumption for adults, as well as for children and infants."
+      },
+      {
+       "section": "livelihood",
+       "text": "Sweet potato is the main staple food crops of the people in the Baliem Valley which constitute of 90% of the people diet."
+      },
+      {
+       "section": "livelihood",
+       "text": "The local people of Baliem valley have been adapted and relied on sweet potato as a staple food for a quite long time."
+      },
+      {
+       "section": "livelihood",
+       "text": "In Kurulu District of the Baliem Valley, there are 43 types of sweet potato accessions consumed for infants, children, adults, livestock, pigs, and utilized for local ceremonies (Logo, 2011)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "dani-languages",
+   "title": "Dani language group",
+   "kind": "language",
+   "sources": [
+    {
+     "title": "Dani languages - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Dani_languages",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Dani%20languages",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "The Dani or Baliem Valley languages are a family of clearly related Trans–New Guinea languages spoken by the Dani and related peoples in the Baliem Valley in the Highland Papua, Indonesia."
+      },
+      {
+       "section": "language",
+       "text": "Foley (2003) considers their Trans–New Guinea language group status to be established."
+      },
+      {
+       "section": "language",
+       "text": "They may be most closely related to the languages of Paniai Lakes, but this is not yet clear."
+      },
+      {
+       "section": "language",
+       "text": "Larson (1977) divided the family into three branches based on lexicostatistics, and Nggem was later added as a fourth."
+      },
+      {
+       "section": "language",
+       "text": "The Ngalik languages are very poorly attested."
+      }
+     ]
+    },
+    {
+     "title": "Bahasa Dani - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Bahasa_Dani",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Bahasa%20Dani",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Bahasa Lembah Besar Dani, atau bahasa Dani, adalah salah satu bahasa Papua yang memiliki paling banyak penutur di Pulau Papua."
+      },
+      {
+       "section": "language",
+       "text": "Kebanyakan penuturnya adalah Suku Dani yang tinggal di Lembah Baliem di provinsi Papua Pegunungan."
+      },
+      {
+       "section": "language",
+       "text": "Bahasa Hupla, yang terkadang dianggap bahasa yang berbeda, memiliki kesamaan dengan dialek Bawah dibandingkan antar dialek Bahasa Lembah Besar Dani."
+      },
+      {
+       "section": "language",
+       "text": "Atas (Upper): mencakup distrik Asologaima, Mulia dan Tiom."
+      }
+     ]
+    },
+    {
+     "title": "Dani people - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Dani_people",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Dani%20people",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "The Dani languages differentiate only two basic colours, mili for cool/dark shades such as blue, green, and black, and mola for warm/light colours such as red, yellow, and white."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "lani",
+   "title": "Lani",
+   "kind": "people",
+   "sources": [
+    {
+     "title": "Suku Lani - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Suku_Lani",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Lani",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "Lani adalah suku asli di Ilaga, Puncak, Papua Tengah hingga  Lanny Jaya, Papua Pegunungan."
+      },
+      {
+       "section": "peoples",
+       "text": "Suku Lani sering disebut Dani Barat oleh para misionaris asing untuk mengelompokan suku tersebut dengan suku Dani yang tinggal di Lembah Baliem di sebelah timur."
+      },
+      {
+       "section": "language",
+       "text": "Ini karena kemiripan bahasa yang mereka gunakan yaitu bahasa Lani yang termasuk rumpun bahasa Dani."
+      },
+      {
+       "section": "culture",
+       "text": "Suku Hubula (Dani) menamakan wilayah pegunungan di sebelah barat dari Lembah Baliem dengan nama Laani yang artinya \"bagian barat\"."
+      },
+      {
+       "section": "history",
+       "text": "Kontak pertama ekspedisi Belanda dengan suku Lani terjadi pada Otober 1920 saat Ekspedisi Nugini Tengah yang dipimpin oleh  A.J.A. van Overeem dan J. Kremer."
+      },
+      {
+       "section": "livelihood",
+       "text": "Mereka disebut pintar berkebun dengan tanaman berupa tebu, ubi jalar, keladi, pisang, dll dengan bidang tanah teratur dan dipagari supaya tidak dimakan babi yang berkeliaran."
+      },
+      {
+       "section": "culture",
+       "text": "Sama seperti suku pegunungan lainnya suku Lani menganut sistem moietas eksogami di mana masyarakat Lani terbagi menjadi dua kelompok sosial (paroh masyarakat) yang disebut moietas keturunan kakak beradik yang bernama Wenda dan Kogoya."
+      },
+      {
+       "section": "culture",
+       "text": "Sama seperti suku-suku di wilayah pegunungan Papua lainnya, rumah adat suku Lani berbentuk honai dan disebut kunume yang berasal dari kunu artinya 'laki-laki'."
+      }
+     ]
+    },
+    {
+     "title": "Lani people - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Lani_people",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Lani%20people",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "The Lani are an indigenous people in Puncak, Central Papua and Lanny Jaya, Highland Papua, usually labelled 'Western Dani' by foreign missionaries, or grouped—inaccurately—with the Dani people who inhabit the Baliem Valley to the east."
+      },
+      {
+       "section": "history",
+       "text": "First contact with the populous Lani was made in October 1920 during the Central New Guinea Expedition, in which a group of explorers stayed for six months with them at their farms in the upper Swart River Valley (now Toli Valley, Tolikara Regency)."
+      },
+      {
+       "section": "population",
+       "text": "The total population of Lani tribes in the 1980s, as reported by Douglas Hayward in his book The Dani of Irian Jaya, Before and After Conversion was around 200,000 people."
+      },
+      {
+       "section": "culture",
+       "text": "The most distinguishable feature of the Lani and Dani tribes is their kotekas, or penis gourds made from the bottle gourd."
+      },
+      {
+       "section": "culture",
+       "text": "Meanwhile Lani women wear two types of skirt made of barks, the colourful green, yellow, red, and purple sali koe or the brown and purple tipped skirt called sali keragi."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "lani-language",
+   "title": "Lani language (Western Dani)",
+   "kind": "language",
+   "sources": [
+    {
+     "title": "Bahasa Lani (id Wikipedia; page title \"Bahasa Dani Barat\")",
+     "url": "https://id.wikipedia.org/wiki/Bahasa_Lani",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Bahasa%20Lani",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Bahasa Dani Barat atau Lani, adalah bahasa Papua di Papua Tengah dan Papua Pegunungan, Indonesia, yang paling banyak penuturnya."
+      },
+      {
+       "section": "language",
+       "text": "Diperkirakan, penutur bahasa ini sekitar 180.000 sampai 200.000 penutur."
+      }
+     ]
+    },
+    {
+     "title": "Western Dani language - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Western_Dani_language",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Western%20Dani%20language",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Western Dani, or Lani, is a Nuclear-Trans-New Guinea language."
+      },
+      {
+       "section": "language",
+       "text": "It is the Papuan language with the most speakers in Indonesian New Guinea. It is spoken by the Lani people in the province of Highland Papua."
+      }
+     ]
+    },
+    {
+     "title": "Suku Lani - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Suku_Lani",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Lani",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Ini karena kemiripan bahasa yang mereka gunakan yaitu bahasa Lani yang termasuk rumpun bahasa Dani."
+      },
+      {
+       "section": "language",
+       "text": "Lani Loma adalah kelompok lani yang tinggal di Kabupaten Puncak Jaya. Mereka berbicara menggunakan bahasa Lani dan bahasa Moni, dan terkadang juga memakai bahasa Damal."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "yali",
+   "title": "Yali",
+   "kind": "people",
+   "sources": [
+    {
+     "title": "Yali people - Wikipedia",
+     "url": "https://en.wikipedia.org/wiki/Yali_people",
+     "fetchedVia": "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Yali%20people",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "en",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Text is available under the Creative Commons Attribution-ShareAlike 4.0 License\" (checked on the HTML page of en.wikipedia.org)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "Yali are a major tribal group in Highland Papua in Indonesia, and live to the east of the Baliem Valley, mainly in Yalimo Regency, Yahukimo Regency, and the surrounding regions."
+      },
+      {
+       "section": "language",
+       "text": "In general, the Yali are split into two groups, Yali (mo) and Yali Mek, which live in Yalimo Regency and Yahukimo Regency, respectively. They also speak two different languages, the first one related to the Dani in the Ngalik-Nduga subfamily, the other one related to the Mek."
+      },
+      {
+       "section": "geography",
+       "text": "The settlement territory of the Yali lies between the rivers Ubahak to the east and Sibi, Yahuli, and Podeng to the west."
+      },
+      {
+       "section": "population",
+       "text": "Accounts of the population size vary according to the source. In 1991, it was estimated to be 15,000 or 30,000. While according to the 2010 Indonesian census, the population was 133,812; however, this figure included Ngalik people."
+      },
+      {
+       "section": "livelihood",
+       "text": "The Yali use sweet potatoes and taro as their staple foods, which are grown using shifting cultivation. Other food sources are hunting and gathering."
+      }
+     ]
+    },
+    {
+     "title": "Suku Yali - Wikipedia",
+     "url": "https://id.wikipedia.org/wiki/Suku_Yali",
+     "fetchedVia": "https://id.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=Suku%20Yali",
+     "publisher": "Wikipedia (Wikimedia Foundation)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike 4.0)",
+     "licenceEvidence": "Page footer: \"Teks tersedia di bawah Creative Commons ...\" (checked on the HTML page of id.wikipedia.org; CC BY-SA)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "Suku Yali adalah kelompok etnis yang mendiami Provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "Suku Yali membentuk kampung-kampung kecil yang tersebar di daerah pegunungan tengah, di sebelah timur dari lembah Baliem."
+      },
+      {
+       "section": "language",
+       "text": "Orang Yali juga terbagi-bagi menurut bahasa, dialek, dan budayanya, menjadi dua kelompok besar: Yalimek dan Yalimo."
+      },
+      {
+       "section": "language",
+       "text": "Perbedaan ini mencakup juga bahasa karena suku Yali memiliki dua bahasa, bahasa Yali (rumpun bahasa Lembah Baliem), sedangkan kelompok lain berbahasa Mek."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "notes": [
+  "Scope: 15 required pages (region, 10 regencies, Dani people, Dani language group, Lani people, Lani language) plus Yali (extra) = 16 pages. Nduga and Ngalum/Ok were not given separate people/language pages for lack of budget (Nduga regency is covered).",
+  "Source mix: almost every source is Indonesian or English Wikipedia (CC BY-SA 4.0, licence line confirmed in the HTML page footer of both wikis). The only non-Wikipedia source with quotes is Suparno et al. 2016 (J. Agricultural Science, CC BY 3.0 stated in the PDF), used for Dani livelihood. Every page has at least 2 sources, but for 15 of 16 pages both are Wikipedia, so independence is low. No scholarly article with no stated licence is included.",
+  "Glottolog is CC BY 4.0 (footer confirmed on glottolog.org) but its language pages are mostly JavaScript-rendered tree widgets with no citable prose sentences, so no Glottolog source was included.",
+  "Official regency sites: jayawijayakab.go.id loads but its profile pages (Batas Wilayah, Demografi, Distrik) returned empty content; tolikarakab.go.id, lannyjayakab.go.id and puncakjayakab.go.id could not be reached (connection reset / 502 / TLS error); papua.go.id returned a 404 page. None used. Not seen injected spam on jayawijayakab.go.id (keyword check found none), but nothing citable came from it. BPS was not tried (known to block).",
+  "Brill/KITLV open-access article by Ploeg 1966 on the Dani (CC BY-NC 3.0) was found via search but the PDF could not be fetched directly (returned HTML), so it was left out. Purwanto 2004 (J. Tropical Ethnobiology) host did not resolve; left out.",
+  "The en Wikipedia title 'La Pago' redirects to the article 'Highland Papua' (province). It describes the province, which roughly matches La Pago but excludes Puncak and Puncak Jaya (Central Papua). The en articles still use 'Highland Papua' where the current official name is Papua Pegunungan.",
+  "Wikipedia pages were fetched in Nov 2026; en Wikipedia regency articles carry 'Highland Papua' while id Wikipedia uses 'Papua Pegunungan'. Puncak and Puncak Jaya are in Central Papua / Papua Tengah per both wikis.",
+  "CONFLICT, area: Lanny Jaya id 2,248.00 km2 (2017 figure) vs en 6,077.4 km2. Mamberamo Tengah id 1,275.00 km2 vs en 3,706.02 km2. Nduga id 2,168 km2 vs en 12,941 km2 (id Nduga also says 'Bentang alam ... Lembah Baliem' text which looks copied from the Jayawijaya article; those sentences were not quoted). Puncak Jaya id 5,996.942 km2 vs en 6,515 km2. Tolikara id page gives both 14,564.00 km2 and 5,588.13 km2 in different sections (en says 14,564). Yalimo id page gives both about 3,148 km2 and 4,330.29 km2 (en: 4,320.29, written 'km3' in the source, quoted verbatim). Jayawijaya id says 8,495.85 km2 (2017) while en and the regency's own documents say 13,925.31 km2. Reviewers must pick one figure per page and state its source and year.",
+  "CONFLICT, population: figures differ by year and source (e.g. Jayawijaya id 275,772 mid-2024 vs en 282,497 mid-2023; Dani id page says about 100,000 in Baliem Valley but components add up to 90,000, quoted as written). All quotes carry their own year; do not mix them.",
+  "CONFLICT, dates: Yahukimo id says established by UU 26/2002 and inaugurated 11 December 2003 (elsewhere on the same page 'April 2003'); en says it became a separate regency on 11 December 2002. Id Wikipedia gives 21 June 2008 as inauguration date for the 2008 regencies while the Jayawijaya id page says 12 June 2008. Law numbers for 2008 regencies: Mamberamo Tengah 3, Yalimo 4, Lanny Jaya 5, Nduga 6, Puncak 7 (from the id pages; Puncak Jaya id says Puncak split on 29 October 2008, which differs from 4 January 2008 in the Puncak page).",
+  "Excluded on purpose: all conflict sections (armed conflict, shootings, riots, displacement, famine/starvation reports, casualty figures) that appear in the id and en Wikipedia articles for Jayawijaya, Nduga, Puncak, Pegunungan Bintang, Tolikara, Yahukimo, Puncak Jaya and the Highland Papua article. Also excluded: Dani/Yali religion, ancestor-spirit, mummification and war-ceremony sections, and Yali creator-figure myth, as potentially sacred or restricted. The id Dani page's finger-cutting mourning section was also left out.",
+  "Quote quirks: some quotes keep source typos or odd spacing exactly (e.g. 'dibudiadayakn' in Nduga id, double space after 'hingga' in Lani id, 'Otober 1920', 'Kimyal dan Momuna' etc.). Yahukimo id tribe-list quote has no final period in the source. Suparno 2016 text was extracted from the PDF with pdftotext and line breaks collapsed to single spaces; only clean first-page sentences were quoted (later pages of the extraction have doubled letters).",
+  "fetchedVia for Wikipedia is the exact API URL with redirects=1 (needed so 'Highland Papua', 'Lani language' etc. resolve). Wikipedia 'year' is set to 2026 (retrieval year, not publication). The id article 'Bahasa Lani' is titled 'Bahasa Dani Barat' in places; the en 'Lani language' title redirects to 'Western Dani language'.",
+  "Hand-check recommended: the id Dani page claims Ndani 'orang timur' was first applied to Lani east of Moni; Dani/Lani ethnonym explanations differ between id and en wikis and in the literature."
+ ]
+}

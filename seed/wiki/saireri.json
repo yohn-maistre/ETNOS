@@ -1,0 +1,1319 @@
+{
+ "region": "saireri",
+ "surveyed": "2026-11-16",
+ "pages": [
+  {
+   "slug": "saireri",
+   "title": "Saireri",
+   "kind": "region",
+   "sources": [
+    {
+     "title": "Saireri",
+     "url": "https://id.wikipedia.org/wiki/Saireri",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "adalah wilayah adat yang dihuni oleh beragam kelompok etnis campuran Austronesia-Melanesia yang menghuni wilayah pesisir Teluk Cendrawasih (disebut juga Teluk Sarera) di pesisir utara Provinsi Papua Tengah dan wilayah kepulauan di Provinsi Papua."
+      },
+      {
+       "section": "administration",
+       "text": "Daerah yang termasuk ke dalam wilayah adat ini adalah Kabupaten Biak Numfor, Kabupaten Supiori, Kabupaten Kepulauan Yapen, Kabupaten Nabire, dan Kabupaten Waropen."
+      },
+      {
+       "section": "peoples",
+       "text": "Kelompok etnis terbesar yang mendiami wilayah adat Saireri adalah suku Biak."
+      },
+      {
+       "section": "peoples",
+       "text": "Suku Biak mendiami hampir seluruh pesisir utara wilayah adat Saireri termasuk juga kepulauan di sekitarnya serta diluar wilayah adat Saireri, hal ini karena suku Biak sejak dahulu dikenal sebagai suku penjelajah laut."
+      },
+      {
+       "section": "peoples",
+       "text": "Selain suku Biak, suku lainnya yang mendiami wilayah adat Saireri adalah suku Waropen, Serui, Yaur, Yerisiam, dan suku-suku lainnya."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Biak people",
+     "url": "https://en.wikipedia.org/wiki/Biak_people",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "The Biak people are an indigenous Austronesian ethnic group native to the Biak Islands of Indonesia (including Supiori, Numfor, and the Padaido Islands) in Cenderawasih Bay, off the northern coast of New Guinea."
+      },
+      {
+       "section": "history",
+       "text": "According to oral traditions, the Biak people have a long-standing maritime history tied to Cenderawasih Bay and the surrounding islands."
+      },
+      {
+       "section": "history",
+       "text": "From at least the early eighteenth century, the Biak expanded beyond their home islands to establish permanent coastal settlements along the north and northwest coasts of New Guinea's Bird's Head Peninsula (Doberai)."
+      },
+      {
+       "section": "history",
+       "text": "Today, the vast majority of the Biak people are Protestant Christians."
+      },
+      {
+       "section": "population",
+       "text": "The core population of the Biak people inhabits the islands of Biak, Supiori, and Numfor in Cenderawasih Bay, with native speakers of the Biak language estimated at around 70,000."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Suku Biak",
+     "url": "https://id.wikipedia.org/wiki/Suku_Biak",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "Suku Biak berasal dari kelompok etnis yang berasal dari Kepulauan Biak di Teluk Cenderawasih, tepat di lepas pantai utara Pulau Papua."
+      },
+      {
+       "section": "peoples",
+       "text": "Masyarakat Biak memiliki beberapa sub-suku, seperti Aimando, Betew, Doreri, Kafdaron, Karon, Usba, Wardo, dan Kaipuri yang kebanyakan telah bermigrasi serta menetap di pesisir utara Papua dan Kepulauan Raja Ampat sejak abad ke-15."
+      },
+      {
+       "section": "history",
+       "text": "Suku Biak yang mendiami Kepulauan Biak dikenal sebagai penjelajah lautan yang tangguh."
+      },
+      {
+       "section": "livelihood",
+       "text": "Aktivitas berdagang suku Biak menggunakan sistem kongsi dagang antar sahabat yang disebut manibobi, yaitu dengan cara berlayar dan berdagang keliling."
+      },
+      {
+       "section": "livelihood",
+       "text": "Suku Biak juga sudah menguasai ilmu navigasi yang baik dengan mengandalkan rasi bintang, biasanya bintang Orion (Sawakoi) dan Scorpio (Romanggwandi)."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "biak-numfor",
+   "title": "Biak Numfor",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Biak Numfor Regency",
+     "url": "https://en.wikipedia.org/wiki/Biak_Numfor_Regency",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "Biak Numfor Regency is one of the regencies (kabupaten) in Papua Province of Western New Guinea in northeastern Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "These two large islands are Biak and Numfor; the remaining large island within the Schouten Islands group, Supiori Island, was formerly also part of the regency but was administratively split off to form the separate Supiori Regency on 8 January 2004."
+      },
+      {
+       "section": "geography",
+       "text": "Numfor Island lies due west of Biak."
+      },
+      {
+       "section": "geography",
+       "text": "The remaining Biak Numfor Regency also includes the 54 small islands of the Padaido Archipelago, to the southeast of Biak, and there are 87 other small islands within the regency."
+      },
+      {
+       "section": "population",
+       "text": "The official estimate as at mid 2024 was 150,318 (comprising 76,214 males and 74,104 females)."
+      },
+      {
+       "section": "administration",
+       "text": "The regency's administrative centre is the town (kota) of Biak, situated on the south coast of the island of the same name; more than half of the population of the regency lives in the urbanised area comprising the town and the neighbouring district of Samofa, which adjoins the town on its north side."
+      },
+      {
+       "section": "administration",
+       "text": "Numfor Island (comprising the first five districts listed above) were intended to be split off to form a separate regency under proposals announced in 2013 by the Indonesian Government, although all such new measures have been placed on hold since 2013."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Kabupaten Biak Numfor",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Biak_Numfor",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Biak Numfor merupakan salah satu kabupaten di provinsi Papua, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibu kota kabupaten ini terletak di Distrik Biak Kota."
+      },
+      {
+       "section": "administration",
+       "text": "Wilayah otonom yang kini disebut sebagai Kabupaten Supiori pernah menjadi bagian dari kabupaten ini, sebelum mengalami pemekaran wilayah."
+      },
+      {
+       "section": "population",
+       "text": "Penduduk kabupaten ini pada akhir tahun 2024 berjumlah 150.318 jiwa."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten yang berdampingan dengan Kabupaten Supiori ini memiliki dua pulau utama, yaitu Pulau Biak dan Pulau Numfor."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Biak Numfor terletak di Teluk Cenderawasih pada titik 0°21'-1°31' LS, 134°47'-136°48' BT dengan ketinggian 0 - 1.000 meter di atas permukaan laut."
+      },
+      {
+       "section": "geography",
+       "text": "Luas keseluruhan Kabupaten Biak Numfor adalah 5,11% dari luas wilayah provinsi Papua."
+      },
+      {
+       "section": "history",
+       "text": "Dalam fakta sejarah terungkap, pemerintahan Biak pertama kali berdiri pada 17 Juli 1918 di Bosnik yang ketika itu masuk dalam wilayah Afdeling Nieuw Guinea Utara Keresidenan Ternate dan sekitarnya."
+      },
+      {
+       "section": "history",
+       "text": "Dalam percakapan sehari-hari orang hanya menggunakan nama Biak saja yang mengandung pengertian yang sama juga dengan yang disebutkan di atas."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Pulau Biak",
+     "url": "https://id.wikipedia.org/wiki/Pulau_Biak",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "Biak adalah pulau utama di Kepulauan Biak yang terletak di Teluk Cenderawasih dekat pantai utara Papua, sebuah provinsi di Indonesia, dan berada tepat di sebelah barat laut Pulau Papua."
+      },
+      {
+       "section": "geography",
+       "text": "Biak memiliki banyak atol, terumbu karang, dan koral."
+      },
+      {
+       "section": "geography",
+       "text": "Dalam literatur lama, pulau ini juga disebut Pulau Mysore."
+      },
+      {
+       "section": "population",
+       "text": "Pusat populasi terbesar terletak di Biak Kota di pesisir selatan."
+      },
+      {
+       "section": "population",
+       "text": "Wilayah pulau lainnya berpenduduk jarang dan hanya terdapat desa-desa kecil."
+      },
+      {
+       "section": "administration",
+       "text": "Biak merupakan bagian dari Kepulauan Biak, dan berada di bawah administrasi Kabupaten Biak Numfor."
+      },
+      {
+       "section": "geography",
+       "text": "Biak memiliki iklim hutan hujan tropis dengan suhu yang hampir sama sepanjang tahun."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "kepulauan-yapen",
+   "title": "Kepulauan Yapen",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Yapen Islands Regency",
+     "url": "https://en.wikipedia.org/wiki/Yapen_Islands_Regency",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Yapen Islands Regency is a regency (kabupaten) in Papua Province of eastern Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "It comprises an archipelago which lies in Cenderawasih Bay off the north coast of Western New Guinea."
+      },
+      {
+       "section": "geography",
+       "text": "The regency includes the islands and island groups of the Yapen Islands archipelago, including the main Yapen Island as well as the adjacent Yerui (or Num) Island, Kurudu Island, Ambai Archipelago and Kuran Islands."
+      },
+      {
+       "section": "administration",
+       "text": "Its capital is Serui town (part of Yapen Selatan district)."
+      },
+      {
+       "section": "population",
+       "text": "the official estimate as at mid 2024 was 116,214 (comprising 59,587 males and 56,627 females)."
+      },
+      {
+       "section": "geography",
+       "text": "Kurudu Island (Pulau Kurudu) lies to the east of Yapen, and Num Island (Pulau Yerui) lies to the west of Yapen, while the Ambai Archipelago (Kepulauan Ambai) and Kuran Islands lie immediately off the south coast of Yapen."
+      },
+      {
+       "section": "administration",
+       "text": "The Yapen Islands Regency in 2010 comprised twelve districts (distrik); however, by 2018 four additional districts has been created (Anataurei, Pulau Kurudu, Pulau Yerui and Yawakukat), and another (Nusawani) was created in 2024 from the western part of Kepulauan Ambai District, bringing the total to seventeen, which are subdivided into 165 administrative \"villages\"."
+      },
+      {
+       "section": "geography",
+       "text": "Serui has a tropical rainforest climate (Af) with heavy rainfall year-round."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Kabupaten Kepulauan Yapen",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Kepulauan_Yapen",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Kepulauan Yapen adalah salah satu kabupaten yang berada di Provinsi Papua, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibu kota kabupaten ini terletak di Kelurahan Serui Kota yang berada di wilayah Distrik Yapen Selatan."
+      },
+      {
+       "section": "history",
+       "text": "Kabupaten ini dahulu bernama Kabupaten Yapen Waropen, yang dibentuk berdasarkan Undang-Undang Nomor 12 Tahun 1969 tentang Pembentukan Provinsi Otonom Irian Barat dan Kabupaten-kabupaten Otonom di Provinsi Irian Barat."
+      },
+      {
+       "section": "history",
+       "text": "Akhirnya berdasarkan Peraturan Pemerintah Nomor 40 Tahun 2008, nama Kabupaten Yapen Waropen diubah namanya menjadi Kabupaten Kepulauan Yapen."
+      },
+      {
+       "section": "history",
+       "text": "Kabupaten Kepulauan Yapen dikenal sebagai Jappengroep pada masa pemerintahan Nederlands-Nieuw-Guinea lalu pada tahun 1921 berubah nama menjadi Onderafdeeling pada masa pemerintahan Nederlands(ch)-Indië."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Kepulauan Yapen terdiri atas 17 distrik, 5 kelurahan, dan 160 kampung dengan total luas daratan 2.432,49 km², luas lautan 4.713,16 km², dan jumlah penduduk sebanyak 113.099 jiwa (2020)."
+      },
+      {
+       "section": "geography",
+       "text": "Ibukota Kepulauan Yapen, Serui memiliki iklim hutan hujan tropis (Af) dengan curah hujan tinggi sepanjang tahun."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "supiori",
+   "title": "Supiori",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Supiori Regency",
+     "url": "https://en.wikipedia.org/wiki/Supiori_Regency",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Supiori Regency (Indonesian: Kabupaten Supiori) is a regency in the Indonesian province of Papua."
+      },
+      {
+       "section": "history",
+       "text": "Until 8 January 2004, this area was part of the Biak Numfor Regency, from which it was split off in accordance with the Law (Undang-Undang RI No.35 Tahun 2003) dated 18 December 2003."
+      },
+      {
+       "section": "geography",
+       "text": "It comprises mainly the island of Supiori, one of the Biak Islands within Cenderawasih Bay off the north coast of Papua province (the rest of the Schouten Islands comprise the separate Biak Numfor Regency); the island is connected to Biak Island by a bridge across the Sorendi River (which is actually a narrow channel separating the two islands)."
+      },
+      {
+       "section": "geography",
+       "text": "The Supiori Regency also includes the Aruri Islands to the south of Supiori, comprising the small coral islands Aruri (Insumbabi) and Rani Island as well as over a hundred smaller islets."
+      },
+      {
+       "section": "geography",
+       "text": "Its West Supiori District also includes Mapia Atoll to the northwest, approximately 290 kilometers north of the city of Manokwari."
+      },
+      {
+       "section": "administration",
+       "text": "The existing regency comprises five districts (kecamatan), tabulated below with their areas and their populations at the 2010 Census and the 2020 Census, together with the official estimates as at mid 2024."
+      },
+      {
+       "section": "population",
+       "text": "the official estimate as at mid 2024 was 24,527 - comprising 12,685 males and 11,842 females."
+      },
+      {
+       "section": "geography",
+       "text": "Sorendiweri, the seat of the regency has a tropical rainforest climate (Af) with heavy rainfall year-round."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Kabupaten Supiori",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Supiori",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Supiori adalah salah satu kabupaten yang berada di provinsi Papua, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Pusat pemerintahan kabupaten ini terletak di Sorendiweri."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Supiori ada di Pulau Supiori yang dipisahkan dengan Pulau Biak oleh Selat Sorendiweri."
+      },
+      {
+       "section": "geography",
+       "text": "Kedua pulau ini terhubung oleh jembatan sepanjang 100 meter yang berada di atas Selat Sorendiweri."
+      },
+      {
+       "section": "history",
+       "text": "Kabupaten Supiori merupakan Kabupaten Pemekaran dari Kabupaten Biak Numfor, Kabupaten yang dibentuk dengan Undang-Undang Nomor 35 tahun 2003, mempunyai wilayah daratan dengan luas sebesar 704,24 Km² dan wilayah perairan seluas 5.993 Km²."
+      },
+      {
+       "section": "geography",
+       "text": "Kondisi topografi daerah ini pada umumnya bergunung-gunung dan hanya pada beberapa bagian tertentu saja yang merupakan daerah datar hingga landai."
+      },
+      {
+       "section": "livelihood",
+       "text": "Pada daerah yang datar dan landai inilah masyarakat membangun pemukiman, berkebun, berladang dan melakukan aktivitas ekonomi lainnya."
+      },
+      {
+       "section": "culture",
+       "text": "Munara Wampasi yang diselenggarakan di Kabupaten Supiori tersebut merupakan budaya tahunan yang dimiliki Suku Biak."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Profil - Sejarah Singkat Kabupaten Supiori",
+     "url": "https://supiorikab.go.id/profil/sejarah",
+     "publisher": "Pemerintah Kabupaten Supiori (official regency website)",
+     "year": null,
+     "language": "id",
+     "licence": "none stated (footer reads 'Hak Cipta © 2021 Pemerintah Kabupaten Supiori', a copyright notice with no open licence)",
+     "licenceEvidence": "Page footer: 'Hak Cipta © 2021 Pemerintah Kabupaten Supiori'; no Creative Commons or open-data licence found",
+     "tier": "unstated",
+     "quotes": [
+      {
+       "section": "history",
+       "text": "Kabupaten Supiori merupakan Kabupaten Pemekaran dari Kabupaten Biak Numfor, Kabupaten yang dibentuk dengan Undang-Undang Nomor 35 tahun 2003, mempunyai wilayah daratan dengan luas sebesar 704,24 Km2 dan wilayah perairan seluas 5.993 Km2."
+      },
+      {
+       "section": "geography",
+       "text": "Wilayah Kabupaten Supiori sebagian besar terletak di Pulau Supiori dan sebagian lainnya di Pulau Biak"
+      },
+      {
+       "section": "geography",
+       "text": "Kondisi topografi daerah ini pada umumnya bergunung-gunung dan hanya pada beberapa bagian tertentu saja yang merupakan daerah datar hingga landai."
+      },
+      {
+       "section": "livelihood",
+       "text": "Pada daerah yang datar dan landai inilah masyarakat membangun pemukiman, berkebun, berladang dan melakukan aktifitas ekonomi lainnya."
+      },
+      {
+       "section": "geography",
+       "text": "Kondisi tanah pada umumnya merupakan perkembangan dari bahan induk dengan struktur batu kapur."
+      },
+      {
+       "section": "geography",
+       "text": "Menurut klasifikasi smith dan fergusson iklim di Kabupaten Supiori termasuk tipe A/B dengan bulan basah terjadi selama 6 (enam) bulan, bulan lembab selama 4 (empat) bulan dan bulan kering selama 2 (dua) bulan."
+      },
+      {
+       "section": "geography",
+       "text": "Didaerah ini terdapat kawasan hutan seluas 45.384 ha atau sekitar 65% dari luas wilayah Kabupaten Supiori."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Profil - Geografis (Kabupaten Supiori)",
+     "url": "https://supiorikab.go.id/profil/geografis",
+     "publisher": "Pemerintah Kabupaten Supiori (official regency website)",
+     "year": null,
+     "language": "id",
+     "licence": "none stated (footer reads 'Hak Cipta © 2021 Pemerintah Kabupaten Supiori', a copyright notice with no open licence)",
+     "licenceEvidence": "Page footer: 'Hak Cipta © 2021 Pemerintah Kabupaten Supiori'; no Creative Commons or open-data licence found",
+     "tier": "unstated",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Supiori adalah salah satu kabupaten di provinsi Papua, Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "Kabupaten Supiori ada di Pulau Supiori yang dipisahkan dengan Pulau Biak oleh Selat Sorendiweri."
+      },
+      {
+       "section": "geography",
+       "text": "Luas Wilayah Supiori terdiri dari daratan dengan luas sebesar 704,24 Km2 dan wilayah perairan seluas 5.993 Km2."
+      },
+      {
+       "section": "geography",
+       "text": "Supiori Bagian Utara dibatasi oleh Samudera Pasifik"
+      },
+      {
+       "section": "geography",
+       "text": "Bagian Selatan berbatasan dengan Selat Yapen"
+      },
+      {
+       "section": "geography",
+       "text": "Bagian Barat berbatasan dengan Selat Aruri"
+      },
+      {
+       "section": "geography",
+       "text": "Bagiat timur berbatasan dengan Kabupaten Biak Numfor"
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "waropen",
+   "title": "Waropen",
+   "kind": "regency",
+   "sources": [
+    {
+     "title": "Waropen Regency",
+     "url": "https://en.wikipedia.org/wiki/Waropen_Regency",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Waropen Regency is one of the regencies (kabupaten) in Papua Province, Indonesia."
+      },
+      {
+       "section": "history",
+       "text": "Originally, this area comprised those districts of the former Yapen Waropen Regency which lay on the Papuan mainland, but that regency was split in two on 12 November 2002 (effective on 11 December 2002), to form the Waropen Regency on the Papuan mainland and the Yapen Islands Regency (consisting of Yapen Island and some smaller islands) in Cenderawasih Bay."
+      },
+      {
+       "section": "language",
+       "text": "The Waropen language is spoken in the regency."
+      },
+      {
+       "section": "peoples",
+       "text": "The main ethnic groups that inhabit this regency are the Waropen people, and the Biak who generally inhabit coastal areas."
+      },
+      {
+       "section": "population",
+       "text": "the official estimate as at mid 2023 was 37,643 - comprising 19,754 males and 17,889 females."
+      },
+      {
+       "section": "administration",
+       "text": "At the 2010 Census, Waropen Regency comprised ten districts (distrik), but subsequently two additional districts have been created - Soyoi Mambai and Wonti."
+      },
+      {
+       "section": "geography",
+       "text": "Botawa, the seat of the regency has a tropical rainforest climate (Af) with heavy to very heavy rainfall year-round."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Kabupaten Waropen",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Waropen",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Waropen adalah kabupaten di Provinsi Papua, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibu kota kabupaten ini terletak di Distrik Waropen Bawah."
+      },
+      {
+       "section": "history",
+       "text": "Kabupaten Waropen merupakan pemekaran dari Kabupaten Yapen Waropen pada tahun 2003."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Waropen terdiri atas 11 distrik dan 100 kampung dengan luas wilayah 10.977,09 km² dan jumlah penduduk 32.541 jiwa (2017)."
+      },
+      {
+       "section": "population",
+       "text": "Jumlah penduduk Kabupaten Waropen tahun 2022 tercatat sebanyak 36.974 jiwa dengan komposisi 19.415 laki-laki dan 17.559 perempuan, menghasilkan sex ratio sebesar 110,57 dan kepadatan penduduk rata-rata 3,41 jiwa per km²."
+      },
+      {
+       "section": "peoples",
+       "text": "Orang Waropen secara resmi dalam administrasi Pemerintahan mendiami daerah Kecamatan Waropen Atas, Masirei, dan Waropen Bawah."
+      },
+      {
+       "section": "livelihood",
+       "text": "Kampung-kampung di daerah pesisir Waropen umumnya dibangun di atas sungai pada hutan bakau dan ada pula yang dibangun di lidah pasir dan muara-muara sungai."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "biak-people",
+   "title": "Biak people",
+   "kind": "people",
+   "sources": [
+    {
+     "title": "Biak people",
+     "url": "https://en.wikipedia.org/wiki/Biak_people",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "The Biak people are an indigenous Austronesian ethnic group native to the Biak Islands of Indonesia (including Supiori, Numfor, and the Padaido Islands) in Cenderawasih Bay, off the northern coast of New Guinea."
+      },
+      {
+       "section": "history",
+       "text": "According to oral traditions, the Biak people have a long-standing maritime history tied to Cenderawasih Bay and the surrounding islands."
+      },
+      {
+       "section": "history",
+       "text": "From at least the early eighteenth century, the Biak expanded beyond their home islands to establish permanent coastal settlements along the north and northwest coasts of New Guinea's Bird's Head Peninsula (Doberai)."
+      },
+      {
+       "section": "language",
+       "text": "Their familiarity with sea navigation allowed them to exert wide-ranging influence across coastal New Guinea, leaving a lasting linguistic footprint; prominent regional place names such as 'Manokwari' (meaning \"old village\" in Biak) and the regional designations Bomberai and Doberai are derived from the Biak language."
+      },
+      {
+       "section": "history",
+       "text": "Today, the vast majority of the Biak people are Protestant Christians."
+      },
+      {
+       "section": "population",
+       "text": "The core population of the Biak people inhabits the islands of Biak, Supiori, and Numfor in Cenderawasih Bay, with native speakers of the Biak language estimated at around 70,000."
+      },
+      {
+       "section": "livelihood",
+       "text": "The traditional and contemporary economy of the Biak people relies heavily on a combination of coastal fishing and small-scale agriculture."
+      },
+      {
+       "section": "livelihood",
+       "text": "Inland and rural village plots are cultivated using shifting agriculture, where staples such as taro, cassava, sweet potatoes, bananas, and mung beans are grown."
+      },
+      {
+       "section": "culture",
+       "text": "Biak society is organized around patrilineal descent, meaning family lineage and the clan name, known as kéret, are traced through the father."
+      },
+      {
+       "section": "culture",
+       "text": "Marriage involves the customary payment of a brideprice by the groom's family."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Suku Biak",
+     "url": "https://id.wikipedia.org/wiki/Suku_Biak",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "Suku Biak berasal dari kelompok etnis yang berasal dari Kepulauan Biak di Teluk Cenderawasih, tepat di lepas pantai utara Pulau Papua."
+      },
+      {
+       "section": "peoples",
+       "text": "Masyarakat Biak memiliki beberapa sub-suku, seperti Aimando, Betew, Doreri, Kafdaron, Karon, Usba, Wardo, dan Kaipuri yang kebanyakan telah bermigrasi serta menetap di pesisir utara Papua dan Kepulauan Raja Ampat sejak abad ke-15."
+      },
+      {
+       "section": "history",
+       "text": "Suku Biak yang mendiami Kepulauan Biak dikenal sebagai penjelajah lautan yang tangguh."
+      },
+      {
+       "section": "livelihood",
+       "text": "Aktivitas berdagang suku Biak menggunakan sistem kongsi dagang antar sahabat yang disebut manibobi, yaitu dengan cara berlayar dan berdagang keliling."
+      },
+      {
+       "section": "livelihood",
+       "text": "Suku Biak juga sudah menguasai ilmu navigasi yang baik dengan mengandalkan rasi bintang, biasanya bintang Orion (Sawakoi) dan Scorpio (Romanggwandi)."
+      },
+      {
+       "section": "language",
+       "text": "Wor dalam bahasa Biak berarti lagu dan tari tradisional."
+      },
+      {
+       "section": "culture",
+       "text": "Makanan tradisional sekaligus makanan pokok masyarakat suku Biak adalah pokem atau otong yang lebih populer dengan nama 'gandum Papua'."
+      },
+      {
+       "section": "culture",
+       "text": "Tradisi Iyakyaker suku Biak, yaitu tradisi pemberian maskawin antara lain berupa, hewan babi, manik-manik, guci, piring antik, hasil perkebunan, hasil laut, hewan hasil buruan, serta beragam harta benda lainnya yang dimiliki."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Kabupaten Biak Numfor",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Biak_Numfor",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "history",
+       "text": "Pada waktu pemerintah Belanda berkuasa di daerah Papua hingga awal tahun 1960-an, nama yang dipakai untuk menamakan Kepulauan Biak-Numfor adalah Schouten Eilanden, menurut nama orang Eropa pertama berkebangsaan Belanda, yang mengunjungi daerah ini pada awal abad ke-17."
+      },
+      {
+       "section": "peoples",
+       "text": "Nama-nama lain yang sering dijumpai dalam laporan-laporan tua untuk penduduk dan daerah kepuluan ini adalah Numfor atau Wiak."
+      },
+      {
+       "section": "peoples",
+       "text": "Dua nama terakhir itulah kemudian digabungkan menjadi satu nama yaitu Biak-Numfor, dengan tanda garis mendatar di antara dua kata itu sebagai tanda penghubung antara dua kata tersebut, yang dipakai secara resmi untuk menamakan daerah dan penduduk yang mendiami pulau-pulau yang terletak di sebelah utara Teluk Cenderawasih itu."
+      },
+      {
+       "section": "language",
+       "text": "Fonem w pada kata wiak sebenarnya berasal dari fonem v yang kemudian berubah menjadi b sehingga muncullah kata biak seperti yang digunakan sekarang."
+      },
+      {
+       "section": "peoples",
+       "text": "Dalam percakapan sehari-hari orang hanya menggunakan nama Biak saja yang mengandung pengertian yang sama juga dengan yang disebutkan di atas."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "biak-language",
+   "title": "Biak language",
+   "kind": "language",
+   "sources": [
+    {
+     "title": "Biak language",
+     "url": "https://en.wikipedia.org/wiki/Biak_language",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Biak (wós Vyak or 'Biak language'; wós kovedi or 'our language'; Indonesian: bahasa Biak), also known as Biak-Numfor, Noefoor, Mafoor, Mefoor, Nufoor, Mafoorsch, Myfoorsch and Noefoorsch, is an Austronesian language of the South Halmahera-West New Guinea subgroup of the Eastern Malayo-Polynesian languages."
+      },
+      {
+       "section": "population",
+       "text": "According to Ethnologue, it is spoken by about 70,000 people in Biak and Numfor and numerous small islands in the Schouten Islands, located in Papua province of Western New Guinea, northeastern Indonesia."
+      },
+      {
+       "section": "language",
+       "text": "The name Biak or Vyak refers to the island of the same name."
+      },
+      {
+       "section": "language",
+       "text": "These dialect differences are minor and mostly limited to slight regular sound changes."
+      },
+      {
+       "section": "language",
+       "text": "The vast majority of Biak speakers are also fluent in the local variety of Malay, but not all of them are proficient in standard Indonesian."
+      },
+      {
+       "section": "language",
+       "text": "Despite the comparatively high number of speakers compared to some other Austronesian languages, Biak is still in danger of extinction."
+      },
+      {
+       "section": "culture",
+       "text": "Songs in Biak are also very popular throughout the islands."
+      },
+      {
+       "section": "language",
+       "text": "Since 2002, there has also been an initiative to introduce Biak being taught formerly in schools on the islands."
+      },
+      {
+       "section": "language",
+       "text": "Biak has a phoneme inventory consisting of 13 consonants and 5 vowels, in which vowel length is phonemic."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Bahasa Biak",
+     "url": "https://id.wikipedia.org/wiki/Bahasa_Biak",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Bahasa Biak (Wós Vyak) adalah salah satu bahasa Austronesia yang dituturkan di Provinsi Papua terutama di Pulau Biak, Pulau Numfor, dan sekitarnya."
+      },
+      {
+       "section": "population",
+       "text": "Penutur bahasa ini pada tahun 2000 berjumlah 30.000 orang."
+      },
+      {
+       "section": "language",
+       "text": "Bahasa Biak mempunyai beberapa dialek, antara lain:"
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Biak people",
+     "url": "https://en.wikipedia.org/wiki/Biak_people",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Their familiarity with sea navigation allowed them to exert wide-ranging influence across coastal New Guinea, leaving a lasting linguistic footprint; prominent regional place names such as 'Manokwari' (meaning \"old village\" in Biak) and the regional designations Bomberai and Doberai are derived from the Biak language."
+      },
+      {
+       "section": "population",
+       "text": "The core population of the Biak people inhabits the islands of Biak, Supiori, and Numfor in Cenderawasih Bay, with native speakers of the Biak language estimated at around 70,000."
+      },
+      {
+       "section": "peoples",
+       "text": "The Biak people are an indigenous Austronesian ethnic group native to the Biak Islands of Indonesia (including Supiori, Numfor, and the Padaido Islands) in Cenderawasih Bay, off the northern coast of New Guinea."
+      },
+      {
+       "section": "history",
+       "text": "Today, the vast majority of the Biak people are Protestant Christians."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "waropen-people",
+   "title": "Waropen people",
+   "kind": "people",
+   "sources": [
+    {
+     "title": "Suku Waropen",
+     "url": "https://id.wikipedia.org/wiki/Suku_Waropen",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "peoples",
+       "text": "Suku Waropen adalah kelompok etnis yang mendiami wilayah pesisir di utara Papua, khususnya di Kabupaten Waropen dan beberapa wilayah di sekitarnya serta juga di Kabupaten Teluk Wondama, Papua Barat, dan disebut sebagai Waruri."
+      },
+      {
+       "section": "language",
+       "text": "Masyarakat suku Waropen berkomunikasi menggunakan bahasa Waropen sebagai bahasa asli mereka, dan bahasa Indonesia serta Melayu Papua sebagai lingua franca di daerahnya."
+      },
+      {
+       "section": "history",
+       "text": "Jacob Weyland, seorang peneliti Belanda pertama kali menyebutkan kata \"Aropen\", disebutkan pertama kali oleh Jacob Weyland pada tahun 1705."
+      },
+      {
+       "section": "peoples",
+       "text": "Antropologi asal Belanda Held, membagi wilayah Waropen sesuai wilayah adat yang tecermin dalam perbedaan dalam menggunakan bahasa sehari-hari."
+      },
+      {
+       "section": "administration",
+       "text": "Saat ini wilayah Waropen sudah berdiri menjadi salah satu kabupaten di Provinsi Papua, dengan ibu kota kabupaten ini terletak di Botawa."
+      },
+      {
+       "section": "language",
+       "text": "Waropen adalah bahasa Austronesia yang digunakan di Teluk Geelvink, Papua."
+      },
+      {
+       "section": "language",
+       "text": "Bahasa ini terkait erat dengan bahasa Yapen."
+      },
+      {
+       "section": "language",
+       "text": "Dialeknya adalah Waropen Kai, Napan, dan Ambumi."
+      },
+      {
+       "section": "culture",
+       "text": "Masyarakat Waropen mengenal struktur kepemimpinan tradisional yang dikenal dalam sistem kepemimpinan Sera."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Waropen Regency",
+     "url": "https://en.wikipedia.org/wiki/Waropen_Regency",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "history",
+       "text": "Originally, this area comprised those districts of the former Yapen Waropen Regency which lay on the Papuan mainland, but that regency was split in two on 12 November 2002 (effective on 11 December 2002), to form the Waropen Regency on the Papuan mainland and the Yapen Islands Regency (consisting of Yapen Island and some smaller islands) in Cenderawasih Bay."
+      },
+      {
+       "section": "language",
+       "text": "The Waropen language is spoken in the regency."
+      },
+      {
+       "section": "peoples",
+       "text": "The main ethnic groups that inhabit this regency are the Waropen people, and the Biak who generally inhabit coastal areas."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Kabupaten Waropen",
+     "url": "https://id.wikipedia.org/wiki/Kabupaten_Waropen",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "administration",
+       "text": "Kabupaten Waropen adalah kabupaten di Provinsi Papua, Indonesia."
+      },
+      {
+       "section": "administration",
+       "text": "Ibu kota kabupaten ini terletak di Distrik Waropen Bawah."
+      },
+      {
+       "section": "history",
+       "text": "Kabupaten Waropen merupakan pemekaran dari Kabupaten Yapen Waropen pada tahun 2003."
+      },
+      {
+       "section": "administration",
+       "text": "Kabupaten Waropen terdiri atas 11 distrik dan 100 kampung dengan luas wilayah 10.977,09 km² dan jumlah penduduk 32.541 jiwa (2017)."
+      },
+      {
+       "section": "peoples",
+       "text": "Orang Waropen secara resmi dalam administrasi Pemerintahan mendiami daerah Kecamatan Waropen Atas, Masirei, dan Waropen Bawah."
+      },
+      {
+       "section": "livelihood",
+       "text": "Kampung-kampung di daerah pesisir Waropen umumnya dibangun di atas sungai pada hutan bakau dan ada pula yang dibangun di lidah pasir dan muara-muara sungai."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "waropen-language",
+   "title": "Waropen language",
+   "kind": "language",
+   "sources": [
+    {
+     "title": "Waropen language",
+     "url": "https://en.wikipedia.org/wiki/Waropen_language",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Waropen (Wonti) is an Austronesian language spoken at the Cendrawasih Bay of Papua, Indonesia."
+      },
+      {
+       "section": "language",
+       "text": "It is a primary branch of the South Halmahera–West New Guinea languages."
+      },
+      {
+       "section": "language",
+       "text": "Dialects are Ambumi, Napan, Mo'or (Moor), and Waropen Kai."
+      },
+      {
+       "section": "geography",
+       "text": "In Papua province, it is spoken in Mamberamo Raya Regency and Waropen Regency."
+      },
+      {
+       "section": "geography",
+       "text": "Waropen is also spoken southwest to the Rombak River mouth."
+      },
+      {
+       "section": "language",
+       "text": "The Ambumi dialect, also called Waruri, mainly spoken in Ambumi village in Wondama Bay Regency, West Papua."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Bahasa Waropen",
+     "url": "https://id.wikipedia.org/wiki/Bahasa_Waropen",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Bahasa Waropen atau Aropen, Wonti, dan Worpen adalah bahasa yang digunakan suku Waropen."
+      },
+      {
+       "section": "geography",
+       "text": "Penuturnya terdapat di pesisir selatan Pulau Yapen dan Teluk Cendrawasih timur."
+      },
+      {
+       "section": "language",
+       "text": "Dialek-dialeknya diantaranya: Waropen Kai, Napan, dan Mo'or."
+      },
+      {
+       "section": "language",
+       "text": "Bahasa ini termasuk dalam rumpun bahasa Austronesia."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Suku Waropen",
+     "url": "https://id.wikipedia.org/wiki/Suku_Waropen",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2026,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Masyarakat suku Waropen berkomunikasi menggunakan bahasa Waropen sebagai bahasa asli mereka, dan bahasa Indonesia serta Melayu Papua sebagai lingua franca di daerahnya."
+      },
+      {
+       "section": "language",
+       "text": "Waropen adalah bahasa Austronesia yang digunakan di Teluk Geelvink, Papua."
+      },
+      {
+       "section": "language",
+       "text": "Bahasa ini terkait erat dengan bahasa Yapen."
+      },
+      {
+       "section": "language",
+       "text": "Dialeknya adalah Waropen Kai, Napan, dan Ambumi."
+      },
+      {
+       "section": "geography",
+       "text": "Di Provinsi Papua, bahasa ini dituturkan di Kabupaten Mamberamo Raya dan Kabupaten Waropen."
+      },
+      {
+       "section": "geography",
+       "text": "Dialek Ambumi yang disebut juga Waruri dituturkan di bagian selatan Kabupaten Teluk Wondama, Papua Barat."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "yapen-languages",
+   "title": "Yapen languages (Ambai, Serui-Laut, Ansus)",
+   "kind": "language",
+   "sources": [
+    {
+     "title": "Yapen languages (Austronesian)",
+     "url": "https://en.wikipedia.org/wiki/Yapen_languages_(Austronesian)",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "The Yapen languages are the branch of Malayo-Polynesian languages spoken on Yapen Island and the nearby small islands in Cenderawasih Bay, all in Papua province of northeastern Indonesia."
+      },
+      {
+       "section": "language",
+       "text": "They share Yapen Ιsland with the Papuan Yawa languages."
+      },
+      {
+       "section": "language",
+       "text": "Proto-Western Yapen, also known as Proto-Central-Western Yapen, was reconstructed in 1983 by P.J. Silzer, with further amendments by Usher and Gasser (in preparation)."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Ambai language",
+     "url": "https://en.wikipedia.org/wiki/Ambai_language",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "The Ambai or Ampari is an Austronesian language spoken by the Ambai people in Indonesian New Guinea (Papua Province), mostly on the Ambai Islands, as well as the southern part of Yapen Island."
+      },
+      {
+       "section": "population",
+       "text": "The number of speakers is estimated to be 10,000."
+      },
+      {
+       "section": "language",
+       "text": "Dialects are Randawaya, Ambai (Wadapi-Laut), and Manawi."
+      },
+      {
+       "section": "language",
+       "text": "Ambai has 19 consonants and 6 vowels, shown on the tables below."
+      },
+      {
+       "section": "language",
+       "text": "All pronouns in Ambai mark for number, person and clusivity (in first person)."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Serui-Laut language",
+     "url": "https://en.wikipedia.org/wiki/Serui-Laut_language",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Serui-Laut, or Arui, is an Austronesian language spoken on Serui Island of the Ambai Islands, in Western New Guinea, Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "Serui Island is located in Cenderawasih Bay of Papua Province."
+      },
+      {
+       "section": "language",
+       "text": "It is one of the Yapen languages, in the South Halmahera–West New Guinea languages group."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Ansus language",
+     "url": "https://en.wikipedia.org/wiki/Ansus_language",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "language",
+       "text": "Ansus is an Austronesian language spoken by the Ansus people in the Papua Province of Western New Guinea, Indonesia."
+      },
+      {
+       "section": "language",
+       "text": "It is one of the South Halmahera–West New Guinea languages."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "numfor",
+   "title": "Numfor",
+   "kind": "region",
+   "sources": [
+    {
+     "title": "Numfor",
+     "url": "https://en.wikipedia.org/wiki/Numfor",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "Numfor (also Numfoor, Noemfoor, Noemfoer) is one of the Biak Islands (also known as the Schouten Islands) in Papua province, northeastern Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "The island is located on the northern side of large Cenderawasih Bay (formerly Geelvink Bay) of New Guinea island."
+      },
+      {
+       "section": "geography",
+       "text": "It is mostly surrounded by coral reefs, with the exception of some points on the southeastern coast."
+      },
+      {
+       "section": "administration",
+       "text": "The island is jurisdictionally within the Biak Numfor Regency of Papua province."
+      },
+      {
+       "section": "population",
+       "text": "It has a population of 9,336 people in the 2010 census covering 5 districts."
+      },
+      {
+       "section": "history",
+       "text": "The Tidore Sultanate had tributary ties with the island."
+      },
+      {
+       "section": "livelihood",
+       "text": "The indigenous population at the time numbered about 5,000 people, most of whom lived a subsistence lifestyle in coastal villages."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Pulau Numfor",
+     "url": "https://id.wikipedia.org/wiki/Pulau_Numfor",
+     "publisher": "Wikipedia (Bahasa Indonesia)",
+     "year": 2025,
+     "language": "id",
+     "licence": "Lisensi Atribusi-BerbagiSerupa Creative Commons (CC BY-SA)",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons; ketentuan tambahan mungkin berlaku.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "Pulau Numfor (ditulis juga: Numfoor, Noemfoor, Noemfoer) merupakan sebuah pulau yang berada di Kepulauan Biak dan terletak pada sebelah utara Pulau Papua."
+      },
+      {
+       "section": "administration",
+       "text": "Secara administratif, Pulau Numfor termasuk wilayah Kabupaten Biak Numfor."
+      },
+      {
+       "section": "geography",
+       "text": "Terletak di Teluk Cendrawasih yang berjarak 50 km sebelah barat Biak dan Supiori dan 70 km sebelah timur dari kota pelabuhan Manokwari."
+      },
+      {
+       "section": "geography",
+       "text": "Bagian terbesar dari pulau ini adalah hutan hujan tropis."
+      },
+      {
+       "section": "geography",
+       "text": "Seluruh pantai pada pulau Numfor terutama dikelilingi oleh terumbu karang, kecuali untuk beberapa titik di pantai tenggara Pulau Numfor karena ada yang bertebing curam."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Biak Numfor Regency",
+     "url": "https://en.wikipedia.org/wiki/Biak_Numfor_Regency",
+     "publisher": "Wikipedia (English)",
+     "year": 2026,
+     "language": "en",
+     "licence": "Creative Commons Attribution-ShareAlike 4.0 License",
+     "licenceEvidence": "Page footer: 'Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply.'",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "geography",
+       "text": "Numfor Island lies due west of Biak."
+      },
+      {
+       "section": "geography",
+       "text": "These two large islands are Biak and Numfor; the remaining large island within the Schouten Islands group, Supiori Island, was formerly also part of the regency but was administratively split off to form the separate Supiori Regency on 8 January 2004."
+      },
+      {
+       "section": "administration",
+       "text": "Numfor Island (comprising the first five districts listed above) were intended to be split off to form a separate regency under proposals announced in 2013 by the Indonesian Government, although all such new measures have been placed on hold since 2013."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  }
+ ],
+ "notes": [
+  "All quotes were machine-checked as exact substrings (whitespace-normalised) of text extracted from the fetched pages; HTML pages were fetched with curl and converted to text with <sup> footnote markers and scripts removed, so a verifier that keeps '[1]'-style markers could fail quotes that span them (I chose single sentences, or spans that start/end at the markers, to limit this). A few quotes start mid-sentence (e.g. id Saireri 'adalah wilayah adat ...', en Yapen 'the official estimate as at mid 2024 was ...') because a footnote or table sits before them.",
+  "Fewer than 5 quotes (or none) for several sources, because the pages are short or purely structured data: Glottolog biak1248 and waro1242 have 0 quotes (the content is labels/codes, no sentence of 6+ words; usable facts only as structured data: glottocodes biak1248/waro1242, ISO bhw/wrp, AES status threatened/shifting, classification Austronesian > ... > Cenderawasih Bay > Biakic / Waropen). Ansus (2), Serui-Laut (3), Yapen languages (3), Waropen Reswara on regency page (2), Biak language via Biak people (4), en Waropen Regency on people page (3) and Numfor reused regency page (3) are below the 5-quote minimum.",
+  "BPS (Badan Pusat Statistik) pages and biakkab.go.id returned 403 through the proxy with curl; waropenkab.go.id connection was reset; papua.go.id, papua.bpk.go.id and the provincial Saireri PDF (lingkunganhidup.papua.go.id) could not be fetched with curl either. They were seen only as Exa search snippets, so NOT cited. No BPS source is in the file; the wiki should cite BPS 'Kabupaten ... Dalam Angka 2025' only via the Wikipedia citations, not as a verified source. Official regency sources used: Supiori (supiorikab.go.id, 2 pages) and Kepulauan Yapen (kepyapenkab.go.id, 2 pages). None of the official sites states an open licence (Supiori footer: 'Hak Cipta © 2021 Pemerintah Kabupaten Supiori'), so they are tier 'unstated'.",
+  "kepyapenkab.go.id pages contain an injected spam line ('sbobet onlineslot gacor') at the top of the page text, suggesting the site is compromised. The history/geography text itself looks like genuine official content and matches id Wikipedia, but a reviewer may prefer to drop these two sources.",
+  "Region composition conflict: id Wikipedia 'Saireri' lists Nabire (and says the coast is in Papua Tengah) among the regencies of Saireri, alongside Biak Numfor, Supiori, Kepulauan Yapen and Waropen. The brief lists four regencies, and Nabire coastal part is often included in other sources. Also the id Saireri article's own references are news sites (historia.id, mediaindonesia.com, penghubung.papua.go.id), not used here. There is no English Wikipedia 'Saireri' article (404). Administrative province names may be outdated: since 2022 Nabire is in Papua Tengah, while the four regencies remain in Papua province; Wikipedia pages in the file still say 'Papua Province' for them.",
+  "Conflicting area figures: Supiori 634.24 km2 (en Wikipedia, BPS-based), 678.00 / 678.32 / 704.24 km2 (id Wikipedia and supiorikab.go.id, which gives 704.24 km2 land plus 5,993 km2 sea). Kepulauan Yapen 2,429.03 km2 (en Wikipedia; kepyapenkab.go.id citing BIG 2021) vs 2,432.49 km2 (id Wikipedia). Waropen 10,843.97 km2 (en) vs 10,847.91 km2 (id infobox) vs 10,977.09 km2 (id text, 2017); Waropen district count 12 (en, 2023) vs 11 (id). Biak Numfor 2,601.99 km2 in both.",
+  "Conflicting population figures (different years/bases): Biak Numfor 150,318 (mid-2024 estimate in en; 31 Dec 2024 in id; same number). Supiori 24,527 (mid-2024, en) vs 27,965 (31 Dec 2024, id). Kepulauan Yapen 116,214 in both. Waropen 37,643 (mid-2023, en) vs 38,840 (31 Dec 2024, id) vs 36,974 (2022, id). Biak speakers: ~70,000 (en, Ethnologue 2007) vs 30,000 (id, 2000) vs id Suku Biak infobox 204,415 ethnic population (2010); en Biak people says Biak language speakers ~70,000 and does not give an ethnic population.",
+  "Formation dates differ: Waropen formed under UU 26/2002 (12 Nov 2002 per en; 'Tanggal berdiri 25 Oktober 2002' in id infobox) but id text says 'pada tahun 2003'. Supiori: UU 35/2003 of 18 Dec 2003, effective 8 Jan 2004 per en. Kepulauan Yapen: formerly Yapen Waropen under UU 12/1969, renamed by PP 40/2008 (kepyapenkab.go.id says 19 May 2008, regency anniversary 6 March 1969). Biak Numfor: id infobox 'Tanggal berdiri 17 Juli 1918', 'Dasar hukum UU No. 12 Tahun 1969' (the 1918 date is that of the first Dutch government post at Bosnik, not the modern regency).",
+  "id 'Bahasa Waropen' says speakers are on the 'pesisir selatan Pulau Yapen'; other sources (en Waropen language, id Suku Waropen, id Kabupaten Waropen) place Waropen on the mainland coast (Waropen Regency, Mamberamo Raya, Ambumi in Teluk Wondama/Nabire/Manokwari). Treat the Yapen statement as doubtful. Likewise id Pulau Biak says Biak Island has 'Luas 2.455 km2' while the regency table gives 2,135.96 km2 for Biak Island (not quoted).",
+  "Reswara article (CC BY-NC-SA 4.0): the licence has a NonCommercial clause and ShareAlike; the landing page text ('published under the terms of Creative Commons Attribution-Share Alike ... Attribution-NonCommercial-ShareAlike 4.0') is internally inconsistent, the footer states CC BY-NC-SA 4.0. Quotes were taken from the PDF (https://jurnal.dharmawangsa.ac.id/index.php/reswara/article/download/2079/pdf/9168) via pdftotext; PDF line-wrapping/hyphenation may differ in another extractor. It is a community-service report, not a linguistic source; it states 'Bahasa Waropen ... salah satu dari 1.100 bahasa daerah' and '714 suku', figures not independently checked.",
+  "Content kept out on purpose: Biak Massacre/1998 unrest and Morning Star flag paragraphs in en 'Biak people'; the 1979 earthquake death toll in en 'Yapen Islands Regency'; WWII battle details at Numfor; slave-raiding passages; Koreri and detailed ritual/sacred material (the id 'Suku Biak' article has sections on Wor, Korwar and the Padwa old graves, only Wor is mentioned in one definitional quote 'Wor dalam bahasa Biak berarti lagu dan tari tradisional'; the Suku Waropen Sera quote is a general leadership-structure statement). Neither Ethnologue nor SIL nor Balai Bahasa were fetched or cited, but several Wikipedia language articles cite Ethnologue figures and EGIDS status (secondary use).",
+  "Pages created: 11 (saireri, biak-numfor, kepulauan-yapen, supiori, waropen as regency, biak-people, biak-language, waropen-people, waropen-language, plus extras yapen-languages (Yapen branch, Ambai, Serui-Laut, Ansus) and numfor (island, kind 'region')). The brief's single 'Waropen language or people' page was split into two. Ambai, Serui-Laut and Ansus have no stand-alone page; all four Yapen-language sources are English Wikipedia (CC BY-SA 4.0); Indonesian Wikipedia pages for them were fetched but only contain infobox data (not quoted). A wiki editor should still verify that Indonesian Wikipedia copyright (CC BY-SA 4.0, attribution required, share-alike) is acceptable for the target wiki.",
+  "Wikipedia 'year' fields are the page's last-edit year (2025-2026, from the footer 'Halaman ini terakhir diubah' / 'This page was last edited'), not a publication year; the per-page edit years for en Yapen languages (Austronesian), Ambai, Serui-Laut and Ansus were assumed 2026 and not individually checked. Glottolog year is the version (5.4, 2026)."
+ ]
+}

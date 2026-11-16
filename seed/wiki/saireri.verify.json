@@ -1,0 +1,300 @@
+{
+ "file": "seed/wiki/saireri.json",
+ "checked": "2026-11-16",
+ "sources": [
+  {
+   "page": "saireri",
+   "url": "https://id.wikipedia.org/wiki/Saireri",
+   "ok": 5,
+   "bad": [
+    "Pakaian tradisional suku Biak, kelompok etnis terbesar di wilayah adat Saireri."
+   ],
+   "error": null
+  },
+  {
+   "page": "saireri",
+   "url": "https://jurnal.dharmawangsa.ac.id/index.php/reswara/article/download/2079/pdf/9168",
+   "ok": 0,
+   "bad": [],
+   "error": "PDF: text not extracted"
+  },
+  {
+   "page": "saireri",
+   "url": "https://en.wikipedia.org/wiki/Biak_people",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "saireri",
+   "url": "https://id.wikipedia.org/wiki/Suku_Biak",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-numfor",
+   "url": "https://en.wikipedia.org/wiki/Biak_Numfor_Regency",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-numfor",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Biak_Numfor",
+   "ok": 9,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-numfor",
+   "url": "https://id.wikipedia.org/wiki/Pulau_Biak",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "kepulauan-yapen",
+   "url": "https://en.wikipedia.org/wiki/Yapen_Islands_Regency",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "kepulauan-yapen",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Kepulauan_Yapen",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "kepulauan-yapen",
+   "url": "https://kepyapenkab.go.id/profil/sejarah",
+   "ok": 0,
+   "bad": [],
+   "error": "blocked host"
+  },
+  {
+   "page": "kepulauan-yapen",
+   "url": "https://kepyapenkab.go.id/profil/letak-geografis",
+   "ok": 0,
+   "bad": [],
+   "error": "blocked host"
+  },
+  {
+   "page": "supiori",
+   "url": "https://en.wikipedia.org/wiki/Supiori_Regency",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "supiori",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Supiori",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "supiori",
+   "url": "https://supiorikab.go.id/profil/sejarah",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "supiori",
+   "url": "https://supiorikab.go.id/profil/geografis",
+   "ok": 7,
+   "bad": [
+    "Ibu kota kabupaten ini terletak di Sorendiweri."
+   ],
+   "error": null
+  },
+  {
+   "page": "waropen",
+   "url": "https://en.wikipedia.org/wiki/Waropen_Regency",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Waropen",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen",
+   "url": "https://jurnal.dharmawangsa.ac.id/index.php/reswara/article/download/2079/pdf/9168",
+   "ok": 0,
+   "bad": [],
+   "error": "PDF: text not extracted"
+  },
+  {
+   "page": "biak-people",
+   "url": "https://en.wikipedia.org/wiki/Biak_people",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-people",
+   "url": "https://id.wikipedia.org/wiki/Suku_Biak",
+   "ok": 8,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-people",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Biak_Numfor",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-language",
+   "url": "https://en.wikipedia.org/wiki/Biak_language",
+   "ok": 9,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-language",
+   "url": "https://id.wikipedia.org/wiki/Bahasa_Biak",
+   "ok": 3,
+   "bad": [
+    "Bahasa Biak diklasifikasikan sebagai bahasa rentan (VU) pada Atlas Bahasa-Bahasa di Dunia yang Terancam Kepunahan",
+    "Bahasa Biak dikategorikan sebagai C6b Threatened menurut SIL Ethnologue, artinya bahasa ini mulai terancam dan mengalami penurunan jumlah penutur dari waktu ke waktu"
+   ],
+   "error": null
+  },
+  {
+   "page": "biak-language",
+   "url": "https://glottolog.org/resource/languoid/id/biak1248",
+   "ok": 0,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "biak-language",
+   "url": "https://en.wikipedia.org/wiki/Biak_people",
+   "ok": 4,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen-people",
+   "url": "https://id.wikipedia.org/wiki/Suku_Waropen",
+   "ok": 9,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen-people",
+   "url": "https://jurnal.dharmawangsa.ac.id/index.php/reswara/article/download/2079/pdf/9168",
+   "ok": 0,
+   "bad": [],
+   "error": "PDF: text not extracted"
+  },
+  {
+   "page": "waropen-people",
+   "url": "https://en.wikipedia.org/wiki/Waropen_Regency",
+   "ok": 3,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen-people",
+   "url": "https://id.wikipedia.org/wiki/Kabupaten_Waropen",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen-language",
+   "url": "https://en.wikipedia.org/wiki/Waropen_language",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen-language",
+   "url": "https://id.wikipedia.org/wiki/Bahasa_Waropen",
+   "ok": 4,
+   "bad": [
+    "Bahasa Waropen dikategorikan sebagai C7 Shifting menurut SIL Ethnologue, artinya sebagian atau kebanyakan penutur mulai beralih menuturkan bahasa lain dalam kesehariannya atau bahasa ini telah tergeser oleh bahasa besar lainnya"
+   ],
+   "error": null
+  },
+  {
+   "page": "waropen-language",
+   "url": "https://id.wikipedia.org/wiki/Suku_Waropen",
+   "ok": 6,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "waropen-language",
+   "url": "https://glottolog.org/resource/languoid/id/waro1242",
+   "ok": 0,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yapen-languages",
+   "url": "https://en.wikipedia.org/wiki/Yapen_languages_(Austronesian)",
+   "ok": 3,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yapen-languages",
+   "url": "https://en.wikipedia.org/wiki/Ambai_language",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yapen-languages",
+   "url": "https://en.wikipedia.org/wiki/Serui-Laut_language",
+   "ok": 3,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "yapen-languages",
+   "url": "https://en.wikipedia.org/wiki/Ansus_language",
+   "ok": 2,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "numfor",
+   "url": "https://en.wikipedia.org/wiki/Numfor",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "numfor",
+   "url": "https://id.wikipedia.org/wiki/Pulau_Numfor",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "numfor",
+   "url": "https://en.wikipedia.org/wiki/Biak_Numfor_Regency",
+   "ok": 3,
+   "bad": [],
+   "error": null
+  }
+ ],
+ "totals": {
+  "ok": 198,
+  "bad": 5,
+  "unreachable": 10
+ }
+}
