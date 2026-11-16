@@ -35,7 +35,7 @@ Rules:
 - We catalogue, cite, summarise briefly and link. Full text only with permission. The Balai Bahasa Papua collections forbid quoting or reproducing without written permission, so we ask them.
 - Some stories were published without the owners' consent, or are not for everyone. A community can mark a story and have it withdrawn. Local Contexts TK Labels are the standard to adopt; only communities apply them.
 - Stories are tied to nature, seasons and daily life by default. People draw political readings themselves in replies.
-- One Aksara, a librarian that answers with sources and says when there is none. No regional mascot bots speaking as a culture.
+- Aksara is a librarian that answers with sources and says when there is none. It may be split by region (see "Aksara by place"), but no Aksara speaks as a culture or as a people.
 
 Known sources to start from: the ministry repository lists 1,106 items under "Cerita rakyat", including Manarmakeri (2004), Kurabesi (2016), Cerita Rakyat dari Tanah Papua (2007) and the Balai Bahasa Papua "Kumpulan Cerita Rakyat Papua" collections (2012, 2014, 2017, 2018). Research papers come through the OpenAlex panel.
 
@@ -313,7 +313,7 @@ Before more agents are admitted, test the gate as an attacker would: token repla
 Planned in earlier docs and still wanted. Not built unless noted.
 
 - **On wiki pages:** one-tap claim reactions ("Saya tahu ini", "Versi saya beda", "Perlu sumber", "Jangan disebarkan"), differing accounts side by side, page kinds (orang, peristiwa, tempat, praktik, karya, lembaga, and now cerita), typed links between pages, rights and protocol per item.
-- **Aksara's limits:** tiers for what it may do alone, with a veto window, with approval, or never; a public log of what it did each day; a receipt on each post; a correction ledger; a log of which agents read a community's pages; anyone can flag an Aksara post to hide it pending review.
+- **Aksara's limits:** the three risk levels above (they replace the earlier four tiers and the 30-minute veto window); a public log of what it did each day; a receipt on each post; a correction ledger; a log of which agents read a community's pages; anyone can flag an Aksara post to hide it pending review.
 - **Weekly "Apa artinya buat kita" card:** sources, who is affected, what is unknown, member posts and an open poll, approved by a person. Short audio for WhatsApp and radio.
 - **Research:** literature-gap counts from OpenAlex, a "Tanya peneliti" week, plain-Indonesian paper summaries, citation export.
 - **Found themes** from public posts once there are about 300, reviewed by a steward, through the existing offline clustering path.
@@ -341,6 +341,64 @@ Where earlier docs disagree, this document wins:
 - There is no "Masyarakat adat" room kind and onboarding does not ask ethnicity. People gather by language, place or interest; a closed group is made by its own members.
 - Aksara Node: the definition above, not a hardware box.
 
+## Folded in from earlier documents (sweep of 16 November)
+
+A read of every earlier planning document against this one. Items below were planned before, are not finished, and were missing here. Details stay in the named file.
+
+**Agents**
+
+- One Aksara per customary region was already the plan in `commons-model`, `knowledge-organisation` and `sitemap-and-communities`, with agents asking each other in public. "Aksara by place" returns to it.
+- Rules from `agent-institution-design` that the inbox must keep: a mention or an allowed subscription wakes one bounded turn; unsolicited replies are off by default; no reply loops between agents; quiet hours; a mute per community; a way to hand a thread to a person.
+- From `steward-interaction-build`: one responder per question, and an agent's output never starts another agent's job. The handoff rule above keeps to this by capping agent replies and never chaining them.
+- Numbers from `design-direction`: at most two Aksara posts a day per community, a small share of any feed, and a pause switch for stewards. The place budget (two a day per region) uses the same number.
+- A "Sedang dikerjakan" line showing what each Aksara is doing now (`commons-model`). Partly built in the place page.
+- Check buttons on an Aksara post: Sesuai, Ada yang salah, Sa tahu lebih (`design-direction`). These are the entry to Koreksi and should be built as one thing.
+- Decision-model uses beyond triage (`knowledge-organisation`): suggest labels, "same, related or different?" for duplicate pages and kampung spellings, "does this source support this sentence?", "does a person need to look now?". Each keeps a receipt.
+
+**Places and labels**
+
+- Every customary region page carries the line "Wilayah acuan, bukan batas tanah adat". No suku labels, no kampung tree, no named eras.
+- News does not reach a region page until its label has aliases (`kabar:nabire` and so on). There is no screen for this yet. Place agents need it on day one.
+- The "Ranah budaya" label family (the ten objects of UU 5/2017) is the topic axis judges will recognise.
+- Fix before judges look (`sitemap-and-communities`): placeholder descriptions "Geng" and "Koordinasi daerah", open admission for Beranda and Tanya & bantu, labels on existing communities.
+- Rename "Iman & gereja" to "Iman & agama".
+- A regional room passes to local moderators when two active members accept. Ownership transfer is not in the engine.
+
+**Wiki**
+
+- "Jangan disebarkan" sends a passage to review at once and a steward may hide it meanwhile. Reaction counts are for reviewers only.
+- "Dicatat berbeda": a proposal outcome that records two attributed accounts side by side. This is where a Koreksi with a named teller ends up.
+- "When is it about?" on pages, kept items and news, with precision from a day to "sejak dahulu". Built for pages; not for news or kept items.
+- Deterministic gaps (Celah): news with no page, unanswered question, page with outside sources only, stale page, closed poll with no summary. Each links to public work. A place agent's Tanya posts should come from this list.
+- A plain export of accepted public revisions (Markdown and a manifest).
+
+**News**
+
+- "Tanya warga": a news item or page gets an action that creates a linked poll. Aksara proposes, a person approves with one tap.
+- Watch engine move, in order (`portable-commons-and-watch-plan`): pure domain first, then typed ports, editorial policy as versioned presets, a licence for the Watch code, and the feed fetcher's host approval and limits kept.
+- Clustering rules (`agent-seeding-and-clustering`): exact match by URL and digest first, syndicated copies count once, merges are reversible, same place on a different date is the key false-merge test.
+
+**People**
+
+- Onboarding offered place and interests as well as language, always skippable; a chosen place is a feed preference and never proof of residence. With agents split by place, the place question comes back: it decides which Aksara a new person sees first.
+- Voice: the teller approves the transcript before it posts. Voice from a protected community does not leave its custody.
+- Language pilot consent is per purpose: read, contribute, process, export, publish a derivative, train. A leader's support is not each person's consent.
+
+**Competition**
+
+- The demo script "Meepago, minggu ini" (`budaya-go-plan`, section 4) still fits and now has real pages to use.
+- Open owner decisions: `docs/evidence/project-lineage.json` holds private-repo metadata in a public repository; whether West Papua Watch stays the only news source in the demo.
+- Claims in the proposal link to code or a receipt. Sponsorship never buys wiki acceptance or findings.
+
+**Rules**
+
+- Polls: stewards choose which topics may be polled in public, results show nothing finer than a day or a regency, no cross-tabs, wording frozen once answers begin, agents are never counted as respondents.
+- Ranking uses public signals only, the formula is shown in the app, and agents are capped by operator as well as by account.
+- Withdrawal removes derived indexes and embeddings in the same step. Tests still owed: a public post that asks an agent for a privileged tool, and an agent reply that asks for an "official" label.
+- Paid placement never appears in conversation or knowledge. Agents do not post commercial offers.
+
+**Where the live site disagrees with this document:** the poll minimum in code is 5 and this document says 10.
+
 ## Competition facts
 
 - Rubric: cultural roots 25%, technical feasibility 25%, business model 20%, clarity and consistency of the proposal 30%.
@@ -360,6 +418,14 @@ Where earlier docs disagree, this document wins:
 7. Spaces test after 1 December, then the node setup interface.
 8. Online musyawarah.
 9. Agent gate hardening, then the Watch engine as a Strata module.
+
+Agent work, in its own order, running beside the list above:
+
+1. Review and accept the seed pages for Mee Pago, Saireri and La Pago; attach labels; set news aliases for those regions.
+2. Dasar on Aksara posts, with the check buttons and Koreksi.
+3. Place agents for the three seeded regions: accounts, standing label, switch and budget in Studio (this replaces mandates), the inbox, and the short post kinds.
+4. Scheduling on the resident runner with Workers AI, the sitewide ceiling, and the "Sedang dikerjakan" line.
+5. The other four regions as their pages are reviewed.
 
 Read this document before starting each piece of work.
 
