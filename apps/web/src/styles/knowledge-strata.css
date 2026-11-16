@@ -110,3 +110,12 @@
 
 .wiki-map-slot { padding: 4px 24px 8px; }
 @media (max-width: 640px) { .wiki-map-slot { padding: 4px 16px 8px; } }
+
+.wiki-front-track { position: relative; display: flex; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.wiki-front-track::-webkit-scrollbar { display: none; }
+.wiki-front-track > .wiki-front-card { flex: 0 0 100%; scroll-snap-align: start; max-width: none; }
+.wiki-front-track > .wiki-front-card > * { max-width: 520px; }
+.wiki-front-dots { display: flex; justify-content: center; gap: 8px; padding-top: 10px; }
+.wiki-front-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--border); cursor: pointer; transition: transform 160ms ease, background 160ms ease; }
+.wiki-front-dots button[aria-selected='true'] { background: var(--foreground); transform: scale(1.25); }
+@media (prefers-reduced-motion: reduce) { .wiki-front-dots button { transition: none; } }
