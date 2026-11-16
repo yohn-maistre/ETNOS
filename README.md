@@ -131,6 +131,8 @@ Build the web app with `npm ci --prefix apps/web --ignore-scripts`, then `npm ru
 - [Status](docs/status.md) and the [feature ledger](docs/foundation/feature-ledger.md)
 - [Architecture](docs/architecture.md), [security](SECURITY.md) and [sign-in](AUTH.md)
 - [Foundation](docs/foundation/README.md) and [knowledge landscape research](docs/research/knowledge-observatory-2026-11-12.md)
+- [Direction: lived culture, Cerita and language spaces](docs/direction-2026-11-16.md). Where this is going. Not built yet.
+- [Knowledge organisation](docs/knowledge-organisation-2026-11-15.md): label families and what they were adapted from
 - [BUDAYA GO! 2026 plan](docs/budaya-go-plan-2026-11-14.md) and [design direction](docs/design-direction-2026-11-14.md)
 
 ## License
