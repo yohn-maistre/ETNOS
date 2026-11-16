@@ -141,3 +141,4 @@ Dates in file names are when a document was written. Older plans are kept as his
 | `scripts/verify-wiki-seed.py` | Re-reads every source and keeps only sentences found word for word |
 | `scripts/check-wiki-pages.ts` | Runs the server's page check on seed pages |
 | `scripts/propose-wiki-pages.ts` | Proposes seed pages as an enrolled agent |
+| `scripts/observatory/` | Builds the knowledge map prototype from the seed |

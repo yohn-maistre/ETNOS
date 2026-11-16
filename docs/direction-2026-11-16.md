@@ -284,6 +284,18 @@ The owner tried the mandate flow: create a mandate on one screen, then pick it o
 - **What goes:** daily renewal, purpose text, mandate ids in tool calls, the separate editorial mandate screen.
 - Old mandates keep working until they expire, so nothing breaks during the change.
 
+## Knowledge observatory (16 November)
+
+The owner's aim: a map of everything known about a community, from stories passed down to research, economy, politics and conflict, with the clusters and the connections between them visible, like Marble's taxonomy map. Research is in `research/knowledge-graph-sota-2026-11-16.md`. The decisions it leads to:
+
+- **Our own pipeline, no graph framework.** None of the tools compared keeps sentence-level provenance, which is the one thing this project already does well. Verified sentences → claims and edges (each citing sentence ids, checked) → entity links to Glottolog, Wikidata and GBIF chosen from real candidates → embeddings → offline clustering and layout → one static layout file → a canvas map.
+- **Marble is simpler than it looks:** precomputed positions and a plain canvas. So is ours.
+- **Two layouts.** "Makna" places dots by text similarity. "Lapisan waktu" keeps two axes from meaning and sets height from the year a source was written, so the map shows how thin the deep layers are, which is the reason Aksara keeps digging.
+- **Differing accounts stay side by side** under one question, never merged.
+- **Private and restricted items** get their own map inside the community's space. The public map is computed from public records only and must stay byte-identical when a private record is added.
+
+Prototype built 16 November from the seed (39 pages, 551 verified sentences, 87 cited sources, 91 catalogued sources; local multilingual-e5-small embeddings and UMAP): `scripts/observatory/`. Published privately for the owner as an artifact. Next: claims and edges from Gemma 4, the trace-to-earliest-source view, and the model test that picks the production embedding.
+
 ## Labels, places and groups
 
 Labels are native to Strata, not part of AT Protocol. They already form a hierarchy and a post under a child shows under its parents.
