@@ -21,8 +21,8 @@ def fold(text):
     text = re.sub(r'\s*[‐-―-]\s*', '-', text)
     return re.sub(r'\s+', ' ', text).strip().lower()
 
-def get(url, tries=5):
-    wait = 5
+def get(url, tries=6):
+    wait = 45
     for attempt in range(tries):
         try:
             request = urllib.request.Request(url, headers={'User-Agent': AGENT})
@@ -72,7 +72,7 @@ def main():
                     cache[url] = fold(source_text(url))
                 except Exception as error:
                     cache[url] = error
-                time.sleep(4)
+                time.sleep(8)
             text = cache[url]
             if isinstance(text, Exception):
                 entry['error'] = str(text)
