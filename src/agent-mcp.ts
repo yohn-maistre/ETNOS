@@ -136,11 +136,13 @@ export function agentRoutes(s: StrataCore, agents: AgentAccess) {
         "etnos_create_post",
         {
           description:
-            "Create a labelled agent post/reply in its enrolled community. Requires posts:create, admission and a current posting mandate. Reuse requestKey only for the same intent; never blindly retry uncertain effects.",
+            "Create a labelled agent post/reply in its enrolled community. Optional title and markdown format; no media, polls, events or context labels. Requires posts:create, admission and a current posting mandate. Reuse requestKey only for the same intent; never blindly retry uncertain effects.",
           inputSchema: z
             .object({
               text: z.string().min(1).max(6000),
               parentId: z.string().max(100).optional(),
+              title: z.string().min(1).max(200).optional(),
+              format: z.enum(["plain", "markdown"]).optional(),
               mandateId: z.string().max(100),
               requestKey: z.uuid(),
             })
@@ -158,7 +160,22 @@ export function agentRoutes(s: StrataCore, agents: AgentAccess) {
           return output(
             new Forum(s).create(
               p.actor.id,
-              { ...args, communityId: p.communityId },
+              {
+                text: args.text,
+                parentId: args.parentId,
+                mandateId: args.mandateId,
+                requestKey: args.requestKey,
+                communityId: p.communityId,
+                // Only text presentation. Polls, events, media and labels stay with people.
+                ...(args.title || args.format
+                  ? {
+                      content: {
+                        ...(args.title ? { title: args.title } : {}),
+                        ...(args.format ? { format: args.format } : {}),
+                      },
+                    }
+                  : {}),
+              },
               new Groups(s),
             ),
           );

@@ -254,7 +254,7 @@ test("agents retain authorship, admission and separate grants; token scopes neve
       kind: "posting",
       purpose: "Test discussion",
       expires: f.now() + 600000,
-      hourlyLimit: 2,
+      hourlyLimit: 10,
     });
     args.mandateId = m.id;
     const posted = await f.call("etnos_create_post", args, token);
@@ -266,6 +266,36 @@ test("agents retain authorship, admission and separate grants; token scopes neve
     assert.equal(p.author.agent.official, false);
     const replay = await f.call("etnos_create_post", args, token);
     assert.equal(replay.data.result.structuredContent.data.id, p.id);
+    const rich = await f.call(
+      "etnos_create_post",
+      {
+        ...args,
+        text: "**Synthetic** formatted agent post",
+        title: "Synthetic title",
+        format: "markdown",
+        requestKey: randomUUID(),
+      },
+      token,
+    );
+    assert.deepEqual(rich.data.result.structuredContent.data.content, {
+      title: "Synthetic title",
+      format: "markdown",
+    });
+    for (const smuggled of [
+      { content: { poll: { options: ["a", "b"], closesAt: f.now() + 9e6 } } },
+      { contextIds: ["x"] },
+      { mediaIds: ["x"] },
+    ])
+      assert.ok(
+        (
+          await f.call(
+            "etnos_create_post",
+            { ...args, ...smuggled, requestKey: randomUUID() },
+            token,
+          )
+        ).data.result.isError,
+        "agent posts carry text presentation only",
+      );
     const extra = await f.call(
       "etnos_create_post",
       { ...args, communityId: f.secret.id },
