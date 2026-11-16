@@ -217,7 +217,17 @@
     if (doc.startViewTransition && !prefersReducedMotion.current) doc.startViewTransition(go)
     else go()
   }
+  // The open explorer is moved to <body> so no ancestor can clip or re-anchor the fixed layer.
+  function portal(node: HTMLElement) { document.body.appendChild(node); return { destroy() { node.remove() } } }
   function key(e: KeyboardEvent) { if (e.key === 'Escape' && open) toggle(false) }
+  let toggleButton = $state<HTMLButtonElement>()
+  $effect(() => {
+    if (!open) return
+    const before = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+    toggleButton?.focus()
+    return () => { document.documentElement.style.overflow = before }
+  })
 
   const sel = $derived(data && selected >= 0 ? data.nodes[selected] : null)
   const related = $derived.by(() => {
@@ -235,18 +245,16 @@
 <svelte:window onkeydown={key} />
 
 {#if data && counts}
-  <section class="km" class:km-open={open} aria-label="Peta pengetahuan" style="view-transition-name: knowledge-map">
+  <section class="km" aria-label="Peta pengetahuan">
     <header class="km-head">
       <div>
         <h2>Peta pengetahuan</h2>
         <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}</p>
       </div>
-      <button class="km-toggle" onclick={() => toggle(!open)} aria-expanded={open}>
+      <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
         {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}
       </button>
     </header>
-
-    {#if !open}
       <button class="km-band" onclick={() => toggle(true)} aria-label="Buka peta pengetahuan">
         <svg viewBox="0 0 {BAND_W} 140" preserveAspectRatio="none" role="img" aria-label="Sebaran pengetahuan menurut waktu terjadi dan waktu dicatat">
           <text x="10" y="13" class="km-axis">Terjadi</text>
@@ -259,7 +267,18 @@
           <text x={BAND_W - UNDATED + 6} y="79" class="km-axis">{undatedCount}</text>
         </svg>
       </button>
-    {:else}
+  </section>
+  {#if open}
+    <div class="km km-open" use:portal role="dialog" aria-modal="true" aria-label="Peta pengetahuan" style="view-transition-name: knowledge-map">
+    <header class="km-head">
+      <div>
+        <h2>Peta pengetahuan</h2>
+        <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}</p>
+      </div>
+      <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
+        {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}
+      </button>
+    </header>
       <div class="km-tools">
         <div class="km-seg" role="group" aria-label="Susunan">
           <button aria-pressed={lens === 'makna'} onclick={() => (lens = 'makna')}>Kedekatan isi</button>
@@ -304,8 +323,8 @@
           {/if}
         </aside>
       </div>
-    {/if}
-  </section>
+    </div>
+  {/if}
 {:else if failed}
   <!-- The map is optional; the wiki works without it. -->
 {/if}
@@ -319,6 +338,17 @@
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
   }
+  .km-open {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: var(--background);
+    padding: max(14px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(14px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    overflow: auto;
+    border: 0;
+    grid-template-rows: auto auto 1fr;
+  }
+  .km-open .km-stage, .km-open .km-panel { height: calc(100dvh - 190px); }
   .km-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
   .km-head h2 { margin: 0; font-family: var(--font-editorial, inherit); font-weight: 400; font-size: 24px; }
   .km-head p { margin: 2px 0 0; color: var(--muted-foreground); font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -357,7 +387,8 @@
   .km-trace small { display: block; color: var(--muted-foreground); font-size: 11.5px; }
   @media (max-width: 860px) {
     .km-body { grid-template-columns: 1fr; }
-    .km-stage { height: 60vh; }
+    .km-stage, .km-open .km-stage { height: 62dvh; }
+    .km-open .km-panel { height: auto; }
     .km-panel { grid-column: 1; grid-row: auto; height: auto; }
     .km-legend { grid-row: auto; }
     .km-band svg { height: 96px; }
