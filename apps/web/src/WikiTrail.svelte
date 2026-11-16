@@ -65,13 +65,13 @@
 {#if steps?.length}
   <section class="wiki-trail" aria-labelledby={'wiki-trail-' + uid}>
     <h2 id={'wiki-trail-' + uid}>Jejak</h2>
-    <p class="wiki-trail-intro">Dari mana halaman ini datang, dan ke mana ia mengarah.</p>
+    <p class="wiki-trail-intro">Asal halaman ini dan perubahan yang bisa menyusul.</p>
     <ol>
       {#each steps as step, i}
         <li class={'trail-step trail-' + step.kind} class:current={step.kind === 'page'} class:last={i === steps.length - 1 && !hasNext} aria-current={step.kind === 'page' ? 'step' : undefined}>
           <span class="trail-dot" aria-hidden="true">{i + 1}</span>
           <div class="trail-card">
-            <small>{kindLabel[step.kind]}{step.at ? ', ' + relativeDate(step.at) : ''}{step.kind === 'page' ? ' · kamu di sini' : ''}</small>
+            <small>{kindLabel[step.kind]}{step.at ? ', ' + relativeDate(step.at) : ''}{step.kind === 'page' ? ' · halaman ini' : ''}</small>
             {#if step.kind === 'sources'}
               <strong>{step.label}</strong>
               <ul>
@@ -89,7 +89,7 @@
               <p>Revisi pertama oleh {who(step.actor)}.</p>
             {:else if step.kind === 'proposed'}
               <strong>Ditulis oleh {who(step.actor)}</strong>
-              {#if step.actor?.kind === 'agent'}<p>Agen hanya bisa mengusulkan. Orang yang memutuskan.</p>{/if}
+              {#if step.actor?.kind === 'agent'}<p>Ditulis oleh agen dan bisa ditinjau atau dikembalikan oleh pengelola.</p>{/if}
             {:else if step.kind === 'page'}
               <strong class="trail-title">{step.label}</strong>
               <p>Ditinjau {who(step.actor)}.</p>
@@ -109,7 +109,7 @@
           <div class="trail-card">
             <small>Belum terjadi</small>
             {#if canPropose}
-              <p>Kamu bisa menambah atau membetulkan halaman ini. Seseorang akan meninjaunya.</p>
+              <p>Tambahan dan perbaikan dari siapa pun akan ditinjau oleh pengelola komunitas.</p>
               <button type="button" onclick={onPropose}>Usulkan perubahan</button>
             {:else if firstWork}
               <p>Ada kerja publik terbuka di tempat yang sama.</p>

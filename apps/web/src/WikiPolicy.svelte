@@ -78,8 +78,8 @@
   }
 </script>
 
-<details class="wiki-policy">
-  <summary>Aturan kontribusi & tinjauan</summary>
+<details class="wiki-policy" open>
+  <summary>Aturan wiki komunitas ini</summary>
   {#if ready}<p>
       Keanggotaan komunitas tetap diperlukan. Kelompok tambahan dapat membatasi
       pengusul dan peninjau.

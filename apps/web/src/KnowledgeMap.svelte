@@ -245,17 +245,17 @@
 <svelte:window onkeydown={key} />
 
 {#if data && counts}
-  <section class="km" aria-label="Peta pengetahuan">
+  <section class="km" aria-label="Peta wiki">
     <header class="km-head">
       <div>
-        <h2>Peta pengetahuan</h2>
+        <h2>Peta wiki</h2>
         <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}</p>
       </div>
       <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
         {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}
       </button>
     </header>
-      <button class="km-band" onclick={() => toggle(true)} aria-label="Buka peta pengetahuan">
+      <button class="km-band" onclick={() => toggle(true)} aria-label="Buka peta wiki">
         <svg viewBox="0 0 {BAND_W} 140" preserveAspectRatio="none" role="img" aria-label="Sebaran pengetahuan menurut waktu terjadi dan waktu dicatat">
           <text x="10" y="13" class="km-axis">Terjadi</text>
           <text x="10" y="79" class="km-axis">Dicatat</text>
@@ -269,10 +269,10 @@
       </button>
   </section>
   {#if open}
-    <div class="km km-open" use:portal role="dialog" aria-modal="true" aria-label="Peta pengetahuan" style="view-transition-name: knowledge-map">
+    <div class="km km-open" use:portal role="dialog" aria-modal="true" aria-label="Peta wiki" style="view-transition-name: knowledge-map">
     <header class="km-head">
       <div>
-        <h2>Peta pengetahuan</h2>
+        <h2>Peta wiki</h2>
         <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}</p>
       </div>
       <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
@@ -300,7 +300,7 @@
       <div class="km-body">
         <div class="km-stage">
           <canvas bind:this={canvas} onpointerdown={down} onpointermove={move} onpointerup={up} onpointerleave={() => (hovered = -1)} onwheel={wheel} aria-label="Peta: titik adalah halaman, kalimat sumber dan sumber"></canvas>
-          <p class="km-note">{lens === 'makna' ? 'Jarak menunjukkan kemiripan isi, bukan kategori budaya.' : (clock === 'dicatat' ? 'Tinggi menurut tahun sumber ditulis.' : 'Tinggi menurut tahun yang disebut dalam teks.') + ` Bawah: sebelum ${START}. Atas: ${NOW} dan tanpa tahun.`}</p>
+          <p class="km-note">{lens === 'makna' ? 'Titik yang berdekatan memiliki isi yang mirip. Kedekatan ini tidak menunjukkan kategori budaya.' : (clock === 'dicatat' ? 'Tinggi menurut tahun sumber ditulis.' : 'Tinggi menurut tahun yang disebut dalam teks.') + ` Bawah: sebelum ${START}. Atas: ${NOW} dan tanpa tahun.`}</p>
         </div>
         <ul class="km-legend">{#each legend as [label, color]}<li><span style="background:{color}"></span>{label}</li>{/each}</ul>
         <aside class="km-panel" aria-live="polite">
@@ -318,8 +318,8 @@
             {#if sel.k === 'page'}<p class="km-meta">Sumber tercatat paling awal: {earliestFor ?? 'belum ditemukan'}</p>{/if}
           {:else}
             <p class="km-kicker">Pilih titik</p>
-            <p>Ketuk titik untuk melihat asalnya: halaman, kalimat yang dipakai, sumbernya, dan sumber lain yang tercatat.</p>
-            <p class="km-meta">Ranah dan bentuk budaya diberi otomatis dan masih kasar. Hampir semua kalimat sekarang dari Wikipedia.</p>
+            <p>Pilih sebuah titik untuk melihat halaman atau sumber yang diwakilinya beserta kalimat dan sumber yang mendasarinya.</p>
+            <p class="km-meta">Ranah dan bentuk budaya ditandai otomatis dan masih kasar. Sebagian besar kalimat saat ini berasal dari Wikipedia.</p>
           {/if}
         </aside>
       </div>
@@ -334,9 +334,7 @@
     --km-quiet: color-mix(in srgb, var(--muted-foreground) 70%, transparent);
     display: grid;
     gap: 12px;
-    padding: 18px 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    padding: 14px 0 6px;
   }
   .km-open {
     position: fixed;

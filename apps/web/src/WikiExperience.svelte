@@ -28,8 +28,8 @@
   } from './api'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
-  import WikiPolicy from './WikiPolicy.svelte'
   import KnowledgeMap from './KnowledgeMap.svelte'
+  import WikiDiscussion from './WikiDiscussion.svelte'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiTrail from './WikiTrail.svelte'
@@ -49,6 +49,7 @@
     onPropose,
     onDecide,
     onReview,
+    onShare,
     busy,
   }: {
     page: WikiPage | null
@@ -70,6 +71,7 @@
     onPropose: () => void
     onDecide: (p: Proposal, accept: boolean) => void
     onReview: (revisionId: string, accept: boolean) => void
+    onShare: (url: string) => void
     busy: boolean
   } = $props()
   let query = $state(''),
@@ -254,6 +256,7 @@
         <WikiSourceNotes citations={page.revision.citations} />
         <WikiPeriod pageId={page.id} time={page.time ?? null} {steward} />
         <WikiTrail pageId={page.id} canPropose={member} {onPropose} />
+        <WikiDiscussion pageId={page.id} citations={page.revision.citations} {auth} {communities} {memberships} {onShare} />
       {:else}<div class="wiki-draft-state">
           <FileText size={26} />
           <h2>Tulisan sedang disiapkan</h2>
@@ -385,7 +388,6 @@
               </div>{/if}
           </article>{/each}
       </section>{/if}
-    {#if steward}<WikiPolicy communityId={page.community_id} />{/if}
   </article>
 {:else}
   <section class="knowledge-atlas wiki-discovery">
@@ -399,6 +401,7 @@
       {#if contexts.length}<nav class="atlas-lenses" aria-label="Jelajahi pengetahuan"><button aria-pressed={!context} onclick={()=>context=''}>Semua</button>{#each lensContexts as c}<button aria-pressed={context===c.slug} onclick={()=>context=c.slug}>{#if c.kind==='place'||c.kind==='region'}<MapPin size={14}/>{/if}{c.title}</button>{/each}</nav>{/if}
     </div>
     {#if discovering}<div class="wiki-discovery-loading" role="status">Menyiapkan bacaan…</div>{:else if discoveryError}<div class="wiki-draft-state"><p>{discoveryError}</p><Button variant="outline" onclick={()=>discover()}>Coba lagi</Button></div>{:else}
+      {#if !query&&!context&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap /></div>{/if}
       {#if continued&&!query&&!context&&!communityFilter}<a class="wiki-continue" href={'/wiki/'+continued.id}><Clock3 size={17}/><div><small>Lanjutkan membaca · di perangkat ini</small><strong>{continued.title}</strong></div><ArrowRight size={18}/></a>{/if}
       {#if featured}{@const art=communityArtwork(featured.community_id)}<section class="wiki-featured wiki-front" aria-label="Untuk dibaca">
         <div class="wiki-front-cover">{#if art}<LandscapePrint artwork={art} decorative/>{/if}
@@ -406,7 +409,6 @@
         </div>
         {#if accepted.length}<div class="wiki-front-tools">{#if accepted.length>1}<button onclick={surprise}><Shuffle size={15}/>Halaman acak</button>{/if}<a class="commons-quiet-link" href="/lini-masa">Lini masa</a></div>{/if}
       </section>
-      {#if !query&&!context&&!communityFilter}<KnowledgeMap />{/if}
       {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru ditinjau</h2><span>Revisi diterima</span></div>{#each recent as p,i}<a class="wiki-rank-row" href={'/wiki/'+p.id}><span class="wiki-rank" aria-hidden="true">{i+1}</span><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+', ':'Diterima '}{relativeDate(p.updated)} · {communities.find(c=>c.id===p.community_id)?.title??''}{p.authorKind==='agent'?' · ditulis agen':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {:else if !growingMatches.length}<div class="wiki-draft-state"><BookOpen size={27}/><h2>{query||context||communityFilter?'Belum ada halaman yang cocok':'Cerita pertama dimulai dari kita.'}</h2><p>{query||context||communityFilter?'Coba kata atau pilihan lain.':'Halaman yang ditinjau bersama akan hadir di sini.'}</p></div>{/if}

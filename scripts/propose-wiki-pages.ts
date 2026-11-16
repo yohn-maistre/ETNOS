@@ -15,7 +15,8 @@ const receiptsFile = file.replace(/\.json$/, ".receipts.json"),
 const client = await connectAgent({ origin, keyFile, deploymentId, scope: "public:read agent:self wiki:propose" });
 const data = (r: any) => r.structuredContent?.data ?? r;
 const grants = data(await client.callTool({ name: "etnos_my_grants", arguments: {} })),
-  mandate = (grants.editorial ?? []).find((m: any) => !m.revoked && m.expires > Date.now());
+  // Prefer the agent switch (daily limit); fall back to an older editorial mandate (hourly limit).
+  mandate = grants.switch?.wiki ? null : (grants.editorial ?? []).find((m: any) => !m.revoked && m.expires > Date.now());
 // The agent switch (wiki proposals on) needs no mandate id; an older editorial mandate still works.
 if (!mandate && !grants.switch?.wiki) throw new Error("Turn on wiki proposals in the agent's switch first.");
 for (const page of JSON.parse(readFileSync(file, "utf8")) as SeedPage[]) {

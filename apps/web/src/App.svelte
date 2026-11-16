@@ -32,6 +32,7 @@
   import FeedRefresh from './FeedRefresh.svelte'
   import NewsSection from './NewsSection.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
+  import WikiContents from './WikiContents.svelte'
   import VaultTransfer from './messaging/VaultTransfer.svelte'
   import SearchDialog from './SearchDialog.svelte'
   import SearchPage from './SearchPage.svelte'
@@ -1140,6 +1141,10 @@
           }}
           onDecide={decide}
           onReview={reviewRevision}
+          onShare={(url) => {
+            open('compose')
+            composeUrl = url
+          }}
         />{/await}{/if}
   {:else if parts[0] === 'communities' && parts[1]}
     {#if community}<div class="cx-detail-head community-profile">
@@ -1603,7 +1608,7 @@
       <Button href="/" class="cx-button" variant="outline">Beranda</Button>
     </div>{/if}
   {#snippet rail()}
-    {#if parts[0] === 'wiki' && selectedPage?.revision}<WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
+    {#if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
     {:else if !['explore', 'news', 'communities', 'people', 'wiki'].includes(parts[0])}<NewsSection
         compact
       />

@@ -1,5 +1,6 @@
 <script lang="ts">
  import StudioTabs from './StudioTabs.svelte'
+ import WikiPolicy from './WikiPolicy.svelte'
  import {notify} from './notifications.svelte'
  import {untrack} from 'svelte'
  import {Radio,Rss,Bot,Pause,Play,Plus,ArrowUpRight,RefreshCw,BookOpen,CheckCircle2,MapPin} from '@lucide/svelte'
@@ -68,7 +69,8 @@
  {#if !rooms.length}<div class="strata-nodata"><h2>Ruang untuk para pengelola</h2><p>Studio tersedia untuk komunitas yang kamu kelola.</p><Button variant="outline" href="/communities">Lihat komunitas</Button></div>{:else}
  <div class="commons-scope"><label for="studio-scope">Komunitas</label><select id="studio-scope" disabled={busy} bind:value={scope} onchange={()=>void loadScope(scope)}><option value="">Pilih komunitas publik</option>{#each rooms.filter(r=>r.visibility==='public') as room}<option value={room.id}>{room.title}</option>{/each}</select></div>
  {#if scope}
- <nav class="commons-tabs" aria-label="Studio"><button class:active={section==='sources'} onclick={()=>section='sources'}><Rss size={16}/>Sumber</button><button class:active={section==='resident'} onclick={()=>section='resident'}><Bot size={16}/>Penghuni</button><button class:active={section==='activity'} onclick={()=>section='activity'}>Aktivitas</button></nav>
+ <nav class="commons-tabs" aria-label="Studio"><button class:active={section==='sources'} onclick={()=>section='sources'}><Rss size={16}/>Sumber</button><button class:active={section==='resident'} onclick={()=>section='resident'}><Bot size={16}/>Penghuni</button><button class:active={section==='activity'} onclick={()=>section='activity'}>Aktivitas</button><button class:active={section==='wiki'} onclick={()=>section='wiki'}><BookOpen size={16}/>Wiki</button></nav>
+ {#if section==='wiki'}<WikiPolicy communityId={scope} />{/if}
  {#if section==='sources'}
  <div class="commons-section-heading"><h2>Sumber komunitas</h2><Button variant="outline" onclick={()=>sourceForm=!sourceForm}><Plus size={16}/>Tambah</Button></div>
  {#if !acquisition}<p class="commons-alert">Pengambilan sumber belum dikonfigurasi. Daftar sumber tetap tersimpan.</p>{/if}
