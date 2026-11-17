@@ -20,6 +20,7 @@
   import {
     request,
     relativeDate,
+    relativeLong,
     type WikiPage,
     type Proposal,
     type Community,
@@ -396,7 +397,7 @@
     <header class="wiki-discovery-header">
       <div class="wiki-atlas-mark"><BookOpen size={22}/><span>Wiki ETNOS</span></div>
       <h1>Pengetahuan bersama</h1>
-      <p>Cerita, tempat & pengetahuan yang terus tumbuh.</p>
+      <p>Halaman tentang tempat, bahasa dan sejarah Papua yang ditulis dan diperiksa bersama.</p>
       <div class="wiki-discovery-actions">{#if memberships.length}<a class="commons-quiet-link" href="/wiki/notes/new">Tambah catatan <Plus size={14}/></a>{/if}{#if memberships.some(m=>m.role!=='member')}<Button variant="outline" onclick={onCreate}><Plus size={15}/>Tulis halaman</Button>{/if}</div>
     </header>
     <div class="wiki-discovery-controls"><label class="atlas-search"><Search size={18}/><Input bind:value={query} aria-label="Cari pengetahuan" placeholder="Cari dalam Wiki…"/></label>
@@ -414,13 +415,13 @@
         {#if accepted.length}<div class="wiki-front-tools">{#if accepted.length>1}<button onclick={surprise}><Shuffle size={15}/>Halaman acak</button>{/if}<a class="commons-quiet-link" href="/lini-masa">Lini masa</a></div>{/if}
       </section>
       {#if !query&&!context&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap /></div>{/if}
-      {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2><span>Halaman terbaru</span></div>{#each recent as p,i}<a class="wiki-rank-row" href={'/wiki/'+p.id}><span class="wiki-rank" aria-hidden="true">{i+1}</span><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+', ':p.review==='unreviewed'?'Belum ditinjau · ':'Diterima '}{relativeDate(p.updated)} · {communities.find(c=>c.id===p.community_id)?.title??''}{p.authorKind==='agent'?' · ditulis agen':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
+      {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2></div>{#each recent as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+'. ':p.review==='unreviewed'?(p.authorKind==='agent'?'Ditulis agen dan belum ditinjau. ':'Belum ditinjau. '):''}Diperbarui {relativeLong(p.updated)}.</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {:else if !growingMatches.length}<div class="wiki-draft-state"><BookOpen size={27}/><h2>{query||context||communityFilter?'Belum ada halaman yang cocok':'Cerita pertama dimulai dari kita.'}</h2><p>{query||context||communityFilter?'Coba kata atau pilihan lain.':'Halaman yang ditinjau bersama akan hadir di sini.'}</p></div>{/if}
       {#if growingMatches.length}<section class="wiki-growing" aria-label="Dalam pengembangan"><div class="wiki-module-heading"><h2>Dalam pengembangan</h2><span>Belum ditinjau menyeluruh</span></div><p class="wiki-growing-intro">Bacaan awal untuk diperiksa dan dilengkapi bersama.</p>{#each growingMatches as p}<a class="wiki-recent-row" href={'/wiki/notes/'+p.id}><FileText size={19}/><div><h3>{p.title}</h3><p>{p.excerpt}</p><small>{p.author.name}{p.author.kind==='agent'?' · Agen AI':''} · {p.citationCount?p.citationCount+' sumber':'Sumber belum ditautkan'}{p.evidenceStatus!=='current'?' · Sumber perlu ditinjau':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{:else if growingError}<p class="commons-alert" role="status">{growingError}</p>{/if}
-      {#if gaps&&(gaps.contexts.length||gaps.uncited.length)&&!query&&!context&&!communityFilter}<section class="wiki-module wiki-gaps" aria-label="Celah"><div class="wiki-module-heading"><h2>Celah</h2></div><p class="wiki-module-sub">Yang belum terindeks. Setiap celah bisa diisi.</p>
-        {#each gaps.contexts.slice(0,3) as c}<a class="wiki-rank-row" href={'/contexts/'+c.slug}><MapPin size={18}/><div><h3>{c.title} belum punya halaman yang ditinjau</h3><small>{kindName[c.kind]??'Konteks'} · belum terindeks</small></div><ArrowUpRight size={17}/></a>{/each}
-        {#each gaps.uncited.slice(0,3) as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>Belum mengutip sumber. Bantu tambahkan.</small></div><ArrowUpRight size={17}/></a>{/each}
+      {#if gaps&&(gaps.contexts.length||gaps.uncited.length)&&!query&&!context&&!communityFilter}<section class="wiki-module wiki-gaps" aria-label="Belum ada halaman"><div class="wiki-module-heading"><h2>Belum ada halaman</h2></div><p class="wiki-module-sub">Tempat dan halaman yang masih perlu ditulis atau diberi sumber.</p>
+        {#each gaps.contexts.slice(0,3) as c}<a class="wiki-rank-row" href={'/contexts/'+c.slug}><MapPin size={18}/><div><h3>{c.title}</h3><small>{kindName[c.kind]??'Tempat'} yang belum punya halaman wiki.</small></div><ArrowUpRight size={17}/></a>{/each}
+        {#each gaps.uncited.slice(0,3) as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>Halaman ini belum mengutip sumber.</small></div><ArrowUpRight size={17}/></a>{/each}
       </section>{/if}
       {#if groups.length>1}<section class="wiki-browse"><div class="wiki-module-heading"><h2>Jelajahi komunitas</h2>{#if communityFilter}<button onclick={()=>communityFilter=''}>Lihat semua</button>{/if}</div><div class="wiki-community-grid">{#each groups as c}<button aria-pressed={communityFilter===c.id} onclick={()=>communityFilter=communityFilter===c.id?'':c.id}><BookOpen size={18}/><strong>{c.title}</strong><span>{c.count} halaman</span></button>{/each}</div></section>{/if}
       {#if drafts.length}<section class="wiki-drafts"><div class="wiki-module-heading"><h2>Dalam tinjauan</h2></div>{#each drafts as p}<a href={'/wiki/'+p.id}>{p.title}<span>Draf</span><ArrowUpRight size={15}/></a>{/each}</section>{/if}

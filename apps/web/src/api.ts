@@ -249,6 +249,15 @@ export const relativeDate = (value: number) => {
             month: 'short',
           })
 }
+/** A relative time written out, for reading surfaces where "4j" is unclear. */
+export const relativeLong = (value: number) => {
+  const n = Math.max(0, Date.now() - value)
+  if (n < 60000) return 'baru saja'
+  if (n < 3600000) return `${Math.floor(n / 60000)} menit lalu`
+  if (n < 86400000) return `${Math.floor(n / 3600000)} jam lalu`
+  if (n < 172800000) return 'kemarin'
+  return new Date(value).toLocaleDateString('id', { day: 'numeric', month: 'long' })
+}
 export const initials = (name: string) =>
   name
     .split(/[.\s-]/)

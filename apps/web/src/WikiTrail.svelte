@@ -64,8 +64,8 @@
 
 {#if steps?.length}
   <section class="wiki-trail" aria-labelledby={'wiki-trail-' + uid}>
-    <h2 id={'wiki-trail-' + uid}>Jejak</h2>
-    <p class="wiki-trail-intro">Asal halaman ini dan perubahan yang bisa menyusul.</p>
+    <h2 id={'wiki-trail-' + uid}>Asal halaman</h2>
+    <p class="wiki-trail-intro">Sumber yang dipakai, siapa yang menulis dan meninjau, dan cara menambahkan perubahan.</p>
     <ol>
       {#each steps as step, i}
         <li class={'trail-step trail-' + step.kind} class:current={step.kind === 'page'} class:last={i === steps.length - 1 && !hasNext} aria-current={step.kind === 'page' ? 'step' : undefined}>

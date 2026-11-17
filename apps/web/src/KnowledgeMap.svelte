@@ -309,19 +309,18 @@
         <ul class="km-legend">{#each legend as [label, color]}<li><span style="background:{color}"></span>{label}</li>{/each}</ul>
         <aside class="km-panel" aria-live="polite">
           {#if sel && related}
-            <p class="km-kicker">{KIND[sel.k]} · {REGION[sel.reg]?.[0] ?? ''}</p>
             <h3>{sel.k === 'passage' ? '“' + short(sel.t, 220) + '”' : sel.t}</h3>
+            <p class="km-meta">{KIND[sel.k]}{REGION[sel.reg] ? ', ' + REGION[sel.reg][0] : ''}</p>
             {#if sel.a || sel.y}<p class="km-meta">{[sel.a, sel.y].filter(Boolean).join(' · ')}</p>{/if}
             {#if sel.d?.length}<p class="km-chips">{#each sel.d as d}<span>{data.domains[d]}</span>{/each}{#if sel.f}<span>{data.forms[sel.f]}</span>{/if}{#if sel.v}<span>{VOICE[sel.v]?.[0]}</span>{/if}</p>{/if}
             {#if sel.k === 'passage'}<p class="km-meta">Dari {sel.x}</p>{:else if sel.x && sel.k !== 'region'}<p>{short(sel.x, 360)}</p>{/if}
             {#if sel.href}<a class="km-open-link" href={sel.href}>Buka halaman <ArrowUpRight size={14} /></a>{:else if sel.u}<a class="km-open-link" href={sel.u} target="_blank" rel="noreferrer">Buka sumber <ArrowUpRight size={14} /></a>{/if}
             {#each [['Bersandar pada kalimat', related.passage], ['Halaman', related.page], ['Sumber yang dikutip', related.source], ['Sumber lain yang tercatat', related.catalogue]] as [title, list]}
-              {#if (list as number[]).length}<p class="km-kicker">{title} · {(list as number[]).length}</p>
+              {#if (list as number[]).length}<h4 class="km-section">{title} ({(list as number[]).length})</h4>
                 <ul class="km-trace">{#each (list as number[]).slice(0, 12) as j}<li><button onclick={() => (selected = j)}>{short(data.nodes[j].t, 110)}{#if data.nodes[j].y}<small>{data.nodes[j].y}</small>{/if}</button></li>{/each}</ul>{/if}
             {/each}
             {#if sel.k === 'page'}<p class="km-meta">Sumber tercatat paling awal: {earliestFor ?? 'belum ditemukan'}</p>{/if}
           {:else}
-            <p class="km-kicker">Pilih titik</p>
             <p>Pilih sebuah titik untuk melihat halaman atau sumber yang diwakilinya beserta kalimat dan sumber yang mendasarinya.</p>
             <p class="km-meta">Ranah dan bentuk budaya ditandai otomatis dan masih kasar. Sebagian besar kalimat saat ini berasal dari Wikipedia.</p>
           {/if}
@@ -381,7 +380,7 @@
   .km-panel { grid-column: 2; grid-row: 1 / span 2; min-width: 0; overflow: auto; height: min(72vh, 640px); display: grid; align-content: start; gap: 8px; font-size: 14px; }
   .km-panel h3 { margin: 0; font-family: var(--font-editorial, inherit); font-weight: 400; font-size: 20px; line-height: 1.25; text-wrap: balance; }
   .km-panel p { margin: 0; }
-  .km-kicker { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted-foreground); margin-top: 6px !important; }
+  .km-section { margin: 10px 0 2px; font-size: 13px; font-weight: 600; }
   .km-meta { font-size: 12.5px; color: var(--muted-foreground); }
   .km-chips { display: flex; flex-wrap: wrap; gap: 4px; }
   .km-chips span { font-size: 12.5px; border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; color: var(--muted-foreground); }

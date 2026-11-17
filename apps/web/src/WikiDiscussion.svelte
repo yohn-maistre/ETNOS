@@ -24,7 +24,7 @@
 
 <section class="wiki-discussion" aria-label="Percakapan tentang halaman ini">
   <div class="wiki-discussion-head">
-    <h2>Dibicarakan</h2>
+    <h2>Diskusi</h2>
     <div>
       <Button variant="ghost" onclick={copy} aria-label="Salin tautan halaman"><Link2 size={16} /></Button>
       <Button variant="outline" onclick={() => onShare(url)}><MessageCircle size={16} />Bahas di komunitas</Button>
