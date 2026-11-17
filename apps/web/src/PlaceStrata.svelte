@@ -55,7 +55,7 @@
 <div class="place-cover">
   {#if artwork}<LandscapePrint {artwork} decorative />{/if}
 </div>
-<a class="place-strata-open" href={corePath(slug)} aria-label={'Buka inti lapisan ' + title}>
+<a class="place-strata-open" href={corePath(slug)} aria-label={'Lihat semua lapisan ' + title}>
 <svg
   class="place-strata"
   viewBox="0 0 680 168"
@@ -77,9 +77,9 @@
   <path class="ps-line" d="M0 73 C90 66 190 78 300 71 C430 62 540 78 680 70" />
   <path class="ps-line dashed" d="M0 116 C100 108 200 122 320 113 C420 104 560 118 680 112" />
 </svg>
-<span class="place-strata-hint" aria-hidden="true">Buka inti lapisan</span>
+<span class="place-strata-hint" aria-hidden="true">Lihat semua lapisan</span>
 </a>
-<ul class="place-strata-key" aria-label={'Penampang ' + title}>
+<ul class="place-strata-key" aria-label={'Ringkasan lapisan ' + title}>
   <li><span>Hari ini</span>{pending ? 'memuat kabar' : today}</li>
   <li><span>Sedang dikerjakan</span>{works ? works + ' kerja publik' : 'belum ada kerja publik'}</li>
   <li><span>Sudah ditinjau</span>{pages ? pages + ' halaman' : 'belum ada halaman'}</li>

@@ -20,7 +20,7 @@ Every deployment describes one place and the people of it. What it holds settles
 Two things are not layers:
 
 - **People** are at the surface and reach down. A person posts in Percakapan, reads in Pengetahuan, adds a story to Ingatan.
-- **Communities and institutions are columns.** A church, a school, a book club or a customary council passes through every layer: its conversation, its news, its work, its knowledge, its memory, and the place it stands on. The community page is a core sample of that column. "Buka inti lapisan" already says this.
+- **Communities and institutions are columns.** A church, a school, a book club or a customary council passes through every layer: its conversation, its news, its work, its knowledge, its memory, and the place it stands on. The community page is a core sample of that column. The place page's "Lihat semua lapisan" view (formerly "inti lapisan") already says this.
 
 **Aksara is groundwater.** It carries material between layers: a news story settles into a wiki change; a wiki fact rises as a post that asks members what they know; a member's story becomes a sourced variant. It never creates a layer on its own, and everything it moves carries its source.
 
@@ -64,6 +64,17 @@ This revises `next-2026-11-16.md`, which put wilayah adat as the first rung of t
 - **Overlay pages come first in the interface.** The Tempat index opens on the seven wilayah adat, not on provinces, and local names lead. The spine is the filing system; the overlays are how people talk about home.
 
 Why this is cleaner than making wilayah adat the first rung: the overlay scheme is contested at its edges (Nabire, Mimika, Puncak), was formalised for planning, and differs by source; putting it at the root would force a single answer where the honest answer is several. Putting the state's units first has its own cost: it can read as the state's map of Papua. The mitigations are the overlay-first interface, local names first, and the "Wilayah acuan, bukan batas tanah adat" line on every overlay.
+
+### 4.1a A continuum, not a tree
+
+The owner, on reading the boundary research: Tanah Papua has been federated since deep time, connected by land; each people lives in its own way; this looks more like an embedding map than a tree. Not to undermine the literature, but a different way of seeing it.
+
+What that means in the build:
+
+- The administrative spine is only a filing system: it gives every place one address so a post, a page or a kampung can be found. It is not how places are shown.
+- On the map, cultural regions are drawn as soft fields, not polygons: a density built from the places, peoples and languages that sources link to a region, fading at the edges, overlapping where they overlap. Nabire sits where two fields meet, which is what the sources and the owner both say.
+- Peoples and languages sit on the same map as places, near the places they are linked to, so the map shows neighbours and kinship across administrative lines (the Kedekatan isi lens already places items by meaning; a place lens adds geography).
+- Every membership claim stays a sourced, dated statement that can be contested. The map shows the claims; it does not settle them.
 
 ### 4.2 Nabire
 

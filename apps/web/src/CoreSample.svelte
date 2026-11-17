@@ -66,11 +66,11 @@
 <article class="core-sample" aria-labelledby={'core-title-' + uid}>
   <header class="core-cover">
     {#if artwork}<LandscapePrint {artwork} decorative />{/if}
-    <h1 id={'core-title-' + uid}><span class="sr-only">Inti lapisan </span>{context.title}</h1>
+    <h1 id={'core-title-' + uid}><span class="sr-only">Lapisan tempat </span>{context.title}</h1>
   </header>
   <nav class="core-back" aria-label="Navigasi lapisan">
     <a href={'/contexts/' + encodeURIComponent(context.slug)}><ArrowLeft size={16} />Kembali ke {context.title}</a>
-    <span>Inti lapisan</span>
+    <span>Lapisan tempat</span>
   </nav>
 
   <section class="core-band" aria-labelledby={'core-week-' + uid}>

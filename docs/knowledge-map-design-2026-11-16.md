@@ -123,7 +123,7 @@ The owner's layout, made concrete:
 3. **Unfolded.** Tapping the band opens the full explorer: lens switcher, search, filters for place, domain, form, voice, time, and the reading panel. Full screen on phones.
 4. **Below.** Lini masa, search results and the lists that exist today.
 
-The place page (the "Penampang" view in the screenshots) shows the same band filtered to its place, so "Buka inti lapisan" opens the explorer focused there.
+The place page (the "Penampang" view in the screenshots) shows the same band filtered to its place, so "Lihat semua lapisan" (formerly "Buka inti lapisan") opens the explorer focused there.
 
 ## 8. Beyond the site
 

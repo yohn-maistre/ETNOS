@@ -380,8 +380,10 @@
   .km-chips span { font-size: 11.5px; border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; color: var(--muted-foreground); }
   .km-open-link { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; text-decoration: underline; text-underline-offset: 3px; }
   .km-trace { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-  .km-trace button { all: unset; cursor: pointer; display: block; border-left: 2px solid var(--border); padding: 2px 0 2px 9px; font-size: 13px; line-height: 1.4; }
-  .km-trace button:hover { border-color: var(--foreground); }
+  .km-trace button { all: unset; cursor: pointer; display: block; padding: 5px 0; border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent); font-size: 13px; line-height: 1.4; }
+  .km-trace li:last-child button { border-bottom: 0; }
+  .km-trace button:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .km-trace button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
   .km-trace small { display: block; color: var(--muted-foreground); font-size: 11.5px; }
   @media (max-width: 860px) {
     .km-body { grid-template-columns: 1fr; }

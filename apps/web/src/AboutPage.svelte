@@ -13,7 +13,7 @@
     'Catatan kerja.',
     'Penawaran dan permintaan.',
     'Pertanyaan untuk @aksara.',
-    'Halaman tempat dengan kabar dari wilayahnya, penampang, dan inti lapisan.',
+    'Halaman tempat dengan kabar dari wilayahnya dan semua lapisannya.',
     'Jejak setiap halaman wiki: dari sumber, ke tinjauan, ke kerja yang terbuka.',
     'Bilah suara di tiap halaman wiki dan celah yang bisa diisi komunitas.',
     'Langit di atas Papua saat ini, dihitung dari jam, tanpa data lokasi.',
