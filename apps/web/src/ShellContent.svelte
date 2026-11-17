@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PlaceScopeSwitch from './PlaceScopeSwitch.svelte'
   import {avatarTone} from './avatar-tone'
   import { type Snippet } from 'svelte'
   import * as Sidebar from '$lib/components/ui/sidebar/index.js'
@@ -236,7 +237,7 @@
               Mengikuti
             </Dropdown.Item>
           </Dropdown.Content>
-        </Dropdown.Root>{:else if path === '/explore' || ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
+        </Dropdown.Root><PlaceScopeSwitch onChange={onRefresh} />{:else if path === '/explore' || ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
         >
           {heading}
         </h1>{:else}<span>{heading}</span>{/if}

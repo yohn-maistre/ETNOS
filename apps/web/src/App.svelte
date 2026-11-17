@@ -33,6 +33,7 @@
   import NewsSection from './NewsSection.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiContents from './WikiContents.svelte'
+  import { placeScope } from './place-scope.svelte'
   import VaultTransfer from './messaging/VaultTransfer.svelte'
   import SearchDialog from './SearchDialog.svelte'
   import SearchPage from './SearchPage.svelte'
@@ -480,6 +481,7 @@
         filters.set('community', parts[1])
       if (path === '/' && feedTab === 'following' && identity.actor)
         filters.set('following', 'true')
+      if (path === '/' && placeScope.slug) filters.set('context', placeScope.slug)
       if (parts[0] === 'people' && parts[1]) {
         filters.set('author', parts[1])
         filters.set('roots', 'false')
@@ -829,6 +831,7 @@
         q.set('roots', 'false')
       }
       if (path === '/' && feedTab === 'following') q.set('following', 'true')
+      if (path === '/' && placeScope.slug) q.set('context', placeScope.slug)
       const page = await request<{ items: Post[]; nextCursor: string | null }>(
         '/v1/feed/page?' + q,
       )

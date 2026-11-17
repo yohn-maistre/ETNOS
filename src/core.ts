@@ -347,7 +347,7 @@ export class StrataCore {
       AND (? IS NULL OR json_extract(p.content,'$.url') IN (SELECT value FROM json_each(?)))
       AND (? IS NULL OR p.community_id=?)
       AND (? IS NULL OR EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?))
-      AND (? IS NULL OR EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND rc.context_id=? AND cx.active=1))
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND cx.active=1 AND rc.context_id IN (WITH RECURSIVE down(id,depth) AS (SELECT ?,0 UNION SELECT l.context_id,down.depth+1 FROM context_parents l JOIN down ON l.parent_id=down.id WHERE down.depth<8) SELECT id FROM down)))
       AND (?=0 OR json_type(p.content,'$.poll')='object')
       AND (?=0 OR p.parent_id IS NULL)
       AND (? IS NULL OR (p.root_id=? AND p.id!=?))

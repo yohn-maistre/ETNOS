@@ -30,6 +30,7 @@
   import { Input } from '$lib/components/ui/input/index.js'
   import KnowledgeMap from './KnowledgeMap.svelte'
   import WikiDiscussion from './WikiDiscussion.svelte'
+  import { placeScope, setPlaceScope } from './place-scope.svelte'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiTrail from './WikiTrail.svelte'
@@ -76,7 +77,7 @@
   } = $props()
   let query = $state(''),
     section = $state('read'),
-    context = $state(''),
+    context = $state(placeScope.slug),
     contexts = $state<
       { id: string; slug: string; title: string; kind: string; facet?: string; parents?: string[] }[]
     >([]),
@@ -403,7 +404,7 @@
       <div class="wiki-discovery-actions">{#if memberships.length}<a class="commons-quiet-link" href="/wiki/notes/new">Tambah catatan <Plus size={14}/></a>{/if}{#if memberships.some(m=>m.role!=='member')}<Button variant="outline" onclick={onCreate}><Plus size={15}/>Tulis halaman</Button>{/if}</div>
     </header>
     <div class="wiki-discovery-controls"><label class="atlas-search"><Search size={18}/><Input bind:value={query} aria-label="Cari pengetahuan" placeholder="Cari dalam Wiki…"/></label>
-      {#if contexts.length}<nav class="atlas-lenses" aria-label="Jelajahi pengetahuan"><button aria-pressed={!context} onclick={()=>context=''}>Semua</button>{#each lensContexts as c}<button aria-pressed={context===c.slug} onclick={()=>context=c.slug}>{#if c.kind==='place'||c.kind==='region'}<MapPin size={14}/>{/if}{c.title}</button>{/each}</nav>{/if}
+      {#if contexts.length}<nav class="atlas-lenses" aria-label="Jelajahi pengetahuan"><button aria-pressed={!context} onclick={()=>{context='';setPlaceScope({slug:'',title:'Tanah Papua'})}}>Semua</button>{#each lensContexts as c}<button aria-pressed={context===c.slug} onclick={()=>{context=c.slug;if(c.kind==='place'||c.kind==='region')setPlaceScope({slug:c.slug,title:c.title})}}>{#if c.kind==='place'||c.kind==='region'}<MapPin size={14}/>{/if}{c.title}</button>{/each}</nav>{/if}
     </div>
     {#if discovering}<div class="wiki-discovery-loading" role="status">Menyiapkan bacaan…</div>{:else if discoveryError}<div class="wiki-draft-state"><p>{discoveryError}</p><Button variant="outline" onclick={()=>discover()}>Coba lagi</Button></div>{:else}
       {#if !query&&!context&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap /></div>{/if}

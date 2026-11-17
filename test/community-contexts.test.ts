@@ -112,3 +112,19 @@ test("the public index counts only what is public right now", () => {
     w.s.close();
   }
 });
+
+test("a post labelled with a regency shows in the feed of every place above it, and not beside it", () => {
+  const w = world();
+  try {
+    const room = w.s.createCommunity(w.owner.actor.id, "Kabar Nabire", "Kabar", "public");
+    const post = w.s.createPost(w.owner.actor.id, room.id, "Pasar Oyehe ramai pagi ini");
+    w.groups.attach(w.owner.actor.id, "post", post.id, w.nabire.id);
+    const ids = (slug: string) => w.s.feedPage(undefined, { contextId: w.groups.context(slug).id }).items.map((p) => p.id);
+    assert.deepEqual(ids("nabire"), [post.id]);
+    assert.deepEqual(ids("mee-pago"), [post.id]);
+    assert.deepEqual(ids("papua-tengah"), [post.id]);
+    assert.deepEqual(ids("paniai"), []);
+  } finally {
+    w.s.close();
+  }
+});
