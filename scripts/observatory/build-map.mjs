@@ -23,7 +23,7 @@ for (const [slug, name] of Object.entries(regions)) {
     }
   }
   for (const p of pages) {
-    const pi = add('p:' + slug + ':' + p.slug, { k: 'page', reg: slug, t: p.title, x: plain(p.text).slice(0, 420), y: null, kind: p.kind, slug: p.slug });
+    const pi = add('p:' + slug + ':' + p.slug, { k: 'page', reg: slug, t: p.title, x: plain(p.text).slice(0, 420), ft: plain(p.text), y: null, kind: p.kind, slug: p.slug });
     link(pi, r, 'part');
     for (const c of p.citations) if (byKey.has('s:' + c)) link(pi, byKey.get('s:' + c), 'cites');
     for (const b of p.basis) { const qi = quoteSrc.get(fold(b.text)); if (qi !== undefined) link(pi, qi, 'rests'); }
@@ -133,9 +133,11 @@ const FKW = {
 };
 nodes.forEach((n, i) => {
   if (n.k === 'region') return;
-  const text = n.t + ' ' + (n.k === 'passage' ? '' : n.x || '');
+  // Pages are tagged from their whole text (the lead alone is mostly geography), up to four domains.
+  const text = n.t + ' ' + (n.k === 'passage' ? '' : n.ft || n.x || '');
+  const top = n.k === 'page' ? 4 : 3;
   const hits = Object.entries(KW).map(([k, re]) => [k, (text.match(new RegExp(re.source, 'gi')) || []).length]).filter(([, c]) => c > 0).sort((a, b) => b[1] - a[1]);
-  if (hits.length) n.d = hits.slice(0, 3).map(([k]) => k);
+  if (hits.length) n.d = hits.slice(0, top).map(([k]) => k);
   else { const ds = D.map(([k, v]) => [k, dot(vecs[i], v)]).sort((a, b) => b[1] - a[1]); n.d = [ds[0][0]]; n.dg = 1; }
   const fh = Object.entries(FKW).map(([k, re]) => [k, (text.match(new RegExp(re.source, 'gi')) || []).length]).filter(([, c]) => c > 0).sort((a, b) => b[1] - a[1]);
   if (fh.length) n.f = fh[0][0];
@@ -146,6 +148,6 @@ const umap = new UMAP({ nComponents: 3, nNeighbors: 14, minDist: 0.25, random: r
 const pos = umap.fit(vecs);
 const lo = [0, 1, 2].map((d) => Math.min(...pos.map((p) => p[d]))), hi = [0, 1, 2].map((d) => Math.max(...pos.map((p) => p[d])));
 const P = pos.map((p) => p.map((v, d) => +(((v - lo[d]) / (hi[d] - lo[d])) * 2 - 1).toFixed(3)));
-const out = { built: new Date().toISOString().slice(0, 10), model: 'multilingual-e5-small (q8), UMAP 3D, seed 7', domains: Object.fromEntries(Object.entries(DOMAINS).map(([k, v]) => [k, v.split(':')[0]])), forms: Object.fromEntries(Object.entries(FORMS).filter(([k]) => k !== 'bukan').map(([k, v]) => [k, v.split(':')[0]])), nodes: nodes.map((n, i) => { const { i: _i, ...rest } = n; return { ...rest, p: P[i] }; }), edges };
+const out = { built: new Date().toISOString().slice(0, 10), model: 'multilingual-e5-small (q8), UMAP 3D, seed 7', domains: Object.fromEntries(Object.entries(DOMAINS).map(([k, v]) => [k, v.split(':')[0]])), forms: Object.fromEntries(Object.entries(FORMS).filter(([k]) => k !== 'bukan').map(([k, v]) => [k, v.split(':')[0]])), nodes: nodes.map((n, i) => { const { i: _i, ft: _ft, ...rest } = n; return { ...rest, p: P[i] }; }), edges };
 writeFileSync(process.argv[2], JSON.stringify(out));
 console.log('written', JSON.stringify(out).length, 'bytes');
