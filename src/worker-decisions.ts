@@ -1,6 +1,7 @@
 import {publicNews,type NewsFeed} from './news.ts'
 import {decisionModel,type DecisionProvider} from './decisions.ts'
-import {deskModel,type DeskModel} from './desk.ts'
+import {type DeskModel} from './desk.ts'
+import {nodeModels,ModelError,type ModelEnv} from './models.ts'
 /** Fixed AI binding and public-news service. No caller-selected model, URL or credentials. */
 export function workerDecisions(env:Cloudflare.Env):DecisionProvider|undefined{
  if(env.STRATA_DECISIONS_ENABLED!=='true'||!env.AI)return undefined
@@ -15,16 +16,16 @@ export function workerDecisions(env:Cloudflare.Env):DecisionProvider|undefined{
   async run(input){return env.AI.run(decisionModel,input,{signal:AbortSignal.timeout(10000),tags:['etnos:public-suggestions']})},
  }
 }
-/** Fixed free-tier writing model for the desk. Thinking stays off: the job is copying and retelling. */
+/** The desk writes with the node's models: Workers AI Gemma 4 unless the operator set a keyed provider.
+ * Low temperature, thinking off: the job is copying and retelling. */
 export function workerDesk(env:Cloudflare.Env):DeskModel|undefined{
- if(!env.AI)return undefined
+ const models=nodeModels(env as unknown as ModelEnv)
+ if(!models)return undefined
  return async(messages,maxTokens)=>{
-  type Reply={response?:unknown;choices?:{message?:{content?:unknown};finish_reason?:unknown}[];usage?:{prompt_tokens?:number;completion_tokens?:number}}
-  let raw:Reply
-  try{raw=await (env.AI.run as (model:string,input:unknown,options?:unknown)=>Promise<unknown>)(deskModel,{messages,max_completion_tokens:Math.min(maxTokens,2000),temperature:0.2,chat_template_kwargs:{enable_thinking:false}},{signal:AbortSignal.timeout(90000)}) as Reply}
-  catch(error){throw Error('model-call: '+(error instanceof Error?error.name+' '+error.message:'unknown').replace(/[^\w .:,()@/-]/g,' ').slice(0,160))}
-  const text=typeof raw?.response==='string'?raw.response:typeof raw?.choices?.[0]?.message?.content==='string'?raw.choices[0].message.content:''
-  if(!text.trim())throw Error('model-empty: keys '+Object.keys(raw??{}).join(',').slice(0,80)+' finish '+String(raw?.choices?.[0]?.finish_reason??'').slice(0,20))
-  return {text,inputTokens:Number(raw.usage?.prompt_tokens??0),outputTokens:Number(raw.usage?.completion_tokens??0)}
+  let reply
+  try{reply=await models.chat({purpose:'synthesis',messages,maxTokens:Math.min(maxTokens,2000),temperature:0.2})}
+  catch(error){throw Error((error instanceof ModelError?error.code:'model-call')+': '+(error instanceof Error?error.message:'unknown').replace(/[^\w .:,()@/-]/g,' ').slice(0,160))}
+  if(!reply.text.trim())throw Error('model-empty: no text')
+  return {text:reply.text,inputTokens:reply.inputTokens,outputTokens:reply.outputTokens,model:reply.model}
  }
 }

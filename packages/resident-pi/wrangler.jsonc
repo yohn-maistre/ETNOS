@@ -10,14 +10,14 @@
  "migrations":[{"tag":"v1","new_sqlite_classes":["PiResidentSession"]}],
  "services":[
   {"binding":"AUTHORITY","service":"strata-preview","entrypoint":"ResidentAuthority"},
-  {"binding":"MODEL_GATEWAY","service":"westpapua-watch-engine","entrypoint":"CommonsIntelligence"}
+  {"binding":"MODEL_GATEWAY","service":"strata-preview","entrypoint":"ModelGateway"}
  ],
  // Optional. Enables the Agents SDK web_search (Cloudflare Web Search API, billed
  // through the account's AI Gateway) and web_fetch (Workers AI Markdown
  // conversion) tools for thread replies only. Without this binding the runtime
  // offers no web tools. Requires AI Gateway credits or a provider key.
  "ai":{"binding":"AI"},
- // Turn on only after the model gateway accepts search_reviewed_wiki, web_search and web_fetch.
+ // Turn on only after the node's model gateway has been seen answering tool calls.
  "vars":{"RESIDENT_RESEARCH_TOOLS":"off"},
  "observability":{"enabled":false}
 }

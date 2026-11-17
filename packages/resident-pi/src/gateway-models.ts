@@ -10,7 +10,7 @@ export type UsageReceipt={model:string;input:number;output:number}
  * helper conversations and compactions cannot borrow a newer job's authority. */
 export function jobProvider(work:ResidentWork,ports:{authority:ServicePort;gateway:ServicePort},record:(usage:UsageReceipt)=>void,replay?:ProtocolReplay,onFailure?:(code:ResidentFailureCode)=>void){
  const providerId='strata-'+work.jobId+'-'+work.generation
- const models:Model<'openai-completions'>[]=['fast','synthesis'].map(id=>({id,name:'Configured WPW '+id+' route',api:'openai-completions',provider:providerId,baseUrl:'https://commons-model.internal/v1',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:600}))
+ const models:Model<'openai-completions'>[]=['fast','synthesis'].map(id=>({id,name:'Strata node model ('+id+')',api:'openai-completions',provider:providerId,baseUrl:'https://commons-model.internal/v1',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:600}))
  const transport:typeof fetch=async(input,init)=>{
   try{
   const request=new Request(input,init),target=new URL(request.url)

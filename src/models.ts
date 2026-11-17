@@ -1,0 +1,135 @@
+/**
+ * The node's language models.
+ *
+ * Keyless by default: Workers AI Gemma 4 through the node's own `AI` binding.
+ * An operator may add one OpenAI-compatible provider (base URL, model names and
+ * a key kept as a Worker secret). Google AI Studio works this way through
+ * `https://generativelanguage.googleapis.com/v1beta/openai`. When the keyed
+ * provider is rate limited or down, the call falls back to Workers AI once, and
+ * the reply names the model that actually answered.
+ *
+ * Free hosted models may keep prompts. Callers send public material only.
+ */
+
+export const keylessModel='@cf/google/gemma-4-26b-a4b-it'
+export type ModelPurpose='fast'|'synthesis'
+export type ChatMessage={role:'system'|'user'|'assistant'|'tool';content:string|null;tool_calls?:ToolCall[];tool_call_id?:string;name?:string}
+export type ToolCall={id:string;type:'function';function:{name:string;arguments:string}}
+export type ChatRequest={purpose:ModelPurpose;messages:ChatMessage[];tools?:unknown[];maxTokens:number;temperature?:number;signal?:AbortSignal}
+export type ChatReply={text:string;toolCalls?:ToolCall[];model:string;route:'key'|'keyless';inputTokens:number;outputTokens:number}
+export type ModelEnv={AI?:{run:(model:string,input:unknown,options?:unknown)=>Promise<unknown>};STRATA_MODEL_BASE_URL?:string;STRATA_MODEL_KEY?:string;STRATA_MODEL_FAST?:string;STRATA_MODEL_SYNTHESIS?:string;STRATA_MODEL_REASONING?:string}
+export class ModelError extends Error{readonly code:'model-unavailable'|'model-output'|'model-config';constructor(code:'model-unavailable'|'model-output'|'model-config',message:string){super(message);this.code=code}}
+
+type Keyed={baseUrl:string;key:string;fast:string;synthesis:string;reasoning?:string}
+const MAX_REPLY=65536
+
+/** Reads the keyed provider from the environment. Incomplete or non-HTTPS settings are ignored, never half-used. */
+export function keyedProvider(env:ModelEnv):Keyed|undefined{
+ const key=env.STRATA_MODEL_KEY?.trim(),base=env.STRATA_MODEL_BASE_URL?.trim(),fast=env.STRATA_MODEL_FAST?.trim()
+ if(!key||!base||!fast)return undefined
+ let url:URL;try{url=new URL(base)}catch{return undefined}
+ if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)return undefined
+ const reasoning=env.STRATA_MODEL_REASONING?.trim()
+ return {baseUrl:url.href.replace(/\/+$/,''),key,fast,synthesis:env.STRATA_MODEL_SYNTHESIS?.trim()||fast,...(reasoning&&/^[a-z]{1,12}$/.test(reasoning)?{reasoning}:{})}
+}
+
+/** Which route a node would use, without the key. Safe for an operator page. */
+export function modelRoute(env:ModelEnv){
+ const keyed=keyedProvider(env)
+ return {keyless:env.AI?keylessModel:null,keyed:keyed?{host:new URL(keyed.baseUrl).host,fast:keyed.fast,synthesis:keyed.synthesis}:null}
+}
+
+export type Models={chat:(request:ChatRequest)=>Promise<ChatReply>}
+
+export function nodeModels(env:ModelEnv,fetcher:typeof fetch=fetch):Models|undefined{
+ const keyed=keyedProvider(env),ai=env.AI
+ if(!keyed&&!ai)return undefined
+ return {async chat(request){
+  if(keyed){
+   try{return await keyedChat(keyed,request,fetcher)}
+   catch(error){if(!ai||!(error instanceof ModelError)||error.code!=='model-unavailable'||request.signal?.aborted)throw error}
+  }
+  return keylessChat(ai!,request)
+ }}
+}
+
+async function keyedChat(p:Keyed,request:ChatRequest,fetcher:typeof fetch):Promise<ChatReply>{
+ const model=request.purpose==='synthesis'?p.synthesis:p.fast
+ const body={model,messages:request.messages,max_tokens:request.maxTokens,...(request.temperature===undefined?{}:{temperature:request.temperature}),...(request.tools?.length?{tools:request.tools}:{}),...(p.reasoning?{reasoning_effort:p.reasoning}:{})}
+ let response:Response
+ try{response=await fetcher(p.baseUrl+'/chat/completions',{method:'POST',redirect:'error',headers:{'content-type':'application/json',authorization:'Bearer '+p.key},body:JSON.stringify(body),signal:request.signal??AbortSignal.timeout(60000)})}
+ catch{throw new ModelError('model-unavailable','Keyed provider unreachable')}
+ if(response.status===429||response.status>=500){await response.body?.cancel().catch(()=>{});throw new ModelError('model-unavailable','Keyed provider '+response.status)}
+ // 4xx other than 429 means the request or the key is wrong. Falling back would hide it.
+ if(!response.ok){await response.body?.cancel().catch(()=>{});throw new ModelError('model-config','Keyed provider refused the request ('+response.status+')')}
+ return normalize(await bounded(response),model,'key')
+}
+
+async function keylessChat(ai:NonNullable<ModelEnv['AI']>,request:ChatRequest):Promise<ChatReply>{
+ let raw:unknown
+ // Thinking stays off: these jobs retell and choose; they do not need long reasoning.
+ try{raw=await ai.run(keylessModel,{messages:request.messages,max_completion_tokens:request.maxTokens,temperature:request.temperature??0.2,...(request.tools?.length?{tools:request.tools}:{}),chat_template_kwargs:{enable_thinking:false}},{signal:request.signal??AbortSignal.timeout(90000)})}
+ catch(error){throw new ModelError('model-unavailable','Workers AI: '+(error instanceof Error?error.message:'unknown').replace(/[^\w .:,()@/-]/g,' ').slice(0,160))}
+ return normalize(raw,keylessModel,'keyless')
+}
+
+async function bounded(response:Response){
+ const reader=response.body?.getReader();if(!reader)throw new ModelError('model-output','Empty model response')
+ const parts:Uint8Array[]=[];let n=0
+ try{while(true){const r=await reader.read();if(r.done)break;n+=r.value.length;if(n>MAX_REPLY)throw new ModelError('model-output','Model response too large');parts.push(r.value)}}
+ finally{await reader.cancel().catch(()=>{});reader.releaseLock()}
+ const bytes=new Uint8Array(n);let at=0;for(const p of parts){bytes.set(p,at);at+=p.length}
+ try{return JSON.parse(new TextDecoder().decode(bytes)) as unknown}catch{throw new ModelError('model-output','Model response is not JSON')}
+}
+
+type Raw={model?:unknown;response?:unknown;tool_calls?:unknown;choices?:{message?:{content?:unknown;tool_calls?:unknown}}[];usage?:{prompt_tokens?:unknown;completion_tokens?:unknown}}
+/** Accepts the OpenAI shape and the older Workers AI shape (`response`, top-level `tool_calls`). */
+export function normalize(value:unknown,fallbackModel:string,route:'key'|'keyless'):ChatReply{
+ if(!value||typeof value!=='object')throw new ModelError('model-output','Invalid model response')
+ const raw=value as Raw,message=raw.choices?.[0]?.message
+ const text=typeof message?.content==='string'?message.content:typeof raw.response==='string'?raw.response:''
+ const calls=toolCalls(message?.tool_calls??raw.tool_calls)
+ if(!text.trim()&&!calls)throw new ModelError('model-output','Empty model response')
+ return {text,...(calls?{toolCalls:calls}:{}),model:(typeof raw.model==='string'&&raw.model?raw.model:fallbackModel).slice(0,200),route,inputTokens:Number(raw.usage?.prompt_tokens??0)||0,outputTokens:Number(raw.usage?.completion_tokens??0)||0}
+}
+
+function toolCalls(value:unknown):ToolCall[]|undefined{
+ if(!Array.isArray(value)||!value.length)return undefined
+ const out:ToolCall[]=[]
+ for(const item of value.slice(0,8)){
+  if(!item||typeof item!=='object')continue
+  const c=item as {id?:unknown;name?:unknown;arguments?:unknown;function?:{name?:unknown;arguments?:unknown}}
+  const name=c.function?.name??c.name,args=c.function?.arguments??c.arguments
+  if(typeof name!=='string'||!/^[A-Za-z0-9_-]{1,64}$/.test(name))continue
+  out.push({id:typeof c.id==='string'&&c.id?c.id.slice(0,100):'call_'+crypto.randomUUID(),type:'function',function:{name,arguments:typeof args==='string'?args:JSON.stringify(args??{})}})
+ }
+ return out.length?out:undefined
+}
+
+const ROLES=new Set(['system','user','assistant','tool'])
+/**
+ * The resident runtime's model endpoint, reached only through a service binding.
+ * OpenAI-compatible request and reply. The runtime has already been granted
+ * inference for its job by the node; this only bounds the shape and size.
+ */
+export async function modelGateway(request:Request,models:Models|undefined):Promise<Response>{
+ const reply=(status:number,value:unknown)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json','cache-control':'no-store'}})
+ if(request.method!=='POST'||new URL(request.url).pathname!=='/v1/chat/completions')return reply(404,{error:'Not found'})
+ if(!models)return reply(503,{error:'No model configured'})
+ const raw=await request.text()
+ if(new TextEncoder().encode(raw).byteLength>32768)return reply(413,{error:'Request too large'})
+ let input:{messages?:unknown;tools?:unknown;max_tokens?:unknown}
+ try{input=JSON.parse(raw)}catch{return reply(400,{error:'Invalid JSON'})}
+ const messages=input.messages
+ if(!Array.isArray(messages)||!messages.length||messages.length>40||messages.some(m=>!m||typeof m!=='object'||!ROLES.has((m as {role?:unknown}).role as string)))return reply(400,{error:'Invalid messages'})
+ const tools=Array.isArray(input.tools)?input.tools.slice(0,8):undefined
+ const maxTokens=Math.max(1,Math.min(Number(input.max_tokens)||500,600))
+ const purpose:ModelPurpose=request.headers.get('x-strata-purpose')==='synthesis'?'synthesis':'fast'
+ try{
+  const r=await models.chat({purpose,messages:messages as ChatMessage[],...(tools?{tools}:{}),maxTokens,signal:request.signal})
+  return reply(200,{id:'chatcmpl-'+crypto.randomUUID(),object:'chat.completion',model:r.model,choices:[{index:0,message:{role:'assistant',content:r.text,...(r.toolCalls?{tool_calls:r.toolCalls}:{})},finish_reason:r.toolCalls?'tool_calls':'stop'}],usage:{prompt_tokens:r.inputTokens,completion_tokens:r.outputTokens}})
+ }catch(error){
+  const code=error instanceof ModelError?error.code:'model-unavailable'
+  return reply(code==='model-output'?502:503,{error:code})
+ }
+}

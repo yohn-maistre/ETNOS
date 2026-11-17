@@ -5,12 +5,14 @@ import { StrataCore, Fault } from "./core.ts";
  * Code plans and checks. The model does two small jobs: copy, then retell.
  * Nothing here posts, fetches or grants authority. */
 
-export const deskModel = "@cf/google/gemma-4-26b-a4b-it";
+import { keylessModel } from "./models.ts";
+/** Recorded when the host does not report which model answered. */
+export const deskModel = keylessModel;
 export const deskKinds = ["cerita", "kata", "tempat", "riset", "arsip"] as const;
 export type DeskKind = (typeof deskKinds)[number];
 export type DeskMessage = { role: "system" | "user"; content: string };
-export type DeskReply = { text: string; inputTokens: number; outputTokens: number };
-/** Fixed binding supplied by the host. No caller-selected model, URL or key. */
+export type DeskReply = { text: string; inputTokens: number; outputTokens: number; model?: string };
+/** Fixed by the host (see models.ts). No caller-selected model, URL or key. */
 export type DeskModel = (messages: DeskMessage[], maxTokens: number) => Promise<DeskReply>;
 export type DeskFact = { n: number; quote: string };
 export type DeskCheck = { ok: boolean; unknown: string[]; uncited: number; tooLong: boolean };
@@ -22,6 +24,8 @@ export type DeskRun = {
   attempts: number;
   inputTokens: number;
   outputTokens: number;
+  /** The model that wrote the last answer, when the host reports it. */
+  model?: string;
 };
 
 /** Same folding for source and quote, so a match means the words are really there. */
@@ -232,15 +236,17 @@ export async function runDesk(
   input: { kind: DeskKind; source: string; examples?: string[]; language?: string },
 ): Promise<DeskRun> {
   let inputTokens = 0,
-    outputTokens = 0;
+    outputTokens = 0,
+    used: string | undefined;
   const ask = async (m: DeskMessage[], max: number) => {
     const r = await model(m, max);
+    used = r.model ?? used;
     inputTokens += r.inputTokens;
     outputTokens += r.outputTokens;
     return r.text;
   };
   const { kept: facts, dropped } = verifyQuotes(input.source, parseNumbered(await ask(factMessages(input.kind, input.source), 1800)));
-  if (facts.length < 3) return { facts, dropped, draft: "", check: { ok: false, unknown: [], uncited: 0, tooLong: false }, attempts: 0, inputTokens, outputTokens };
+  if (facts.length < 3) return { facts, dropped, draft: "", check: { ok: false, unknown: [], uncited: 0, tooLong: false }, attempts: 0, inputTokens, outputTokens, ...(used ? { model: used } : {}) };
   const language = input.language ?? "Indonesian",
     examples = input.examples ?? [];
   let draft = (await ask(draftMessages(input.kind, facts, examples, language), 900)).trim(),
@@ -251,7 +257,7 @@ export async function runDesk(
     check = checkDraft(draft, facts);
     attempts = 2;
   }
-  return { facts, dropped, draft, check, attempts, inputTokens, outputTokens };
+  return { facts, dropped, draft, check, attempts, inputTokens, outputTokens, ...(used ? { model: used } : {}) };
 }
 
 type ShelfRow = { id: string; community_id: string; added_by: string; title: string; url: string; holder: string; digest: string; state: string; created: number };
@@ -304,12 +310,12 @@ export class Desk {
       run = await runDesk(model, { kind: b.kind, source: b.text, examples });
     } catch (error) {
       // The host's own short failure code, for the operator. Never model output or source text.
-      const code = error instanceof Error && /^model-(call|empty): /.test(error.message) ? error.message.slice(0, 200) : "model-unknown";
+      const code = error instanceof Error && /^model-[a-z]+(: |$)/.test(error.message) ? error.message.slice(0, 200) : "model-unknown";
       s.run("UPDATE desk_drafts SET state='failed',checks=? WHERE id=? AND state='pending'", JSON.stringify({ ok: false, unknown: [], uncited: 0, tooLong: false, error: code }), id);
       throw new Fault(503, "The desk model did not answer (" + code + ")");
     }
     s.tx(() => {
-      s.run("UPDATE desk_drafts SET facts=?,dropped=?,draft=?,checks=?,state=? WHERE id=? AND state='pending'", JSON.stringify(run.facts), JSON.stringify(run.dropped.slice(0, 20)), run.draft.slice(0, 8000), JSON.stringify({ ...run.check, attempts: run.attempts, inputTokens: run.inputTokens, outputTokens: run.outputTokens }), run.check.ok ? "draft" : "failed", id);
+      s.run("UPDATE desk_drafts SET facts=?,dropped=?,draft=?,checks=?,state=?,model=? WHERE id=? AND state='pending'", JSON.stringify(run.facts), JSON.stringify(run.dropped.slice(0, 20)), run.draft.slice(0, 8000), JSON.stringify({ ...run.check, attempts: run.attempts, inputTokens: run.inputTokens, outputTokens: run.outputTokens }), run.check.ok ? "draft" : "failed", (run.model ?? deskModel).slice(0, 200), id);
     });
     return this.view(s.get<DraftRow>("SELECT * FROM desk_drafts WHERE id=?", id)!);
   }

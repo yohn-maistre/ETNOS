@@ -1,1 +1,2 @@
+2026-11-17k Node models: Gemma 4 keyless, optional keyed provider, ModelGateway for the resident
 2026-11-17j Free tier: indexed feed, cached shared lists, static files off the Worker, usage metering

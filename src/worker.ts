@@ -10,6 +10,7 @@ import {BrowserAuth} from './oauth.ts'
 import {Discovery,sourceFetcher} from './discovery.ts'
 import {Resident,parseResidentWork,type ResidentWork} from './resident.ts'
 import {piResidentProvider} from './resident-provider.ts'
+import {modelGateway,modelRoute,nodeModels,type ModelEnv} from './models.ts'
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
   private handle!: (request: Request) => Promise<Response>
@@ -70,7 +71,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   }
   async request(request: Request): Promise<Response> {
     const url=new URL(request.url)
-    if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,this.meter.report()):json(404,{error:'Not found'})
+    if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,{...this.meter.report(),models:modelRoute(this.env as unknown as ModelEnv)}):json(404,{error:'Not found'})
     const mark=this.meter.start()
     let status=500
     try{const response=await this.handle(request);status=response.status;await this.arm();return response}
@@ -101,6 +102,12 @@ export class ResidentAuthority extends WorkerEntrypoint<Cloudflare.Env>{
    return json(200,await this.env.STRATA.getByName(this.env.STRATA_NODE).residentAuthority(work,path.slice(1),fields))
   }catch(error){return json(error instanceof Fault?error.status:503,{error:error instanceof Fault?error.message:'Resident authority unavailable'})}
  }
+}
+
+/** Binding-only model endpoint for the resident runtime: Workers AI Gemma 4, or
+ * the operator's keyed provider (see models.ts). No public route. */
+export class ModelGateway extends WorkerEntrypoint<Cloudflare.Env>{
+ async fetch(request:Request){return modelGateway(request,nodeModels(this.env as unknown as ModelEnv))}
 }
 
 export default {
