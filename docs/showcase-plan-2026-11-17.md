@@ -6,10 +6,17 @@ Status: **draft for the owner**. Sections marked *proposal* are my calls with re
 
 ## 1. Dates
 
-- Polish and first people: until Saturday 21 November.
-- Proposal upload: about a week after the old 18–19 November date. Exact date still to confirm.
-- Showcase: 4–5 December. AT Protocol permissioned data ("Spaces") public beta expected around 1 December (to be checked).
-- Pilot: January 2027, for as many people as we can carry, across all of Tanah Papua.
+- Registration on budayago.id closes **21 November**. Polish and first people until then.
+- Open lectures for registrants: 24–25 November.
+- **Proposal upload: 26–27 November** (final product proposal). Everything shown in it must be usable by then.
+- Administrative and substance selection: 28 November – 2 December.
+- Finalists announced 4 December: 20 finalists, 10 digital and 10 physical prototypes.
+- Mentoring for finalists on the deck and the showcase: 7–14 December.
+- Arrival in Jakarta 17 December; **showcase and judging 18–19 December**, ranked 1–10 per category.
+- AT Protocol "Spaces" public beta: 1 December (official post of 13 November).
+- Pilot opens to everyone after the competition, on a proper server or Abstraksi's own machines.
+
+Source: the BUDAYA GO! 2026 timetable the owner shared on 17 November. This replaces the 4–5 December showcase date in earlier documents.
 
 The owner's position: everything on the list gets built before the proposal goes in, not cut. Aksara Node stays a roadmap slide. I agree to try, with one condition: we build in an order where the showcase story is complete after each step, so that if a risky item slips (the serverless PDS above all), nothing else is left half done.
 
@@ -293,13 +300,16 @@ The owner can bring more than ten people before 21 November: a Papuan coding com
 
 What the build owes them: sign-up that works on a phone in two minutes, open rooms, something to do on the first screen, and no fake people anywhere.
 
-## 21. Questions for the owner
+## 21. Owner answers (17 November, late)
 
-After both research reports and the second review. Most important first.
+- **Accounts:** try the free tier first. Log whether Workers Free carries at least 30 AT identities with their requests and posts (publishing off). If it does, fork our own multi-identity PDS so people get handles like `giyaibo.etnos.space`. Yes to the serverless identity host. Older Cloudflare projects (Detak Detik, nonafiksi) may be taken down to free quota, or the owner opens a new free account. The $10 a month stays in mind; the official PDS on a VPS comes after the competition. Document both deploy paths: Cloudflare free tier, and a full VPS install.
+- **Surveys and politics:** the culture lead and the owner's partner are comfortable, and are the ones pushing for it: culture is not separate from public policy. Elections and budgets may ship before the proposal, under the aggregation rules in §17.
+- **Scale:** the floodgates open after the competition, for the pilot, on a proper server if a prize allows or on Abstraksi's own machines.
+- **Everything usable before the proposal (26–27 November)**, so the proposal is consistent with the live site.
+- **Still open:** who besides the owner answers "Jangan disebarkan" and how fast; who else holds identity keys and backups; the private-room line about the operator.
 
-1. **Who answers flags.** Which three people besides you moderate and answer "Jangan disebarkan" from 21 November, and within how many hours?
-2. **Money now.** Will you pay about $10 a month from now: Workers Paid ($5) and a small server for the official PDS, unless a free machine works? And who besides you holds the identity keys and backups?
-3. **Surveys and politics.** Are the culture lead and your partner comfortable with surveys on public issues under ETNOS's name before the showcase, and who approves each topic? Do elections and budgets ship before the showcase or after?
-4. **How many people.** Do the creators with large followings invite their followers before the showcase or after? Thirty people and three thousand are different builds and different moderation.
-5. **Private rooms.** Do you accept saying in every private room that ETNOS's operator can technically read it until Spaces arrives?
-6. **The serverless identity host.** Build it after the walk is complete, with throwaway identities, to show at the showcase (my recommendation), or leave it as a roadmap slide (the reviewer's)?
+## 22. Questions for the owner (open)
+
+1. Which people besides you moderate and answer "Jangan disebarkan", and within how many hours?
+2. Who besides you holds the identity keys and backups?
+3. Do you accept saying in every private room that ETNOS's operator can technically read it until Spaces arrives?
