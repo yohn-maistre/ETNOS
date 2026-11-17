@@ -1,1 +1,2 @@
+2026-11-17 model gateway moved into Strata (Gemma 4 keyless, optional keyed provider)
 2026-11-15 two-tool registry, research off, honest abstention
