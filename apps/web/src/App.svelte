@@ -1719,7 +1719,7 @@
       <a href="/third-party-notices.txt" target="_blank" rel="noreferrer">
         Lisensi
       </a>
-      <span>ETNOS · pratinjau</span>
+      <span>ETNOS · dijalankan dengan Strata · pratinjau</span>
     </div>
   {/snippet}
 </PlatformShell>

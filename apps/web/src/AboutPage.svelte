@@ -180,6 +180,12 @@
 
   <section aria-labelledby="about-origin">
     <h2 id="about-origin">Asal-usul</h2>
+    <p>
+      ETNOS dijalankan dengan
+      <a href="https://github.com/yohn-maistre/strata" target="_blank" rel="noreferrer">Strata</a>,
+      perangkat lunak terbuka berlisensi AGPL-3.0. Komunitas lain bisa memakainya
+      untuk wilayahnya sendiri.
+    </p>
     <p>ETNOS sudah tumbuh beberapa tahun. Strata adalah babak terbarunya.</p>
     <ul class="about-lineage">
       {#each lineage as step}<li>
