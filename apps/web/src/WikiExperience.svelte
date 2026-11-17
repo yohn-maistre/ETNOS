@@ -30,6 +30,7 @@
   import { Input } from '$lib/components/ui/input/index.js'
   import KnowledgeMap from './KnowledgeMap.svelte'
   import WikiDiscussion from './WikiDiscussion.svelte'
+  import WikiContents from './WikiContents.svelte'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
@@ -177,6 +178,7 @@
       {#if page.revision}<WikiVoices
           voices={pageVoices(page.revision.citations, history, page.revision.author, proposals)}
           invite={member ? { onclick: onPropose } : { href: auth.actor ? '/communities/' + page.community_id : '/login' }}
+          current={page.revision.review}
         />{/if}
       <p>
         {page.revision
@@ -205,14 +207,7 @@
             <Button variant="ghost" disabled={busy} onclick={() => onReview(page.revision!.id, false)}>Kembalikan</Button>
           </div>{/if}{/if}
       <div class="wiki-actions">
-        {#if headings.length}<details class="wiki-contents">
-            <summary>Dalam halaman <ChevronDown size={14} /></summary>
-            <div class="wiki-history-popover">
-              {#each headings as heading}<a href={'#' + heading.id}>
-                  {heading.text}
-                </a>{/each}
-            </div>
-          </details>{/if}
+
         <details class="wiki-reading-options"><summary><Type size={15}/>Teks</summary><div class="wiki-history-popover"><p>Ukuran tulisan</p><button aria-pressed={readingSize==='normal'} onclick={()=>resize('normal')}>Nyaman</button><button aria-pressed={readingSize==='large'} onclick={()=>resize('large')}>Lebih besar</button></div></details>
         {#if member}<Button variant="outline" onclick={onPropose}>
             <GitPullRequest size={15} />Usulkan perubahan
@@ -256,7 +251,8 @@
         </button>
       </nav>{/if}
     {#if section === 'read'}
-      {#if page.revision}<div class="wiki-body wiki-serif post-markdown">
+      {#if page.revision}<WikiContents text={page.revision.text} pageId={page.id} inline />
+        <div class="wiki-body wiki-serif post-markdown">
           {@html markdown(page.revision.text, [], 'wiki-' + page.id)}
         </div>
         <WikiSourceNotes citations={page.revision.citations} />

@@ -111,7 +111,8 @@
     search = $state(location.pathname === '/login' ? '' : location.search),
     loading = $state(true),
     busy = $state(false),
-    error = $state('')
+    error = $state(''),
+    errorStatus = $state(0)
   let auth = $state<Auth>({ actor: null, csrf: null, steward: false }),
     cap = $state<Capabilities | null>(null)
   let communities = $state<Community[]>([]),
@@ -467,6 +468,7 @@
     const mine = ++generation
     loading = true
     error = ''
+    errorStatus = 0
     try {
       const identity = await request<Auth>('/auth/me')
       if (mine !== generation) return
@@ -572,6 +574,7 @@
     } catch (e) {
       if (mine === generation) {
         error = e instanceof Error ? e.message : 'Belum dapat memuat halaman.'
+        errorStatus = e instanceof ApiError ? e.status : 0
         if (e instanceof ApiError && e.status === 401) {
           auth = { actor: null, csrf: null, steward: false }
           setCsrf(null)
@@ -944,6 +947,14 @@
   {#if loading && !posts.length && !selectedPost && path !== '/' && path !== '/saved' && path !== '/find' && !['messages', 'notifications', 'groups', 'work', 'contexts', 'topics', 'explore', 'news', 'login', 'wiki'].includes(parts[0])}<ContentSkeleton
     />
   {:else if path === '/recover-messages'}<VaultTransfer recovery />
+  {:else if error && errorStatus === 404}<div class="page-missing" role="alert">
+      <h1>{parts[0] === 'wiki' ? 'Halaman wiki ini tidak ditemukan' : 'Halaman ini tidak ditemukan'}</h1>
+      <p>Tautannya mungkin keliru atau sudah lama, halamannya mungkin sudah dipindah atau ditarik, atau halaman ini hanya bisa dibuka oleh anggota komunitasnya.</p>
+      <div class="page-missing-actions">
+        <Button href={parts[0] === 'wiki' ? '/wiki' : '/'} variant="outline">{parts[0] === 'wiki' ? 'Kembali ke Wiki' : 'Ke Beranda'}</Button>
+        <Button variant="ghost" onclick={() => (searchDialogOpen = true)}>Cari di ETNOS</Button>
+      </div>
+    </div>
   {:else if error}<div class="strata-card">
       <p class="strata-alert" role="alert">{error}</p>
       <Button

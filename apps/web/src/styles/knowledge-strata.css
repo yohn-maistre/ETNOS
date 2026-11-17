@@ -29,6 +29,7 @@
 .voice-people { background: var(--voice-people); }
 .voice-agent { background: var(--voice-agent); }
 .voice-pending { background: repeating-linear-gradient(135deg, var(--voice-agent) 0 1.5px, var(--voice-agent-soft) 1.5px 4.5px); }
+.voice-unreviewed { background: repeating-linear-gradient(90deg, var(--voice-agent) 0 3px, var(--voice-agent-soft) 3px 5px); }
 .voice-key { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--muted-foreground); }
 .voice-key li { display: inline-flex; align-items: center; gap: 7px; }
 .voice-swatch { width: 18px; height: 8px; border-radius: 2px; flex: none; }

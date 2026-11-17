@@ -7,17 +7,21 @@
     reviewer,
     reviewed,
     invite,
+    current,
   }: {
     voices: Voices
     reviewer?: string
     reviewed?: string
     invite: { href?: string; onclick?: () => void }
+    /** Review state of the version on screen. */
+    current?: string
   } = $props()
   const segments = $derived(
     [
       { key: 'source', n: voices.sources, label: 'Sumber luar, ' + voices.sources },
       { key: 'people', n: voices.people, label: 'Warga, ' + voices.people + ' penulis' },
       { key: 'agent', n: voices.agentRevisions, label: 'Tulisan agen yang sudah ditinjau, ' + voices.agentRevisions + ' revisi' },
+      { key: 'unreviewed', n: voices.unreviewedAgent, label: 'Tulisan agen yang belum ditinjau, ' + voices.unreviewedAgent + ' revisi' },
       { key: 'pending', n: voices.pendingAgent, label: 'Draf agen menunggu tinjauan, ' + voices.pendingAgent + ' usulan' },
     ].filter((s) => s.n > 0),
   )
@@ -34,6 +38,7 @@
     {#each segments as s (s.key)}<li><span class={'voice-swatch voice-' + s.key} aria-hidden="true"></span>{s.label}</li>{/each}
   </ul>
   <p class="voice-line">
+    {#if current === 'unreviewed'}<span>Versi yang tampil sekarang belum ditinjau.</span>{/if}
     {#if !voices.people}Belum ada suara warga.
       {#if invite.onclick}<button type="button" onclick={invite.onclick}>Tambahkan ceritamu</button>{:else if invite.href}<a href={invite.href}>Tambahkan ceritamu</a>{/if}
     {/if}

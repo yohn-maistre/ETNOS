@@ -51,6 +51,7 @@ export type Voices = {
   sources: number
   people: number
   agentRevisions: number
+  unreviewedAgent: number
   pendingAgent: number
 }
 /** Page-level voices: cited sources, distinct human authors of accepted
@@ -58,15 +59,19 @@ export type Voices = {
  * the viewer is already allowed to see. Nothing is estimated. */
 export function voices(
   citations: string[],
-  history: { author?: Person }[],
+  history: { author?: Person; review?: string }[],
   current: Person | undefined,
   proposals: Proposal[],
 ): Voices {
-  const authors = history.length ? history.map((h) => h.author).filter((a): a is Person => !!a) : current ? [current] : []
+  // Reverted revisions are not part of the page any more; live ones not yet reviewed are counted apart.
+  const kept = history.length ? history.filter((h) => h.review !== 'reverted') : current ? [{ author: current, review: undefined }] : []
+  const authors = kept.map((h) => h.author).filter((a): a is Person => !!a)
+  const agent = kept.filter((h) => h.author?.kind === 'agent')
   return {
     sources: citations.length,
     people: new Set(authors.filter((a) => a.kind === 'human').map((a) => a.id)).size,
-    agentRevisions: authors.filter((a) => a.kind === 'agent').length,
+    agentRevisions: agent.filter((h) => h.review !== 'unreviewed').length,
+    unreviewedAgent: agent.filter((h) => h.review === 'unreviewed').length,
     pendingAgent: proposals.filter(
       (p) => p.state === 'pending' && ((p as Proposal & { authorKind?: string }).authorKind ?? p.author?.kind) === 'agent',
     ).length,
