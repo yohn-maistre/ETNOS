@@ -40,7 +40,7 @@
     const start = day % pool.length
     return [...pool.slice(start), ...pool.slice(0, start)].slice(0, 4)
   })
-  const snippet = (t?: string) => (t ? (t.length > 140 ? t.slice(0, 137).trimEnd() + '…' : t) : '')
+  function snippet(t: string | undefined) { return t ? (t.length > 140 ? t.slice(0, 137).trimEnd() + '…' : t) : '' }
 </script>
 
 {#if regions.length}
