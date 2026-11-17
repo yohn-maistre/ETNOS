@@ -353,22 +353,24 @@ export class StrataCore {
         before=[decoded[0],decoded[1]]
       } catch { throw new Fault(400,'Invalid cursor') }
     }
-    const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.hidden=0 AND (p.deleted=0 OR p.parent_id IS NOT NULL)
-      AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
-      AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0
-      AND (? IS NULL OR EXISTS(SELECT 1 FROM follows f WHERE f.actor_id=? AND f.target_id=p.author_id))
-      AND (? IS NULL OR p.author_id=?)
-      AND (? IS NULL OR json_extract(p.content,'$.url') IN (SELECT value FROM json_each(?)))
-      AND (? IS NULL OR p.community_id=?)
-      AND (? IS NULL OR EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?))
-      AND (? IS NULL OR EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND cx.active=1 AND rc.context_id IN (WITH RECURSIVE down(id,depth) AS (SELECT ?,0 UNION SELECT l.context_id,down.depth+1 FROM context_parents l JOIN down ON l.parent_id=down.id WHERE down.depth<8) SELECT id FROM down)))
-      AND (?=0 OR json_type(p.content,'$.poll')='object')
-      AND (?=0 OR p.parent_id IS NULL)
-      AND (? IS NULL OR (p.root_id=? AND p.id!=?))
-      AND (? IS NULL OR p.id IN (WITH RECURSIVE descendants(id) AS (SELECT id FROM posts WHERE parent_id=? UNION SELECT child.id FROM posts child JOIN descendants d ON child.parent_id=d.id) SELECT id FROM descendants))
-      AND (? IS NULL OR p.created<? OR (p.created=? AND p.id<?))
-      ORDER BY p.created DESC,p.id DESC LIMIT ?`,actorId??null,(options.query??'').slice(0,200),options.followingId??null,options.followingId??null,options.authorId??null,options.authorId??null,options.linkUrls?JSON.stringify(options.linkUrls):null,options.linkUrls?JSON.stringify(options.linkUrls):null,options.communityId??null,options.communityId??null,
-      options.topicId??null,options.topicId??null,options.contextId??null,options.contextId??null,options.pollsOnly?1:0,options.rootsOnly?1:0,options.rootId??null,options.rootId??null,options.rootId??null,options.branchId??null,options.branchId??null,before?.[0]??null,before?.[0]??null,before?.[0]??null,before?.[1]??null,limit+1)
+    // Only the filters that apply go into the query, so SQLite can use the
+    // matching index (root, community, author) instead of walking every post.
+    const where:string[]=["p.hidden=0 AND (p.deleted=0 OR p.parent_id IS NOT NULL)","(c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))"],args:Binding[]=[actorId??null]
+    const add=(clause:string,...values:Binding[])=>{where.push(clause);args.push(...values)}
+    if(options.query)add("instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0",options.query.slice(0,200))
+    if(options.followingId!=null)add('EXISTS(SELECT 1 FROM follows f WHERE f.actor_id=? AND f.target_id=p.author_id)',options.followingId)
+    if(options.authorId!=null)add('p.author_id=?',options.authorId)
+    if(options.linkUrls)add("json_extract(p.content,'$.url') IN (SELECT value FROM json_each(?))",JSON.stringify(options.linkUrls))
+    if(options.communityId!=null)add('p.community_id=?',options.communityId)
+    if(options.topicId!=null)add('EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?)',options.topicId)
+    if(options.contextId!=null)add("EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND cx.active=1 AND rc.context_id IN (WITH RECURSIVE down(id,depth) AS (SELECT ?,0 UNION SELECT l.context_id,down.depth+1 FROM context_parents l JOIN down ON l.parent_id=down.id WHERE down.depth<8) SELECT id FROM down))",options.contextId)
+    if(options.pollsOnly)add("json_type(p.content,'$.poll')='object'")
+    // Unary plus keeps SQLite walking posts newest first; an index on parent_id here reads every root.
+    if(options.rootsOnly)add('+p.parent_id IS NULL')
+    if(options.rootId!=null)add('p.root_id=? AND p.id!=?',options.rootId,options.rootId)
+    if(options.branchId!=null)add('p.id IN (WITH RECURSIVE descendants(id) AS (SELECT id FROM posts WHERE parent_id=? UNION SELECT child.id FROM posts child JOIN descendants d ON child.parent_id=d.id) SELECT id FROM descendants)',options.branchId)
+    if(before)add('(p.created<? OR (p.created=? AND p.id<?))',before[0],before[0],before[1])
+    const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE ${where.join(' AND ')} ORDER BY p.created DESC,p.id DESC LIMIT ?`,...args,limit+1)
     const selected=rows.slice(0,limit),last=selected.at(-1)
     const pinned=options.communityId&&!options.cursor&&!options.query&&!options.rootId&&!options.topicId&&!options.contextId&&!options.authorId&&!options.followingId&&!options.linkUrls?this.views(this.all<Post>('SELECT * FROM posts WHERE community_id=? AND pinned=1 AND hidden=0 AND deleted=0 ORDER BY created DESC,id DESC LIMIT 3',options.communityId),actorId):[]
     return {pinned,items:this.views(selected,actorId),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}

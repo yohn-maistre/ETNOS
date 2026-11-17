@@ -1,5 +1,6 @@
 import { DurableObject,WorkerEntrypoint } from 'cloudflare:workers'
 import { CloudflareDatabase } from './cloudflare-database.ts'
+import { Meter, routeShape } from './usage.ts'
 import { StrataCore, Fault } from './core.ts'
 import { api, json,body } from './api.ts'
 import {workerDecisions,workerDesk} from './worker-decisions.ts'
@@ -15,10 +16,15 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private resident?:Resident
   private discovery?:Discovery
   private sourceOperatorAllowed:(id:string)=>boolean=()=>false
+  private operatorOf:(request:Request)=>boolean=()=>false
+  private meter:Meter
+  protected database:CloudflareDatabase
   constructor(ctx: DurableObjectState, env: Cloudflare.Env) {
     super(ctx,env)
+    const database=this.database=new CloudflareDatabase(ctx.storage)
+    this.meter=new Meter(database.usage,ctx.storage.kv,()=>Date.now())
     ctx.blockConcurrencyWhile(async()=>{
-      const core=new StrataCore(new CloudflareDatabase(ctx.storage),env.STRATA_ORIGIN,()=>Date.now(),{collection:env.STRATA_COLLECTION})
+      const core=new StrataCore(database,env.STRATA_ORIGIN,()=>Date.now(),{collection:env.STRATA_COLLECTION})
       const sourceOrigins=(env.STRATA_SOURCE_ORIGINS??'').split(',').map(x=>x.trim()).filter(Boolean)
       const acquire=sourceOrigins.length?sourceFetcher(sourceOrigins):undefined
       const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI,env.STRATA_RESIDENT_RESEARCH==='on'):undefined
@@ -38,31 +44,48 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           this.resident=new Resident(core,access,residentProvider)
           this.discovery=acquire?new Discovery(core,acquire):undefined
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
+          this.operatorOf=r=>{const p=auth.principal(r);return !!p&&auth.operatorAllowed(p.id)}
           const handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
-      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
+      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
     })
   }
   private alarmUpdates:Promise<void>=Promise.resolve()
+  /** The alarm time last written (null: none). Each setAlarm is a storage write,
+   * so an unchanged schedule is not written again on every request. */
+  private armed:number|null|undefined
   private arm(){
     const update=this.alarmUpdates.then(async()=>{
       const candidates=[this.resident?.nextWake(),this.discovery?.nextWake()].filter((n):n is number=>typeof n==='number')
-      if(!candidates.length){await this.ctx.storage.deleteAlarm();return}
-      await this.ctx.storage.setAlarm(Math.max(Date.now()+1000,Math.min(...candidates)))
+      const next=candidates.length?Math.min(...candidates):null
+      if(next===null){if(this.armed!==null){await this.ctx.storage.deleteAlarm();this.armed=null}return}
+      const at=Math.max(Date.now()+1000,next)
+      // An alarm already due in the future, no later than needed, fires and re-arms itself.
+      if(typeof this.armed==='number'&&this.armed>Date.now()&&this.armed<=at)return
+      await this.ctx.storage.setAlarm(at);this.armed=at
     })
     this.alarmUpdates=update.catch(()=>{})
     return update
   }
-  async request(request: Request): Promise<Response> { const response=await this.handle(request);await this.arm();return response }
+  async request(request: Request): Promise<Response> {
+    const url=new URL(request.url)
+    if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,this.meter.report()):json(404,{error:'Not found'})
+    const mark=this.meter.start()
+    let status=500
+    try{const response=await this.handle(request);status=response.status;await this.arm();return response}
+    finally{this.meter.finish(mark,request.method,routeShape(url.pathname),status)}
+  }
   async residentAuthority(work:ResidentWork,operation:string,input:Record<string,unknown>={}){
     if(!this.resident)throw new Fault(503,'Resident authority is unavailable')
     return this.resident.authority(operation,work,input)
   }
   async alarm(){
     // Persist a recovery wake before network work; an exception cannot strand jobs.
-    await this.ctx.storage.setAlarm(Date.now()+60000)
-    try{await this.discovery?.tick(this.sourceOperatorAllowed);await this.resident?.tick()}finally{await this.arm()}
+    this.armed=Date.now()+60000
+    await this.ctx.storage.setAlarm(this.armed)
+    const mark=this.meter.start()
+    try{await this.discovery?.tick(this.sourceOperatorAllowed);await this.resident?.tick()}finally{this.meter.finish(mark,'ALARM','alarm',200);await this.arm()}
   }
 }
 

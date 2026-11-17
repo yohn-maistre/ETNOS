@@ -175,6 +175,10 @@ let csrf: string | null = null
 export function setCsrf(value: string | null) {
   csrf = value
 }
+/** Bumped after every successful write, so cached shared lists refresh. */
+let writes = 0
+export const writeCount = () => writes
+
 export async function request<T>(
   path: string,
   body?: unknown,
@@ -204,6 +208,7 @@ export async function request<T>(
       .catch(() => ({ error: 'Layanan belum dapat dihubungi.' }))
     if (!response.ok)
       throw new ApiError(response.status, apiErrorMessage(response.status))
+    if (body !== undefined) writes++
     return data as T
   } catch (e) {
     if (

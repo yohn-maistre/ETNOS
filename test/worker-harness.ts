@@ -51,6 +51,35 @@ export class TestNode extends StrataNode {
     s.hidePost(owner.actor.id,child.id);const hiddenAnswer=resident.questions.statuses(question.id)[0]
     return JSON.stringify({rolledBack,created:response.status,retry:retry.status,oneJob:s.all('SELECT id FROM resident_jobs').length===1,calls,state:result.state,actualChild:child.parent_id===question.id&&child.community_id===target.id,answered:status[0].state==='answered',hiddenAnswerOmitted:hiddenAnswer.state==='unavailable'&&hiddenAnswer.replyId===null,explicitAdmission:!!s.membership(agent.agent_id,target.id)})
   }
+  /** Profiling only: statements above a row threshold for one request. */
+  async traceRequest(path:string,token?:string,body?:unknown,min=50){
+    const seen:{sql:string;read:number;written:number}[]=[]
+    this.database.trace=(sql,read,written)=>{if(read>=min||written>=min)seen.push({sql:sql.replace(/\s+/g,' ').slice(0,240),read,written})}
+    try{await this.request(new Request(this.env.STRATA_ORIGIN+path,{method:body===undefined?'GET':'POST',headers:{...(token?{authorization:'Bearer '+token}:{}),...(body===undefined?{}:{'content-type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})}))}
+    finally{this.database.trace=undefined}
+    return JSON.stringify(seen)
+  }
+  /** Load-test fixture at showcase scale: synthetic people, rooms, posts and wiki pages. Test-only. */
+  seedScale(people:number,pages:number,posts:number) {try{return this.seedScaleInner(people,pages,posts)}catch(e){return JSON.stringify({error:String(e instanceof Error?e.stack:e)})}}
+  private seedScaleInner(people:number,pages:number,posts:number) {
+    const s=this.core(),wiki=new Wiki(s),body='Teks sintetis untuk uji beban. '.repeat(90)
+    const owner=s.provision('did:web:load-owner.example','Load owner')
+    const rooms=['Beranda','Tanya & bantu','Budaya & bahasa','Kabar komunitas','Bahasa Mee','Koordinasi'].map((t,i)=>s.createCommunity(owner.actor.id,t,'Sintetis',i===5?'listed-private':'public',false,i===5?'invite':'open'))
+    const open=rooms.slice(0,5)
+    for(const r of open)wiki.setLive(owner.actor.id,r.id,true)
+    for(let i=0;i<pages;i++)wiki.createDraft(owner.actor.id,open[i%open.length].id,'Halaman sintetis '+i,{text:body,citations:['https://example.org/sumber/'+i],language:'id',perspective:'Ringkasan umum'})
+    const users=Array.from({length:people},(_,i)=>s.provision(`did:web:load-${i}.example`,'Peserta '+i))
+    for(const u of users)for(const r of open)s.join(u.actor.id,r.id)
+    const roots:{id:string;room:string}[]=[]
+    for(let i=0;i<posts;i++){
+      const u=users[i%people],parent=i%3===0||!roots.length?undefined:roots[(i*7)%roots.length]
+      const room=parent?.room??open[i%open.length].id
+      const p=s.createPost(u.actor.id,room,'Pos sintetis nomor '+i+'. '+'Isi percakapan. '.repeat(12),parent?.id)
+      if(!parent)roots.push({id:p.id,room})
+    }
+    const counts=Object.fromEntries(['posts','wiki_pages','wiki_revisions','actors','memberships'].map(t=>[t,s.get<{n:number}>('SELECT count(*) n FROM '+t)!.n]))
+    return JSON.stringify({rooms:rooms.map(r=>r.id),users:users.map(u=>({id:u.actor.id,token:u.token})),roots:roots.map(r=>r.id),rootRooms:roots.map(r=>r.room),counts})
+  }
   seed() {
     const s=this.core()
     const owner=s.provision('did:web:owner.example','Owner')

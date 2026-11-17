@@ -410,6 +410,8 @@ CREATE TABLE agent_switches(agent_id TEXT NOT NULL REFERENCES actors(id),communi
 ALTER TABLE wiki_policies ADD COLUMN live INTEGER NOT NULL DEFAULT 0;
 CREATE TABLE wiki_reviews(revision_id TEXT PRIMARY KEY REFERENCES wiki_revisions(id),page_id TEXT NOT NULL REFERENCES wiki_pages(id),community_id TEXT NOT NULL REFERENCES communities(id),state TEXT NOT NULL CHECK(state IN ('unreviewed','reviewed','reverted')),reviewer_id TEXT REFERENCES actors(id),created INTEGER NOT NULL,decided INTEGER);
 CREATE INDEX wiki_review_queue ON wiki_reviews(community_id,state,created);
+`,`
+CREATE INDEX IF NOT EXISTS memberships_actor ON memberships(actor_id,active,community_id);
 `]
 
 export const schemaVersion=migrations.length

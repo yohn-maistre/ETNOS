@@ -57,6 +57,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/knowledge-graph-sota-2026-11-16.md](research/knowledge-graph-sota-2026-11-16.md) | Current methods for knowledge graphs and embedding maps; observatory pipeline |
 | [research/ui-components-and-realtime-2026-11-16.md](research/ui-components-and-realtime-2026-11-16.md) | Svelte components, motion, live cursors, map rendering, products to learn from |
 | [research/algorithms-and-decision-models-2026-11-16.md](research/algorithms-and-decision-models-2026-11-16.md) | e-means, vector storage, live placement, decision models and receipts |
+| [research/free-tier-measurement-2026-11-17.md](research/free-tier-measurement-2026-11-17.md) | Measured: 30 people on Workers Free, what was fixed, metering in production, what to watch |
 | [research/free-tier-llm-coverage-2026-11-16.md](research/free-tier-llm-coverage-2026-11-16.md) | Google AI Studio free tier and Workers AI against our workloads |
 | [research/places-and-hierarchy-2026-11-16.md](research/places-and-hierarchy-2026-11-16.md) | Places, hierarchy, onboarding, first deployment; other platforms compared |
 | [research/detak-detik-and-biocultural-sources-2026-11-16.md](research/detak-detik-and-biocultural-sources-2026-11-16.md) | Detak Detik reviewed; species, terrain, museum objects and images as data; nine features |

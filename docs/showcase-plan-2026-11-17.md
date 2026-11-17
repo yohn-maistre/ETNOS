@@ -41,7 +41,9 @@ The Strata model (layers, places, columns) is the explanation slide after the wa
 
 ## 3. Thirty people on the free tier
 
-**Where we are.** The site is one Worker in front of one SQLite Durable Object that holds everything. The browser does not poll the server; requests come only from navigation and actions. Observability is turned off, so we have no measured CPU time or row counts.
+**Measured on 17 November** ([research/free-tier-measurement-2026-11-17.md](research/free-tier-measurement-2026-11-17.md)). A heavy simulated day for 30 people at showcase scale used 102% of the daily read allowance before the fixes and 40% after (requests 9%, writes under 2%). The usage page `/v1/ops/usage` and Workers Logs now meter the live site. Aksara's recurring work (alarms) is the thing to watch during the alpha. The table below was written before the measurement and is kept for its reasoning.
+
+**Where we are.** The site is one Worker in front of one SQLite Durable Object that holds everything. The browser does not poll the server; requests come only from navigation and actions.
 
 **What breaks first on Workers Free** (limits to be confirmed by the research in §4):
 

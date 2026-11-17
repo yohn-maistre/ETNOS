@@ -1,1 +1,1 @@
-2026-11-17i Community settings, open admission for new public rooms, poll minimum 10, Iman & agama
+2026-11-17j Free tier: indexed feed, cached shared lists, static files off the Worker, usage metering

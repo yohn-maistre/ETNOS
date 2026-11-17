@@ -91,6 +91,7 @@
     type Auth,
     type Capabilities,
     type ActivityInbox,
+    writeCount,
   } from './api'
   let searchQuery = $state(''),
     searchDialogOpen = $state(false),
@@ -465,7 +466,8 @@
     e.preventDefault()
     navigate(u.pathname + u.search + u.hash)
   }
-  async function load() {
+  let sharedCache: { at: number; writes: number; actor: string } | null = null
+  async function load(fresh = false) {
     const mine = ++generation
     loading = true
     error = ''
@@ -491,9 +493,15 @@
       }
       if (parts[0] === 'find')
         filters.set('q', new SvelteURLSearchParams(search).get('q') ?? '')
+      // Lists that rarely change are reused for a minute across screens and
+      // refreshed after any write. Thread and wiki pages do not show the feed.
+      const shared =
+        fresh || !sharedCache || sharedCache.writes !== writeCount() || sharedCache.actor !== (identity.actor?.id ?? '') || Date.now() - sharedCache.at > 60_000
+      const showsFeed =
+        path === '/' || path === '/find' || (['communities', 'people'].includes(parts[0]) && !!parts[1])
       const [cs, feed, pages, roles, features, followed] = await Promise.all([
-        request<Community[]>('/v1/communities'),
-        ['news','studio','knowledge','offers'].includes(parts[0])
+        shared ? request<Community[]>('/v1/communities') : Promise.resolve(communities),
+        !showsFeed
           ? Promise.resolve({
               items: [] as Post[],
               pinned: [] as Post[],
@@ -504,18 +512,21 @@
               pinned?: Post[]
               nextCursor: string | null
             }>('/v1/feed/page?' + filters),
-        ['news','studio','knowledge','offers'].includes(parts[0])
-          ? Promise.resolve([])
-          : request<WikiPage[]>('/v1/wiki'),
-        identity.actor
-          ? request<Membership[]>('/v1/memberships')
-          : Promise.resolve([]),
-        request<Capabilities>('/v1/capabilities'),
-        identity.actor
-          ? request<Actor[]>('/v1/following')
-          : Promise.resolve([]),
+        shared ? request<WikiPage[]>('/v1/wiki') : Promise.resolve(wiki),
+        !shared
+          ? Promise.resolve(memberships)
+          : identity.actor
+            ? request<Membership[]>('/v1/memberships')
+            : Promise.resolve([]),
+        shared ? request<Capabilities>('/v1/capabilities') : Promise.resolve(cap!),
+        !shared
+          ? Promise.resolve(following)
+          : identity.actor
+            ? request<Actor[]>('/v1/following')
+            : Promise.resolve([]),
       ])
       if (mine !== generation) return
+      if (shared) sharedCache = { at: Date.now(), writes: writeCount(), actor: identity.actor?.id ?? '' }
       communities = cs
       posts = [
         ...(feed.pinned ?? []),
@@ -528,9 +539,11 @@
       cap = features
       following = followed
       nextCursor = feed.nextCursor
-      unread = identity.actor
-        ? (await request<ActivityInbox>('/v1/notifications')).unread
-        : 0
+      unread = !identity.actor
+        ? 0
+        : shared
+          ? (await request<ActivityInbox>('/v1/notifications')).unread
+          : unread
       if (mine !== generation) return
       selectedPost = null
       replies = []
@@ -930,7 +943,7 @@
   {unread}
   onBack={goBack}
   onCompose={() => open('compose')}
-  onRefresh={() => load()}
+  onRefresh={() => load(true)}
   feedMode={feedTab}
   onFeedChange={(mode) => {
     if (mode === 'following' && !auth.actor) {
@@ -961,7 +974,7 @@
       <Button
         class="cx-button small"
         style="margin-top:14px"
-        onclick={() => load()}
+        onclick={() => load(true)}
         type="button"
         variant="outline"
       >

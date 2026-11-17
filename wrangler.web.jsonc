@@ -40,8 +40,15 @@
       ]
     }
   ],
+  // Our own log line per request carries only the route shape and row counts.
+  // Invocation logs stay off: they would record full URLs, including search text.
   "observability": {
-    "enabled": false
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": false
+    }
   },
   "secrets": {
     "required": [
@@ -63,7 +70,9 @@
   "assets": {
     "directory": "./apps/web/dist",
     "binding": "ASSETS",
-    "run_worker_first": true,
+    // Static files are served without running the Worker, so they do not count
+    // against the 100,000 requests a day on Workers Free. Pages still run it.
+    "run_worker_first": ["/*", "!/assets/*", "!/branding/*", "!/fonts/*", "!/img/*", "!/textures/*", "!/observatory/*", "!/share/*", "!/third-party-notices.txt"],
     "not_found_handling": "single-page-application"
   },
   "ai": {
