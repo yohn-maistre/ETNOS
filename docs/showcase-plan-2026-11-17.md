@@ -13,22 +13,24 @@ Status: **draft for the owner**. Sections marked *proposal* are my calls with re
 
 The owner's position: everything on the list gets built before the proposal goes in, not cut. Aksara Node stays a roadmap slide. I agree to try, with one condition: we build in an order where the showcase story is complete after each step, so that if a risky item slips (the serverless PDS above all), nothing else is left half done.
 
-## 2. What ETNOS is, in one paragraph *(proposal)*
+## 2. What ETNOS is, in one paragraph *(proposal, revised after the second review)*
 
-ETNOS is a social app for Tanah Papua where people talk, share news, and keep what is known about their places, peoples and languages. It opens already full: every region, regency and language has a page written from public sources, with the sources shown. AI stewards, one per customary region, post a little each day from those sources and ask people what they know; people answer, correct and add their own accounts, and the record keeps both. Language communities can have private rooms that stay theirs. It runs on Strata, an open engine any place-tied community can deploy for itself.
+Framed in the judges' own law: Cerita is *tradisi lisan* and Ruang bahasa is *bahasa*, two of the ten objects of UU 5/2017. Draft, to be written last and to claim only what is live on upload day:
 
-**What leads at the showcase.** The direction document named two things: **Cerita** (stories of Tanah Papua on one map, with sources, and the people a story belongs to say what it means) and **Ruang bahasa** (a private room for each language where people talk in it). The owner had forgotten the first; it was Cerita. The rest (the Strata model, the populated wiki, the map, the seeded communities) is how those two work, not a third headline.
+> Orang Papua mencatat, membicarakan dan memakai budayanya sendiri setiap hari di ETNOS. Cerita dan sejarah dari sumber terbitan ada di satu tempat, dan orang dari wilayahnya bisa menambah versi mereka; satu tanggapan dari seorang tetua Mee tersimpan di samping catatan yang sudah terbit. Setiap tulisan menunjukkan sumbernya, dan Aksara, sebuah program, membantu mencari dan merangkum. ETNOS berjalan di Strata, mesin terbuka yang bisa dipakai wilayah lain, dan laporan keadaan pengetahuan per wilayah bisa menjadi masukan PPKD kabupaten.
 
-**The demo in one walk** *(proposal)*:
+**What leads at the showcase.** The direction document named two things: **Cerita** (stories of Tanah Papua with sources, and the people a story belongs to say what it means) and **Ruang bahasa** (rooms where people talk in their language). The owner had forgotten the first; it was Cerita. The Strata model, the wiki, the map and the communities are how those two work. Surveys and government data stay out of the headline.
 
-1. Open etnos.space on a phone. Place set to Mee Pago. The feed has posts from people and from Aksara · Mee Pago.
-2. Aksara · Mee Pago posts the morning story (Koyeidaba, or another the owner chooses) with its sources folded underneath. A Mee member replies with how their family tells it. That reply becomes a variant on the story's page.
-3. Tap the region: the Mee Pago page, with a photo, its regencies, peoples, languages, news, and open questions. Nabire shows both Mee Pago and Saireri, with who says which.
-4. Tap Bahasa Mee: the public language page, then the private room (members only), where a word is marked and added to the living dictionary with a voice clip.
+**The demo in one walk:**
+
+1. Open etnos.space on a phone. Place set to Mee Pago. The feed has posts from people and one card from Aksara.
+2. Aksara · Mee Pago's morning story, with "2 sumber" folded underneath and a question at the end. A Mee member answers with how their family tells it; the answer becomes a variant on the story's page.
+3. Tap the region: the Mee Pago page with a photo, its regencies, peoples, languages, news and open questions. Nabire shows both Mee Pago and Saireri, with who says which.
+4. Tap Bahasa Mee: the public language page, then a demo room with consenting members (said on stage), where a word is marked and added to the living dictionary with a voice clip. Real private rooms are never shown.
 5. Share a story card to WhatsApp. It looks like a printed page.
-6. Close on the map of everything known, and the printed A4 bulletin with an elder's correction on it.
+6. Close on the printed A4 bulletin with the elder's correction on it.
 
-The Strata model (layers, places, columns) is the explanation slide after the walk, not the opening.
+The Strata model (layers, places, columns) is the explanation slide after the walk.
 
 ## 3. Thirty people on the free tier
 
@@ -53,6 +55,8 @@ The Strata model (layers, places, columns) is the explanation slide after the wa
 
 If the measurements say Free cannot carry it, Workers Paid is $5 a month for the account and lifts the CPU limit to 30 seconds. That is the honest fallback and should be in the proposal budget.
 
+**Revised after the second review:** pay the $5 for Workers Paid now rather than spend build days protecting it, and still measure what Free would carry so the proposal can say "berjalan di paket gratis untuk N orang" honestly. Kampung search ships as a static file searched in the browser, and the map stipple is drawn from the same file, so it reads no database rows.
+
 ## 4. Accounts: the full AT experience
 
 The owner wants every person to have a real AT account from the start, without signing up at Bluesky first. Today ETNOS sends new people to bsky.social. Running the official PDS needs a VM; the Oracle free tier had no capacity in Singapore.
@@ -71,10 +75,12 @@ What already exists: `packages/pds` is an attributed fork of Cirrus (MIT) runnin
 
 **One thing that shrinks the work** *(my finding)*: ETNOS uses the AT account for identity and sign-in. Posts live in Strata, and public AT publishing is off. So for ETNOS the PDS only has to create accounts, sign people in through OAuth, hold a `did:plc` and resolve `nama.etnos.space`. Firehose, relay, blob serving and large imports can wait. An identity-first multi-account PDS is a smaller job than a full one.
 
-**Proposal: two tracks.**
+**Proposal: two tracks** (revised after the second review).
 
-1. **For the people arriving this week: the official PDS on a small server.** Real multi-account, invites, `did:plc`, `nama.etnos.space` handles, email through a free tier, no phone gate, Spaces by update on 1 December. Needs a machine. Free candidates to check: Google Cloud's always-free e2-micro (1 GB, US regions), or Oracle in another region with a new account (an Oracle account's home region is fixed at sign-up, which is likely why Singapore blocked it). Otherwise a VPS at about $4–6 a month. The owner rents; I set it up.
-2. **For Strata and the showcase: an identity-first multi-account PDS on Workers**, built in parallel, one Durable Object per account, hashing and signing inside the object. Shown at the showcase as the serverless way to deploy Strata, with the official PDS as the other. Accounts can move between them later because `did:plc` identities are portable.
+1. **For people, now and through the pilot: the official PDS on a small server.** Real multi-account, invites, `did:plc`, `nama.etnos.space` handles, email through a free tier, no phone gate, Spaces by update on 1 December. Sign-up form on etnos.space with the invite code in the link; relay crawling off until publishing is wanted; PDS data and the PLC rotation keys backed up off the machine from day one, because ETNOS becomes the custodian of these identities. Free candidates to check: Google Cloud's always-free e2-micro (1 GB, US regions), or Oracle in another region with a new account (an Oracle account's home region is fixed at sign-up, which is likely why Singapore blocked it). Otherwise a VPS at about $4–6 a month. The owner rents; I set it up.
+2. **For Strata: a serverless identity host on Workers**, one Durable Object per account, hashing and signing inside the object. Started only after the walk is complete (about 22 November), with throwaway identities, never holding a real person's identity before it is qualified. Named honestly as an identity host until it holds repositories: its accounts cannot use the Bluesky app, and Spaces needs a full PDS. Shown at the showcase as the way Strata deploys without a server, if it is ready; otherwise a roadmap slide with the design. Accounts can move between hosts later because `did:plc` identities are portable.
+
+To check in our code: whether Strata reads a profile record or the session from the PDS after sign-in; if it does, the identity host must answer that too.
 
 Rejected: one Cirrus Worker per person (thirty deployments, thirty sets of keys). ETNOS-only accounts stay an emergency option: they contradict Decision 004 and need a migration later.
 
@@ -107,19 +113,22 @@ What the research recommends (`research/peoples-places-and-public-data-2026-11-1
 
 The worked examples (Nabire, Ngaju in Central Kalimantan, Ngāti Porou) are in the research. The engine change is one `claims` table with that shape, of which `place_claims` in §5 is the first use.
 
-## 7. Language rooms *(proposal)*
+## 7. Language rooms *(proposal, revised after the second review)*
 
 The owner asked whether to go fully like Reddit (one community per language), one Space per organisation with communities inside, a catalogue entry that prompts someone to open a room, or a tree of language under people under place.
 
-My recommendation combines the first and third, and leaves the door open to the second:
+- **Every language has a public page** from the start (Glottolog data, where it is spoken, the peoples linked to it, published dictionaries, a word a day from published sources).
+- **Several rooms per language, named by their people**: "Mee · Tigi", "Mee · perantau Jogja". No room is the official one, so nobody can capture a language by tapping first, and rival dialect or clan groups do not have to share one room. The language page lists its rooms.
+- **Opening a room**: someone taps "Buka ruang bahasa", names it and asks a second speaker to keep it with them. The request shows on the language page for a few days with the requesters' handles before the room opens. A room that falls to one keeper stops admitting members until a second is named.
+- **Two sides.** A public side (words and stories the room chose to publish) and a private side (members only: conversation, voice posts, the living dictionary). What is said privately never enters search, export, the map, the cache or any model. Publishing is a separate approved public copy.
+- **Membership is private too**: the member list is visible to members only.
+- **Voice clips** sit behind signed-in URLs; their maker can delete them; if a room closes, its keepers get an export.
+- **Varieties without a Glottolog code** can be named by the community.
+- **Each private room is stored in its own Durable Object**, separate from the public database, with negative tests on every path that could leak. Until Spaces, each room says plainly that the operator of ETNOS can technically read it.
+- **Not a tree.** A room is not under a people or a place; it links to them through claims (§6).
+- **Organisations later.** When Spaces work, a room can move to an organisation's Space. No date is promised.
 
-- **Every language has a public page** from the start (Glottolog data, where it is spoken, the peoples linked to it, published dictionaries, a word a day from published sources). That is the catalogue the owner already has.
-- **The page has one button: "Buka ruang bahasa ini".** The person who taps it asks to open the room and becomes its first keeper. The room opens when a second speaker joins as keeper, so no room has a single owner. Until then the page shows "Butuh satu penjaga lagi".
-- **A language room has two sides.** A public side (words and stories the room chose to publish) and a private side (members only: conversation, voice posts, the living dictionary, unpublished entries). What is said privately never enters search, export, the map or any model. Publishing something is a separate, approved public copy.
-- **Not a tree.** A language room is not under a people or a place, for the reasons in §6. The page links to the peoples and places through claims.
-- **Organisations later.** When Spaces arrive, a room can be hosted in the Space of an organisation (a language institute, a church, a customary council) instead of ETNOS's. Until then ETNOS hosts it, and the room's keepers decide who joins. This is how "one Space per institution with communities inside" fits without making it the first step.
-
-For the showcase: the Mee room, opened by the owner and one other Mee speaker, with real members. Two or three more opened by the owner's friends in Saireri and Domberai if they want them.
+For the showcase: one or more Mee rooms opened by the owner and other Mee speakers, with real members. Rooms in Saireri and Domberai if people there want them. On stage, a demo room with consenting members.
 
 ## 8. Communities and organisations
 
@@ -150,7 +159,18 @@ For the showcase: the Mee room, opened by the owner and one other Mee speaker, w
 | Ringkasan | A weekly summary for the region, and a printable bulletin |
 | Replies | Answers to mentions and questions, only from accepted sources or reviewed pages |
 
-**From surveys to policy** *(proposal)*: a finished Tanya warga produces a one-page summary shaped like a Musrenbang proposal (issue, place, what people said, how many answered, the public data behind it), which anyone can download and take to a village or regency meeting. The feature is built and shown; whether a government reads it is not ours to promise.
+**Showing them** *(second review, adopted)*:
+
+- One name and one mark for all eight. The region appears as the place line, where a person's post shows its place. One profile with seven voices; following or muting a region is a setting on it.
+- In the all-Papua feed, the regional morning posts collapse into one card, "Aksara menulis di 7 wilayah hari ini", that opens sideways. In a region's scope, only that region's voice shows.
+- Never two Aksara items in a row, and at most one in five items in any feed.
+- No agent replying to another agent at the showcase.
+- Every post ends with a question and the Sumber line. An unanswered post folds after two days.
+- No first-person cultural voice and no reading of its own. Tapping the mark says "Aksara adalah program, bukan orang".
+- Each voice's profile carries "wilayah acuan, bukan batas tanah adat".
+- A new deployment starts with one Aksara. A regional voice turns on when its scope has seeded pages and a named human steward.
+
+**From surveys to policy** *(revised)*: a finished Tanya warga produces a one-page summary shaped like a Musrenbang proposal (issue, place, what people said, how many answered, the public data behind it), which anyone can download and take to a village or regency meeting. For the showcase: a person opens each survey (Aksara may draft it), the culture lead approves the topic, topics are services and culture (schools, language teaching, roads, prices), results show only from 20 answers, and answers cannot be linked to accounts. Whether a government reads the summary is not ours to promise.
 
 ## 10. Sources under Aksara posts (was "Dasar")
 
@@ -210,7 +230,7 @@ Layer names (Percakapan, Kabar, Kerja bersama, Pengetahuan, Ingatan, Tempat) are
 
 The owner's rule: people should just post, read, talk, verify and have fun. Nobody should have to tag, file or configure anything.
 
-- **Labels and places on posts**: a model suggests the place and topic labels for every post and news item when it arrives; they are attached at once and marked as suggested. Anyone can remove a wrong one with one tap; the author can always. Public posts only on Google's free tier; private rooms never go to a model.
+- **Labels and places on posts**: a model attaches a place (regency at most) and topic labels to every public post and news item when it arrives, marked as suggested. Never a people or language label on a member's post, since that tags the person. The author can remove any label; anyone can flag a wrong one. Public posts only on Google's free tier, and members are told that this tier may use what it reads; private rooms never go to a model.
 - **News to places**: news items are matched to places by the place names and their aliases (all names from the place pack, local names included), then checked by a typed decision model. No hand-written alias lists.
 - **Wiki pages**: Aksara proposes changes from news and from accepted corrections; pages go live before review, as decided.
 - **What people still decide**: which sources are accepted, what is sacred and hidden, who joins a language room, and whether a correction is right.
@@ -225,6 +245,10 @@ Decision (owner): seed all seven wilayah adat. Operationally the people of Tanah
 - Year pages, "2026 di Tanah Papua" first, then earlier years from the news archive.
 - More engravings: one plate per region, then per regency.
 - The safeguards the owner kept stand: human remains are never shown as images; for material its source calls sacred, a summary and a link to the original, and a one-tap "Jangan disebarkan" that hides it pending a steward.
+- Named people answer "Jangan disebarkan" within a stated time (see the questions).
+- Every page not yet reviewed by someone from its region says "Ditulis dari sumber terbitan; belum ditinjau orang dari wilayah ini."
+- The owner's reasoning goes on Tentang ETNOS in his own words. Stated, it is a position; unstated, it looks like an oversight.
+- A short threat-model page (who could be exposed by what is posted, what is logged, who can read what) before conflict material is seeded further.
 
 The reviewer's alternative (catalogue-only for peoples with no steward) is recorded as rejected by the owner, with the reasoning above. The owner's network covers Mee Pago directly, and Domberai and Saireri through family; that is noted, not required.
 
@@ -251,11 +275,11 @@ Every wiki page, place, story and post gets a share card that looks like a print
 
 ## 17. Public government data, politics included
 
-*(proposal, scope to confirm)* A "Data" tab on each place: population, schools, health facilities, village fund amounts, the 2024 election results, the regency budget, regulations about the place, each with its source and year. Aksara uses it for Tanya warga and for news context. Rules: figures only from official public sources, always dated; elections, budgets and village funds only as aggregates by regency or district, never per polling station in a small kampung; no data about private individuals; elected officials appear only as public office holders with sourced facts. Codes come from Kepmendagri 300.2.2-2138/2025 as amended (about 7,150 kampung across the six provinces, fetched from an MIT-licensed mirror without an account); boundaries to regency level from geoBoundaries; no open source for kampung boundaries, so kampung are points. Several government portals (KPU, JDIH, Ina-Geoportal, the Papua open-data portal) could not be reached from our sandbox and need a second try. Details and licences in the research.
+*(proposal, scope to confirm)* For the showcase the "Data" tab ships population, schools, health facilities and languages; elections, budgets and village funds follow after the showcase unless the owner decides otherwise. The full tab on each place: population, schools, health facilities, village fund amounts, the 2024 election results, the regency budget, regulations about the place, each with its source and year. Aksara uses it for Tanya warga and for news context. Rules: figures only from official public sources, always dated; elections, budgets and village funds only as aggregates by regency or district, never per polling station in a small kampung; no data about private individuals; elected officials appear only as public office holders with sourced facts. Codes come from Kepmendagri 300.2.2-2138/2025 as amended (about 7,150 kampung across the six provinces, fetched from an MIT-licensed mirror without an account); boundaries to regency level from geoBoundaries; no open source for kampung boundaries, so kampung are points. Several government portals (KPU, JDIH, Ina-Geoportal, the Papua open-data portal) could not be reached from our sandbox and need a second try. Details and licences in the research.
 
 ## 18. Studio
 
-One place for every operator setting: the agent switches (all eight Aksara), sources, review, packs, communities, organisations, admission defaults, budgets. Rebuilt with the impeccable pass, as an Operate surface: plain, scannable, every setting with one line on what it does.
+One place for every operator setting: the agent switches (all eight Aksara), sources, review, packs, communities, organisations, admission defaults, budgets. Rebuilt with the impeccable pass, as an Operate surface: plain, scannable, every setting with one line on what it does. After the proposal, together with the place and wiki page merge (§15): neither should change under people in the week they arrive. Navigation freezes on 21 November; plain names go in once, on day one, through one strings file.
 
 ## 19. What the reviewer said to cut, and what we do
 
@@ -271,4 +295,11 @@ What the build owes them: sign-up that works on a phone in two minutes, open roo
 
 ## 21. Questions for the owner
 
-To be filled after the research and the second outside review.
+After both research reports and the second review. Most important first.
+
+1. **Who answers flags.** Which three people besides you moderate and answer "Jangan disebarkan" from 21 November, and within how many hours?
+2. **Money now.** Will you pay about $10 a month from now: Workers Paid ($5) and a small server for the official PDS, unless a free machine works? And who besides you holds the identity keys and backups?
+3. **Surveys and politics.** Are the culture lead and your partner comfortable with surveys on public issues under ETNOS's name before the showcase, and who approves each topic? Do elections and budgets ship before the showcase or after?
+4. **How many people.** Do the creators with large followings invite their followers before the showcase or after? Thirty people and three thousand are different builds and different moderation.
+5. **Private rooms.** Do you accept saying in every private room that ETNOS's operator can technically read it until Spaces arrives?
+6. **The serverless identity host.** Build it after the walk is complete, with throwaway identities, to show at the showcase (my recommendation), or leave it as a roadmap slide (the reviewer's)?

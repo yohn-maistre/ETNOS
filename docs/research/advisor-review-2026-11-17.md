@@ -134,3 +134,40 @@ The one thing that most convinces: a Mee elder's correction to a published accou
 5. Is the January pilot one room of Mee speakers, or Tanah Papua? The plan is written for the second; the resources fit the first.
 6. Who pays after the free tier, and for what? Which one institution would sign a hosting agreement in 2027?
 7. Do people in your own family's WhatsApp groups want a new place to talk, or a place where what they already say is kept? The answer decides whether ETNOS is a social app or an archive with a front door, and the roadmap is very different for each.
+
+---
+
+# Second round (17 November, night)
+
+The reviewer read `showcase-plan-2026-11-17.md`, its build order, the accounts research and `src/oauth.ts`, after the owner's answers. Condensed here; what the plan adopted is marked in the plan itself.
+
+**Problems left, ranked.**
+
+1. The build order did not deliver the walk first: Cerita with variants, the language room and share cards sat behind measurement, kampung, seven agents and labelling. Make "walk complete" the 21 November milestone.
+2. Private rooms lead, and everything still sits in one Durable Object. Put each private room in its own object before real speech goes in, or at least a negative test for every leak path (search, map, export, MCP, cache, model calls, media URLs). Say in the room that the operator can technically read it.
+3. Tanya warga beside election data, with about 30 respondents, can be brigaded, can expose respondents, and can read as a political instrument to culture judges. For the showcase: a person opens each survey, the culture lead approves topics, topics are services and culture, a minimum of 20 answers, answers not linkable to accounts; the Data tab ships population, schools, health and languages; elections and budgets after the showcase. Keep the Musrenbang summary.
+4. Automatic labels: models attach place (regency at most) and topic only, never a people or language label on a member's post. Tell members public posts go to a free model tier that may use them. The threat-model page is still owed.
+5. Seeding all seven: name who answers "Jangan disebarkan" and how fast; put the owner's reasoning on Tentang in his words; mark unreviewed pages "ditulis dari sumber terbitan; belum ditinjau orang dari wilayah ini".
+6. Kampung search as a static file searched in the browser (zero rows read); pay $5 for Workers Paid now and still measure what Free would carry.
+7. No big refactors in the week people arrive: renames once through one strings file on day one; freeze navigation on 21 November; Studio and the page merge after the proposal.
+8. Consistency: this is the fifth document that "wins"; the README still points to direction. Write the one paragraph last and claim only what is live on upload day.
+
+**Accounts.** The official PDS on a small server is right and is the whole answer this year: invite codes in a sign-up link on etnos.space, crawling off, PDS data and PLC rotation keys backed up off the machine from day one. With publishing off, the client asks only for `atproto`, so a serverless host needs handle resolution, OAuth server metadata, PAR, authorise, token with DPoP and refresh rotation, JWKS, revocation, account creation with invites and password reset; no repo, sync, firehose or blobs (check whether Strata reads a profile or session after sign-in). Caveats: that is an identity host, not a PDS (accounts cannot use the Bluesky app; calling it "a PDS" is a consistency risk); Spaces needs a real PDS; did:plc genesis and key custody are irreversible. Advice: no serverless build before the proposal; a roadmap slide, and a throwaway demo after 26 November if there is time.
+
+**Build order.** One writer owns schema migrations (they are a positional list). Lead: sign-in, private boundary, agent write path, schema. Helpers: batch and leaf work. Walk complete by Saturday 21 November; breadth and the proposal 22–25; the rest 26 November to 2 December; freeze 2 December, rehearse the 3rd.
+
+**Language rooms.** Language as its own axis is right. Fixes: several rooms per language named by their people ("Mee · Tigi", "Mee · perantau Jogja") so no room is the official one; a request to open shows publicly for a few days first; a room with one keeper stops admitting; member lists visible to members only; voice clips behind authenticated URLs, deletable by their maker, exported to keepers if a room closes; varieties without a Glottolog code allowed. On stage, use a demo room with consenting members, since showing a private room contradicts its rule.
+
+**Seven Aksara.** One name and mark; region as the place line; one profile with seven voices. In the all-Papua feed, seven morning posts collapse into one card ("Aksara menulis di 7 wilayah hari ini"); in a region's scope only that voice. Never two Aksara items in a row, at most one in five. No agent-to-agent replies at the showcase. Every post ends with a question and the Sumber line; unanswered posts fold after two days. No first-person cultural voice; "Aksara adalah program, bukan orang". A new deployment starts with one Aksara; a voice turns on when its scope has seeded pages and a named human steward.
+
+**Framing.** Use the judges' own law: Cerita is tradisi lisan and Ruang bahasa is bahasa, two of the ten objects of UU 5/2017. First sentence about Papuans recording, discussing and using their own culture every day; then the proof (a named person's correction kept beside the published account); then sources shown and an assistant that helps; then an open engine other regions can deploy, with the state-of-knowledge report as input to a regency's PPKD. Surveys and government data out of the headline. Close on the printed correction.
+
+**Questions for the owner.** (1) Which three named people besides the owner moderate and answer "Jangan disebarkan" from 21 November, and within how many hours? (2) Pay about $10 a month now (Workers Paid and a small server)? (3) Are the culture lead and the activist partner comfortable with surveys on public issues under ETNOS's name before the showcase, and who approves topics? (4) Do the creators invite their followers before or after the showcase? (5) Accept saying in every private room that the operator can technically read it until Spaces, and who besides the owner holds identity keys and backups?
+
+## What I make of the second round
+
+I agree with almost all of it. Points I would weigh differently:
+
+- **The serverless identity host.** The owner asked for it explicitly. I agree with the reviewer that it must not be what real people's identities depend on before the proposal, and that it should be called an identity host until it holds repos. I would still start it after the walk is complete (from about 22 November) with throwaway identities, so the showcase can show Strata deploying without a server, rather than leave it as a slide.
+- **Labels on posts.** Labelling a post with a people is not labelling a person, but on a member's post about their family it effectively tags them, so I accept the narrower rule.
+- **Politics.** The owner wanted politics in. The reviewer's version keeps the feature and moves elections and budgets after the showcase; that is the owner's call (question 3).

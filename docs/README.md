@@ -1,6 +1,6 @@
 # Documents
 
-Start with **[direction-2026-11-16.md](direction-2026-11-16.md)**. It is the plan of record: where an earlier document disagrees with it, it wins. Read it before each piece of work.
+For the showcase build, start with **[showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md)** and the build order in [open-work-2026-11-17.md](open-work-2026-11-17.md). Where they disagree with an earlier document, they win until the showcase. Behind them, **[direction-2026-11-16.md](direction-2026-11-16.md)** remains the longer plan of record.
 
 Dates in file names are when a document was written. Older plans are kept as history; the direction document lists what it carried over from them.
 
@@ -8,11 +8,12 @@ Dates in file names are when a document was written. Older plans are kept as his
 
 | Document | What it holds |
 | --- | --- |
+| [showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md) | What ETNOS is for the showcase and how we build it: framing, accounts, places and claims, language rooms, seven Aksara, plain names, automation, questions for the owner |
 | [strata-model-2026-11-17.md](strata-model-2026-11-17.md) | The Strata model: layers, columns, building upward from a place, social first, places as spine and overlays |
 | [direction-2026-11-16.md](direction-2026-11-16.md) | Current direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work |
 | [status.md](status.md) | What the engine does today, by area |
 | [roadmap.md](roadmap.md) | Earlier public-square-first roadmap |
-| [research/advisor-review-2026-11-17.md](research/advisor-review-2026-11-17.md) | One outside review of the whole platform, with what was checked and what the owner must decide |
+| [research/advisor-review-2026-11-17.md](research/advisor-review-2026-11-17.md) | Two rounds of outside review of the whole platform and the showcase plan, with what was checked and what the owner must decide |
 | [open-work-2026-11-17.md](open-work-2026-11-17.md) | Every planned item not yet built, with the document it comes from; checked against the code on 17 November |
 | [next-2026-11-16.md](next-2026-11-16.md) | What comes next: places as the spine, free-tier model routing, wiki discovery, images, a seed pipeline others can run |
 | [vision-and-roadmap-2026-11-14.md](vision-and-roadmap-2026-11-14.md) | Vision, ideas and a dated roadmap from 14 November |
@@ -59,6 +60,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/free-tier-llm-coverage-2026-11-16.md](research/free-tier-llm-coverage-2026-11-16.md) | Google AI Studio free tier and Workers AI against our workloads |
 | [research/places-and-hierarchy-2026-11-16.md](research/places-and-hierarchy-2026-11-16.md) | Places, hierarchy, onboarding, first deployment; other platforms compared |
 | [research/detak-detik-and-biocultural-sources-2026-11-16.md](research/detak-detik-and-biocultural-sources-2026-11-16.md) | Detak Detik reviewed; species, terrain, museum objects and images as data; nine features |
+| [research/peoples-places-and-public-data-2026-11-17.md](research/peoples-places-and-public-data-2026-11-17.md) | How others model peoples, places and languages; a claims schema for any deployment; public data to seed Papua |
 | [research/customary-regions-and-boundaries-2026-11-17.md](research/customary-regions-and-boundaries-2026-11-17.md) | Where the seven wilayah adat come from, and how sources place Nabire, Mimika, Puncak Jaya and other edges |
 | [research/wpw-seed-inventory-2026-11-15.md](research/wpw-seed-inventory-2026-11-15.md) | What West Papua Watch holds that could seed knowledge |
 
@@ -92,6 +94,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [pds-hosting.md](pds-hosting.md) | Optional PDS hosting |
 | [handle-portability-2026-11-04.md](handle-portability-2026-11-04.md) | ETNOS handles with an outside account provider |
 | [signup-2026-11-04.md](signup-2026-11-04.md) | Signup through a provider |
+| [research/serverless-pds-and-auth-2026-11-17.md](research/serverless-pds-and-auth-2026-11-17.md) | A multi-account PDS on Workers, free-plan CPU, Spaces, sign-up friction, fallbacks |
 | [serverless-reuse-review.md](serverless-reuse-review.md) | What serverless code we reuse |
 | [language-choice.md](language-choice.md) | Why TypeScript |
 | [research/2026-10-31-contextual-commons.md](research/2026-10-31-contextual-commons.md) | Contextual commons research |
