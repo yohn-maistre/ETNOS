@@ -100,3 +100,11 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Place scope: inline in the top bar on wide screens, its own row above the feed on phones. */
+.scope-row { display: none; }
+@media (max-width: 767px) {
+  .cx-topbar .scope-inline { display: none; }
+  .scope-row { display: flex; padding: 8px 16px 4px; border-bottom: 1px solid var(--border); background: var(--background); }
+  .scope-row .place-scope { max-width: 100%; }
+}

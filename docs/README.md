@@ -12,6 +12,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [direction-2026-11-16.md](direction-2026-11-16.md) | Current direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work |
 | [status.md](status.md) | What the engine does today, by area |
 | [roadmap.md](roadmap.md) | Earlier public-square-first roadmap |
+| [open-work-2026-11-17.md](open-work-2026-11-17.md) | Every planned item not yet built, with the document it comes from; checked against the code on 17 November |
 | [next-2026-11-16.md](next-2026-11-16.md) | What comes next: places as the spine, free-tier model routing, wiki discovery, images, a seed pipeline others can run |
 | [vision-and-roadmap-2026-11-14.md](vision-and-roadmap-2026-11-14.md) | Vision, ideas and a dated roadmap from 14 November |
 

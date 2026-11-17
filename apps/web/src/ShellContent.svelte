@@ -237,7 +237,7 @@
               Mengikuti
             </Dropdown.Item>
           </Dropdown.Content>
-        </Dropdown.Root><PlaceScopeSwitch onChange={onRefresh} />{:else if path === '/explore' || ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
+        </Dropdown.Root><span class="scope-inline"><PlaceScopeSwitch onChange={onRefresh} /></span>{:else if path === '/explore' || ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
         >
           {heading}
         </h1>{:else}<span>{heading}</span>{/if}
@@ -294,6 +294,7 @@
         />{/if}
     </Button>
   </header>
+  {#if path === '/'}<div class="scope-row"><PlaceScopeSwitch onChange={onRefresh} /></div>{/if}
   <div
     class="cx-content-grid"
     data-surface={path.startsWith('/square/')
