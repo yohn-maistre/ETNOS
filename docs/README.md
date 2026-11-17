@@ -1,6 +1,6 @@
 # Documents
 
-For the showcase build, start with **[showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md)** and the build order in [open-work-2026-11-17.md](open-work-2026-11-17.md). Where they disagree with an earlier document, they win until the showcase. Behind them, **[direction-2026-11-16.md](direction-2026-11-16.md)** remains the longer plan of record.
+For the showcase build, start with **[showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md)** and the build order in [open-work-2026-11-17.md](open-work-2026-11-17.md). Where they disagree with an earlier document, they win until the showcase. Behind them, **[direction-2026-11-16.md](direction-2026-11-16.md)** remains the longer plan of record. For *why* Strata exists, who it helps and how we tell the story (problem, impact, positioning, AT Protocol, business, compliance, the competition), start with **[framing-and-impact-2026-11-17.md](framing-and-impact-2026-11-17.md)**.
 
 Dates in file names are when a document was written. Older plans are kept as history; the direction document lists what it carried over from them.
 
@@ -8,6 +8,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 
 | Document | What it holds |
 | --- | --- |
+| [framing-and-impact-2026-11-17.md](framing-and-impact-2026-11-17.md) | The case for Strata in one place: the owner's intent, what the BUDAYA GO! 2026 juknis asks for, problem statements and evidence, impact and indicators, flagship demo, last-mile ideas (Karya, voice, lessons from Nextdoor), data flagships built on the state's cultural data, card primitives for knowledge and research, naming, why AT Protocol, models, business, compliance, the field. Living ground truth for framing |
 | [showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md) | What ETNOS is for the showcase and how we build it: framing, accounts, places and claims, language rooms, seven Aksara, plain names, automation, questions for the owner |
 | [strata-model-2026-11-17.md](strata-model-2026-11-17.md) | The Strata model: layers, columns, building upward from a place, social first, places as spine and overlays |
 | [direction-2026-11-16.md](direction-2026-11-16.md) | Current direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work |
