@@ -24,7 +24,7 @@ There's more news than anyone can read. People want help connecting it. What hap
 
 Any community can invite Aksara, an AI participant that works in the open.
 
-It shares what it finds in the community feed and asks people to check it. Tag `@aksara` in a post and it answers in the thread with its sources. It drafts wiki pages, and those pages wait for a person to review them.
+It shares what it finds in the community feed and asks people to check it. Tag `@aksara` in a post and it answers in the thread with its sources. It writes wiki pages from sentences it has checked against their sources. A community chooses whether those pages wait for review or go live marked "not yet reviewed".
 
 A person grants its permissions, its budget and its time limit. Its work log is public. A steward can pause it at any moment. It never gets the last word.
 
@@ -32,7 +32,7 @@ A person grants its permissions, its budget and its time limit. Its work log is 
 
 - Join communities, post, reply, run polls, share photos and links.
 - Read Papua news by topic and place, with every publisher credited.
-- Grow the wiki through proposals. A person reviews each change. Every page shows its sources, its history, its author and its reviewer.
+- Grow the wiki. A community chooses review before publishing, or publishing first with review after. Every page shows its sources, its history, its author and whether a person has reviewed it.
 - Ask `@aksara` a question and get a cited answer.
 - Post offers and requests, then mark them done.
 - Turn a need into *kerja publik*, public work that someone can pick up.
@@ -50,40 +50,20 @@ Poll results show totals only. The app never shows who chose what.
 
 ## How it fits together
 
-Knowledge settles in layers, like rock. That's where the name Strata comes from, and it's how the system is arranged.
+What a place knows settles in layers, like rock. That's where the name Strata comes from, and it's how the system is arranged.
 
-```mermaid
-flowchart TB
-  subgraph S["Surface: the public square"]
-    P["Posts, replies, votes, polls"]
-    N["News with credited publishers"]
-    O["Offers and requests"]
-  end
-  subgraph M["Sediment: shared knowledge"]
-    F["Findings waiting to be checked"]
-    W["Reviewed wiki pages"]
-    G["Gaps and public work"]
-  end
-  subgraph B["Bedrock: originals in custody"]
-    A["Archives, recordings, language material"]
-    I["Institutional files and datasets"]
-  end
-  P -- "a person or Aksara flags something worth keeping" --> F
-  N --> F
-  F -- "a person reviews it" --> W
-  W -- "what's missing" --> G
-  G -- "someone picks it up" --> P
-  A -- "the institution approves a public copy" --> W
-  I -- "the institution approves a public copy" --> W
-```
+<p align="center"><img src="docs/assets/strata-layers.svg" alt="A cross-section of ground with six layers, from the surface down: Percakapan (conversation), Kabar (news), Kerja bersama (public work), Pengetahuan (knowledge), Ingatan (memory) and Tempat (place). Communities and institutions are columns through every layer. Aksara is drawn as groundwater moving between them." width="100%"></p>
 
-| Layer | What lives there | Who runs it | Today |
-| --- | --- | --- | --- |
-| Surface | Conversation, news, polls, offers | ETNOS, or anyone who deploys Strata | Live |
-| Sediment | Findings, wiki pages, gaps, public work | The community, with Aksara helping | Wiki and public work are live. Findings in the feed and gaps are next. |
-| Bedrock | Originals an institution keeps private | Each institution, on its own Aksara Node | Planned. Pilots targeted for early 2027. |
+| Layer | What lives there | Pace |
+| --- | --- | --- |
+| Percakapan | Posts, threads, art, writing, polls | Hours |
+| Kabar | News and events, every publisher credited | Days |
+| Kerja bersama | Public work, decisions, what institutions do | Months |
+| Pengetahuan | Wiki pages, research, sources, the map | Years |
+| Ingatan | Stories, languages, history, practice | Generations |
+| Tempat | Land, water, terrain, living things | Deep time |
 
-Things move up a layer only when a person decides. A conversation becomes a page after review. A private original becomes public only as a copy its keeper approved.
+People live at the surface and reach down. Communities and institutions are columns that pass through every layer. Aksara carries material between layers, with its sources: a news story becomes a wiki change, a wiki fact becomes a question to members. A new deployment starts at the bedrock with its places and builds upward. The full model is in [docs/strata-model-2026-11-17.md](docs/strata-model-2026-11-17.md).
 
 Three kinds of participant share the square. **People.** **Organisations** such as churches, schools, NGOs and government offices. **Aksara**, which always answers to one of the first two.
 
@@ -102,7 +82,7 @@ Same community, same wiki, same Papuan look. Each step gave it a sturdier home. 
 
 ## Principles
 
-1. People decide. Aksara drafts, sums up and asks. A person accepts every wiki change.
+1. People decide. Aksara drafts, sums up and asks. A person can review, correct or revert anything it writes.
 2. Every AI action is labelled, limited and logged.
 3. Sources get credit. A source shared as headlines only stays headlines only.
 4. Private stays private, including counts, search results and suggestions built from private content.

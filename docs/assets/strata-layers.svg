@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="Georgia, 'Times New Roman', serif">
+  <title>Strata: the layers of a place</title>
+  <desc>A cross-section of ground. Six layers from the surface down: conversation, news, public work, knowledge, memory, place. Communities and institutions are columns that pass through every layer. Aksara moves material between layers like groundwater.</desc>
+  <defs>
+    <pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="0.9" fill="#1d2320" opacity="0.35"/></pattern>
+    <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="7" stroke="#1d2320" stroke-width="0.8" opacity="0.35"/></pattern>
+    <pattern id="cross" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 0L9 9M9 0L0 9" stroke="#1d2320" stroke-width="0.6" opacity="0.3"/></pattern>
+    <pattern id="lines" width="10" height="5" patternUnits="userSpaceOnUse"><line x1="0" y1="2.5" x2="10" y2="2.5" stroke="#1d2320" stroke-width="0.7" opacity="0.35"/></pattern>
+    <pattern id="stone" width="14" height="10" patternUnits="userSpaceOnUse"><path d="M1 8 Q4 2 8 6 T13 4" fill="none" stroke="#1d2320" stroke-width="0.7" opacity="0.35"/></pattern>
+  </defs>
+  <rect width="960" height="600" fill="#eef0ea"/>
+  <!-- sky and people on the surface -->
+  <text x="40" y="44" font-size="26" fill="#1d2320">Strata</text>
+  <text x="40" y="68" font-size="14" fill="#5d6660" font-family="Helvetica, Arial, sans-serif">Each layer changes at its own pace. Fast at the surface, slow in the bedrock.</text>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1d2320">
+    <circle cx="610" cy="92" r="5"/><circle cx="640" cy="96" r="5"/><circle cx="668" cy="90" r="5"/><circle cx="700" cy="95" r="5"/><circle cx="730" cy="92" r="5"/><circle cx="760" cy="97" r="5"/>
+    <text x="790" y="98" fill="#5d6660">people, at the surface</text>
+  </g>
+  <!-- layers -->
+  <g stroke="#1d2320" stroke-width="1.2">
+    <path d="M0 112 Q240 102 480 112 T960 108 L960 170 Q720 178 480 168 T0 172 Z" fill="#f7f8f4"/>
+    <path d="M0 172 Q240 162 480 168 T960 170 L960 236 Q700 246 470 234 T0 240 Z" fill="url(#dots)"/>
+    <path d="M0 240 Q230 228 470 234 T960 236 L960 306 Q720 314 480 302 T0 310 Z" fill="url(#lines)"/>
+    <path d="M0 310 Q240 296 480 302 T960 306 L960 384 Q700 394 480 380 T0 390 Z" fill="url(#hatch)"/>
+    <path d="M0 390 Q240 374 480 380 T960 384 L960 466 Q720 476 470 460 T0 472 Z" fill="url(#stone)"/>
+    <path d="M0 472 Q230 452 470 460 T960 466 L960 560 L0 560 Z" fill="url(#cross)"/>
+  </g>
+  <!-- layer labels -->
+  <rect x="32" y="128" width="250" height="38" rx="4" fill="#eef0ea" fill-opacity="0.85"/><rect x="32" y="192" width="270" height="38" rx="4" fill="#eef0ea" fill-opacity="0.85"/><rect x="32" y="260" width="300" height="38" rx="4" fill="#eef0ea" fill-opacity="0.85"/><rect x="32" y="332" width="250" height="38" rx="4" fill="#eef0ea" fill-opacity="0.85"/><rect x="32" y="414" width="300" height="38" rx="4" fill="#eef0ea" fill-opacity="0.85"/><rect x="32" y="500" width="280" height="38" rx="4" fill="#eef0ea" fill-opacity="0.85"/>
+  <g font-family="Helvetica, Arial, sans-serif" fill="#1d2320">
+    <g font-size="15" font-weight="700">
+      <text x="40" y="146">Percakapan</text><text x="40" y="210">Kabar</text><text x="40" y="278">Kerja bersama</text>
+      <text x="40" y="350">Pengetahuan</text><text x="40" y="432">Ingatan</text><text x="40" y="518">Tempat</text>
+    </g>
+    <g font-size="12" fill="#3d4540">
+      <text x="40" y="162">posts, threads, art, writing, polls · hours</text>
+      <text x="40" y="226">news and events from credited sources · days</text>
+      <text x="40" y="294">public work, decisions, institutions acting · months</text>
+      <text x="40" y="366">wiki, research, sources, the map · years</text>
+      <text x="40" y="448">stories, languages, history, practice · generations</text>
+      <text x="40" y="534">land, water, terrain, living things · deep time</text>
+    </g>
+  </g>
+  <!-- community columns -->
+  <g font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1d2320">
+    <rect x="560" y="104" width="34" height="456" fill="#eef0ea" fill-opacity="0.55" stroke="#1d2320" stroke-width="1.4"/>
+    <rect x="660" y="104" width="34" height="456" fill="#eef0ea" fill-opacity="0.55" stroke="#1d2320" stroke-width="1.4"/>
+    <rect x="760" y="104" width="34" height="456" fill="#eef0ea" fill-opacity="0.55" stroke="#1d2320" stroke-width="1.4"/>
+    <text x="577" y="576" text-anchor="middle">komunitas</text><text x="677" y="576" text-anchor="middle">gereja</text><text x="777" y="576" text-anchor="middle">sekolah</text>
+    <text x="920" y="596" text-anchor="end" fill="#5d6660">Communities and institutions are columns through every layer</text>
+  </g>
+  <!-- Aksara groundwater -->
+  <path d="M470 520 C520 500 520 440 600 420 S700 360 720 330 S640 250 700 216 S800 160 840 140" fill="none" stroke="#2d6b78" stroke-width="2.2" stroke-dasharray="6 5"/>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#2d6b78"><text x="846" y="136">Aksara</text><text x="846" y="152" font-size="11">carries material</text><text x="846" y="166" font-size="11">between layers</text></g>
+  <text x="40" y="596" font-size="11" fill="#5d6660" font-family="Helvetica, Arial, sans-serif">A deployment starts at the bedrock with its places, and builds upward.</text>
+</svg>

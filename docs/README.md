@@ -8,6 +8,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 
 | Document | What it holds |
 | --- | --- |
+| [strata-model-2026-11-17.md](strata-model-2026-11-17.md) | The Strata model: layers, columns, building upward from a place, social first, places as spine and overlays |
 | [direction-2026-11-16.md](direction-2026-11-16.md) | Current direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work |
 | [status.md](status.md) | What the engine does today, by area |
 | [roadmap.md](roadmap.md) | Earlier public-square-first roadmap |
