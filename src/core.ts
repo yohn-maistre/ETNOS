@@ -27,7 +27,7 @@ const input = (s: string, max = 6000) => {
   return s.trim()
 }
 /** Poll results stay withheld until this many people have answered, so tiny polls cannot expose one person's choice. */
-export const POLL_MIN_RESPONDENTS = 5
+export const POLL_MIN_RESPONDENTS = 10
 type PollVoteRow = { choice: number; n: number; mine: number }
 function pollView(poll: { options: string[]; closesAt: number }, votes: PollVoteRow[], closed: boolean) {
   const respondents = votes.reduce((n, v) => n + v.n, 0), shown = respondents >= POLL_MIN_RESPONDENTS
@@ -88,8 +88,22 @@ export class StrataCore {
     if (this.actor(actorId).kind !== 'human' || !['owner','moderator'].includes(member.role)) throw new Fault(403, 'Community steward required')
     return member
   }
+  /** A community steward edits the title, description and admission. Visibility and publication never change here. */
+  updateCommunity(actorId: string, communityId: string, change: { title?: string; description?: string; admission?: Community['admission'] }) {
+    return this.tx(() => {
+      this.requireSteward(actorId, communityId)
+      const c = this.community(communityId)
+      const admission = change.admission ?? c.admission
+      if (!['open','approval','invite'].includes(admission) || (c.visibility !== 'public' && admission === 'open') || (c.visibility === 'hidden-private' && admission !== 'invite')) throw new Fault(400,'Invalid admission policy')
+      const title = change.title === undefined ? c.title : input(change.title, 100), description = change.description === undefined ? c.description : input(change.description, 2000)
+      if (!title.trim()) throw new Fault(400,'Title required')
+      this.run('UPDATE communities SET title=?,description=?,admission=? WHERE id=?', title, description, admission, communityId)
+      this.audit(actorId, 'community.update', communityId)
+      return this.community(communityId)
+    })
+  }
   canRead(actorId: string | undefined, community: Community) { return community.visibility === 'public' || !!this.membership(actorId, community.id) }
-  createCommunity(actorId: string, title: string, description: string, visibility: Community['visibility'], automation = false, admission: Community['admission'] = visibility === 'public' ? 'approval' : 'invite', publication:Community['publication']='local') {
+  createCommunity(actorId: string, title: string, description: string, visibility: Community['visibility'], automation = false, admission: Community['admission'] = visibility === 'public' ? 'open' : 'invite', publication:Community['publication']='local') {
     if (this.actor(actorId).kind !== 'human') throw new Fault(403, 'Human owner required')
     if (!['public','listed-private','hidden-private'].includes(visibility)) throw new Fault(400, 'Invalid visibility')
     if (!['open','approval','invite'].includes(admission) || (visibility !== 'public' && admission === 'open') || (visibility === 'hidden-private' && admission !== 'invite')) throw new Fault(400,'Invalid admission policy')

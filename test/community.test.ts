@@ -14,7 +14,7 @@ function fixture() {
   let now=Date.parse('2026-11-01T00:00:00Z')
   const s=new Strata(':memory:','https://strata.example',()=>now)
   const owner=s.provision('did:web:owner.example','Owner'),member=s.provision('did:web:member.example','Member'),outsider=s.provision('did:web:outsider.example','Outsider')
-  const pub=s.createCommunity(owner.actor.id,'Square','Public','public')
+  const pub=s.createCommunity(owner.actor.id,'Square','Public','public',false,'approval')
   const hidden=s.createCommunity(owner.actor.id,'Hidden','Protected','hidden-private')
   return {s,owner,member,outsider,pub,hidden,advance:(n:number)=>{now+=n}}
 }
@@ -212,4 +212,23 @@ test('thread roots are stable across nested replies and private threads never en
     s.hidePost(owner.actor.id,root.id)
     assert.equal((await handler(new Request(s.base+'/v1/posts/'+nested.id+'/replies'))).status,404)
   }finally{s.close()}
+})
+
+test('a steward edits title, description and admission; others and invalid policies are refused',async()=>{
+  const {s,owner,member,outsider,pub,hidden}=fixture(),handle=api(s)
+  try {
+    assert.equal(s.createCommunity(owner.actor.id,'Open','Default','public').admission,'open','New public communities are open by default')
+    s.updateCommunity(owner.actor.id,pub.id,{admission:'open'});s.join(member.actor.id,pub.id)
+    assert.throws(()=>s.updateCommunity(member.actor.id,pub.id,{admission:'approval'}),/steward/i)
+    assert.throws(()=>s.updateCommunity(outsider.actor.id,pub.id,{description:'x'}))
+    assert.throws(()=>s.updateCommunity(owner.actor.id,hidden.id,{admission:'open'}),/admission/i)
+    assert.throws(()=>s.updateCommunity(owner.actor.id,pub.id,{title:'  '}),/Invalid input/)
+    const changed=s.updateCommunity(owner.actor.id,pub.id,{description:'Percakapan sehari-hari.',admission:'approval'})
+    assert.equal(changed.description,'Percakapan sehari-hari.');assert.equal(changed.admission,'approval');assert.equal(changed.title,'Square')
+    assert.equal(changed.visibility,'public')
+    const res=await handle(new Request(s.base+`/v1/communities/${pub.id}/settings`,{method:'POST',headers:{authorization:`Bearer ${owner.token}`,'content-type':'application/json',origin:s.base},body:JSON.stringify({admission:'open'})}))
+    assert.equal(res.status,200);assert.equal(s.community(pub.id).admission,'open')
+    const denied=await handle(new Request(s.base+`/v1/communities/${pub.id}/settings`,{method:'POST',headers:{authorization:`Bearer ${member.token}`,'content-type':'application/json',origin:s.base},body:JSON.stringify({admission:'invite'})}))
+    assert.equal(denied.status,403);assert.equal(s.community(pub.id).admission,'open')
+  } finally {s.close()}
 })

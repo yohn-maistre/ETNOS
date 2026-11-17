@@ -13,6 +13,8 @@ export type CatalogueEntry = {
   parents: string[]
   /** Earlier wordings of the description that an import may replace. */
   previous?: string[]
+  /** Earlier titles that an import may replace; a title a steward typed never matches. */
+  previousTitles?: string[]
 }
 export type CatalogueFamily = { key: string; title: string; basis: string; sources: { title: string; url: string }[] }
 export type Catalogue = {

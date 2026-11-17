@@ -505,7 +505,7 @@ export class Groups implements GroupAuthority {
             .filter((a) => !aliases.includes(a))
             .slice(0, Math.max(0, 20 - aliases.length)),
           facet = row.facet || e.facet || "",
-          title = row.title.trim() ? row.title : text(e.title, 100),
+          title = row.title.trim() && !(Array.isArray(e.previousTitles) && e.previousTitles.includes(row.title)) ? row.title : text(e.title, 100),
           // A description is replaced only when it is still, word for word, one this
           // catalogue wrote earlier. Anything a steward typed never matches.
           earlier = Array.isArray(e.previous) && e.previous.includes(row.description),

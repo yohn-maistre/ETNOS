@@ -144,7 +144,7 @@ test("an import replaces only a description it wrote earlier, never a steward's 
     groups = new Groups(s, { stewardDid: admin.actor.did });
   try {
     const entry = (slug: string, description: string, previous?: string[]) => ({ slug, title: slug, kind: "topic" as const, description, language: "id", aliases: [], parents: [], previous });
-    const load = (entries: ReturnType<typeof entry>[]) => groups.importCatalogue(admin.actor.id, { name: "Synthetic", sources: [], notes: [], entries });
+    const load = (entries: (ReturnType<typeof entry> & { previousTitles?: string[] })[]) => groups.importCatalogue(admin.actor.id, { name: "Synthetic", sources: [], notes: [], entries });
     load([entry("first", "Old wording"), entry("second", "Old wording")]);
     s.run("UPDATE contexts SET description='Steward wording' WHERE slug='second'");
     const counts = load([entry("first", "New wording", ["Old wording"]), entry("second", "New wording", ["Old wording"])]);
@@ -152,6 +152,10 @@ test("an import replaces only a description it wrote earlier, never a steward's 
     assert.equal(groups.context("second").description, "Steward wording");
     assert.deepEqual([counts.updated, counts.skipped], [1, 1]);
     assert.equal(load([entry("first", "New wording", ["Old wording"])]).updated, 0);
+    s.run("UPDATE contexts SET title='Steward title' WHERE slug='second'");
+    load([{ ...entry("first", "New wording"), title: "Renamed", previousTitles: ["first"] }, { ...entry("second", "New wording"), title: "Renamed", previousTitles: ["second"] }]);
+    assert.equal(groups.context("first").title, "Renamed");
+    assert.equal(groups.context("second").title, "Steward title");
   } finally {
     s.close();
   }

@@ -258,6 +258,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(path==='/v1/editorial-mandates')result=wiki.grant(caller,string(b.agentId),string(b.communityId),string(b.purpose),Number(b.expires),b.hourlyLimit===undefined?3:Number(b.hourlyLimit))
       else if(parts.length===4&&parts[1]==='editorial-mandates'&&parts[3]==='revoke')result=wiki.revoke(caller,parts[2])
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'contexts') result=groups.labelCommunity(caller,parts[2],string(b.contextId),b.remove===true)
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'settings') result = store.updateCommunity(caller,parts[2],{title:b.title===undefined?undefined:string(b.title),description:b.description===undefined?undefined:string(b.description),admission:b.admission===undefined?undefined:string(b.admission) as Community['admission']})
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'join') result = store.join(caller,parts[2])
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'requests') result = store.requestJoin(caller,parts[2],string(b.message))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'decide') {

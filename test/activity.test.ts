@@ -72,6 +72,8 @@ test("Wiki and membership review activity requires current authority; decisions 
       "Public forum",
       "Synthetic",
       "public",
+      false,
+      "approval",
     );
     s.requestJoin(member.actor.id, space.id, "Join please");
     assert.equal(activity.list(owner.actor.id).items[0].kind, "join-review");

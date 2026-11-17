@@ -52,20 +52,20 @@ test('poll results are withheld below the respondent threshold and never leak co
  const{s,f,a,b}=fixture();try{
  const pub=s.createCommunity(a.actor.id,'Open','Open','public');s.setMember(a.actor.id,pub.id,b.actor.id,true)
  const p=s.createPost(a.actor.id,pub.id,'Pick',undefined,undefined,{content:{poll:{options:['A','B','C'],closesAt:s.clock()+1000000}}})
- const voters=[a,b];for(let i=0;i<4;i++){const v=s.provision('did:web:v'+i+'.example','V'+i);s.setMember(a.actor.id,pub.id,v.actor.id,true);voters.push(v)}
+ const voters=[a,b];for(let i=0;i<POLL_MIN_RESPONDENTS-1;i++){const v=s.provision('did:web:v'+i+'.example','V'+i);s.setMember(a.actor.id,pub.id,v.actor.id,true);voters.push(v)}
  const withheld=(view:ReturnType<typeof s.getPost>['poll'])=>{assert.equal(view!.results,'withheld');assert.equal(view!.total,null);assert.ok(view!.options.every(o=>o.votes===null))}
  for(let i=0;i<POLL_MIN_RESPONDENTS-1;i++){
   const mine=f.poll(voters[i].actor.id,p.id,i%2).poll!;withheld(mine);assert.equal(mine.myVote,i%2)
   withheld(s.getPost(undefined,p.id).poll);assert.equal(s.getPost(undefined,p.id).poll!.myVote,null)
-  withheld(s.getPost(voters[5].actor.id,p.id).poll);assert.equal(s.getPost(voters[5].actor.id,p.id).poll!.myVote,null)
+  withheld(s.getPost(voters[POLL_MIN_RESPONDENTS].actor.id,p.id).poll);assert.equal(s.getPost(voters[POLL_MIN_RESPONDENTS].actor.id,p.id).poll!.myVote,null)
   withheld(s.feedPage(undefined).items.find(x=>x.id===p.id)!.poll)
  }
  // changing and withdrawing a vote below threshold leaks nothing
  withheld(f.poll(voters[0].actor.id,p.id,2).poll);assert.equal(s.getPost(voters[0].actor.id,p.id).poll!.myVote,2)
  withheld(f.poll(voters[0].actor.id,p.id,null).poll);assert.equal(s.getPost(voters[0].actor.id,p.id).poll!.myVote,null);withheld(s.getPost(undefined,p.id).poll)
  // reaching the threshold shows counts to everyone
- f.poll(voters[0].actor.id,p.id,0);f.poll(voters[4].actor.id,p.id,0)
- const anon=s.getPost(undefined,p.id).poll!;assert.equal(anon.results,'shown');assert.equal(anon.total,POLL_MIN_RESPONDENTS);assert.deepEqual(anon.options.map(o=>o.votes),[3,2,0]);assert.equal(anon.myVote,null)
+ f.poll(voters[0].actor.id,p.id,0);f.poll(voters[POLL_MIN_RESPONDENTS-1].actor.id,p.id,0)
+ const anon=s.getPost(undefined,p.id).poll!;assert.equal(anon.results,'shown');assert.equal(anon.total,POLL_MIN_RESPONDENTS);const bVotes=Math.floor((POLL_MIN_RESPONDENTS-1)/2);assert.deepEqual(anon.options.map(o=>o.votes),[POLL_MIN_RESPONDENTS-bVotes,bVotes,0]);assert.equal(anon.myVote,null)
  assert.equal(s.getPost(voters[1].actor.id,p.id).poll!.myVote,1)
  // dropping back below the threshold withholds again
  withheld(f.poll(voters[0].actor.id,p.id,null).poll)

@@ -142,7 +142,7 @@
             </button>{/each}
           <small>
             {#if post.poll.results === 'shown'}Hasil dari {post.poll.total}
-              penjawab di ETNOS{:else}Hasil tampil setelah 5 orang menjawab.{/if}
+              penjawab di ETNOS{:else}Hasil tampil setelah 10 orang menjawab.{/if}
             · {post.poll.closed
               ? 'Ditutup'
               : new Date(post.poll.closesAt).toLocaleString(
