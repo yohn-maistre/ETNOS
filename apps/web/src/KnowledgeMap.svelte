@@ -32,7 +32,7 @@
     open = $state(false),
     lens = $state<'makna' | 'waktu'>('makna'),
     clock = $state<'dicatat' | 'terjadi'>('dicatat'),
-    colorBy = $state<'wilayah' | 'ranah' | 'bentuk' | 'suara'>('ranah'),
+    colorBy = $state<'wilayah' | 'ranah' | 'bentuk' | 'suara'>('wilayah'),
     query = $state(''),
     selected = $state(-1),
     hovered = $state(-1),
@@ -188,8 +188,10 @@
       for (const y of [1850, 1900, 1950, 2000]) { const t = timeH(y), y1 = t * cx, z2 = t * sx, f = 3.2 / (3.2 + z2); ctx.fillText(String(y), 6, H / 2 + y1 * s * f) }
       ctx.fillStyle = css('--foreground'); ctx.font = '500 12px ' + (getComputedStyle(canvas).fontFamily || 'sans-serif')
     }
-    let ri = 0
-    nodes.forEach((n, i) => { if (n.k === 'region' || i === selected) ctx.fillText(n.k === 'region' ? REGION[n.reg]?.[0] ?? n.t : short(n.t, 42), proj[i][0] + 10, proj[i][1] + (n.k === 'region' ? (ri++ - 1) * 15 : 0)) })
+    // Region labels: placed top to bottom with at least 16px between them so they never overlap.
+    const labels = nodes.map((n, i) => (n.k === 'region' || i === selected ? { i, x: proj[i][0] + 10, y: proj[i][1], text: n.k === 'region' ? REGION[n.reg]?.[0] ?? n.t : short(n.t, 42) } : null)).filter((l): l is { i: number; x: number; y: number; text: string } => !!l).sort((a, b) => a.y - b.y)
+    for (let k = 1; k < labels.length; k++) if (labels[k].y - labels[k - 1].y < 16 && Math.abs(labels[k].x - labels[k - 1].x) < 120) labels[k].y = labels[k - 1].y + 16
+    for (const l of labels) ctx.fillText(l.text, l.x, l.y)
     raf = requestAnimationFrame(frame)
   }
   $effect(() => {
@@ -291,9 +293,9 @@
             <button aria-pressed={clock === 'terjadi'} onclick={() => (clock = 'terjadi')}>Terjadi</button>
           </div>{/if}
         <div class="km-seg" role="group" aria-label="Warna">
+          <button aria-pressed={colorBy === 'wilayah'} onclick={() => (colorBy = 'wilayah')}>Wilayah</button>
           <button aria-pressed={colorBy === 'ranah'} onclick={() => (colorBy = 'ranah')}>Ranah</button>
           <button aria-pressed={colorBy === 'bentuk'} onclick={() => (colorBy = 'bentuk')}>Bentuk budaya</button>
-          <button aria-pressed={colorBy === 'wilayah'} onclick={() => (colorBy = 'wilayah')}>Wilayah</button>
           <button aria-pressed={colorBy === 'suara'} onclick={() => (colorBy = 'suara')}>Sumber suara</button>
         </div>
         <label class="km-search"><Search size={14} /><input bind:value={query} placeholder="Cari di peta" aria-label="Cari di peta" /></label>
