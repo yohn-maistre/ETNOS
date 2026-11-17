@@ -124,3 +124,10 @@
 .wiki-front-dots button[aria-selected='true']::before { background: var(--foreground); transform: scale(1.3); }
 .wiki-front-dots button:focus-visible { outline: 2px solid var(--foreground); outline-offset: -4px; border-radius: 50%; }
 @media (prefers-reduced-motion: reduce) { .wiki-front-dots button::before { transition: none; } }
+
+/* Engraved cover above a wiki page, chosen by its region. */
+.wiki-page-cover { position: relative; height: 132px; overflow: hidden; border-radius: 18px 18px 0 0; background: var(--paper-print, var(--muted)); }
+.wiki-page-cover > .landscape-print { position: absolute; inset: 0; width: 100%; height: 300%; object-fit: cover; object-position: 50% 32%; display: block; }
+.wiki-page-region { margin: 2px 0 0; font-size: 14px; color: var(--muted-foreground); }
+.wiki-page-region a { color: inherit; text-underline-offset: 3px; }
+@media (max-width: 640px) { .wiki-page-cover { height: 96px; border-radius: 0; } }

@@ -4,6 +4,7 @@
   import { onMount } from 'svelte'
   import { prefersReducedMotion } from 'svelte/motion'
   import { ArrowUpRight, Maximize2, Minimize2, Pause, Play, Search } from '@lucide/svelte'
+  import { loadMap } from './observatory'
 
   type Node = {
     k: 'region' | 'page' | 'source' | 'passage' | 'catalogue'
@@ -65,10 +66,7 @@
   const NOW = new Date().getFullYear()
 
   onMount(() => {
-    fetch(src)
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((d: MapData) => (data = d))
-      .catch(() => (failed = true))
+    void loadMap(src).then((d) => { if (d) data = d as MapData; else failed = true })
   })
 
   const adj = $derived.by(() => {

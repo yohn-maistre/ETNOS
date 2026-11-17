@@ -32,6 +32,9 @@
   import KnowledgeMap from './KnowledgeMap.svelte'
   import WikiDiscussion from './WikiDiscussion.svelte'
   import WikiContents from './WikiContents.svelte'
+  import WikiPlaces from './WikiPlaces.svelte'
+  import { loadMap, highlandRegions, type MapData } from './observatory'
+  import { siteBranding } from './site-branding'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
@@ -109,6 +112,17 @@
   async function discover(signal:AbortSignal|undefined=undefined){discovering=true;discoveryError='';try{const rows=await request<Preview[]>('/v1/wiki/discover',undefined,signal);if(!signal?.aborted)discoveries=rows}catch{if(!signal?.aborted)discoveryError='Halaman belum dapat dimuat.'}finally{if(!signal?.aborted)discovering=false}}
   $effect(()=>{const controller=new AbortController();void discover(controller.signal);try{lastReadId=localStorage.getItem('strata.ui.wiki-last')??'';readingSize=localStorage.getItem('strata.ui.wiki-text')==='large'?'large':'normal'}catch{};return()=>controller.abort()})
   $effect(()=>{if(page?.revision){try{localStorage.setItem('strata.ui.wiki-last',page.id)}catch{}}})
+  // The region a page belongs to, from the public map data, chooses its engraved cover.
+  let mapData = $state<MapData | null>(null)
+  $effect(() => { if (page && !mapData) void loadMap().then((d) => (mapData = d)) })
+  const pageRegion = $derived.by(() => {
+    if (!page || !mapData) return null
+    const node = mapData.nodes.find((n) => n.href === '/wiki/' + page.id)
+    if (!node) return null
+    const region = mapData.nodes.find((n) => n.k === 'page' && n.kind === 'region' && n.reg === node.reg)
+    return { reg: node.reg, title: region?.t.replace(/^Wilayah adat /, '') ?? '', href: region && region.href !== node.href ? region.href : undefined }
+  })
+  const pageArt = $derived(pageRegion ? siteBranding.welcomeArtworks.find((a) => a.id === (highlandRegions.has(pageRegion.reg) ? 'tigi' : 'raja-ampat')) ?? null : null)
   const headings = $derived.by(() => {
     if (!page?.revision) return []
     const template = document.createElement('template')
@@ -171,11 +185,10 @@
 
 {#if page}
   <article class="wiki-reader" class:wiki-large-text={readingSize==='large'}>
+    {#if pageArt}<div class="wiki-page-cover" aria-hidden="true"><LandscapePrint artwork={pageArt} decorative /></div>{/if}
     <header class="wiki-page-header">
-      <small>
-        {communities.find((c) => c.id === page.community_id)?.title}
-      </small>
       <h1>{page.title}</h1>
+      {#if pageRegion?.title}<p class="wiki-page-region">Wilayah adat {#if pageRegion.href}<a href={pageRegion.href}>{pageRegion.title}</a>{:else}{pageRegion.title}{/if}</p>{/if}
       {#if page.revision}<WikiVoices
           voices={pageVoices(page.revision.citations, history, page.revision.author, proposals)}
           invite={member ? { onclick: onPropose } : { href: auth.actor ? '/communities/' + page.community_id : '/login' }}
@@ -195,7 +208,7 @@
               · Agen{/if}
           </span>
           {#if page.revision.review === 'unreviewed'}<span class="wiki-unreviewed">
-              Belum ditinjau · terbit {relativeDate(page.revision.created)}
+              Belum ditinjau. Terbit {relativeLong(page.revision.created)}.
             </span>{:else}<span>
             Ditinjau oleh <strong>
               {page.revision.reviewer?.name ?? 'Pengelola'}
@@ -395,7 +408,6 @@
 {:else}
   <section class="knowledge-atlas wiki-discovery">
     <header class="wiki-discovery-header">
-      <div class="wiki-atlas-mark"><BookOpen size={22}/><span>Wiki ETNOS</span></div>
       <h1>Pengetahuan bersama</h1>
       <p>Halaman tentang tempat, bahasa dan sejarah Papua yang ditulis dan diperiksa bersama.</p>
       <div class="wiki-discovery-actions">{#if memberships.length}<a class="commons-quiet-link" href="/wiki/notes/new">Tambah catatan <Plus size={14}/></a>{/if}{#if memberships.some(m=>m.role!=='member')}<Button variant="outline" onclick={onCreate}><Plus size={15}/>Tulis halaman</Button>{/if}</div>
@@ -408,12 +420,13 @@
       {#if featured}{@const art=communityArtwork(featured.community_id)}<section class="wiki-featured wiki-front" aria-label="Untuk dibaca">
         <div class="wiki-front-cover">{#if art}<LandscapePrint artwork={art} decorative/>{/if}
           <div class="wiki-front-track" bind:this={track} onscroll={onTrackScroll}>
-            {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><small>Untuk dibaca · {communities.find(c=>c.id===item.community_id)?.title??'Pengetahuan bersama'}</small><h2>{item.title}</h2>{#if item.excerpt}<p>{item.excerpt.length>180?item.excerpt.slice(0,177).trimEnd()+'…':item.excerpt}</p>{/if}<span class="wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span></a>{/each}
+            {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><h2>{item.title}</h2>{#if item.excerpt}<p>{item.excerpt.length>180?item.excerpt.slice(0,177).trimEnd()+'…':item.excerpt}</p>{/if}<span class="wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span></a>{/each}
           </div>
         </div>
         {#if featuredList.length>1}<div class="wiki-front-dots" role="tablist" aria-label="Pilih bacaan">{#each featuredList as item,i}<button role="tab" aria-selected={slide===i} aria-label={item.title} onclick={()=>goTo(i)}></button>{/each}</div>{/if}
         {#if accepted.length}<div class="wiki-front-tools">{#if accepted.length>1}<button onclick={surprise}><Shuffle size={15}/>Halaman acak</button>{/if}<a class="commons-quiet-link" href="/lini-masa">Lini masa</a></div>{/if}
       </section>
+      {#if !query&&!communityFilter}<WikiPlaces />{/if}
       {#if !query&&!context&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap /></div>{/if}
       {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2></div>{#each recent as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+'. ':p.review==='unreviewed'?(p.authorKind==='agent'?'Ditulis agen dan belum ditinjau. ':'Belum ditinjau. '):''}Diperbarui {relativeLong(p.updated)}.</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
