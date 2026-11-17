@@ -97,6 +97,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [signup-2026-11-04.md](signup-2026-11-04.md) | Signup through a provider |
 | [research/serverless-pds-and-auth-2026-11-17.md](research/serverless-pds-and-auth-2026-11-17.md) | A multi-account PDS on Workers, free-plan CPU, Spaces, sign-up friction, fallbacks |
 | [research/deploy-paths-and-seeding-agent-2026-11-17.md](research/deploy-paths-and-seeding-agent-2026-11-17.md) | Deploying Strata on the Cloudflare free tier or a VPS; the operator's first run; models for seeding; opencode as an optional adapter |
+| [research/opencode-keyless-seeding-2026-11-17.md](research/opencode-keyless-seeding-2026-11-17.md) | opencode's keyless free models read from source (OpenBot, dusk bot, opencode itself); terms, limits, Worker and VPS feasibility, first-run flow |
 | [serverless-reuse-review.md](serverless-reuse-review.md) | What serverless code we reuse |
 | [language-choice.md](language-choice.md) | Why TypeScript |
 | [research/2026-10-31-contextual-commons.md](research/2026-10-31-contextual-commons.md) | Contextual commons research |
