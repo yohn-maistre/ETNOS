@@ -94,11 +94,18 @@ Agreed with the reviewer and the owner. A `place_claims` table before any map wo
 
 The owner wants the model to fit Kalimantan or Aotearoa without code changes. The research in `research/peoples-places-and-public-data-2026-11-17.md` (in progress) checks the standards (Glottolog, ISO 639-3, Wikidata, Native Land, Local Contexts labels, Mukurtu's cultural protocols, BRWA and AMAN, iwi and hapū, Dayak classification) and proposes one schema filled for Nabire, a Dayak example and an iwi example.
 
-The shape I expect, to be checked against that research:
+What the research recommends (`research/peoples-places-and-public-data-2026-11-17.md`), which I take as the model:
 
-- **Four axes, each its own list**: places (administrative spine), regions (cultural overlays), peoples (and sub-groups, clans where public), languages (and dialects, from Glottolog).
-- **Everything between them is a sourced claim** in `place_claims`, as above. No axis sits under another. A language does not live under a people, and a people does not live under a place, because the sources show them crossing: Mee is spoken in Paniai, Deiyai, Dogiyai and Nabire; Nabire sits in two regions. This is the "continuum, not a tree" of the strata model, made into a table.
-- **A deployment's steward regions** are one overlay scheme marked as the one that gets an Aksara each. Tanah Papua: the seven wilayah adat. Aotearoa might choose iwi regions; Kalimantan might choose provinces or Dayak groupings. The pack decides; the engine does not know about wilayah adat.
+- **One administrative spine, everything cultural a graph.** Places nest once (country, province, regency, district, kampung), with valid-from and valid-to dates so the 2022 provinces and the 2025 codes do not break old paths. Overlays, peoples, sub-groups (clans, marga, hapū), languages, organisations and communities are separate entities.
+- **Every link is a claim**: subject, relation, object, extent (whole, part, contested), who asserts it, source and its type (law, planning, customary body, scholar, press, community, dataset), source date, status. A disagreement is two claims, never an edit war; a steward can change a claim's status but not erase it. Nine relations: `within`, `part_of_overlay`, `speaks`, `indigenous_to`, `subgroup_of`, `located_in`, `represents`, `recognised_as`, `steward_scope`.
+- **Self-description first.** Where a people has described itself, that claim shows first.
+- **No registry of persons.** The platform never records which people a person belongs to. Labels never go on people (already a rule).
+- **Languages by Glottolog code**, ISO 639-3 as a cross-reference. Ethnologue and Joshua Project are not used for seeding (terms, and Joshua Project's missionary framing).
+- **Every overlay page says it is a reported classification, not a land boundary**, as Native Land, AIATSIS and Te Kāhui Māngai do. ("Wilayah acuan, bukan batas tanah adat" already does this.)
+- **Content protocols from Mukurtu and Local Contexts**: communities, cultural protocols and categories kept apart; Local Contexts Notices applied by the platform as placeholders, Labels written by communities. CARE and OCAP as review questions.
+- **Steward scope is itself a claim**, so Nabire sits in two Aksaras' scopes, and a question goes to the Aksara the asker's place selects, with the other shown as "also in". Tanah Papua: seven scopes, an eighth only if a community proposes one. Kalimantan: one per province first, cultural groupings only if Dayak organisations ask. Aotearoa: one per iwi, at that iwi's request.
+
+The worked examples (Nabire, Ngaju in Central Kalimantan, Ngāti Porou) are in the research. The engine change is one `claims` table with that shape, of which `place_claims` in §5 is the first use.
 
 ## 7. Language rooms *(proposal)*
 
@@ -223,7 +230,7 @@ The reviewer's alternative (catalogue-only for peoples with no steward) is recor
 
 ## 14. Images
 
-- **Wiki and place pages**: a real photograph at the top where a freely licensed one exists (Wikimedia Commons first), with author and licence under it. Where none exists, the engraving.
+- **Wiki and place pages**: a real photograph at the top where a freely licensed one exists (Wikimedia Commons first), with author and licence under it. Where none exists, the engraving. A spot check found 15 to 59 Commons files for each of five regencies (Paniai has none geotagged near its town), so most smaller regencies will start with the engraving and the photo comes when someone adds one.
 - **Cards** (feed, wiki home, share cards): stylised, with the ink-print filter applied to a photo or the engraving. The filter is applied at build time for seed pages, so it costs nothing per request.
 
 ## 15. Maps *(proposal)*
@@ -244,7 +251,7 @@ Every wiki page, place, story and post gets a share card that looks like a print
 
 ## 17. Public government data, politics included
 
-*(proposal, scope to confirm)* A "Data" tab on each place: population, schools, health facilities, village fund amounts, the 2024 election results, the regency budget, regulations about the place, each with its source and year. Aksara uses it for Tanya warga and for news context. Rules: figures only from official public sources, always dated; no data about private individuals; elected officials appear only as public office holders with sourced facts. The research (§6) lists the sources and their terms.
+*(proposal, scope to confirm)* A "Data" tab on each place: population, schools, health facilities, village fund amounts, the 2024 election results, the regency budget, regulations about the place, each with its source and year. Aksara uses it for Tanya warga and for news context. Rules: figures only from official public sources, always dated; elections, budgets and village funds only as aggregates by regency or district, never per polling station in a small kampung; no data about private individuals; elected officials appear only as public office holders with sourced facts. Codes come from Kepmendagri 300.2.2-2138/2025 as amended (about 7,150 kampung across the six provinces, fetched from an MIT-licensed mirror without an account); boundaries to regency level from geoBoundaries; no open source for kampung boundaries, so kampung are points. Several government portals (KPU, JDIH, Ina-Geoportal, the Papua open-data portal) could not be reached from our sandbox and need a second try. Details and licences in the research.
 
 ## 18. Studio
 
