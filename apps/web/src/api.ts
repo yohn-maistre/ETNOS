@@ -250,6 +250,14 @@ export const relativeDate = (value: number) => {
           })
 }
 /** A relative time written out, for reading surfaces where "4j" is unclear. */
+/** Shorten text at a word boundary, without a trailing comma or stop before the ellipsis. */
+export const clip = (t: string | undefined, n: number) => {
+  if (!t) return ''
+  if (t.length <= n) return t
+  const cut = t.slice(0, n - 1)
+  const at = cut.lastIndexOf(' ')
+  return (at > n * 0.6 ? cut.slice(0, at) : cut).replace(/[\s,.;:–-]+$/, '') + '…'
+}
 export const relativeLong = (value: number) => {
   const n = Math.max(0, Date.now() - value)
   if (n < 60000) return 'baru saja'

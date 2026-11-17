@@ -10,7 +10,8 @@ export function loadMap(src = '/observatory/map.json'): Promise<MapData | null> 
 export const domainGroups: { key: string; label: string; tags: string[] }[] = [
   { key: 'alam', label: 'Alam', tags: ['alam-hidup', 'hutan-tanah', 'laut-air', 'iklim-musim', 'langit'] },
   { key: 'sejarah', label: 'Sejarah', tags: ['sejarah'] },
-  { key: 'budaya', label: 'Budaya dan bahasa', tags: ['adat-hukum', 'kepercayaan', 'seni-teknologi', 'bahasa', 'cerita'] },
+  { key: 'cerita', label: 'Cerita', tags: ['cerita'] },
+  { key: 'budaya', label: 'Budaya dan bahasa', tags: ['adat-hukum', 'kepercayaan', 'seni-teknologi', 'bahasa'] },
   { key: 'hidup', label: 'Hidup bersama', tags: ['kehidupan-bersama', 'kesehatan', 'pangan'] },
 ]
 /** Region slugs that read as highlands, for choosing an engraving. */

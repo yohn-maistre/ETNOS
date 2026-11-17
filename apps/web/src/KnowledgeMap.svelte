@@ -249,7 +249,7 @@
     <header class="km-head">
       <div>
         <h2>Peta wiki</h2>
-        <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}</p>
+        <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}{undatedCount ? ` · ${undatedCount} tanpa tahun` : ''}</p>
       </div>
       <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
         {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}
@@ -266,7 +266,6 @@
         <span class="km-ticks" aria-hidden="true">
           <span style="left: 0">sebelum 1800</span>
           {#each bandYears as y}<span style="left: {(bx(y) / BAND_W) * 100}%">{y}</span>{/each}
-          <span style="right: 0">{undatedCount} tanpa tahun</span>
         </span>
       </button>
   </section>
@@ -275,7 +274,7 @@
     <header class="km-head">
       <div>
         <h2>Peta wiki</h2>
-        <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}</p>
+        <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}{undatedCount ? ` · ${undatedCount} tanpa tahun` : ''}</p>
       </div>
       <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
         {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}
@@ -349,9 +348,9 @@
   }
   .km-open .km-stage, .km-open .km-panel { height: calc(100dvh - 190px); }
   .km-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
-  .km-head h2 { margin: 0; font-family: var(--font-editorial, inherit); font-weight: 400; font-size: 24px; }
+  .km-head h2 { margin: 0; font-size: 18px; font-weight: 600; }
   .km-head p { margin: 2px 0 0; color: var(--muted-foreground); font-size: 13px; font-variant-numeric: tabular-nums; }
-  .km-toggle, .km-icon { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; background: var(--card); color: var(--foreground); font-size: 13px; cursor: pointer; }
+  .km-toggle, .km-icon { display: inline-flex; flex-shrink: 0; white-space: nowrap; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; background: var(--card); color: var(--foreground); font-size: 13px; cursor: pointer; }
   .km-icon { padding: 6px 8px; }
   .km-caption { margin: 0; max-width: 70ch; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
   .km-band { all: unset; position: relative; display: block; cursor: pointer; width: 100%; border-radius: 10px; padding-bottom: 22px; }

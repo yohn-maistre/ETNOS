@@ -127,7 +127,7 @@ export default {
         headers.delete('etag');headers.delete('last-modified');headers.delete('content-length')
         if(!meta.index)headers.set('x-robots-tag','noindex, nofollow')
         const article=meta.article
-        return new HTMLRewriter().on('#app',{element(e){if(article)e.append(articleHTML(article),{html:true})}}).on('title',{element(e){e.setInnerContent(meta.title==='ETNOS'?'ETNOS':meta.title+' · ETNOS')}}).on('meta[name="description"],meta[property^="og:"],meta[name^="twitter:"],meta[name="robots"],link[rel="canonical"]',{element(e){e.remove()}}).on('head',{element(e){e.append(shareTags(meta,env.STRATA_ORIGIN)+(article?articleLD(article,new URL(meta.path,env.STRATA_ORIGIN).href):''),{html:true})}}).transform(new Response(response.body,{status:response.status,headers}))
+        return new HTMLRewriter().on('#app',{element(e){if(article)e.append(articleHTML(article),{html:true})}}).on('title',{element(e){e.setInnerContent(meta.title==='ETNOS'||meta.title.endsWith(' · ETNOS')?meta.title:meta.title+' · ETNOS')}}).on('meta[name="description"],meta[property^="og:"],meta[name^="twitter:"],meta[name="robots"],link[rel="canonical"]',{element(e){e.remove()}}).on('head',{element(e){e.append(shareTags(meta,env.STRATA_ORIGIN)+(article?articleLD(article,new URL(meta.path,env.STRATA_ORIGIN).href):''),{html:true})}}).transform(new Response(response.body,{status:response.status,headers}))
       }
     }
     return new Response(response.body,{status:response.status,headers})

@@ -7,6 +7,7 @@
   import { siteBranding } from './site-branding'
   import { loadMap, domainGroups, highlandRegions, type MapData, type MapNode } from './observatory'
   import { placeScope } from './place-scope.svelte'
+  import { clip } from './api'
 
   let data = $state<MapData | null>(null)
   onMount(() => { void loadMap().then((d) => (data = d)) })
@@ -31,6 +32,7 @@
         }
       })
   })
+  const groupsShown = $derived(domainGroups.filter((g) => pages.some((p) => p.d?.some((t) => g.tags.includes(t)))))
   let group = $state(domainGroups[0].key)
   const day = Math.floor(Date.now() / 86400000)
   const picks = $derived.by(() => {
@@ -40,7 +42,7 @@
     const start = day % pool.length
     return [...pool.slice(start), ...pool.slice(0, start)].slice(0, 4)
   })
-  function snippet(t: string | undefined) { return t ? (t.length > 140 ? t.slice(0, 137).trimEnd() + '…' : t) : '' }
+  function snippet(t: string | undefined) { return clip(t, 140) }
 </script>
 
 {#if regions.length}
@@ -66,7 +68,7 @@
   <section class="wp" aria-labelledby="wp-domains">
     <h2 id="wp-domains">Menurut ranah</h2>
     <div class="wp-tabs" role="tablist" aria-label="Pilih ranah">
-      {#each domainGroups as g (g.key)}<button role="tab" aria-selected={group === g.key} onclick={() => (group = g.key)}>{g.label}</button>{/each}
+      {#each groupsShown as g (g.key)}<button role="tab" aria-selected={group === g.key} onclick={() => (group = g.key)}>{g.label}</button>{/each}
     </div>
     {#if picks.length}
       <ul class="wp-picks">
@@ -84,7 +86,7 @@
   .wp-regions { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
   .wp-region { display: grid; grid-template-rows: 96px auto; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--card); }
   .wp-cover { position: relative; overflow: hidden; background: var(--muted); }
-  .wp-cover :global(.landscape-print) { position: absolute; inset: 0; width: 100%; height: 260%; object-fit: cover; object-position: 50% 35%; }
+  .wp-cover :global(.landscape-print) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 68%; }
   .wp-body { display: grid; gap: 6px; padding: 12px 14px 14px; min-width: 0; }
   .wp-title { font-family: var(--font-editorial, inherit); font-size: 22px; line-height: 1.15; color: var(--foreground); text-decoration: none; }
   a.wp-title:hover { text-decoration: underline; text-underline-offset: 4px; }

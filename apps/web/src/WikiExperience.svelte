@@ -21,6 +21,7 @@
     request,
     relativeDate,
     relativeLong,
+    clip,
     type WikiPage,
     type Proposal,
     type Community,
@@ -420,7 +421,7 @@
       {#if featured}{@const art=communityArtwork(featured.community_id)}<section class="wiki-featured wiki-front" aria-label="Untuk dibaca">
         <div class="wiki-front-cover">{#if art}<LandscapePrint artwork={art} decorative/>{/if}
           <div class="wiki-front-track" bind:this={track} onscroll={onTrackScroll}>
-            {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><h2>{item.title}</h2>{#if item.excerpt}<p>{item.excerpt.length>180?item.excerpt.slice(0,177).trimEnd()+'…':item.excerpt}</p>{/if}<span class="wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span></a>{/each}
+            {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><h2>{item.title}</h2>{#if item.excerpt}<p>{clip(item.excerpt,180)}</p>{/if}<span class="wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span></a>{/each}
           </div>
         </div>
         {#if featuredList.length>1}<div class="wiki-front-dots" role="tablist" aria-label="Pilih bacaan">{#each featuredList as item,i}<button role="tab" aria-selected={slide===i} aria-label={item.title} onclick={()=>goTo(i)}></button>{/each}</div>{/if}
@@ -439,6 +440,6 @@
       {#if groups.length>1}<section class="wiki-browse"><div class="wiki-module-heading"><h2>Jelajahi komunitas</h2>{#if communityFilter}<button onclick={()=>communityFilter=''}>Lihat semua</button>{/if}</div><div class="wiki-community-grid">{#each groups as c}<button aria-pressed={communityFilter===c.id} onclick={()=>communityFilter=communityFilter===c.id?'':c.id}><BookOpen size={18}/><strong>{c.title}</strong><span>{c.count} halaman</span></button>{/each}</div></section>{/if}
       {#if drafts.length}<section class="wiki-drafts"><div class="wiki-module-heading"><h2>Dalam tinjauan</h2></div>{#each drafts as p}<a href={'/wiki/'+p.id}>{p.title}<span>Draf</span><ArrowUpRight size={15}/></a>{/each}</section>{/if}
     {/if}
-    <footer class="wiki-discovery-footer"><BookOpen size={19}/><p>Pengetahuan terus tumbuh.<br/><a href="/knowledge">Bawa sumber atau catatan baru <ArrowRight size={13}/></a></p></footer>
+    <footer class="wiki-discovery-footer"><BookOpen size={19}/><p><a href="/knowledge">Tambah sumber atau catatan <ArrowRight size={13}/></a></p></footer>
   </section>
 {/if}
