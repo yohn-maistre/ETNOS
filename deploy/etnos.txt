@@ -1,1 +1,1 @@
-2026-11-17g Map tags pages from full text
+2026-11-17h Allow the Cloudflare analytics beacon
