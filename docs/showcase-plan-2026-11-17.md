@@ -59,17 +59,26 @@ The owner wants every person to have a real AT account from the start, without s
 
 What already exists: `packages/pds` is an attributed fork of Cirrus (MIT) running on Workers with a SQLite Durable Object and R2, tested locally against the official OAuth client. It hosts **one identity per deployment**. Making it host many accounts is the work.
 
-**Proposal: a multi-account Strata PDS on Workers**, for ETNOS and as the easy deployment path for other communities (beside the official PDS on a VM, which stays supported):
+**What the research found** (`research/serverless-pds-and-auth-2026-11-17.md`):
 
-- One Durable Object per account (repository, keys, sessions), plus one directory object for handles, invites and account creation.
-- Handles as `nama.etnos.space`, resolved by the Worker at `/.well-known/atproto-did`.
-- `did:plc` identities, so people can move their account to another host later.
-- Sign-up on etnos.space itself: name, handle, password, and an invite or open mode. The person never sees "Bluesky" unless they want to.
-- Posts can appear in the Bluesky app once the relay crawls us, but public AT publishing stays off until the owner turns it on.
+- No multi-account PDS for Workers is usable today. Cirrus is still single-user (0.19.0, the version we forked). One independent multi-account attempt exists and is a good design reference, not adoptable.
+- Making ours multi-account touches about 120 places that assume one identity. Estimate: 8–10 focused days for a happy path, 15–19 for something we would trust.
+- CPU: the password hash Cirrus uses takes about 90 ms, far over the 10 ms Worker limit on Free; signing is about 1 ms. Durable Objects allow far more CPU per request, so hashing and signing inside the account object may make Free workable (untested).
+- Email to arbitrary addresses from Cloudflare needs Workers Paid; Resend's free tier (100 a day) works.
+- Bluesky and the other open hosts currently require phone verification at sign-up. That is real friction for our people.
+- Spaces public beta on 1 December is confirmed by the official post of 13 November; the reference PDS gets it by update that day.
+- A new PDS may be capped by Bluesky's relay at a small number of accounts until trusted (figure from 2024, current value unverified). This only matters once public AT publishing is on; ETNOS keeps posts in its own store today.
 
-**Fallback, decided now so it does not cost a day later:** if the multi-account PDS is not safe by the proposal date, people sign in with an ETNOS account (email link or passkey), stored in our own Durable Object, with a button later to create or connect an AT account that carries their posts over. Every post is stored so that this move is possible. The research in `research/serverless-pds-and-auth-2026-11-17.md` (in progress) decides between the two and covers Spaces, free-plan CPU limits, Bluesky's sign-up checks for Indonesia, and Supabase against Cloudflare-native options.
+**One thing that shrinks the work** *(my finding)*: ETNOS uses the AT account for identity and sign-in. Posts live in Strata, and public AT publishing is off. So for ETNOS the PDS only has to create accounts, sign people in through OAuth, hold a `did:plc` and resolve `nama.etnos.space`. Firehose, relay, blob serving and large imports can wait. An identity-first multi-account PDS is a smaller job than a full one.
 
-*Owner note:* Supabase would add a second company and a second free tier that every community deploying Strata must sign up for. Cloudflare-native keeps one account to deploy. I would only use it if the research shows something we cannot do on Workers.
+**Proposal: two tracks.**
+
+1. **For the people arriving this week: the official PDS on a small server.** Real multi-account, invites, `did:plc`, `nama.etnos.space` handles, email through a free tier, no phone gate, Spaces by update on 1 December. Needs a machine. Free candidates to check: Google Cloud's always-free e2-micro (1 GB, US regions), or Oracle in another region with a new account (an Oracle account's home region is fixed at sign-up, which is likely why Singapore blocked it). Otherwise a VPS at about $4–6 a month. The owner rents; I set it up.
+2. **For Strata and the showcase: an identity-first multi-account PDS on Workers**, built in parallel, one Durable Object per account, hashing and signing inside the object. Shown at the showcase as the serverless way to deploy Strata, with the official PDS as the other. Accounts can move between them later because `did:plc` identities are portable.
+
+Rejected: one Cirrus Worker per person (thirty deployments, thirty sets of keys). ETNOS-only accounts stay an emergency option: they contradict Decision 004 and need a migration later.
+
+*Owner note:* Supabase would add a second company and a second free tier that every community deploying Strata must sign up for, and it does not give anyone an AT account. Not needed.
 
 ## 5. Places as a table first
 
