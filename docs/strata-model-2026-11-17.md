@@ -137,6 +137,15 @@ Each step is useful on its own; no organisation has to reach step 3 to take part
 - **Kampung**: seed all, allow proposals for new ones.
 - **Diaspora**: as communities, like subreddits.
 
+## 6a. The wiki home, organised around places and peoples (owner, 17 November)
+
+After the first impeccable critique (23/40), the owner chose to carry the ink-print world through the whole wiki and to go further: organise the wiki home around places and peoples, with other domains alongside.
+
+- **Places and peoples are the first section** of the wiki home: the seven overlays, regencies and kampung through the place scope, and peoples and languages linked to them.
+- **Domain sections with a selector**: Alam, Sejarah, Cerita, Budaya, Kabar dan tren, Ilmu pengetahuan. Each shows a few pages rotated by day, chosen from the domain tags. The selector follows the place scope, so "Alam" under Mee Pago shows Mee Pago's nature pages.
+- **Year pages.** Aksara writes one page per year, "2026 di Tanah Papua", and adds to it as the year goes: what was in the news, what people discussed most, music and food that spread, political issues, events, new wiki pages, and what changed in the record. Each section cites the news stories, posts and pages it draws on, and the page grows chronologically, month by month. A year page per region can follow ("2026 di Mee Pago"). Earlier years are written backwards from the news archive and sources, marked by how much each section rests on. This is the "trend" layer the owner noted was missing: Percakapan and Kabar settling into Pengetahuan once a year.
+- **The ink-print world carried through**: engraved covers on every wiki and place page, hatching on the band and map, engraved section dividers. The layout stays familiar.
+
 ## 7. What this changes in the build order
 
 1. **Place scope switcher** on Beranda, Jelajah and Wiki, filtering by the existing labels. Small, and it changes how the whole app feels.
@@ -144,6 +153,7 @@ Each step is useful on its own; no organisation has to reach step 3 to take part
 3. **Place pack v1**: administrative spine with codes for Papua's six provinces, regencies and districts; kampung after paged lists; overlays with sources; Nabire as the first two-overlay place; "Usulkan tempat".
 4. **Shared map component with a scope** (wiki home, place pages, explore, news), including the Tempat lens.
 5. **Organisation listing, claim form and verified mark.**
-6. Carried: Bacaan terpandu; the Mee Pago state-of-knowledge report; Aksara's cursor on the map; the classifier with receipts; Studio as one place for every operator setting, with the setup flow ("Mulai dari awal") built on the packs; the model comparison on the seed sentences; Jejak Spesimen and the other biocultural features.
+6. Wiki home by places and peoples, domain sections, year pages (6a).
+7. Carried: Bacaan terpandu; the Mee Pago state-of-knowledge report; Aksara's cursor on the map; the classifier with receipts; Studio as one place for every operator setting, with the setup flow ("Mulai dari awal") built on the packs; the model comparison on the seed sentences; Jejak Spesimen and the other biocultural features.
 
 Open: whether the five phone destinations hold up in a usability test with three people in Jayapura; whether the scope switcher should remember the last place (per device only, never inferred).
