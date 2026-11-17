@@ -69,7 +69,16 @@ Why this is cleaner than making wilayah adat the first rung: the overlay scheme 
 
 The owner: Nabire sits on the coast of Cenderawasih Bay with direct access to the central ranges, close to Paniai, Deiyai and Dogiyai; culturally a meeting point of Saireri and Mee Pago peoples with long histories on both sides; people are split; administratively in Papua Tengah, which is often treated as interchangeable with Mee Pago, though Nabire is not its formal capital.
 
-Under the model: Nabire's spine parent is Papua Tengah. Its overlays are Saireri (part: the coast and its peoples) and Mee Pago (part: the inland and its peoples), each with the sources that say so, hatched on the map. Its page has a "Beda versi" section that sets out how sources and people place it, and invites people to add their account. A research note on how Papuan scholars, customary councils and government documents place Nabire and the other boundary regencies is in `research/customary-regions-and-boundaries-2026-11-17.md`. The same treatment applies everywhere: what is public (the literature, the researchers, the documents) is the base, and the platform is where people discuss and correct it.
+What the sources say (from `research/customary-regions-and-boundaries-2026-11-17.md`):
+
+- The seven-region scheme has no single author. A provincial profile traces it through Dutch administration and the anthropologists Held and Gerbrands to Dewan Adat Papua, Uncen, SIL and the culture office around 2008; a DAP figure says DAP fixed the seven in 2002. It is not in Mansoben's 1995 study of traditional political systems, which is often assumed.
+- The 2022 laws that created the new provinces (UU 15/2022 for Papua Tengah, UU 29/2022 for Papua Barat Daya) do not mention wilayah adat. The scheme appears in planning documents (Bappenas RPJMN 2020–2024, RIPPP) and in a Papua Barat spatial plan.
+- Official lists disagree at the edges. Nabire is Saireri in a provincial profile, Mee Pago in RPJMN 2020–2024, and split between coast and highlands in DAP statements and Kompas. Mimika appears under Mee Pago, Bomberai and Ha Anim. Puncak Jaya is La Pago in some lists and Mee Pago in others. Mamberamo Raya is Mamta for DAP and Saireri in a 2014 provincial regulation as reported by Jubi. Yapen and Waropen are consistently Saireri; Raja Ampat is consistently Domberai.
+- Papuan scholars question the frame itself: Kondologit calls them culture areas rather than adat areas, Sanggenafa warns that they divide, and Kossay says DAP copied a Dutch map.
+
+So an overlay membership has three states, not two: **whole**, **part**, or **contested**, each with the sources on each side and their dates. A contested membership shows both claims with who makes them.
+
+Under the model: Nabire's spine parent is Papua Tengah. Its overlays are Saireri and Mee Pago, both marked contested, with the provincial profile, RPJMN 2020–2024, DAP and Kompas cited for each reading (one, the other, or split between coast and inland), hatched on the map. Its page has a "Beda versi" section that sets out how sources and people place it, and invites people to add their account. The same treatment applies everywhere: what is public (the literature, the researchers, the documents) is the base, and the platform is where people discuss and correct it.
 
 ### 4.3 Provinces: chip or tree
 
