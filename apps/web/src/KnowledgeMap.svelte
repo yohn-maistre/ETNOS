@@ -255,17 +255,19 @@
         {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}
       </button>
     </header>
+      <p class="km-caption">Setiap garis mewakili satu halaman, kalimat atau sumber. Baris atas memakai tahun yang disebut di dalamnya, baris bawah memakai tahun sumbernya ditulis.</p>
       <button class="km-band" onclick={() => toggle(true)} aria-label="Buka peta wiki">
-        <svg viewBox="0 0 {BAND_W} 140" preserveAspectRatio="none" role="img" aria-label="Sebaran pengetahuan menurut waktu terjadi dan waktu dicatat">
-          <text x="10" y="13" class="km-axis">Terjadi</text>
-          <text x="10" y="79" class="km-axis">Dicatat</text>
+        <span class="km-row-label" style="top: 0">Tahun peristiwa</span>
+        <span class="km-row-label" style="top: 50%">Tahun dicatat</span>
+        <svg viewBox="0 0 {BAND_W} 128" preserveAspectRatio="none" aria-hidden="true">
           <line x1="0" x2={BAND_W} y1="70" y2="70" class="km-rule" />
           {#each bandTicks as t (t.i + '-' + t.y)}<rect x={t.x} y={t.y} width="1.6" height="11" fill={t.c} opacity="0.75" />{/each}
-          {#each bandYears as y}<text x={bx(y)} y="137" class="km-axis">{y}</text>{/each}
-          <text x="8" y="137" class="km-axis">sebelum 1800</text>
-          <text x={BAND_W - UNDATED + 6} y="137" class="km-axis">tanpa tahun</text>
-          <text x={BAND_W - UNDATED + 6} y="79" class="km-axis">{undatedCount}</text>
         </svg>
+        <span class="km-ticks" aria-hidden="true">
+          <span style="left: 0">sebelum 1800</span>
+          {#each bandYears as y}<span style="left: {(bx(y) / BAND_W) * 100}%">{y}</span>{/each}
+          <span style="right: 0">{undatedCount} tanpa tahun</span>
+        </span>
       </button>
   </section>
   {#if open}
@@ -352,11 +354,14 @@
   .km-head p { margin: 2px 0 0; color: var(--muted-foreground); font-size: 13px; font-variant-numeric: tabular-nums; }
   .km-toggle, .km-icon { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; background: var(--card); color: var(--foreground); font-size: 13px; cursor: pointer; }
   .km-icon { padding: 6px 8px; }
-  .km-band { all: unset; display: block; cursor: pointer; width: 100%; border-radius: 10px; }
+  .km-caption { margin: 0; max-width: 70ch; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
+  .km-band { all: unset; position: relative; display: block; cursor: pointer; width: 100%; border-radius: 10px; padding-bottom: 22px; }
+  .km-row-label { position: absolute; left: 0; z-index: 1; font-size: 12px; color: var(--muted-foreground); background: color-mix(in srgb, var(--background) 82%, transparent); padding: 0 4px 0 0; }
+  .km-ticks { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; font-size: 12px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .km-ticks span { position: absolute; bottom: 0; white-space: nowrap; }
   .km-band:focus-visible, .km-toggle:focus-visible, .km-seg button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
-  .km-band svg { display: block; width: 100%; height: 120px; }
+  .km-band svg { display: block; width: 100%; height: 112px; }
   .km-band:hover rect { opacity: 1; }
-  .km-axis { font-size: 11px; fill: var(--muted-foreground); }
   .km-rule { stroke: var(--border); }
   .km-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   .km-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 999px; padding: 2px; background: var(--card); }
@@ -367,7 +372,7 @@
   .km-body { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; }
   .km-stage { position: relative; min-width: 0; height: min(72vh, 640px); }
   .km-stage canvas { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; border-radius: 10px; }
-  .km-note { position: absolute; left: 8px; bottom: 4px; margin: 0; font-size: 11.5px; color: var(--muted-foreground); pointer-events: none; }
+  .km-note { position: absolute; left: 8px; bottom: 4px; margin: 0; font-size: 12.5px; color: var(--muted-foreground); pointer-events: none; }
   .km-legend { grid-column: 1; grid-row: 2; list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted-foreground); }
   .km-legend li { display: flex; align-items: center; gap: 6px; }
   .km-legend span { width: 9px; height: 9px; border-radius: 50%; flex: none; }
@@ -377,14 +382,14 @@
   .km-kicker { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted-foreground); margin-top: 6px !important; }
   .km-meta { font-size: 12.5px; color: var(--muted-foreground); }
   .km-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-  .km-chips span { font-size: 11.5px; border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; color: var(--muted-foreground); }
+  .km-chips span { font-size: 12.5px; border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; color: var(--muted-foreground); }
   .km-open-link { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; text-decoration: underline; text-underline-offset: 3px; }
   .km-trace { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
   .km-trace button { all: unset; cursor: pointer; display: block; padding: 5px 0; border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent); font-size: 13px; line-height: 1.4; }
   .km-trace li:last-child button { border-bottom: 0; }
   .km-trace button:hover { text-decoration: underline; text-underline-offset: 3px; }
   .km-trace button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
-  .km-trace small { display: block; color: var(--muted-foreground); font-size: 11.5px; }
+  .km-trace small { display: block; color: var(--muted-foreground); font-size: 12.5px; }
   @media (max-width: 860px) {
     .km-body { grid-template-columns: 1fr; }
     .km-stage, .km-open .km-stage { height: 62dvh; }

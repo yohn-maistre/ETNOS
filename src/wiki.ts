@@ -32,7 +32,7 @@ function citations(values:string[]) {
  * No network fetch, automatic source ingestion, AT export or training consent.
  */
 /** Markdown/HTML-stripped prose for public excerpts. */
-function plainWikiText(text:string){return text.replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/^\s{0,3}#{1,6}\s+.*$/gm,' ').replace(/[*_`~>|]/g,'').replace(/\s+/g,' ').trim()}
+function plainWikiText(text:string){return text.replace(/```[\s\S]*?```/g,' ').replace(/\s?\[\d+(?:\s*,\s*\d+)*\]/g,'').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/^\s{0,3}#{1,6}\s+.*$/gm,' ').replace(/[*_`~>|]/g,'').replace(/\s+/g,' ').trim()}
 export class Wiki {
   private store:StrataCore
   constructor(store:StrataCore) {this.store=store}
