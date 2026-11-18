@@ -428,3 +428,56 @@ Every UI step uses the impeccable skill, `vite build` and screenshots at phone a
 **Run 3.** Aksara with proper Gemini keys: seven Aksara from the place pack (30), place notebook (48), community-kept Aksara (49).
 
 **Roadmap only.** Clan spaces: a private space and PDS per clan with the communal Aksara on a refurbished machine. The composer build (Aksara arranging typed blocks, steward approval).
+
+## 25. After the 18–19 November research sessions: what to build next *(proposal)*
+
+Written 19 November, morning, before implementation starts. The detail lives in five documents; this section is the short version and the order. Read them in this order:
+
+1. `research/epistemic-multiplex-2026-11-19.md`: the knowledge model (Entity, Assertion, Witness), the motif library, five lenses on importance, how the seed and map were really built (§5), public data and foundation models (§9), voice notes and video (§10), and **three flagships** (§17).
+2. `rationale-threads-2026-11-19.md`: eight proposal threads with findings, research, laws and indicators, plus the flagships table (§0.1).
+3. `research/aksara-living-program-2026-11-18.md`: Ritme (stays as designed; the reel is now a *Temuan* selector beside *Terbaru*).
+4. `research/knowledge-ontology-2026-11-18.md`: the reasoning behind the model (naming superseded).
+5. `framing-and-impact-2026-11-17.md`: the case and the competition.
+
+### 25.1 Private communities: what we have, and what "just talk" still needs
+
+The owner wants a commons where people can simply talk in a private community, separate from private spaces on a self-hosted PDS. Read from the code on 19 November:
+
+- **What exists and is right:**
+  - Communities can be public, listed-private (name visible, talk members-only) or hidden-private (invisible to non-members), with open, approval or invite admission.
+  - Private communities cannot publish to AT (`src/core.ts`).
+  - Search, feeds, knowledge notes, the resident and agent access all exclude them (`src/search.ts`, `src/knowledge.ts`, `src/resident.ts`, `src/agent-access.ts`, governance tests).
+  - Founding with two people, and invite links (`src/founding.ts`).
+  - DMs have an experimental client-encrypted slice.
+- **What is missing:**
+  1. **The honest notice.** The community page says "Isi hanya tersedia bagi anggota saat ini" but not that ETNOS's operator can technically read it. Only the Spaces lab says so. Owner question §22.3 already proposed adding it; it matters for consent and for the juknis honesty rule.
+  2. **A talk view.** Posts are threads only. A simple *Obrolan* view (one chronological stream, newest at the bottom, voice notes inline, refresh on focus) would make a private room feel like a group chat without a new data model.
+  3. **Voice notes in private rooms**, behind signed member-only URLs, deletable by their maker.
+  4. **Storage isolation.** §7 planned one Durable Object per private room; today all communities share the node's database. Keep as planned, after the proposal.
+- **Not for now:** end-to-end encrypted groups (the DM slice shows the way; group keys and recovery are open problems in `architecture.md`). Clan spaces on a self-hosted PDS stay the roadmap path for strong privacy, and AT Spaces (1 December) brings access control, not encryption.
+
+### 25.2 Order *(proposal; estimates are the agent's working time, not measured)*
+
+**Run 1c, before the proposal pack (19–25 November):**
+
+| Step | What | Time | Detail |
+| --- | --- | --- | --- |
+| 1 | Private-room notice; *Obrolan* view | half a day | §25.1 |
+| 2 | **Voice notes**: record, validate, store, waveform, transcript (Whisper), protocol and withdrawal tests; in private rooms too | 1.5–2 days | multiplex §10 |
+| 3 | **Kata Bersama**: import TransNewGuinea.org (CLDF, CC BY 4.0), map to catalogue Glottocodes, words on language pages, concept map, *Masih dipakai? / Bukan begitu / Rekam suaramu* | about 2 days | multiplex §17.3 |
+| 4 | **Siapa yang menulis Papua?**: voice and topic charts from the seed (§5 figures), first entity extraction on one region, gaps and question cards | 2–3 days | multiplex §17.4 |
+| 5 | Proposal pack (step 10 of §24), citing only what is live | — | `proposal/claims-2026-11-18.md` |
+
+**Showcase (December):**
+- **Lensa Kita** with a Mee room's pins (multiplex §17.2), video posts, *Temuan* selector with the first card kinds, and the Ritme slots from Run 3.
+- Runs 2 (multi-identity PDS) and 3 (Aksara with Gemini keys) as already planned.
+
+**Owner decision needed:** does Run 1c go before Run 2, as proposed here, or after it? The earlier order put the PDS first.
+
+### 25.3 Small decisions recorded this session
+
+- **Cards** are our own zod schema in the shape of json-render, not OpenUI (Ritme §8.5). Designed, not built.
+- **Voice posts back to AT Protocol.** Once our voice-post record has run in production, propose it as a community lexicon to the Atmosphere. After the proposal, not before (multiplex §10.3).
+- **Satellite data.** TESSERA (CC0) by default; AlphaEarth as a second witness where its non-commercial terms allow (owner: both "sound good").
+- **No genomics.** Never human data. For plants and animals, only links to public records (multiplex §9.3).
+- **Agents** never post video or a synthetic voice; people may post both.

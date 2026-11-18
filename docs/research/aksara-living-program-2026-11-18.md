@@ -292,11 +292,12 @@ Actions on every card: **Benar · Ada yang salah · Saya tahu lebih**, Simpan ke
 - **Finite at the top, deep below.** After today's cards, "Kamu sudah melihat semua temuan hari ini". Scrolling on continues into **Gali**: older layers, back through time (framing doc §10).
 - **Agents post no video and no synthetic voice.** Cards may embed a person's clip with that person's permission. People themselves may post voice notes and short videos (section 8.6).
 
-### 8.5 OpenUI, json-render or our own spec
+### 8.5 Our own spec, not OpenUI *(aligned 19 November)*
 
-- The composed-views research chose **our own small schema**, borrowing the shape of Vercel's json-render (Apache-2.0) and the data/surface split of Google's A2UI.
-- **OpenUI** (Thesys, MIT) is a newer option: the model writes "OpenUI Lang", a compact line-oriented format, which maps only to components the host registers. Its 1.0 shipped in October 2026, and Thesys reports it uses fewer output tokens than JSON formats on its own benchmark (vendor figures).
-- Fewer tokens matter on the free tier. So: **spike OpenUI Lang for half a day** against our zod schema on five reel cards. Measure tokens, repair rounds and Svelte fit (Svelte support is claimed by one directory listing; *to verify*). Keep our schema unless OpenUI is clearly better on all three.
+- Cards are **our own small zod schema**, decided in `aksara-composed-views-2026-11-18.md`: a flat element tree in the shape of Vercel's json-render (Apache-2.0), with the data/surface split of Google's A2UI. Strata owns the schema because its bindings are queries with visibility rules and stored views must stay valid for years.
+- The only spike is half a day on `@json-render/svelte` as a renderer; if it does not fit, a renderer of about 200 lines.
+- **OpenUI (Thesys) is not used**: a hosted generator adds a vendor and a data path, and its licence was unclear when checked. Its one good idea, a compact line format with fewer output tokens than JSON, is worth revisiting only if JSON specs prove too long on the free tier.
+- Status: designed, not built. New card kinds from this session (*Cuaca dan musim*, *Lanskap berubah*, *Suara hutan*, *Suara warga*, and *Kata Bersama* and *Lensa Kita* cards from multiplex note §17) are primitives in the same catalogue.
 
 ### 8.6 Voice and video from people *(added 19 November)*
 

@@ -26,6 +26,16 @@ Laws and policies are paraphrased, not quoted, and each one names its article wh
 
 Section 9 maps each thread to the proposal's sections and the deck's ten slides. Section 10 is the regulatory map in one table.
 
+### 0.1 Three flagships across the threads *(added 19 November; design in `research/epistemic-multiplex-2026-11-19.md` §17)*
+
+| Flagship | One line | Threads it carries |
+| --- | --- | --- |
+| **Kata Bersama** | The largest open database of New Guinea wordlists holds 41 words of Ekari, all from one 1975 source; speakers confirm, correct and voice their words, and corrections go back to open science with consent | 1, 5, 2, 8 |
+| **Siapa yang menulis Papua?** | The voices and topics behind the open record (92% encyclopaedia; administration and population 31%, culture and ecology under 6%) and how they move as tellers join | 1, 3, 7 |
+| **Lensa Kita** | A community's own landscape categories become a map through a tiny classifier on open satellite embeddings that the community owns; what the satellite cannot learn is the cultural residual, and residual times vitality says what to record first | 3, 4, 5, 2 |
+
+The idea that ties them: **small sovereign heads on big open bodies.** Open foundation models already turn land, sound and speech into embeddings; a community adds its categories with a few dozen examples, and the resulting lens is small enough to own, inspect, share under protocol or delete. It is a sovereign model sized to a people, and it reverses the usual direction of extraction.
+
 ## 1. Ditulis tentang kita (written about us)
 
 **Claim.** Most published knowledge about Tanah Papua was written by outsiders, and the open web's version of it is mostly the state's administrative view. The people it describes can rarely read it and almost never answer it. Strata makes their answer part of the record.

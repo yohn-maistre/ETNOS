@@ -2,7 +2,7 @@
 
 19 November 2026, early morning. Design research; no code changed. It follows `knowledge-ontology-2026-11-18.md` and replaces its naming and its analysis sections; that note's reasoning on what the things are, seeding and the first-person voice still stands. Marks: *(proposal)* for suggestions the owner can overturn, *(not measured)* for estimates, *(to verify)* for open checks, *(rencana)* for anything not built. Nothing in this note is running yet. Sources are at the end.
 
-**Revised 19 November, morning:** section 5 corrected after reading the seed pipeline end to end (the first draft overstated one figure); new sections 9 (public data and foundation models as the measurement layer) and 10 (multimodal witnesses: voice notes, video, photos, with the technical path); motifs M20–M23 added. Later sections renumbered.
+**Revised 19 November, morning:** section 5 corrected after reading the seed pipeline end to end (the first draft overstated one figure); new sections 9 (public data and foundation models as the measurement layer) and 10 (multimodal witnesses: voice notes, video, photos, with the technical path); motifs M20–M23 added. Later sections renumbered. **Second revision, same morning:** section 17 (three flagships and the idea that ties them together) added; sources moved to 18.
 
 For the case built on top of this note (why it matters, which laws and policies it answers, how it maps to the proposal), read `../rationale-threads-2026-11-19.md`.
 
@@ -361,6 +361,7 @@ The owner wants people to post **voice notes and short videos**, as on Threads, 
 **On AT Protocol:**
 - Bluesky's video embed allows up to 10 minutes and 300 MB per video with up to 20 WebVTT caption files, handled by a separate video service before the blob reaches the PDS. A Strata video post can use the same shape, so it plays in other Atmosphere apps.
 - There is no standard audio post in Bluesky's schemas. Strata defines its own voice-post record (audio blob, waveform, transcript, language, protocol). For reach, a voice note can also be published as a short video with a waveform frame, so it plays in Bluesky. *(proposal)*
+- **Contribute it back** *(flagged by the owner, 19 November; after the proposal, not before)*: once our voice-post record has run in production, publish it as a community lexicon and propose it to the Atmosphere (the community lexicon index at lexicon.garden, and the AT Protocol developer community), so any app can post and play voice notes. Same later for the place, language and assertion records if they prove useful to others.
 
 **Estimated effort** *(agent's working time, not measured)*: voice notes with transcripts, about 1.5–2 days including tests for access and withdrawal; video with Stream or R2, about 2 days more.
 
@@ -427,7 +428,119 @@ About 6–7 days for the first wave, 3–5 for the second, and 7–9 more for mu
 5. TESSERA (CC0, fully open) or AlphaEarth (Earth Engine, non-commercial) as the default land embedding? *(Recommended: TESSERA by default, AlphaEarth as a second witness where its terms allow.)*
 6. Video in the showcase, or voice notes only? *(Recommended: voice notes for the proposal; video as a showcase stretch if voice ships.)*
 
-## 17. Sources
+## 17. Flagships: what to build with all this *(proposal, 19 November)*
+
+The owner asked for something more ambitious than more charts: a flagship that uses these open models and motifs, in service of preservation, of knowledge organisation, and of paths for science that start from Indigenous knowledge.
+
+### 17.1 The idea that ties it together
+
+**Small sovereign heads on big open bodies.** Open foundation models (TESSERA and AlphaEarth for land, Perch for sound, Omnilingual for speech, multilingual text encoders) have already done the expensive part: they turn the world into embeddings. What they lack is a people's categories. A community can supply those categories with a few dozen examples, and a tiny classifier (a linear probe, a few kilobytes) turns the open embeddings into **a lens in the community's own terms**. Evidence that this works with few labels:
+- On TESSERA, a single logistic regression trained in seconds on a laptop reaches about 84% weighted accuracy on land cover in a public demo.
+- TESSERA's paper reports about 0.5 F1 with only four labelled samples per class on crop types.
+- AlphaEarth was evaluated with one, ten and a few hundred samples per class.
+
+Three consequences matter:
+
+1. **It reverses the usual direction of extraction.** Instead of large companies training on Indigenous data, a community trains a tiny model on openly released embeddings. Its labels never have to leave the commons. The probe is small enough to inspect, keep in the community's own repository, share under a protocol, or delete. This is the owner's "sovereign model for internal use", sized to a people and available now.
+2. **What the lens cannot learn is information too.** Where a community's category is predictable from open embeddings, the open world can reconstruct it. Where it is not (a category defined by history, custody, a story or a relationship), the category is **cultural residual**: knowledge no satellite or sound model can recover. Residual is a measurable signature of irreplaceable knowledge.
+3. **Residual times vitality is a preservation priority.** Knowledge that is both unrecoverable by machines and fading among people (vitality lens, section 7) is what to record first, with whom, now.
+
+### 17.2 Flagship A: **Lensa Kita** (our lens), land first
+
+*What a judge sees:* in a private Mee room, members have dropped pins on a map for five or six of their own landscape categories, named in Mee with a voice note (for example kinds of garden, forest and wetland). A few minutes later the room sees:
+- Paniai in those categories, as a map in the people's own legend.
+- A card saying which categories the satellite can see and which it cannot (the residual).
+- How each category changed since 2017.
+- Where the people's categories split or merge the official land-cover classes: Berlin's folk–science correspondence (M18), applied to land.
+
+*How it works:*
+1. A pin layer in a private community. Pins are stored like posts, under the room's protocol.
+2. At build time, a script reads TESSERA embeddings (CC0, streamed over HTTPS) for the pins and for the region at a coarse grid.
+3. It trains a logistic regression with spatial cross-validation, and writes a small probe file, a coarse prediction raster, per-class scores and a confusion table.
+4. The room renders this as a map overlay and a card from the composed-view catalogue.
+
+The run happens on the owner's machine or in a CI job, because the agent workspace cannot reach the data host. Nothing leaves the room unless its stewards publish it.
+
+*Rules:*
+- Private by default.
+- No sacred categories, no named sites.
+- Coarse resolution.
+- No boundary claims by Aksara.
+- The community decides what any map is for.
+
+Such maps may one day support a customary-forest recognition file (MK 35/PUU-X/2012; Permen LHK P.17/2020 asks for evidence that a forest is managed and used by the community). If so, the community uses them, on its own terms.
+
+*Research question:* **how much of a people's landscape vocabulary is visible from space, and what is left over?** (M22, M20).
+
+*Effort (agent time, not measured):*
+- Pins and room overlay: about 1 day.
+- Pipeline and probe: about 1 day.
+- Cards: half a day.
+- People's time: one evening for 3–5 Mee speakers to drop and name pins.
+
+*Then sound:* the same pattern with Perch 2.0 on consented forest recordings, so bird and frog calls are named by people (M23).
+
+### 17.3 Flagship B: **Kata Bersama** (shared words)
+
+*The problem, in one line:* TransNewGuinea.org, the largest open database of New Guinea wordlists (588 languages, 1,027 meanings, 124,464 words; CC BY 4.0 as a Lexibank CLDF dataset), holds **41 words of Ekari, all from a single 1975 source**. The open record of the Mee language is a list a child could say in a minute.
+
+*What a judge sees:*
+- Every language page in ETNOS shows its published words with their source, as witnesses.
+- Each concept has a map ("pig", "sweet potato", "sago", "tree") showing the word across the languages of New Guinea.
+- Speakers tap *Masih dipakai?*, *Bukan begitu di kampung kami* or *Rekam suaramu*, and every answer is a voice witness and a vitality data point.
+- A colexification view (CLICS, a CLDF network of which concepts share one word across 3,000+ languages) shows how Papuan languages group meanings, and where a living community's usage differs from the 1975 record.
+
+*Two-way:* with the speakers' consent, corrections and new words are offered back to TransNewGuinea.org and Lexibank as attributed contributions. The commons gives to open science instead of only taking from it.
+
+*Research question:* **how do Papuan languages carve meaning, and how far does today's usage differ from the published record?** It feeds the vitality lens.
+
+*Effort:*
+- Import the CLDF dataset and map its languages to the catalogue's Glottocodes: about half a day.
+- Concept map and language-page block: about 1 day.
+- Confirm, correct and record actions, using voice notes: half a day once voice notes exist.
+
+The data is on GitHub and Zenodo, so the import can run here.
+
+### 17.4 Flagship C: **Siapa yang menulis Papua?** (who wrote Papua?)
+
+The observatory flagship. Entities and assertions are extracted from the seed and laid out as a multiplex by voice, with gaps (M8) and predicted links turned into question cards (M9).
+
+*The headline chart:*
+- the voices behind the open record (92% encyclopaedia today);
+- the topics the record covers (administration and population 31%, culture and ecology under 6%);
+- how both move as tellers join.
+
+OpenAlex adds a third series: what scholarship has studied, set against what people ask Aksara (the demand lens).
+
+*Effort:* about 2–3 days. It is the per-regency state-of-knowledge report from the framing doc, made rigorous.
+
+### 17.5 How they fit
+
+| | Lensa Kita | Kata Bersama | Siapa yang menulis Papua? |
+| --- | --- | --- | --- |
+| Preservation | Residual × vitality says what to record first | Words confirmed, corrected and voiced | Gaps become questions |
+| Knowledge organisation | A people's scheme becomes a working lens | Words linked to standard concepts without losing the community's own | Entities, assertions, voices |
+| Science | Land categories meet satellite embeddings; folk–science correspondence | Contributions back to open linguistic data | A provenance-aware dataset for research |
+| Sovereignty | Probe owned by the room, labels never leave | Consent before anything is offered back | Voice layers show whose record it is |
+| Judge criteria | Akar budaya, teknis | Akar budaya, proposal | Proposal, teknis |
+| Ready by | Showcase (18–19 Dec) | Proposal (26–27 Nov) if started now | Proposal or showcase |
+
+**Recommended order:**
+1. Voice notes first; the other two use them.
+2. **Kata Bersama**, which is quick, real and proposal-ready.
+3. **Siapa yang menulis Papua?**, the observatory headline.
+4. **Lensa Kita** as the showcase centrepiece, once a Mee room has dropped its pins.
+
+### 17.6 Research questions, consolidated
+
+1. Whose Papua? How do colonial, mission, state, scholarly, Papuan and tellers' voices structure the same world? (multiplex)
+2. How much of a people's landscape vocabulary is visible from space, and what is the cultural residual? (Lensa Kita)
+3. Which knowledge is irreplaceable and fading, and so should be recorded first? (residual × vitality)
+4. How do Papuan languages carve meaning, and how far has usage moved from the published record? (Kata Bersama, CLICS)
+5. Does a commons learn? Do its knowledge gaps open and close the way science's do? (topology)
+6. Where do folk and scientific classifications of living kinds and landscapes agree? (M18, M22)
+
+## 18. Sources
 
 Read 18–19 November 2026.
 
@@ -497,6 +610,9 @@ Read 18–19 November 2026.
 - Perch 2.0: <https://www.kaggle.com/models/google/bird-vocalization-classifier>, <https://deepmind.google/blog/how-ai-is-helping-advance-the-science-of-bioacoustics-to-save-endangered-species/>
 - Omnilingual ASR: <https://ai.meta.com/blog/omnilingual-asr-advancing-automatic-speech-recognition/>, <https://arxiv.org/html/2511.09690>, <https://github.com/facebookresearch/omnilingual-asr/>
 - Pl@ntNet API pricing: <https://my.plantnet.org/pricing>; GBIF API: <https://techdocs.gbif.org/en/openapi/>; iNaturalist datasets: <https://www.inaturalist.org/pages/developers>
+- TransNewGuinea.org: <https://transnewguinea.org/>, Ekari entry <https://transnewguinea.org/language/ekari>, Greenhill (2015) *PLOS ONE* <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0141563>, CLDF release v3.2 (CC BY 4.0) <https://zenodo.org/records/14162587>
+- CLICS colexifications: Rzymski et al. (2020), *Scientific Data* <https://www.nature.com/articles/s41597-019-0341-x>; <https://clics.clld.org/>
+- Few-label probes on satellite embeddings: TESSERA paper <https://arxiv.org/abs/2506.20380>; TESSERA linear-probe demo <https://github.com/isan-miguel/tessera-demo>; AlphaEarth paper <https://arxiv.org/abs/2507.22291v2>
 - CLDF <https://cldf.clld.org/>; Lexibank (2022) <https://www.nature.com/articles/s41597-022-01432-0>; Grambank <https://grambank.clld.org/>; Concepticon <https://github.com/concepticon/concepticon-cldf>
 - AlphaGenome API and terms: <https://github.com/google-deepmind/alphagenome>; AlphaGenome 2 (November 2026): <https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/>
 - AT Protocol video handling: <https://atproto.com/guides/video-handling>; Bluesky 10-minute videos (August 2026): <https://techcrunch.com/2026/08/26/bluesky-now-lets-you-upload-10-minute-long-videos/>; video embed limits: <https://opentweet.io/tools/bluesky-video-checker>
