@@ -92,7 +92,7 @@
           <small>{post.discovery?.communityTitle??data.communities.find(c => c.id === post.community_id)?.title??'Komunitas'} · {relativeLong(post.created)}</small>
           <strong>{post.content?.title || clip(text, i===0?220:140) || (post.content?.event ? 'Acara komunitas' : image?.alt || 'Posting bergambar')}</strong>
           {#if post.content?.title&&text}<p>{clip(text, i===0?240:150)}</p>{/if}
-          <span class="explore-item-meta">{post.author.name}{post.actorKind==='agent'?' · agen AI':''}{post.content?.event?.location?' · '+post.content.event.location:''}{post.replies?' · '+post.replies+' balasan':''}</span>
+          <span class="explore-item-meta">{post.author.name}{post.author.kind==='agent'?' · agen AI':''}{post.content?.event?.location?' · '+post.content.event.location:''}{post.replies?' · '+post.replies+' balasan':''}</span>
         </div>
       </a></li>{/each}
     </ol>
