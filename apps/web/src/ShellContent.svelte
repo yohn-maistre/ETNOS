@@ -70,6 +70,7 @@
     { href: '/notifications', label: 'Aktivitas', icon: Bell },
     { href: '/saved', label: 'Tersimpan', icon: Bookmark },
   ]
+  const exploreSections = [['tempat', 'Tempat'], ['bahasa', 'Bahasa'], ['topik', 'Topik']]
   const navGroups = $derived(auth.actor ? [nav.slice(0, 5), nav.slice(5)] : [nav.slice(0, 5)])
   function active(href: string) {
     return href === '/'
@@ -136,6 +137,14 @@
                       </span>{/if}
                   </a>{/snippet}
               </Sidebar.MenuButton>
+              {#if item.href === '/explore'}<!-- Places, languages and topics, one tap away for people who open the menu before Jelajah. -->
+                <Sidebar.MenuSub class="nav-sub">
+                  {#each exploreSections as [hash, label]}<Sidebar.MenuSubItem>
+                      <Sidebar.MenuSubButton href={'/explore#' + hash} onclick={() => sidebar.setOpenMobile(false)}>
+                        <span>{label}</span>
+                      </Sidebar.MenuSubButton>
+                    </Sidebar.MenuSubItem>{/each}
+                </Sidebar.MenuSub>{/if}
             </Sidebar.MenuItem>{/each}
         </Sidebar.Menu>
       </Sidebar.Group>{#if section === 0 && auth.actor}

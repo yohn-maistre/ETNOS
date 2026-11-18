@@ -24,3 +24,4 @@
 2026-11-18v Studio: Pasang label awal labels the 39 seed wiki pages with their region, kabupaten or language
 2026-11-18w node stewards can retire a place, language or topic page
 2026-11-18x Jelajah becomes the home of places, languages and topics
+2026-11-18y Tempat, Bahasa and Topik under Jelajah in the menu
