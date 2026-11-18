@@ -42,6 +42,6 @@ Pages need an open, citable source. These have Wikipedia articles in Indonesian 
 
 ## Next
 
-- Survey and verify the candidates above (helper task, background).
+- Survey done for eight pages (Danau Paniai, Danau Tigi, Danau Tage, Puncak Jaya, Danau Habema, Lembah Baliem, Gunung Trikora, Teluk Cenderawasih), kept in `seed/drafts/beings-survey-2026-11-18.unverified.json`. Verification is pending: Wikipedia returned HTTP 429 to this environment on 18 November. Next run: move the entries back into `seed/wiki/<region>.json`, run `scripts/verify-wiki-seed.py --prune`, then write pages from kept sentences only.
 - Rebuild `apps/web/public/observatory/map.json` once pages are proposed, so the Alam row and Peta wiki show them.
 - After the showcase: a page kind for stories (task 28, Cerita with variants) and a way for a community to mark a page as held by a clan (Local Contexts TK Clan label), which is the bridge to clan spaces.
