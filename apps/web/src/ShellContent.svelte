@@ -138,7 +138,7 @@
               </Sidebar.MenuButton>
             </Sidebar.MenuItem>{/each}
         </Sidebar.Menu>
-      </Sidebar.Group>{#if section === 0}
+      </Sidebar.Group>{#if section === 0 && auth.actor}
         <div class="px-4 pt-2">
           <Button
             class="w-full sidebar-compose"
@@ -326,10 +326,14 @@
     <Compass size={21} />
     <span aria-hidden="true">Jelajah</span>
   </Button>
-  <Button size="icon" aria-label="Posting baru" onclick={onCompose}>
+  <!-- Visitors get four places: Beranda, Jelajah, Masuk in the middle, Menu. Posting and Aktivitas need an account. -->
+  {#if auth.actor}<Button size="icon" aria-label="Posting baru" onclick={onCompose}>
     <Plus size={23} />
     <span aria-hidden="true">Posting</span>
-  </Button>
+  </Button>{:else}<Button href="/login" size="icon" aria-label="Masuk" class="dock-signin">
+    <LogIn size={21} />
+    <span aria-hidden="true">Masuk</span>
+  </Button>{/if}
   {#if auth.actor}<Button
     href="/notifications"
     variant="ghost"
@@ -340,15 +344,6 @@
   >
     <span class="mobile-activity-icon"><Bell size={21} />{#if unread}<span class="notification-count" aria-hidden="true">{unread>99?'99+':unread}</span>{/if}</span>
     <span aria-hidden="true">Aktivitas</span>
-  </Button>{:else}<Button
-    href="/login"
-    variant="ghost"
-    size="icon"
-    aria-label="Masuk"
-    aria-current={active('/login') ? 'page' : undefined}
-  >
-    <LogIn size={21} />
-    <span aria-hidden="true">Masuk</span>
   </Button>{/if}
   <Button
     variant="ghost"

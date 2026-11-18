@@ -1582,9 +1582,10 @@
           <h1>Hasil pencarian</h1>
         </div>{:else}<h1 class="sr-only">Beranda</h1>
         <SkyStrip />
-        <div class="cx-composer-bar">
-          <span class="cx-avatar sage avatar-tinted" style={avatarTone(auth.actor?.id??'visitor')}>
-            {auth.actor ? initials(auth.actor.name) : '+'}
+        <!-- Writing needs an account; visitors reach Masuk from the dock and the menu. -->
+        {#if auth.actor}<div class="cx-composer-bar">
+          <span class="cx-avatar sage avatar-tinted" style={avatarTone(auth.actor.id)}>
+            {initials(auth.actor.name)}
           </span>
           <Button
             onclick={() => open('compose')}
@@ -1601,7 +1602,7 @@
           >
             Posting
           </Button>
-        </div>{/if}
+        </div>{/if}{/if}
       {#if loading && !displayPosts.length}<ContentSkeleton />{/if}
       {#each displayPosts as p}<PostCard
           post={p}
