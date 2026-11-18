@@ -1,5 +1,6 @@
 <script lang="ts">
-  // Wiki home sections built from the same public data as Peta wiki: places and peoples first,
+  // Wiki home sections built from the same public data as Peta wiki: places first, with the mountains,
+  // lakes, forests and species of each region before its peoples and languages,
   // then a few pages per domain, rotated by day and narrowed by the chosen place.
   import { onMount } from 'svelte'
   import { ArrowUpRight } from '@lucide/svelte'
@@ -26,6 +27,7 @@
           reg: r.reg,
           title: home?.t ?? r.t,
           href: home?.href,
+          beings: own.filter((p) => p.kind === 'being'),
           peoples: own.filter((p) => p.kind === 'people'),
           languages: own.filter((p) => p.kind === 'language'),
           places: own.filter((p) => p.kind === 'regency').length,
@@ -55,6 +57,7 @@
           <div class="wp-body">
             {#if r.href}<a class="wp-title" href={r.href}>{r.title}</a>{:else}<span class="wp-title">{r.title}</span>{/if}
             <p class="wp-count">{r.places} halaman kabupaten</p>
+            {#if r.beings.length}<p class="wp-list"><span>Alam</span>{#each r.beings as p, i}<a href={p.href}>{p.t}</a>{i < r.beings.length - 1 ? ', ' : ''}{/each}</p>{/if}
             {#if r.peoples.length}<p class="wp-list"><span>Suku</span>{#each r.peoples as p, i}<a href={p.href}>{p.t.replace(/^Suku /, '')}</a>{i < r.peoples.length - 1 ? ', ' : ''}{/each}</p>{/if}
             {#if r.languages.length}<p class="wp-list"><span>Bahasa</span>{#each r.languages as p, i}<a href={p.href}>{p.t.replace(/^Bahasa /, '')}</a>{i < r.languages.length - 1 ? ', ' : ''}{/each}</p>{/if}
           </div>
