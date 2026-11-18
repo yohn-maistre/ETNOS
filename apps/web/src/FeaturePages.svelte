@@ -23,13 +23,18 @@
   import * as Tabs from '$lib/components/ui/tabs/index.js'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import Choice from './Choice.svelte'
-  import PlaceStrata from './PlaceStrata.svelte'
-  import PlaceCommunities, { type PlaceCommunity } from './PlaceCommunities.svelte'
-  import CoreSample from './CoreSample.svelte'
-  import Literature from './Literature.svelte'
+  import type { PlaceCommunity } from './PlaceCommunities.svelte'
+  import ThingPage, { type ThingTab } from './ThingPage.svelte'
   import { openWorkStates } from './place-layers'
   import { facetNames, orderedParents } from './context-tree'
   // A description that only restates the kind ("Kelompok topik: …") drops that prefix; the badge already says it.
+  const tabNames = ['tentang', 'percakapan', 'kabar', 'komunitas', 'sumber']
+  // Lapisan is the Kabar tab now; its old address still opens there.
+  const thingTab = $derived.by((): ThingTab => {
+    if (segments[2] === 'lapisan') return 'kabar'
+    const t = typeof location === 'undefined' ? '' : new URLSearchParams(location.search).get('tab') ?? ''
+    return (tabNames.includes(t) ? t : 'tentang') as ThingTab
+  })
   const blurb = (text: string | undefined, kind: string | undefined) => {
     const t = (text ?? '').trim()
     return kind && t.toLowerCase().startsWith(kind.toLowerCase() + ':') ? t.slice(kind.length + 1).trim().replace(/^./, (c) => c.toUpperCase()) : t
@@ -737,165 +742,23 @@
             </Button>{/if}
         </article>{/each}
     </Card.Root>{/if}
-{:else if segments[0] === 'contexts' && context && segments[2] === 'lapisan'}
-  <CoreSample {context} {posts} {works} {auth} {onCompose} />
 {:else if segments[0] === 'contexts' && context}
   {@const contextBlurb = blurb(context.description, facetNames[context.facet ?? ''] ?? kinds[context.kind])}
-  <PlaceStrata
-    contextId={context.id}
-    slug={context.slug}
-    title={context.title}
-    places={context.newsPlaces ?? []}
-    posts={posts.length}
-    pages={context.pages.length}
-    works={works.filter((w) => openWorkStates.has(w.state)).length}
+  <ThingPage
+    thing={context}
+    kindLabel={facetNames[context.facet ?? ''] ?? kinds[context.kind] ?? 'Topik'}
+    blurb={contextBlurb}
+    {posts}
+    {works}
+    {auth}
+    {communities}
+    canVote={isMember}
+    initialTab={thingTab}
+    {onError}
+    {onCompose}
+    onStartCommunity={onStartCommunity ? () => onStartCommunity({ id: context!.id, title: context!.title }) : undefined}
+    stewardTools={auth.steward ? stewardNews : undefined}
   />
-  <div class="cx-detail-head context-detail-heading">
-    {#if context.kind !== 'topic' || context.facet}<Badge variant="secondary">
-        {facetNames[context.facet ?? ''] ?? kinds[context.kind]}
-      </Badge>{/if}
-    <h1>{context.title}</h1>
-    {#if context.parents?.length}<p class="context-parents">
-        Bagian dari:
-        {#each orderedParents(context.parents) as p, i (p.id)}{#if i}<span aria-hidden="true">·</span>{/if}<a href={'/contexts/' + p.slug}>{p.title}</a>{/each}
-      </p>{/if}
-    {#if contextBlurb}<p>{contextBlurb}</p>{/if}
-    {#if context.family}<p class="context-basis">
-        Dasar label: {context.family.basis}
-        {#each context.family.sources as src (src.url)}<a href={src.url} target="_blank" rel="noreferrer">{src.title}</a>{/each}
-        <a href="/tentang#about-basis">Semua dasar</a>
-      </p>{/if}
-    {#if auth.steward}<details class="place-news-setup" ontoggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) void loadPlaceOptions() }}>
-        <summary>Atur tempat kabar</summary>
-        <form
-          onsubmit={async (e) => {
-            e.preventDefault()
-            if (!context) return
-            const slugs = newsPlacesDraft
-              .split(',')
-              .map((x) => x.trim().toLowerCase().replace(/\s+/g, '-'))
-              .filter((x) => /^[-a-z0-9]{1,100}$/.test(x))
-            try {
-              await request('/v1/contexts/' + context.id + '/aliases', {
-                aliases: [
-                  ...(context.aliases ?? []).filter((a) => !a.startsWith('kabar:')),
-                  ...slugs.map((x) => 'kabar:' + x),
-                ],
-              })
-              const next = await request<ContextDetail>('/v1/contexts/' + context.id)
-              context = next
-              newsPlacesDraft = (next.newsPlaces ?? []).join(', ')
-            } catch (error) {
-              onError(error instanceof Error ? error.message : 'Tempat kabar belum tersimpan.')
-            }
-          }}
-        >
-          {#if placeOptions.length}
-            <Label for="place-news-filter">Pilih tempat kabar</Label>
-            <Input id="place-news-filter" type="search" bind:value={placeFilter} placeholder="Cari tempat" autocomplete="off" />
-            <div class="place-news-list" role="group" aria-label="Tempat kabar">
-              {#each visiblePlaces as p (p.slug)}
-                <label class="place-news-option">
-                  <input type="checkbox" checked={draftSlugs.includes(p.slug)} onchange={(e) => togglePlace(p.slug, e.currentTarget.checked)} />
-                  <span>{p.name}</span>
-                </label>
-              {:else}
-                <p class="cx-hint">Tidak ada tempat yang cocok.</p>
-              {/each}
-            </div>
-            <Label for="place-news-slugs">Tempat lain (nama pendek, dipisah koma)</Label>
-            <Input id="place-news-slugs" value={extraSlugs.join(', ')} onchange={(e) => setExtraPlaces(e.currentTarget.value)} placeholder="nabire, paniai" autocomplete="off" />
-          {:else}
-            <Label for="place-news-slugs">Nama tempat kabar, dipisah koma</Label>
-            <Input id="place-news-slugs" bind:value={newsPlacesDraft} placeholder="nabire, paniai, deiyai" autocomplete="off" />
-          {/if}
-          <p class="cx-hint">Kabar dari tempat-tempat ini tampil di halaman {context.title}. Kosongkan untuk memakai nama halaman ini saja.</p>
-          <Button type="submit" size="sm">Simpan</Button>
-        </form>
-      </details>{/if}
-  </div>
-  {#if context.children?.length}<section
-      class="context-children"
-      aria-labelledby="context-children-heading"
-    >
-      <h2 id="context-children-heading">
-        {context.children.every((c) => c.kind === 'place') ? 'Kabupaten & kota' : context.facet === 'institution-kind' ? 'Jenis lembaga' : 'Di dalamnya'}
-        <span>{context.childCount ?? context.children.length}</span>
-      </h2>
-      <div class="context-chips">
-        {#each context.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}
-      </div>
-    </section>{/if}
-  <PlaceCommunities communities={context.communities ?? []} title={context.title} onStart={onStartCommunity ? () => onStartCommunity({ id: context!.id, title: context!.title }) : undefined} />
-  {#if context.pages.length || context.groups.length || works.length}<nav
-      class="context-relations section-tab-scroll"
-      aria-label={'Terhubung dengan ' + context.title}
-    >
-      <a href="#context-posts"><MessageCircle size={16} />Percakapan</a>
-      {#if context.pages.length}
-        <a href="#context-wiki">
-          <BookOpen size={16} />Wiki
-          <span>{context.pages.length}</span>
-        </a>{/if}
-      {#if context.groups.length}
-        <a href="#context-groups">
-          <Building2 size={16} />Organisasi
-          <span>{context.groups.length}</span>
-        </a>{/if}
-      {#if works.length}
-        <a href="#context-work">
-          <ListTodo size={16} />Kerja publik
-          <span>{works.length}</span>
-        </a>{/if}
-    </nav>{/if}
-  <section id="context-posts" aria-label="Percakapan">
-    {#each posts as post}<PostCard
-        {post}
-        community={communities.find((c) => c.id === post.community_id)}
-        loggedIn={!!auth.actor}
-        canVote={isMember(post.community_id)}
-        {onError}
-      />{/each}
-    {#if !posts.length}<div class="strata-nodata">
-        <p>Belum ada percakapan tentang {context.title}.</p>
-      </div>{/if}
-  </section>
-  {#if context.groups.length}
-    <section id="context-groups" class="context-relation-section">
-      {#if context.groups.length}<div class="strata-card">
-          <h2>Organisasi</h2>
-          {#each context.groups as g}<a
-              href={'/groups/' + g.id}
-              class="cx-list-row"
-            >
-              <Building2 size={18} />{g.title}<ArrowUpRight size={15} />
-            </a>{/each}
-        </div>{:else}<p class="context-empty">
-          Belum ada organisasi tertaut.
-        </p>{/if}
-    </section>{/if}
-  {#if context.pages.length}
-    <section id="context-wiki" class="context-relation-section">
-      {#if context.pages.length}<div class="strata-card">
-          <h2>Wiki</h2>
-          {#each context.pages as p}<a
-              href={'/wiki/' + p.id}
-              class="cx-list-row"
-            >
-              <BookOpen size={18} />{p.title}
-            </a>{/each}
-        </div>{:else}<p class="context-empty">
-          Belum ada halaman wiki tertaut.
-        </p>{/if}
-    </section>{/if}
-  {#if context.facet !== 'topic-group'}<Literature slug={context.slug} title={context.title} />{/if}
-  {#if works.length}
-    <section id="context-work" class="context-relation-section">
-      {#if works.length}<div class="strata-card"><h2>Kerja publik</h2></div>
-        {@render workList(works)}{:else}<p class="context-empty">
-          Belum ada kerja publik tertaut.
-        </p>{/if}
-    </section>{/if}
 {:else if segments[0] === 'work'}
   <div class="cx-page-head">
     <h1>Kerja publik</h1>
@@ -1249,3 +1112,54 @@
     </form>
   </Dialog.Content>
 </Dialog.Root>
+
+{#snippet stewardNews()}
+  <details class="place-news-setup" ontoggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) void loadPlaceOptions() }}>
+        <summary>Atur tempat kabar</summary>
+        <form
+          onsubmit={async (e) => {
+            e.preventDefault()
+            if (!context) return
+            const slugs = newsPlacesDraft
+              .split(',')
+              .map((x) => x.trim().toLowerCase().replace(/\s+/g, '-'))
+              .filter((x) => /^[-a-z0-9]{1,100}$/.test(x))
+            try {
+              await request('/v1/contexts/' + context.id + '/aliases', {
+                aliases: [
+                  ...(context.aliases ?? []).filter((a) => !a.startsWith('kabar:')),
+                  ...slugs.map((x) => 'kabar:' + x),
+                ],
+              })
+              const next = await request<ContextDetail>('/v1/contexts/' + context.id)
+              context = next
+              newsPlacesDraft = (next.newsPlaces ?? []).join(', ')
+            } catch (error) {
+              onError(error instanceof Error ? error.message : 'Tempat kabar belum tersimpan.')
+            }
+          }}
+        >
+          {#if placeOptions.length}
+            <Label for="place-news-filter">Pilih tempat kabar</Label>
+            <Input id="place-news-filter" type="search" bind:value={placeFilter} placeholder="Cari tempat" autocomplete="off" />
+            <div class="place-news-list" role="group" aria-label="Tempat kabar">
+              {#each visiblePlaces as p (p.slug)}
+                <label class="place-news-option">
+                  <input type="checkbox" checked={draftSlugs.includes(p.slug)} onchange={(e) => togglePlace(p.slug, e.currentTarget.checked)} />
+                  <span>{p.name}</span>
+                </label>
+              {:else}
+                <p class="cx-hint">Tidak ada tempat yang cocok.</p>
+              {/each}
+            </div>
+            <Label for="place-news-slugs">Tempat lain (nama pendek, dipisah koma)</Label>
+            <Input id="place-news-slugs" value={extraSlugs.join(', ')} onchange={(e) => setExtraPlaces(e.currentTarget.value)} placeholder="nabire, paniai" autocomplete="off" />
+          {:else}
+            <Label for="place-news-slugs">Nama tempat kabar, dipisah koma</Label>
+            <Input id="place-news-slugs" bind:value={newsPlacesDraft} placeholder="nabire, paniai, deiyai" autocomplete="off" />
+          {/if}
+          <p class="cx-hint">Kabar dari tempat-tempat ini tampil di halaman {context?.title}. Kosongkan untuk memakai nama halaman ini saja.</p>
+          <Button type="submit" size="sm">Simpan</Button>
+        </form>
+      </details>
+{/snippet}

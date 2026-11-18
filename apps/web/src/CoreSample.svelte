@@ -14,12 +14,15 @@
     works,
     auth,
     onCompose,
+    embedded = false,
   }: {
     context: { id: string; slug: string; title: string; pages: { id: string; title: string }[]; newsPlaces?: string[] }
     posts: Post[]
     works: { id: string; title: string; state: string; updated: number; sponsor: { title: string } }[]
     auth: Auth
     onCompose?: (place?: { id: string; title: string }) => void
+    /** Inside a thing page's Kabar tab: no cover, no back link, and a short news list. */
+    embedded?: boolean
   } = $props()
   type Reviewed = { id: string; updated: number; reviewer?: { name: string; kind: string } }
   const week = 7 * 86400000,
@@ -63,28 +66,29 @@
   }
 </script>
 
-<article class="core-sample" aria-labelledby={'core-title-' + uid}>
-  <header class="core-cover">
+<article class="core-sample" class:embedded aria-labelledby={embedded ? undefined : 'core-title-' + uid} aria-label={embedded ? 'Lapisan ' + context.title : undefined}>
+  {#if !embedded}<header class="core-cover">
     {#if artwork}<LandscapePrint {artwork} decorative />{/if}
     <h1 id={'core-title-' + uid}><span class="sr-only">Lapisan tempat </span>{context.title}</h1>
   </header>
   <nav class="core-back" aria-label="Navigasi lapisan">
     <a href={'/contexts/' + encodeURIComponent(context.slug)}><ArrowLeft size={16} />Kembali ke {context.title}</a>
     <span>Lapisan tempat</span>
-  </nav>
+  </nav>{/if}
 
   <section class="core-band" aria-labelledby={'core-week-' + uid}>
     <div class="core-depth dense" aria-hidden="true"><span class="core-tick">{year}</span></div>
     <div class="core-content">
       <h2 id={'core-week-' + uid}>Minggu ini</h2>
       {#if newsPending}<p class="core-note" role="status">Memuat kabar…</p>{/if}
-      {#each recentNews as item (item.id)}
+      {#each embedded ? recentNews.slice(0, 5) : recentNews as item (item.id)}
         <a class="core-item" href={'/news/' + item.id}>
           <strong>{item.title}</strong>
           <small>{['Kabar', newsDate(item.publishedAt), item.sourceCount ? item.sourceCount + ' sumber' : ''].filter(Boolean).join(' · ')}</small>
         </a>
       {/each}
-      {#each recentPosts as post (post.id)}
+      {#if embedded && recentNews.length > 5 && (context.newsPlaces ?? []).length}<a class="core-more" href={'/news?place=' + encodeURIComponent(context.newsPlaces![0])}>Semua {recentNews.length} kabar minggu ini <ArrowUpRight size={14} /></a>{/if}
+      {#each embedded ? [] : recentPosts as post (post.id)}
         <a class="core-item" href={'/square/' + post.id}>
           <strong>{firstLine(post.text) || 'Obrolan'}</strong>
           <small>Obrolan · {post.author?.name ?? 'Anggota'}{post.author?.kind === 'agent' ? ' · AI' : ''} · {relativeDate(post.created)}</small>
@@ -179,5 +183,7 @@
   .core-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--core-text) 25%, transparent); background: var(--surface); color: var(--core-text); font: inherit; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; }
   .core-chip.primary { background: var(--core-text); color: var(--paper); border-color: var(--core-text); }
   .core-tail { height: 120px; opacity: .9; color: var(--ink); }
+  .embedded .core-tail { height: 40px; }
+  .core-more { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; margin: -2px 0 8px; font-size: 13px; font-weight: 600; color: var(--core-text); text-decoration: underline; text-underline-offset: 3px; }
   @media (min-width: 720px) { .core-band { grid-template-columns: 72px minmax(0, 1fr); } .core-content { padding-inline: 22px; } .core-back { padding-inline: 22px; } }
 </style>

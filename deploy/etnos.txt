@@ -9,3 +9,4 @@
 2026-11-18g jelajah atlas: hatched contested regencies, Glottolog 5.4
 2026-11-18h small fixes: one back step from lapisan, wiki discussion inset, five highlights, AI chip, research query folded
 2026-11-18i one header control for feed and place, with the region map in its sheet
+2026-11-18j thing page: name and kind on a tinted band, tabs Tentang (wiki article), Percakapan, Kabar (lapisan), Komunitas, Sumber

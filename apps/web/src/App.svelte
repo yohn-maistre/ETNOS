@@ -1642,7 +1642,7 @@
     </div>{/if}
   {#snippet rail()}
     {#if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
-    {:else if !['explore', 'news', 'communities', 'people', 'wiki'].includes(parts[0])}<NewsSection
+    {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts'].includes(parts[0])}<NewsSection
         compact
       />
     {/if}

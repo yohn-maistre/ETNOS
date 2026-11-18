@@ -31,4 +31,3 @@ export async function placeNews(places: string[], signal: AbortSignal, limit = 6
 /** Public work that is still open to be done. Completed or withdrawn work is history, not "in progress". */
 export const openWorkStates = new Set(['proposed', 'adopted', 'active', 'blocked'])
 
-export const corePath = (slug: string) => '/contexts/' + encodeURIComponent(slug) + '/lapisan'
