@@ -221,7 +221,7 @@
       <PanelLeft size={19} />
     </Button>
     <div class="surface-heading" class:explore-title={path === '/explore'}>
-      {#if path === '/'}<PlaceScopeSwitch onChange={onRefresh} feed={feedMode} {onFeedChange} />{:else if path === '/explore' || ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
+      {#if path === '/'}<PlaceScopeSwitch onChange={onRefresh} feed={feedMode} {onFeedChange} />{:else if ['/explore', '/wiki'].includes(path)}<h1 class="sr-only">{heading}</h1><PlaceScopeSwitch />{:else if ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
         >
           {heading}
         </h1>{:else}<span>{heading}</span>{/if}

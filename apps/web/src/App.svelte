@@ -103,6 +103,8 @@
     composeUrl = $state(''),
     composeKind = $state(''),
     profile = $state<Actor | null>(null)
+  // The old place and topic directories now live as sections of Jelajah.
+  function directoryTarget(p:string,q:string){return p==='/topics'?'topik':p==='/contexts'&&!q.includes('create=true')?'tempat':''}
   function commonsPath(value:string){return value==='/knowledge'?'/wiki':value.startsWith('/knowledge/')?'/wiki/notes/'+value.slice('/knowledge/'.length):value}
   const firstWelcome = location.pathname === '/' && !hasSeenWelcome()
   const initialBoot = location.pathname === '/' && (firstWelcome || !hasBootedThisSession())
@@ -113,7 +115,7 @@
     authDialogError = $state(''),
     welcomeIntro = $state(initialBoot),
     authDialogLeaving = $state(false)
-  let path = $state(['/board', '/login'].includes(location.pathname) ? '/' : commonsPath(location.pathname)),
+  let path = $state(['/board', '/login'].includes(location.pathname) ? '/' : directoryTarget(location.pathname, location.search) ? '/explore' : commonsPath(location.pathname)),
     search = $state(location.pathname === '/login' ? '' : location.search),
     loading = $state(true),
     busy = $state(false),
@@ -364,6 +366,12 @@
   function navigate(href: string) {
     const u = new URL(href, location.origin)
     u.pathname = commonsPath(u.pathname)
+    const section = directoryTarget(u.pathname, u.search)
+    if (section) {
+      u.pathname = '/explore'
+      u.search = ''
+      u.hash = section
+    }
     if (u.pathname === '/board') u.pathname = '/'
     if (
       u.pathname === '/login' &&
@@ -913,7 +921,9 @@
         '',
         '/' + location.search,
       )
-    if(commonsPath(location.pathname)!==location.pathname)window.history.replaceState(window.history.state,'',commonsPath(location.pathname)+location.search)
+    const section=directoryTarget(location.pathname,location.search)
+    if(section){window.history.replaceState(window.history.state,'','/explore#'+section);search=''}
+    else if(commonsPath(location.pathname)!==location.pathname)window.history.replaceState(window.history.state,'',commonsPath(location.pathname)+location.search)
     restoreAppearance()
     const stopClock = startAppearanceClock()
     window.history.scrollRestoration = 'manual'
@@ -1132,23 +1142,6 @@
       {communities}
       {memberships}
       view="organizations"
-      onCreate={() => open('community')}
-      {navigate}
-    />
-  {:else if path === '/topics'}<CommunityDirectory
-      {auth}
-      {communities}
-      {memberships}
-      view="places"
-      onCreate={() => open('community')}
-      {navigate}
-    />
-  {:else if path === '/contexts' && !search.includes('create=true')}
-    <CommunityDirectory
-      {auth}
-      {communities}
-      {memberships}
-      view="places"
       onCreate={() => open('community')}
       {navigate}
     />
