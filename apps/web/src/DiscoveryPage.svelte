@@ -58,7 +58,7 @@
 
 <nav class="discovery-nav" aria-label="Jelajah ETNOS">
   <a href="/communities"><Users size={17} />Komunitas</a>
-  <a href="/topics"><Hash size={17} />Topik</a>
+  <a href="/contexts#topik"><Hash size={17} />Topik</a>
   <a href="/groups"><Building2 size={17} />Organisasi</a>
   <a href="/offers"><ShoppingBag size={17}/>Penawaran</a>
   <a href="/wiki"><BookOpen size={17}/>Wiki</a>

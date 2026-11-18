@@ -32,11 +32,10 @@
       .filter((c) => c.facet === 'customary-region')
       .map((c) => {
         const own = pages.filter((p) => p.reg === c.slug)
-        const home = own.find((p) => p.kind === 'region' && p.t.startsWith('Wilayah adat')) ?? own.find((p) => p.kind === 'region')
         return {
           slug: c.slug,
           title: c.title.replace(/^Meepago$/, 'Mee Pago'),
-          href: home?.href ?? '/contexts/' + c.slug,
+          href: '/contexts/' + c.slug,
           pages: own.length,
           peoples: own.filter((p) => p.kind === 'people').map((p) => p.t.replace(/^Suku /, '')),
           regencies: contexts.filter((x) => x.kind === 'place' && x.parents?.includes(c.id)).length,
@@ -55,7 +54,7 @@
 {#if regions.length}<section class="discovery-section explore-places" aria-labelledby="explore-places-title">
     <div class="discovery-section-head">
       <h2 id="explore-places-title">Tanah Papua</h2>
-      <a href="/contexts">Peta lengkap <ArrowUpRight size={14} /></a>
+      <a href="/contexts">Semua tempat <ArrowUpRight size={14} /></a>
     </div>
     {#if atlas}<figure class="papua-atlas" class:focused={!!over}>
         <svg viewBox={atlas.box.join(' ')} aria-hidden="true">
@@ -114,15 +113,15 @@
         </li>{/each}
     </ul>
     <p class="explore-place-links">
-      <a href="/contexts">{count('region', 'province')} provinsi</a>
-      <a href="/contexts">{count('place')} kabupaten dan kota</a>
-      <a href="/contexts">{count('language')} bahasa</a>
+      <a href="/contexts#provinsi">{count('region', 'province')} provinsi</a>
+      <a href="/contexts#wilayah-adat">{count('place')} kabupaten dan kota</a>
+      <a href="/contexts#bahasa">{count('language')} bahasa</a>
     </p>
   </section>{/if}
 {#if topics.length}<section class="discovery-section" aria-labelledby="explore-topics-title">
     <div class="discovery-section-head">
       <h2 id="explore-topics-title">Topik</h2>
-      <a href="/topics">Semua <ArrowUpRight size={14} /></a>
+      <a href="/contexts#topik">Semua <ArrowUpRight size={14} /></a>
     </div>
     <ul class="explore-topics">
       {#each topics as t (t.id)}<li><a href={'/contexts/' + t.slug}><Hash size={13} aria-hidden="true" />{t.title}</a></li>{/each}

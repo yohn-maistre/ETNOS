@@ -325,13 +325,14 @@
                                     ? 'Organisasi'
                                     : parts[0] === 'work'
                                       ? 'Kerja publik'
-                                      : parts[0] === 'topics'
-                                        ? 'Topik'
+                                      : path === '/topics' || path === '/contexts'
+                                        ? 'Tempat, bahasa & topik'
                                         : parts[0] === 'contexts'
-                                          ? contextHeading?.path === path &&
-                                            contextHeading.kind === 'topic'
+                                          ? contextHeading?.path === path && contextHeading.kind === 'topic'
                                             ? 'Topik'
-                                            : 'Tempat & bahasa'
+                                            : contextHeading?.path === path && contextHeading.kind === 'language'
+                                              ? 'Bahasa'
+                                              : 'Tempat'
                                           : 'ETNOS',
   )
   function fail(value: unknown) {
@@ -1129,7 +1130,7 @@
       {auth}
       {communities}
       {memberships}
-      view="topics"
+      view="places"
       onCreate={() => open('community')}
       {navigate}
     />

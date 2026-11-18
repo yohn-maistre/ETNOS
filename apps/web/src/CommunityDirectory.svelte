@@ -1,5 +1,4 @@
 <script lang="ts">
-  import PlaceMap from './PlaceMap.svelte'
   import {avatarTone} from './avatar-tone'
   import {
     Users,
@@ -13,6 +12,7 @@
     Hash,
     Languages,
     Landmark,
+    ArrowLeft,
   } from '@lucide/svelte'
   import { contextTree, facetNames, type ContextNode, type ContextBranch } from './context-tree'
   import {
@@ -90,6 +90,11 @@
       })
     return () => abort.abort()
   })
+  // Links such as /contexts#bahasa land on their section once the list has loaded.
+  $effect(() => {
+    if (pending || !places.length || !location.hash) return
+    requestAnimationFrame(() => document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ block: 'start' }))
+  })
   const match = (title: string, description = '') =>
     (title + ' ' + description)
       .toLocaleLowerCase()
@@ -161,8 +166,9 @@
 
 <section class="community-directory" aria-label="Direktori">
   <div class="directory-controls">
-    <nav class="directory-tabs" aria-label="Direktori komunitas" use:tabScroll>
-      {#each [['rooms', 'Komunitas', '/communities'], ['topics', 'Topik', '/topics'], ['places', 'Tempat & bahasa', '/contexts'], ['organizations', 'Organisasi', '/groups']] as [id, label, url]}
+    <!-- Places, languages and topics are labels you look at: they live under Jelajah, not beside rooms you join. -->
+    {#if view === 'places' || view === 'topics'}<a class="directory-up" href="/explore"><ArrowLeft size={16} />Jelajah</a>{:else}<nav class="directory-tabs" aria-label="Direktori komunitas" use:tabScroll>
+      {#each [['rooms', 'Komunitas', '/communities'], ['organizations', 'Organisasi', '/groups']] as [id, label, url]}
         <button
           aria-current={view === id || (view === 'joined' && id === 'rooms')
             ? 'page'
@@ -172,7 +178,7 @@
           {label}
         </button>
       {/each}
-    </nav>
+    </nav>{/if}
     {#if !['places', 'topics'].includes(view) || auth.steward}<Button
         variant="outline"
         aria-label={view === 'organizations'
@@ -197,7 +203,7 @@
             : view === 'topics'
               ? 'Cari topik…'
               : view === 'places'
-                ? 'Cari tempat atau bahasa…'
+                ? 'Cari tempat, bahasa atau topik…'
                 : 'Cari komunitas…'}
           bind:value={query}
         />
@@ -269,7 +275,6 @@
           {#if tree.languages.length}<a href="#bahasa">Bahasa</a>{/if}
           {#if tree.lenses.length || tree.topicGroups.length}<a href="#topik">Topik</a>{/if}
         </nav>{/if}
-      {#if view === 'places'}<PlaceMap nodes={places} />{/if}
       {#if view === 'places' && tree.regions.length}<section
           id="wilayah-adat"
           class="context-map-section"

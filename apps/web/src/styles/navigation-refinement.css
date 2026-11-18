@@ -325,3 +325,5 @@
   font-size: 14px;
   line-height: 1.6;
 }
+.directory-controls .directory-up { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--foreground); text-decoration: none; }
+.directory-controls .directory-up:hover { text-decoration: underline; text-underline-offset: 3px; }

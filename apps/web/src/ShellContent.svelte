@@ -73,7 +73,9 @@
       ? path === '/'
       : href === '/communities'
         ? path.startsWith('/communities') || path.startsWith('/groups')
-        : path.startsWith(href)
+        : href === '/explore'
+          ? path.startsWith('/explore') || path.startsWith('/contexts') || path.startsWith('/topics')
+          : path.startsWith(href)
   }
   $effect(() => {
     void path

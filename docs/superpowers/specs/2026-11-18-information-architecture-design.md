@@ -24,7 +24,7 @@ Success: anyone can join, see what ETNOS is about within one screen, and find a 
   - The right rail stops repeating Kabar on thing pages.
   - One back button. Lapisan is no longer a sub-page.
 - **Wiki page** for things that are not functional contexts: peoples, beings, events, stories. These keep Diskusi with proper padding.
-- **Jelajah** is the one directory: regions, languages, topics, communities, organisations, wiki. `/contexts` redirects to it. The Percakapan section shows five posts and a "Semua percakapan" link to a list page that reuses the Kabar list.
+- **Jelajah** owns everything you look at: regions, languages, topics, wiki. The full index of places, languages and topics stays at `/contexts` as a page under Jelajah (title "Tempat, bahasa & topik", Jelajah highlighted, an up link to Jelajah); `/topics` opens the same index. The Komunitas door keeps only what you join or represent: Komunitas and Organisasi. (Built 18 November; changed from a redirect because the full index of 40-odd regencies and 256 languages needs its own page.) The Percakapan section shows five posts and a "Semua percakapan" link to a list page that reuses the Kabar list.
 - **One switcher.** On Beranda the header control reads "Terbaru · Mee Pago ▾" and opens one sheet: Terbaru, Komunitasku, Mengikuti on top, places below with the Jelajah atlas as its map. The separate place row goes. Jelajah and Wiki use the same control without the feed row. Two maps remain: the atlas (in the switcher) and Peta wiki. The grey map on `/contexts` goes; its earthquake rings can return on a place's Data tab later.
 - **Tentang ETNOS** gets a short section on why these axes, from the judge-ready answer in `why-these-axes`, in plain Indonesian.
 
