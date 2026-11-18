@@ -24,7 +24,7 @@
   $effect(()=>{const method=sort,controller=new AbortController();rankingPending=true;request<{items:RankedPost[];sort:string;recipe:string}>('/v1/discovery/posts?limit=9&sort='+method,undefined,controller.signal).then(result=>{if(!controller.signal.aborted)ranked=result}).catch(()=>{if(!controller.signal.aborted)ranked=null}).finally(()=>{if(!controller.signal.aborted)rankingPending=false});return()=>controller.abort()})
   function preview(post:Post){let text=post.text;if(post.content?.format==='markdown')text=text.replace(/!\[[^\]]*\]\([^)]*\)/g,'').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/(^|\n)\s{0,3}#{1,6}\s/g,' ').replace(/[*_`~]+/g,'');return text.replace(/\s+/g,' ').trim().slice(0,280)}
   // The lead slot goes to the strongest of the top three: an image first, then a written title, else rank order.
-  const conversations = $derived.by(()=>{const top=featured.slice(0,3),lead=top.find(p=>p.media?.length&&!failedImages.includes(p.id))??top.find(p=>p.content?.title)??featured[0];return lead?[lead,...featured.filter(p=>p!==lead)]:[]})
+  const conversations = $derived.by(()=>{const top=featured.slice(0,3),lead=top.find(p=>p.media?.length&&!failedImages.includes(p.id))??top.find(p=>p.content?.title)??featured[0];return lead?[lead,...featured.filter(p=>p!==lead)].slice(0,5):[]})
   const featured = $derived<RankedPost[]>(
     ranked?.items ?? data?.posts
       .filter(
@@ -81,10 +81,11 @@
           <small>{post.discovery?.communityTitle??data.communities.find(c => c.id === post.community_id)?.title??'Komunitas'} · {relativeLong(post.created)}</small>
           <strong>{post.content?.title || clip(text, i===0?220:140) || (post.content?.event ? 'Acara komunitas' : image?.alt || 'Posting bergambar')}</strong>
           {#if post.content?.title&&text}<p>{clip(text, i===0?240:150)}</p>{/if}
-          <span class="explore-item-meta">{post.author.name}{post.author.kind==='agent'?' · agen AI':''}{post.content?.event?.location?' · '+post.content.event.location:''}{post.replies?' · '+post.replies+' balasan':''}</span>
+          <span class="explore-item-meta">{post.author.name}{post.author.kind==='agent'?' · AI':''}{post.content?.event?.location?' · '+post.content.event.location:''}{post.replies?' · '+post.replies+' balasan':''}</span>
         </div>
       </a></li>{/each}
     </ol>
+    <a class="explore-more" href="/">Semua percakapan di Beranda <ArrowUpRight size={14} /></a>
   </section>{/if}
   <ExplorePlaces />
   <section class="discovery-section">
@@ -121,7 +122,7 @@
           <span>
             <strong>{person.name}</strong>
             <small>
-              {person.kind === 'agent' ? 'Agen' : 'Lihat profil'}
+              {person.kind === 'agent' ? 'AI' : 'Lihat profil'}
             </small>
           </span>
           <ArrowUpRight size={16} />

@@ -4,7 +4,7 @@
   type Work = { title: string; year: number | null; authors: string[]; moreAuthors: number; venue: string; url: string; open: boolean; cited: number }
   type Result = { available: boolean; query: string; more: string; total: number; items: Work[] }
 
-  let { slug }: { slug: string } = $props()
+  let { slug, title }: { slug: string; title: string } = $props()
   let result = $state<Result | null>(null)
 
   // Labels without a search, a missing key and an unreachable index all leave this section out.
@@ -24,11 +24,11 @@
   <section id="context-literature" class="literature" aria-labelledby="literature-heading">
     <h2 id="literature-heading">Riset terbit</h2>
     <p class="lit-note">
-      {result.total.toLocaleString('id-ID')} karya di OpenAlex cocok dengan pencarian <code>{result.query}</code>. Ini hasil
-      pencarian, belum ditinjau siapa pun di sini.
+      {result.total.toLocaleString('id-ID')} karya di OpenAlex cocok dengan pencarian untuk {title}. Ini hasil pencarian, belum ditinjau
+      siapa pun di sini.
     </p>
     <ol>
-      {#each result.items as w (w.url)}
+      {#each result.items.slice(0, 5) as w (w.url)}
         <li>
           <a href={w.url} target="_blank" rel="noreferrer">{w.title}</a>
           <span class="lit-by">{byline(w)}</span>
@@ -39,6 +39,7 @@
         </li>
       {/each}
     </ol>
+    <details class="lit-query"><summary>Kata pencarian</summary><code>{result.query}</code></details>
     <p class="lit-more"><a href={result.more} target="_blank" rel="noreferrer">Lihat semua di OpenAlex</a></p>
   </section>
 {/if}
@@ -56,6 +57,9 @@
   .lit-by { font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
   .lit-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--muted-foreground); }
   .lit-more { font-size: 13px; }
+  .lit-query { font-size: 12px; color: var(--muted-foreground); }
+  .lit-query summary { cursor: pointer; width: fit-content; }
+  .lit-query code { display: block; margin-top: 6px; line-height: 1.5; }
   .lit-more a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
   @media (max-width: 640px) {
     .literature { padding-inline: 16px; }

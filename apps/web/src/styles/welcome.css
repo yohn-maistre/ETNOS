@@ -289,3 +289,5 @@ body:has(.welcome-dialog[data-exiting='true']) [data-slot='dialog-overlay'] { op
   .explore-regions { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { .explore-region, .explore-topics a, .explore-wiki a { transition: none; } }
+.explore-more { display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; font-size: 13px; color: var(--muted-foreground); text-decoration: none; }
+.explore-more:hover, .explore-more:focus-visible { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }

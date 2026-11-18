@@ -29,6 +29,11 @@
   import Literature from './Literature.svelte'
   import { openWorkStates } from './place-layers'
   import { facetNames, orderedParents } from './context-tree'
+  // A description that only restates the kind ("Kelompok topik: …") drops that prefix; the badge already says it.
+  const blurb = (text: string | undefined, kind: string | undefined) => {
+    const t = (text ?? '').trim()
+    return kind && t.toLowerCase().startsWith(kind.toLowerCase() + ':') ? t.slice(kind.length + 1).trim().replace(/^./, (c) => c.toUpperCase()) : t
+  }
   import ContentSkeleton from './ContentSkeleton.svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
@@ -735,6 +740,7 @@
 {:else if segments[0] === 'contexts' && context && segments[2] === 'lapisan'}
   <CoreSample {context} {posts} {works} {auth} {onCompose} />
 {:else if segments[0] === 'contexts' && context}
+  {@const contextBlurb = blurb(context.description, facetNames[context.facet ?? ''] ?? kinds[context.kind])}
   <PlaceStrata
     contextId={context.id}
     slug={context.slug}
@@ -753,7 +759,7 @@
         Bagian dari:
         {#each orderedParents(context.parents) as p, i (p.id)}{#if i}<span aria-hidden="true">·</span>{/if}<a href={'/contexts/' + p.slug}>{p.title}</a>{/each}
       </p>{/if}
-    <p>{context.description}</p>
+    {#if contextBlurb}<p>{contextBlurb}</p>{/if}
     {#if context.family}<p class="context-basis">
         Dasar label: {context.family.basis}
         {#each context.family.sources as src (src.url)}<a href={src.url} target="_blank" rel="noreferrer">{src.title}</a>{/each}
@@ -882,7 +888,7 @@
           Belum ada halaman wiki tertaut.
         </p>{/if}
     </section>{/if}
-  <Literature slug={context.slug} />
+  {#if context.facet !== 'topic-group'}<Literature slug={context.slug} title={context.title} />{/if}
   {#if works.length}
     <section id="context-work" class="context-relation-section">
       {#if works.length}<div class="strata-card"><h2>Kerja publik</h2></div>

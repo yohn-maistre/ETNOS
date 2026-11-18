@@ -191,7 +191,7 @@
     {#if pageArt}<div class="wiki-page-cover" aria-hidden="true"><LandscapePrint artwork={pageArt} decorative /></div>{/if}
     <header class="wiki-page-header">
       <h1>{page.title}</h1>
-      {#if pageRegion?.title}<p class="wiki-page-region">Wilayah adat {#if pageRegion.href}<a href={pageRegion.href}>{pageRegion.title}</a>{:else}{pageRegion.title}{/if}</p>{/if}
+      {#if pageRegion?.title && !page.title.toLowerCase().includes(pageRegion.title.toLowerCase())}<p class="wiki-page-region">Wilayah adat {#if pageRegion.href}<a href={pageRegion.href}>{pageRegion.title}</a>{:else}{pageRegion.title}{/if}</p>{/if}
       {#if page.revision}<WikiVoices
           voices={pageVoices(page.revision.citations, history, page.revision.author, proposals)}
           invite={member ? { onclick: onPropose } : { href: auth.actor ? '/communities/' + page.community_id : '/login' }}
@@ -208,7 +208,7 @@
               {page.revision.author?.name ?? 'Kontributor'}
             </strong>
             {#if page.revision.author?.kind === 'agent'}
-              · Agen{/if}
+              · AI{/if}
           </span>
           {#if page.revision.review === 'unreviewed'}<span class="wiki-unreviewed">
               Belum ditinjau. Terbit {relativeLong(page.revision.created)}.
@@ -240,7 +240,7 @@
                 {#if rev.author || rev.reviewer}<small>
                     {rev.author?.name ?? 'Kontributor'}{rev.author?.kind ===
                     'agent'
-                      ? ' · Agen'
+                      ? ' · AI'
                       : ''} · {rev.review === 'unreviewed' ? 'belum ditinjau' : rev.review === 'reverted' ? 'dikembalikan' : 'ditinjau ' + (rev.reviewer?.name ?? 'pengelola')}
                   </small>{/if}
               </p>{/each}{#if !history.length}<p>
@@ -316,7 +316,7 @@
             <p>
               {proposal.author?.name ?? 'Kontributor'}{proposal.author?.kind ===
               'agent'
-                ? ' · Agen'
+                ? ' · AI'
                 : ''} · {languageName(proposal.language)}
             </p>
             <p class="cx-hint">Atribusi tulisan: {proposal.perspective}</p>
@@ -431,10 +431,10 @@
       </section>
       {#if !query&&!communityFilter}<WikiPlaces />{/if}
       {#if !query&&!context&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap /></div>{/if}
-      {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2></div>{#each recent as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+' · ':p.review==='unreviewed'?(p.authorKind==='agent'?'Agen AI · belum ditinjau · ':'Belum ditinjau · '):''}{relativeLong(p.updated)}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
+      {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2></div>{#each recent as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+' · ':p.review==='unreviewed'?(p.authorKind==='agent'?'AI · belum ditinjau · ':'Belum ditinjau · '):''}{relativeLong(p.updated)}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {:else if !growingMatches.length}<div class="wiki-draft-state"><BookOpen size={27}/><h2>{query||context||communityFilter?'Belum ada halaman yang cocok':'Cerita pertama dimulai dari kita.'}</h2><p>{query||context||communityFilter?'Coba kata atau pilihan lain.':'Halaman yang ditinjau bersama akan hadir di sini.'}</p></div>{/if}
-      {#if growingMatches.length}<section class="wiki-growing wiki-module" aria-label="Draf"><div class="wiki-module-heading"><h2>Draf</h2><span>Belum ditinjau</span></div>{#each growingMatches as p}<a class="wiki-recent-row" href={'/wiki/notes/'+p.id}><FileText size={19}/><div><h3>{p.title}</h3><p>{opening(p.excerpt)}</p><small>{p.author.name}{p.author.kind==='agent'?' · Agen AI':''} · {p.citationCount?p.citationCount+' sumber':'Belum ada sumber'}{p.evidenceStatus!=='current'?' · sumber perlu ditinjau':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{:else if growingError}<p class="commons-alert" role="status">{growingError}</p>{/if}
+      {#if growingMatches.length}<section class="wiki-growing wiki-module" aria-label="Draf"><div class="wiki-module-heading"><h2>Draf</h2><span>Belum ditinjau</span></div>{#each growingMatches as p}<a class="wiki-recent-row" href={'/wiki/notes/'+p.id}><FileText size={19}/><div><h3>{p.title}</h3><p>{opening(p.excerpt)}</p><small>{p.author.name}{p.author.kind==='agent'?' · AI':''} · {p.citationCount?p.citationCount+' sumber':'Belum ada sumber'}{p.evidenceStatus!=='current'?' · sumber perlu ditinjau':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{:else if growingError}<p class="commons-alert" role="status">{growingError}</p>{/if}
       {#if gaps&&(gaps.contexts.length||gaps.uncited.length)&&!query&&!context&&!communityFilter}<section class="wiki-module wiki-gaps" aria-label="Perlu ditulis"><div class="wiki-module-heading"><h2>Perlu ditulis</h2></div>
         {#each gaps.contexts.slice(0,3) as c}<a class="wiki-rank-row" href={'/contexts/'+c.slug}><MapPin size={18}/><div><h3>{c.title}</h3><small>{kindName[c.kind]??'Tempat'} · belum ada halaman</small></div><ArrowUpRight size={17}/></a>{/each}
         {#each gaps.uncited.slice(0,3) as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>Belum ada sumber</small></div><ArrowUpRight size={17}/></a>{/each}

@@ -7,3 +7,4 @@
 2026-11-18e jelajah: Tanah Papua regions, topic chips, compact wiki list
 2026-11-18f jelajah: Tanah Papua atlas (seven regions, 256 Glottolog language points)
 2026-11-18g jelajah atlas: hatched contested regencies, Glottolog 5.4
+2026-11-18h small fixes: one back step from lapisan, wiki discussion inset, five highlights, AI chip, research query folded

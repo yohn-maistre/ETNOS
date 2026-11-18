@@ -20,8 +20,8 @@
     [
       { key: 'source', n: voices.sources, label: 'Sumber luar, ' + voices.sources },
       { key: 'people', n: voices.people, label: 'Warga, ' + voices.people + ' penulis' },
-      { key: 'agent', n: voices.agentRevisions, label: 'Tulisan agen yang sudah ditinjau, ' + voices.agentRevisions + ' revisi' },
-      { key: 'unreviewed', n: voices.unreviewedAgent, label: 'Tulisan agen yang belum ditinjau, ' + voices.unreviewedAgent + ' revisi' },
+      { key: 'agent', n: voices.agentRevisions, label: 'Tulisan AI yang sudah ditinjau, ' + voices.agentRevisions + ' revisi' },
+      { key: 'unreviewed', n: voices.unreviewedAgent, label: 'Tulisan AI yang belum ditinjau, ' + voices.unreviewedAgent + ' revisi' },
       { key: 'pending', n: voices.pendingAgent, label: 'Draf agen menunggu tinjauan, ' + voices.pendingAgent + ' usulan' },
     ].filter((s) => s.n > 0),
   )

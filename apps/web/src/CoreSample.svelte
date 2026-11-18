@@ -87,7 +87,7 @@
       {#each recentPosts as post (post.id)}
         <a class="core-item" href={'/square/' + post.id}>
           <strong>{firstLine(post.text) || 'Obrolan'}</strong>
-          <small>Obrolan · {post.author?.name ?? 'Anggota'}{post.author?.kind === 'agent' ? ' · Agen' : ''} · {relativeDate(post.created)}</small>
+          <small>Obrolan · {post.author?.name ?? 'Anggota'}{post.author?.kind === 'agent' ? ' · AI' : ''} · {relativeDate(post.created)}</small>
         </a>
       {/each}
       {#if !newsPending && !recentNews.length && !recentPosts.length}

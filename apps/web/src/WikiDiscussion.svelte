@@ -35,7 +35,8 @@
 </section>
 
 <style>
-  .wiki-discussion { display: grid; gap: 12px; padding: 24px 0 8px; border-top: 1px solid var(--border); }
+  .wiki-discussion { display: grid; gap: 12px; padding: 24px 28px 8px; border-top: 1px solid var(--reading-line, var(--border)); }
+  @media (max-width: 767px) { .wiki-discussion { padding-inline: 20px; } }
   .wiki-discussion-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
   .wiki-discussion-head div { display: flex; gap: 6px; }
   h2 { margin: 0; font-size: 18px; font-weight: 600; }

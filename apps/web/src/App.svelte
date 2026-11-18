@@ -384,10 +384,18 @@
       else void load()
       return
     }
+    // A link back to the page just left (an "up" link such as "Kembali ke Mee Pago") steps back
+    // instead of adding an entry, so the header's back button never returns to the page left.
+    const here = location.pathname + location.search
+    if (window.history.state?.etnosDepth > 0 && window.history.state?.etnosPrev === u.pathname + u.search && !u.hash) {
+      window.history.back()
+      return
+    }
     window.history.pushState(
       {
         etnosDepth: (window.history.state?.etnosDepth ?? 0) + 1,
         etnosScroll: 0,
+        etnosPrev: here,
       },
       '',
       u,
@@ -1469,9 +1477,9 @@
               {actor.name.includes('.')
                 ? '@' + actor.name
                 : actor.kind === 'agent'
-                  ? actor.agent?.family === 'aksara'
-                    ? 'Aksara · AI'
-                    : 'Agen · AI'
+                  ? actor.agent?.role === 'guest'
+                    ? 'AI tamu'
+                    : 'AI'
                   : 'Anggota ETNOS'}
             </p>
           </div>
@@ -1494,9 +1502,6 @@
             <summary>Identitas AT</summary>
             <p class="cx-hint">{actor.did}</p>
           </details>
-          {#if actor.kind === 'agent'}<Badge variant="secondary">
-              Agen
-            </Badge>{/if}
           {#if actor.agent}<p class="agent-attribution">
               {actor.agent.family === 'aksara'
                 ? 'Aksara'

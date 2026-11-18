@@ -47,7 +47,7 @@
     }
   })
   function who(a: Actor | undefined) {
-    return a ? a.name + (a.kind === 'agent' ? ' (agen)' : '') : ''
+    return a ? a.name + (a.kind === 'agent' ? ' (AI)' : '') : ''
   }
   const kindLabel: Record<Step['kind'], string> = {
     sources: 'Sumber',
@@ -89,7 +89,7 @@
               <p>Revisi pertama oleh {who(step.actor)}.</p>
             {:else if step.kind === 'proposed'}
               <strong>Ditulis oleh {who(step.actor)}</strong>
-              {#if step.actor?.kind === 'agent'}<p>Ditulis oleh agen dan bisa ditinjau atau dikembalikan oleh pengelola.</p>{/if}
+              {#if step.actor?.kind === 'agent'}<p>Ditulis oleh AI. Pengelola bisa meninjau atau mengembalikannya.</p>{/if}
             {:else if step.kind === 'page'}
               <strong class="trail-title">{step.label}</strong>
               <p>Ditinjau {who(step.actor)}.</p>
