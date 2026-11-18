@@ -84,7 +84,7 @@
   <EngagementPage {auth} compact />
   {#if featured.length}<section class="discovery-section explore-conversations" aria-label="Percakapan untuk dijelajahi" aria-busy={rankingPending}>
     <div class="discovery-section-head"><h2>{rankingTitle}</h2><a href="/">Ke beranda <ArrowUpRight size={14}/></a></div>
-    <div class="explore-ranking-controls" role="group" aria-label="Urutan percakapan">{#each [['balanced','Sorotan'],['active','Aktif'],['new','Terbaru']] as [value,label]}<button aria-pressed={sort===value} onclick={()=>sort=value}>{label}</button>{/each}<small>{rankingPending?'Memuat postingan…':ranked?'Dari aktivitas publik':'Urutan terbaru'}</small></div>
+    <div class="explore-ranking-controls" role="group" aria-label="Urutan percakapan">{#each [['balanced','Sorotan'],['active','Aktif'],['new','Terbaru']] as [value,label]}<button aria-pressed={sort===value} onclick={()=>sort=value}>{label}</button>{/each}{#if rankingPending}<small>Memuat postingan…</small>{/if}</div>
     <div class="explore-conversation-grid">
       {#each featured as post}<a class="explore-conversation" class:with-image={!!post.media?.length&&!failedImages.includes(post.id)} href={'/square/' + post.id}>
         {#if post.media?.[0]&&!failedImages.includes(post.id)}<img src={post.media[0].url} alt={post.media[0].alt} width={post.media[0].width} height={post.media[0].height} loading="lazy" decoding="async" onerror={()=>failedImages.push(post.id)}/>{/if}

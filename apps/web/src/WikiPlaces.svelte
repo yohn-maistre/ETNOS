@@ -54,7 +54,7 @@
           <div class="wp-cover" aria-hidden="true">{#if a}<LandscapePrint artwork={a} decorative />{/if}</div>
           <div class="wp-body">
             {#if r.href}<a class="wp-title" href={r.href}>{r.title}</a>{:else}<span class="wp-title">{r.title}</span>{/if}
-            <p class="wp-count">{r.places} kabupaten dengan halaman wiki</p>
+            <p class="wp-count">{r.places} halaman kabupaten</p>
             {#if r.peoples.length}<p class="wp-list"><span>Suku</span>{#each r.peoples as p, i}<a href={p.href}>{p.t.replace(/^Suku /, '')}</a>{i < r.peoples.length - 1 ? ', ' : ''}{/each}</p>{/if}
             {#if r.languages.length}<p class="wp-list"><span>Bahasa</span>{#each r.languages as p, i}<a href={p.href}>{p.t.replace(/^Bahasa /, '')}</a>{i < r.languages.length - 1 ? ', ' : ''}{/each}</p>{/if}
           </div>
@@ -87,7 +87,7 @@
   .wp-region { display: grid; grid-template-rows: 96px auto; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--card); }
   .wp-cover { position: relative; overflow: hidden; background: var(--muted); }
   .wp-cover :global(.landscape-print) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 68%; }
-  .wp-body { display: grid; gap: 6px; padding: 12px 14px 14px; min-width: 0; }
+  .wp-body { display: grid; align-content: start; gap: 6px; padding: 12px 14px 14px; min-width: 0; }
   .wp-title { font-family: var(--font-editorial, inherit); font-size: 22px; line-height: 1.15; color: var(--foreground); text-decoration: none; }
   a.wp-title:hover { text-decoration: underline; text-underline-offset: 4px; }
   .wp-count { margin: 0; font-size: 13px; color: var(--muted-foreground); }

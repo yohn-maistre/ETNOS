@@ -100,6 +100,9 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/serverless-pds-and-auth-2026-11-17.md](research/serverless-pds-and-auth-2026-11-17.md) | A multi-account PDS on Workers, free-plan CPU, Spaces, sign-up friction, fallbacks |
 | [research/deploy-paths-and-seeding-agent-2026-11-17.md](research/deploy-paths-and-seeding-agent-2026-11-17.md) | Deploying Strata on the Cloudflare free tier or a VPS; the operator's first run; models for seeding; opencode as an optional adapter |
 | [research/opencode-keyless-seeding-2026-11-17.md](research/opencode-keyless-seeding-2026-11-17.md) | opencode's keyless free models read from source (OpenBot, dusk bot, opencode itself); terms, limits, Worker and VPS feasibility, first-run flow |
+| [research/resident-harness-2026-11-17.md](research/resident-harness-2026-11-17.md) | Pi versus Flue and Mastra for the resident; the place notebook design (facts, corrections, questions, digest) inside the node's SQLite |
+| [research/aksara-node-for-communities-2026-11-17.md](research/aksara-node-for-communities-2026-11-17.md) | How an Aksara kept by a community (not an institution) works: two named stewards, ETNOS-hosted first, a device later, open questions for the owner |
+| [research/aksara-workers-harness-2026-11-18.md](research/aksara-workers-harness-2026-11-18.md) | What Aksara's harness can run on Workers: `@cloudflare/computer` workspace (free), code execution (Paid only), optmem (no licence, shape borrowed), free-tier neuron budget, phased plan and the shared contract with aksara-core |
 | [serverless-reuse-review.md](serverless-reuse-review.md) | What serverless code we reuse |
 | [language-choice.md](language-choice.md) | Why TypeScript |
 | [research/2026-10-31-contextual-commons.md](research/2026-10-31-contextual-commons.md) | Contextual commons research |

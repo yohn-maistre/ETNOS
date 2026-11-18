@@ -206,7 +206,7 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
      if(config.announce_knowledge){
       // Note, native announcement/outbox and job result commit atomically.
       const link=s.base+'/wiki/notes/'+note.id
-      const post=s.createPost(job.agent_id,job.community_id,'Halo, sa baru saja tambah catatan ini di Wiki. Mohon dicek dan dilengkapi bersama.\n\n'+note.title+'\n'+link+'\n\nDraf awal · belum ditinjau menyeluruh.',undefined,config.posting_mandate_id??undefined)
+      const post=s.createPost(job.agent_id,job.community_id,'Draf baru di Wiki, belum ditinjau: '+note.title+'\n'+link+'\n\nBantu periksa sumbernya.',undefined,config.posting_mandate_id??undefined)
       s.run('INSERT INTO knowledge_announcements VALUES(?,?,?,?,?)',note.id,note.revision,job.community_id,post.id,s.clock())
      }
      resultKind='knowledge';resultId=note.id

@@ -249,13 +249,13 @@
     <header class="km-head">
       <div>
         <h2>Peta wiki</h2>
-        <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}{undatedCount ? ` · ${undatedCount} tanpa tahun` : ''}</p>
+        <p>{counts.pages} halaman · {counts.sources} sumber · {counts.passages} kalimat{counts.earliest ? ` · sejak ${counts.earliest}` : ''}</p>
       </div>
       <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
         {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}
       </button>
     </header>
-      <p class="km-caption">Setiap garis mewakili satu halaman, kalimat atau sumber. Baris atas memakai tahun yang disebut di dalamnya, baris bawah memakai tahun sumbernya ditulis.</p>
+      <p class="km-caption">Satu garis untuk tiap halaman, sumber atau kalimat.</p>
       <button class="km-band" onclick={() => toggle(true)} aria-label="Buka peta wiki">
         <span class="km-row-label" style="top: 0">Tahun peristiwa</span>
         <span class="km-row-label" style="top: 50%">Tahun dicatat</span>
@@ -274,7 +274,7 @@
     <header class="km-head">
       <div>
         <h2>Peta wiki</h2>
-        <p>{counts.passages} kalimat sumber · {counts.pages} halaman · {counts.sources} sumber{counts.earliest ? ` · tercatat paling awal ${counts.earliest}` : ''}{undatedCount ? ` · ${undatedCount} tanpa tahun` : ''}</p>
+        <p>{counts.pages} halaman · {counts.sources} sumber · {counts.passages} kalimat{counts.earliest ? ` · sejak ${counts.earliest}` : ''}</p>
       </div>
       <button class="km-toggle" bind:this={toggleButton} onclick={() => toggle(!open)} aria-expanded={open}>
         {#if open}<Minimize2 size={15} />Tutup{:else}<Maximize2 size={15} />Buka peta{/if}

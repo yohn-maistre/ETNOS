@@ -1640,23 +1640,7 @@
     {:else if !['explore', 'news', 'communities', 'people', 'wiki'].includes(parts[0])}<NewsSection
         compact
       />
-    {:else if parts[0] !== 'news'}<div
-        class="cx-context-block rail-context-intro"
-      >
-        <span class="rail-accent-icon"><BookOpen size={20} /></span>
-        <h2>
-          {parts[0] === 'news'
-            ? 'Dari kabar ke percakapan'
-            : parts[0] === 'people'
-              ? 'Temukan percakapan'
-              : 'Di sekitarmu'}
-        </h2>
-        <p class="cx-hint">
-          {parts[0] === 'news'
-            ? 'Baca sumbernya, lalu bagikan sudut pandangmu di komunitas.'
-            : 'Komunitas, tempat dan pengetahuan bersama.'}
-        </p>
-      </div>{/if}
+    {/if}
     {#if selectedPost?.contexts?.length}<div class="cx-context-block">
         <h2>Terkait</h2>
         {#each selectedPost.contexts as context}<a

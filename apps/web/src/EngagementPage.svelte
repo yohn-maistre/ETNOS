@@ -107,7 +107,8 @@
   }
 </script>
 
-<section class="engagement-page" class:engagement-compact={compact}>
+<!-- On Jelajah an empty question list is hidden rather than announced. -->
+{#if !compact || pending || error || displayed.length}<section class="engagement-page" class:engagement-compact={compact}>
   <header>
     <div>
       <span class="engagement-label">
@@ -200,4 +201,4 @@
       </p>
       <a href="/work">Jelajahi kerja publik <ArrowRight size={14} /></a>
     </footer>{/if}
-</section>
+</section>{/if}
