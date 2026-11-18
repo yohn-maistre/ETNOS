@@ -164,6 +164,8 @@ export class Resident{
   try{
    const evidence=JSON.parse(job.evidence) as ResidentEvidence[],community=s.community(job.community_id),thread=this.thread(job),skill=this.effectiveSkill(job)
    if(!evidence.length&&!(thread&&this.provider?.researchTools))throw new Fault(422,noEvidence)
+   // A Wiki page is for what lasts. Items from news feeds alone (a price report, a meeting) never start one; a source read for review or indexing must be among the evidence.
+   if(job.skill==='knowledge-draft'&&!evidence.some(e=>e.sources.some(src=>(s.get<{mode:string}>('SELECT mode FROM discovery_sources WHERE id=?',src.id)?.mode??'news')!=='news')))throw new Fault(422,'News alone does not start a Wiki page; waiting for a source that is not a news feed')
    if(job.skill==='knowledge-draft'&&s.get("SELECT 1 FROM resident_jobs j JOIN knowledge_notes n ON n.id=j.result_id WHERE j.community_id=? AND j.skill='knowledge-draft' AND j.state='succeeded' AND j.evidence=? AND n.state!='withdrawn' LIMIT 1",job.community_id,job.evidence))throw new Fault(422,'These sources already have a Wiki starting point; waiting for new evidence')
    let result:ResidentOutput
    if(this.provider){

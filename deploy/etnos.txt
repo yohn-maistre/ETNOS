@@ -12,3 +12,4 @@
 2026-11-18j thing page: name and kind on a tinted band, tabs Tentang (wiki article), Percakapan, Kabar (lapisan), Komunitas, Sumber
 2026-11-18k labels under Jelajah: index of places, languages and topics; Komunitas keeps rooms and organisations; grey map removed
 2026-11-18l one topic scheme: 18 starter topics, groups hidden; steward reloads the catalogue in Studio to apply renames
+2026-11-18m wiki drafts need a source that is not a news feed

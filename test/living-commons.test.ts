@@ -184,6 +184,13 @@ test('opt-in resident Wiki announcements commit once with the note and require a
   await assert.rejects(f.r.run(next.id));assert.equal(f.k.list().length,1);assert.equal(f.s.feed().length,1)
  }finally{f.s.close()}
 })
+test('news alone does not start a Wiki page',async()=>{
+ const f=fixture();try{
+  f.s.run("UPDATE discovery_sources SET mode='news' WHERE id=?",f.source.id)
+  await publish(f);f.configure();const job=f.r.enqueue(f.owner.actor.id,f.c.id,'knowledge-draft',randomUUID());const result=await f.r.run(job.id)
+  assert.equal(result.state,'abstained');assert.match('error' in result?result.error:'',/News alone/);assert.equal(f.k.list().length,0)
+ }finally{f.s.close()}
+})
 test('unchanged source read-sets do not produce repeated Wiki pages or announcements',async()=>{
  const f=fixture();try{
   await publish(f);f.configure();const first=f.r.enqueue(f.owner.actor.id,f.c.id,'knowledge-draft',randomUUID());assert.equal((await f.r.run(first.id)).state,'succeeded')
