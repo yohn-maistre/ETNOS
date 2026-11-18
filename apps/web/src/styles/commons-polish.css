@@ -194,3 +194,5 @@
   .cx-topbar { background: var(--page-ground); backdrop-filter: none; }
   .cx-mobile-dock:not(.thread-dock) { background: var(--reading-surface); backdrop-filter: none; }
 }
+/* Visitors: the writing bar becomes one wide link to Masuk. */
+.cx-composer-bar.visitor-bar > [data-slot='button'], .cx-composer-bar.visitor-bar > [data-slot='button']:last-child { background: color-mix(in srgb, var(--secondary) 65%, transparent); border: 1px solid var(--commons-hairline); box-shadow: none; font-weight: 400; flex: 1; min-width: 0; min-height: 44px; border-radius: 16px; justify-content: flex-start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted-foreground); }

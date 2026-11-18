@@ -1582,8 +1582,11 @@
           <h1>Hasil pencarian</h1>
         </div>{:else}<h1 class="sr-only">Beranda</h1>
         <SkyStrip />
-        <!-- Writing needs an account; visitors reach Masuk from the dock and the menu. -->
-        {#if auth.actor}<div class="cx-composer-bar">
+        <!-- Visitors see the same bar, but it leads to Masuk; writing needs an account. -->
+        {#if !auth.actor}<div class="cx-composer-bar visitor-bar">
+          <span class="cx-avatar sage avatar-tinted" style={avatarTone('visitor')} aria-hidden="true">+</span>
+          <Button href="/login" variant="outline">Daftar atau masuk untuk ikut berdiskusi</Button>
+        </div>{:else}<div class="cx-composer-bar">
           <span class="cx-avatar sage avatar-tinted" style={avatarTone(auth.actor.id)}>
             {initials(auth.actor.name)}
           </span>
