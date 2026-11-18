@@ -6,12 +6,14 @@
   import AtlasMap from './AtlasMap.svelte'
   import { request } from './api'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
+  import { scopeRegions } from './scope-region.svelte'
   type Feed = 'new' | 'mine' | 'following'
   let {
     onChange,
     feed,
     onFeedChange,
   }: { onChange?: () => void; feed?: Feed; onFeedChange?: (mode: Feed) => void } = $props()
+  const scoped = scopeRegions()
   type Ctx = { id: string; slug: string; title: string; kind: string; facet?: string; parents?: string[]; active?: number }
   const feeds: [Feed, string][] = [
     ['new', 'Terbaru'],
@@ -73,7 +75,7 @@
     {#if feed}<div class="view-feeds" role="group" aria-label="Linimasa">
         {#each feeds as [mode, label] (mode)}<button aria-pressed={feed === mode} onclick={() => pickFeed(mode)}>{label}</button>{/each}
       </div>{/if}
-    {#if !query.trim() && regions.length}<AtlasMap {regions} selected={placeScope.slug} onpick={choose} />{/if}
+    {#if !query.trim() && regions.length}<AtlasMap {regions} selected={placeScope.slug} within={scoped.list} onpick={choose} />{/if}
     <label class="place-scope-search"><Search size={16} /><input bind:value={query} placeholder="Cari kabupaten, kota atau kampung" aria-label="Cari tempat" /></label>
     <ul class="place-scope-list">
       {#if !query.trim()}

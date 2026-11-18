@@ -8,7 +8,9 @@
   import { siteBranding } from './site-branding'
   import { loadMap, domainGroups, highlandRegions, type MapData, type MapNode } from './observatory'
   import { placeScope } from './place-scope.svelte'
+  import { scopeRegions } from './scope-region.svelte'
   import { clip } from './api'
+  const scoped = scopeRegions()
 
   let data = $state<MapData | null>(null)
   onMount(() => { void loadMap().then((d) => (data = d)) })
@@ -19,7 +21,7 @@
     if (!data) return []
     return data.nodes
       .filter((n) => n.k === 'region')
-      .filter((r) => !placeScope.slug || placeScope.slug === r.reg)
+      .filter((r) => scoped.has(r.reg))
       .map((r) => {
         const own = pages.filter((p) => p.reg === r.reg)
         const home = own.find((p) => p.kind === 'region')
@@ -39,7 +41,7 @@
   const day = Math.floor(Date.now() / 86400000)
   const picks = $derived.by(() => {
     const g = domainGroups.find((x) => x.key === group)!
-    const pool = pages.filter((p) => (!placeScope.slug || p.reg === placeScope.slug) && p.d?.some((t) => g.tags.includes(t)))
+    const pool = pages.filter((p) => scoped.has(p.reg) && p.d?.some((t) => g.tags.includes(t)))
     if (!pool.length) return []
     const start = day % pool.length
     return [...pool.slice(start), ...pool.slice(0, start)].slice(0, 4)

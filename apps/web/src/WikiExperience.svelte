@@ -37,6 +37,7 @@
   import { loadMap, highlandRegions, type MapData } from './observatory'
   import { siteBranding } from './site-branding'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
+  import { loadAtlasLangs, loadContexts, regionsOf } from './explore-data'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiTrail from './WikiTrail.svelte'
@@ -115,6 +116,16 @@
   async function discover(signal:AbortSignal|undefined=undefined){discovering=true;discoveryError='';try{const rows=await request<Preview[]>('/v1/wiki/discover',undefined,signal);if(!signal?.aborted)discoveries=rows}catch{if(!signal?.aborted)discoveryError='Halaman belum dapat dimuat.'}finally{if(!signal?.aborted)discovering=false}}
   $effect(()=>{const controller=new AbortController();void discover(controller.signal);try{lastReadId=localStorage.getItem('strata.ui.wiki-last')??'';readingSize=localStorage.getItem('strata.ui.wiki-text')==='large'?'large':'normal'}catch{};return()=>controller.abort()})
   $effect(()=>{if(page?.revision){try{localStorage.setItem('strata.ui.wiki-last',page.id)}catch{}}})
+  // The map stays on the wiki home whatever place is chosen; it opens on that place's customary region.
+  let mapRegion = $state('')
+  $effect(() => {
+    const slug = context
+    mapRegion = ''
+    if (!slug) return
+    let live = true
+    void Promise.all([loadContexts(), loadAtlasLangs()]).then(([all, langs]) => { if (live) mapRegion = regionsOf(slug, all, langs)[0] ?? '' }).catch(() => {})
+    return () => { live = false }
+  })
   // The region a page belongs to, from the public map data, chooses its engraved cover.
   let mapData = $state<MapData | null>(null)
   $effect(() => { if (page && !mapData) void loadMap().then((d) => (mapData = d)) })
@@ -430,7 +441,7 @@
         {#if accepted.length}<div class="wiki-front-tools">{#if accepted.length>1}<button onclick={surprise}><Shuffle size={15}/>Halaman acak</button>{/if}<a class="commons-quiet-link" href="/lini-masa">Lini masa</a></div>{/if}
       </section>
       {#if !query&&!communityFilter}<WikiPlaces />{/if}
-      {#if !query&&!context&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap /></div>{/if}
+      {#if !query&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap region={mapRegion} /></div>{/if}
       {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2></div>{#each recent as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+' · ':p.review==='unreviewed'?(p.authorKind==='agent'?'AI · belum ditinjau · ':'Belum ditinjau · '):''}{relativeLong(p.updated)}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {:else if !growingMatches.length}<div class="wiki-draft-state"><BookOpen size={27}/><h2>{query||context||communityFilter?'Belum ada halaman yang cocok':'Cerita pertama dimulai dari kita.'}</h2><p>{query||context||communityFilter?'Coba kata atau pilihan lain.':'Halaman yang ditinjau bersama akan hadir di sini.'}</p></div>{/if}

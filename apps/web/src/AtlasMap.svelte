@@ -4,9 +4,12 @@
   import { onMount } from 'svelte'
   type Shape = { d: string; x: number; y: number }
   type Atlas = { box: number[]; regions: Record<string, Shape>; contested: { slug: string; regions: string[]; d: string }[] }
-  let { regions, selected, onpick }: { regions: { slug: string; title: string }[]; selected: string; onpick: (r: { slug: string; title: string }) => void } = $props()
+  // within: the regions a chosen kabupaten or language sits in, tinted so a place that is not itself a region
+  // still shows where it is. A kabupaten whose region is disputed (Nabire, Mimika, Puncak Jaya) is drawn too.
+  let { regions, selected, within = [], onpick }: { regions: { slug: string; title: string }[]; selected: string; within?: string[]; onpick: (r: { slug: string; title: string }) => void } = $props()
   let atlas = $state<Atlas | null>(null),
     over = $state<string | null>(null)
+  const place = $derived(atlas?.contested.find((c) => c.slug === selected) ?? null)
   onMount(() => {
     import('./papua-atlas.json').then((m) => (atlas = m.default as unknown as Atlas)).catch(() => {})
   })
@@ -16,10 +19,12 @@
     {#each regions as r (r.slug)}{@const shape = atlas.regions[r.slug]}{#if shape}<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions --><g
           class="pick-region"
           class:on={selected === r.slug}
+          class:within={selected !== r.slug && within.includes(r.slug)}
           class:hover={over === r.slug}
           onclick={() => onpick(r)}
           onpointerenter={() => (over = r.slug)}
           onpointerleave={() => (over = null)}><path d={shape.d} /></g>{/if}{/each}
+    {#if place}<path class="pick-place" d={place.d} />{/if}
     <g class="pick-labels">
       {#each regions as r (r.slug)}{@const shape = atlas.regions[r.slug]}{#if shape}<text x={shape.x} y={shape.y} class:on={selected === r.slug}>{r.title}</text>{/if}{/each}
     </g>
@@ -39,6 +44,8 @@
   }
   .pick-region.hover path { fill: color-mix(in oklab, var(--brand) 22%, var(--background)); }
   .pick-region.on path { fill: color-mix(in oklab, var(--brand) 42%, var(--background)); stroke: var(--brand); stroke-opacity: 1; stroke-width: 1.6; }
+  .pick-region.within path { fill: color-mix(in oklab, var(--brand) 24%, var(--background)); stroke: var(--brand); stroke-opacity: 0.8; }
+  .pick-place { pointer-events: none; fill: color-mix(in oklab, var(--brand) 60%, var(--background)); stroke: var(--brand); stroke-width: 1.6; vector-effect: non-scaling-stroke; }
   .pick-labels { pointer-events: none; }
   .pick-labels text {
     font-family: var(--font-editorial);

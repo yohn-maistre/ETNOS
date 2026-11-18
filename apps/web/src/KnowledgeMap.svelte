@@ -27,7 +27,8 @@
   }
   type MapData = { built: string; model: string; domains: Record<string, string>; forms: Record<string, string>; nodes: Node[]; edges: [number, number, string][] }
 
-  let { src = '/observatory/map.json' }: { src?: string } = $props()
+  // region: the customary region of the place chosen in the switcher; opening the map starts on it.
+  let { src = '/observatory/map.json', region = '' }: { src?: string; region?: string } = $props()
   let data = $state<MapData | null>(null),
     failed = $state(false),
     open = $state(false),
@@ -212,7 +213,14 @@
 
   // Opening and closing morph with a view transition where the browser has one.
   function toggle(next: boolean) {
-    const go = () => { open = next; if (!next) selected = -1 }
+    const go = () => {
+      open = next
+      if (!next) selected = -1
+      else if (region && selected < 0 && data) {
+        const i = data.nodes.findIndex((n) => n.k === 'region' && n.reg === region)
+        if (i >= 0) selected = i
+      }
+    }
     const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown }
     if (doc.startViewTransition && !prefersReducedMotion.current) doc.startViewTransition(go)
     else go()
