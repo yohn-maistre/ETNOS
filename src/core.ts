@@ -332,7 +332,8 @@ export class StrataCore {
     const confirmations=new Map(this.all<{post_id:string;n:number;mine:number}>('SELECT post_id,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM post_confirmations WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id',viewer??null,ids).map(r=>[r.post_id,r]))
     const answers=this.all<{parent_id:string;answer:string;n:number}>("SELECT parent_id,json_extract(content,'$.answer') answer,COUNT(*) n FROM posts WHERE parent_id IN(SELECT value FROM json_each(?)) AND hidden=0 AND deleted=0 AND json_extract(content,'$.answer') IN('wrong','more') GROUP BY parent_id,answer",ids)
     const seasonIds=JSON.stringify([...new Set(posts.flatMap(p=>{const sid=p.deleted?undefined:contentOf(p.content).season;return sid?[sid]:[]}))])
-    const seasons=new Map(this.all<{id:string;community_id:string;name:string}>('SELECT id,community_id,name FROM community_seasons WHERE id IN(SELECT value FROM json_each(?))',seasonIds).map(r=>[r.id,r]))
+    // Most pages carry no season; skip the lookup then, so a feed costs no extra read.
+    const seasons=new Map(seasonIds==='[]'?[]:this.all<{id:string;community_id:string;name:string}>('SELECT id,community_id,name FROM community_seasons WHERE id IN(SELECT value FROM json_each(?))',seasonIds).map(r=>[r.id,r]))
     const responses=this.all<{post_id:string;response:string;n:number;mine:number}>('SELECT post_id,response,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM event_responses WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,response',viewer??null,ids)
     return posts.map(p=>{
       const author=authors.get(p.author_id)!,content=p.deleted?{}:contentOf(p.content),votes=pollVotes.filter(v=>v.post_id===p.id),rsvp=responses.filter(v=>v.post_id===p.id)
