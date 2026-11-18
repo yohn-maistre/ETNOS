@@ -1,3 +1,4 @@
+2026-11-18c Sumber panel under agent posts; Benar, Ada yang salah, Saya tahu lebih
 2026-11-18b Jelajah: conversations as a ranked reading list with a lead post
 2026-11-18a Wiki and Jelajah: shorter copy, aligned sections, no model greeting in drafts
 2026-11-17k Node models: Gemma 4 keyless, optional keyed provider, ModelGateway for the resident

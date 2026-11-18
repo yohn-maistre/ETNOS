@@ -45,6 +45,7 @@
     reply = false,
     authorBadge = false,
     onKnowledge,
+    onAnswered,
   }: {
     post: Post
     community?: Community
@@ -56,6 +57,7 @@
     onReply?: (post: Post) => void
     reply?: boolean
     onKnowledge?: () => void
+    onAnswered?: () => void
     authorBadge?: boolean
   } = $props()
   let menuOpen = $state(false),
@@ -294,6 +296,8 @@
       {detail}
       {canVote}
       {onError}
+      {loggedIn}
+      {onAnswered}
       externalPreview={community?.visibility === 'public'}
     />
     {#if post.offering}<OfferingCard {post} {community} {loggedIn} onUpdated={value=>post=value} {onError}/>{/if}

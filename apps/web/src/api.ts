@@ -58,6 +58,10 @@ export type PostContent = {
   inlineMedia?: { version: 1; ids: string[] }
   poll?: { options: string[]; closesAt: number }
   event?: { startsAt: number; endsAt?: number; location: string }
+  /** Marks a reply that answers a sourced post. */
+  answer?: 'wrong' | 'more'
+  /** Sources the author named, shown as written. */
+  sources?: { title: string; url?: string; quote?: string }[]
 }
 export type OfferingView={kind:'offer'|'request';price:number|null;currency:'IDR';unit:string;status:'open'|'paused'|'fulfilled'|'withdrawn'|'expired';expiresAt:number|null;place:{id:string;title:string}|null;revision:number;updated:number;canManage:boolean;canContact:boolean}
 export type Post = {
@@ -102,6 +106,8 @@ export type Post = {
   bookmarked: boolean
   contexts?: { id: string; slug: string; title: string; kind: string }[]
   replies: number
+  /** Answers to an agent post; null on other posts. */
+  answers?: { right: number; wrong: number; more: number; mine: boolean } | null
 }
 export type Membership = {
   community_id: string

@@ -71,3 +71,32 @@ test('poll results are withheld below the respondent threshold and never leak co
  withheld(f.poll(voters[0].actor.id,p.id,null).poll)
  }finally{s.close()}
 })
+test('answers to agent posts: members confirm once, "wrong" and "more" are visible replies, sources are bounded',()=>{
+ const{s,f,g,a,b,o}=fixture();try{
+ const c=s.createCommunity(a.actor.id,'Mee Pago','Cerita','hidden-private',true);s.setMember(a.actor.id,c.id,b.actor.id,true)
+ const agent=s.provision('did:web:aksara.example','Aksara',a.actor.id);s.setMember(a.actor.id,c.id,agent.actor.id,true);const m=s.mandate(a.actor.id,agent.actor.id,c.id,'Cerita pagi',s.clock()+10000,20)
+ const sources=[{title:'Prihartanti & Harjito (2026), Didaktik 12(01)',url:'https://journal.example/10786',quote:'Koyeidaba lahir dari air kencing Kibiwoo.'}]
+ const p=s.createPost(agent.actor.id,c.id,'Cerita Koyeidaba',undefined,m,{content:{title:'Koyeidaba',sources}})
+ assert.deepEqual(p.content.sources,sources);assert.deepEqual(p.answers,{right:0,wrong:0,more:0,mine:false})
+ // Bounded and checked: unknown keys, bad links, empty titles and long lists are refused.
+ for(const bad of [[{title:'x',url:'javascript:alert(1)'}],[{title:''}],[{title:'x',note:'y'}],Array(9).fill({title:'x'}),'x'])assert.throws(()=>s.createPost(agent.actor.id,c.id,'Bad',undefined,m,{content:{sources:bad}}),/source|link/i)
+ // "Benar": current human members only, once each, withdrawable, private to the viewer.
+ assert.equal(f.confirm(b.actor.id,p.id,true).answers!.right,1);assert.equal(f.confirm(b.actor.id,p.id,true).answers!.right,1)
+ assert.equal(s.getPost(b.actor.id,p.id).answers!.mine,true);assert.equal(s.getPost(a.actor.id,p.id).answers!.mine,false)
+ assert.throws(()=>f.confirm(o.actor.id,p.id,true));assert.throws(()=>f.confirm(agent.actor.id,p.id,true),/Human/);assert.throws(()=>f.confirm(b.actor.id,p.id,'yes'),/Invalid/)
+ const human=s.createPost(a.actor.id,c.id,'A person writes');assert.equal(human.answers,null);assert.throws(()=>f.confirm(b.actor.id,human.id,true),/agent posts/)
+ s.setMember(a.actor.id,c.id,b.actor.id,false);assert.throws(()=>f.confirm(b.actor.id,p.id,false));s.setMember(a.actor.id,c.id,b.actor.id,true)
+ assert.equal(f.confirm(b.actor.id,p.id,false).answers!.right,0);f.confirm(b.actor.id,p.id,true)
+ // "Ada yang salah" and "Saya tahu lebih" are ordinary replies with a marker; an opening post cannot carry one.
+ const wrong=f.create(b.actor.id,{communityId:c.id,parentId:p.id,text:'Di Topo ceritanya beda.',content:{answer:'wrong'}},g)
+ f.create(a.actor.id,{communityId:c.id,parentId:p.id,text:'Nenek saya cerita versi lain.',content:{answer:'more',url:'https://example.org/versi'}},g)
+ assert.deepEqual(s.getPost(a.actor.id,p.id).answers,{right:1,wrong:1,more:1,mine:false})
+ assert.throws(()=>f.create(b.actor.id,{communityId:c.id,text:'Top',content:{answer:'more'}},g),/reply/);assert.throws(()=>f.create(b.actor.id,{communityId:c.id,parentId:p.id,text:'x',content:{answer:'maybe'}},g),/Invalid answer/)
+ // An edit keeps the marker; a hidden or deleted answer stops counting.
+ assert.equal(f.edit(b.actor.id,wrong.id,{revision:1,text:'Di Topo ceritanya sedikit beda.'}).content.answer,'wrong')
+ f.moderate(a.actor.id,wrong.id,{action:'hide',reason:'Review'});assert.equal(s.getPost(a.actor.id,p.id).answers!.wrong,0)
+ // A steward may correct an agent post's sources; deleting it removes the confirmations.
+ const corrected=f.edit(a.actor.id,p.id,{revision:1,text:'Cerita Koyeidaba',content:{title:'Koyeidaba',sources:[{title:'Yobe, tesis UGM'}]}});assert.deepEqual(corrected.content.sources,[{title:'Yobe, tesis UGM'}])
+ f.delete(a.actor.id,p.id,2);assert.equal(s.all('SELECT * FROM post_confirmations WHERE post_id=?',p.id).length,0)
+ }finally{s.close()}
+})

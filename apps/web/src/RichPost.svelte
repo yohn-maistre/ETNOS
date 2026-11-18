@@ -8,6 +8,8 @@
   } from '@lucide/svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import PostText from './PostText.svelte'
+  import SourcesPanel from './SourcesPanel.svelte'
+  import { splitSources } from './sources'
   import PostMedia from './PostMedia.svelte'
   import VideoPreview from './VideoPreview.svelte'
   import LinkPreview from './LinkPreview.svelte'
@@ -19,13 +21,21 @@
     canVote = false,
     onError,
     externalPreview = false,
+    loggedIn = false,
+    onAnswered,
   }: {
     post: Post
     detail?: boolean
     canVote?: boolean
     onError: (s: string) => void
     externalPreview?: boolean
+    loggedIn?: boolean
+    onAnswered?: () => void
   } = $props()
+  // An agent's closing "Sumber:" sections fold into the panel; the body reads without them.
+  const folded = $derived(post.author.kind === 'agent' && !post.content?.sources?.length ? splitSources(post.text) : null)
+  const body = $derived(folded?.body ?? post.text)
+  const answerLabel = { wrong: 'Ada yang salah', more: 'Saya tahu lebih' } as const
   let revealed = $state(false),
     expanded = $state(false),
     busy = $state(false)
@@ -37,7 +47,7 @@
   const embed = $derived(
     videoEmbed(post.content?.url ?? '') || directVideo(post.content?.url ?? ''),
   )
-  const truncated = $derived(!detail && !expanded && post.text.length > 900)
+  const truncated = $derived(!detail && !expanded && body.length > 900)
   async function act(route: string, b: unknown) {
     if (busy) return
     busy = true
@@ -76,11 +86,12 @@
       {#if post.content?.title}<h2 class="post-title">
           <a href={'/square/' + post.id}>{post.content.title}</a>
         </h2>{/if}
+      {#if post.content?.answer}<small class="post-answer-label">{answerLabel[post.content.answer]}</small>{/if}
       <div class="cx-post-body strata-body" class:post-clamped={truncated}>
         {#if post.content?.format === 'markdown'}<div class="post-markdown">
-            {@html markdown(post.text, inlineImages)}
+            {@html markdown(body, inlineImages)}
           </div>{:else}<PostText
-            text={post.text}
+            text={body}
             permalink={!detail ? '/square/' + post.id : undefined}
           />{/if}
       </div>
@@ -90,6 +101,7 @@
         >
           Baca selengkapnya
         </button>{/if}
+      {#if post.content?.sources?.length || folded || post.answers}<SourcesPanel {post} tail={folded?.tail ?? ''} open={detail} {loggedIn} canAnswer={canVote} {onError} {onAnswered} />{/if}
       {#if post.media?.length}<PostMedia
           bind:this={mediaViewer}
           images={post.media}

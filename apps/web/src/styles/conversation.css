@@ -2637,3 +2637,29 @@ body {
   letter-spacing: -0.3px;
   margin-bottom: 6px;
 }
+
+/* Sumber: what an agent post was written from, and the three answers. */
+.post-sources { margin-top: 14px; border-top: 1px solid var(--reading-line); }
+.post-sources > summary { display: flex; align-items: center; gap: 6px; min-height: 40px; padding-top: 8px; font-size: 13px; color: var(--muted-foreground); cursor: pointer; list-style: none; width: fit-content; }
+.post-sources > summary::-webkit-details-marker { display: none; }
+.post-sources > summary svg { transition: transform 160ms ease-out; flex-shrink: 0; }
+.post-sources[open] > summary svg { transform: rotate(90deg); }
+.post-sources > summary:hover { color: var(--foreground); }
+.post-sources > summary:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+.post-sources-body { display: grid; gap: 12px; padding: 4px 0 2px 21px; }
+.post-sources-body ol { display: grid; gap: 12px; margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.5; }
+.post-sources-body li::marker { color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.post-source-title a { display: inline-flex; align-items: baseline; gap: 4px; color: var(--brand); text-underline-offset: 3px; }
+.post-source-title a svg { align-self: center; }
+.post-sources-body q { display: block; margin-top: 4px; font-family: var(--font-editorial); font-size: 15px; line-height: 1.5; color: var(--foreground); quotes: '“' '”'; }
+.post-sources-tail { font-size: 14px; line-height: 1.55; color: var(--foreground); overflow-wrap: anywhere; }
+.post-sources-tail :is(p, .post-markdown p) { margin: 0 0 8px; }
+.post-sources-note { font-size: 12px; color: var(--muted-foreground); }
+.post-answers { display: flex; flex-wrap: wrap; gap: 8px; }
+.post-answers button[aria-pressed='true'] { border-color: var(--foreground); color: var(--foreground); background: var(--secondary); }
+.post-answer-form { display: grid; gap: 8px; max-width: 560px; }
+.post-answer-form > div { display: flex; justify-content: flex-end; gap: 8px; }
+.post-answer-sent { margin: 0; font-size: 13px; color: var(--muted-foreground); }
+.post-answer-label { display: inline-block; margin-bottom: 4px; padding: 2px 8px; border-radius: 999px; font-size: 12px; color: var(--foreground); background: var(--secondary); }
+@media (max-width: 600px) { .post-sources-body { padding-left: 0; } }
+@media (prefers-reduced-motion: reduce) { .post-sources > summary svg { transition: none; } }

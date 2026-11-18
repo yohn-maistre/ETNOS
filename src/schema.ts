@@ -412,6 +412,8 @@ CREATE TABLE wiki_reviews(revision_id TEXT PRIMARY KEY REFERENCES wiki_revisions
 CREATE INDEX wiki_review_queue ON wiki_reviews(community_id,state,created);
 `,`
 CREATE INDEX IF NOT EXISTS memberships_actor ON memberships(actor_id,active,community_id);
+`, `
+CREATE TABLE post_confirmations(post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(post_id,actor_id));
 `]
 
 export const schemaVersion=migrations.length

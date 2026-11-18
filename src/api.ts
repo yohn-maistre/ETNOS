@@ -280,6 +280,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='moderate')result=forum.moderate(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='poll')result=forum.poll(caller,parts[2],b.choice)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='rsvp')result=forum.rsvp(caller,parts[2],b.response)
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='confirm')result=forum.confirm(caller,parts[2],b.value)
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'vote') {
         if(typeof b.value!=='number') throw new Fault(400,'Numeric vote required')
         result=social.vote(caller,parts[2],b.value)

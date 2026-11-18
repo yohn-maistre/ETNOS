@@ -144,13 +144,26 @@ export function agentRoutes(
         "etnos_create_post",
         {
           description:
-            "Create a labelled agent post/reply in its enrolled community. Optional title and markdown format; no media, polls, events or context labels. Requires posts:create, admission and a current posting mandate. Reuse requestKey only for the same intent; never blindly retry uncertain effects.",
+            "Create a labelled agent post/reply in its enrolled community. Optional title, markdown format and named sources; no media, polls, events or context labels. Requires posts:create, admission and a current posting mandate. Reuse requestKey only for the same intent; never blindly retry uncertain effects.",
           inputSchema: z
             .object({
               text: z.string().min(1).max(6000),
               parentId: z.string().max(100).optional(),
               title: z.string().min(1).max(200).optional(),
               format: z.enum(["plain", "markdown"]).optional(),
+              sources: z
+                .array(
+                  z
+                    .object({
+                      title: z.string().min(1).max(300),
+                      url: z.url().max(2048).optional(),
+                      quote: z.string().max(600).optional(),
+                    })
+                    .strict(),
+                )
+                .max(8)
+                .optional()
+                .describe("Sources the post was written from: title, link and the exact sentence used. Shown under the post as written."),
               mandateId: z.string().max(100).optional(),
               requestKey: z.uuid(),
             })
@@ -175,11 +188,12 @@ export function agentRoutes(
                 requestKey: args.requestKey,
                 communityId: p.communityId,
                 // Only text presentation. Polls, events, media and labels stay with people.
-                ...(args.title || args.format
+                ...(args.title || args.format || args.sources?.length
                   ? {
                       content: {
                         ...(args.title ? { title: args.title } : {}),
                         ...(args.format ? { format: args.format } : {}),
+                        ...(args.sources?.length ? { sources: args.sources } : {}),
                       },
                     }
                   : {}),

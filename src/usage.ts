@@ -13,7 +13,7 @@ export type SqlUsage={statements:number;rowsRead:number;rowsWritten:number}
 export const FREE_TIER={requests:100000,rowsRead:5000000,rowsWritten:100000} as const
 
 const WORDS=new Set(('accept actors admit agents aliases ambient approve auth bookmark bookmarks cancel capabilities catalogue choices close clustering '+
-  'communities config contacts contexts decide delete deployments desk device discover discovery dm drafts edit editorial-mandates feed follow following '+
+  'communities config confirm contacts contexts decide delete deployments desk device discover discovery dm drafts edit editorial-mandates feed follow following '+
   'gaps grants group-memberships groups growing hide history image invitations items jobs join knowledge link-preview mandates me media members '+
   'memberships messages moderate moderation news notifications oauth offerings ops outbox page parents people poll posts profile promote proposals '+
   'publish quakes read refresh reject related releases replies report reports request-sponsorship requests resident resume review revoke '+

@@ -102,6 +102,7 @@
         }
       : undefined}
     onReply={replyTo}
+    onAnswered={() => void onRefresh()}
     {onError}
   />
   <div class="thread-reply-dock" id="reply">

@@ -278,9 +278,10 @@ export class StrataCore {
     if (parentId && (!parent || parent.community_id !== communityId || parent.deleted)) missing()
     if(parent && this.get<Post>('SELECT * FROM posts WHERE id=?',parent.root_id)?.locked)throw new Fault(409,'This conversation is locked')
     if(parent && (content.poll||content.event))throw new Fault(400,'Polls and events belong in an opening post')
+    if(!parent && content.answer)throw new Fault(400,'An answer is a reply')
     const pid = id(), actor = this.actor(actorId), created = this.clock()
     const uri = c.visibility === 'public' && c.publication==='atproto' ? `at://${actor.did}/${this.contract.collection}/${pid}` : null
-    if(uri&&(Object.keys(content).some(k=>k!=='format')||(options.mediaIds?.length??0)>0||content.format==='markdown'))throw new Fault(409,'Rich AT publishing is not enabled')
+    if(uri&&(Object.keys(content).some(k=>k!=='format'&&k!=='answer')||(options.mediaIds?.length??0)>0||content.format==='markdown'))throw new Fault(409,'Rich AT publishing is not enabled')
     if(typeof text!=='string'||text.length>(uri?6000:20000))throw new Fault(400,'Post text is too long')
     if(!text.trim()&&!content.title&&!content.url&&!content.poll&&!content.event&&!options.mediaIds?.length)throw new Fault(400,'Add text, a link or media')
     this.run('INSERT INTO posts(id,author_id,community_id,parent_id,text,created,hidden,mandate_id,release_id,uri,root_id,content) VALUES(?,?,?,?,?,?,0,?,?,?,?,?)', pid, actorId, communityId, parentId ?? null, text.trim(), created, mandateId ?? null, releaseId ?? null, uri,parent?.root_id??pid,JSON.stringify(content))
@@ -311,6 +312,9 @@ export class StrataCore {
     const pollVotes=this.all<{post_id:string;choice:number;n:number;mine:number}>('SELECT post_id,choice,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM poll_votes WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,choice',viewer??null,ids)
     const offerings=new Map(this.all<OfferingRow>('SELECT * FROM offerings WHERE post_id IN(SELECT value FROM json_each(?))',ids).map(o=>[o.post_id,o]))
     const places=new Map(this.all<{id:string;title:string}>("SELECT id,title FROM contexts WHERE active=1 AND id IN(SELECT place_context_id FROM offerings WHERE post_id IN(SELECT value FROM json_each(?)))",ids).map(c=>[c.id,c]))
+    // Answers to sourced posts: confirmations are their own rows; "wrong" and "more" are visible replies.
+    const confirmations=new Map(this.all<{post_id:string;n:number;mine:number}>('SELECT post_id,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM post_confirmations WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id',viewer??null,ids).map(r=>[r.post_id,r]))
+    const answers=this.all<{parent_id:string;answer:string;n:number}>("SELECT parent_id,json_extract(content,'$.answer') answer,COUNT(*) n FROM posts WHERE parent_id IN(SELECT value FROM json_each(?)) AND hidden=0 AND deleted=0 AND json_extract(content,'$.answer') IN('wrong','more') GROUP BY parent_id,answer",ids)
     const responses=this.all<{post_id:string;response:string;n:number;mine:number}>('SELECT post_id,response,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM event_responses WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,response',viewer??null,ids)
     return posts.map(p=>{
       const author=authors.get(p.author_id)!,content=p.deleted?{}:contentOf(p.content),votes=pollVotes.filter(v=>v.post_id===p.id),rsvp=responses.filter(v=>v.post_id===p.id)
@@ -325,6 +329,7 @@ export class StrataCore {
         publicationState:p.uri?jobs.get(p.id)??'unknown':policy.get(p.community_id)?.visibility==='public'?'local':'private',
         score:p.deleted?0:scores.get(p.id)?.score??0,myVote:p.deleted?0:scores.get(p.id)?.mine??0,bookmarked:!p.deleted&&bookmarks.has(p.id),
         poll:content.poll?pollView(content.poll,votes,this.clock()>=content.poll.closesAt||!!p.locked):null,
+        answers:author.kind==='agent'&&!p.deleted?{right:confirmations.get(p.id)?.n??0,wrong:answers.find(a=>a.parent_id===p.id&&a.answer==='wrong')?.n??0,more:answers.find(a=>a.parent_id===p.id&&a.answer==='more')?.n??0,mine:!!confirmations.get(p.id)?.mine}:null,
         event:content.event?{...content.event,going:rsvp.find(v=>v.response==='going')?.n??0,interested:rsvp.find(v=>v.response==='interested')?.n??0,myResponse:rsvp.find(v=>v.mine)?.response??null}:null}
     })
   }

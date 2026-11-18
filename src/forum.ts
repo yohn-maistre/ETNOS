@@ -50,8 +50,8 @@ export class Forum {
    const p=this.editable(actor,id,b.revision),old=contentOf(p.content)
    if(typeof b.text!=='string'||b.text.length>20000)throw new Fault(400,'Invalid post text')
    const patch=b.content??{}
-   if(!patch||typeof patch!=='object'||Array.isArray(patch)||Object.keys(patch).some(k=>!['title','url','format','warning','inlineMedia'].includes(k)))throw new Fault(400,'Edit only text, title, link or warning')
-   const c={...contentInput(patch,s.clock()),...(old.poll?{poll:old.poll}:{}),...(old.event?{event:old.event}:{})}
+   if(!patch||typeof patch!=='object'||Array.isArray(patch)||Object.keys(patch).some(k=>!['title','url','format','warning','inlineMedia','sources'].includes(k)))throw new Fault(400,'Edit only text, title, link, warning or sources')
+   const c={...contentInput(patch,s.clock()),...(old.answer?{answer:old.answer}:{}),...(old.poll?{poll:old.poll}:{}),...(old.event?{event:old.event}:{})}
    checkInlineMedia(c,s.all<{id:string}>('SELECT id FROM media WHERE post_id=?',id).map(m=>m.id))
    if(!b.text.trim()&&!c.title&&!c.url&&!c.poll&&!c.event&&!s.get('SELECT 1 FROM media WHERE post_id=?',id))throw new Fault(400,'Add text, a link or media')
    s.run('UPDATE posts SET text=?,content=?,revision=revision+1,updated=? WHERE id=?',b.text.trim(),JSON.stringify(c),s.clock(),id)
@@ -64,7 +64,7 @@ export class Forum {
   return s.tx(()=>{
    const p=this.editable(actor,id,revision)
    s.run("UPDATE posts SET text='',content='{}',deleted=1,pinned=0,revision=revision+1,updated=? WHERE id=?",s.clock(),id)
-   for(const table of ['media','poll_votes','event_responses','votes','bookmarks'])s.run(`DELETE FROM ${table} WHERE post_id=?`,id)
+   for(const table of ['media','poll_votes','event_responses','votes','bookmarks','post_confirmations'])s.run(`DELETE FROM ${table} WHERE post_id=?`,id)
    s.run("DELETE FROM record_contexts WHERE record_kind='post' AND record_id=?",id)
    s.invalidatePublicContext(p.community_id)
    s.audit(actor,'post.delete',id);return s.getPost(actor,id)
@@ -105,6 +105,17 @@ export class Forum {
    if(!p.poll||p.poll.closed)throw new Fault(409,'Poll closed')
    if(choice===null)s.run('DELETE FROM poll_votes WHERE post_id=? AND actor_id=?',id,actor)
    else{if(!Number.isInteger(choice)||Number(choice)<0||Number(choice)>=p.poll.options.length)throw new Fault(400,'Invalid poll option');s.run('INSERT INTO poll_votes VALUES(?,?,?,?) ON CONFLICT(post_id,actor_id) DO UPDATE SET choice=excluded.choice,created=excluded.created',id,actor,Number(choice),s.clock())}
+   return s.getPost(actor,id)
+  })
+ }
+ /** "Benar": a member confirms a post by an agent. One per person; sending false withdraws it. */
+ confirm(actor:string,id:string,value:unknown){
+  const s=this.store;return s.tx(()=>{
+   const p=this.participant(actor,id)
+   if(p.author.kind!=='agent')throw new Fault(409,'Only agent posts take answers')
+   if(typeof value!=='boolean')throw new Fault(400,'Invalid answer')
+   if(value)s.run('INSERT INTO post_confirmations VALUES(?,?,?) ON CONFLICT(post_id,actor_id) DO NOTHING',id,actor,s.clock())
+   else s.run('DELETE FROM post_confirmations WHERE post_id=? AND actor_id=?',id,actor)
    return s.getPost(actor,id)
   })
  }
