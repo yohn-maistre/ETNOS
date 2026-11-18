@@ -419,6 +419,8 @@ Every UI step uses the impeccable skill, `vite build` and screenshots at phone a
 
 **Progress (18 November, evening).** Steps 1 to 9 are built and pushed. Step 6: the seed format takes `kind: "being"`, the wiki home lists beings per region, news alone never starts a wiki draft, and the seeding plan is `research/wiki-beings-seeding-plan-2026-11-18.md`; the first being pages are being surveyed through the verify pipeline and still need proposing and a `map.json` rebuild. Step 7: seasons per community on posts (`src/seasons.ts`). Step 8: founding with two people (`src/founding.ts`, `/gabung#token`). Step 9: Tentang ETNOS section under Dasar penggolongan. Owner actions after deploy: click "Muat katalog" in Studio for the topic renames. Next is step 10, the proposal pack.
 
+**Run 1b (decided 18 November evening, before step 10).** Spec amendment at the end of `superpowers/specs/2026-11-18-information-architecture-design.md`. Task 60: Jelajah becomes the home of places, languages and topics (anchors, Sedang dibicarakan, strata layers, language specimen index, topic tiles, Kabar strip; map to Wiki home; `/contexts` folds in). Task 61: sidebar sub-items and Menu sheet, retire a context (Musik Reggae), `/wiki/<id>` redirect for context articles, Kabar tab grouped by layer. Task 62: kind-specific top blocks on thing pages. Then step 10.
+
 **Run 2.** Multi-identity PDS (task 24, plan in `research/pds-multi-identity-plan-2026-11-18.md`).
 
 **Run 3.** Aksara with proper Gemini keys: seven Aksara from the place pack (30), place notebook (48), community-kept Aksara (49).
