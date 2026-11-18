@@ -1,9 +1,10 @@
 /* Consistency pass: later than every other stylesheet, so it overrides cleanly. */
 
-/* 1. /explore chip row wraps on desktop instead of clipping (mobile keeps its grid). */
+/* 1. /explore shortcuts sit in an even three-column grid at every width, so nothing wraps raggedly. */
 @media (min-width: 768px) {
   .discovery-nav {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     overflow: visible;
   }
 }

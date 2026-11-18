@@ -11,13 +11,13 @@
   import ContentSkeleton from './ContentSkeleton.svelte'
   import NewsSection from './NewsSection.svelte'
   import EngagementPage from './EngagementPage.svelte'
+  import ExplorePlaces from './ExplorePlaces.svelte'
   import { request, initials, relativeLong, clip, type Auth, type Post } from './api'
   import type { SearchResult } from './search'
   let { auth }: { auth: Auth } = $props()
   let data = $state<SearchResult | null>(null),
     pending = $state(true),
-    error = $state(''),
-    facet = $state('all')
+    error = $state('')
   type RankedPost=Post&{discovery?:{reason:string;communityTitle:string}}
   let sort=$state('balanced'),ranked=$state<{items:RankedPost[];sort:string;recipe:string}|null>(null),rankingPending=$state(false)
   let failedImages=$state<string[]>([])
@@ -25,11 +25,6 @@
   function preview(post:Post){let text=post.text;if(post.content?.format==='markdown')text=text.replace(/!\[[^\]]*\]\([^)]*\)/g,'').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/(^|\n)\s{0,3}#{1,6}\s/g,' ').replace(/[*_`~]+/g,'');return text.replace(/\s+/g,' ').trim().slice(0,280)}
   // The lead slot goes to the strongest of the top three: an image first, then a written title, else rank order.
   const conversations = $derived.by(()=>{const top=featured.slice(0,3),lead=top.find(p=>p.media?.length&&!failedImages.includes(p.id))??top.find(p=>p.content?.title)??featured[0];return lead?[lead,...featured.filter(p=>p!==lead)]:[]})
-  const contexts = $derived(
-    data?.contexts.filter(
-      (c) => c.kind !== 'topic' && (facet === 'all' || c.kind === facet),
-    ) ?? [],
-  )
   const featured = $derived<RankedPost[]>(
     ranked?.items ?? data?.posts
       .filter(
@@ -42,12 +37,6 @@
       )
       .slice(0, 9) ?? [],
   )
-  const kinds: Record<string, string> = {
-    region: 'Wilayah',
-    place: 'Tempat',
-    language: 'Bahasa',
-    topic: 'Topik',
-  }
   $effect(() => {
     const actor = auth.actor?.id,
       controller = new AbortController()
@@ -97,56 +86,7 @@
       </a></li>{/each}
     </ol>
   </section>{/if}
-  {#if data.contexts.some((c) => c.kind === 'topic')}<section
-      class="discovery-section"
-    >
-      <div class="discovery-section-head">
-        <h2>Topik</h2>
-        <a href="/topics">Semua <ArrowUpRight size={14} /></a>
-      </div>
-      {#each data.contexts.filter((c) => c.kind === 'topic') as topic}<a
-          class="discovery-row"
-          href={'/contexts/' + topic.slug}
-        >
-          <Hash size={18} />
-          <span>
-            <strong>{topic.title}</strong>
-            {#if topic.description}<small>{topic.description}</small>{/if}
-          </span>
-          <ArrowUpRight size={16} />
-        </a>{/each}
-    </section>{/if}
-  {#if data.contexts.some((c) => c.kind !== 'topic')}<section
-      class="discovery-section"
-    >
-      <div class="discovery-section-head">
-        <h2>Tempat & bahasa</h2>
-        <a href="/contexts">Semua <ArrowUpRight size={14} /></a>
-      </div>
-      <div class="search-filters" role="group" aria-label="Tempat dan bahasa">
-        {#each [['all', 'Semua'], ['region', 'Wilayah'], ['place', 'Tempat'], ['language', 'Bahasa']] as [id, label]}<button
-            aria-pressed={facet === id}
-            onclick={() => (facet = id)}
-          >
-            {label}
-          </button>{/each}
-      </div>
-      <div class="discovery-mosaic">
-        {#each contexts as context, i}<a
-            class="discovery-tile"
-            class:wide={i === 0}
-            href={'/contexts/' + context.slug}
-          >
-            <small>{kinds[context.kind]}</small>
-            <strong>{context.title}</strong>
-            <p>{context.description}</p>
-            <ArrowUpRight size={18} />
-          </a>{/each}
-      </div>
-      {#if !contexts.length}<p class="discovery-note">
-          Belum ada tempat atau bahasa dalam pilihan ini.
-        </p>{/if}
-    </section>{/if}
+  <ExplorePlaces />
   <section class="discovery-section">
     <div class="discovery-section-head">
       <h2>Komunitas</h2>
@@ -187,19 +127,13 @@
           <ArrowUpRight size={16} />
         </a>{/each}
     </section>{/if}
-  {#if data.wiki.length}<section class="discovery-section">
+  {#if data.wiki.length}<section class="discovery-section" aria-labelledby="explore-wiki-title">
       <div class="discovery-section-head">
-        <h2>Wiki bersama</h2>
-        <a href="/offers"><ShoppingBag size={17}/>Penawaran</a>
-  <a href="/wiki">Semua <ArrowUpRight size={14} /></a>
+        <h2 id="explore-wiki-title">Wiki bersama</h2>
+        <a href="/wiki">Semua <ArrowUpRight size={14} /></a>
       </div>
-      {#each data.wiki as page}<a
-          class="discovery-row"
-          href={'/wiki/' + page.id}
-        >
-          <BookOpen size={18} />
-          <strong>{page.title}</strong>
-          <ArrowUpRight size={16} />
-        </a>{/each}
+      <ul class="explore-wiki">
+        {#each data.wiki as page}<li><a href={'/wiki/' + page.id}><BookOpen size={16} aria-hidden="true" /><span>{page.title}</span></a></li>{/each}
+      </ul>
     </section>{/if}
 {/if}
