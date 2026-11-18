@@ -247,6 +247,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       }
       else if(parts.length===4&&parts[1]==='actors'&&parts[3]==='follow'){if(typeof b.following!=='boolean')throw new Fault(400,'Boolean required');result=social.follow(caller,parts[2],b.following)}
       else if(path==='/v1/contexts')result=groups.createContext(caller,{slug:string(b.slug),title:string(b.title),kind:string(b.kind) as Context['kind'],description:string(b.description),language:string(b.language),aliases:strings(b.aliases??[],20),facet:b.facet===undefined?undefined:string(b.facet)})
+      else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='retire'){if(typeof b.retired!=='boolean')throw new Fault(400,'Boolean required');result=groups.retireContext(caller,parts[2],b.retired)}
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='aliases')result=groups.setContextAliases(caller,parts[2],b.aliases)
       else if(path==='/v1/contexts/seed-labels')result=groups.applySeedLabels(caller,seedLabels as SeedLabels)
       else if(path==='/v1/contexts/catalogue'){const c=catalogue(options.catalogue);result={catalogue:c.key,...groups.importCatalogue(caller,c.catalogue)}}

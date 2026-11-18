@@ -602,6 +602,20 @@ export class Groups implements GroupAuthority {
       return { added, present, missingPages, missingContexts: [...missingContexts] };
     });
   }
+  /**
+   * Retire a context (node steward only), or bring it back. A retired context drops out of every list, picker,
+   * feed filter and thing page, because each of those reads active=1; its labels and history stay stored and the
+   * catalogue import never revives it.
+   */
+  retireContext(actorId: string, contextId: string, retired: boolean) {
+    return this.store.tx(() => {
+      this.nodeSteward(actorId);
+      const row = this.store.get<{ id: string; active: number }>("SELECT id,active FROM contexts WHERE id=? OR slug=?", contextId, contextId) ?? missing();
+      this.store.run("UPDATE contexts SET active=? WHERE id=?", retired ? 0 : 1, row.id);
+      if (Boolean(row.active) === retired) this.store.audit(actorId, retired ? "context.retire" : "context.restore", row.id);
+      return { id: row.id, retired };
+    });
+  }
   setContextAliases(actorId: string, contextId: string, value: unknown) {
     return this.store.tx(() => {
       this.nodeSteward(actorId);

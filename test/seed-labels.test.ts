@@ -67,3 +67,23 @@ test('the shipped seed labels name real catalogue contexts and are reachable onl
   assert.ok([401,403].includes(res.status),String(res.status))
  }finally{x.s.close()}
 })
+
+test('a retired context leaves lists and lookups but keeps its labels; only the node steward retires or restores',()=>{
+ const x=world()
+ try{
+  const page=x.publish(x.steward.actor.id,x.room.id,'Kabupaten Fixture')
+  x.g.applySeedLabels(x.steward.actor.id,{pages:[{title:'Kabupaten Fixture',contexts:['fixture-place']}]})
+  assert.throws(()=>x.g.retireContext(x.other.actor.id,x.place.id,true),/Node steward/)
+  x.g.retireContext(x.steward.actor.id,'fixture-place',true)
+  assert.ok(!x.g.contexts().some(c=>c.id===x.place.id))
+  assert.throws(()=>x.g.context(x.place.id),/Not found/)
+  assert.deepEqual(x.g.contextLinks('wiki',page.id),[])
+  assert.deepEqual(links(x.s,page.id),[x.place.id]) // stored, not shown
+  // The catalogue import does not bring it back.
+  x.g.importCatalogue(x.steward.actor.id,{entries:[{slug:'fixture-place',title:'Fixture place',kind:'place',description:'Synthetic',language:'id',aliases:[],parents:[]}]} as never)
+  assert.ok(!x.g.contexts().some(c=>c.id===x.place.id))
+  x.g.retireContext(x.steward.actor.id,x.place.id,false)
+  assert.equal(x.g.contexts().find(c=>c.id===x.place.id)?.indexed,1)
+  assert.equal(x.s.all("SELECT 1 FROM audit WHERE action IN ('context.retire','context.restore')").length,2)
+ }finally{x.s.close()}
+})

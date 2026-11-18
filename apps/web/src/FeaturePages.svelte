@@ -1163,4 +1163,18 @@
           <Button type="submit" size="sm">Simpan</Button>
         </form>
       </details>
+  <!-- Node steward only (the server checks): a retired page leaves lists, menus and label pickers; labels and history stay stored. -->
+  <details class="place-news-setup">
+    <summary>Pensiunkan halaman ini</summary>
+    <p class="cx-hint">Halaman {context?.title} tidak lagi tampil di Jelajah, daftar dan pilihan label. Label yang sudah terpasang dan riwayatnya tetap tersimpan, dan halaman bisa dipulihkan.</p>
+    <Button size="sm" variant="outline" onclick={async () => {
+      if (!context) return
+      try {
+        await request('/v1/contexts/' + context.id + '/retire', { retired: true })
+        navigate('/explore')
+      } catch (error) {
+        onError(error instanceof Error ? error.message : 'Halaman belum dapat dipensiunkan.')
+      }
+    }}>Pensiunkan {context?.title}</Button>
+  </details>
 {/snippet}
