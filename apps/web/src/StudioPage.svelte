@@ -3,7 +3,7 @@
  import WikiPolicy from './WikiPolicy.svelte'
  import {notify} from './notifications.svelte'
  import {untrack} from 'svelte'
- import {Radio,Rss,Bot,Pause,Play,Plus,ArrowUpRight,RefreshCw,BookOpen,CheckCircle2,MapPin} from '@lucide/svelte'
+ import {Radio,Rss,Bot,Pause,Play,Plus,ArrowUpRight,RefreshCw,BookOpen,CheckCircle2,MapPin,Tags} from '@lucide/svelte'
  import {request,ApiError,relativeDate,type Auth,type Community} from './api'
  import {residentJobMessage} from './resident-job-ui'
  import {Button} from '$lib/components/ui/button/index.js'
@@ -31,6 +31,10 @@
  type CatalogueResult={created:number;updated:number;linked:number;skipped:number;refused:number}
  let catalogueInfo=$state<CatalogueInfo|null>(null),catalogueResult=$state<CatalogueResult|null>(null),catalogueBusy=$state(false),catalogueError=$state('')
  $effect(()=>{if(!auth.steward)return;const controller=new AbortController();request<CatalogueInfo>('/v1/contexts/catalogue',undefined,controller.signal,true).then(c=>{if(!controller.signal.aborted)catalogueInfo=c}).catch(()=>{/* No catalogue for this deployment. */});return()=>controller.abort()})
+ type SeedResult={added:number;present:number;missingPages:string[];missingContexts:string[]}
+ let seedResult=$state<SeedResult|null>(null),seedBusy=$state(false)
+ // First labels for the seed wiki pages: each page gets its wilayah adat, kabupaten or language. Safe to run again.
+ async function applySeedLabels(){if(seedBusy)return;seedBusy=true;catalogueError='';try{seedResult=await request<SeedResult>('/v1/contexts/seed-labels',{});notify(seedResult.added?'Label awal dipasang.':'Label awal sudah lengkap. Tidak ada yang diubah.')}catch(e){catalogueError=e instanceof Error?e.message:'Label belum dapat dipasang.'}finally{seedBusy=false}}
  async function loadCatalogue(){if(catalogueBusy)return;catalogueBusy=true;catalogueError='';try{catalogueResult=await request<CatalogueResult>('/v1/contexts/catalogue',{});notify(catalogueResult.created||catalogueResult.linked||catalogueResult.updated?'Katalog dimuat.':'Katalog sudah lengkap. Tidak ada yang diubah.')}catch(e){catalogueError=e instanceof Error?e.message:'Katalog belum dapat dimuat.'}finally{catalogueBusy=false}}
  async function load(){const mine=++generation;loading=true;error=''
   try{const info=await request<{communities:Room[];residentProvider:string;acquisitionConfigured:boolean}>('/v1/studio');if(mine!==generation)return;rooms=info.communities;provider=info.residentProvider;acquisition=info.acquisitionConfigured;scope=rooms.some(r=>r.id===scope)?scope:rooms.find(r=>r.visibility==='public')?.id??'';await loadScope(scope,mine)}catch(e){error=e instanceof Error?e.message:'Studio belum dapat dimuat.'}finally{if(mine===generation)loading=false}}
@@ -64,6 +68,9 @@
   <p class="cx-hint">{catalogueInfo?catalogueInfo.entries+' konteks: wilayah, provinsi, kabupaten dan kota, bahasa, serta topik. ':''}Yang belum ada akan dibuat. Judul dan keterangan yang sudah disunting tidak diubah, dan tidak ada yang dihapus.</p>
   <Button variant="outline" disabled={catalogueBusy||!catalogueInfo} onclick={()=>void loadCatalogue()}><MapPin size={15}/>{catalogueBusy?'Memuat…':'Muat katalog '+(catalogueInfo?.name??'')}</Button>
   {#if catalogueResult}<p class="studio-catalogue-result" role="status"><span><strong>{catalogueResult.created}</strong> dibuat</span><span><strong>{catalogueResult.linked}</strong> tautan induk</span><span><strong>{catalogueResult.updated}</strong> dilengkapi</span><span><strong>{catalogueResult.skipped}</strong> sudah ada</span>{#if catalogueResult.refused}<span><strong>{catalogueResult.refused}</strong> tidak ditautkan</span>{/if}</p>{/if}
+  <p class="cx-hint">Setelah katalog dimuat, pasang label awal pada halaman wiki dari data awal. Tiap halaman mendapat label wilayah adat, kabupaten atau bahasanya. Label yang sudah ada tidak diubah.</p>
+  <Button variant="outline" disabled={seedBusy} onclick={()=>void applySeedLabels()}><Tags size={15}/>{seedBusy?'Memasang…':'Pasang label awal'}</Button>
+  {#if seedResult}<p class="studio-catalogue-result" role="status"><span><strong>{seedResult.added}</strong> dipasang</span><span><strong>{seedResult.present}</strong> sudah ada</span>{#if seedResult.missingPages.length}<span><strong>{seedResult.missingPages.length}</strong> halaman belum terbit</span>{/if}{#if seedResult.missingContexts.length}<span><strong>{seedResult.missingContexts.length}</strong> label belum ada di katalog</span>{/if}</p>{/if}
   {#if catalogueError}<p class="commons-inline-error" role="alert">{catalogueError}</p>{/if}
  </div></section>{/if}
  {#if !rooms.length}<div class="strata-nodata"><h2>Ruang untuk para pengelola</h2><p>Studio tersedia untuk komunitas yang kamu kelola.</p><Button variant="outline" href="/communities">Lihat komunitas</Button></div>{:else}

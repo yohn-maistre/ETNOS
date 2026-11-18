@@ -11,7 +11,8 @@ export type Group = {
   sponsorship: "unrequested" | "pending" | "enabled" | "suspended";
   created: number;
 };
-export type GroupRole = "owner" | "steward" | "member";
+export type SeedLabels = { pages: { title: string; contexts: string[] }[] };
+export type GroupRole ="owner" | "steward" | "member";
 export type GroupAction = "manage" | "work" | "read";
 export interface GroupAuthority {
   allows(actorId: string, groupId: string, action: GroupAction): boolean;
@@ -551,6 +552,56 @@ export class Groups implements GroupAuthority {
     });
   }
   /** Node stewards may correct a public context's alternative names. `kabar:<slug>` names a news-desk place. */
+  /**
+   * First labels for seed wiki pages, applied by the node steward. Pages are matched by exact title among
+   * published pages in public communities only; drafts, hidden pages and private communities are never touched.
+   * Idempotent: a label already present is counted, not added twice. Retired contexts are skipped.
+   */
+  applySeedLabels(actorId: string, seed: SeedLabels) {
+    return this.store.tx(() => {
+      this.nodeSteward(actorId);
+      if (
+        !seed ||
+        !Array.isArray(seed.pages) ||
+        seed.pages.length > 500 ||
+        seed.pages.some((e) => typeof e?.title !== "string" || !Array.isArray(e.contexts) || e.contexts.length > 10 || e.contexts.some((c) => typeof c !== "string"))
+      )
+        throw new Fault(400, "Invalid seed labels");
+      let added = 0,
+        present = 0;
+      const missingPages: string[] = [],
+        missingContexts = new Set<string>();
+      for (const entry of seed.pages) {
+        const pages = this.store.all<{ id: string }>(
+          "SELECT w.id FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE w.title=? AND c.visibility='public' AND w.draft=0 AND w.revision_id IS NOT NULL",
+          text(entry.title, 200),
+        );
+        if (!pages.length) {
+          missingPages.push(entry.title);
+          continue;
+        }
+        for (const slug of entry.contexts) {
+          const c = this.store.get<{ id: string }>("SELECT id FROM contexts WHERE slug=? AND active=1", slug);
+          if (!c) {
+            missingContexts.add(slug);
+            continue;
+          }
+          for (const page of pages) {
+            if (this.store.get("SELECT 1 FROM record_contexts WHERE record_kind='wiki' AND record_id=? AND context_id=?", page.id, c.id)) {
+              present++;
+              continue;
+            }
+            const count = this.store.get<{ n: number }>("SELECT count(*) AS n FROM record_contexts WHERE record_kind='wiki' AND record_id=?", page.id)!.n;
+            if (count >= 10) continue;
+            this.store.run("INSERT INTO record_contexts VALUES('wiki',?,?,?,?)", page.id, c.id, actorId, this.store.clock());
+            added++;
+          }
+        }
+      }
+      this.store.audit(actorId, "context.seed-labels", "seed");
+      return { added, present, missingPages, missingContexts: [...missingContexts] };
+    });
+  }
   setContextAliases(actorId: string, contextId: string, value: unknown) {
     return this.store.tx(() => {
       this.nodeSteward(actorId);

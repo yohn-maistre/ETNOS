@@ -1,0 +1,263 @@
+{
+ "about": "First labels for the Tanah Papua seed wiki pages, applied once by a node steward (Studio, Katalog tempat). Each page gets its wilayah adat; kabupaten pages also get their kabupaten; language pages also get their language by Glottolog name (Lani is Western Dani, glottocode west2594). Pages about peoples and language families get their region only. Keyed by page title so any deployment of the seed can use it.",
+ "pages": [
+  {
+   "title": "Wilayah adat Mee Pago",
+   "contexts": [
+    "meepago"
+   ]
+  },
+  {
+   "title": "Kabupaten Nabire",
+   "contexts": [
+    "meepago",
+    "nabire"
+   ]
+  },
+  {
+   "title": "Kabupaten Paniai",
+   "contexts": [
+    "meepago",
+    "paniai"
+   ]
+  },
+  {
+   "title": "Kabupaten Deiyai",
+   "contexts": [
+    "meepago",
+    "deiyai"
+   ]
+  },
+  {
+   "title": "Kabupaten Dogiyai",
+   "contexts": [
+    "meepago",
+    "dogiyai"
+   ]
+  },
+  {
+   "title": "Kabupaten Intan Jaya",
+   "contexts": [
+    "meepago",
+    "intan-jaya"
+   ]
+  },
+  {
+   "title": "Kabupaten Mimika",
+   "contexts": [
+    "meepago",
+    "mimika"
+   ]
+  },
+  {
+   "title": "Suku Mee",
+   "contexts": [
+    "meepago"
+   ]
+  },
+  {
+   "title": "Bahasa Ekari",
+   "contexts": [
+    "meepago",
+    "bahasa-ekari"
+   ]
+  },
+  {
+   "title": "Suku Moni",
+   "contexts": [
+    "meepago"
+   ]
+  },
+  {
+   "title": "Suku Amungme",
+   "contexts": [
+    "meepago"
+   ]
+  },
+  {
+   "title": "Suku Kamoro",
+   "contexts": [
+    "meepago"
+   ]
+  },
+  {
+   "title": "Wilayah adat La Pago",
+   "contexts": [
+    "la-pago"
+   ]
+  },
+  {
+   "title": "Kabupaten Jayawijaya",
+   "contexts": [
+    "la-pago",
+    "jayawijaya"
+   ]
+  },
+  {
+   "title": "Kabupaten Lanny Jaya",
+   "contexts": [
+    "la-pago",
+    "lanny-jaya"
+   ]
+  },
+  {
+   "title": "Kabupaten Mamberamo Tengah",
+   "contexts": [
+    "la-pago",
+    "mamberamo-tengah"
+   ]
+  },
+  {
+   "title": "Kabupaten Nduga",
+   "contexts": [
+    "la-pago",
+    "nduga"
+   ]
+  },
+  {
+   "title": "Kabupaten Pegunungan Bintang",
+   "contexts": [
+    "la-pago",
+    "pegunungan-bintang"
+   ]
+  },
+  {
+   "title": "Kabupaten Puncak",
+   "contexts": [
+    "la-pago",
+    "puncak"
+   ]
+  },
+  {
+   "title": "Kabupaten Puncak Jaya",
+   "contexts": [
+    "la-pago",
+    "puncak-jaya"
+   ]
+  },
+  {
+   "title": "Kabupaten Tolikara",
+   "contexts": [
+    "la-pago",
+    "tolikara"
+   ]
+  },
+  {
+   "title": "Kabupaten Yahukimo",
+   "contexts": [
+    "la-pago",
+    "yahukimo"
+   ]
+  },
+  {
+   "title": "Kabupaten Yalimo",
+   "contexts": [
+    "la-pago",
+    "yalimo"
+   ]
+  },
+  {
+   "title": "Suku Dani",
+   "contexts": [
+    "la-pago"
+   ]
+  },
+  {
+   "title": "Rumpun bahasa Dani",
+   "contexts": [
+    "la-pago"
+   ]
+  },
+  {
+   "title": "Suku Lani",
+   "contexts": [
+    "la-pago"
+   ]
+  },
+  {
+   "title": "Bahasa Lani",
+   "contexts": [
+    "la-pago",
+    "bahasa-western-dani"
+   ]
+  },
+  {
+   "title": "Suku Yali",
+   "contexts": [
+    "la-pago"
+   ]
+  },
+  {
+   "title": "Wilayah adat Saireri",
+   "contexts": [
+    "saireri"
+   ]
+  },
+  {
+   "title": "Kabupaten Biak Numfor",
+   "contexts": [
+    "saireri",
+    "biak-numfor"
+   ]
+  },
+  {
+   "title": "Kabupaten Kepulauan Yapen",
+   "contexts": [
+    "saireri",
+    "kepulauan-yapen"
+   ]
+  },
+  {
+   "title": "Kabupaten Supiori",
+   "contexts": [
+    "saireri",
+    "supiori"
+   ]
+  },
+  {
+   "title": "Kabupaten Waropen",
+   "contexts": [
+    "saireri",
+    "waropen"
+   ]
+  },
+  {
+   "title": "Suku Biak",
+   "contexts": [
+    "saireri"
+   ]
+  },
+  {
+   "title": "Bahasa Biak",
+   "contexts": [
+    "saireri",
+    "bahasa-biak"
+   ]
+  },
+  {
+   "title": "Suku Waropen",
+   "contexts": [
+    "saireri"
+   ]
+  },
+  {
+   "title": "Bahasa Waropen",
+   "contexts": [
+    "saireri",
+    "bahasa-waropen"
+   ]
+  },
+  {
+   "title": "Bahasa-bahasa Yapen",
+   "contexts": [
+    "saireri"
+   ]
+  },
+  {
+   "title": "Pulau Numfor",
+   "contexts": [
+    "saireri"
+   ]
+  }
+ ]
+}

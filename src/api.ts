@@ -6,7 +6,7 @@ import { Wiki } from './wiki.ts'
 import {Seasons} from './seasons.ts'
 import {Founding} from './founding.ts'
 import {updateProfile} from './profile.ts'
-import {Groups,strings,type Group,type Context} from './groups.ts'
+import {Groups,strings,type Group,type Context,type SeedLabels} from './groups.ts'
 import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
@@ -23,6 +23,7 @@ import {Clustering} from './clustering.ts'
 import {Knowledge} from './knowledge.ts'
 import {Resident,type ResidentProvider,type ResidentSkill} from './resident.ts'
 import {catalogue,catalogueSummary,contextFamily} from './catalogue.ts'
+import seedLabels from './catalogues/tanah-papua-seed-labels.json' with { type: 'json' }
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -247,6 +248,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='actors'&&parts[3]==='follow'){if(typeof b.following!=='boolean')throw new Fault(400,'Boolean required');result=social.follow(caller,parts[2],b.following)}
       else if(path==='/v1/contexts')result=groups.createContext(caller,{slug:string(b.slug),title:string(b.title),kind:string(b.kind) as Context['kind'],description:string(b.description),language:string(b.language),aliases:strings(b.aliases??[],20),facet:b.facet===undefined?undefined:string(b.facet)})
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='aliases')result=groups.setContextAliases(caller,parts[2],b.aliases)
+      else if(path==='/v1/contexts/seed-labels')result=groups.applySeedLabels(caller,seedLabels as SeedLabels)
       else if(path==='/v1/contexts/catalogue'){const c=catalogue(options.catalogue);result={catalogue:c.key,...groups.importCatalogue(caller,c.catalogue)}}
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='parents')result=b.remove===true?groups.unlinkContext(caller,parts[2],string(b.parentId)):groups.linkContext(caller,parts[2],string(b.parentId))
       else if(parts.length===4&&['posts','groups','wiki'].includes(parts[1])&&parts[3]==='contexts'){

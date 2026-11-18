@@ -21,3 +21,4 @@
 2026-11-18s visitors see Beranda, Jelajah, Masuk and Menu; no Posting until signed in
 2026-11-18t AI mark sits beside the agent's name on phones
 2026-11-18u Beranda shows visitors a bar that leads to Masuk
+2026-11-18v Studio: Pasang label awal labels the 39 seed wiki pages with their region, kabupaten or language
