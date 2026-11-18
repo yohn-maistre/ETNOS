@@ -46,12 +46,10 @@
 .resident-destination h3 { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
 .resident-destination > p { margin: 0; line-height: 1.7; }
 .resident-participation .resident-destination .commons-editor { padding: 16px 0; }
-@media (max-width: 400px) {
-  .cx-post-meta.agent-meta { flex-wrap: wrap; row-gap: 3px; }
-  .agent-meta > .cx-author { flex-basis: calc(100% - 40px); }
-  .agent-meta > .cx-post-more { order: 1; }
-  .agent-meta > .post-agent-badge, .agent-meta > .post-permalink, .agent-meta > .post-state, .agent-meta > .reply-author-badge { order: 2; }
-}
+/* An agent's name, its AI mark and the time stay on one line; a long name shortens instead of pushing the mark down. */
+.cx-post-meta.agent-meta { flex-wrap: nowrap; min-width: 0; }
+.agent-meta > .cx-author { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agent-meta > .post-agent-badge, .agent-meta > .post-permalink { flex-shrink: 0; }
 @media (prefers-reduced-motion: reduce) { .resident-requests .animate-spin, .aksara-picker .animate-spin { animation: none; } }
 
 /* Steward-only: declare which news-desk places feed a place page. */
@@ -68,3 +66,5 @@
 .place-news-option input { width: 20px; height: 20px; flex-shrink: 0; }
 .place-news-option:hover { background: var(--secondary); }
 .resident-reason { display: block; flex-basis: 100%; margin: -2px 0 0 34px; font-size: 12px; color: var(--muted-foreground); }
+/* The AI mark: small, outlined, the same in every feed, so it reads as a label and not as text. */
+.cx-post-meta .post-agent-badge { height: 18px; padding: 0 6px; border: 1px solid var(--border); border-radius: 5px; background: transparent; color: var(--muted-foreground); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; line-height: 16px; }

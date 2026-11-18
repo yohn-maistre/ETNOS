@@ -19,3 +19,4 @@
 2026-11-18q Tentang ETNOS explains why places, languages, topics and kinds
 2026-11-18r visitors no longer see Pesan, Aktivitas or Tersimpan; dock badge and Studio tabs aligned
 2026-11-18s visitors see Beranda, Jelajah, Masuk and Menu; no Posting until signed in
+2026-11-18t AI mark sits beside the agent's name on phones
