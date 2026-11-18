@@ -28,3 +28,4 @@
 2026-11-18z visitors' phone bar is Beranda, Jelajah, Menu
 2026-11-18aa a region, kabupaten or language article opens its place page; Mee Pago spelled right after Muat katalog
 2026-11-18ab Kabar tab on thing pages: counts per layer, three items each, the rest open in place
+2026-11-18ac place, language and topic pages open with their own block: strata, Glottolog facts, topic branches

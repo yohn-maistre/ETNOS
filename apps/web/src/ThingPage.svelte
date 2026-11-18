@@ -16,6 +16,7 @@
   import PostCard from './PostCard.svelte'
   import PlaceCommunities, { type PlaceCommunity } from './PlaceCommunities.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
+  import ThingTop from './ThingTop.svelte'
   import { communityArtwork } from './site-branding'
   import { markdown } from './markdown'
   import { orderedParents } from './context-tree'
@@ -30,6 +31,7 @@
     kind: string
     facet?: string
     description?: string
+    aliases?: string[]
     family?: { basis: string; sources: { title: string; url: string }[] } | null
     parents?: Ref[]
     children?: Ref[]
@@ -195,11 +197,15 @@
 
   <div class="thing-panel" id={uid + '-panel'} role="tabpanel" aria-labelledby={uid + '-tab-' + tab}>
     {#if tab === 'tentang'}
-      {#if blurb}<p class="thing-blurb">{blurb}</p>{/if}
-      {#if thing.children?.length}<section class="thing-children" aria-labelledby={uid + '-children'}>
-          <h2 id={uid + '-children'}>{childHeading} <span>{thing.childCount ?? thing.children.length}</span></h2>
-          <div class="thing-chips">{#each thing.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}</div>
-        </section>{/if}
+      <!-- A language's catalogue sentence names its family from Glottolog; the facts block below says the same. -->
+      {#if blurb && !(thing.kind === 'language' && /^Rumpun .+ menurut Glottolog/.test(blurb))}<p class="thing-blurb">{blurb}</p>{/if}
+      {#snippet chips()}
+        {#if thing.children?.length}<section class="thing-children" aria-labelledby={uid + '-children'}>
+            <h2 id={uid + '-children'}>{childHeading} <span>{thing.childCount ?? thing.children.length}</span></h2>
+            <div class="thing-chips">{#each thing.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}</div>
+          </section>{/if}
+      {/snippet}
+      {#if ['place', 'region', 'language', 'topic'].includes(thing.kind)}<ThingTop {thing} fallback={chips} />{:else}{@render chips()}{/if}
       {#if home}
         {#if article?.revision}<section class="thing-article" aria-label={'Halaman wiki ' + article.title}>
             <div class="wiki-body wiki-serif post-markdown">{@html markdown(article.revision.text, [], 'thing-' + article.id)}</div>

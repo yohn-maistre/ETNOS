@@ -5,7 +5,8 @@
 </script>
 
 <script lang="ts">
-  let { groups, total, open = false }: { groups: SpecimenGroup[]; total: number; open?: boolean } = $props()
+  // current: the language being read, marked in its group on a language page. credit off when the page credits it.
+  let { groups, total, open = false, current = '', credit = true }: { groups: SpecimenGroup[]; total: number; open?: boolean; current?: string; credit?: boolean } = $props()
   const FIRST = 8
   let all = $state(false)
   const showAll = $derived(open || all)
@@ -15,14 +16,14 @@
   {#each groups as g (g.slug)}{@const shown = showAll ? g.languages : g.languages.slice(0, FIRST)}<section class="specimen-group" aria-labelledby={'lang-' + g.slug}>
       <h3 id={'lang-' + g.slug}><a href={'/contexts/' + g.slug}>{g.title}</a> <span>{g.languages.length}</span></h3>
       <ul class="specimen-names">
-        {#each shown as l (l.slug)}<li><a href={'/contexts/' + l.slug}>{l.title}</a></li>{/each}
+        {#each shown as l (l.slug)}<li><a href={'/contexts/' + l.slug} class:here={l.slug === current} aria-current={l.slug === current ? 'page' : undefined}>{l.title}</a></li>{/each}
         {#if !showAll && g.languages.length > FIRST}<li class="specimen-more">dan {g.languages.length - FIRST} lagi</li>{/if}
       </ul>
     </section>{/each}
   {#if !open && groups.some((g) => g.languages.length > FIRST)}<button class="specimen-toggle" aria-expanded={all} onclick={() => (all = !all)}>
       {all ? 'Tampilkan lebih sedikit' : 'Semua ' + total + ' bahasa'}
     </button>{/if}
-  <p class="specimen-credit">Nama dan titik acuan dari <a href="https://glottolog.org" rel="noreferrer" target="_blank">Glottolog</a> (CC BY 4.0). Pengelompokan per wilayah mengikuti titik acuan, bukan batas wilayah bahasa.</p>
+  {#if credit}<p class="specimen-credit">Nama dan titik acuan dari <a href="https://glottolog.org" rel="noreferrer" target="_blank">Glottolog</a> (CC BY 4.0). Pengelompokan per wilayah mengikuti titik acuan, bukan batas wilayah bahasa.</p>{/if}
 </div>
 
 <style>
@@ -35,6 +36,7 @@
   .specimen-names li { white-space: nowrap; overflow-wrap: normal; word-break: normal; }
   .specimen-names li:not(:last-child):not(.specimen-more)::after { content: '·'; padding: 0 0.42em; color: color-mix(in oklab, var(--ink) 45%, transparent); }
   .specimen-names a { color: inherit; text-decoration: none; padding-block: 4px; }
+  .specimen-names a.here { color: var(--foreground); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: var(--ink); }
   .specimen-names a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
   .specimen-names a:focus-visible, .specimen-group h3 a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
   .specimen-more { margin-left: 2px; align-self: center; font-family: var(--font-sans, inherit); font-size: 13px; color: var(--muted-foreground); white-space: nowrap; }

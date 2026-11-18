@@ -11,62 +11,32 @@
   import ExploreTalked from './ExploreTalked.svelte'
   import { request, type Auth, type Community } from './api'
   import { loadMap, type MapData } from './observatory'
-  import { contextTree } from './context-tree'
   import { placeScope } from './place-scope.svelte'
+  import { buildStrata, loadAtlasLangs, loadContexts, regionsOf, topicTiles, type AtlasLang, type Ctx } from './explore-data'
 
   let { auth }: { auth: Auth } = $props()
-  type Ctx = { id: string; slug: string; title: string; kind: string; facet: string; parents?: string[]; indexed: number }
   let contexts = $state<Ctx[]>([]),
     communities = $state<Community[]>([]),
     map = $state<MapData | null>(null),
-    langs = $state<[string, number, number, string | null][]>([]),
+    langs = $state<AtlasLang[]>([]),
     failed = $state(false)
 
   onMount(() => {
     const abort = new AbortController()
-    request<Ctx[]>('/v1/contexts', undefined, abort.signal, true)
+    loadContexts()
       .then((all) => (contexts = all))
       .catch(() => (failed = true))
     request<Community[]>('/v1/communities', undefined, abort.signal, true)
       .then((all) => (communities = all.filter((c) => c.visibility === 'public')))
       .catch(() => {})
     void loadMap().then((d) => (map = d))
-    import('./papua-atlas.json').then((m) => (langs = (m.default as unknown as { langs: typeof langs }).langs)).catch(() => {})
+    void loadAtlasLangs().then((l) => (langs = l))
     return () => abort.abort()
   })
 
-  // Coast at the top, highlands in the middle, the southern lowlands at the bottom.
-  const ORDER = ['mamta-tabi', 'saireri', 'domberai', 'bomberai', 'meepago', 'la-pago', 'ha-anim']
   const bySlug = $derived(new Map(contexts.map((c) => [c.slug, c])))
-  const byId = $derived(new Map(contexts.map((c) => [c.id, c])))
-  const regionOf = (slug: string) => {
-    const c = bySlug.get(slug)
-    if (!c) return ''
-    if (c.facet === 'customary-region') return c.slug
-    for (const p of c.parents ?? []) {
-      const parent = byId.get(p)
-      if (parent?.facet === 'customary-region') return parent.slug
-    }
-    return langs.find((l) => l[0] === slug)?.[3] ?? ''
-  }
-  const focus = $derived(placeScope.slug ? regionOf(placeScope.slug) : '')
-  const title = (c: { title: string }) => c.title.replace(/^Meepago$/, 'Mee Pago')
-
-  const strata = $derived<Stratum[]>(
-    ORDER.map((slug) => bySlug.get(slug))
-      .filter((r): r is Ctx => !!r)
-      .map((r) => ({
-        slug: r.slug,
-        title: title(r),
-        href: '/contexts/' + r.slug,
-        places: contexts
-          .filter((c) => c.kind === 'place' && c.parents?.includes(r.id))
-          .sort((a, b) => a.title.localeCompare(b.title, 'id'))
-          .map((c) => ({ slug: c.slug, title: c.title })),
-        languages: langs.filter((l) => l[3] === r.slug).length,
-        pages: map?.nodes.filter((n) => n.k === 'page' && n.reg === r.slug).length ?? 0,
-      })),
-  )
+  const focus = $derived(placeScope.slug ? (regionsOf(placeScope.slug, contexts, langs)[0] ?? '') : '')
+  const strata = $derived<Stratum[]>(buildStrata(contexts, langs, map))
   const languageTotal = $derived(contexts.filter((c) => c.kind === 'language').length)
   const specimen = $derived<SpecimenGroup[]>(
     strata
@@ -83,13 +53,7 @@
       }))
       .filter((g) => g.languages.length),
   )
-  const tiles = $derived<TopicTile[]>(
-    contextTree(contexts.map((c) => ({ ...c, description: '' }))).topics.map((b) => ({
-      slug: b.node.slug,
-      title: b.node.title,
-      children: b.children.map((c) => ({ slug: c.slug, title: c.title })),
-    })),
-  )
+  const tiles = $derived<TopicTile[]>(topicTiles(contexts))
   // Everything under the chosen region, so "Sedang dibicarakan" can follow the switcher too.
   const within = $derived.by(() => {
     if (!focus) return null

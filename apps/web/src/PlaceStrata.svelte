@@ -13,7 +13,10 @@
 </script>
 
 <script lang="ts">
-  let { strata, focus = '' }: { strata: Stratum[]; focus?: string } = $props()
+  // focus: the layer or layers to open (a contested kabupaten sits in two). compact folds every other layer to its
+  // name, for the top of a place page. current: the places to mark as the one being read.
+  let { strata, focus = '', compact = false, current = [] }: { strata: Stratum[]; focus?: string | string[]; compact?: boolean; current?: string[] } = $props()
+  const focused = $derived(new Set(Array.isArray(focus) ? focus : focus ? [focus] : []))
   // A gentle ridge line per layer, each with its own phase so the layers read as rock, not stripes.
   function ridge(i: number) {
     const amp = 5 + (i % 3) * 2,
@@ -24,17 +27,17 @@
   }
 </script>
 
-<ol class="strata" class:focused={!!focus}>
-  {#each strata as s, i (s.slug)}{@const r = ridge(i)}<li class="stratum" class:on={focus === s.slug} style={`--depth:${i}`}>
+<ol class="strata" class:focused={focused.size > 0} class:compact>
+  {#each strata as s, i (s.slug)}{@const r = ridge(i)}{@const on = focused.has(s.slug)}<li class="stratum" class:on style={`--depth:${i}`}>
       <svg class="stratum-ridge" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true"><path class="ridge-fill" d={r.fill} /><path class="ridge-line" d={r.line} /></svg>
       <div class="stratum-body">
-        <a class="stratum-name" href={s.href}>{s.title}</a>
-        <p class="stratum-meta">
-          {s.places.length} kabupaten dan kota · {s.languages} bahasa{#if s.pages} · {s.pages} halaman wiki{/if}
-        </p>
-        {#if s.places.length}<ul class="stratum-places" aria-label={'Kabupaten dan kota di ' + s.title}>
-            {#each s.places as p (p.slug)}<li><a href={'/contexts/' + p.slug}>{p.title}</a></li>{/each}
-          </ul>{/if}
+        <a class="stratum-name" href={s.href} aria-current={on && compact && !current.length ? 'page' : undefined}>{s.title}</a>
+        {#if !compact || on}<p class="stratum-meta">
+            {s.places.length} kabupaten dan kota · {s.languages} bahasa{#if s.pages} · {s.pages} halaman wiki{/if}
+          </p>
+          {#if s.places.length}<ul class="stratum-places" aria-label={'Kabupaten dan kota di ' + s.title}>
+              {#each s.places as p (p.slug)}<li><a href={'/contexts/' + p.slug} class:here={current.includes(p.slug)} aria-current={current.length === 1 && current[0] === p.slug ? 'page' : undefined}>{p.title}</a></li>{/each}
+            </ul>{/if}{/if}
       </div>
     </li>{/each}
 </ol>
@@ -88,7 +91,12 @@
   }
   .stratum-places a:hover { background: var(--background); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--brand) 60%, transparent); }
   .stratum a:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; border-radius: 6px; }
+  .stratum-places a.here { background: var(--brand); color: var(--background); box-shadow: none; font-weight: 600; }
   .strata.focused .stratum:not(.on) { opacity: 0.5; }
+  .compact .stratum:not(.on) { margin-top: -12px; }
+  .compact .stratum:not(.on) .stratum-ridge { height: 14px; }
+  .compact .stratum:not(.on) .stratum-body { padding-bottom: 14px; }
+  .compact .stratum:not(.on) .stratum-name { font-size: 17px; min-height: 32px; padding-top: 2px; }
   .strata.focused .stratum:not(.on):hover, .strata.focused .stratum:not(.on):focus-within { opacity: 1; }
   @media (min-width: 768px) { .stratum-body { padding: 4px 24px 22px; } }
   @media (prefers-reduced-motion: reduce) { .stratum { transition: none; } }
