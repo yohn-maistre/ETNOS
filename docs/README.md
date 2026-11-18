@@ -82,6 +82,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/strata-intelligence-catalogue-2026-11-12.md](research/strata-intelligence-catalogue-2026-11-12.md) | Where models could help, by seam |
 | [research/aksara-composed-views-2026-11-18.md](research/aksara-composed-views-2026-11-18.md) | Aksara composing community views from typed Strata components instead of writing code; spec, storage, approval, first primitives |
 | [research/wiki-beings-seeding-plan-2026-11-18.md](research/wiki-beings-seeding-plan-2026-11-18.md) | Mountains, lakes, forests and species as wiki page kinds: what is built, candidates per region, rules for origin stories and sacred places |
+| [proposal/claims-2026-11-18.md](proposal/claims-2026-11-18.md) | Every proposal claim with its status (live, built, roadmap) and the code and test that prove it; re-check on 25 November |
 
 ## News
 
