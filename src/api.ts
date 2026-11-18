@@ -126,6 +126,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
         else if(path==='/v1/contexts/catalogue')result=catalogueSummary(options.catalogue)
+        else if(path==='/v1/contexts/talked')result=groups.talked(Number(url.searchParams.get('days')??7))
         else if(parts.length===3&&parts[1]==='contexts'){const detail=groups.contextDetail(parts[2]);result={...detail,family:contextFamily(detail,options.catalogue),work:work.list({contextId:parts[2]})}}
         else if(path==='/v1/work')result=work.list({groupId:url.searchParams.get('group')??undefined,contextId:url.searchParams.get('context')??undefined})
         else if(parts.length===3&&parts[1]==='work')result=work.read(parts[2])

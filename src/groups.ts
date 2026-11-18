@@ -725,6 +725,44 @@ export class Groups implements GroupAuthority {
       return this.contextLinks(kind, recordId);
     });
   }
+  /**
+   * What is being talked about: places, languages and topics ranked by public posts in the last `days` days.
+   * A post counts for a context when its thread is labelled with it or its community is. Only public
+   * communities, never hidden, deleted or content-warned posts, and never a thread whose root is gone.
+   * Each item names its busiest thread so Jelajah can link straight to it.
+   */
+  talked(days = 7) {
+    const window = Math.min(Math.max(Math.trunc(Number.isFinite(days) ? days : 7), 1), 90);
+    const since = this.store.clock() - window * 86400000;
+    const visible = `SELECT p.id,COALESCE(p.root_id,p.id) root,p.community_id,p.author_id FROM posts p
+      JOIN communities c ON c.id=p.community_id JOIN posts r ON r.id=COALESCE(p.root_id,p.id)
+      WHERE c.visibility='public' AND p.hidden=0 AND p.deleted=0 AND r.hidden=0 AND r.deleted=0 AND p.created>=?
+      AND COALESCE(json_extract(p.content,'$.warning'),'')='' AND COALESCE(json_extract(r.content,'$.warning'),'')=''`;
+    const tagged = `WITH v AS (${visible}),
+      t AS (SELECT v.*,l.context_id FROM v JOIN record_contexts l ON l.record_kind='post' AND l.record_id=v.root
+        UNION SELECT v.*,cc.context_id FROM v JOIN community_contexts cc ON cc.community_id=v.community_id)`;
+    const rows = this.store.all<ContextRow & { posts: number; threads: number; people: number }>(
+      `${tagged} SELECT x.*,count(DISTINCT t.id) posts,count(DISTINCT t.root) threads,count(DISTINCT CASE WHEN a.kind='human' THEN t.author_id END) people
+       FROM t JOIN contexts x ON x.id=t.context_id AND x.active=1 JOIN actors a ON a.id=t.author_id
+       GROUP BY x.id ORDER BY posts DESC,people DESC,x.title LIMIT 12`,
+      since,
+    );
+    if (!rows.length) return { days: window, items: [] };
+    const leads = new Map(
+      this.store
+        .all<{ context_id: string; root: string; n: number; title: string | null; text: string; rank: number }>(
+          `${tagged}, c AS (SELECT t.context_id,t.root,count(*) n FROM t WHERE t.context_id IN (SELECT value FROM json_each(?)) GROUP BY t.context_id,t.root)
+           SELECT * FROM (SELECT c.context_id,c.root,c.n,json_extract(r.content,'$.title') title,r.text,ROW_NUMBER() OVER(PARTITION BY c.context_id ORDER BY c.n DESC,r.created DESC) rank FROM c JOIN posts r ON r.id=c.root) WHERE rank=1`,
+          since,
+          JSON.stringify(rows.map((r) => r.id)),
+        )
+        .map((l) => [l.context_id, { id: l.root, title: (l.title || l.text).replace(/[#*_>`]/g, "").replace(/\s+/g, " ").trim().slice(0, 140) }]),
+    );
+    return {
+      days: window,
+      items: rows.map(({ posts, threads, people, ...c }) => ({ context: this.contextView(c), posts, threads, people, lead: leads.get(c.id) ?? null })),
+    };
+  }
   /** Public labels a community carries. A hidden community has none to show, whatever is stored. */
   communityContexts(communityId: string) {
     if (this.store.community(communityId).visibility === "hidden-private") return [];
