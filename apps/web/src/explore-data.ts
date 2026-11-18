@@ -6,6 +6,7 @@ import { contextTree } from './context-tree'
 import type { MapData } from './observatory'
 import type { Stratum } from './PlaceStrata.svelte'
 import type { TopicTile } from './TopicTiles.svelte'
+import type { Atlas } from './RegionArt.svelte'
 
 export type Ctx = { id: string; slug: string; title: string; kind: string; facet: string; parents?: string[]; indexed: number; description?: string; aliases?: string[] }
 /** [language slug, x, y, customary region of its Glottolog reference point] */
@@ -27,6 +28,9 @@ export function loadContexts(): Promise<Ctx[]> {
 }
 export const loadAtlasLangs = (): Promise<AtlasLang[]> =>
   import('./papua-atlas.json').then((m) => (m.default as unknown as { langs: AtlasLang[] }).langs).catch(() => [])
+/** The region outlines for the small maps on place tiles. */
+export const loadAtlas = (): Promise<Atlas | null> =>
+  import('./papua-atlas.json').then((m) => m.default as unknown as Atlas).catch(() => null)
 
 export function buildStrata(contexts: Ctx[], langs: AtlasLang[], map: MapData | null): Stratum[] {
   const bySlug = new Map(contexts.map((c) => [c.slug, c]))

@@ -14,7 +14,16 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { request } from './api'
-  let { recorded, within = null }: { recorded: Recorded[]; within?: Set<string> | null } = $props()
+  import ExploreTile from './ExploreTile.svelte'
+  import RegionArt, { type Atlas } from './RegionArt.svelte'
+  import WordArt from './WordArt.svelte'
+  import { regionsOf, type AtlasLang, type Ctx } from './explore-data'
+  let {
+    recorded,
+    within = null,
+    atlas = null,
+    langs = [],
+  }: { recorded: Ctx[]; within?: Set<string> | null; atlas?: Atlas | null; langs?: AtlasLang[] } = $props()
   let items = $state<TalkedItem[] | null>(null),
     days = $state(7)
   onMount(() => {
@@ -29,49 +38,41 @@
       .catch(() => (items = []))
     return () => abort.abort()
   })
-  const shown = $derived((items ?? []).filter((i) => !within || within.has(i.context.id)).slice(0, 6))
-  const fallback = $derived(recorded.filter((c) => c.indexed > 0 && (!within || within.has(c.id))).sort((a, b) => b.indexed - a.indexed).slice(0, 6))
-  const kindName: Record<string, string> = { place: 'Tempat', region: 'Wilayah', language: 'Bahasa', topic: 'Topik' }
-  const ink = (kind: string) => (kind === 'language' ? 'language' : kind === 'topic' ? 'topic' : 'place')
+  const shown = $derived((items ?? []).filter((i) => !within || within.has(i.context.id)).slice(0, 5))
+  const fallback = $derived(recorded.filter((c) => c.indexed > 0 && (!within || within.has(c.id))).sort((a, b) => b.indexed - a.indexed).slice(0, 5))
+  const kindName: Record<string, string> = { place: 'Kabupaten', region: 'Wilayah adat', language: 'Bahasa', topic: 'Topik' }
+  const tone = (kind: string) => (kind === 'language' ? 'language' : kind === 'topic' ? 'topic' : 'place') as 'place' | 'language' | 'topic'
 </script>
 
+{#snippet artFor(c: { slug: string; title: string; kind: string })}
+  {#if (c.kind === 'place' || c.kind === 'region') && atlas}<RegionArt {atlas} lit={regionsOf(c.slug, recorded, langs)} />
+  {:else}<WordArt words={[c.title]} />{/if}
+{/snippet}
+
 {#if items === null}<p class="talked-note" role="status">Memuat…</p>
-{:else if shown.length}<ol class="talked">
-    {#each shown as t (t.context.id)}<li data-ink={ink(t.context.kind)}>
-        <a class="talked-name" href={'/contexts/' + t.context.slug}><span class="talked-kind">{kindName[t.context.kind] ?? 'Topik'}</span>{t.context.title}</a>
-        {#if t.lead}<a class="talked-lead" href={'/square/' + t.lead.id}>{t.lead.title}</a>{/if}
-        <span class="talked-count">{t.threads} percakapan · {t.posts} posting{#if t.people} · {t.people} orang{/if}</span>
-      </li>{/each}
-  </ol>
+{:else if shown.length}<div class="explore-mosaic">
+    {#each shown as t, i (t.context.id)}<ExploreTile
+        wide={i === 0}
+        tone={tone(t.context.kind)}
+        href={t.lead ? '/square/' + t.lead.id : '/contexts/' + t.context.slug}
+        title={t.lead?.title || t.context.title}
+        text={(kindName[t.context.kind] ?? 'Topik') + ' · ' + t.context.title}
+        meta={t.threads + ' percakapan · ' + t.posts + ' posting' + (t.people ? ' · ' + t.people + ' orang' : '')}
+      >
+        {#snippet art()}{@render artFor(t.context)}{/snippet}
+      </ExploreTile>{/each}
+  </div>
   <p class="talked-note">Dari posting publik {days} hari terakhir yang berlabel tempat, bahasa atau topik.</p>
-{:else if fallback.length}<p class="talked-note">Belum ada percakapan berlabel dalam {days} hari terakhir. Yang paling banyak tercatat:</p>
-  <ol class="talked">
-    {#each fallback as c (c.id)}<li data-ink={ink(c.kind)}>
-        <a class="talked-name" href={'/contexts/' + c.slug}><span class="talked-kind">{kindName[c.kind] ?? 'Topik'}</span>{c.title}</a>
-        <span class="talked-count">{c.indexed} catatan</span>
-      </li>{/each}
-  </ol>
+{:else if fallback.length}<p class="talked-note lead">Belum ada percakapan berlabel dalam {days} hari terakhir. Yang paling banyak tercatat:</p>
+  <div class="explore-mosaic">
+    {#each fallback as c, i (c.id)}<ExploreTile wide={i === 0} tone={tone(c.kind)} href={'/contexts/' + c.slug} title={c.title} text={kindName[c.kind] ?? 'Topik'} meta={c.indexed + ' catatan'}>
+        {#snippet art()}{@render artFor(c)}{/snippet}
+      </ExploreTile>{/each}
+  </div>
 {:else}<p class="talked-note">Belum ada percakapan berlabel. Label tempat, bahasa atau topik pada posting akan muncul di sini.</p>{/if}
 
 <style>
-  .talked { list-style: none; margin: 0; padding: 0 16px; display: grid; }
-  .talked li {
-    --ink: var(--brand);
-    display: grid;
-    gap: 3px;
-    padding: 12px 0 13px;
-    border-bottom: 1px solid var(--reading-line, var(--border));
-  }
-  .talked li[data-ink='language'] { --ink: oklch(0.5 0.13 42); }
-  .talked li[data-ink='topic'] { --ink: oklch(0.47 0.09 158); }
-  .talked-name { display: inline-flex; align-items: baseline; gap: 8px; font-size: 17px; font-weight: 650; color: var(--foreground); text-decoration: none; min-height: 28px; }
-  .talked-kind { font-size: 12px; font-weight: 600; color: var(--ink); }
-  .talked-lead { font-family: var(--font-editorial, inherit); font-size: 17px; line-height: 1.4; color: var(--foreground); text-decoration: none; max-width: 62ch; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .talked-name:hover, .talked-lead:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
-  .talked a:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; border-radius: 4px; }
-  .talked-count { font-size: 13px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
-  .talked-note { margin: 10px 16px 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); max-width: 66ch; }
-  @media (min-width: 768px) { .talked { padding-inline: 24px; } .talked-note { margin-inline: 24px; } }
-  :global(.dark) .talked li[data-ink='language'] { --ink: oklch(0.78 0.11 55); }
-  :global(.dark) .talked li[data-ink='topic'] { --ink: oklch(0.74 0.1 158); }
+  .talked-note { margin: 10px 16px 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); max-width: 62ch; }
+  .talked-note.lead { margin: 0 16px 10px; }
+  @media (min-width: 768px) { .talked-note, .talked-note.lead { margin-inline: 24px; } }
 </style>

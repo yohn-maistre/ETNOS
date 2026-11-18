@@ -31,3 +31,4 @@
 2026-11-18ac place, language and topic pages open with their own block: strata, Glottolog facts, topic branches
 2026-11-18ad wiki map stays when a place is chosen and opens on its region; switcher atlas and wiki places follow a kabupaten's region
 2026-11-18ae Kabar tab renamed Perkembangan; steward tools and masa line padded; carousel one card per swipe; Lini masa says once when empty
+2026-11-18af Jelajah rebuilt on one tile: news mosaic first, then talked, places, languages, topics, communities
