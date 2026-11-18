@@ -5,3 +5,4 @@
 2026-11-17k Node models: Gemma 4 keyless, optional keyed provider, ModelGateway for the resident
 2026-11-17j Free tier: indexed feed, cached shared lists, static files off the Worker, usage metering
 2026-11-18e jelajah: Tanah Papua regions, topic chips, compact wiki list
+2026-11-18f jelajah: Tanah Papua atlas (seven regions, 256 Glottolog language points)

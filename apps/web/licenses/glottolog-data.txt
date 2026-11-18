@@ -1,0 +1,14 @@
+Glottolog language reference points (apps/web/src/papua-atlas.json)
+
+Source: Glottolog, languages_and_dialects_geo.csv, https://glottolog.org
+Hammarström, Harald, Robert Forkel, Martin Haspelmath and Sebastian Bank. Glottolog. Leipzig: Max Planck Institute for Evolutionary Anthropology.
+License: Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
+
+Changes: the latitude and longitude of the 256 languages in the Tanah Papua catalogue were projected to the
+site map's Web Mercator pixel space, rounded to 0.1 px, and each point was assigned to the customary reference
+region of the regency outline it falls in (or the nearest outline within 20 px). A point is a reference point
+for the language, not the boundary of where it is spoken.
+
+Region outlines in the same file are the union of the simplified Badan Informasi Geospasial regency outlines in
+site-map.json, grouped by the customary reference region membership in src/catalogues/tanah-papua.json
+(Narasi RPJMN 2020–2024, Bappenas). They are planning regions, not customary land boundaries.
