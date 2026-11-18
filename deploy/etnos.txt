@@ -17,3 +17,4 @@
 2026-11-18o seasons per community: stewards name them, posts may carry one
 2026-11-18p new communities wait for a second person: waiting room, WhatsApp link, 14 days
 2026-11-18q Tentang ETNOS explains why places, languages, topics and kinds
+2026-11-18r visitors no longer see Pesan, Aktivitas or Tersimpan; dock badge and Studio tabs aligned

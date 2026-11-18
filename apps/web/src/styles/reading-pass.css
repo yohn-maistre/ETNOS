@@ -128,7 +128,10 @@
 .notification-count, .utility-unread.notification-count { display: inline-grid; place-items: center; min-width: 21px; height: 21px; padding-inline: 5px; border-radius: 999px; background: var(--brand); color: var(--brand-foreground); font-size: 11px; font-weight: 750; line-height: 1; font-variant-numeric: tabular-nums; border: 2px solid var(--page-ground); flex-shrink: 0; }
 .utility-unread.notification-count { margin-inline-start: auto; }
 .activity-bell, .mobile-activity { position: relative; }
-.activity-bell .notification-count, .mobile-activity .notification-count { position: absolute; top: 0; right: 0; font-size: 9px; min-width: 18px; height: 18px; padding-inline: 3px; }
+.activity-bell .notification-count { position: absolute; top: 0; right: 0; font-size: 9px; min-width: 18px; height: 18px; padding-inline: 3px; }
+/* On the phone dock the count sits on the bell's shoulder, ringed in the dock's own colour so it reads as part of the icon. */
+.mobile-activity-icon { position: relative; display: inline-grid; place-items: center; }
+.mobile-activity .notification-count { position: absolute; top: -5px; left: 13px; font-size: 10px; min-width: 17px; height: 17px; padding-inline: 4px; border-width: 2px; border-color: var(--reading-surface); }
 
 /* A page that is not there: say why, and offer a way back and a search. */
 .page-missing { display: grid; gap: 12px; padding: 48px 24px 56px; max-width: 62ch; }

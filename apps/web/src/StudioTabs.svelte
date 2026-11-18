@@ -12,8 +12,8 @@
   .studio-tabs {
     display: flex;
     gap: 24px;
-    padding: 0 4px;
-    margin-bottom: 16px;
+    /* Full width with the page's own gutter, so the tabs line up with the heading below on both pages. */
+    padding: 0 var(--studio-gutter, 24px);
     border-bottom: 1px solid var(--reading-line);
   }
   .studio-tabs a {
@@ -30,5 +30,11 @@
     color: var(--foreground);
     font-weight: 600;
     border-bottom-color: var(--foreground);
+  }
+  .studio-tabs a:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; border-radius: 4px; }
+  :global(.agent-connections) > .studio-tabs { margin: -28px -24px 28px; }
+  @media (max-width: 767px) {
+    .studio-tabs { padding-inline: var(--studio-gutter, 16px); }
+    :global(.agent-connections) > .studio-tabs { margin: -20px -16px 20px; }
   }
 </style>

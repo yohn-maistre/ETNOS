@@ -25,6 +25,7 @@
     ArrowLeft,
     ChevronDown,
     RefreshCw,
+    LogIn,
   } from '@lucide/svelte'
   import { appearance } from './appearance.svelte'
   import { initials, type Auth } from './api'
@@ -58,6 +59,7 @@
   const sidebar = Sidebar.useSidebar()
   let contextScroll=$state<HTMLDivElement|null>(null)
   $effect(()=>{void path;if(contextScroll)contextScroll.scrollTop=0})
+  // Pesan, Aktivitas and Tersimpan belong to an account; visitors who are not signed in do not see them.
   const nav = [
     { href: '/', label: 'Beranda', icon: Home },
     { href: '/explore', label: 'Jelajah', icon: Compass },
@@ -68,6 +70,7 @@
     { href: '/notifications', label: 'Aktivitas', icon: Bell },
     { href: '/saved', label: 'Tersimpan', icon: Bookmark },
   ]
+  const navGroups = $derived(auth.actor ? [nav.slice(0, 5), nav.slice(5)] : [nav.slice(0, 5)])
   function active(href: string) {
     return href === '/'
       ? path === '/'
@@ -108,7 +111,7 @@
     </div>
   </Sidebar.Header>
   <Sidebar.Content>
-    {#each [nav.slice(0, 5), nav.slice(5)] as items, section}
+    {#each navGroups as items, section}
       <Sidebar.Group>
         <Sidebar.Menu>
           {#each items as item}<Sidebar.MenuItem>
@@ -250,7 +253,7 @@
       >
         <RefreshCw size={18} />
       </Button>{/if}
-    <Button
+    {#if auth.actor}<Button
       href="/notifications"
       variant="ghost"
       size="icon"
@@ -258,7 +261,7 @@
       aria-label={unread ? `Aktivitas, ${unread} belum dibaca` : 'Aktivitas'}
     >
       <Bell size={18} />{#if unread}<span class="notification-count" aria-hidden="true">{unread>99?'99+':unread}</span>{/if}
-    </Button>
+    </Button>{/if}
     <Button
       variant="ghost"
       size="icon"
@@ -327,7 +330,7 @@
     <Plus size={23} />
     <span aria-hidden="true">Posting</span>
   </Button>
-  <Button
+  {#if auth.actor}<Button
     href="/notifications"
     variant="ghost"
     size="icon"
@@ -335,10 +338,18 @@
     aria-current={active('/notifications') ? 'page' : undefined}
     class="mobile-activity"
   >
-    <Bell size={21} />
+    <span class="mobile-activity-icon"><Bell size={21} />{#if unread}<span class="notification-count" aria-hidden="true">{unread>99?'99+':unread}</span>{/if}</span>
     <span aria-hidden="true">Aktivitas</span>
-    {#if unread}<span class="notification-count" aria-hidden="true">{unread>99?'99+':unread}</span>{/if}
-  </Button>
+  </Button>{:else}<Button
+    href="/login"
+    variant="ghost"
+    size="icon"
+    aria-label="Masuk"
+    aria-current={active('/login') ? 'page' : undefined}
+  >
+    <LogIn size={21} />
+    <span aria-hidden="true">Masuk</span>
+  </Button>{/if}
   <Button
     variant="ghost"
     size="icon"
