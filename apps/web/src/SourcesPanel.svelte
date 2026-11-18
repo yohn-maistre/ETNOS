@@ -31,7 +31,7 @@
     sent = $state('')
   const listed = $derived(post.content?.sources ?? [])
   // The author's own "Sumber:" label is redundant under the panel heading.
-  const shown = $derived(tail.replace(/^[*_]{0,2}Sumber[*_]{0,2}\s*:\s*/, ''))
+  const shown = $derived(tail.replace(/^[*_]{0,2}Sumber[*_]{0,2}\s*:\s*(\S)/, (_, first: string) => first.toLocaleUpperCase('id')))
   const hasSources = $derived(listed.length > 0 || !!tail)
   const count = $derived(listed.length || sourceLinks(tail))
   const answers = $derived(post.answers)
