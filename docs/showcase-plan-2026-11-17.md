@@ -393,3 +393,32 @@ The owner set opencode aside. Every node now has its own model module (`src/mode
 - At about 57 neurons per one-round reply, the free allowance is about 150 replies a day across all eight Aksara, or four or five long coding loops. On the free tier Aksara is a research editor that keeps files, not a coding agent. Code execution is a Paid option or the self-hosted harness's job.
 - optmem has no licence; neither `pi-optmem` package grants one for its memory code. We borrow the shape only (append-only log, rebuildable summary, small fixed read at start), which matches the place notebook. Its "never edit the log" rule conflicts with withdrawal, so withdrawn sources must still remove what was derived from them.
 - Plan: the node's notebook tables stay the source of truth. Each region gets a workspace with a read-only `/place` folder generated from the notebook and writable `/scratch`, `/drafts` and `/journal.md`, every file tagged with its source and revision. One-day spike on `@cloudflare/computer` (cold-start CPU, rows per job) before the showcase; ship the notebook alone if it fails. The shared contract with aksara-core is tool names, a plain markdown folder layout with `sources:` front matter and a `recall(query, mode, limit)` call.
+
+## 24. Build order from 18 November (read this first after compaction)
+
+Decided with the owner on 18 November. Design: `superpowers/specs/2026-11-18-information-architecture-design.md`. Research: `research/why-these-axes-2026-11-18.md`, `research/topic-primitives-and-knowledge-organisation-2026-11-18.md`, `research/aksara-composed-views-2026-11-18.md`.
+
+The owner's order: foundations solid, UI beautiful and understandable, anyone can join and see what it is about. Then the multi-identity PDS so people can register and post. Then Aksara activity with proper Gemini keys.
+
+**Run 1, foundations and UI (now).** Task numbers are in the session task list.
+
+| Step | Task | What |
+| --- | --- | --- |
+| 1 | 52 | Small fixes: one back button on lapisan, wiki Diskusi padding, Jelajah highlights to five with "Semua percakapan", Riset terbit without the raw query, repeated subtitles, agent chip "AI" / "AI · Mee Pago" |
+| 2 | 53 | One switcher: "Terbaru · tempat" in one sheet with the atlas as its map; drop the scope row and the grey map on `/contexts` |
+| 3 | 36 | Thing page: name and kind on a tinted band, tabs Tentang, Percakapan, Kabar (lapisan inside), Komunitas, Sumber; context and wiki page merged |
+| 4 | 54 | Jelajah as the one directory; `/contexts` redirects |
+| 5 | 55 | One topic scheme (18), headings display only, crosswalks, catalogue renames reach live deployments |
+| 6 | 56 | Wiki: beings (mountain, lake, forest, species) as page kinds; news never becomes a wiki draft; seeding plan |
+| 7 | 57 | Optional season on records, defined per community |
+| 8 | 58 | Start a community with two people: waiting room, invite link, 14 days |
+| 9 | 59 | Tentang ETNOS: why these axes, in plain Indonesian |
+| 10 | 40 | Proposal pack (26–27 November), with the composer as the next step and one mock |
+
+Every UI step uses the impeccable skill, `vite build` and screenshots at phone and desktop width.
+
+**Run 2.** Multi-identity PDS (task 24, plan in `research/pds-multi-identity-plan-2026-11-18.md`).
+
+**Run 3.** Aksara with proper Gemini keys: seven Aksara from the place pack (30), place notebook (48), community-kept Aksara (49).
+
+**Roadmap only.** Clan spaces: a private space and PDS per clan with the communal Aksara on a refurbished machine. The composer build (Aksara arranging typed blocks, steward approval).
