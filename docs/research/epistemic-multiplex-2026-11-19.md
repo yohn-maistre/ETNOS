@@ -2,6 +2,8 @@
 
 19 November 2026, early morning. Design research; no code changed. It follows `knowledge-ontology-2026-11-18.md` and replaces its naming and its analysis sections; that note's reasoning on what the things are, seeding and the first-person voice still stands. Marks: *(proposal)* for suggestions the owner can overturn, *(not measured)* for estimates, *(to verify)* for open checks, *(rencana)* for anything not built. Nothing in this note is running yet. Sources are at the end.
 
+**Revised 19 November, morning:** section 5 corrected after reading the seed pipeline end to end (the first draft overstated one figure); new sections 9 (public data and foundation models as the measurement layer) and 10 (multimodal witnesses: voice notes, video, photos, with the technical path); motifs M20–M23 added. Later sections renumbered.
+
 For the case built on top of this note (why it matters, which laws and policies it answers, how it maps to the proposal), read `../rationale-threads-2026-11-19.md`.
 
 ## 1. In one paragraph
@@ -31,7 +33,7 @@ From the session of 18–19 November, lightly edited:
 | Schemes | Separate "Kerangka" machinery | Scheme concepts are entities, linked by "broader" assertions (SKOS's own design) |
 | Holder's account layer | *kesaksian* | **tuturan** (so it does not clash with Witness) |
 | Analysis | Similarity and keyword domains | A **motif library** (section 6) and **five lenses on importance** (section 7) |
-| Ritme | Unchanged | Unchanged; motif outputs feed its existing slots (section 9) |
+| Ritme | Unchanged | Unchanged; motif outputs feed its existing slots (section 11) |
 
 Today's map stays as it is until the new one ships. It remains useful as the "records" view.
 
@@ -105,18 +107,39 @@ Bulmer's classic New Guinea case shows why both matter. The Karam of the Schrade
 | Tuturan | a teller's account given on the platform | Always attributed to the teller or to a consenting group |
 | Measurement | a GBIF occurrence, a rainfall series, a satellite index, an elevation model | How science enters the graph |
 | Paper | a scholarly work (OpenAlex) | Also a document; listed separately for the science layer |
-| Post | an accepted reply or thread on Strata | Enters only after acceptance |
+| Post | an accepted reply or thread on Strata, including voice notes and videos | Enters only after acceptance (section 10) |
+| Derived | a transcript, a caption, a species suggestion, a satellite embedding for a place | Machine-made; labelled as such until a person confirms; keeps the model, version and licence |
 
 Every witness keeps its bytes or its stable link and receipt, as the repository rules already require.
 
-## 5. What the data already tells us *(computed 19 November from today's map; rough, automatic labels)*
+## 5. What the data already is, and what it tells us *(computed 19 November)*
 
-A small first finding, from the current map (`apps/web/public/observatory/map.json`, built 17 November):
+### 5.1 How the seed was made
 
-- **Who speaks.** All 551 verified sentences come from two voices: encyclopaedia pages (499, 91%) and government pages (52, 9%). The source catalogue lists 105 sources across ethnography, articles, archives, reports, theses, mission records, a grammar and a dictionary, but those are not yet quoted, mostly because they are paywalled, scanned or offline. **Tellers: zero.**
-- **What it is about.** By the map's automatic domain labels, 62% of verified sentences concern administration, population and conflict (*kehidupan bersama*), 25% land and forest, 23% sea and water. Stories (1%), belief (1%) and health (1%) barely appear. The labels are keyword-based and rough.
+The owner asked whether the 500-odd sentences were pulled at random from Wikipedia or summarised. Neither. Reading `seed/wiki/*.json`, `scripts/verify-wiki-seed.py`, `src/desk.ts` and `scripts/observatory/build-map.mjs`:
 
-So the open record of these three regions, as it stands, is mostly the state's and the encyclopaedia's view of administrative units. That is not a flaw to hide; it is the first result of the multiplex lens, and the clearest argument for what the commons adds (section 7.3).
+- **Selected, verbatim quotes.** A seeding agent surveyed sources for three regions (16–18 November) and copied whole sentences from them, each tagged with a section label it chose (administration, geography, history, language, population, peoples, livelihood, culture, ecology and a few others). There are **657 quotes** in `seed/wiki/{meepago,saireri,la-pago}.json` (220, 210, 227).
+- **Checked word for word.** `verify-wiki-seed.py` re-fetches each source (Wikipedia through its plain-text API, other pages as stripped HTML), folds case, quotes and dashes, and keeps a quote only if it is a contiguous span of the source. Last run: **586 confirmed, 5 rejected, 37 unreachable** (the sources could not be fetched, so their quotes were not checked).
+- **Where they come from.** 602 of 657 quotes (92%) are from Wikipedia (364 Indonesian, 238 English); the rest come from six regency government sites. The 105-source catalogue (ethnographies, articles, archives, reports, theses, mission records, a grammar, a dictionary) is listed but **not yet quoted**: most of it is paywalled, scanned or offline.
+- **The wiki pages are written prose, held to their quotes.** The 39 seed pages (20 regencies, 9 peoples, 8 beings, 6 languages, 4 regions) are Indonesian prose written by the seeding agent from those quotes, with numbered citations. `checkPage` in `src/desk.ts` enforces that every paragraph cites a source and every name and number in the prose appears in the quotes it rests on. It allows translation and paraphrase; it does not require identical wording. The wiki pages are therefore *tafsir* resting on *jejak*, in this note's terms.
+- **The map's 551 sentence nodes** are the quotes that survived verification and deduplication.
+
+### 5.2 How the map clusters today
+
+It does not run a clustering algorithm.
+
+- Each node's text (sentence, page, source or catalogue entry) is embedded with `multilingual-e5-small`, and **UMAP** places the nodes in 3D so that similar texts sit near each other. Groups you see are UMAP neighbourhoods, not computed communities.
+- **Colours** are 14 domains assigned by keyword regular expressions (the top three or four by keyword hits). When no keyword matches, the nearest domain description by embedding is used. Cultural forms (the ten OPK) are assigned by a second keyword list.
+- **Edges** are provenance only: sentence *from* source, page *part of* region, page *cites* source, page *rests on* sentence, catalogue entry *about* page.
+- The labels are noisy. The keyword list for *kehidupan bersama* also matches "km", "kampung", "road" and "school", and the English Wikipedia page for Mee Pago fell back to *kesehatan* (health) by embedding. Treat any domain figure from the map as rough.
+
+### 5.3 What it tells us
+
+- **Who speaks.** Every verified sentence comes from two voices: encyclopaedia (91%) and the state (9%). **Tellers: none yet.**
+- **What it is about.** The seeding agent's own section tags are a cleaner measure than the map's colours: administration 21%, geography 18%, history 13%, language 12%, population 9%, peoples 9%, livelihood 5%, culture 5%, ecology under 1%. Administration and population together are **31%**; culture and ecology together under **6%**. (The map's keyword labels put *kehidupan bersama* at 62%, but that list is too broad to quote.)
+- **Part of this bias is ours.** The seeding agent chose regency pages and their administrative sections, because those are what the open web has and what it could verify. The finding is about the reachable open record *and* our first seeding pass, and should be stated that way.
+
+So the open, verifiable record of these three regions is mostly an encyclopaedia's and the state's account of administrative units. That is the first result of the multiplex lens, the clearest argument for what the commons adds (section 7.3), and a reason to seed next from the catalogue's ethnographies and Papuan-authored works where licences allow.
 
 ## 6. The motif library
 
@@ -188,7 +211,17 @@ Science here does not grade people's knowledge. Disagreement is reported as disa
 
 **M19. Structural analogy.** When several deployments exist, structure-mapping can propose that a practice in one community has the same relational shape as one elsewhere (a seasonal exchange cycle, a custody pattern). Aksara would offer these as questions to both communities, never as claims. *(later)*
 
-### 6.11 Summary table
+### 6.11 Across modalities
+
+**M20. Representational similarity across modalities.** From neuroscience: representational similarity analysis (Kriegeskorte et al. 2008) compares two systems by comparing their *similarity matrices*, not their raw features. Applied here: build one matrix from how a community connects its places (shared assertions, stories, practices) and another from how alike those places look from space (satellite embeddings, section 9). Where the two agree, people's knowledge tracks the land; where they diverge, something cultural (a sacred site, a customary boundary, a history) organises the place. **A people's map of meaning, compared with the land's own map.**
+
+**M21. Change on place embeddings becomes questions.** Satellite embeddings are consistent across years, so the angle between a place's vectors in two years flags change (a road, a mine, a garden gone back to forest). Change becomes a candidate *Peristiwa* and a question to people of that place ("Apa yang berubah di sini sejak 2019?"), never a claim.
+
+**M22. Landscape words and the land (ethnophysiography).** Ethnophysiography studies how languages carve up the landscape; landscape terms often have no one-to-one equivalent across languages. With consented points (a garden type, a forest type, a wetland named in Mee), we can test whether a people's landscape categories separate in embedding space, as participatory mapping in Angola and the Tiwi Islands did by hand. This is Berlin's folk-science correspondence (M18), applied to land instead of species.
+
+**M23. Bird and frog calls, named by people.** Bioacoustic embeddings (Perch 2.0) make it possible to build a classifier for a sound from a single example and a local expert's corrections ("agile modelling"). Applied: an elder names a call in a forest recording; the model finds similar calls; people confirm. Folk names and scientific species meet through sound, with the folk name first. Only with the recorder's consent, and never on human speech.
+
+### 6.12 Summary table
 
 | Motif | Question it answers | Needs | Effort *(not measured)* | When |
 | --- | --- | --- | --- | --- |
@@ -207,6 +240,10 @@ Science here does not grade people's knowledge. Disagreement is reported as disa
 | M17 time | How has the framing changed? | witness dates | small | first |
 | M18 second eye | Where do science and the people agree, differ or stay silent? | measurement witnesses | medium | second |
 | M19 analogy | What looks alike across peoples? | several deployments | large | later |
+| M20 cross-modal similarity | Does knowledge of places follow the land? | place assertions; satellite embeddings | medium | second |
+| M21 change → questions | What changed here, and what do people say about it? | satellite embeddings, two years | small | first (one region) |
+| M22 ethnophysiography | Do landscape words follow the land? | consented points with local terms | medium | second |
+| M23 sounds named by people | Which calls does a people name, and how do they map to species? | consented recordings; Perch | medium | second |
 
 ## 7. Five lenses on importance
 
@@ -241,25 +278,109 @@ Section 5 is the voice lens on today's seed: two voices only, mostly about admin
 3. **Review.** A steward in Studio accepts, merges, splits or rejects. Nothing becomes an entity without a person.
 4. **Build.** A build step computes constellations and the motif outputs, each against its null model, and writes JSON for the web app. The runtime stays TypeScript on Workers; heavy analysis (persistent homology, Infomap) runs in a small Python step at build time, as the map's UMAP and embeddings already run offline.
 5. **Publish.** Entity pages, map lenses, an observatory report page, and inputs for Ritme.
-6. **Export.** The open dataset (section 10).
+6. **Export.** The open dataset (section 12).
 
-## 9. Where it shows up, without the reel
+## 9. The measurement layer: public data and foundation models *(proposal)*
+
+The owner asked what more we can do with public data, including specialised embedding models already hosted with free use. The idea: every entity can carry, beside its assertions, **embeddings and measurements from other modalities**, each kept as a witness with its source and licence. Most of what follows is free for non-commercial use; some of it is fully open.
+
+### 9.1 What is available
+
+| Modality | Resource | What it gives | Access and licence (as read 19 Nov) | Use in Strata |
+| --- | --- | --- | --- | --- |
+| Land | **AlphaEarth Foundations** Satellite Embedding (Google DeepMind) | A 64-number vector for every 10 m pixel per year (2017–2025), summarising optical, radar and other sensors; consistent across years | Earth Engine (free for non-commercial and research use with a registered project); CC BY 4.0; also as COGs in a GCS bucket that is "provider pays" since July 2026 | Place fingerprints, change detection (M21), M20, habitat models for Makhluk |
+| Land | **TESSERA** (University of Cambridge) | 128-number vectors per 10 m pixel per year, 2017–2025, from Sentinel-1 and -2 | Embeddings CC0, encoder MIT; streamed over HTTPS (Zarr) with no request; fine-tunes on a CPU | **The sovereign choice**: fully open, can be cached by us or by a partner in Papua |
+| Land | Clay, Major TOM, Copernicus-Embed and others | Coarser patch embeddings | Various open licences | Not needed for the first wave |
+| Weather and climate | **Open-Meteo** | ERA5 reanalysis from 1940, forecasts from 30+ models, and Google's WeatherNext 2 ensemble since July 2026 | Free for non-commercial use up to 10,000 calls a day, no key; data CC BY 4.0 | Seasons beside climate (M18), *Siaga* weather by place, a Ritme weather card |
+| Terrain | Copernicus DEM (30 m) | Elevation | Free | Upstream/downstream checks, altitude zones |
+| Species | **GBIF** API | Occurrences, names, vernacular names | Free, no key for reads | Measurement witnesses for Makhluk; crosswalk of folk names |
+| Species | **Pl@ntNet** API | Plant identification from photos (87,000+ species) | Free up to 500 identifications a day, commercial use allowed; more for non-profits | Suggest a species for a posted plant photo; the poster's own name stays first |
+| Species | **iNaturalist** datasets | Research-grade observations, taxonomy, range maps | Open datasets; API rate-limited | Background for living kinds |
+| Sound | **Perch 2.0** (Google DeepMind) | Embeddings and labels for about 15,000 classes (around 10,000 birds, plus frogs, insects, mammals) | Apache 2.0; a CPU variant and ONNX/TFLite conversions exist | M23; species presence from consented forest recordings |
+| Speech | **Omnilingual ASR** (Meta) | Speech recognition for 1,600+ languages, including 77 New Guinea languages in its evaluation (average character error rate 5.5); extendable to a new language with a few paired examples | Apache 2.0 models (300M to 7B), CC BY corpus | Transcripts of voice notes in Papuan languages; whether Ekari is covered is *(to verify)* |
+| Speech | Workers AI Whisper (large-v3-turbo) | Indonesian and Papuan Malay transcripts | About 47 neurons per audio minute on the free tier | Transcripts on the platform itself |
+| Language | **Glottolog, Concepticon, Lexibank, Grambank** (CLDF) | Language identities; 3,000+ standard concepts linking word lists; 2,456 languages of word lists; grammar features for 2,467 varieties | CC BY | Link *Kata* entities to standard concepts, so "sweet potato" in Mee and in Moni meet; never replace the community's own dictionary |
+| Culture | **D-PLACE** | Cultural, linguistic and environmental data for 1,400+ societies | Open | Cross-deployment comparison (M14) |
+| Scholarship | **OpenAlex**, Wikidata | Papers, concepts; general entities | Open | Science witnesses; attention of scholarship vs demand of people |
+
+### 9.2 What the combination makes possible
+
+- **Every place has a landscape fingerprint per year.** Places in the wiki can show how their land changed (with the caveat that an embedding is not a land-cover map), and Aksara can ask the people of that place what happened. This is the "Lanskap berubah" Ritme card (Ritme note §8).
+- **Seasons meet climate.** Each *Musim* entity can show rainfall and temperature by month from ERA5 beside what people say marks the season (M18).
+- **Living kinds meet occurrence data and sound.** A Makhluk page can show GBIF records, an iNaturalist range, a Pl@ntNet match for a posted photo, and calls identified in consented recordings, always under the people's own name for it.
+- **Words meet concepts.** Concepticon links let language rooms compare their words across Papuan languages without anyone giving up control of their dictionary.
+- **People's observations can flow back to science, on their terms.** With consent, observations can be published to GBIF (Darwin Core), with sensitive locations generalised, as GBIF already does for sensitive species. Two eyes, both ways.
+
+### 9.3 What we will not do: genomics
+
+The owner asked about genomics. **Our recommendation is no, for now, and never for human data.**
+
+- AlphaGenome (and AlphaGenome 2, November 2026) is a human DNA model, free for non-commercial use, with terms that bar using its outputs to train other models.
+- Human genetic data is among the most sensitive data a people has. UU 27/2022 classes genetic data as specific personal data, and Indigenous peoples have a long record of genetic research done without proper consent. Strata will never collect, hold or analyse human genetic data.
+- For plants and animals, the only step that makes sense is **linking** a Makhluk entity to existing public taxonomic and genome records as a witness. Anything beyond that touches genetic resources and the knowledge associated with them, which needs prior informed consent and agreed terms under the Nagoya Protocol (UU 11/2013) and PP 56/2022.
+
+### 9.4 Practical notes
+
+- **Where it runs.** Satellite and sound embeddings are computed or fetched at build time (Python, as the map's embeddings already are), never on the Worker. Results are stored as small JSON per entity.
+- **Coordinates.** We fetch embeddings only for places that are already public entities, at a resolution the community is comfortable with. Sacred sites and private gardens never go to an outside API.
+- **Licences travel.** Every derived number keeps its source and licence in its witness (CC BY 4.0 for AlphaEarth with its required attribution; CC0 for TESSERA; CC BY 4.0 for Open-Meteo).
+- **Free tiers have limits.** Earth Engine's free use is for non-commercial work; TESSERA is the fallback with no such condition.
+
+## 10. Multimodal witnesses: voice, video, photos *(proposal)*
+
+The owner wants people to post **voice notes and short videos**, as on Threads, with voice notes as a first-class post component. In this model, every such post is a **witness**, and when it is accepted as knowledge it becomes *tuturan* in the people's own voice: the layer the seed lacks entirely (section 5).
+
+### 10.1 What each medium adds
+
+| Medium | What it carries that text cannot | Derived witnesses (always labelled as machine-made until a person confirms) |
+| --- | --- | --- |
+| Voice note | The language itself; the teller's voice; songs and calls; people who prefer speaking to typing | Transcript (Whisper for Indonesian and Papuan Malay; Omnilingual ASR for Papuan languages where it works; "bantu tulis" by the community otherwise); species in background sound (Perch, opt-in) |
+| Video | Practice: how a noken is woven, how bakar batu is laid, a dance | Captions (WebVTT from the transcript); a poster frame |
+| Photo | Objects, plants, places | Species suggestion (Pl@ntNet), never a face match |
+
+### 10.2 Rules
+
+- **Consent and protocol first.** Each post carries its protocol (public, community only, *Jangan disebarkan*) and a training-permission flag, like any assertion.
+- **No biometrics.** No voiceprints, speaker identification or face recognition, ever. Biometric data is specific personal data under UU 27/2022.
+- **Metadata stripped.** Location and device metadata are removed by re-encoding on the phone, as images already are.
+- **Agents do not post voice or video.** Aksara never speaks with a synthetic voice and never publishes video; its cards may embed a person's clip with that person's permission.
+- **Children.** PP 17/2025 duties apply (minimum age, reporting, age assurance) before video opens to everyone.
+
+### 10.3 The technical path
+
+**Voice notes (first):**
+- Recorded in the browser with MediaRecorder: Opus in WebM on Android Chrome, AAC in MP4 on iPhone. At about 24 kbps a two-minute note is about 360 KB, inside today's 512 KB media cap (`src/media.ts`).
+- Validated strictly, as WebP images are today: container check, metadata stripped, duration and size caps. A 64-bar waveform is computed on the phone and stored with the post.
+- Stored in the bounded media store for previews and in R2 for originals. R2's free tier (10 GB a month) holds roughly 28,000 two-minute notes.
+- Transcribed in the background with Workers AI Whisper (about 47 neurons a minute; roughly 200 minutes a day fit in the free allocation, shared with Aksara's model). Papuan-language transcripts come from Omnilingual ASR, run off the Worker in a small batch job, or from the community.
+
+**Video (second):**
+- Two options. **Cloudflare Stream**: $5 a month per 1,000 minutes stored and $1 per 1,000 minutes watched; encoding and ingest are free. **R2 with compression on the phone** (WebCodecs, about 480p): a one-minute video is about 9 MB, so the free tier holds about a thousand; Media Transformations makes poster frames and audio-only versions (5,000 free a month).
+- A 60-second cap at first; captions from the transcript; an audio-only fallback for low bandwidth.
+
+**On AT Protocol:**
+- Bluesky's video embed allows up to 10 minutes and 300 MB per video with up to 20 WebVTT caption files, handled by a separate video service before the blob reaches the PDS. A Strata video post can use the same shape, so it plays in other Atmosphere apps.
+- There is no standard audio post in Bluesky's schemas. Strata defines its own voice-post record (audio blob, waveform, transcript, language, protocol). For reach, a voice note can also be published as a short video with a waveform frame, so it plays in Bluesky. *(proposal)*
+
+**Estimated effort** *(agent's working time, not measured)*: voice notes with transcripts, about 1.5–2 days including tests for access and withdrawal; video with Stream or R2, about 2 days more.
+
+## 11. Where it shows up, without the reel
 
 The reel's visual design waits. The motif outputs flow into surfaces that already exist or are already planned:
 
 - **Entity pages**: a "why this matters" profile (the five lenses), voices side by side, variants with their logical status, a *Mata kedua* (second eye) panel where measurements exist, and open questions from M9.
 - **Map lenses**: Constellations (Jaringan), Places (Peta), Gaps (Celah: thin and single-voice entities glow), Voices (one layer at a time).
 - **Observatory report**: per region, the strategic diagram, the voice comparison, the vitality list and the gap timeline. This is the "cultural observatory" of KKI 2023, idea 10.
-- **Ritme** (unchanged slots): *Soal hari ini* draws from M9 questions; *Temuan* fires when a gap closes or a constellation changes; *Hari ini di wiki* reports new assertions and which voice they added; the monthly *Denyut* carries the vitality and voice charts.
+- **Ritme** (unchanged slots; the reel is a selector on Beranda, Ritme note §8): *Soal hari ini* draws from M9 questions; *Temuan* fires when a gap closes or a constellation changes; *Hari ini di wiki* reports new assertions and which voice they added; the monthly *Denyut* carries the vitality and voice charts.
 
-## 10. Open data and a sovereign model
+## 12. Open data and a sovereign model
 
 - **Open by default, protocol first.** Computed data (entities, assertions with voice and witness, constellation memberships, motif outputs) is published under an open licence, except what a protocol restricts. Withdrawal removes dependent assertions and recomputes.
 - **Formats.** JSON-LD (CIDOC CRM / Linked Art and Wikidata-style statements), SKOS for schemes, and plain tables (CSV or Parquet) for researchers; one documented package per release.
 - **Training permission is separate.** Only assertions whose protocol says *boleh dipakai melatih* enter a fine-tuning or evaluation set. This follows the Kaitiakitanga Licence's logic (guardianship rather than ownership, and benefit returns to the source) and the CARE principles.
 - **Evaluation sets come free.** Negative competency questions (from the Ritme note), held-out assertions and the folk–science correspondences double as tests for any model trained later.
 
-## 11. Honesty and guardrails
+## 13. Honesty and guardrails
 
 - **The record is biased; we say so.** Every importance lens is shown per voice. Section 5 is the first example.
 - **Small data.** The seed has 551 verified sentences. Early constellations are drafts; every chart says so.
@@ -269,7 +390,7 @@ The reel's visual design waits. The motif outputs flow into surfaces that alread
 - **Science is not the referee.** Disagreements are shown as such.
 - **Aksara writes *tafsir* only.** Constellation names, summaries and analogies are interpretations, renamed and corrected by people.
 
-## 12. Research outputs *(proposal)*
+## 14. Research outputs *(proposal)*
 
 1. **Resource paper.** The model, the pipeline, the open dataset for three Papuan regions, and the motif library with null models. Fits a semantic-web resources track or a digital humanities journal.
 2. **"Whose Papua?"** The epistemic multiplex of the open record: how colonial, mission, state, scholarly, Papuan and tellers' voices structure the same world, with gap dynamics as tellers join. Quantitative ethnography or science-of-science venues.
@@ -278,7 +399,7 @@ The reel's visual design waits. The motif outputs flow into surfaces that alread
 
 Co-authorship with Papuan scholars and tellers, by their choice, is the default.
 
-## 13. Build plan *(estimates of the agent's working time; not measured)*
+## 15. Build plan *(estimates of the agent's working time; not measured)*
 
 | Step | Time |
 | --- | --- |
@@ -290,17 +411,23 @@ Co-authorship with Papuan scholars and tellers, by their choice, is the default.
 | Observatory report page per region | 1 day |
 | Second-eye spike: one seasonal assertion set beside one climate series | 1–2 days *(data access to verify)* |
 | Sheaf, hypergraph, optimal-transport and ecological-metric spikes | 2–3 days |
+| Voice notes: record, validate, store, transcribe, protocol and withdrawal tests | 1.5–2 days |
+| Video posts (Stream or R2) with captions | about 2 days |
+| Measurement layer, first slice: Open-Meteo by season, TESSERA or AlphaEarth change for one region's places, GBIF for living kinds | 1.5–2 days |
+| Cross-modal spikes (M20, M22, M23) | 2–3 days |
 
-About 6–7 days for the first wave and 3–5 for the second. **For the proposal, only what runs by 26 November counts as *berjalan*; the rest is *rencana*.** Realistically, the first wave on one region is the showcase target, and section 5 is the one result we can already state honestly.
+About 6–7 days for the first wave, 3–5 for the second, and 7–9 more for multimodal posts and the measurement layer. **Voice notes are the one multimodal piece that can realistically be *berjalan* by 25 November.** **For the proposal, only what runs by 26 November counts as *berjalan*; the rest is *rencana*.** Realistically, the first wave on one region is the showcase target, and section 5 is the one result we can already state honestly.
 
-## 14. Open questions for the owner
+## 16. Open questions for the owner
 
 1. Licence for computed data: CC BY 4.0, or a Kaitiakitanga-style licence with benefit-return terms?
 2. Which region goes first for the full first wave? *(Recommended: Mee Pago, where the owner can reach tellers.)*
 3. May voice layers be shown publicly from day one, given that they expose how thin the tellers' layer is? *(Recommended: yes; it is the argument.)*
 4. Which partner holds measurement data we could use first (a university, BMKG, a conservation group)?
+5. TESSERA (CC0, fully open) or AlphaEarth (Earth Engine, non-commercial) as the default land embedding? *(Recommended: TESSERA by default, AlphaEarth as a second witness where its terms allow.)*
+6. Video in the showcase, or voice notes only? *(Recommended: voice notes for the proposal; video as a showcase stretch if voice ships.)*
 
-## 15. Sources
+## 17. Sources
 
 Read 18–19 November 2026.
 
@@ -359,5 +486,21 @@ Read 18–19 November 2026.
 - UU 11/2013 ratifying the Nagoya Protocol: <https://jdih.kemenkeu.go.id/api/download/fulltext/2013/11TAHUN2013UU.htm>
 - PP 56/2022 on communal intellectual property: <https://peraturan.bpk.go.id/Details/233504/pp-no-56-tahun-2022>
 
+**Measurement layer and multimodal (read 19 November)**
+- AlphaEarth Foundations Satellite Embedding, Earth Engine catalogue: <https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL>; GCS README: <https://developers.google.com/earth-engine/guides/aef_on_gcs_readme>; DeepMind announcement: <https://deepmind.google/blog/alphaearth-foundations-helps-map-our-planet-in-unprecedented-detail/>
+- TESSERA: <https://geotessera.org/>, <https://github.com/ucam-eo/geotessera/>; "Earth Embeddings as Products" (2026): <https://arxiv.org/abs/2601.13134>
+- AlphaEarth in practice: forest mapping preprint <https://eartharxiv.org/repository/object/14063/download/24645/>; atoll ecosystems (2026) <https://doi.org/10.3390/rs18172964>; AlphaSDM <https://cran.dcc.uchile.cl/web/packages/AlphaSDM/refman/AlphaSDM.html>
+- Combining remote sensing and local knowledge: Lower Omo (2026) <https://eprints.whiterose.ac.uk/id/eprint/243653/1/1-s2.0-S2665972726001741-main.pdf>; southeast Angola (2025) <https://doi.org/10.21203/rs.3.rs-6466451/v1>; Tiwi Islands ecosystem typology (2024) <https://doi.org/10.32942/x20p75>
+- Ethnophysiography: Mark and Turk (2017) <https://doi.org/10.1002/9781118786352.wbieg0349>; Burenhult and Levinson (2008) <https://doi.org/10.1016/j.langsci.2006.12.028>
+- Representational similarity analysis: Kriegeskorte, Mur and Bandettini (2008), *Frontiers in Systems Neuroscience*: <https://doi.org/10.3389/neuro.06.004.2008>
+- Open-Meteo: <https://open-meteo.com/>, historical API <https://open-meteo.com/en/docs/historical-weather-api>, WeatherNext 2 <https://open-meteo.com/en/docs/google-weathernext-api>, pricing <https://open-meteo.com/en/pricing>
+- Perch 2.0: <https://www.kaggle.com/models/google/bird-vocalization-classifier>, <https://deepmind.google/blog/how-ai-is-helping-advance-the-science-of-bioacoustics-to-save-endangered-species/>
+- Omnilingual ASR: <https://ai.meta.com/blog/omnilingual-asr-advancing-automatic-speech-recognition/>, <https://arxiv.org/html/2511.09690>, <https://github.com/facebookresearch/omnilingual-asr/>
+- Pl@ntNet API pricing: <https://my.plantnet.org/pricing>; GBIF API: <https://techdocs.gbif.org/en/openapi/>; iNaturalist datasets: <https://www.inaturalist.org/pages/developers>
+- CLDF <https://cldf.clld.org/>; Lexibank (2022) <https://www.nature.com/articles/s41597-022-01432-0>; Grambank <https://grambank.clld.org/>; Concepticon <https://github.com/concepticon/concepticon-cldf>
+- AlphaGenome API and terms: <https://github.com/google-deepmind/alphagenome>; AlphaGenome 2 (November 2026): <https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/>
+- AT Protocol video handling: <https://atproto.com/guides/video-handling>; Bluesky 10-minute videos (August 2026): <https://techcrunch.com/2026/08/26/bluesky-now-lets-you-upload-10-minute-long-videos/>; video embed limits: <https://opentweet.io/tools/bluesky-video-checker>
+- Cloudflare Stream pricing <https://developers.cloudflare.com/stream/pricing/>; R2 pricing <https://developers.cloudflare.com/r2/pricing/>; Media Transformations <https://developers.cloudflare.com/stream/transform-videos/>
+
 **In this repository**
-- `apps/web/public/observatory/map.json` (built 17 November), `scripts/observatory/build-map.mjs`, `seed/sources/*.json`, `seed/wiki/*.verify.json`, `knowledge-ontology-2026-11-18.md`, `aksara-living-program-2026-11-18.md`.
+- `apps/web/public/observatory/map.json` (built 17 November), `scripts/observatory/build-map.mjs`, `scripts/verify-wiki-seed.py`, `src/desk.ts` (`checkPage`), `src/media.ts`, `seed/wiki/*.json`, `seed/wiki/pages/*.json`, `seed/sources/*.json`, `seed/wiki/*.verify.json`, `knowledge-ontology-2026-11-18.md`, `aksara-living-program-2026-11-18.md`.

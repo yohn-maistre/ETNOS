@@ -7,6 +7,8 @@ How to read the status words, which follow `proposal/claims-2026-11-18.md`:
 - **built:** merged and tested, deploy pending.
 - **rencana:** planned, not built. In the proposal these must be written as plans. The juknis is explicit: "Jangan mencantumkan teknologi atau spesifikasi yang belum diterapkan seolah-olah sudah berfungsi."
 
+**Revised 19 November, morning:** thread 1's figures corrected after reading the seed pipeline end to end; each thread now has a **Voice and media** part (voice notes, short video, photos) and a **Public data** part (satellite embeddings, weather, biodiversity, language and speech datasets), from sections 9 and 10 of the multiplex note.
+
 Laws and policies are paraphrased, not quoted, and each one names its article where we have read it. *(to verify)* marks anything we have not read in the original.
 
 ## 0. The threads at a glance
@@ -29,8 +31,8 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 **Claim.** Most published knowledge about Tanah Papua was written by outsiders, and the open web's version of it is mostly the state's administrative view. The people it describes can rarely read it and almost never answer it. Strata makes their answer part of the record.
 
 **Our own findings**
-- The verified layer of today's knowledge map (551 sentences across Mee Pago, Saireri and La Pago) rests on **two voices only**: encyclopaedia pages (91%) and government pages (9%). Tellers' accounts: none yet. *(computed 19 November from `apps/web/public/observatory/map.json`)*
-- By the map's rough automatic labels, **62%** of those sentences concern administration, population and conflict. Stories, belief and health are about **1% each**.
+- The seed holds 657 verbatim quotes chosen by a seeding agent for three regions; 586 were confirmed word for word against their sources. **92% come from Wikipedia**, the rest from regency government sites. Tellers' accounts: none yet. *(computed 19 November; method in multiplex note §5)*
+- By the seeding agent's own section tags, administration and population make up **31%** of quotes, culture **5%**, ecology **under 1%**. Part of this skew is our own first seeding pass, which followed what the open web has and what could be verified; we say so.
 - The source catalogue holds 105 sources: ethnographies, articles, archive collections, reports, theses, mission records, a grammar and a dictionary. 22 are archive-only, paywalled or library-only, and half state no licence.
 - Still to gather before 26 November (from the framing doc): how many of the 105 have Papuan authors; a 50-person survey; a screenshot audit of city Facebook groups.
 
@@ -46,6 +48,13 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **UUD 1945 Article 28I(3):** cultural identity and the rights of traditional communities are respected in step with the times.
 - **UU 2/2021 (Otsus Papua), Article 57:** the provincial government must protect, foster and develop Papuan culture, giving the community the widest role.
 - **Perpres 115/2024 (RIPK 2025–2045), mission 1:** space for diverse cultural expression and cultural interaction.
+
+**Voice and media**
+- A voice answer from a person of the region is the strongest possible correction to an outsider's record: their language, their voice, attributed. *Ceritakan versimu* and *Jawab dengan suara* (Ritme note §4.1a) make that one tap.
+- Short video shows practice (weaving, building, cooking) that text describes poorly.
+
+**Public data**
+- OpenAlex shows how much scholarship exists about each region and topic; set against what people ask (the demand lens), it shows where research has looked away.
 
 **Impact and indicators**
 - Share of assertions per region whose voice is *tuturan* (people of the region), against the 0% baseline today.
@@ -78,6 +87,14 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **UN Declaration on the Rights of Indigenous Peoples (2007)**, which Indonesia voted for (non-binding).
 - **AI governance in Indonesia:** Circular SE Menkominfo 9/2023 on AI ethics; two draft Presidential Regulations (a national AI roadmap for 2026–2029 and AI ethics) were placed on the 2026 programme by Keppres 38/2025; the roadmap's principles include personal data protection and respect for intellectual property. *(to verify whether either has been enacted since March 2026)*
 
+**Voice and media**
+- Every voice note and video carries a protocol (public, community only, *Jangan disebarkan*) and a training-permission flag. No voiceprints, speaker identification or face recognition, ever.
+- On AT Protocol, video can live on the poster's own data host; Strata defines its own voice-post record so people keep their recordings if ETNOS goes away.
+
+**Public data**
+- Open data flows in with its licence attached (TESSERA CC0; AlphaEarth and Open-Meteo CC BY 4.0). People's observations flow out to science (GBIF) only with consent, with sensitive locations generalised.
+- Genomics: no. Strata never collects or analyses human genetic data; for plants and animals it only links existing public records.
+
 **Impact and indicators**
 - Communities with their own protocols set; items held back by a protocol (counted, never shown).
 - Share of assertions with an explicit training-permission decision.
@@ -109,6 +126,12 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **Perpres 115/2024 (RIPK 2025–2045):** the target is better government services that keep the cultural ecosystem alive; mission 7 casts government as facilitator.
 - **Perpres 39/2019 (Satu Data Indonesia):** shared standards, metadata and reference codes for government data. *(to verify how cultural data is covered)*
 
+**Voice and media**
+- Voice notes and video become witnesses in the graph, so the observatory measures the people's own layer growing, not only documents.
+
+**Public data**
+- Each place carries a landscape fingerprint per year from satellite embeddings; change becomes a question to the people of that place (motif M21). Comparing how people connect places with how alike those places look from space (motif M20, from neuroscience's representational similarity analysis) asks whether a people's map of meaning follows the land.
+
 **Impact and indicators**
 - Regencies with a state-of-knowledge report; reports used in a PPKD revision or a Dinas plan (letters of use).
 - Gaps opened and closed per month (the topology lens); questions generated and answered.
@@ -138,6 +161,15 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **Perpres 115/2024 (RIPK), mission 5:** cultural advancement that protects biodiversity and strengthens ecosystems.
 - **UU 2/2021 (Otsus Papua), Article 56:** education in Papua must take account of culture and local wisdom. **Permendikdasmen 22/2026** on local content makes schools natural partners (framing doc §8).
 
+**Voice and media**
+- With consent, a forest recording can be run through an open bioacoustics model (Perch 2.0, about 15,000 classes): an elder names a bird or frog call, the model finds similar calls, people confirm. Folk names and species meet through sound, with the folk name first.
+- A photo of a plant gets a species suggestion (Pl@ntNet, free up to 500 a day), beside the poster's own name for it.
+
+**Public data**
+- Seasons beside climate: ERA5 reanalysis since 1940 and forecasts (including Google's WeatherNext 2) through Open-Meteo, free for non-commercial use.
+- Landscape words beside the land: do a people's names for forest and garden types separate in satellite-embedding space? (ethnophysiography, motif M22). Studies in Angola, the Tiwi Islands and Ethiopia's Lower Omo combine remote sensing and local knowledge while keeping each on its own terms.
+- Living kinds beside occurrence records (GBIF, iNaturalist).
+
 **Impact and indicators**
 - Entities with a second-eye panel; agreements, differences and silences reported.
 - School classes or university groups using the panel; joint pieces by a scientist and a teller.
@@ -164,6 +196,12 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **Permen LHK P.34/2017:** indicators of living local wisdom include maintained practice, maintained collective memory, and transmission between generations, which our vitality lens follows.
 - **Perpres 78/2007** ratifying the UNESCO 2003 Convention for the Safeguarding of the Intangible Cultural Heritage.
 
+**Voice and media**
+- Voice notes are how a language stays in use on the platform. Meta's open Omnilingual ASR (1,600+ languages, 77 New Guinea languages in its evaluation, extendable with a few examples) may transcribe Papuan languages; whether Ekari is covered is *(to verify)*. Where it is not, the community writes transcripts ("bantu tulis"), which also builds the room's corpus under its control.
+
+**Public data**
+- Concepticon and Lexibank link words to standard concepts across 2,000+ languages, so language rooms can compare words across Papuan languages without giving up control of their dictionaries.
+
 **Impact and indicators**
 - Words added and voiced per language room; words marked "still used".
 - Entities whose vitality improved (new *tuturan*, a taught-by link).
@@ -187,6 +225,13 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **KKI 2023, idea 7:** cultural meeting driven by *pe-lumbung-an* (commoning) and organic collective organising. **Idea 8** worries about screen-culture harm to mental health; a published ranking without engagement prediction answers it.
 - **PP 17/2025 (PP Tunas):** duties for any system minors may use: a minimum age, age assurance, a reporting path, a risk self-assessment.
 - **Juknis subtheme 5:** platforms for cultural communities, membership, activities and cultural networks.
+
+**Voice and media**
+- Threads-style posting: voice notes as a first-class component, short videos (60 seconds at first). Agents never post video or a synthetic voice.
+- The reel is a *Temuan* selector beside *Terbaru* on Beranda, showing agents' composed cards; new card kinds include weather and season, landscape change and forest sounds (Ritme note §8).
+
+**Public data**
+- *Kabar pagi* adds weather by place; *Siaga* covers heavy rain, not "suspicious people".
 
 **Impact and indicators**
 - Weekly active people not on the team; communities opened by users and still active after a month.
@@ -213,6 +258,12 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **UU 28/2014, Article 41(b):** ideas, procedures, methods, findings and data are not protected by copyright even inside a protected work, so verified facts and short attributed quotes can be restated with links to the holder (framing doc §8).
 - **PSE registration** (PP 71/2019; Permenkominfo 5/2020); **UU 27/2022**; **PP 17/2025**.
 
+**Voice and media**
+- Recordings are validated and stripped of metadata on the phone, as images are today. Machine transcripts, captions and species suggestions are labelled as machine-made until a person confirms.
+
+**Public data**
+- Every derived number keeps its model, version, source and licence in its witness, so a judge or researcher can trace it.
+
 **Impact and indicators**
 - Verified-sentence rate; time to correct a reported error; number of claims dropped at the 25 November re-check (aim: zero surprises).
 
@@ -227,7 +278,7 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 **Research**
 - Standards that make data travel: CIDOC CRM, Linked Art, SKOS, Wikidata's statement model, Glottolog.
 - Cross-deployment comparison done properly: cultural phylogenetics with language trees (D-PLACE).
-- Four research papers planned from the multiplex (multiplex note §12), co-authored with Papuan scholars and tellers by their choice.
+- Four research papers planned from the multiplex (multiplex note §14), co-authored with Papuan scholars and tellers by their choice.
 
 **Features**
 - AT Protocol identity and data portability (**live** sign-in; Spaces from 1 December). Open dataset per release (**rencana**). Business Model Canvas (**owed**; a dedicated session is still pending).
@@ -237,6 +288,12 @@ Section 9 maps each thread to the proposal's sections and the deck's ten slides.
 - **Perpres 115/2024 (RIPK), missions 3 and 4:** develop cultural wealth to strengthen Indonesia internationally; use the OPK for welfare.
 - **PP 56/2022:** the KIK data centre aims at protection, promotion, research and education, and community empowerment; a community-run commons can feed a national inventory under the community's terms *(proposal)*.
 - **Juknis:** finalists may continue through a cooperation agreement (PKS); the showcase is for meeting strategic partners.
+
+**Voice and media**
+- Costs are known: R2's free tier holds about 28,000 two-minute voice notes or about a thousand one-minute videos; Cloudflare Stream costs $5 a month per 1,000 minutes stored and $1 per 1,000 minutes watched; Workers AI Whisper fits about 200 transcript minutes a day in the free allocation.
+
+**Public data**
+- The measurement layer uses free or open resources only, so a new deployment inherits it at no cost. TESSERA's open embeddings can be cached by a partner in Papua.
 
 **Impact and indicators**
 - Deployments beyond ETNOS; institutions with a letter of use or PKS; paying observatory clients; dataset downloads and papers.
@@ -273,7 +330,7 @@ For the showcase video's six parts: introduction (1), demonstration (6, 3), usef
 | UU 5/1994 (CBD); UU 11/2013 (Nagoya) | Consent and benefit-sharing for genetic resources and associated knowledge | Protocol and training flags; no export of biological-use knowledge without terms | rencana |
 | UU 32/2009; Permen LHK P.34/2017 | Recognition of local wisdom; public vs secret/sacred; vitality indicators | Protocol layer; vitality lens | rencana |
 | MK 35/PUU-X/2012 | Customary forests are not state forests | Land knowledge treated as a rights matter; no boundary claims by Aksara | policy |
-| UU 27/2022 (PDP) | Personal data rules | Privacy notice, consent, voice as personal data | partly live; to complete |
+| UU 27/2022 (PDP) | Personal data rules; biometric and genetic data are specific personal data with stricter handling | Privacy notice, consent, voice as personal data; no voiceprints, face recognition or human genetic data | partly live; to complete |
 | PP 71/2019; Permenkominfo 5/2020 (PSE) | Registration of electronic system operators | Register or state the plan | to do |
 | PP 17/2025 (Tunas) | Child-safety duties | Minimum age, reporting path, age assurance | to do |
 | SE Menkominfo 9/2023; draft Perpres on AI roadmap and ethics | AI ethics; roadmap principles incl. data protection and IP | Labelled AI, human acceptance, published method | live (labels); watch the Perpres |
@@ -294,4 +351,5 @@ Read 18–19 November 2026, in addition to those in `framing-and-impact-2026-11-
 - MK 35/PUU-X/2012: <https://www.mkri.id/public/content/persidangan/putusan/putusan_sidang_35%20PUU%202012-Kehutanan-telah%20ucap%2016%20Mei%202013.pdf>
 - AI regulation: Komdigi on the draft Perpres for the AI roadmap 2026–2029 (12 February 2026): <https://jdih.komdigi.go.id/berita/view/113>; Komdigi on the planned AI Perpres (16 March 2026): <https://portal.komdigi.go.id/kanal-publik/berita-kini/10081>; Kompas on Keppres 38/2025: <https://www.kompas.id/artikel/program-perpres-2026-ditetapkan-dua-rancangan-atur-etika-dan-peta-jalan-ai-nasional>
 - Kaitiakitanga Licence, as described: <https://kiwidynamics.co.nz/maori-ai/frameworks/kaitiakitanga-license/>; Māori AI Governance Framework: <https://www.kahuiraraunga.io/_files/ugd/b8e45c_79f4162207da4123861c50dec08cd0fb.pdf>; Schulz and Loewen-Colón (2026): <https://link.springer.com/article/10.1007/s00146-026-02931-z>
-- Not re-read this session, cited from standing knowledge and marked *(to verify)* where it matters: UUD 1945 Articles 18B, 28I, 32; UU 24/2009 Article 42; UU 28/2014 Article 38; UU 5/1994; Perpres 39/2019; Perpres 78/2007; PP 87/2021.
+- Measurement layer and multimodal sources (AlphaEarth, TESSERA, Open-Meteo, Perch 2.0, Omnilingual ASR, Pl@ntNet, GBIF, CLDF datasets, Cloudflare and AT Protocol limits): see `research/epistemic-multiplex-2026-11-19.md` §17.
+- Not re-read this session, cited from standing knowledge and marked *(to verify)* where it matters: UUD 1945 Articles 18B, 28I, 32; UU 24/2009 Article 42; UU 28/2014 Article 38; UU 27/2022 Article 4 (specific personal data); UU 5/1994; Perpres 39/2019; Perpres 78/2007; PP 87/2021.

@@ -2,7 +2,9 @@
 
 18 November 2026. Design research; no code changed. It answers the owner's request for a recurring, generalisable programme for the agents that act as Strata's librarians: proactive posts, mentions, visible collaboration between regional voices, persistent memory on one key, and a reel of synthesised knowledge. Marks: *(proposal)* for suggestions the owner can overturn, *(not measured)* for estimates, *(to verify)* for open checks. Sources are at the end. It builds on `resident-harness-2026-11-17.md`, `aksara-workers-harness-2026-11-18.md`, `aksara-composed-views-2026-11-18.md`, `knowledge-graph-sota-2026-11-16.md`, sections 9 and 23 of `../showcase-plan-2026-11-17.md`, and sections 9 and 10 of `../framing-and-impact-2026-11-17.md`.
 
-> **Scope, added the same evening.** The owner's read: this note runs ahead of the competition goal. Treat it as the long-term shape of Aksara's work, not the showcase build. For the showcase, only section 11's first rows matter, and only what runs by 26 November counts as *berjalan*. An earlier draft proposed **Tanya ETNOS**, a search-style "AI Mode" for the commons. **The owner dropped it:** people can already tag the main Aksara, which covers the same need without a second surface. (The "AI Mode" mention in the owner's message meant his pasted note had come from Google's AI Mode, not a request to build one.) The knowledge-object questions raised in section 10 moved to **[knowledge-ontology-2026-11-18.md](knowledge-ontology-2026-11-18.md)**.
+> **Scope, added the same evening.** The owner's read: this note runs ahead of the competition goal. Treat it as the long-term shape of Aksara's work, not the showcase build. For the showcase, only section 11's first rows matter, and only what runs by 26 November counts as *berjalan*. An earlier draft proposed **Tanya ETNOS**, a search-style "AI Mode" for the commons. **The owner dropped it:** people can already tag the main Aksara, which covers the same need without a second surface. (The "AI Mode" mention in the owner's message meant his pasted note had come from Google's AI Mode, not a request to build one.) The knowledge-object questions raised in section 10 moved to **[knowledge-ontology-2026-11-18.md](knowledge-ontology-2026-11-18.md)**, and from there to **[epistemic-multiplex-2026-11-19.md](epistemic-multiplex-2026-11-19.md)**.
+
+> **Updated 19 November.** Ritme stays as designed. Four changes: (1) **the reel is a selector, not a separate surface** (section 8): a *Temuan* option beside *Terbaru* on Beranda, showing agents' composed cards; no full-screen vertical reel for the showcase, because its visual design is the risky part. (2) **People can now post voice notes and short videos**, as on Threads; agents still never post video or a synthetic voice (section 8.6). (3) **New card kinds from public data**: weather and season, landscape change, forest sounds (section 8.3). (4) Motif outputs from the multiplex note feed the existing slots (section 4.5).
 
 ## 1. The idea in one paragraph
 
@@ -111,6 +113,17 @@ Rules that apply to every slot:
 4. **Budgets are reserved before a call**, through the existing ModelGateway reservation, so a runaway job cannot spend tomorrow's allowance.
 5. **The schedule is public.** "Cara Aksara bekerja" shows today's Ritme, what ran, what was skipped and why.
 
+### 4.1a Voice in the rhythm *(added 19 November)*
+
+Some slots invite answers by voice, because many people would rather speak than type, and because a voice answer in a Papuan language is the most valuable witness the commons can receive:
+
+- **Soal hari ini** carries a *Jawab dengan suara* button. A voice answer is a post like any other, with its protocol and training-permission flags.
+- **Cerita** ends with *Ceritakan versimu*, which opens the recorder.
+- **Kata** cards play the voice clip a language room chose to publish.
+- **Hari ini di wiki** counts voice answers that became accepted variants, by language.
+
+Aksara never transcribes a voice note into a public post without the speaker's choice, and never reads anything aloud in a synthetic voice.
+
 ### 4.2 The staff: roles, not more accounts
 
 One Aksara per region, wearing different hats. The hat shows as the post's kind label, not as a separate account.
@@ -152,6 +165,19 @@ One Aksara per region, wearing different hats. The hat shows as the post's kind 
 - **Never the arbiter of culture.** For contested or customary questions, Aksara shows what each source and each accepted variant says, and invites people who know to answer.
 - **Language:** reply in the asker's language (Indonesian or Papuan Malay); never generate text in a Papuan language.
 - **Rate limits** per person and per thread, and a fold for unanswered agent replies after two days, as already planned.
+
+### 4.5 Fed by the knowledge model *(added 19 November)*
+
+The analyses in `epistemic-multiplex-2026-11-19.md` give the slots better material without new slots:
+
+| Slot | New input | Source |
+| --- | --- | --- |
+| Soal hari ini | Predicted links turned into questions; thin, single-voice entities | Motifs M8, M9, M15 |
+| Temuan | A gap closed; a constellation changed; outsiders' and tellers' salience compared | M2–M5, M8, M16 |
+| Hari ini di wiki | New assertions by voice, so the tellers' layer visibly grows | Voice lens |
+| Denyut (monthly) | Vitality list, voice comparison, strategic diagram per region | Five lenses |
+| Kabar pagi | Weather and season by place; *Siaga* for heavy rain | Open-Meteo (multiplex note §9) |
+| Upkeep | Landscape change flagged for a place, queued as a question to its people | Satellite embeddings, M21 |
 
 ## 5. Showing collaboration without a bot farm
 
@@ -225,6 +251,8 @@ The owner wants the site fully active before people arrive. *(proposal)*
 
 ## 8. The reel: Temuan, and the feed's rails
 
+**What "reel" means here** *(clarified 19 November)*: a stream of **cards that agents compose from a fixed catalogue of Strata components** (charts, timelines, maps, comparisons, word cards, questions), each carrying its sources. Agents fill typed specs; they never write code, HTML, video or audio. People's own posts, including voice notes and videos, stay in the ordinary feed.
+
 ### 8.1 Should synthesis go in the main feed?
 
 Both, with a clear split:
@@ -232,9 +260,9 @@ Both, with a clear split:
 - **Beranda (Terbaru · tempat) stays people-first.** At most one agent item in five; the morning card; anything a person has replied to or confirmed.
 - **The reel holds synthesis in volume.** That way the main feed never feels like a bot site, and the synthesis still has a home where people can dive in.
 
-### 8.2 Rails *(proposal)*
+### 8.2 A selector, not a new surface *(revised 19 November)*
 
-On Beranda, a row of rails above the feed: **Terbaru · tempat** (people, as now), **Kerja** (public work and open calls), **Temuan** (the reel). On phones, the reel opens full screen.
+On Beranda, a selector beside the existing sort: **Terbaru · Temuan** (and later **Kerja** for public work and open calls). *Terbaru* is people first, as now; *Temuan* shows only composed cards, newest and best-evidenced first, in the same list layout as posts. No full-screen vertical reel for the showcase: its visual design is the risky part and it can come later once the cards prove themselves. A place page gets the same selector, filtered to that place.
 
 ### 8.3 What a reel card is
 
@@ -251,6 +279,10 @@ Every card is a **composed view**: a small typed JSON spec from the fixed catalo
 | **Arsip** | A public-domain archive photo with "Ini di mana?" | archive card |
 | **Kabar terkumpul** | A clustered story: what the sources say, what people here say | cluster |
 | **Pertanyaan** | An open question or a card from the framing doc's §10 primitives | question |
+| **Cuaca dan musim** *(new)* | This month's rainfall and temperature for a place beside what people say marks the season | stat + season *(Open-Meteo, CC BY 4.0)* |
+| **Lanskap berubah** *(new)* | "The land here changed between 2019 and 2024. What happened?" with before/after imagery where licensed | map + question *(satellite embeddings; multiplex note M21)* |
+| **Suara hutan** *(new)* | Species heard in a recording someone chose to share, under the names people gave them | sound card *(Perch 2.0, opt-in; M23)* |
+| **Suara warga** *(new)* | A person's voice answer that became an accepted variant, with transcript | voice card *(with the speaker's permission)* |
 
 Actions on every card: **Benar · Ada yang salah · Saya tahu lebih**, Simpan ke Noken, Bagikan ke WhatsApp, Buka sumber.
 
@@ -258,13 +290,22 @@ Actions on every card: **Benar · Ada yang salah · Saya tahu lebih**, Simpan ke
 
 - **Published ranking:** freshness, relevance to the chosen place, evidence strength (independent sources, accepted variants), and diversity of layers. No engagement prediction, consistent with the existing ranking rule.
 - **Finite at the top, deep below.** After today's cards, "Kamu sudah melihat semua temuan hari ini". Scrolling on continues into **Gali**: older layers, back through time (framing doc §10).
-- **No original video.** Reposts and links only, as the owner wants.
+- **Agents post no video and no synthetic voice.** Cards may embed a person's clip with that person's permission. People themselves may post voice notes and short videos (section 8.6).
 
 ### 8.5 OpenUI, json-render or our own spec
 
 - The composed-views research chose **our own small schema**, borrowing the shape of Vercel's json-render (Apache-2.0) and the data/surface split of Google's A2UI.
 - **OpenUI** (Thesys, MIT) is a newer option: the model writes "OpenUI Lang", a compact line-oriented format, which maps only to components the host registers. Its 1.0 shipped in October 2026, and Thesys reports it uses fewer output tokens than JSON formats on its own benchmark (vendor figures).
 - Fewer tokens matter on the free tier. So: **spike OpenUI Lang for half a day** against our zod schema on five reel cards. Measure tokens, repair rounds and Svelte fit (Svelte support is claimed by one directory listing; *to verify*). Keep our schema unless OpenUI is clearly better on all three.
+
+### 8.6 Voice and video from people *(added 19 November)*
+
+The owner now wants Threads-style multimodal posting: voice notes as a first-class post component, and short videos. This supersedes the earlier "no original video" line for people's posts; it does not change what agents may do.
+
+- **Voice first.** A voice note is recorded in the browser, validated and stripped of metadata like images today, shown with a waveform, and transcribed in the background (Whisper for Indonesian and Papuan Malay; Omnilingual ASR or the community's "bantu tulis" for Papuan languages). About 1.5–2 days of work; the one multimodal piece that can be live by 25 November.
+- **Video second.** Up to 60 seconds at first, via Cloudflare Stream or R2 with compression on the phone, with captions from the transcript and an audio-only fallback. About 2 days more.
+- **Rules.** Protocol and training-permission flags on every post; no voiceprints or face recognition; PP 17/2025 duties before video opens to everyone.
+- **Where they show.** In *Terbaru*, on place pages, and as *Versi lain* when a voice answer is accepted. Full technical path, costs and AT Protocol notes: multiplex note §10.
 
 ## 9. Asking Aksara: tagging is enough
 
@@ -302,16 +343,18 @@ Fits Run 3 of the showcase plan (Aksara with proper keys, seven voices, place no
 | 3 | Journal and startup read for two voices (Mee Pago, Saireri) plus sitewide | 3 |
 | 4 | Mentions on with handoff | 1 |
 | 5 | Hari ini di Wiki; Rapat pagi card; one co-authored Nabire post | 2 |
-| 6 | Temuan reel with four card kinds (Temuan, Angka, Bandingkan, Kabar terkumpul) | 4 |
+| 6 | *Temuan* selector on Beranda with four card kinds (Temuan, Angka, Bandingkan, Kabar terkumpul), then Cuaca dan musim | 3 |
+| 6a | Voice notes from people, and *Jawab dengan suara* on Soal hari ini *(added 19 November)* | 2 |
 | 7 | Negative competency tests (first ten) | 1 |
 | 8 | Cara Aksara bekerja page: Ritme, prompts, changelog, work log | 1 |
 
-About 17 working days, so it overlaps the proposal week. **For the proposal, only what is running by 26 November counts as *berjalan*;** the rest is *rencana*. OpenUI and the other five voices are January work.
+About 17 working days as first estimated; in the agent's own working time, closer to 10–12 *(revised 19 November, not measured)*, so it still overlaps the proposal week. **For the proposal, only what is running by 26 November counts as *berjalan*;** the rest is *rencana*. OpenUI and the other five voices are January work.
 
 ## 12. Open questions for the owner
 
 1. Should the morning card publish at the same local time in every region, or follow each region's own rhythm?
 2. Which threshold makes a story "trending": three independent publishers, or more?
+2a. When a voice answer is transcribed, does the transcript publish with it by default, or only after the speaker checks it? *(Recommended: only after the speaker checks it.)*
 3. Do we name contributors in "Hari ini di Wiki" by default, or only with consent? *(Recommended: consent.)*
 4. Which outside institution could take the first Ritme slot through the agent gate?
 

@@ -412,6 +412,8 @@ Aksara's part is a weekly **Sorotan Karya** per community: it gathers what membe
 
 ### 8.8 Voice posts
 
+> **Updated 19 November:** the owner now wants Threads-style multimodal posting, voice notes first and short videos second. The current technical path, costs, AT Protocol notes and rules are in `research/epistemic-multiplex-2026-11-19.md` §10; Meta's open Omnilingual ASR may transcribe Papuan languages (Ekari coverage to verify). The plan below still holds for voice.
+
 Feasible, and about a week of work:
 
 - **Recording** in the browser: Opus/WebM on Android Chrome, AAC/MP4 on Safari, so both are accepted.
