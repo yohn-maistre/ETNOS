@@ -14,7 +14,7 @@ export class Fault extends Error {
   constructor(status: number, message: string) { super(message); this.status=status }
 }
 export type Actor = { id: string; did: string; name: string; kind: 'human' | 'agent'; operator_id: string | null }
-export type Community = { id: string; title: string; description: string; visibility: 'public' | 'listed-private' | 'hidden-private'; automation: number; admission: 'open' | 'approval' | 'invite'; publication:'local'|'atproto' }
+export type Community = { id: string; title: string; description: string; visibility: 'public' | 'listed-private' | 'hidden-private'; automation: number; admission: 'open' | 'approval' | 'invite'; publication:'local'|'atproto'; forming_until?: number | null; founding_visibility?: 'public' | 'listed-private' | 'hidden-private' | null; founding_admission?: 'open' | 'approval' | 'invite' | null }
 type Membership = { role: 'owner' | 'moderator' | 'member'; active: number }
 type Source = { id: string; owner_id: string; bytes: Uint8Array; revision: number; withdrawn: number; digest: string }
 type Release = { id: string; source_id: string; source_revision: number; community_id: string; publisher_id: string; text: string; digest: string; approved: number; revoked: number; post_id: string | null }
@@ -117,6 +117,16 @@ export class StrataCore {
       return this.community(cid)
     })
   }
+  /** A forming community opens once it has two people (see founding.ts). Every way in calls this. */
+  openIfReady(actorId: string, communityId: string) {
+    const c = this.get<{ forming_until: number | null }>('SELECT forming_until FROM communities WHERE id=?', communityId)
+    if (c?.forming_until == null || c.forming_until <= this.clock()) return false
+    const people = this.get<{ n: number }>("SELECT COUNT(*) n FROM memberships m JOIN actors a ON a.id=m.actor_id WHERE m.community_id=? AND m.active=1 AND a.kind='human'", communityId)!.n
+    if (people < 2) return false
+    this.run('UPDATE communities SET visibility=founding_visibility,admission=founding_admission,forming_until=NULL,founding_visibility=NULL,founding_admission=NULL WHERE id=? AND forming_until IS NOT NULL', communityId)
+    this.audit(actorId, 'community.open', communityId)
+    return true
+  }
   listCommunities(actorId?: string) {
     return this.all<Community>(`SELECT c.* FROM communities c WHERE visibility!='hidden-private'
       OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1)`, actorId ?? null)
@@ -133,6 +143,7 @@ export class StrataCore {
       if(!active) this.run('UPDATE invitations SET revoked=1 WHERE community_id=? AND recipient_id=?',communityId,target)
       if(!active || role==='member') this.run('UPDATE invitations SET revoked=1 WHERE community_id=? AND issuer_id=?',communityId,target)
       this.audit(actorId, active ? 'membership.admit' : 'membership.revoke', communityId)
+      if (active) this.openIfReady(actorId, communityId)
     })
   }
   join(actorId: string, communityId: string) {
@@ -195,6 +206,7 @@ export class StrataCore {
       this.run("INSERT INTO memberships VALUES(?,?,'member',1) ON CONFLICT(community_id,actor_id) DO UPDATE SET role='member',active=1",invitation.community_id,actorId)
       this.run('UPDATE invitations SET used=1 WHERE hash=?',digest(token))
       this.audit(actorId,'invitation.accept',invitation.community_id)
+      this.openIfReady(actorId,invitation.community_id)
       return this.community(invitation.community_id)
     })
   }
@@ -253,6 +265,8 @@ export class StrataCore {
   }
   checkWrite(actorId: string, communityId: string, mandateId?: string | null, newPost = true) {
     this.requireMember(actorId, communityId)
+    const forming = this.get<{ forming_until: number | null }>('SELECT forming_until FROM communities WHERE id=?', communityId)
+    if (forming?.forming_until != null && forming.forming_until <= this.clock()) throw new Fault(403, 'This community did not open in time')
     const actor = this.actor(actorId)
     if (actor.kind === 'agent') {
       const c = this.community(communityId)

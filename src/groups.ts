@@ -679,7 +679,9 @@ export class Groups implements GroupAuthority {
       if (this.store.actor(actorId).kind !== "human")
         throw new Fault(403, "Context disclosure needs a human steward");
       this.store.requireSteward(actorId, communityId);
-      if (this.store.community(communityId).visibility === "hidden-private")
+      // A forming community is stored hidden; its labels wait with it and show once it opens.
+      const target = this.store.community(communityId);
+      if (target.visibility === "hidden-private" && (target.founding_visibility ?? "hidden-private") === "hidden-private")
         throw new Fault(400, "Hidden communities cannot carry public contexts");
       const c = this.context(contextId);
       if (remove)

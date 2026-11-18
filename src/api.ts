@@ -4,6 +4,7 @@ import { Social } from './social.ts'
 import { Search } from './search.ts'
 import { Wiki } from './wiki.ts'
 import {Seasons} from './seasons.ts'
+import {Founding} from './founding.ts'
 import {updateProfile} from './profile.ts'
 import {Groups,strings,type Group,type Context} from './groups.ts'
 import {DirectMessages} from './dm.ts'
@@ -57,7 +58,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
-  const wiki=new Wiki(store),seasons=new Seasons(store)
+  const wiki=new Wiki(store),seasons=new Seasons(store),founding=new Founding(store)
   const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups)
   const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   return async (req: Request): Promise<Response> => {
@@ -154,7 +155,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (parts.length === 3 && parts[1] === 'communities') {
           const c = store.community(parts[2])
           if (c.visibility === 'hidden-private' && !store.canRead(actor?.id,c)) throw new Fault(404,'Not found')
-          result = {...c,contexts:groups.communityContexts(c.id)} // Listed-private metadata is intentionally public; no membership or counts.
+          result = {...c,forming:Founding.state(c,store.clock()),contexts:groups.communityContexts(c.id)} // Listed-private metadata is intentionally public; no membership or counts.
         }
         else if (path === '/v1/feed') result = store.feed(actor?.id, url.searchParams.get('q') ?? '')
         else if (path === '/v1/feed/page') result=store.feedPage(actor?.id,{
@@ -179,6 +180,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       }
       if (req.method !== 'POST') throw new Fault(405, 'Method not allowed')
       options.writeGuard?.(req)
+      // A founding link is read before signing in: the token travels in the body, never in a URL.
+      if (path === '/v1/founding/preview') return json(200, founding.preview((await body(req)).token, principal()?.id))
       const caller = authenticated(), b = await body(req)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
@@ -211,6 +214,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='suggestions') result=await decisions.suggest(caller,parts[2],string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(path==='/v1/profile')result=updateProfile(store,caller,b)
       else if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
+      else if (path === '/v1/communities' && b.forming === true) result = founding.found(caller,{title:string(b.title),description:string(b.description),visibility:string(b.visibility) as Community['visibility'],admission:b.admission === undefined ? undefined : string(b.admission) as Community['admission']})
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){
         if(!Array.isArray(b.packages)||b.packages.some(p=>!p||typeof p!=='object'||typeof p.id!=='string'||typeof p.data!=='string'))throw new Fault(400,'Key packages required')
@@ -295,6 +299,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if (parts.length === 4 && parts[1] === 'reports' && parts[3] === 'decide') result=social.decideReport(caller,parts[2],string(b.state) as 'resolved'|'dismissed',string(b.decision))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'topics') result=social.addTopic(caller,parts[2],string(b.title))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.add(caller,parts[2],b)
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'founding-link') result=founding.renew(caller,parts[2])
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'founding-withdraw') result=founding.withdraw(caller,parts[2])
+      else if (path === '/v1/founding/accept') result=founding.accept(caller,b.token)
       else if (parts.length === 5 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.update(caller,parts[2],parts[4],b)
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-live') result=wiki.setLive(caller,parts[2],b.live as boolean)
       else if (parts.length === 4 && parts[1] === 'wiki-revisions' && parts[3] === 'review') result=wiki.review(caller,parts[2],b.accept as boolean)

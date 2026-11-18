@@ -24,6 +24,10 @@ export type Community = {
   admission: 'open' | 'approval' | 'invite'
   publication: 'local' | 'atproto'
   automation: number
+  /** Set while a new community waits for its second person (see founding.ts on the server). */
+  forming_until?: number | null
+  founding_visibility?: 'public' | 'listed-private' | 'hidden-private' | null
+  founding_admission?: 'open' | 'approval' | 'invite' | null
 }
 export type ResidentUnavailableReason = 'requests-off'|'not-admitted-here'|'no-posting-mandate'|'budget'|'binding-changed'|'other'
 export type ResidentChoice = {

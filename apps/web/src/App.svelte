@@ -71,6 +71,9 @@
   import { Label } from '$lib/components/ui/label/index.js'
   import CommunitySettings from './CommunitySettings.svelte'
   import CommunitySeasons from './CommunitySeasons.svelte'
+  import FoundingRoom from './FoundingRoom.svelte'
+  import JoinFounding from './JoinFounding.svelte'
+  import { rememberLink } from './founding-links'
   import Choice from './Choice.svelte'
   import CommunityKindPicker from './CommunityKindPicker.svelte'
   import * as Card from '$lib/components/ui/card/index.js'
@@ -292,6 +295,8 @@
       ? 'Agen & koneksi'
       : parts[0] === 'tentang'
         ? 'Tentang ETNOS'
+      : parts[0] === 'gabung'
+        ? 'Undangan'
       : parts[0] === 'lini-masa'
         ? 'Lini masa'
       : parts[0] === 'voices'
@@ -728,12 +733,15 @@
         navigate('/square/' + p.id)
       } else if (modal === 'community') {
         if (!visibility) return
-        const c = await request<Community>('/v1/communities', {
+        // A new community waits for a second person before anyone else can see it (founding.ts).
+        const c = await request<Community & { token: string }>('/v1/communities', {
           title,
           description,
           visibility,
           admission: visibility === 'public' ? communityAdmission : 'invite',
+          forming: true,
         })
+        rememberLink(c.id, c.token)
         const place = communityPlace
         communityPlace = null
         modal = null
@@ -1220,9 +1228,10 @@
         </div>
         <h1>{community.title}</h1>
         <p>{community.description}</p>
+        {#if community.forming_until != null && currentMembership}<FoundingRoom {community} onChanged={() => load(true)} />{/if}
         <CommunityPlaces communityId={community.id} steward={isSteward(community.id)} hidden={community.visibility === 'hidden-private'} />
         <div class="strata-caption">
-          {#if community.visibility === 'public'}<Globe
+          {#if community.forming_until != null}<LockKeyhole size={13} />Belum terbuka{:else if community.visibility === 'public'}<Globe
               size={13}
             />Publik{:else}<LockKeyhole size={13} />Khusus anggota{/if}
           <span>·</span>
@@ -1394,6 +1403,15 @@
       />{:else if !loading}<div class="strata-nodata">
         <h2>Posting tidak tersedia</h2>
       </div>{/if}
+  {:else if parts[0] === 'gabung'}
+    <JoinFounding
+      actor={auth.actor ?? null}
+      onSignIn={() => navigate('/login')}
+      onJoined={async (id) => {
+        await load(true)
+        navigate('/communities/' + id)
+      }}
+    />
   {:else if parts[0] === 'people'}
     {@const actor = profile}{#if actor}{@const profilePosts = posts.filter(
         (p) =>
@@ -1644,7 +1662,7 @@
     </div>{/if}
   {#snippet rail()}
     {#if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
-    {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts'].includes(parts[0])}<NewsSection
+    {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts', 'gabung'].includes(parts[0])}<NewsSection
         compact
       />
     {/if}

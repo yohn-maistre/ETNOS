@@ -417,6 +417,12 @@ CREATE TABLE post_confirmations(post_id TEXT NOT NULL REFERENCES posts(id),actor
 `, `
 CREATE TABLE community_seasons(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),name TEXT NOT NULL,note TEXT NOT NULL,position INTEGER NOT NULL,archived INTEGER NOT NULL DEFAULT 0,issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,updated INTEGER NOT NULL);
 CREATE INDEX community_season_order ON community_seasons(community_id,archived,position);
+`, `
+ALTER TABLE communities ADD COLUMN forming_until INTEGER;
+ALTER TABLE communities ADD COLUMN founding_visibility TEXT CHECK(founding_visibility IN ('public','listed-private','hidden-private'));
+ALTER TABLE communities ADD COLUMN founding_admission TEXT CHECK(founding_admission IN ('open','approval','invite'));
+CREATE TABLE founding_links(hash TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,expires INTEGER NOT NULL,revoked INTEGER NOT NULL DEFAULT 0);
+CREATE INDEX founding_link_community ON founding_links(community_id);
 `]
 
 export const schemaVersion=migrations.length
