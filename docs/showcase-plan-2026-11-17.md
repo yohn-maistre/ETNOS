@@ -289,6 +289,8 @@ The owner does not like a sitewide map. Neither do I: one map for everything end
 - **What is known** → Peta wiki, on the wiki home (exists). Lenses: Menurut isi, Waktu, Tempat.
 - **Where** → the place map, inside the place switcher. Tapping "Tanah Papua" opens a sheet with search on top and the engraved map below: regions as soft fields, kampung as stipple, tap to choose. On a place page the same map sits at the top, zoomed to it.
 
+**Built 18 November, needs an owner decision:** Jelajah now has a Tanah Papua atlas (`apps/web/src/ExplorePlaces.svelte`): the seven reference regions as plain outlines built from the BIG regency lines, the 256 languages as Glottolog 5.4 reference points, regions with wiki pages tinted. It follows the advisor's call (plain reference outlines with hatching, no soft fields): Nabire, Mimika, Puncak, Puncak Jaya, Mamberamo Raya and Teluk Wondama are hatched as placed differently by different sources (`research/customary-regions-and-boundaries-2026-11-17.md` §4), and hovering a region lights them up with it. This is a third map next to the two above. Either it becomes the shared map component that the place switcher and place pages use (task 36), or it moves into the switcher and Jelajah keeps the list. Soft fields (`strata-model` §4.1a) against plain outlines (advisor) is also still open.
+
 **Consolidate the places page.** Since place is a scope, the place page and the place's wiki page become one page: Tentang (the wiki text), Percakapan, Kabar, Komunitas, Data. `/places/...` redirects to it. No separate "Tempat" destination to confuse people.
 
 ## 16. Shared cards for WhatsApp

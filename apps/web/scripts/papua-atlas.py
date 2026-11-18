@@ -1,7 +1,8 @@
 """Rebuild src/papua-atlas.json: seven customary reference regions and 256 Glottolog language points.
 
-Usage: python3 scripts/papua-atlas.py path/to/languages_and_dialects_geo.csv
-Needs shapely. The Glottolog CSV (CC BY 4.0) comes from https://glottolog.org/meta/downloads.
+Usage: python3 scripts/papua-atlas.py path/to/languages.csv
+Needs shapely. languages.csv is Glottolog CLDF 5.4 (CC BY 4.0):
+https://raw.githubusercontent.com/glottolog/glottolog-cldf/v5.4/cldf/languages.csv
 Region outlines are the union of the regency outlines in src/site-map.json, grouped by the region
 membership in src/catalogues/tanah-papua.json. See licenses/glottolog-data.txt.
 """
@@ -13,7 +14,18 @@ from shapely.ops import unary_union
 web = Path(__file__).resolve().parent.parent
 catalogue = json.loads((web.parent.parent / 'src/catalogues/tanah-papua.json').read_text())
 site = json.loads((web / 'src/site-map.json').read_text())
-geo = {r['glottocode']: r for r in csv.DictReader(open(sys.argv[1], encoding='utf-8'))}
+geo = {r['Glottocode']: r for r in csv.DictReader(open(sys.argv[1], encoding='utf-8'))}
+
+# Regencies that sources place in different regions. From docs/research/customary-regions-and-boundaries-2026-11-17.md,
+# section 4, until the claims table (task 27) holds them. The map hatches these and never picks one silently.
+CONTESTED = {
+    'nabire': ['meepago', 'saireri'],
+    'mimika': ['meepago', 'bomberai', 'ha-anim'],
+    'puncak-jaya': ['la-pago', 'meepago'],
+    'puncak': ['la-pago', 'meepago'],
+    'mamberamo-raya': ['mamta-tabi', 'saireri'],
+    'teluk-wondama': ['domberai', 'saireri'],
+}
 
 regions = {e['slug'] for e in catalogue['entries'] if e.get('facet') == 'customary-region'}
 member = {e['slug']: next(p for p in e['parents'] if p in regions) for e in catalogue['entries']
@@ -48,8 +60,8 @@ for e in catalogue['entries']:
     if e['kind'] != 'language': continue
     code = next(a.split(':', 1)[1] for a in e['aliases'] if a.startswith('glottocode:'))
     row = geo[code]
-    x = (float(row['longitude']) - site['west']) * scale
-    y = scale * 180 / math.pi * (merc(site['north']) - merc(float(row['latitude'])))
+    x = (float(row['Longitude']) - site['west']) * scale
+    y = scale * 180 / math.pi * (merc(site['north']) - merc(float(row['Latitude'])))
     inside = [s for s, polys in shapes.items() if sum(g.contains(Point(x, y)) for g in polys) % 2]
     if inside: regency = inside[0]
     else:
@@ -60,8 +72,9 @@ for e in catalogue['entries']:
 pad = 12
 atlas = {
     'box': [round(min(xs) - pad), round(min(ys) - pad), round(max(xs) - min(xs) + 2 * pad), round(max(ys) - min(ys) + 2 * pad)],
-    'sources': ['Garis wilayah: gabungan garis kabupaten Badan Informasi Geospasial (disederhanakan) menurut keanggotaan wilayah acuan RPJMN 2020–2024.', 'Titik bahasa: Glottolog, CC BY 4.0.'],
+    'sources': ['Garis wilayah: gabungan garis kabupaten Badan Informasi Geospasial (disederhanakan) menurut keanggotaan wilayah acuan RPJMN 2020–2024.', 'Titik bahasa: Glottolog 5.4, CC BY 4.0.'],
     'regions': out_regions,
+    'contested': [{'slug': slug, 'regions': regs, 'd': next(p['d'] for p in site['places'] if p['slug'] == slug)} for slug, regs in CONTESTED.items()],
     'langs': langs,
 }
 (web / 'src/papua-atlas.json').write_text(json.dumps(atlas, separators=(',', ':'), ensure_ascii=False))

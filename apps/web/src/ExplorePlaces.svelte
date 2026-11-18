@@ -10,6 +10,7 @@
     box: number[]
     sources: string[]
     regions: Record<string, { d: string; x: number; y: number }>
+    contested: { slug: string; regions: string[]; d: string }[]
     langs: [string, number, number, string | null][]
   }
   let map = $state<MapData | null>(null),
@@ -67,6 +68,14 @@
                 class:on={over === r.slug}
                 onpointerenter={() => (over = r.slug)}
                 onpointerleave={() => (over = null)}><path d={shape.d} /></a>{/if}{/each}
+          <defs>
+            <pattern id="atlas-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
+              <line x1="0" y1="0" x2="0" y2="9" />
+            </pattern>
+          </defs>
+          <g class="atlas-contested">
+            {#each atlas.contested as c (c.slug)}<path d={c.d} class:on={!!over && c.regions.includes(over)} />{/each}
+          </g>
           <g class="atlas-langs">
             {#each atlas.langs as l (l[0])}<circle cx={l[1]} cy={l[2]} r="4" class:on={!!over && l[3] === over} />{/each}
           </g>
@@ -77,11 +86,11 @@
         <figcaption>
           <p class="atlas-now">
             {#if current}<strong>{current.title}</strong> {stats(current)}
-            {:else}{atlas.langs.length} bahasa di tujuh wilayah adat. Wilayah berwarna sudah punya halaman wiki.{/if}
+            {:else}{atlas.langs.length} bahasa di tujuh wilayah adat. Wilayah berwarna sudah punya halaman wiki. Arsiran menandai kabupaten yang ditempatkan di wilayah berbeda oleh sumber berbeda, seperti Nabire dan Mimika.{/if}
           </p>
           <p class="atlas-credit">
             Wilayah acuan dari RPJMN 2020–2024, bukan batas tanah adat. Garis dari Badan Informasi Geospasial, disederhanakan.
-            Titik bahasa dari <a href="https://glottolog.org" rel="noreferrer" target="_blank">Glottolog</a> (CC BY 4.0) adalah titik acuan, bukan batas wilayah bahasa.
+            Titik bahasa dari <a href="https://glottolog.org" rel="noreferrer" target="_blank">Glottolog 5.4</a> (CC BY 4.0) adalah titik acuan, bukan batas wilayah bahasa.
           </p>
         </figcaption>
       </figure>{/if}
@@ -136,6 +145,11 @@
   .atlas-region.written path { fill: color-mix(in oklab, var(--brand) 26%, var(--background)); }
   .focused .atlas-region:not(.on) path { opacity: 0.55; }
   .atlas-region.on path { fill: color-mix(in oklab, var(--brand) 40%, var(--background)); stroke: var(--brand); stroke-opacity: 1; stroke-width: 1.6; }
+  .atlas-contested { pointer-events: none; }
+  .atlas-contested path { fill: url(#atlas-hatch); stroke: var(--foreground); stroke-opacity: 0.5; stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+  pattern line { stroke: var(--foreground); stroke-opacity: 0.45; stroke-width: 1.6; }
+  .focused .atlas-contested path:not(.on) { opacity: 0.4; }
+  .atlas-contested path.on { stroke: var(--brand); stroke-opacity: 1; }
   .atlas-langs { pointer-events: none; }
   .atlas-langs circle { fill: var(--foreground); fill-opacity: 0.7; transition: fill-opacity 180ms ease-out; }
   .focused .atlas-langs circle { fill-opacity: 0.18; }

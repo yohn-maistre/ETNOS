@@ -16,6 +16,14 @@ Builds on `docs/research/serverless-pds-and-auth-2026-11-17.md` (the earlier res
 6. Riskiest unknown: DO CPU enforcement on Free. A one-day spike (section 8) settles it and also tests wildcard routing and handle resolution through bsky.social.
 7. Effort: about 14 to 15 focused days to a demonstrable happy path, about 20 to a version we would trust with a real member, about 27 with public publishing. Today is day 0 of a 27-day run to the 15 December freeze. A demo with throwaway or steward-test identities on 18 to 19 December is realistic if the work starts about 22 November and nothing else competes; real members' identities should stay on the official-PDS track.
 
+## 0. Against the earlier decisions
+
+Checked after writing, against `decision-004-at-account-hosting.md`, `decision-005-node-account-data-planes.md`, `pds-hosting.md` and `showcase-plan-2026-11-17.md` §4.
+
+- **Consistent.** This is Track 2 of showcase §4 (one Durable Object per account, hashing and signing inside the object, throwaway identities first) and the "multi-tenant Worker PDS fork" row of Decision 004, not the rejected one-Worker-per-person fleet. Real members stay on Track 1, the official PDS on a small server. Decision 004's registration contract (separately checked forum and PDS invitations, reconcile an uncertain createAccount instead of repeating it, verify handle to DID to PDS before binding, fresh OAuth consent) is what section 4 follows. Decision 005's rule against a multi-tenant fork "by changing a hostname" holds: the routing, keys and OAuth are rebuilt per account.
+- **In tension.** Decision 005 says an institution should not own every member's identity or hold the sole recovery key. In section 2.3 the member's own rotation key is optional and under "Advanced", so for most members ETNOS (host key plus escrow) would be the only recovery path. Before a real member is hosted, either the member key becomes the default at sign-up, or the owner accepts and states this custody plainly. Open question 3 in section 9 is where it is decided.
+- **Updated.** Showcase §4 estimated 8–10 days to a happy path and 15–19 to something trusted. This plan's figures (about 14.5 and 20.5) are larger because OAuth needs an account step and keys need custody, both counted here.
+
 ## 1. What assumes a single identity today
 
 Counts come from a grep of `env.(DID|HANDLE|SIGNING_KEY|SIGNING_KEY_PUBLIC|PASSWORD_HASH|AUTH_TOKEN|JWT_SECRET)` in `src/upstream/`: index.ts 18, xrpc/server.ts 27, xrpc/repo.ts 16, spaces.ts 16, xrpc/identity.ts 13, xrpc/sync.ts 7, oauth.ts 6, middleware/auth.ts 6, account-do.ts 4, xrpc-proxy.ts 3 (total 116) **[V]**.

@@ -1,6 +1,6 @@
 Glottolog language reference points (apps/web/src/papua-atlas.json)
 
-Source: Glottolog, languages_and_dialects_geo.csv, https://glottolog.org
+Source: Glottolog 5.4, CLDF languages.csv, https://github.com/glottolog/glottolog-cldf (v5.4)
 Hammarström, Harald, Robert Forkel, Martin Haspelmath and Sebastian Bank. Glottolog. Leipzig: Max Planck Institute for Evolutionary Anthropology.
 License: Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
 
