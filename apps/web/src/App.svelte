@@ -103,6 +103,19 @@
     composeUrl = $state(''),
     composeKind = $state(''),
     profile = $state<Actor | null>(null)
+  // A wiki article titled for a region, kabupaten or kota, or language ("Wilayah adat Mee Pago", "Kabupaten
+  // Nabire", "Bahasa Ekari") is the home article of that place or language. Returns its slug, or ''.
+  async function homeOf(title: string) {
+    const m = title.match(/^(Wilayah adat|Kabupaten|Kota|Bahasa)\s+(.+)$/i)
+    if (!m) return ''
+    const norm = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, '')
+    const kind = m[1].toLowerCase()
+    const all = await request<{ slug: string; title: string; kind: string; facet?: string }[]>('/v1/contexts', undefined, undefined, true).catch(() => [])
+    const hit = all.find((c) =>
+      (kind === 'wilayah adat' ? c.facet === 'customary-region' : kind === 'bahasa' ? c.kind === 'language' : c.kind === 'place') &&
+      (norm(c.title) === norm(title) || norm(c.title) === norm(m[2])))
+    return hit?.slug ?? ''
+  }
   // The old place and topic directories now live as sections of Jelajah.
   function directoryTarget(p:string,q:string){return p==='/topics'?'topik':p==='/contexts'&&!q.includes('create=true')?'tempat':''}
   function commonsPath(value:string){return value==='/knowledge'?'/wiki':value.startsWith('/knowledge/')?'/wiki/notes/'+value.slice('/knowledge/'.length):value}
@@ -594,6 +607,17 @@
       }
       if (parts[0] === 'wiki' && parts[1] && parts[1] !== 'notes') {
         const p = await request<WikiPage>('/v1/wiki/' + parts[1])
+        // A region, kabupaten or language article is that thing's Tentang tab; open the thing page instead,
+        // unless the reader asked for the article's history and review (?view=riwayat).
+        if (p.revision && !search.includes('view=riwayat')) {
+          const home = await homeOf(p.title)
+          if (mine !== generation) return
+          if (home) {
+            window.history.replaceState(window.history.state, '', '/contexts/' + home)
+            window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }))
+            return
+          }
+        }
         const h = await request<typeof history>('/v1/wiki/' + p.id + '/history')
         if (mine !== generation) return
         selectedPage = p

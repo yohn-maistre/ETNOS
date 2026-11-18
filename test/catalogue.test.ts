@@ -74,7 +74,8 @@ test("catalogue import is steward-only, idempotent, and keeps existing ids, edit
     // The live Meepago keeps its id, title, description and news places, and gains parents' children and the missing aliases.
     const mp = groups.contextDetail("meepago");
     assert.equal(mp.id, meepago.id);
-    assert.equal(mp.title, "Meepago");
+    // "Meepago" is listed as an earlier spelling in the catalogue, so the import corrects it to "Mee Pago".
+    assert.equal(mp.title, "Mee Pago");
     assert.equal(mp.description, "Wilayah Adat Meepago (Papua Tengah)");
     assert.equal(mp.facet, "customary-region");
     assert.deepEqual(mp.aliases.slice(0, 4), ["kabar:deiyai", "kabar:paniai", "kabar:dogiyai", "kabar:nabire"]);

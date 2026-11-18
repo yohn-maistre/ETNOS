@@ -26,3 +26,4 @@
 2026-11-18x Jelajah becomes the home of places, languages and topics
 2026-11-18y Tempat, Bahasa and Topik under Jelajah in the menu
 2026-11-18z visitors' phone bar is Beranda, Jelajah, Menu
+2026-11-18aa a region, kabupaten or language article opens its place page; Mee Pago spelled right after Muat katalog

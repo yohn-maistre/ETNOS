@@ -205,11 +205,11 @@
             <div class="wiki-body wiki-serif post-markdown">{@html markdown(article.revision.text, [], 'thing-' + article.id)}</div>
             <WikiSourceNotes citations={article.revision.citations} />
             <p class="thing-article-foot">
-              <a href={'/wiki/' + article.id}><BookOpen size={15} />Riwayat, tinjauan dan usulan di Wiki<ArrowUpRight size={14} /></a>
+              <a href={'/wiki/' + article.id + '?view=riwayat'}><BookOpen size={15} />Riwayat, tinjauan dan usulan di Wiki<ArrowUpRight size={14} /></a>
             </p>
           </section>
         {:else if articleState === 'loading'}<p class="thing-note" role="status">Memuat halaman…</p>
-        {:else}<p class="thing-note">Halaman {home.title} belum dapat dimuat. <a href={'/wiki/' + home.id}>Buka di Wiki</a></p>{/if}
+        {:else}<p class="thing-note">Halaman {home.title} belum dapat dimuat. <a href={'/wiki/' + home.id + '?view=riwayat'}>Buka di Wiki</a></p>{/if}
       {:else}<div class="thing-empty">
           <p>Belum ada halaman tentang {thing.title}.</p>
           <a class="thing-action" href={auth.actor ? '/wiki/notes/new' : '/login'}><PenLine size={15} />Mulai tulis di Wiki</a>
