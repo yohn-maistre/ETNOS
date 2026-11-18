@@ -90,7 +90,9 @@
 {/if}
 
 <style>
-  .wiki-period { padding: 12px 0; border-top: 1px solid var(--reading-line); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); }
+  /* Same gutter as the trail below it (knowledge-strata.css). */
+  @media (max-width: 640px) { .wiki-period { padding-inline: 16px; } }
+  .wiki-period { padding: 12px 28px; border-top: 1px solid var(--reading-line); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); }
   p { margin: 0; }
   strong { color: var(--foreground); font-weight: 600; }
   a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }

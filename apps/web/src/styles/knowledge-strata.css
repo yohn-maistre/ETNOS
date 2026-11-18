@@ -114,7 +114,7 @@
 
 .wiki-front-track { position: relative; display: flex; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
 .wiki-front-track::-webkit-scrollbar { display: none; }
-.wiki-front-track > .wiki-front-card { flex: 0 0 100%; scroll-snap-align: start; max-width: none; }
+.wiki-front-track > .wiki-front-card { flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; max-width: none; }
 .wiki-front-track > .wiki-front-card > * { max-width: 520px; }
 .wiki-front-dots { display: flex; justify-content: center; gap: 8px; padding-top: 10px; }
 .wiki-front-dots { gap: 0; }

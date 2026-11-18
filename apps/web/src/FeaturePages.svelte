@@ -28,11 +28,12 @@
   import { openWorkStates } from './place-layers'
   import { facetNames, orderedParents } from './context-tree'
   // A description that only restates the kind ("Kelompok topik: …") drops that prefix; the badge already says it.
-  const tabNames = ['tentang', 'percakapan', 'kabar', 'komunitas', 'sumber']
-  // Lapisan is the Kabar tab now; its old address still opens there.
+  const tabNames = ['tentang', 'percakapan', 'perkembangan', 'komunitas', 'sumber']
+  // The tab was called Lapisan, then Kabar; both old addresses still open Perkembangan.
   const thingTab = $derived.by((): ThingTab => {
-    if (segments[2] === 'lapisan') return 'kabar'
-    const t = typeof location === 'undefined' ? '' : new URLSearchParams(location.search).get('tab') ?? ''
+    if (segments[2] === 'lapisan') return 'perkembangan'
+    const raw = typeof location === 'undefined' ? '' : new URLSearchParams(location.search).get('tab') ?? ''
+    const t = raw === 'kabar' ? 'perkembangan' : raw
     return (tabNames.includes(t) ? t : 'tentang') as ThingTab
   })
   const blurb = (text: string | undefined, kind: string | undefined) => {

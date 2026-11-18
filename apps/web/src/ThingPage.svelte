@@ -1,11 +1,11 @@
 <script module lang="ts">
-  export type ThingTab = 'tentang' | 'percakapan' | 'kabar' | 'komunitas' | 'sumber'
+  export type ThingTab = 'tentang' | 'percakapan' | 'perkembangan' | 'komunitas' | 'sumber'
 </script>
 
 <script lang="ts">
   // One page per thing (a place, a language or a topic). The name and kind sit on the engraved band, tinted by kind
   // so places, languages and topics read differently at a glance. Five tabs hold everything about the thing:
-  // Tentang is its wiki article, Percakapan its posts (labelled with it or linking to its article), Kabar the layers
+  // Tentang is its wiki article, Percakapan its posts (labelled with it or linking to its article), Perkembangan the layers
   // from today down to the archive, Komunitas the rooms and organisations, Sumber the basis and published research.
   import type { Snippet } from 'svelte'
   import { SvelteURLSearchParams } from 'svelte/reactivity'
@@ -75,7 +75,7 @@
   const tabs: [ThingTab, string][] = [
     ['tentang', 'Tentang'],
     ['percakapan', 'Percakapan'],
-    ['kabar', 'Kabar'],
+    ['perkembangan', 'Perkembangan'],
     ['komunitas', 'Komunitas'],
     ['sumber', 'Sumber'],
   ]
@@ -237,7 +237,7 @@
           {onError}
         />{/each}
       {#if !conversation.length}<p class="thing-note">Belum ada percakapan tentang {thing.title}.</p>{/if}
-    {:else if tab === 'kabar'}
+    {:else if tab === 'perkembangan'}
       {@render stewardTools?.()}
       <CoreSample context={{ ...thing, pages: related }} {posts} {works} {auth} {onCompose} embedded />
     {:else if tab === 'komunitas'}

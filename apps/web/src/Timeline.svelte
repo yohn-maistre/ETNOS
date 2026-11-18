@@ -25,6 +25,12 @@
   </header>
   {#if failed}<p class="tl-state" role="status">Lini masa belum bisa dimuat. Coba lagi sebentar.</p>
   {:else if !entries}<p class="tl-state" role="status">Memuat…</p>
+  {:else if !entries.length}
+    <!-- Four empty bands say nothing a single line cannot. -->
+    <p class="tl-state">
+      Belum ada halaman yang diberi masa. Peninjau komunitas menetapkan masa di bagian bawah setiap halaman wiki.
+      <a href="/wiki">Buka Wiki</a>
+    </p>
   {:else}
     {#each grouped as band (band.id)}
       <section class="tl-band" aria-labelledby={'tl-' + band.id}>
@@ -74,6 +80,6 @@
   .tl-empty { margin: 0 0 14px; min-height: 56px; font-size: 14px; color: var(--tl-muted); }
   .tl-state, .tl-foot { margin: 0; padding: 18px 16px 28px; font-size: 14px; line-height: 1.55; color: var(--tl-muted); max-width: 64ch; }
   .tl-foot { border-top: 1px solid color-mix(in srgb, var(--ink) 45%, transparent); }
-  .tl-foot a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
+  .tl-foot a, .tl-state a { color: inherit; text-decoration: underline; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
   @media (min-width: 720px) { .tl-band { grid-template-columns: 72px minmax(0, 1fr); } header, .tl-content, .tl-state, .tl-foot { padding-inline: 22px; } }
 </style>
