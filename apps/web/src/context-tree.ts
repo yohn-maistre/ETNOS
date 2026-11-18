@@ -39,14 +39,25 @@ export function contextTree(all: ContextNode[]) {
     placed.add(b.node.id)
     for (const c of b.children) placed.add(c.id)
   }
-  const roots = all.filter((n) => n.kind === 'topic' && !(n.parents ?? []).some((p) => all.some((x) => x.id === p))).sort(byTitle)
-  const topicGroups = roots.filter((n) => children.has(n.id)).map(branch),
-    lenses = roots.filter((n) => !children.has(n.id))
-  for (const n of roots) placed.add(n.id)
-  for (const b of topicGroups) for (const c of b.children) placed.add(c.id)
+  // Topic groups were display headings in earlier catalogues; running nodes may still hold them, so they are skipped.
+  const groups = new Set(all.filter((n) => n.facet === 'topic-group').map((n) => n.id))
+  const real = (id: string) => !groups.has(id) && all.some((x) => x.id === id)
+  const roots = all.filter((n) => n.kind === 'topic' && !groups.has(n.id) && !(n.parents ?? []).some(real)).sort(byTitle)
+  const topics = roots.filter((n) => !n.facet).map(branch),
+    lensBranches = roots.filter((n) => n.facet).map(branch)
+  for (const n of groups) placed.add(n)
+  for (const b of [...topics, ...lensBranches]) {
+    placed.add(b.node.id)
+    for (const c of b.children) placed.add(c.id)
+  }
   const languages = all.filter((n) => n.kind === 'language').sort(byTitle)
   const other = all.filter((n) => n.kind !== 'language' && !placed.has(n.id)).sort(byTitle)
-  return { regions, provinces, languages, lenses, topicGroups, other }
+  return { regions, provinces, languages, topics, lensBranches, other }
+}
+
+/** The starter topics a deployment shows first: top-level topics without a facet. */
+export function topTopics<T extends ContextNode>(all: T[]) {
+  return contextTree(all).topics.map((b) => b.node as T)
 }
 
 /** Parents in reading order: reference region, then province, then the rest. */

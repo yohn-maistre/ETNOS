@@ -138,6 +138,7 @@
   // their regencies, provinces, languages, then topics and kinds of institution.
   const browsing = $derived(!query.trim() && !placeKind)
   const tree = $derived(contextTree(places))
+  const topicBasis = 'Daftar awal yang dapat diubah komunitas. Ranah budaya, jenis lembaga dan jenis komunitas di bawahnya adalah lensa pembanding.'
   const otherPlaces = $derived(tree.other.filter((o) => o.kind !== 'topic')),
     otherTopics = $derived(tree.other.filter((o) => o.kind === 'topic'))
   let languageQuery = $state(''),
@@ -273,7 +274,7 @@
           {#if tree.regions.length}<a href="#wilayah-adat">Wilayah adat</a>{/if}
           {#if tree.provinces.length}<a href="#provinsi">Provinsi</a>{/if}
           {#if tree.languages.length}<a href="#bahasa">Bahasa</a>{/if}
-          {#if tree.lenses.length || tree.topicGroups.length}<a href="#topik">Topik</a>{/if}
+          {#if tree.topics.length}<a href="#topik">Topik</a>{/if}
         </nav>{/if}
       {#if view === 'places' && tree.regions.length}<section
           id="wilayah-adat"
@@ -333,16 +334,17 @@
               Tampilkan semua {languageMatches.length} bahasa
             </Button>{/if}
         </section>{/if}
-      {#if tree.lenses.length || tree.topicGroups.length || otherTopics.length}<section
+      {#if tree.topics.length || tree.lensBranches.length || otherTopics.length}<section
           id="topik"
           class="context-map-section"
           aria-labelledby="topik-heading"
         >
-          <h2 id="topik-heading">Topik</h2>
-          {#if tree.lenses.length || otherTopics.length}<div class="context-chips">
-              {#each [...tree.lenses, ...otherTopics] as t (t.id)}<a href={'/contexts/' + t.slug}><Hash size={14} />{t.title}</a>{/each}
-            </div>{/if}
-          {#each tree.topicGroups as branch (branch.node.id)}{@render branchBlock(branch, true)}{/each}
+          <h2 id="topik-heading">Topik <span>{tree.topics.length}</span></h2>
+          <p class="context-map-note">{topicBasis}</p>
+          <div class="context-chips">
+            {#each [...tree.topics.map((b) => b.node), ...otherTopics] as t (t.id)}<a href={'/contexts/' + t.slug}><Hash size={14} />{t.title}</a>{/each}
+          </div>
+          {#each tree.lensBranches as branch (branch.node.id)}{@render branchBlock(branch, false)}{/each}
         </section>{/if}
     </div>
   {:else if view === 'places' || view === 'topics'}

@@ -5,6 +5,7 @@
   import { ArrowUpRight, Hash } from '@lucide/svelte'
   import { loadMap, type MapData } from './observatory'
   import { request } from './api'
+  import { topTopics } from './context-tree'
   type Ctx = { id: string; slug: string; title: string; kind: string; facet: string; parents?: string[] }
   type Atlas = {
     box: number[]
@@ -46,7 +47,7 @@
   )
   const current = $derived(over ? regions.find((r) => r.slug === over) : undefined)
   const count = (kind: string, facet: string | null = null) => contexts.filter((c) => c.kind === kind && (facet === null || c.facet === facet)).length
-  const topics = $derived(contexts.filter((c) => c.kind === 'topic' && !c.facet))
+  const topics = $derived(topTopics(contexts.map((c) => ({ ...c, description: '' }))))
   const stats = (r: (typeof regions)[number]) =>
     [r.pages ? r.pages + ' halaman wiki' : 'Belum ada halaman wiki', r.languages + ' bahasa', r.regencies + ' kabupaten/kota'].join(' · ')
 </script>

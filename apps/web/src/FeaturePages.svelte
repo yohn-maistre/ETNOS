@@ -36,7 +36,8 @@
     return (tabNames.includes(t) ? t : 'tentang') as ThingTab
   })
   const blurb = (text: string | undefined, kind: string | undefined) => {
-    const t = (text ?? '').trim()
+    // Older catalogue descriptions start with "Lensa:"; the page says what it is already.
+    const t = (text ?? '').trim().replace(/^Lensa:\s*/, '')
     return kind && t.toLowerCase().startsWith(kind.toLowerCase() + ':') ? t.slice(kind.length + 1).trim().replace(/^./, (c) => c.toUpperCase()) : t
   }
   import ContentSkeleton from './ContentSkeleton.svelte'
