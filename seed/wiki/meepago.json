@@ -1257,6 +1257,210 @@
      "verified": true
     }
    ]
+  },
+  {
+   "slug": "danau-paniai",
+   "title": "Danau Paniai",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Danau Paniai",
+     "url": "https://id.wikipedia.org/wiki/Danau_Paniai",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Danau Paniai adalah sebuah danau yang terletak di Kabupaten Paniai, Papua Tengah."
+      },
+      {
+       "section": "overview",
+       "text": "Luas Danau Paniai yang mencapai 14.500 hektare memberi cukup ruang kepada wisatawan untuk memilih lokasi yang sesuai dengan keinginannya ketika berekreasi ke danau tersebut."
+      },
+      {
+       "section": "history",
+       "text": "Pada awalnya, Danau Paniai beserta Danau Tigi dan Danau Tage dinamakan Wisselmeren."
+      },
+      {
+       "section": "history",
+       "text": "Penamaan ini dinisbatkan kepada orang yang pertama kali menemukan ketiga danau tersebut pada tahun 1937, yaitu seorang pilot berkebangsaan Belanda bernama Frits Julius Wissel."
+      },
+      {
+       "section": "history",
+       "text": "Pada tanggal 31 Desember 1936, Frits Wissel terbang melintasi pegunungan Pulau Papua untuk survei perusahaan minyak Belanda."
+      },
+      {
+       "section": "history",
+       "text": "Wissel melihat bahwa ada beberapa kano di atas danau membuktikan bahwa wilayah ini berpenduduk."
+      },
+      {
+       "section": "history",
+       "text": "Pada bulan November tahun itu, pemerintah Hindia Belanda menamai danau tersebut atas nama Wissel."
+      },
+      {
+       "section": "ecology",
+       "text": "Danau Paniai pun terletak di daerah ketinggian, yaitu sekitar 1.700 meter di atas permukaan laut (dpl)."
+      },
+      {
+       "section": "ecology",
+       "text": "Ikan nila (oreochromis niloticus), ikan mujair (oreochromis mossambicus), ikan mas/ikan karper (cyprinus carpio), ikan sembilan hitam, dan ikan belut (synbranchus) adalah di antara jenis ikan yang dapat dijumpai di danau ini."
+      },
+      {
+       "section": "ecology",
+       "text": "Bila beruntung, di Danau Paniai wisatawan dapat melihat udang endemik Papua yang kini sudah mulai langka, yaitu udang selingkuh (cherax albertisii)."
+      },
+      {
+       "section": "access",
+       "text": "Bagi wisatawan yang ingin mengunjungi Danau Paniai, dapat memulai perjalanan dari Kota Enarotali, Ibu Kota Kabupaten Paniai."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "danau-tigi",
+   "title": "Danau Tigi",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Danau Tigi",
+     "url": "https://id.wikipedia.org/wiki/Danau_Tigi",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Danau Tigi merupakan sebuah danau yang terletak di Kabupaten Deiyai, Provinsi Papua Tengah, Indonesia."
+      },
+      {
+       "section": "overview",
+       "text": "Danau ini terletak di kaki Gunung Deiyai dan berada pada ketinggian 1.700 meter di atas permukaan laut sehingga daerah sekitar danau Tigi beriklim pegunungan yang dingin."
+      },
+      {
+       "section": "overview",
+       "text": "Danau ini memiliki kedalaman sekitar 150 meter dan terdapat sebuah pulau kecil bernama Pulau Duamo."
+      },
+      {
+       "section": "overview",
+       "text": "Danau ini berbentuk segitiga terbalik dengan semenanjung berbentuk T di bagian utara, garis tengahnya memiliki panjang 8 km."
+      },
+      {
+       "section": "tourism",
+       "text": "Bertamasya ke danau cantik ini tentu kurang lengkap bila belum menyambangi perkampungan Suku Mee dan Suku Moni, dua suku besar di sekitar danau tersebut yang menghuni dataran tinggi Paniai."
+      },
+      {
+       "section": "tourism",
+       "text": "Selain melihat rumah adat yang disebut honai dan keseharian mereka dari dekat, bila beruntung Anda akan disuguhkan atraksi kesenian dan memperoleh souvenir khas dua suku tersebut sebagai oleh-oleh."
+      },
+      {
+       "section": "access",
+       "text": "Akses ke Danau Tigi, dapat memulai perjalanan dari Kota Enarotali, Ibu Kota Kabupaten Paniai."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "danau-tage",
+   "title": "Danau Tage",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Danau Tage",
+     "url": "https://id.wikipedia.org/wiki/Danau_Tage",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Danau Tage adalah sebuah danau yang terletak di Kabupaten Paniai, Papua Tengah."
+      },
+      {
+       "section": "overview",
+       "text": "Danau Tage merupakan salah satu dari tiga danau yang terletak di kawasan Danau Paniai."
+      },
+      {
+       "section": "geography",
+       "text": "Luas Danau Tage merupakan yang terkecil, dan danau ini memiliki bentuk melonjong dengan panjang 8 km dan lebar 3 km."
+      },
+      {
+       "section": "geography",
+       "text": "Elevasi dari danau ini lebih tinggi dari Danau Paniai, karena itu air danau ini mengalir ke Danau Paniai melalui sungai Dimiya, walau sepanjang 30–40 m awalnya mengalir di bawah tanah."
+      },
+      {
+       "section": "geology",
+       "text": "Danau Tage mempunyai riwayat asal-usul yang berbeda dari Danau Paniai, yakni terbentuk dalam satu sinklin (syncline), dengan dasar danau yang terbentuk dari kapur (limestone)."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "puncak-jaya",
+   "title": "Puncak Jaya",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Puncak Jaya",
+     "url": "https://id.wikipedia.org/wiki/Puncak_Jaya",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Puncak Jaya (bahasa Amungkal: Nemangkawi Ninggok) adalah puncak tertinggi yang menjadi bagian dari Pegunungan Barisan Sudirman yang terdapat di Kabupaten Mimika, Provinsi Papua Tengah, Indonesia."
+      },
+      {
+       "section": "overview",
+       "text": "Puncak Jaya atau Piramida Carstensz mempunyai ketinggian 4.884 mdpl dan di sekitarnya terdapat gletser dengan nama yang sama yakni gletser Carstensz, satu-satunya gletser tropika di Indonesia, yang tersisa dan secara perlahan mulai menipis akibat pemanasan global."
+      },
+      {
+       "section": "overview",
+       "text": "Puncak ini merupakan gunung tertinggi di Indonesia dan ke-7 tertinggi di Asia Tenggara."
+      },
+      {
+       "section": "history",
+       "text": "Dataran tinggi di sekitar puncak awalnya sudah dihuni sebelum adanya kontak dengan bangsa Eropa, dan puncaknya dikenal sebagai Nemangkawi di Amungkal."
+      },
+      {
+       "section": "history",
+       "text": "Puncak Jaya sebelumnya bernama Piramida Carstensz setelah penjelajah Belanda Jan Carstenszoon menamainya ketika pertama kali melihat gletser di puncak gunung pada hari yang cerah pada tahun 1623."
+      },
+      {
+       "section": "history",
+       "text": "Pada tahun 1963, puncak ini berganti nama menjadi Puncak Soekarno, setelah itu kemudian diganti menjadi Puncak Jaya."
+      },
+      {
+       "section": "glacier",
+       "text": "Sejak tahun 1970-an, bukti dari citra satelit menunjukkan gletser Puncak Jaya telah menyusut dengan cepat."
+      },
+      {
+       "section": "glacier",
+       "text": "Sebuah ekspedisi yang dipimpin oleh paleoklimatologi Lonnie Thompson pada tahun 2010 menemukan bahwa gletser menghilang pada tingkat ketebalan 7 meter per tahun dan akan lenyap sama sekali pada tahun 2015."
+      }
+     ],
+     "verified": true
+    }
+   ]
   }
  ],
  "notes": [
@@ -1278,6 +1482,7 @@
   "SENSITIVE CONTENT AVOIDED: skipped the id Wikipedia 'Konflik bersenjata' section on Intan Jaya, the 2022-2023 incidents paragraph in id Wikipedia Dogiyai, the 'Kapiraya conflict' border-dispute lines in en Wikipedia (Deiyai, Dogiyai, Mimika), the Mee-Dani land-conflict article, the Mee epidemiology/tapeworm section, the Moni finger-cutting tradition, the Tebo-a-kal restricted-speech detail for Amungme, and the Deiyai portal passage on the lake origin story (it says that story is held as sacred). The Penghubung page's spirit-belief paragraphs were also not quoted. Mee Pago id Wikipedia quote about the noken electoral system is cultural-administrative and kept.",
   "Mimika portal 'sejarah' page is a short timeline page (2026 site); the portal's demography page was fetched but contains mainly chart/data labels and was not quoted. Nabire portal history text overlaps heavily with id Wikipedia 'Sejarah' (Wikipedia copied from it), so the two are not independent; the same page (nabirekab.go.id/sejarah-singkat-kabupaten-nabire/) is cited under both Nabire and Paniai with different quotes.",
   "The Jurnal Historical Cenderawasih article (Mee migration to Jayapura, 2024) is CC BY-NC 4.0 per the journal's landing page; its PDF text shows no licence line, so the licence evidence points to the landing page. Its quotes were extracted with pdftotext and match the PDF text only after whitespace normalisation. Journal also states the author-interview material as 'personal communication'; only the introductory descriptive paragraph is quoted.",
-  "Wikipedia lead figures labelled 'mid 2025' / 'mid 2024' are official BPS-based estimates as reproduced by Wikipedia; treat as secondary. Wikipedia pages are licensed CC BY-SA 4.0 (share-alike), which affects how wiki prose built from them must be licensed; the CC BY-NC sources (Kirksey & van Bilsen, Jurnal Historical Cenderawasih) are non-commercial only and may not be compatible with a CC BY-SA wiki if the wiki's licence permits commercial reuse. Flag for the licensing owner."
+  "Wikipedia lead figures labelled 'mid 2025' / 'mid 2024' are official BPS-based estimates as reproduced by Wikipedia; treat as secondary. Wikipedia pages are licensed CC BY-SA 4.0 (share-alike), which affects how wiki prose built from them must be licensed; the CC BY-NC sources (Kirksey & van Bilsen, Jurnal Historical Cenderawasih) are non-commercial only and may not be compatible with a CC BY-SA wiki if the wiki's licence permits commercial reuse. Flag for the licensing owner.",
+  "BEINGS (2026-11-18): entries for mountains, lakes and bays moved here from seed/drafts/beings-survey-2026-11-18.unverified.json (plan: docs/research/wiki-beings-seeding-plan-2026-11-18.md). English Wikipedia sentences were not re-checked where en.wikipedia.org returned HTTP 429; where the Indonesian article covers the same fact the sentence was re-sourced from it."
  ]
 }

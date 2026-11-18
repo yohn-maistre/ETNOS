@@ -1,6 +1,6 @@
 {
  "file": "seed/wiki/saireri.json",
- "checked": "2026-11-16",
+ "checked": "2026-11-18",
  "sources": [
   {
    "page": "saireri",
@@ -290,10 +290,24 @@
    "ok": 3,
    "bad": [],
    "error": null
+  },
+  {
+   "page": "teluk-cenderawasih",
+   "url": "https://id.wikipedia.org/wiki/Teluk_Cenderawasih",
+   "ok": 10,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "teluk-cenderawasih",
+   "url": "https://id.wikipedia.org/wiki/Teluk_Cenderawasih",
+   "ok": 2,
+   "bad": [],
+   "error": null
   }
  ],
  "totals": {
-  "ok": 198,
+  "ok": 210,
   "bad": 5,
   "unreachable": 10
  }

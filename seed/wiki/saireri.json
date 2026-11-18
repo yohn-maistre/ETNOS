@@ -1299,6 +1299,74 @@
      "verified": true
     }
    ]
+  },
+  {
+   "slug": "teluk-cenderawasih",
+   "title": "Teluk Cenderawasih",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Teluk Cenderawasih",
+     "url": "https://id.wikipedia.org/wiki/Teluk_Cenderawasih",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Teluk Cenderawasih (bahasa Inggris: Cenderawasih Bay), juga dikenal sebagai Teluk Sarera dan sebelumnya Teluk Geelvink (bahasa Belanda: Geelvinkbaai), adalah sebuah teluk besar di utara Provinsi Papua, Papua Tengah dan Papua Barat, Papua, Indonesia."
+      },
+      {
+       "section": "geography",
+       "text": "Secara geografis, teluk ini terletak di antara Semenanjung Kepala Burung dan muara Sungai Mamberamo."
+      },
+      {
+       "section": "geography",
+       "text": "Teluk ini memiliki lebar lebih dari 300 km."
+      },
+      {
+       "section": "geography",
+       "text": "Beberapa kota yang terletak di sepanjang teluk adalah Manokwari, Ransiki, Wasior dan Nabire."
+      },
+      {
+       "section": "history",
+       "text": "Nama Belanda teluk itu diambil dari fregat De Geelvink yang digunakan Jacob Weyland untuk berlayar melewati teluk itu pada 1705."
+      },
+      {
+       "section": "history",
+       "text": "Kesultanan Tidore memiliki hubungan anak sungai dengan wilayah tersebut."
+      },
+      {
+       "section": "park",
+       "text": "Di Teluk Cenderawasih terdapat terumbu karang yang luas."
+      },
+      {
+       "section": "park",
+       "text": "Bagian barat teluk dinyatakan sebagai taman nasional laut pada 2002."
+      },
+      {
+       "section": "islands",
+       "text": "Di teluk ini terdapat kepulauan yang dikenal sebagai Kepulauan Biak (juga disebut Kepulauan Schouten, atau Kepulauan Geelvink), terdiri dari Biak, Kepulauan Padaido, Supiori  dan Numfor."
+      },
+      {
+       "section": "islands",
+       "text": "Lebih jauh ke selatan di teluk adalah pulau Yapen sepanjang 140 km."
+      },
+      {
+       "section": "park",
+       "text": "Sebagian dari wilayah tersebut telah dinyatakan sebagai cagar alam laut yang dilindungi seluas 1,5 juta ha, taman alam terbesar di Asia Tenggara."
+      },
+      {
+       "section": "park",
+       "text": "Cagar Alam Wondiwoi/Wandammen seluas 730 km2 melindungi keanekaragaman hayati yang besar di Semenanjung Wandammen."
+      }
+     ],
+     "verified": true
+    }
+   ]
   }
  ],
  "notes": [
@@ -1314,6 +1382,7 @@
   "Reswara article (CC BY-NC-SA 4.0): the licence has a NonCommercial clause and ShareAlike; the landing page text ('published under the terms of Creative Commons Attribution-Share Alike ... Attribution-NonCommercial-ShareAlike 4.0') is internally inconsistent, the footer states CC BY-NC-SA 4.0. Quotes were taken from the PDF (https://jurnal.dharmawangsa.ac.id/index.php/reswara/article/download/2079/pdf/9168) via pdftotext; PDF line-wrapping/hyphenation may differ in another extractor. It is a community-service report, not a linguistic source; it states 'Bahasa Waropen ... salah satu dari 1.100 bahasa daerah' and '714 suku', figures not independently checked.",
   "Content kept out on purpose: Biak Massacre/1998 unrest and Morning Star flag paragraphs in en 'Biak people'; the 1979 earthquake death toll in en 'Yapen Islands Regency'; WWII battle details at Numfor; slave-raiding passages; Koreri and detailed ritual/sacred material (the id 'Suku Biak' article has sections on Wor, Korwar and the Padwa old graves, only Wor is mentioned in one definitional quote 'Wor dalam bahasa Biak berarti lagu dan tari tradisional'; the Suku Waropen Sera quote is a general leadership-structure statement). Neither Ethnologue nor SIL nor Balai Bahasa were fetched or cited, but several Wikipedia language articles cite Ethnologue figures and EGIDS status (secondary use).",
   "Pages created: 11 (saireri, biak-numfor, kepulauan-yapen, supiori, waropen as regency, biak-people, biak-language, waropen-people, waropen-language, plus extras yapen-languages (Yapen branch, Ambai, Serui-Laut, Ansus) and numfor (island, kind 'region')). The brief's single 'Waropen language or people' page was split into two. Ambai, Serui-Laut and Ansus have no stand-alone page; all four Yapen-language sources are English Wikipedia (CC BY-SA 4.0); Indonesian Wikipedia pages for them were fetched but only contain infobox data (not quoted). A wiki editor should still verify that Indonesian Wikipedia copyright (CC BY-SA 4.0, attribution required, share-alike) is acceptable for the target wiki.",
-  "Wikipedia 'year' fields are the page's last-edit year (2025-2026, from the footer 'Halaman ini terakhir diubah' / 'This page was last edited'), not a publication year; the per-page edit years for en Yapen languages (Austronesian), Ambai, Serui-Laut and Ansus were assumed 2026 and not individually checked. Glottolog year is the version (5.4, 2026)."
+  "Wikipedia 'year' fields are the page's last-edit year (2025-2026, from the footer 'Halaman ini terakhir diubah' / 'This page was last edited'), not a publication year; the per-page edit years for en Yapen languages (Austronesian), Ambai, Serui-Laut and Ansus were assumed 2026 and not individually checked. Glottolog year is the version (5.4, 2026).",
+  "BEINGS (2026-11-18): entries for mountains, lakes and bays moved here from seed/drafts/beings-survey-2026-11-18.unverified.json (plan: docs/research/wiki-beings-seeding-plan-2026-11-18.md). English Wikipedia sentences were not re-checked where en.wikipedia.org returned HTTP 429; where the Indonesian article covers the same fact the sentence was re-sourced from it."
  ]
 }

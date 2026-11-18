@@ -1,5 +1,5 @@
 {
- "about": "First labels for the Tanah Papua seed wiki pages, applied once by a node steward (Studio, Katalog tempat). Each page gets its wilayah adat; kabupaten pages also get their kabupaten; language pages also get their language by Glottolog name (Lani is Western Dani, glottocode west2594). Pages about peoples and language families get their region only. Keyed by page title so any deployment of the seed can use it.",
+ "about": "First labels for the Tanah Papua seed wiki pages, applied once by a node steward (Studio, Katalog tempat). Each page gets its wilayah adat; kabupaten pages also get their kabupaten; language pages also get their language by Glottolog name (Lani is Western Dani, glottocode west2594). Pages about peoples and language families get their region only; pages about a lake, mountain, valley or bay also get the kabupaten their source names. Keyed by page title so any deployment of the seed can use it.",
  "pages": [
   {
    "title": "Wilayah adat Mee Pago",
@@ -255,6 +255,60 @@
   },
   {
    "title": "Pulau Numfor",
+   "contexts": [
+    "saireri"
+   ]
+  },
+  {
+   "title": "Danau Paniai",
+   "contexts": [
+    "meepago",
+    "paniai"
+   ]
+  },
+  {
+   "title": "Danau Tigi",
+   "contexts": [
+    "meepago",
+    "deiyai"
+   ]
+  },
+  {
+   "title": "Danau Tage",
+   "contexts": [
+    "meepago",
+    "paniai"
+   ]
+  },
+  {
+   "title": "Puncak Jaya",
+   "contexts": [
+    "meepago",
+    "mimika"
+   ]
+  },
+  {
+   "title": "Danau Habema",
+   "contexts": [
+    "la-pago",
+    "jayawijaya"
+   ]
+  },
+  {
+   "title": "Lembah Baliem",
+   "contexts": [
+    "la-pago",
+    "jayawijaya"
+   ]
+  },
+  {
+   "title": "Gunung Trikora",
+   "contexts": [
+    "la-pago"
+   ]
+  },
+  {
+   "title": "Teluk Cenderawasih",
    "contexts": [
     "saireri"
    ]

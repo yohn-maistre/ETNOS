@@ -1371,6 +1371,230 @@
      "verified": true
     }
    ]
+  },
+  {
+   "slug": "danau-habema",
+   "title": "Danau Habema",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Danau Habema",
+     "url": "https://id.wikipedia.org/wiki/Danau_Habema",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Danau Habema (juga dikenal sebagai Yuginopa) adalah sebuah danau yang terletak di kaki Gunung Trikora, Kabupaten Jayawijaya, Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "overview",
+       "text": "Danau ini berada pada ketinggian sekitar 3.225 hingga 3.300 meter di atas permukaan laut, menjadikannya salah satu danau tertinggi di Indonesia."
+      },
+      {
+       "section": "overview",
+       "text": "Danau ini termasuk dalam kawasan inti Taman Nasional Lorentz,  kawasan lindung terbesar di Asia Tenggara dan disahkan menjadi situs warisan dunia UNESCO."
+      },
+      {
+       "section": "history",
+       "text": "Nama Habema berasal dari Letnan Habema, seorang perwira Belanda yang ikut serta dalam ekspedisi menuju Puncak Trikora pada tahun 1909."
+      },
+      {
+       "section": "history",
+       "text": "Nama asli danau ini dalam bahasa lokal adalah Yuginopa."
+      },
+      {
+       "section": "geography",
+       "text": "Suhu di kawasan ini berkisar antara 0°C pada malam hari hingga sekitar 10°C pada siang hari."
+      },
+      {
+       "section": "culture",
+       "text": "Danau Habema memiliki nilai spiritual bagi masyarakat adat setempat, khususnya suku Dani, yang menganggapnya sebagai tempat keramat dan sumber kesuburan."
+      },
+      {
+       "section": "access",
+       "text": "Danau ini berjarak sekitar 48 kilometer dari Kota Wamena dan dapat dicapai dengan kendaraan roda empat."
+      },
+      {
+       "section": "access",
+       "text": "Meskipun tidak memiliki fasilitas wisata resmi, danau ini sering dikunjungi oleh pendaki yang menuju Puncak Trikora maupun Carstensz Pyramid."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Sungai Baliem",
+     "url": "https://id.wikipedia.org/wiki/Sungai_Baliem",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "hydrology",
+       "text": "Sungai dimulai sebagai \"Baliem Timur\" (Oost Baliem) di utara Pegunungan Maoke (\"Pegunungan Salju\") di Danau Habbema di Kabupaten Jayawijaya, di sebelah utara Gunung Trikora."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "lembah-baliem",
+   "title": "Lembah Baliem",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Lembah Baliem",
+     "url": "https://id.wikipedia.org/wiki/Lembah_Baliem",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Lembah Baliem (atau Lembah Balim) adalah lembah di wilayah Pegunungan Jayawijaya dan juga merupakan lokasi ibu kota Provinsi Papua Pegunungan, yaitu Kabupaten Jayawijaya."
+      },
+      {
+       "section": "overview",
+       "text": "Lembah Baliem berada di ketinggian 1.600 meter dari permukaan laut yang dikelilingi pegunungan dengan pemandangannya yang indah dan masih alami."
+      },
+      {
+       "section": "peoples",
+       "text": "Lembah ini dikenal juga sebagai Grand Baliem Valley dan menurut penjelajahan Eropa (tahun 1940-an hingga 1960-an) merupakan tempat tinggal satu suku saja yaitu suku Dani, walau setelah penelitian lanjut di sebelah Timur dan Selatan ada suku Yali, suku Mek dan suku Nduga."
+      },
+      {
+       "section": "peoples",
+       "text": "Melalui Dewan Adat Papua, masyarakat Wamena sendiri menyetujui mereka terdiri atas suku Hubula di Lembah Baliem, suku Walak di sebelah Utara, dan suku Dani di sebelah Barat (suku Lani)."
+      },
+      {
+       "section": "size",
+       "text": "Panjang Lembah Baliem adalah sekitar 80 kilometer dan lebar sekitar 20 kilometer dan terletak di ketinggian sekitar 1.600-1.700 m, dengan populasi sekitar 100.000 jiwa."
+      },
+      {
+       "section": "history",
+       "text": "Penemuan Lembah Baliem dan kehadiran tak terduga dari populasi yang besar pertaniannya ditemukan oleh ekspedisi ketiga zoologi Richard Archbold untuk New Guinea pada tahun 1938."
+      },
+      {
+       "section": "tourism",
+       "text": "Secara bertahap kemudian lembah sejak itu telah dibuka terbatas untuk pariwisata yaitu dengan adanya Festival Lembah Baliem."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Sungai Baliem",
+     "url": "https://id.wikipedia.org/wiki/Sungai_Baliem",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Sungai Baliem (Sungai Vriendschaps) adalah sebuah sungai di bagian tengah pulau Papua yang mengalir di wilayah provinsi Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "overview",
+       "text": "Merupakan anak sungai dari Sungai Pulau, yang sebelumnya disebut \"Sungai Eilanden\"."
+      },
+      {
+       "section": "hydrology",
+       "text": "Di tengah lembah sungai itu terus mengalir ke tenggara dan bertemu dengan sungai Uwe di kota Wamena."
+      },
+      {
+       "section": "ecology",
+       "text": "Di sungai Baliem juga ditemukan sejenis hewan yang mempunyai nilai adat yang tinggi bagi masyarakat sekitar, sama tinggi nilainya dengan ubi (hipiri) dan babi (wam)."
+      },
+      {
+       "section": "ecology",
+       "text": "Di tepian sungai Baliem juga terdapat rawa-rawa, daerah yang rawan terhadap banjir dan biasa dimanfaatkan masyarakat sekitar untuk melepas ternak babi mereka."
+      }
+     ],
+     "verified": true
+    }
+   ]
+  },
+  {
+   "slug": "gunung-trikora",
+   "title": "Gunung Trikora",
+   "kind": "being",
+   "sources": [
+    {
+     "title": "Puncak Trikora",
+     "url": "https://id.wikipedia.org/wiki/Puncak_Trikora",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Puncak Trikora atau Ettiakup merupakan sebuah gunung yang terdapat di Papua Pegunungan, Indonesia."
+      },
+      {
+       "section": "overview",
+       "text": "Puncak Trikora mempunyai ketinggian setinggi 4,751 meter, menjadikannya gunung tertinggi ketiga di Indonesia setelah Puncak Jaya dan Puncak Mandala."
+      },
+      {
+       "section": "overview",
+       "text": "Puncak Trikora mempunyai kawasan hutan Dipterokarp Bukit, hutan Dipterokarp Atas, hutan Montane, dan Hutan Ericaceous atau hutan gunung."
+      },
+      {
+       "section": "history",
+       "text": "Di zaman pemerintahan Belanda hingga tahun 1963, gunung ini dikenal dengan nama Wilhelminatop (Puncak Wilhelmina)."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Danau Habema",
+     "url": "https://id.wikipedia.org/wiki/Danau_Habema",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "overview",
+       "text": "Danau Habema (juga dikenal sebagai Yuginopa) adalah sebuah danau yang terletak di kaki Gunung Trikora, Kabupaten Jayawijaya, Papua Pegunungan, Indonesia."
+      }
+     ],
+     "verified": true
+    },
+    {
+     "title": "Puncak Jaya",
+     "url": "https://id.wikipedia.org/wiki/Puncak_Jaya",
+     "publisher": "Wikipedia (Indonesian)",
+     "year": 2026,
+     "language": "id",
+     "licence": "CC BY-SA 4.0",
+     "licenceEvidence": "Page footer: 'Teks tersedia di bawah Lisensi Atribusi-BerbagiSerupa Creative Commons' (link to creativecommons.org/licenses/by-sa/4.0)",
+     "tier": "open",
+     "quotes": [
+      {
+       "section": "glacier",
+       "text": "Gletser di Puncak Trikora di Pegunungan Maoke menghilang sama sekali dalam kurun waktu antara 1939 dan 1962."
+      }
+     ],
+     "verified": true
+    }
+   ]
   }
  ],
  "notes": [
@@ -1387,6 +1611,7 @@
   "Excluded on purpose: all conflict sections (armed conflict, shootings, riots, displacement, famine/starvation reports, casualty figures) that appear in the id and en Wikipedia articles for Jayawijaya, Nduga, Puncak, Pegunungan Bintang, Tolikara, Yahukimo, Puncak Jaya and the Highland Papua article. Also excluded: Dani/Yali religion, ancestor-spirit, mummification and war-ceremony sections, and Yali creator-figure myth, as potentially sacred or restricted. The id Dani page's finger-cutting mourning section was also left out.",
   "Quote quirks: some quotes keep source typos or odd spacing exactly (e.g. 'dibudiadayakn' in Nduga id, double space after 'hingga' in Lani id, 'Otober 1920', 'Kimyal dan Momuna' etc.). Yahukimo id tribe-list quote has no final period in the source. Suparno 2016 text was extracted from the PDF with pdftotext and line breaks collapsed to single spaces; only clean first-page sentences were quoted (later pages of the extraction have doubled letters).",
   "fetchedVia for Wikipedia is the exact API URL with redirects=1 (needed so 'Highland Papua', 'Lani language' etc. resolve). Wikipedia 'year' is set to 2026 (retrieval year, not publication). The id article 'Bahasa Lani' is titled 'Bahasa Dani Barat' in places; the en 'Lani language' title redirects to 'Western Dani language'.",
-  "Hand-check recommended: the id Dani page claims Ndani 'orang timur' was first applied to Lani east of Moni; Dani/Lani ethnonym explanations differ between id and en wikis and in the literature."
+  "Hand-check recommended: the id Dani page claims Ndani 'orang timur' was first applied to Lani east of Moni; Dani/Lani ethnonym explanations differ between id and en wikis and in the literature.",
+  "BEINGS (2026-11-18): entries for mountains, lakes and bays moved here from seed/drafts/beings-survey-2026-11-18.unverified.json (plan: docs/research/wiki-beings-seeding-plan-2026-11-18.md). English Wikipedia sentences were not re-checked where en.wikipedia.org returned HTTP 429; where the Indonesian article covers the same fact the sentence was re-sourced from it."
  ]
 }

@@ -1,6 +1,6 @@
 {
  "file": "seed/wiki/meepago.json",
- "checked": "2026-11-16",
+ "checked": "2026-11-18",
  "sources": [
   {
    "page": "mee-pago",
@@ -246,10 +246,38 @@
    "ok": 2,
    "bad": [],
    "error": null
+  },
+  {
+   "page": "danau-paniai",
+   "url": "https://id.wikipedia.org/wiki/Danau_Paniai",
+   "ok": 11,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "danau-tigi",
+   "url": "https://id.wikipedia.org/wiki/Danau_Tigi",
+   "ok": 7,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "danau-tage",
+   "url": "https://id.wikipedia.org/wiki/Danau_Tage",
+   "ok": 5,
+   "bad": [],
+   "error": null
+  },
+  {
+   "page": "puncak-jaya",
+   "url": "https://id.wikipedia.org/wiki/Puncak_Jaya",
+   "ok": 8,
+   "bad": [],
+   "error": null
   }
  ],
  "totals": {
-  "ok": 189,
+  "ok": 220,
   "bad": 0,
   "unreachable": 20
  }
