@@ -56,3 +56,32 @@ A page that leads with news before saying what it is. Two conversation boxes for
 ## Left to the builder
 
 Engraving motifs for languages and topics (use the existing ink-print style; impeccable pass required). Exact tint tokens per kind in light and dark. Redirect details. Migration shape for catalogue renames. The season field's storage and UI.
+
+## Amendment, 18 November evening: Jelajah takes over the index
+
+Decided with the owner after reviewing the live site on a phone.
+
+**Sitemap.**
+```
+Beranda      feed, switcher "Terbaru · tempat"
+Jelajah      what exists and what is talked about; the home of the three axes
+  Sedang dibicarakan   clusters of this week's activity per place or topic, from labels (no AI); Aksara summaries later
+  Tempat               the wilayah adat as stacked strata layers, kabupaten folded inside
+  Bahasa               a typeset index with region marks
+  Topik                the topics as tiles, sub-topics on the topic page
+  Kabar                a short strip, then "Semua kabar"
+    /contexts/<slug>   one page per thing
+Komunitas    Komunitas, Organisasi
+Wiki         the map lives here; peoples, beings, stories
+  /wiki/<id>  only for things that are not places, languages or topics
+```
+
+**Decisions.**
+- `/contexts` folds into Jelajah. The section chips at the top of Jelajah become in-page anchors (Dibicarakan, Tempat, Bahasa, Topik, Kabar). Nothing at the top leaves the page. Long sections open in place, never as long lists.
+- The desktop sidebar shows Tempat, Bahasa and Topik as three indented sub-items under Jelajah, each jumping to its section. The phone Menu sheet lists the same three at the top. The bottom bar is unchanged.
+- Each kind gets its own visual form, shared by its Jelajah section and its page: places as engraved strata layers in blue, languages as a type specimen in warm ink, topics as green tiles with branching sub-topics. One page skeleton with kind-specific top blocks; the blocks are typed with fixed props so Aksara's composer can arrange them later.
+- The atlas map moves from Jelajah to the Wiki home. It stays in the switcher.
+- The switcher shows on pages that collect many things (Beranda with the feed word; Jelajah, Wiki and Kabar with the place only), and those pages follow it. Pages about one thing do not show it.
+- A place's wiki article is its Tentang tab. `/wiki/<id>` for a place, language or topic article redirects to the thing page; history, review and proposals stay reachable from a "Riwayat dan tinjauan" link. The Kabar tab stops listing the home article as a separate reviewed page.
+- The Kabar tab shows this week only, grouped by layer with counts, three items per layer, with "lebih lama" to open more.
+- Node stewards can retire a place, language or topic (hidden, records kept). Only node stewards create them, as before.
