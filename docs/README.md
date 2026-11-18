@@ -66,6 +66,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/peoples-places-and-public-data-2026-11-17.md](research/peoples-places-and-public-data-2026-11-17.md) | How others model peoples, places and languages; a claims schema for any deployment; public data to seed Papua |
 | [research/customary-regions-and-boundaries-2026-11-17.md](research/customary-regions-and-boundaries-2026-11-17.md) | Where the seven wilayah adat come from, and how sources place Nabire, Mimika, Puncak Jaya and other edges |
 | [research/wpw-seed-inventory-2026-11-15.md](research/wpw-seed-inventory-2026-11-15.md) | What West Papua Watch holds that could seed knowledge |
+| [research/topic-primitives-and-knowledge-organisation-2026-11-18.md](research/topic-primitives-and-knowledge-organisation-2026-11-18.md) | Which topics every deployment ships and why: facets, basic level, Indigenous schemes, platforms; a starter set of 18 with crosswalks |
 
 ## Aksara and agents
 
@@ -78,6 +79,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [steward-interaction-release-2026-11-12.md](steward-interaction-release-2026-11-12.md) | Sourced thread replies, as released |
 | [resident-runtime-fix-2026-11-12.md](resident-runtime-fix-2026-11-12.md) | Resident runtime repair |
 | [research/strata-intelligence-catalogue-2026-11-12.md](research/strata-intelligence-catalogue-2026-11-12.md) | Where models could help, by seam |
+| [research/aksara-composed-views-2026-11-18.md](research/aksara-composed-views-2026-11-18.md) | Aksara composing community views from typed Strata components instead of writing code; spec, storage, approval, first primitives |
 
 ## News
 
