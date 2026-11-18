@@ -417,6 +417,8 @@ The owner's order: foundations solid, UI beautiful and understandable, anyone ca
 
 Every UI step uses the impeccable skill, `vite build` and screenshots at phone and desktop width.
 
+**Progress (18 November, evening).** Steps 1 to 9 are built and pushed. Step 6: the seed format takes `kind: "being"`, the wiki home lists beings per region, news alone never starts a wiki draft, and the seeding plan is `research/wiki-beings-seeding-plan-2026-11-18.md`; the first being pages are being surveyed through the verify pipeline and still need proposing and a `map.json` rebuild. Step 7: seasons per community on posts (`src/seasons.ts`). Step 8: founding with two people (`src/founding.ts`, `/gabung#token`). Step 9: Tentang ETNOS section under Dasar penggolongan. Owner actions after deploy: click "Muat katalog" in Studio for the topic renames. Next is step 10, the proposal pack.
+
 **Run 2.** Multi-identity PDS (task 24, plan in `research/pds-multi-identity-plan-2026-11-18.md`).
 
 **Run 3.** Aksara with proper Gemini keys: seven Aksara from the place pack (30), place notebook (48), community-kept Aksara (49).
