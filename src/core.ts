@@ -3,6 +3,7 @@ import { Buffer } from 'node:buffer'
 import {offeringState,type OfferingRow,type OfferingView} from './offering-contract.ts'
 import { Media, type MediaView } from './media.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
+import {checkSeason} from './seasons.ts'
 import {agentLabels} from './agent-labels.ts'
 import { migrate } from './schema.ts'
 import type { Database, Binding } from './database.ts'
@@ -279,9 +280,10 @@ export class StrataCore {
     if(parent && this.get<Post>('SELECT * FROM posts WHERE id=?',parent.root_id)?.locked)throw new Fault(409,'This conversation is locked')
     if(parent && (content.poll||content.event))throw new Fault(400,'Polls and events belong in an opening post')
     if(!parent && content.answer)throw new Fault(400,'An answer is a reply')
+    if(content.season)checkSeason(this,communityId,content.season)
     const pid = id(), actor = this.actor(actorId), created = this.clock()
     const uri = c.visibility === 'public' && c.publication==='atproto' ? `at://${actor.did}/${this.contract.collection}/${pid}` : null
-    if(uri&&(Object.keys(content).some(k=>k!=='format'&&k!=='answer')||(options.mediaIds?.length??0)>0||content.format==='markdown'))throw new Fault(409,'Rich AT publishing is not enabled')
+    if(uri&&(Object.keys(content).some(k=>k!=='format'&&k!=='answer'&&k!=='season')||(options.mediaIds?.length??0)>0||content.format==='markdown'))throw new Fault(409,'Rich AT publishing is not enabled')
     if(typeof text!=='string'||text.length>(uri?6000:20000))throw new Fault(400,'Post text is too long')
     if(!text.trim()&&!content.title&&!content.url&&!content.poll&&!content.event&&!options.mediaIds?.length)throw new Fault(400,'Add text, a link or media')
     this.run('INSERT INTO posts(id,author_id,community_id,parent_id,text,created,hidden,mandate_id,release_id,uri,root_id,content) VALUES(?,?,?,?,?,?,0,?,?,?,?,?)', pid, actorId, communityId, parentId ?? null, text.trim(), created, mandateId ?? null, releaseId ?? null, uri,parent?.root_id??pid,JSON.stringify(content))
@@ -315,13 +317,15 @@ export class StrataCore {
     // Answers to sourced posts: confirmations are their own rows; "wrong" and "more" are visible replies.
     const confirmations=new Map(this.all<{post_id:string;n:number;mine:number}>('SELECT post_id,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM post_confirmations WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id',viewer??null,ids).map(r=>[r.post_id,r]))
     const answers=this.all<{parent_id:string;answer:string;n:number}>("SELECT parent_id,json_extract(content,'$.answer') answer,COUNT(*) n FROM posts WHERE parent_id IN(SELECT value FROM json_each(?)) AND hidden=0 AND deleted=0 AND json_extract(content,'$.answer') IN('wrong','more') GROUP BY parent_id,answer",ids)
+    const seasonIds=JSON.stringify([...new Set(posts.flatMap(p=>{const sid=p.deleted?undefined:contentOf(p.content).season;return sid?[sid]:[]}))])
+    const seasons=new Map(this.all<{id:string;community_id:string;name:string}>('SELECT id,community_id,name FROM community_seasons WHERE id IN(SELECT value FROM json_each(?))',seasonIds).map(r=>[r.id,r]))
     const responses=this.all<{post_id:string;response:string;n:number;mine:number}>('SELECT post_id,response,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM event_responses WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,response',viewer??null,ids)
     return posts.map(p=>{
       const author=authors.get(p.author_id)!,content=p.deleted?{}:contentOf(p.content),votes=pollVotes.filter(v=>v.post_id===p.id),rsvp=responses.filter(v=>v.post_id===p.id)
       const offering=offerings.get(p.id),state=offering?offeringState(offering,this.clock()):null
       const offeringView:OfferingView|null=!p.deleted&&offering?{kind:offering.kind,price:offering.price,currency:'IDR',unit:offering.unit,status:state!,expiresAt:offering.expires,place:offering.place_context_id?places.get(offering.place_context_id)??null:null,revision:offering.revision,updated:offering.updated,canManage:human&&viewer===p.author_id&&roles.has(p.community_id)&&!p.uri,canContact:human&&viewer!==p.author_id&&state==='open'}:null
       return{id:p.id,author_id:p.author_id,community_id:p.community_id,parent_id:p.parent_id,text:p.deleted?'':p.text,created:p.created,uri:p.uri,actorKind:author.kind,author:{id:author.id,did:author.did,name:author.name,kind:author.kind,...(author.kind==='agent'?{agent:attribution.get(author.id)??{role:'guest',family:'external',official:false}}:{})},rootId:p.root_id,
-        offering:offeringView,content,revision:p.revision,updated:p.updated,deleted:!!p.deleted,locked:!!p.locked,pinned:!!p.pinned,
+        offering:offeringView,content,season:(()=>{const r=content.season?seasons.get(content.season):undefined;return r&&r.community_id===p.community_id?{id:r.id,name:r.name}:null})(),revision:p.revision,updated:p.updated,deleted:!!p.deleted,locked:!!p.locked,pinned:!!p.pinned,
         permissions:{edit:human&&(viewer===p.author_id||(author.kind==='agent'&&['owner','moderator'].includes(roles.get(p.community_id)??'')))&&roles.has(p.community_id)&&!p.uri&&!p.deleted&&!p.release_id,moderate:human&&['owner','moderator'].includes(roles.get(p.community_id)??'')},
         contexts:p.deleted?[]:contexts.filter(c=>c.post_id===p.id).map(({id,slug,title,kind})=>({id,slug,title,kind})),
         replies:rootCounts.get(p.root_id)??0,directReplies:directCounts.get(p.id)??0,

@@ -414,6 +414,9 @@ CREATE INDEX wiki_review_queue ON wiki_reviews(community_id,state,created);
 CREATE INDEX IF NOT EXISTS memberships_actor ON memberships(actor_id,active,community_id);
 `, `
 CREATE TABLE post_confirmations(post_id TEXT NOT NULL REFERENCES posts(id),actor_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(post_id,actor_id));
+`, `
+CREATE TABLE community_seasons(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),name TEXT NOT NULL,note TEXT NOT NULL,position INTEGER NOT NULL,archived INTEGER NOT NULL DEFAULT 0,issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,updated INTEGER NOT NULL);
+CREATE INDEX community_season_order ON community_seasons(community_id,archived,position);
 `]
 
 export const schemaVersion=migrations.length

@@ -70,6 +70,7 @@
   import { Textarea } from '$lib/components/ui/textarea/index.js'
   import { Label } from '$lib/components/ui/label/index.js'
   import CommunitySettings from './CommunitySettings.svelte'
+  import CommunitySeasons from './CommunitySeasons.svelte'
   import Choice from './Choice.svelte'
   import CommunityKindPicker from './CommunityKindPicker.svelte'
   import * as Card from '$lib/components/ui/card/index.js'
@@ -1778,7 +1779,7 @@
         {#if communities.find((c) => c.id === communityId)}<CommunitySettings
             community={communities.find((c) => c.id === communityId)!}
             onSaved={(next) => (communities = communities.map((c) => (c.id === next.id ? { ...c, ...next } : c)))}
-          />{/if}
+          /><CommunitySeasons {communityId} />{/if}
         <h3 style="font-size:15px">Permintaan bergabung</h3>
         {#each joinRequests.filter((r) => r.state === 'pending') as r}<article
             class="strata-review"

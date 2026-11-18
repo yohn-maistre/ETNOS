@@ -12,6 +12,7 @@
     Globe,
     LoaderCircle,
     GitPullRequest,
+    Sprout,
   } from '@lucide/svelte'
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js'
   import OfferingCard from './OfferingCard.svelte'
@@ -297,8 +298,9 @@
       externalPreview={community?.visibility === 'public'}
     />
     {#if post.offering}<OfferingCard {post} {community} {loggedIn} onUpdated={value=>post=value} {onError}/>{/if}
-    {#if post.contexts?.length}<div class="context-links mt-3">
-        {#each post.contexts as context}<Badge
+    {#if post.contexts?.length || post.season}<div class="context-links mt-3">
+        {#if post.season}<span class="post-season" title="Musim yang dipilih penulis"><Sprout size={13} aria-hidden="true" />{post.season.name}</span>{/if}
+        {#each post.contexts ?? [] as context}<Badge
             href={'/contexts/' + context.slug}
             variant="secondary"
           >

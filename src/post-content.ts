@@ -1,5 +1,5 @@
 import {Fault} from './core.ts'
-export type PostContent={title?:string;url?:string;format?:'plain'|'markdown';warning?:string;inlineMedia?:{version:1;ids:string[]};poll?:{options:string[];closesAt:number};event?:{startsAt:number;endsAt?:number;location:string};answer?:PostAnswer;sources?:PostSource[]}
+export type PostContent={title?:string;url?:string;format?:'plain'|'markdown';warning?:string;inlineMedia?:{version:1;ids:string[]};poll?:{options:string[];closesAt:number};event?:{startsAt:number;endsAt?:number;location:string};answer?:PostAnswer;sources?:PostSource[];season?:string}
 /** A reply that answers a sourced post: something is wrong, or the writer knows more. */
 export type PostAnswer='wrong'|'more'
 /** A source the author names for the post. Shown as written; Strata does not claim to have checked it. */
@@ -9,7 +9,7 @@ export function contentInput(value:unknown,now:number):PostContent{
  if(value===undefined)return{}
  if(!value||typeof value!=='object'||Array.isArray(value))throw new Fault(400,'Invalid post content')
  const v=value as Record<string,unknown>,c:PostContent={}
- for(const key of Object.keys(v))if(!['title','url','format','warning','poll','event','inlineMedia','answer','sources'].includes(key))throw new Fault(400,'Unknown post field')
+ for(const key of Object.keys(v))if(!['title','url','format','warning','poll','event','inlineMedia','answer','sources','season'].includes(key))throw new Fault(400,'Unknown post field')
  if(v.title!==undefined)c.title=short(v.title,180)
  if(v.warning!==undefined)c.warning=short(v.warning,160)
  if(v.format!==undefined){if(v.format!=='plain'&&v.format!=='markdown')throw new Fault(400,'Invalid text format');c.format=v.format}
@@ -19,6 +19,8 @@ export function contentInput(value:unknown,now:number):PostContent{
  if(v.event!==undefined){const e=v.event as {startsAt?:unknown;endsAt?:unknown;location?:unknown};if(!e||!Number.isSafeInteger(e.startsAt)||Number(e.startsAt)<0||Number(e.startsAt)>now+5*366*86400000)throw new Fault(400,'Invalid event time');if(e.endsAt!==undefined&&(!Number.isSafeInteger(e.endsAt)||Number(e.endsAt)<=Number(e.startsAt)))throw new Fault(400,'Event end must be after its start');c.event={startsAt:Number(e.startsAt),...(e.endsAt!==undefined?{endsAt:Number(e.endsAt)}:{}),location:short(e.location??'',200)}}
  if(v.answer!==undefined){if(v.answer!=='wrong'&&v.answer!=='more')throw new Fault(400,'Invalid answer');c.answer=v.answer}
  if(v.sources!==undefined)c.sources=sourcesInput(v.sources)
+ // A season of the post's community; the caller checks that it belongs there and is still in use.
+ if(v.season!==undefined){if(typeof v.season!=='string'||!/^[-a-f0-9]{36}$/.test(v.season))throw new Fault(400,'Invalid season');c.season=v.season}
  if(c.poll&&c.event)throw new Fault(400,'Choose a poll or an event')
  return c
 }

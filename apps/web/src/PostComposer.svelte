@@ -34,6 +34,7 @@
     type Post,
     type PostContent,
     type ResidentChoice,
+    type Season,
   } from './api'
   import PostText from './PostText.svelte'
   import { markdown, videoEmbed, directVideo } from './markdown'
@@ -117,6 +118,25 @@
       firstPostUrl(text,format),
   )
   const destination = $derived(communities.find((c) => c.id === communityId))
+  // Seasons the destination community named; the picker shows only when it has some.
+  let seasons = $state<Season[]>([]),
+    season = $state('')
+  const seasonCache = new Map<string, Season[]>()
+  $effect(() => {
+    const id = communityId
+    season = ''
+    if (!id || parentId) return void (seasons = [])
+    const known = seasonCache.get(id)
+    if (known) return void (seasons = known)
+    seasons = []
+    request<Season[]>(`/v1/communities/${id}/seasons`)
+      .then((rows) => {
+        const usable = rows.filter((s) => !s.archived)
+        seasonCache.set(id, usable)
+        if (communityId === id) seasons = usable
+      })
+      .catch(() => {})
+  })
   let mentionChoices=$state<ResidentChoice[]>([]),mentionLoading=$state(false),mentionError=$state(''),selectedMention=$state<(ResidentChoice&{communityId:string})|null>(null)
   const mentionEligible=$derived(destination?.visibility==='public'&&destination?.publication==='local'&&actor.kind==='human'&&kind!=='offering'&&!warning.trim())
   const strayAksara=$derived(mentionEligible&&!selectedMention&&/@aksara/i.test(text))
@@ -203,6 +223,7 @@
         ...(detectedUrl ? { url: detectedUrl } : {}),
         ...(warning.trim() ? { warning } : {}),
         ...(format ? { format: 'markdown' } : {}),
+        ...(season && kind !== 'offering' ? { season } : {}),
       }
       if (kind === 'poll')
         content.poll = {
@@ -244,6 +265,7 @@
       title = ''
       url = ''
       warning = ''
+      season = ''
       kind = ''
       offerKind='offer';offerPrice='';offerUnit='';offerDays='30'
       pollOptions = ['', '']
@@ -356,6 +378,11 @@
           maxlength={160}
           disabled={busy || !!pending}
         />{/if}
+      {#if seasons.length && kind !== 'offering'}<label class="composer-season"
+          ><span>Musim</span><select bind:value={season} disabled={busy || !!pending}
+            ><option value="">Tanpa musim</option>{#each seasons as s (s.id)}<option value={s.id}>{s.name}</option>{/each}</select
+          ></label
+        >{/if}
       {#if kind === 'offering'}<fieldset class="composer-extras offering-create" disabled={busy||!!pending}><legend>Penawaran atau kebutuhan</legend><Choice aria-label="Menawarkan atau mencari" bind:value={offerKind} items={[{value:'offer',label:'Menawarkan'},{value:'request',label:'Mencari'}]}/><div class="offering-form-pair"><Input aria-label={offerKind==='request'?'Anggaran (Rp)':'Harga (Rp)'} type="number" min="0" step="1" bind:value={offerPrice} placeholder={offerKind==='request'?'Anggaran (opsional)':'Harga (opsional)'}/><Input aria-label="Satuan harga" bind:value={offerUnit} maxlength={60} placeholder="Misalnya per ikat"/></div><Choice aria-label="Masa penawaran" bind:value={offerDays} items={[{value:'7',label:'Berlaku 7 hari'},{value:'30',label:'Berlaku 30 hari'},{value:'90',label:'Berlaku 90 hari'}]}/><p class="cx-hint">Kosongkan harga untuk dibicarakan langsung. Kontak melalui pesan atau diskusi; belum ada pembayaran di ETNOS.</p><Button variant="ghost" size="sm" onclick={()=>kind=''}>Hapus penawaran</Button></fieldset>{/if}
       {#if kind === 'poll'}<fieldset
           class="composer-extras"

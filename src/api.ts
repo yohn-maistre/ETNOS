@@ -3,6 +3,7 @@ import { StrataCore, Fault, type Community, type Actor } from './core.ts'
 import { Social } from './social.ts'
 import { Search } from './search.ts'
 import { Wiki } from './wiki.ts'
+import {Seasons} from './seasons.ts'
 import {updateProfile} from './profile.ts'
 import {Groups,strings,type Group,type Context} from './groups.ts'
 import {DirectMessages} from './dm.ts'
@@ -56,7 +57,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
-  const wiki=new Wiki(store)
+  const wiki=new Wiki(store),seasons=new Seasons(store)
   const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups)
   const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   return async (req: Request): Promise<Response> => {
@@ -140,6 +141,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'trail') result=wiki.trail(parts[2])
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
+        else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.list(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-unreviewed') result=wiki.unreviewed(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-live') result={live:wiki.isLive(parts[2])}
@@ -292,6 +294,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'report') result=social.report(caller,parts[2],string(b.reason))
       else if (parts.length === 4 && parts[1] === 'reports' && parts[3] === 'decide') result=social.decideReport(caller,parts[2],string(b.state) as 'resolved'|'dismissed',string(b.decision))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'topics') result=social.addTopic(caller,parts[2],string(b.title))
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.add(caller,parts[2],b)
+      else if (parts.length === 5 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.update(caller,parts[2],parts[4],b)
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-live') result=wiki.setLive(caller,parts[2],b.live as boolean)
       else if (parts.length === 4 && parts[1] === 'wiki-revisions' && parts[3] === 'review') result=wiki.review(caller,parts[2],b.accept as boolean)
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.setPolicy(caller,parts[2],b.contributorGroupId===null?null:string(b.contributorGroupId),b.reviewerGroupId===null?null:string(b.reviewerGroupId))

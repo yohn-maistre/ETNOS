@@ -1,6 +1,7 @@
 import {createHash,randomUUID} from 'node:crypto'
 import {StrataCore,Fault,type Post} from './core.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
+import {checkSeason} from './seasons.ts'
 import {Groups,strings} from './groups.ts'
 
 /** Local forum lifecycle. Public PDS mutation requires its own qualified workflow. */
@@ -49,9 +50,13 @@ export class Forum {
   return s.tx(()=>{
    const p=this.editable(actor,id,b.revision),old=contentOf(p.content)
    if(typeof b.text!=='string'||b.text.length>20000)throw new Fault(400,'Invalid post text')
-   const patch=b.content??{}
-   if(!patch||typeof patch!=='object'||Array.isArray(patch)||Object.keys(patch).some(k=>!['title','url','format','warning','inlineMedia','sources'].includes(k)))throw new Fault(400,'Edit only text, title, link, warning or sources')
-   const c={...contentInput(patch,s.clock()),...(old.answer?{answer:old.answer}:{}),...(old.poll?{poll:old.poll}:{}),...(old.event?{event:old.event}:{})}
+   const raw=b.content??{}
+   if(!raw||typeof raw!=='object'||Array.isArray(raw)||Object.keys(raw).some(k=>!['title','url','format','warning','inlineMedia','sources','season'].includes(k)))throw new Fault(400,'Edit only text, title, link, warning, sources or season')
+   // An edit that does not mention the season keeps it; null removes it; a new one must be in use in this community.
+   const {season:seasonPatch,...patch}=raw as Record<string,unknown>
+   const season=seasonPatch===undefined?old.season:seasonPatch===null?undefined:contentInput({season:seasonPatch},s.clock()).season
+   if(season&&season!==old.season)checkSeason(s,p.community_id,season)
+   const c={...contentInput(patch,s.clock()),...(old.answer?{answer:old.answer}:{}),...(old.poll?{poll:old.poll}:{}),...(old.event?{event:old.event}:{}),...(season?{season}:{})}
    checkInlineMedia(c,s.all<{id:string}>('SELECT id FROM media WHERE post_id=?',id).map(m=>m.id))
    if(!b.text.trim()&&!c.title&&!c.url&&!c.poll&&!c.event&&!s.get('SELECT 1 FROM media WHERE post_id=?',id))throw new Fault(400,'Add text, a link or media')
    s.run('UPDATE posts SET text=?,content=?,revision=revision+1,updated=? WHERE id=?',b.text.trim(),JSON.stringify(c),s.clock(),id)

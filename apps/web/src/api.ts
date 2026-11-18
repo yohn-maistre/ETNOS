@@ -62,8 +62,12 @@ export type PostContent = {
   answer?: 'wrong' | 'more'
   /** Sources the author named, shown as written. */
   sources?: { title: string; url?: string; quote?: string }[]
+  /** A season of the post's community, by id. */
+  season?: string
 }
 export type OfferingView={kind:'offer'|'request';price:number|null;currency:'IDR';unit:string;status:'open'|'paused'|'fulfilled'|'withdrawn'|'expired';expiresAt:number|null;place:{id:string;title:string}|null;revision:number;updated:number;canManage:boolean;canContact:boolean}
+/** A season a community names for itself. Retired seasons stay on old posts and cannot be chosen again. */
+export type Season = { id: string; name: string; note: string; position: number; archived: boolean }
 export type Post = {
   offering?: OfferingView|null
   content?: PostContent
@@ -105,6 +109,8 @@ export type Post = {
   myVote: number
   bookmarked: boolean
   contexts?: { id: string; slug: string; title: string; kind: string }[]
+  /** A season the community named, when the post carries one. */
+  season?: { id: string; name: string } | null
   replies: number
   /** Answers to an agent post; null on other posts. */
   answers?: { right: number; wrong: number; more: number; mine: boolean } | null

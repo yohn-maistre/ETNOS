@@ -85,3 +85,15 @@
 
 .composer-editor-loading { min-height: 120px; padding-top: 20px; font-size: 13px; color: var(--muted-foreground); }
 .post-composer.compact .composer-editor-loading { min-height: 42px; padding: 10px 14px; }
+/* Season picker in the composer, shown only when the destination community named seasons. */
+.composer-season { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted-foreground); }
+.composer-season select {
+  min-height: 36px;
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  font: inherit;
+}
+.composer-season select:focus-visible { outline: 2px solid var(--foreground); outline-offset: 1px; }

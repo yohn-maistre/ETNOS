@@ -14,3 +14,4 @@
 2026-11-18l one topic scheme: 18 starter topics, groups hidden; steward reloads the catalogue in Studio to apply renames
 2026-11-18m wiki drafts need a source that is not a news feed
 2026-11-18n wiki home lists mountains, lakes, forests and species per region; domain tabs relabelled
+2026-11-18o seasons per community: stewards name them, posts may carry one

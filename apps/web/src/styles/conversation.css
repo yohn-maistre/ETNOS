@@ -2663,3 +2663,16 @@ body {
 .post-answer-label { display: inline-block; margin-bottom: 4px; padding: 2px 8px; border-radius: 999px; font-size: 12px; color: var(--foreground); background: var(--secondary); }
 @media (max-width: 600px) { .post-sources-body { padding-left: 0; } }
 @media (prefers-reduced-motion: reduce) { .post-sources > summary svg { transition: none; } }
+/* A season the community named, carried by the post. Plain text with a small mark, beside the labels. */
+.post-season {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--foreground);
+  background: color-mix(in oklab, oklch(0.47 0.09 158) 12%, var(--background));
+}
+.post-season svg { color: oklch(0.47 0.09 158); }
+.dark .post-season svg { color: oklch(0.75 0.09 158); }
