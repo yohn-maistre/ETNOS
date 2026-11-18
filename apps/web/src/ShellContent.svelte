@@ -4,7 +4,6 @@
   import { type Snippet } from 'svelte'
   import * as Sidebar from '$lib/components/ui/sidebar/index.js'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
-  import * as Dropdown from '$lib/components/ui/dropdown-menu/index.js'
   import { Button } from '$lib/components/ui/button/index.js'
   import {
     Home,
@@ -217,27 +216,7 @@
       <PanelLeft size={19} />
     </Button>
     <div class="surface-heading" class:explore-title={path === '/explore'}>
-      {#if path === '/'}<Dropdown.Root>
-          <Dropdown.Trigger class="surface-switch" aria-label="Pilih linimasa">
-            {feedMode === 'mine'
-              ? 'Komunitasku'
-              : feedMode === 'following'
-                ? 'Mengikuti'
-                : 'Terbaru'}<ChevronDown size={14} />
-          </Dropdown.Trigger><Dropdown.Content align="center">
-            <Dropdown.Item onSelect={() => onFeedChange('new')}>
-              Terbaru
-            </Dropdown.Item><Dropdown.Item
-              onSelect={() => onFeedChange('mine')}
-            >
-              Komunitasku
-            </Dropdown.Item><Dropdown.Item
-              onSelect={() => onFeedChange('following')}
-            >
-              Mengikuti
-            </Dropdown.Item>
-          </Dropdown.Content>
-        </Dropdown.Root><span class="scope-inline"><PlaceScopeSwitch onChange={onRefresh} /></span>{:else if path === '/explore' || ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
+      {#if path === '/'}<PlaceScopeSwitch onChange={onRefresh} feed={feedMode} {onFeedChange} />{:else if path === '/explore' || ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
         >
           {heading}
         </h1>{:else}<span>{heading}</span>{/if}
@@ -294,7 +273,6 @@
         />{/if}
     </Button>
   </header>
-  {#if path === '/'}<div class="scope-row"><PlaceScopeSwitch onChange={onRefresh} /></div>{/if}
   <div
     class="cx-content-grid"
     data-surface={path.startsWith('/square/')
