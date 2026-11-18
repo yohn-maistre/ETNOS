@@ -103,6 +103,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/resident-harness-2026-11-17.md](research/resident-harness-2026-11-17.md) | Pi versus Flue and Mastra for the resident; the place notebook design (facts, corrections, questions, digest) inside the node's SQLite |
 | [research/aksara-node-for-communities-2026-11-17.md](research/aksara-node-for-communities-2026-11-17.md) | How an Aksara kept by a community (not an institution) works: two named stewards, ETNOS-hosted first, a device later, open questions for the owner |
 | [research/aksara-workers-harness-2026-11-18.md](research/aksara-workers-harness-2026-11-18.md) | What Aksara's harness can run on Workers: `@cloudflare/computer` workspace (free), code execution (Paid only), optmem (no licence, shape borrowed), free-tier neuron budget, phased plan and the shared contract with aksara-core |
+| [research/pds-multi-identity-plan-2026-11-18.md](research/pds-multi-identity-plan-2026-11-18.md) | Plan for task 24, many identities on one Workers account host: what assumes one identity today (116 places), one Durable Object per DID, key custody and escrow, `*.etnos.space` handles, Free-tier CPU risk, invite-only signup, security tests, a one-day spike and about 14.5 days to a test-identity demo |
 | [serverless-reuse-review.md](serverless-reuse-review.md) | What serverless code we reuse |
 | [language-choice.md](language-choice.md) | Why TypeScript |
 | [research/2026-10-31-contextual-commons.md](research/2026-10-31-contextual-commons.md) | Contextual commons research |
