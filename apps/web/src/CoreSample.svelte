@@ -60,6 +60,10 @@
     recentPosts = $derived(posts.filter((p) => !p.parent_id && now - p.created <= week).slice(0, 6)),
     open = $derived(works.filter((w) => openWorkStates.has(w.state))),
     year = new Date().getFullYear()
+  // On a thing page each layer shows three items and opens the rest in place, so a busy week stays short.
+  const FIRST = 3
+  let more = $state<Record<string, boolean>>({})
+  const cut = <T,>(key: string, list: T[]) => (embedded && !more[key] ? list.slice(0, FIRST) : list)
   const firstLine = (text: string) => {
     const line = text.replace(/[#*_`>[\]]/g, '').split('\n').find((x) => x.trim()) ?? ''
     return line.length > 140 ? line.slice(0, 137).trimEnd() + '…' : line
@@ -79,15 +83,16 @@
   <section class="core-band" aria-labelledby={'core-week-' + uid}>
     <div class="core-depth dense" aria-hidden="true"><span class="core-tick">{year}</span></div>
     <div class="core-content">
-      <h2 id={'core-week-' + uid}>Minggu ini</h2>
+      <h2 id={'core-week-' + uid}>Minggu ini{#if recentNews.length} <span class="core-count">{recentNews.length}</span>{/if}</h2>
       {#if newsPending}<p class="core-note" role="status">Memuat kabar…</p>{/if}
-      {#each embedded ? recentNews.slice(0, 5) : recentNews as item (item.id)}
+      {#each cut('news', recentNews) as item (item.id)}
         <a class="core-item" href={'/news/' + item.id}>
           <strong>{item.title}</strong>
           <small>{['Kabar', newsDate(item.publishedAt), item.sourceCount ? item.sourceCount + ' sumber' : ''].filter(Boolean).join(' · ')}</small>
         </a>
       {/each}
-      {#if embedded && recentNews.length > 5 && (context.newsPlaces ?? []).length}<a class="core-more" href={'/news?place=' + encodeURIComponent(context.newsPlaces![0])}>Semua {recentNews.length} kabar minggu ini <ArrowUpRight size={14} /></a>{/if}
+      {#if embedded && recentNews.length > FIRST && !more.news}<button type="button" class="core-more" onclick={() => (more.news = true)}>{recentNews.length - FIRST} kabar lagi minggu ini</button>{/if}
+      {#if embedded && recentNews.length && (context.newsPlaces ?? []).length}<a class="core-more" href={'/news?place=' + encodeURIComponent(context.newsPlaces![0])}>Kabar lebih lama <ArrowUpRight size={14} /></a>{/if}
       {#each embedded ? [] : recentPosts as post (post.id)}
         <a class="core-item" href={'/square/' + post.id}>
           <strong>{firstLine(post.text) || 'Obrolan'}</strong>
@@ -106,8 +111,8 @@
   <section class="core-band" aria-labelledby={'core-work-' + uid}>
     <div class="core-depth mid" aria-hidden="true"></div>
     <div class="core-content">
-      <h2 id={'core-work-' + uid}>Sedang dikerjakan</h2>
-      {#each open as w (w.id)}
+      <h2 id={'core-work-' + uid}>Sedang dikerjakan{#if open.length} <span class="core-count">{open.length}</span>{/if}</h2>
+      {#each cut('work', open) as w (w.id)}
         <a class="core-item" href={'/work/' + w.id}>
           <strong>{w.title}</strong>
           <small>Kerja publik · {stateLabel[w.state] ?? w.state} · {w.sponsor.title}</small>
@@ -115,22 +120,24 @@
       {:else}
         <p class="core-note">Belum ada kerja publik yang terbuka di sini. <a href="/work">Lihat kerja publik</a></p>
       {/each}
+      {#if embedded && open.length > FIRST && !more.work}<button type="button" class="core-more" onclick={() => (more.work = true)}>{open.length - FIRST} lagi</button>{/if}
     </div>
   </section>
 
   <section class="core-band" aria-labelledby={'core-pages-' + uid}>
     <div class="core-depth settled" aria-hidden="true"></div>
     <div class="core-content">
-      <h2 id={'core-pages-' + uid}>Sudah ditinjau</h2>
-      {#each context.pages as p (p.id)}
+      <h2 id={'core-pages-' + uid}>Sudah ditinjau{#if context.pages.length} <span class="core-count">{context.pages.length}</span>{/if}</h2>
+      {#each cut('pages', context.pages) as p (p.id)}
         {@const meta = reviewed.get(p.id)}
         <a class="core-item core-page" href={'/wiki/' + p.id}>
           <strong>{p.title}</strong>
           <small>Halaman{meta?.reviewer ? ' · ditinjau ' + meta.reviewer.name + ', ' + relativeDate(meta.updated) : ''}</small>
         </a>
       {:else}
-        <p class="core-note">Belum ada halaman yang ditinjau untuk {context.title}. <a href="/wiki">Buka Wiki</a></p>
+        <p class="core-note">Belum ada halaman{embedded ? ' lain' : ''} yang ditinjau untuk {context.title}. <a href="/wiki">Buka Wiki</a></p>
       {/each}
+      {#if embedded && context.pages.length > FIRST && !more.pages}<button type="button" class="core-more" onclick={() => (more.pages = true)}>{context.pages.length - FIRST} halaman lagi</button>{/if}
     </div>
   </section>
 
@@ -184,6 +191,9 @@
   .core-chip.primary { background: var(--core-text); color: var(--paper); border-color: var(--core-text); }
   .core-tail { height: 120px; opacity: .9; color: var(--ink); }
   .embedded .core-tail { height: 40px; }
-  .core-more { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; margin: -2px 0 8px; font-size: 13px; font-weight: 600; color: var(--core-text); text-decoration: underline; text-underline-offset: 3px; }
+  .core-more { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; margin: -2px 0 8px; font-size: 13px; font-weight: 600; color: var(--core-text); text-decoration: underline; text-underline-offset: 3px; margin-right: 16px; }
+  button.core-more { padding: 0; border: 0; background: none; font-family: inherit; cursor: pointer; }
+  .core-more:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+  .core-count { margin-left: 4px; font-weight: 400; color: var(--core-muted); font-variant-numeric: tabular-nums; }
   @media (min-width: 720px) { .core-band { grid-template-columns: 72px minmax(0, 1fr); } .core-content { padding-inline: 22px; } .core-back { padding-inline: 22px; } }
 </style>

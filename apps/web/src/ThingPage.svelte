@@ -233,7 +233,7 @@
       {#if !conversation.length}<p class="thing-note">Belum ada percakapan tentang {thing.title}.</p>{/if}
     {:else if tab === 'kabar'}
       {@render stewardTools?.()}
-      <CoreSample context={{ ...thing, pages: home && !thing.pages.some((p) => p.id === home.id) ? [home, ...thing.pages] : thing.pages }} {posts} {works} {auth} {onCompose} embedded />
+      <CoreSample context={{ ...thing, pages: related }} {posts} {works} {auth} {onCompose} embedded />
     {:else if tab === 'komunitas'}
       <PlaceCommunities communities={thing.communities ?? []} title={thing.title} onStart={onStartCommunity} />
       {#if thing.groups.length}<section class="thing-related" aria-labelledby={uid + '-groups'}>
