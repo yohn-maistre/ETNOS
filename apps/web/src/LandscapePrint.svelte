@@ -5,7 +5,10 @@
     decorative?: boolean
     onerror?: () => void
   } = $props()
-  let failed = $state(false)
+  let failed = $state(false),
+    // The ink filter paints solid accent over an image that has not arrived yet, so the print stays hidden until
+    // it has loaded.
+    loaded = $state(false)
   const uid = $props.id()
   const filterId = 'landscape-ink-' + uid
 </script>
@@ -21,4 +24,4 @@
     <feMerge><feMergeNode in="paper"/><feMergeNode in="print"/></feMerge>
   </filter></defs>
 </svg>
-{#if !failed}<img class="landscape-print" src={artwork.src} width={artwork.width} height={artwork.height} alt={decorative ? '' : artwork.description} style={'filter:url(#' + filterId + ')'} decoding="async" onerror={() => { failed = true; onerror?.() }}/>{/if}
+{#if !failed}<img class="landscape-print" src={artwork.src} width={artwork.width} height={artwork.height} alt={decorative ? '' : artwork.description} style={'filter:url(#' + filterId + ');' + (loaded ? '' : 'visibility:hidden')} decoding="async" onload={() => (loaded = true)} onerror={() => { failed = true; onerror?.() }}/>{/if}

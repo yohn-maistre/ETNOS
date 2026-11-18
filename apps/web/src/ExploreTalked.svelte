@@ -38,8 +38,8 @@
       .catch(() => (items = []))
     return () => abort.abort()
   })
-  const shown = $derived((items ?? []).filter((i) => !within || within.has(i.context.id)).slice(0, 5))
-  const fallback = $derived(recorded.filter((c) => c.indexed > 0 && (!within || within.has(c.id))).sort((a, b) => b.indexed - a.indexed).slice(0, 5))
+  const shown = $derived((items ?? []).filter((i) => !within || within.has(i.context.id)).slice(0, 8))
+  const fallback = $derived(recorded.filter((c) => c.indexed > 0 && (!within || within.has(c.id))).sort((a, b) => b.indexed - a.indexed).slice(0, 8))
   const kindName: Record<string, string> = { place: 'Kabupaten', region: 'Wilayah adat', language: 'Bahasa', topic: 'Topik' }
   const tone = (kind: string) => (kind === 'language' ? 'language' : kind === 'topic' ? 'topic' : 'place') as 'place' | 'language' | 'topic'
 </script>
@@ -50,9 +50,8 @@
 {/snippet}
 
 {#if items === null}<p class="talked-note" role="status">Memuat…</p>
-{:else if shown.length}<div class="explore-mosaic">
-    {#each shown as t, i (t.context.id)}<ExploreTile
-        wide={i === 0}
+{:else if shown.length}<div class="explore-strip">
+    {#each shown as t (t.context.id)}<ExploreTile
         tone={tone(t.context.kind)}
         href={t.lead ? '/square/' + t.lead.id : '/contexts/' + t.context.slug}
         title={t.lead?.title || t.context.title}
@@ -64,8 +63,8 @@
   </div>
   <p class="talked-note">Dari posting publik {days} hari terakhir yang berlabel tempat, bahasa atau topik.</p>
 {:else if fallback.length}<p class="talked-note lead">Belum ada percakapan berlabel dalam {days} hari terakhir. Yang paling banyak tercatat:</p>
-  <div class="explore-mosaic">
-    {#each fallback as c, i (c.id)}<ExploreTile wide={i === 0} tone={tone(c.kind)} href={'/contexts/' + c.slug} title={c.title} text={kindName[c.kind] ?? 'Topik'} meta={c.indexed + ' catatan'}>
+  <div class="explore-strip">
+    {#each fallback as c (c.id)}<ExploreTile tone={tone(c.kind)} href={'/contexts/' + c.slug} title={c.title} text={kindName[c.kind] ?? 'Topik'} meta={c.indexed + ' catatan'}>
         {#snippet art()}{@render artFor(c)}{/snippet}
       </ExploreTile>{/each}
   </div>
