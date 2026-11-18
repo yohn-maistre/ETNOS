@@ -67,6 +67,7 @@ Dates in file names are when a document was written. Older plans are kept as his
 | [research/customary-regions-and-boundaries-2026-11-17.md](research/customary-regions-and-boundaries-2026-11-17.md) | Where the seven wilayah adat come from, and how sources place Nabire, Mimika, Puncak Jaya and other edges |
 | [research/wpw-seed-inventory-2026-11-15.md](research/wpw-seed-inventory-2026-11-15.md) | What West Papua Watch holds that could seed knowledge |
 | [research/topic-primitives-and-knowledge-organisation-2026-11-18.md](research/topic-primitives-and-knowledge-organisation-2026-11-18.md) | Which topics every deployment ships and why: facets, basic level, Indigenous schemes, platforms; a starter set of 18 with crosswalks |
+| [research/why-these-axes-2026-11-18.md](research/why-these-axes-2026-11-18.md) | Why place, language, topic and kind: rhetoric, Ranganathan, Dublin Core, Tönnies, Mukurtu and Local Contexts; kinship as custody; seasonal time and named beings as the gaps; a judge-ready answer |
 
 ## Aksara and agents
 
