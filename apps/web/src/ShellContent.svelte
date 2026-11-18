@@ -25,7 +25,6 @@
     ArrowLeft,
     ChevronDown,
     RefreshCw,
-    LogIn,
   } from '@lucide/svelte'
   import { appearance } from './appearance.svelte'
   import { initials, type Auth } from './api'
@@ -319,6 +318,7 @@
 <nav
   class="cx-mobile-dock"
   class:thread-dock={path.startsWith('/square/')}
+  class:visitor-dock={!auth.actor}
   aria-label="Navigasi seluler"
 >
   <Button
@@ -335,13 +335,11 @@
     <Compass size={21} />
     <span aria-hidden="true">Jelajah</span>
   </Button>
-  <!-- Visitors get four places: Beranda, Jelajah, Masuk in the middle, Menu. Posting and Aktivitas need an account. -->
+  <!-- Visitors get three places: Beranda, Jelajah, Menu. Masuk lives in the Menu and in the bar on Beranda;
+       Posting and Aktivitas need an account. -->
   {#if auth.actor}<Button size="icon" aria-label="Posting baru" onclick={onCompose}>
     <Plus size={23} />
     <span aria-hidden="true">Posting</span>
-  </Button>{:else}<Button href="/login" size="icon" aria-label="Masuk" class="dock-signin">
-    <LogIn size={21} />
-    <span aria-hidden="true">Masuk</span>
   </Button>{/if}
   {#if auth.actor}<Button
     href="/notifications"
