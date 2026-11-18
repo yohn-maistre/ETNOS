@@ -54,9 +54,24 @@
   })
   const references = [
     {
+      why: 'Pertanyaan siapa, apa, di mana, kapan dan dengan cara apa tentang sebuah perbuatan, yang kemudian dipakai dalam retorika dan jurnalistik.',
+      cite: 'Aristoteles, Etika Nikomakea III.1, dirangkum dalam "Five Ws" (Wikipedia)',
+      href: 'https://en.wikipedia.org/wiki/Five_Ws',
+    },
+    {
       why: 'Penggolongan berfaset: satu hal dilihat dari beberapa sisi, tanpa satu pohon induk.',
       cite: 'Ranganathan (1933), Colon Classification, Madras Library Association',
       href: 'https://en.wikipedia.org/wiki/Colon_classification',
+    },
+    {
+      why: 'Standar metadata yang mencatat subjek, bahasa, cakupan tempat dan waktu, serta jenis sebuah sumber.',
+      cite: 'DCMI, Dublin Core Metadata Terms (ISO 15836)',
+      href: 'https://www.dublincore.org/specifications/dublin-core/dcmi-terms/',
+    },
+    {
+      why: 'Bahasa dicatat sendiri, terpisah dari wilayah, karena satu bahasa dipakai di banyak tempat.',
+      cite: 'Glottolog, katalog bahasa dunia',
+      href: 'https://glottolog.org/',
     },
     {
       why: 'Label disimpan sebagai skema konsep yang bisa dipetakan ke skema lain.',
@@ -72,6 +87,16 @@
       why: 'Data tentang masyarakat adat diatur untuk manfaat bersama dan atas wewenang mereka.',
       cite: 'Carroll dkk. (2020), The CARE Principles for Indigenous Data Governance, Data Science Journal 19',
       href: 'https://doi.org/10.5334/dsj-2020-043',
+    },
+    {
+      why: 'Label pengetahuan tradisional yang dipasang komunitas sendiri, termasuk untuk marga dan keluarga.',
+      cite: 'Local Contexts, Traditional Knowledge Labels',
+      href: 'https://localcontexts.org/labels/traditional-knowledge-labels/',
+    },
+    {
+      why: 'Arsip warisan budaya yang aksesnya diatur oleh protokol komunitas.',
+      cite: 'Mukurtu CMS',
+      href: 'https://mukurtu.org/about/',
     },
     {
       why: 'Musyawarah daring yang mencari pernyataan yang diterima semua kelompok.',
@@ -157,10 +182,35 @@
   <section aria-labelledby="about-basis">
     <h2 id="about-basis">Dasar penggolongan</h2>
     <p>
-      Label di ETNOS adalah faset: tempat, bahasa, ranah, topik dan jenis.
+      Label di ETNOS adalah faset, yaitu tempat, bahasa, topik dan jenis.
       Sebuah kiriman, halaman atau komunitas boleh membawa beberapa sekaligus.
       Label tidak pernah dipasang pada orang. Daftarnya bisa bertambah, berubah
       dan dipensiunkan seiring apa yang dibicarakan.
+    </p>
+    <h3 id="about-axes">Mengapa tempat, bahasa, topik dan jenis</h3>
+    <p>
+      Keempatnya menjawab pertanyaan lama tentang pengetahuan apa pun, yaitu di
+      mana, dalam bahasa apa, tentang apa, dan berupa apa. Waktu dicatat
+      tersendiri sebagai tanggal atau rentang tahun. Daftar pendek yang mirip
+      muncul di beberapa bidang yang berkembang sendiri-sendiri, dari tulisan
+      Aristoteles tentang keadaan sebuah perbuatan, penggolongan berfaset
+      Ranganathan di perpustakaan, sampai standar metadata Dublin Core.
+    </p>
+    <p>
+      Sumbunya tetap dan isinya milik komunitas. Tempat, bahasa dan daftar topik
+      di ETNOS diisi untuk Tanah Papua dan bisa diubah. Bahasa berdiri sendiri,
+      terpisah dari tempat, karena satu bahasa dipakai di banyak tempat dan satu
+      tempat punya banyak bahasa. Siapa yang boleh melihat sebuah pengetahuan dan
+      siapa pemegangnya diatur oleh komunitas di lapisan yang terpisah, seperti
+      pada Local Contexts dan Mukurtu. Karena itu marga dan keturunan tidak
+      dijadikan label.
+    </p>
+    <p>
+      Ada dua hal yang tidak tertangkap daftar pendek itu. Yang pertama waktu
+      musiman yang berulang setiap tahun. Setiap komunitas bisa menamai musimnya
+      sendiri, dan kiriman bisa ditandai dengan musim itu. Yang kedua gunung,
+      danau, sungai, hutan dan makhluk hidup yang punya nama. Semuanya mendapat
+      halaman wiki sendiri di bawah wilayahnya, lengkap dengan sumber.
     </p>
     {#if families.length}<ul class="about-basis">
         {#each families as f (f.key)}<li>
@@ -256,6 +306,14 @@
     font-size: 22px;
     letter-spacing: -0.02em;
     margin-bottom: 12px;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 22px 0 8px;
+  }
+  section p + p {
+    margin-top: 10px;
   }
   ul,
   ol {
