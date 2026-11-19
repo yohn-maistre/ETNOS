@@ -15,3 +15,21 @@ python3 -c "t=open('/path/to/strata/scripts/observatory/map-template.html').read
 ## On the site
 
 `apps/web/public/observatory/map.json` is the layout the wiki home reads (`apps/web/src/KnowledgeMap.svelte`). Rebuild it with the steps above and copy the output there. Domains and cultural forms come from keyword lists in `build-map.mjs` (pages are tagged from their whole text, up to four domains; other items from title and lead, up to three) (the embedding is a fallback for domains only); "when it happened" years are years named in the text. Both are rough and say so in the panel. The planned replacement is the classifier with receipts and a nightly job, as in `docs/knowledge-map-design-2026-11-16.md`.
+
+## Knowledge portal (things, statements, clusters, gaps)
+
+`build-knowledge-portal.ts` builds the observatory's static files from the knowledge model's public view (`/v1/knowledge-model/export`, or the shipped seed imported in memory when no `--from` is given). It writes `apps/web/public/observatory/knowledge/`:
+
+- `graph.json`: entities with layout, Leiden cluster, role, voices, Hill numbers and gaps; typed statements; co-mentions; clusters; the null model; link suggestions phrased as questions; coverage per customary region.
+- `excerpts.json`: the verified excerpts behind every node and statement, with their witnesses.
+- `similar.json` and `index.json` (only with `--vectors`): nearest entities by evidence, sentences close to an entity that do not name it, and the int8 IVF index (`src/vector-index.ts`).
+
+Only commons witnesses (the verified seed sources and the catalogue) go into these files. Statements resting on community posts are served live by the API, where withdrawal is checked on every read.
+
+```bash
+node scripts/observatory/build-knowledge-portal.ts --export-only /tmp/obs/export.json
+cp scripts/observatory/embed-knowledge.mjs /tmp/obs/ && (cd /tmp/obs && node embed-knowledge.mjs export.json vectors.json)
+node scripts/observatory/build-knowledge-portal.ts --vectors /tmp/obs/vectors.json
+```
+
+The same input gives byte-identical files (fixed seed 20261119; `test/knowledge-portal.test.ts`).

@@ -413,7 +413,7 @@ export class KnowledgeModel{
   }
  }
  /** Typed edges for the map: accepted statements and co-mentions in one excerpt. Clustering runs offline from this. */
- graph(actorId?:string,options:{publicOnly?:boolean;train?:boolean}={}){
+ graph(actorId?:string,options:{publicOnly?:boolean;train?:boolean;excerpts?:boolean}={}){
   const w=this.world(actorId,options.publicOnly||options.train),evidence=this.evidenceCounts(w)
   const assertions=options.train?w.assertions.filter(a=>a.train===1):w.assertions
   const co=new Map<string,{a:string;b:string;weight:number;voices:Record<string,number>}>()
@@ -424,9 +424,11 @@ export class KnowledgeModel{
   return {
    version:1,
    nodes:[...w.entities.values()].map(e=>({id:e.slug,class:e.class,title:e.title,context:e.context_slug,...evidence.get(e.slug)??{statements:0,excerpts:0,voices:{}}})),
-   statements:assertions.map(a=>({id:a.id,source:a.subjectSlug,target:a.objectSlug,value:a.value,predicate:a.predicate,family:predicates[a.predicate]?.family??'lain',layer:a.layer,logical:a.logical,rank:a.rank,origin:a.origin,voices:[...new Set(a.support.map(x=>x.witness.voice))].sort(),support:a.support.map(x=>({excerpt:x.id,witness:x.witness.key,...(options.train?{text:x.text,licence:x.witness.licence}:{})}))})),
+   statements:assertions.map(a=>({id:a.id,source:a.subjectSlug,target:a.objectSlug,value:a.value,predicate:a.predicate,family:predicates[a.predicate]?.family??'lain',layer:a.layer,logical:a.logical,rank:a.rank,origin:a.origin,voices:[...new Set(a.support.map(x=>x.witness.voice))].sort(),support:a.support.map(x=>({excerpt:x.id,digest:x.digest,witness:x.witness.key,...(options.train?{text:x.text,licence:x.witness.licence}:{})}))})),
    comentions:options.train?[]:[...co.values()].sort((x,y)=>x.a.localeCompare(y.a)||x.b.localeCompare(y.b)),
-   witnesses:[...new Map([...w.live.values()].map(x=>[x.witness.key,{key:x.witness.key,kind:x.witness.kind,title:x.witness.title,url:x.witness.url,publisher:x.witness.publisher,licence:x.witness.licence,voice:x.witness.voice}])).values()].sort((a,b)=>a.key.localeCompare(b.key)),
+   witnesses:[...new Map([...w.live.values()].map(x=>[x.witness.key,{key:x.witness.key,kind:x.witness.kind,title:x.witness.title,url:x.witness.url,publisher:x.witness.publisher,licence:x.witness.licence,voice:x.witness.voice,scope:x.witness.communityId===null?'commons' as const:'community' as const}])).values()].sort((a,b)=>a.key.localeCompare(b.key)),
+   /** Excerpts in the view, with their text, for an evidence drawer. Only with `excerpts`; each entry lists the entities it mentions. */
+   excerpts:options.excerpts?[...w.live.values()].filter(x=>w.mentions.has(x.id)||assertions.some(a=>a.support.some(y=>y.id===x.id))).map(x=>({id:x.id,digest:x.digest,witness:x.witness.key,section:x.section,text:x.text,mentions:[...(w.mentions.get(x.id)??[])].sort()})).sort((a,b)=>a.id.localeCompare(b.id)):undefined,
   }
  }
  /** What a reviewer can act on: proposals in scopes they steward, each with its live basis. */
