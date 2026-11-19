@@ -34,10 +34,12 @@
   import WikiDiscussion from './WikiDiscussion.svelte'
   import WikiContents from './WikiContents.svelte'
   import WikiPlaces from './WikiPlaces.svelte'
+  import PapuaMap, { type MapRegion } from './PapuaMap.svelte'
+  import type { Atlas } from './RegionArt.svelte'
   import { loadMap, highlandRegions, type MapData } from './observatory'
   import { siteBranding } from './site-branding'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
-  import { loadAtlasLangs, loadContexts, regionsOf } from './explore-data'
+  import { REGION_ORDER, loadAtlas, loadAtlasLangs, loadContexts, regionTitle, regionsOf } from './explore-data'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiTrail from './WikiTrail.svelte'
@@ -89,8 +91,6 @@
       { id: string; slug: string; title: string; kind: string; facet?: string; parents?: string[] }[]
     >([]),
     contextPages = $state<string[] | null>(null)
-  // A catalogue can hold hundreds of contexts; the lens strip keeps to the top of the hierarchy.
-  const lensContexts = $derived(contexts.filter((c) => c.kind !== 'language' && !c.parents?.length && c.facet !== 'province').slice(0, 24))
   type Growing={id:string;community_id:string;title:string;excerpt:string;updated:number;citationCount:number;author:{id:string;name:string;kind:string};evidenceStatus:string}
   let growing=$state<Growing[]>([]),growingError=$state('')
   /** Drops a model's greeting, self-introduction and "based on the evidence, here is…:" preface at the start of an excerpt. */
@@ -128,7 +128,25 @@
   })
   // The region a page belongs to, from the public map data, chooses its engraved cover.
   let mapData = $state<MapData | null>(null)
-  $effect(() => { if (page && !mapData) void loadMap().then((d) => (mapData = d)) })
+  $effect(() => { if (!mapData) void loadMap().then((d) => (mapData = d)) })
+  // The wiki follows the place chosen in the header switcher, and the map at the top of the wiki home sets it:
+  // pressing a region narrows the wiki (and the rest of the site) to it; pressing it again shows all of Papua.
+  $effect(() => { context = placeScope.slug })
+  let atlas = $state<Atlas | null>(null)
+  $effect(() => { if (!page && !atlas) void loadAtlas().then((a) => (atlas = a)) })
+  const regionPages = (slug: string) => mapData?.nodes.filter((n) => n.k === 'page' && n.reg === slug).length ?? 0
+  const mapRegions = $derived<MapRegion[]>(
+    REGION_ORDER.map((slug) => {
+      const c = contexts.find((x) => x.slug === slug)
+      return { slug, title: c ? regionTitle(c) : slug, href: '/contexts/' + slug, count: mapData ? regionPages(slug) : undefined }
+    }),
+  )
+  const pickedRegion = $derived(contexts.find((c) => c.slug === context && c.facet === 'customary-region'))
+  function pickRegion(slug: string) {
+    const c = contexts.find((x) => x.slug === slug)
+    if (!c || context === slug) setPlaceScope({ slug: '', title: 'Tanah Papua' })
+    else setPlaceScope({ slug: c.slug, title: regionTitle(c) })
+  }
   const pageRegion = $derived.by(() => {
     if (!page || !mapData) return null
     const node = mapData.nodes.find((n) => n.href === '/wiki/' + page.id)
@@ -427,7 +445,10 @@
       <div class="wiki-discovery-actions">{#if memberships.length}<a class="commons-quiet-link" href="/wiki/notes/new">Tambah catatan <Plus size={14}/></a>{/if}{#if memberships.some(m=>m.role!=='member')}<Button variant="outline" onclick={onCreate}><Plus size={15}/>Tulis halaman</Button>{/if}</div>
     </header>
     <div class="wiki-discovery-controls"><label class="atlas-search"><Search size={18}/><Input bind:value={query} aria-label="Cari pengetahuan" placeholder="Cari dalam Wiki…"/></label>
-      {#if contexts.length}<nav class="atlas-lenses" aria-label="Jelajahi pengetahuan"><button aria-pressed={!context} onclick={()=>{context='';setPlaceScope({slug:'',title:'Tanah Papua'})}}>Semua</button>{#each lensContexts as c}<button aria-pressed={context===c.slug} onclick={()=>{context=c.slug;if(c.kind==='place'||c.kind==='region')setPlaceScope({slug:c.slug,title:c.title})}}>{#if c.kind==='place'||c.kind==='region'}<MapPin size={14}/>{/if}{c.title}</button>{/each}</nav>{/if}
+      {#if atlas && contexts.length}<div class="wiki-region-map">
+          <PapuaMap {atlas} regions={mapRegions} focus={mapRegion ? [mapRegion] : []} unit="halaman" onpick={pickRegion} />
+          <p class="wiki-region-note">{#if context}{#if pickedRegion}Menampilkan halaman tentang {regionTitle(pickedRegion)}. <a href={'/contexts/' + pickedRegion.slug}>Buka halaman wilayah</a>{' · '}{:else}Menampilkan halaman tentang {placeScope.title}. {/if}<button type="button" onclick={() => setPlaceScope({ slug: '', title: 'Tanah Papua' })}>Tampilkan semua</button>{:else}Pilih wilayah untuk melihat halamannya. Makin gelap wilayahnya, makin banyak halaman wiki tentangnya.{/if}</p>
+        </div>{/if}
     </div>
     {#if discovering}<div class="wiki-discovery-loading" role="status">Menyiapkan bacaan…</div>{:else if discoveryError}<div class="wiki-draft-state"><p>{discoveryError}</p><Button variant="outline" onclick={()=>discover()}>Coba lagi</Button></div>{:else}
       {#if continued&&!query&&!context&&!communityFilter}<a class="wiki-continue" href={'/wiki/'+continued.id}><Clock3 size={17}/><div><small>Lanjutkan membaca · di perangkat ini</small><strong>{continued.title}</strong></div><ArrowRight size={18}/></a>{/if}

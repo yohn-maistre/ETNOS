@@ -56,9 +56,9 @@
 .wiki-discovery-controls { padding: 0 24px 20px; border-bottom: 1px solid var(--commons-hairline); }
 .wiki-discovery .atlas-search { margin: 0; padding: 0 12px; border: 1px solid var(--border); border-radius: 12px; gap: 8px; background: var(--background); }
 .wiki-discovery .atlas-search input { border: 0; background: transparent; min-height: 46px; box-shadow: none; }
-.wiki-discovery .atlas-lenses { margin: 14px 0 0; padding: 0; gap: 8px; }
-.wiki-discovery .atlas-lenses button { min-height: 40px; padding: 8px 12px; font-size: 12px; }
-.wiki-discovery .atlas-lenses [aria-pressed='true'] { background: var(--brand-soft); color: var(--brand); }
+.wiki-region-map { margin: 16px 0 0; }
+.wiki-region-note { margin: 8px 2px 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
+.wiki-region-note a, .wiki-region-note button { color: var(--foreground); font: inherit; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; padding: 0; cursor: pointer; min-height: 28px; }
 .wiki-discovery-loading { padding: 32px 24px; color: var(--muted-foreground); font-size: 14px; }
 .wiki-module-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 16px; }
 .wiki-module-heading h2 { font-size: 18px; font-weight: 600; }
