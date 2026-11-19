@@ -43,3 +43,4 @@
 2026-11-19h model picker in Studio
 2026-11-19i main more openui cards: charts, table, stat row, progress, question
 2026-11-19j studio model key
+2026-11-19k studio service keys
