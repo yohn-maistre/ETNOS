@@ -4,6 +4,7 @@
  * made-up DIDs and deleted accounts never reach a Durable Object.
  */
 import { sha256Hex } from "./crypto.ts";
+import type { SqlDatabase } from "./ports.ts";
 
 export type AccountStatus = "pending" | "active" | "deactivated" | "takendown" | "deleting" | "deleted";
 
@@ -22,7 +23,7 @@ export interface AccountRow {
 export const inviteHash = (code: string) => sha256Hex("invite:" + code);
 
 export class Directory {
-	constructor(private db: D1Database) {}
+	constructor(private db: SqlDatabase) {}
 
 	byDid(did: string): Promise<AccountRow | null> {
 		return this.db.prepare("SELECT * FROM accounts WHERE did = ?").bind(did).first<AccountRow>();

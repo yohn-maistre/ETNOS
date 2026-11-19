@@ -1,5 +1,6 @@
 import type { HostedAccountDurableObject } from "./account-do.ts";
 import type { AuthHubDurableObject } from "./auth-hub.ts";
+import type { DirectoryDurableObject } from "./directory-do.ts";
 
 /**
  * Configuration of the multi-account identity host. Host-level values only:
@@ -33,7 +34,10 @@ export interface HostEnv {
 	PASS_THROUGH_UNKNOWN_HOSTS?: string;
 	ACCOUNT: DurableObjectNamespace<HostedAccountDurableObject>;
 	AUTH_HUB: DurableObjectNamespace<AuthHubDurableObject>;
-	DIRECTORY: D1Database;
+	/** The directory in D1 (Cloudflare). */
+	DIRECTORY?: D1Database;
+	/** Or the directory in a Durable Object (plain workerd, self-hosted). One of the two is required. */
+	DIRECTORY_DO?: DurableObjectNamespace<DirectoryDurableObject>;
 	BLOBS?: R2Bucket;
 }
 
@@ -48,6 +52,6 @@ export function hostConfigProblem(env: HostEnv): string | null {
 	if (!env.ESCROW_ROTATION_KEY || !/^did:key:z[1-9A-HJ-NP-Za-km-z]+$/.test(env.ESCROW_ROTATION_KEY)) return "ESCROW_ROTATION_KEY";
 	if (!env.ACCOUNT_KEK_V1) return "ACCOUNT_KEK_V1";
 	if (!env.OPERATOR_TOKEN || env.OPERATOR_TOKEN.length < 32) return "OPERATOR_TOKEN";
-	if (!env.ACCOUNT || !env.AUTH_HUB || !env.DIRECTORY) return "bindings";
+	if (!env.ACCOUNT || !env.AUTH_HUB || (!env.DIRECTORY && !env.DIRECTORY_DO)) return "bindings";
 	return null;
 }

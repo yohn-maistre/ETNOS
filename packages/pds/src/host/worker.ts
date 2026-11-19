@@ -22,6 +22,7 @@ import { ExpiredTokenError, claimedSubject, issueSession, serviceDid, verifySess
 
 export { HostedAccountDurableObject } from "./account-do.ts";
 export { AuthHubDurableObject } from "./auth-hub.ts";
+export { DirectoryDurableObject } from "./directory-do.ts";
 
 const json = (status: number, body: unknown, headers: Record<string, string> = {}) =>
 	Response.json(body, { status, headers: { "cache-control": "no-store", ...headers } });

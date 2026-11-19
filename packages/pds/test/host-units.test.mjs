@@ -73,3 +73,9 @@ test("password hashes and wrapped keys round-trip and fail closed", async () => 
 	await assert.rejects(unwrapSecret(kek, "did:plc:b", "signing", wrapped), "another DID cannot unwrap");
 	await assert.rejects(unwrapSecret(kek, "did:plc:a", "rotation", wrapped), "another purpose cannot unwrap");
 });
+
+test("the directory object's schema is the D1 migration, word for word", async () => {
+	const { readFileSync } = await import("node:fs");
+	const inlined = (await import("../src/host/directory-schema.ts")).default;
+	assert.equal(inlined, readFileSync("migrations/0001_directory.sql", "utf8"));
+});

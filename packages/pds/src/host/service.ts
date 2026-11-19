@@ -7,6 +7,7 @@
  */
 import { derive, hmac, parseKek } from "./crypto.ts";
 import { Directory, inviteHash, type AccountRow } from "./directory.ts";
+import { directoryOverDurableObject } from "./directory-do.ts";
 import type { HostEnv } from "./env.ts";
 import { checkHandle } from "./handles.ts";
 import { registerGenesis } from "./plc.ts";
@@ -19,7 +20,7 @@ const fail = (status: number, error: string, message: string): Failure => ({ ok:
 export class Host {
 	readonly dir: Directory;
 	constructor(readonly env: HostEnv) {
-		this.dir = new Directory(env.DIRECTORY);
+		this.dir = new Directory(env.DIRECTORY ?? directoryOverDurableObject(env.DIRECTORY_DO!));
 	}
 
 	get origin() {
