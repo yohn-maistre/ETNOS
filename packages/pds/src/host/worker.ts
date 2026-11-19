@@ -23,6 +23,8 @@ import { ExpiredTokenError, claimedSubject, issueSession, serviceDid, verifySess
 export { HostedAccountDurableObject } from "./account-do.ts";
 export { AuthHubDurableObject } from "./auth-hub.ts";
 export { DirectoryDurableObject } from "./directory-do.ts";
+export { HostedSpaceDurableObject, HostedSpaceIndexDurableObject } from "./spaces.ts";
+import { handleSpaces, spacesEnabled } from "./spaces.ts";
 
 const json = (status: number, body: unknown, headers: Record<string, string> = {}) =>
 	Response.json(body, { status, headers: { "cache-control": "no-store", ...headers } });
@@ -189,6 +191,7 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 			stage: "experimental",
 			multiAccount: true,
 			signup: signupsClosed(host.env) ? "closed" : "invite",
+			spaces: spacesEnabled(host.env) ? "alpha" : false,
 			publicRepository: true,
 			firehose: false,
 			passkeys: false,
@@ -317,6 +320,8 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 		// account is refused by the handlers (it does not match this DID).
 		return scoped(host, request, ctx, auth.row, auth);
 	}
+	if (path.startsWith("/xrpc/com.atproto.space.") || path.startsWith("/xrpc/com.atproto.simplespace."))
+		return handleSpaces(host, request, ctx, (inner) => worker.fetch(inner, host.env, ctx));
 	return xerr(501, "MethodNotImplemented", "Not available on this host");
 }
 
@@ -334,7 +339,7 @@ async function handleHost(host: Host, request: Request, label: string): Promise<
 
 const LIMIT_DEFAULT = 256 * 1024, LIMIT_BLOB = 5 * 1024 * 1024;
 
-export default {
+const worker = {
 	async fetch(request: Request, env: HostEnv, ctx: ExecutionContext): Promise<Response> {
 		const problem = hostConfigProblem(env);
 		if (problem) {
@@ -383,3 +388,5 @@ export default {
 		}
 	},
 } satisfies ExportedHandler<HostEnv>;
+
+export default worker;

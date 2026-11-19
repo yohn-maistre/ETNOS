@@ -20,18 +20,23 @@
     "SIGNIN_URL": "https://etnos.space/login",
     "PLC_URL": "https://plc.directory",
     "PLC_WRITES": "off",
-    "ACCOUNT_KEK_CURRENT": "1"
+    "ACCOUNT_KEK_CURRENT": "1",
+    // AT Protocol spaces, alpha: for testing only; nothing sensitive goes into them.
+    "SPACES_ENABLED": "true"
   },
   // Secrets: ACCOUNT_KEK_V1, OPERATOR_TOKEN (set by the workflow; never in the repository).
   "durable_objects": {
     "bindings": [
       { "name": "ACCOUNT", "class_name": "HostedAccountDurableObject" },
       { "name": "AUTH_HUB", "class_name": "AuthHubDurableObject" },
+      { "name": "SPACES", "class_name": "HostedSpaceDurableObject" },
+      { "name": "SPACES_INDEX", "class_name": "HostedSpaceIndexDurableObject" },
       { "name": "DIRECTORY_DO", "class_name": "DirectoryDurableObject" }
     ]
   },
   "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["HostedAccountDurableObject", "AuthHubDurableObject", "DirectoryDurableObject"] }
+    { "tag": "v1", "new_sqlite_classes": ["HostedAccountDurableObject", "AuthHubDurableObject", "DirectoryDurableObject"] },
+    { "tag": "v2", "new_sqlite_classes": ["HostedSpaceDurableObject", "HostedSpaceIndexDurableObject"] }
   ],
   // Invocation logs stay off: they would record full URLs.
   "observability": { "enabled": true, "head_sampling_rate": 1, "logs": { "enabled": true, "invocation_logs": false } }

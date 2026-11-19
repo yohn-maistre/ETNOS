@@ -69,6 +69,8 @@ export function hostRuntime({ persist, plc, vars = {}, outbound } = {}) {
 			durableObjects: {
 				ACCOUNT: { className: "HostedAccountDurableObject", useSQLite: true },
 				AUTH_HUB: { className: "AuthHubDurableObject", useSQLite: true },
+				SPACES: { className: "HostedSpaceDurableObject", useSQLite: true },
+				SPACES_INDEX: { className: "HostedSpaceIndexDurableObject", useSQLite: true },
 			},
 			d1Databases: ["DIRECTORY"],
 			r2Buckets: ["BLOBS"],

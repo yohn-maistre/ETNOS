@@ -16,6 +16,7 @@ import { AccountDurableObject } from "../upstream/account-do";
 import type { RepoFacet } from "../upstream/repo/facet";
 import type { AccountStore } from "../upstream/account/store";
 import {
+	fromB64url,
 	hashPassword,
 	hex,
 	parseKek,
@@ -242,6 +243,27 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 		this.assertAccount(expectedDid);
 		this.ctx.storage.sql.exec("CREATE TABLE IF NOT EXISTS strata_refresh_sessions (jti TEXT PRIMARY KEY, expires INTEGER NOT NULL)");
 		this.ctx.storage.sql.exec("DELETE FROM strata_refresh_sessions");
+	}
+
+	/**
+	 * Sign a space token or a spaces service JWT for this account (atproto spaces alpha). The key
+	 * never leaves this object, and only JWT signing inputs of the space kinds are signed: a space
+	 * delegation or credential, or a service JWT bound to a com.atproto.space or simplespace method
+	 * and issued by this account. Anything else is refused, so this is not a general signing oracle.
+	 */
+	async signSpaceJwt(expectedDid: string, signingInput: Uint8Array): Promise<Uint8Array> {
+		this.assertAccount(expectedDid);
+		const text = new TextDecoder().decode(signingInput);
+		const [h, p, extra] = text.split(".");
+		if (!h || !p || extra !== undefined) throw new Error("Not a JWT signing input");
+		const decode = (part: string) => JSON.parse(new TextDecoder().decode(fromB64url(part))) as Record<string, unknown>;
+		const header = decode(h), payload = decode(p);
+		const spaceToken = header.typ === "atproto-space-delegation+jwt" || header.typ === "atproto-space-credential+jwt";
+		const spaceService = header.typ === "JWT" && typeof payload.lxm === "string" && /^com\.atproto\.(space|simplespace)\./.test(payload.lxm);
+		if (header.alg !== "ES256K" || payload.iss !== expectedDid || !(spaceToken || spaceService)) throw new Error("Refused to sign");
+		const { signingKey } = await this.loadIdentity();
+		const keypair = await Secp256k1Keypair.import(signingKey);
+		return keypair.sign(signingInput);
 	}
 
 	async setActive(expectedDid: string, active: boolean): Promise<void> {

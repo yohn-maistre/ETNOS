@@ -8,6 +8,7 @@
 import { derive, hmac, parseKek } from "./crypto.ts";
 import { Directory, inviteHash, type AccountRow } from "./directory.ts";
 import { directoryOverDurableObject } from "./directory-do.ts";
+import { purgeAccountSpaces } from "./spaces.ts";
 import { signupsClosed, type HostEnv } from "./env.ts";
 import { checkHandle } from "./handles.ts";
 import { registerGenesis } from "./plc.ts";
@@ -134,6 +135,7 @@ export class Host {
 		await this.dir.transition(row.account_id, ["active", "deactivated", "takendown", "deleting"], "deleting", Date.now(), true);
 		await this.hub().purgeSubject(did);
 		await this.account(row).purge(did);
+		await purgeAccountSpaces(this.env, did);
 		if (this.env.BLOBS) {
 			let cursor: string | undefined;
 			do {

@@ -17,15 +17,19 @@
     "ACCOUNT_KEK_V1": "NuqP7BzCoxjfpTQ3cN03ihO5DMTdqz1ZkeF843bxdPI",
     "ACCOUNT_KEK_CURRENT": "1",
     "OPERATOR_TOKEN": "synthetic-operator-token-for-local-tests-only",
+    "SPACES_ENABLED": "true",
   },
   "durable_objects": {
     "bindings": [
       { "name": "ACCOUNT", "class_name": "HostedAccountDurableObject" },
       { "name": "AUTH_HUB", "class_name": "AuthHubDurableObject" },
+      { "name": "SPACES", "class_name": "HostedSpaceDurableObject" },
+      { "name": "SPACES_INDEX", "class_name": "HostedSpaceIndexDurableObject" },
     ],
   },
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["HostedAccountDurableObject", "AuthHubDurableObject"] },
+    { "tag": "v2", "new_sqlite_classes": ["HostedSpaceDurableObject", "HostedSpaceIndexDurableObject"] },
   ],
   "d1_databases": [
     {

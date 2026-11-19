@@ -1,6 +1,7 @@
 import type { HostedAccountDurableObject } from "./account-do.ts";
 import type { AuthHubDurableObject } from "./auth-hub.ts";
 import type { DirectoryDurableObject } from "./directory-do.ts";
+import type { HostedSpaceDurableObject, HostedSpaceIndexDurableObject } from "./spaces.ts";
 
 /**
  * Configuration of the multi-account identity host. Host-level values only:
@@ -41,6 +42,12 @@ export interface HostEnv {
 	/** Or the directory in a Durable Object (plain workerd, self-hosted). One of the two is required. */
 	DIRECTORY_DO?: DurableObjectNamespace<DirectoryDurableObject>;
 	BLOBS?: R2Bucket;
+	/** AT Protocol spaces (alpha): "true" turns them on when both bindings exist. */
+	SPACES_ENABLED?: string;
+	SPACES?: DurableObjectNamespace<HostedSpaceDurableObject>;
+	SPACES_INDEX?: DurableObjectNamespace<HostedSpaceIndexDurableObject>;
+	/** Seconds a space credential from another host's authority is accepted (default 300). */
+	SPACES_REMOTE_CREDENTIAL_MAX_AGE?: string;
 }
 
 export const PUBLIC_PLC = "https://plc.directory";
