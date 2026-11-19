@@ -60,15 +60,17 @@ const plainAliases=(e:Entry)=>e.aliases.filter(a=>!/^(kabar|glottocode):/.test(a
 for(const e of catalogue.entries){
   if(e.kind==='topic')continue
   const names:{text:string;cased:boolean}[]=[]
-  if(e.kind==='place'&&e.facet==='regency')names.push({text:'Kabupaten '+e.title,cased:false},{text:e.title+' Regency',cased:false},{text:e.title,cased:true})
+  // Two regencies carry the prefix in their catalogue title (to tell them from the city of the same name).
+  const bare=e.facet==='regency'?e.title.replace(/^Kabupaten\s+/,''):e.title
+  if(e.kind==='place'&&e.facet==='regency')names.push({text:'Kabupaten '+bare,cased:false},{text:bare+' Regency',cased:false},{text:bare,cased:true})
   else if(e.kind==='place')names.push({text:e.title,cased:true})
   else if(e.facet==='province'){names.push({text:'Provinsi '+e.title,cased:false},{text:e.title+' Province',cased:false});if(e.title!=='Papua')names.push({text:e.title,cased:true});if(englishProvince[e.slug])names.push({text:englishProvince[e.slug]!,cased:true})}
   else if(e.kind==='region')names.push({text:'wilayah adat '+e.title,cased:false},{text:e.title,cased:true})
   else if(e.kind==='language')names.push({text:'bahasa '+e.title,cased:false},{text:e.title+' language',cased:false},{text:e.title+' languages',cased:false},{text:e.title,cased:true})
   for(const a of plainAliases(e))names.push({text:a,cased:true})
   const cls=e.kind==='language'?'bahasa':'tempat'
-  const slug=(cls==='bahasa'?'bahasa-':'')+slugify(e.kind==='place'&&e.facet==='regency'?'kabupaten '+e.title:e.facet==='province'?'provinsi '+e.title:e.title)
-  entities.set(slug,{slug,class:cls,title:e.facet==='regency'?'Kabupaten '+e.title:e.facet==='province'?'Provinsi '+e.title:e.kind==='region'?'Wilayah adat '+e.title:e.kind==='language'?'Bahasa '+e.title:e.title,description:e.description,aliases:plainAliases(e),context:e.slug,origin:'catalogue',names})
+  const slug=(cls==='bahasa'?'bahasa-':'')+slugify(e.kind==='place'&&e.facet==='regency'?'kabupaten '+bare:e.facet==='province'?'provinsi '+e.title:e.title)
+  entities.set(slug,{slug,class:cls,title:e.facet==='regency'?'Kabupaten '+bare:e.facet==='province'?'Provinsi '+e.title:e.kind==='region'?'Wilayah adat '+e.title:e.kind==='language'?'Bahasa '+e.title:e.title,description:e.description,aliases:plainAliases(e),context:e.slug,origin:'catalogue',names})
   bySlugContext.set(e.slug,slug)
 }
 // Seed pages: a page that is a catalogue context becomes the same entity; others become new entities.
