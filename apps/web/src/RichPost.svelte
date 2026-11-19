@@ -10,6 +10,7 @@
   import PostText from './PostText.svelte'
   import SourcesPanel from './SourcesPanel.svelte'
   import { splitSources } from './sources'
+  import { CARD_FENCE } from './cards/fence'
   import PostMedia from './PostMedia.svelte'
   import VideoPreview from './VideoPreview.svelte'
   import LinkPreview from './LinkPreview.svelte'
@@ -33,8 +34,11 @@
     onAnswered?: () => void
   } = $props()
   // An agent's closing "Sumber:" sections fold into the panel; the body reads without them.
-  const folded = $derived(post.author.kind === 'agent' && !post.content?.sources?.length ? splitSources(post.text) : null)
-  const body = $derived(folded?.body ?? post.text)
+  // An agent post may carry one composed card (OpenUI Lang in a fenced block); it renders under the text.
+  const card = $derived(post.author.kind === 'agent' ? post.text.match(CARD_FENCE)?.[1]?.trim() || '' : '')
+  const text = $derived(card ? post.text.replace(CARD_FENCE, '').trim() : post.text)
+  const folded = $derived(post.author.kind === 'agent' && !post.content?.sources?.length ? splitSources(text) : null)
+  const body = $derived(folded?.body ?? text)
   const answerLabel = { wrong: 'Ada yang salah', more: 'Saya tahu lebih' } as const
   let revealed = $state(false),
     expanded = $state(false),
@@ -101,6 +105,7 @@
         >
           Baca selengkapnya
         </button>{/if}
+      {#if card}{#await import('./cards/OpenCard.svelte') then m}<m.default source={card} />{/await}{/if}
       {#if post.content?.sources?.length || folded || post.answers}<SourcesPanel {post} tail={folded?.tail ?? ''} open={detail} {loggedIn} canAnswer={canVote} {onError} {onAnswered} />{/if}
       {#if post.media?.length}<PostMedia
           bind:this={mediaViewer}

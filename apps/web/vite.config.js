@@ -8,5 +8,7 @@ export default defineConfig({
     alias: { $lib: fileURLToPath(new URL('./src/lib', import.meta.url)) },
   },
   esbuild: { tsconfigRaw: {} },
+  // The OpenUI Svelte package ships TypeScript inside .svelte files; the Svelte plugin compiles it, esbuild cannot.
+  optimizeDeps: { exclude: ['@openuidev/svelte-lang'], include: ['@openuidev/lang-core', 'zod'] },
   build: { target: 'es2022', sourcemap: false },
 })

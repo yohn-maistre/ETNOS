@@ -7,7 +7,7 @@
   // so places, languages and topics read differently at a glance. Five tabs hold everything about the thing:
   // Tentang is its wiki article, Percakapan its posts (labelled with it or linking to its article), Perkembangan the layers
   // from today down to the archive, Komunitas the rooms and organisations, Sumber the basis and published research.
-  import type { Snippet } from 'svelte'
+  import { untrack, type Snippet } from 'svelte'
   import { SvelteURLSearchParams } from 'svelte/reactivity'
   import { ArrowUpRight, BookOpen, Building2, PenLine } from '@lucide/svelte'
   import LandscapePrint from './LandscapePrint.svelte'
@@ -79,8 +79,9 @@
     ['komunitas', 'Komunitas'],
     ['sumber', 'Sumber'],
   ]
-  // svelte-ignore state_referenced_locally
-  let tab = $state<ThingTab>(initialTab)
+  // The first tab comes from the route; later changes come from the effect below. (A svelte-ignore comment
+  // here would be stripped by script preprocessing, so the initial read goes through untrack.)
+  let tab = $state<ThingTab>(untrack(() => initialTab))
   $effect(() => {
     tab = initialTab
   })
