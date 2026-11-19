@@ -98,24 +98,27 @@ jobs:
           echo "name=$host" >> "$GITHUB_OUTPUT"
         env:
           PDS_HOSTNAME: ${{ vars.STRATA_PDS_HOSTNAME }}
+      # Escrow key, PLC writes, the operator token hash and the blob bucket are public values in
+      # wrangler.host.jsonc, so the repository is the one place to read them.
       - name: Deploy
-        run: |
-          set -- --config wrangler.host.jsonc --var "PDS_HOSTNAME:${{ steps.host.outputs.name }}"
-          if [ -n "$ESCROW" ]; then set -- "$@" --var "ESCROW_ROTATION_KEY:$ESCROW"; fi
-          if [ -n "$PLC_WRITES" ]; then set -- "$@" --var "PLC_WRITES:$PLC_WRITES"; fi
-          npx wrangler deploy "$@"
-        env:
-          ESCROW: ${{ vars.STRATA_PDS_ESCROW_KEY }}
-          PLC_WRITES: ${{ vars.STRATA_PDS_PLC_WRITES }}
-      # The key-encryption key is set once and never replaced here: replacing it would lock every
-      # account key. A repository secret STRATA_PDS_KEK is used if present; otherwise a random key is
-      # made on the runner and stored only as a Worker secret. The operator token is updated whenever
-      # STRATA_PDS_OPERATOR_TOKEN is set, and made at random once if it is not.
+        run: npx wrangler deploy --config wrangler.host.jsonc --var "PDS_HOSTNAME:${{ steps.host.outputs.name }}"
+      # The key-encryption key (ACCOUNT_KEK_V1) wraps every account key, so a lost or replaced KEK loses
+      # those keys (the owner's escrow key can still rotate each DID to a new key). This step never
+      # replaces it. It is made only on the very first deploy, when the Worker has neither the KEK nor
+      # the operator token; if the operator token exists without a KEK, the step stops instead, because
+      # that means the KEK was removed by hand. The secret list must parse, or nothing is written.
+      # A repository secret STRATA_PDS_KEK is used for that first KEK if present.
       - name: Secrets
+        shell: bash
         run: |
-          names=$(npx wrangler secret list --config wrangler.host.jsonc --format json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).map(x=>x.name).join(" ")))')
-          case " $names " in *" ACCOUNT_KEK_V1 "*) ;; *)
-            if [ -n "$KEK" ]; then printf '%s' "$KEK"; else node -e 'process.stdout.write(require("crypto").randomBytes(32).toString("base64url"))'; fi | npx wrangler secret put ACCOUNT_KEK_V1 --config wrangler.host.jsonc ;;
+          set -euo pipefail
+          list=$(npx wrangler secret list --config wrangler.host.jsonc --format json)
+          names=$(printf '%s' "$list" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s);if(!Array.isArray(a))process.exit(3);console.log(a.map(x=>x.name).join(" "))})')
+          case " $names " in
+            *" ACCOUNT_KEK_V1 "*) echo "ACCOUNT_KEK_V1 exists and is left as it is." ;;
+            *" OPERATOR_TOKEN "*) echo "::error::OPERATOR_TOKEN exists but ACCOUNT_KEK_V1 does not. Not creating a new KEK; restore the old one by hand."; exit 1 ;;
+            *)
+              if [ -n "$KEK" ]; then printf '%s' "$KEK"; else node -e 'process.stdout.write(require("crypto").randomBytes(32).toString("base64url"))'; fi | npx wrangler secret put ACCOUNT_KEK_V1 --config wrangler.host.jsonc ;;
           esac
           if [ -n "$OPERATOR" ]; then printf '%s' "$OPERATOR" | npx wrangler secret put OPERATOR_TOKEN --config wrangler.host.jsonc
           else case " $names " in *" OPERATOR_TOKEN "*) ;; *) node -e 'process.stdout.write(require("crypto").randomBytes(32).toString("base64url"))' | npx wrangler secret put OPERATOR_TOKEN --config wrangler.host.jsonc ;; esac
@@ -123,6 +126,44 @@ jobs:
         env:
           KEK: ${{ secrets.STRATA_PDS_KEK }}
           OPERATOR: ${{ secrets.STRATA_PDS_OPERATOR_TOKEN }}
+      # Handles <name>.etnos.space resolve over HTTPS at /.well-known/atproto-did. That needs a proxied
+      # wildcard DNS record (*.etnos.space AAAA 100::) and a Worker route for that path. Both are made
+      # only when missing. Names that already have their own record keep it: a wildcard record never
+      # applies to a name that has a record. Their resolution is printed before and after as a check.
+      - name: Handle names under etnos.space
+        shell: bash
+        run: |
+          set -uo pipefail
+          api=https://api.cloudflare.com/client/v4
+          get() { curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$api$1"; }
+          post() { curl -sS -X POST -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'content-type: application/json' "$api$1" --data "$2"; }
+          status() { curl -sS -H 'accept: application/dns-json' "https://cloudflare-dns.com/dns-query?name=$1&type=A" | jq -r '.Status'; }
+          zone=$(get "/zones?name=$DOMAIN" | jq -r '.result[0].id // empty')
+          if [ -z "$zone" ]; then echo "::warning::The API token cannot read the zone $DOMAIN. Handles need the record *.$DOMAIN AAAA 100:: (proxied) and the route *.$DOMAIN/.well-known/atproto-did."; exit 0; fi
+          records=$(get "/zones/$zone/dns_records?per_page=500")
+          if [ "$(printf '%s' "$records" | jq -r '.success')" != "true" ]; then echo "::warning::The API token cannot list DNS records: $(printf '%s' "$records" | jq -c '.errors')"; fi
+          names=$(printf '%s' "$records" | jq -r '.result[]? | select(.name | startswith("*") | not) | .name' | sort -u)
+          before=""; for n in $names; do before="$before $n:$(status "$n")"; done
+          echo "Before:$before"
+          if printf '%s' "$records" | jq -e --arg n "*.$DOMAIN" '[.result[]? | select(.name == $n)] | length > 0' >/dev/null; then
+            echo "The wildcard record exists."
+          else
+            r=$(post "/zones/$zone/dns_records" '{"type":"AAAA","name":"*","content":"100::","proxied":true,"ttl":1,"comment":"Strata identity host: handle names"}')
+            echo "Wildcard record: $(printf '%s' "$r" | jq -c '{success, errors}')"
+          fi
+          routes=$(get "/zones/$zone/workers/routes")
+          if printf '%s' "$routes" | jq -e --arg p "*.$DOMAIN/.well-known/atproto-did" '[.result[]? | select(.pattern == $p)] | length > 0' >/dev/null; then
+            echo "The route exists."
+          else
+            r=$(post "/zones/$zone/workers/routes" "{\"pattern\":\"*.$DOMAIN/.well-known/atproto-did\",\"script\":\"etnos-identity-host\"}")
+            echo "Route: $(printf '%s' "$r" | jq -c '{success, errors}')"
+          fi
+          sleep 5
+          after=""; for n in $names; do after="$after $n:$(status "$n")"; done
+          echo "After:$after"
+          if [ "$before" != "$after" ]; then echo "::error::An existing name changed how it resolves."; exit 1; fi
+        env:
+          DOMAIN: etnos.space
       - name: Check it answers
         run: |
           for i in 1 2 3 4 5 6; do

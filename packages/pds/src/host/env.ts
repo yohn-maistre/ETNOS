@@ -33,6 +33,8 @@ export interface HostEnv {
 	ACCOUNT_KEK_CURRENT?: string;
 	/** Operator token for /admin/* only. It can never act as an account. */
 	OPERATOR_TOKEN: string;
+	/** Or the SHA-256 (hex) of an operator token held by the operator; the hash may be public. */
+	OPERATOR_TOKEN_SHA256?: string;
 	/** When "true", unknown handle hosts are passed to their origin instead of 404. */
 	PASS_THROUGH_UNKNOWN_HOSTS?: string;
 	ACCOUNT: DurableObjectNamespace<HostedAccountDurableObject>;
@@ -63,7 +65,9 @@ export function hostConfigProblem(env: HostEnv): string | null {
 	if (env.PLC_URL.replace(/\/+$/, "") === PUBLIC_PLC && env.PLC_WRITES !== "public-directory-approved" && !signupsClosed(env)) return "PLC_WRITES";
 	if (env.ESCROW_ROTATION_KEY ? !/^did:key:z[1-9A-HJ-NP-Za-km-z]+$/.test(env.ESCROW_ROTATION_KEY) : !signupsClosed(env)) return "ESCROW_ROTATION_KEY";
 	if (!env.ACCOUNT_KEK_V1) return "ACCOUNT_KEK_V1";
-	if (!env.OPERATOR_TOKEN || env.OPERATOR_TOKEN.length < 32) return "OPERATOR_TOKEN";
+	const hashed = !!env.OPERATOR_TOKEN_SHA256 && /^[0-9a-f]{64}$/i.test(env.OPERATOR_TOKEN_SHA256);
+	if (env.OPERATOR_TOKEN_SHA256 && !hashed) return "OPERATOR_TOKEN_SHA256";
+	if ((!env.OPERATOR_TOKEN || env.OPERATOR_TOKEN.length < 32) && !hashed) return "OPERATOR_TOKEN";
 	if (!env.ACCOUNT || !env.AUTH_HUB || (!env.DIRECTORY && !env.DIRECTORY_DO)) return "bindings";
 	return null;
 }

@@ -1,12 +1,10 @@
-// The ETNOS identity host as deployed for testing, by .github/workflows/deploy-etnos.yml.
-// No DNS and no PLC writes: it runs on workers.dev with sign-up closed (PLC_WRITES "off").
-// PDS_HOSTNAME is passed at deploy time (the workers.dev host). The directory lives in a
-// Durable Object, so the deploy needs no D1 database and no R2 bucket.
-//
-// To open sign-up, the owner approves, in order (docs/research/pds-multi-identity-build-2026-11-19.md §6):
-//   1. the custom domain pds.etnos.space and the route *.etnos.space/.well-known/atproto-did (DNS),
-//   2. the escrow key (ESCROW_ROTATION_KEY, the public did:key from scripts/host-escrow-key.mjs),
-//   3. PLC_WRITES "public-directory-approved" (real did:plc registrations).
+// The ETNOS identity host, deployed by .github/workflows/deploy-etnos.yml for a test with 5 to 20
+// people (owner approval of 19 November, docs/research/pds-multi-identity-build-2026-11-19.md §6).
+// The service host stays on workers.dev (PDS_HOSTNAME is passed at deploy time); handles are
+// <name>.etnos.space, answered by the route *.etnos.space/.well-known/atproto-did that the
+// workflow adds. Accounts are made with invite codes only. The directory lives in a Durable Object.
+// Every value here is public: the escrow key is the public did:key (the private half stays offline
+// with the owner), and OPERATOR_TOKEN_SHA256 is the hash of a random operator token.
 {
   "name": "etnos-identity-host",
   "main": "src/host/worker.ts",
@@ -19,7 +17,9 @@
     "HOST_DISPLAY_NAME": "ETNOS",
     "SIGNIN_URL": "https://etnos.space/login",
     "PLC_URL": "https://plc.directory",
-    "PLC_WRITES": "off",
+    "PLC_WRITES": "public-directory-approved",
+    "ESCROW_ROTATION_KEY": "did:key:zQ3shvuJC9x23TnbYs5YtPci6fDyxUj3rHm2gsZhpHP3Za1wP",
+    "OPERATOR_TOKEN_SHA256": "d4021f1ed97347622d6f280a9d1c42c22331d056ae75f2e9efaa2263b99394f4",
     "ACCOUNT_KEK_CURRENT": "1",
     // AT Protocol spaces, alpha: for testing only; nothing sensitive goes into them.
     "SPACES_ENABLED": "true"
@@ -34,6 +34,9 @@
       { "name": "DIRECTORY_DO", "class_name": "DirectoryDurableObject" }
     ]
   },
+  // Blobs (images and files in public records, and space blobs under <did>/space/). Served with
+  // content-security-policy "default-src 'none'; sandbox" and nosniff (src/host/worker.ts).
+  "r2_buckets": [{ "binding": "BLOBS", "bucket_name": "etnos-identity-blobs" }],
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["HostedAccountDurableObject", "AuthHubDurableObject", "DirectoryDurableObject"] },
     { "tag": "v2", "new_sqlite_classes": ["HostedSpaceDurableObject", "HostedSpaceIndexDurableObject"] }

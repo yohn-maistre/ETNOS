@@ -56,7 +56,7 @@ export function homePage(name: string, domain: string): Response {
 	return page(
 		`Akun ${name}`,
 		`<h1>Penyedia akun ${esc(name)}</h1>
-<p>Server ini menyimpan akun AT Protocol dengan nama di bawah ${esc(domain)}. Akun dibuat dengan kode undangan dari pengurus.</p>
+<p>Server ini menyimpan akun AT Protocol dengan nama di bawah ${esc(domain)}. Akun hanya bisa dibuat dengan kode undangan dari pengurus. Server ini sedang diuji oleh kelompok kecil.</p>
 <p><a class="button" href="/akun/baru">Buat akun</a></p>`,
 	);
 }

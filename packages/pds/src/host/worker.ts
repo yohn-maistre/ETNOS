@@ -10,7 +10,7 @@
  * The directory (D1) is read before any account object is woken; tokens are
  * verified before any account object is woken (plan §2.2 rule 2).
  */
-import { equal, randomToken } from "./crypto.ts";
+import { equal, randomToken, sha256Hex } from "./crypto.ts";
 import type { AccountRow } from "./directory.ts";
 import { hostConfigProblem, signupsClosed, type HostEnv } from "./env.ts";
 import { labelForHost } from "./handles.ts";
@@ -98,9 +98,21 @@ async function scoped(host: Host, request: Request, ctx: ExecutionContext, row: 
 	return runScoped(request, env, ctx);
 }
 
+/**
+ * The operator token is either the OPERATOR_TOKEN secret or a token whose SHA-256 is
+ * OPERATOR_TOKEN_SHA256. The hash form lets an operator who holds the token act
+ * without a secrets channel; publishing the hash of a 256-bit random token is safe.
+ */
+async function isOperator(env: HostEnv, header: string): Promise<boolean> {
+	if (!header.startsWith("Bearer ")) return false;
+	const token = header.slice(7);
+	if (token.length < 32) return false;
+	if (env.OPERATOR_TOKEN && env.OPERATOR_TOKEN.length >= 32 && equal(token, env.OPERATOR_TOKEN)) return true;
+	return !!env.OPERATOR_TOKEN_SHA256 && equal(await sha256Hex(token), env.OPERATOR_TOKEN_SHA256.toLowerCase());
+}
+
 async function admin(host: Host, request: Request, path: string): Promise<Response> {
-	const header = request.headers.get("authorization") ?? "";
-	if (!header.startsWith("Bearer ") || !equal(header.slice(7), host.env.OPERATOR_TOKEN)) return xerr(401, "AuthenticationRequired", "Operator token required");
+	if (!(await isOperator(host.env, request.headers.get("authorization") ?? ""))) return xerr(401, "AuthenticationRequired", "Operator token required");
 	const now = Date.now();
 	if (path === "/admin/invites" && request.method === "POST") {
 		const body = await bodyJson(request);
@@ -168,6 +180,25 @@ async function listRepos(host: Host, url: URL): Promise<Response> {
 	return json(200, { repos, ...(rows.length === limit ? { cursor: rows.at(-1)!.did } : {}) });
 }
 
+/** CIDv1 in base32 (the only form this host stores) or a legacy CIDv0. */
+export const isPlainCid = (cid: string) => /^b[a-z2-7]{20,200}$/.test(cid) || /^Qm[1-9A-HJ-NP-Za-km-z]{44}$/.test(cid);
+
+const INLINE_BLOB = /^(image\/(png|jpeg|gif|webp|avif)|video\/(mp4|webm)|audio\/(mpeg|mp4|ogg|webm))$/;
+
+/** Blobs are user content: never run as a page here, never sniffed, and downloaded unless they are plain media. */
+function blobResponse(response: Response, cid: string): Response {
+	const headers = new Headers(response.headers);
+	headers.set("content-security-policy", "default-src 'none'; sandbox");
+	headers.set("x-content-type-options", "nosniff");
+	headers.set("cross-origin-resource-policy", "cross-origin");
+	if (response.ok) {
+		const type = (headers.get("content-type") ?? "").split(";")[0]!.trim().toLowerCase();
+		headers.set("content-disposition", `${INLINE_BLOB.test(type) ? "inline" : "attachment"}; filename="${cid}"`);
+		if (!INLINE_BLOB.test(type)) headers.set("content-type", "application/octet-stream");
+	}
+	return new Response(response.body, { status: response.status, headers });
+}
+
 /** Rewrite ?repo= or ?did= from a handle to a DID after resolving it in the directory. */
 async function publicTarget(host: Host, url: URL, param: "repo" | "did"): Promise<AccountRow | Response> {
 	const actor = url.searchParams.get(param);
@@ -191,6 +222,9 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 			stage: "experimental",
 			multiAccount: true,
 			signup: signupsClosed(host.env) ? "closed" : "invite",
+			signupNote: signupsClosed(host.env)
+				? "Pendaftaran di server ini belum dibuka."
+				: "Akun hanya bisa dibuat dengan kode undangan dari pengurus. Server ini sedang diuji oleh kelompok kecil.",
 			spaces: spacesEnabled(host.env) ? "alpha" : false,
 			publicRepository: true,
 			firehose: false,
@@ -309,9 +343,14 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 	if (path === "/xrpc/com.atproto.sync.listRepos" && method === "GET") return listRepos(host, url);
 
 	if (READ_ROUTES.has(path) || SYNC_ROUTES.has(path)) {
+		// A blob CID is used as part of an R2 key, so anything that is not a plain CID is refused:
+		// otherwise "staged/…" or "space/…" would reach unreferenced uploads or private space blobs.
+		if (path === "/xrpc/com.atproto.sync.getBlob" && !isPlainCid(url.searchParams.get("cid") ?? ""))
+			return xerr(400, "InvalidRequest", "Invalid cid");
 		const target = await publicTarget(host, url, READ_ROUTES.has(path) ? "repo" : "did");
 		if (target instanceof Response) return target;
-		return scoped(host, new Request(url, request), ctx, target);
+		const response = await scoped(host, new Request(url, request), ctx, target);
+		return path === "/xrpc/com.atproto.sync.getBlob" ? blobResponse(response, url.searchParams.get("cid")!) : response;
 	}
 	if (WRITE_ROUTES.has(path)) {
 		const auth = await authenticate(host, request);

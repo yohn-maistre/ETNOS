@@ -47,3 +47,4 @@
 2026-11-19l identity host on workers.dev with sign-up closed (no DNS, no PLC writes); ETNOS unchanged until STRATA_ACCOUNT_HOST is set
 2026-11-19m identity host: AT Protocol spaces (alpha), removal checked at read time; sign-up still closed
 2026-11-19n copy pass voice rule
+2026-11-19o identity host: invite-only sign-up with PLC writes and the escrow key, blobs in R2 with safe headers, handle names under etnos.space
