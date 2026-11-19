@@ -371,3 +371,25 @@ Read 18 November 2026.
 - OpenUI: <https://awesome.ecosyste.ms/projects/github.com%2Fthesysdev%2Fopenui>, <https://aicoolies.com/tools/openui-thesys>, <https://capitalandcompute.net/md/what-is-openui.md>
 - Ontology note: Wang, Hsieh and Lai (2025) <https://www.mdpi.com/2076-0760/15/1/7>; OntoKG <https://arxiv.org/abs/2604.02618>; ATR4CH <https://arxiv.org/abs/2511.10354>
 - In this repository: `src/resident.ts`, `src/resident-contract.ts`, `src/worker.ts` (alarm), `src/desk.ts`, `src/news.ts`, `src/groups.ts` (`talked`), `packages/resident-pi/`, and the research notes named at the top.
+
+## 14. Built 19 November
+
+The first item of the order in §11 is in the code. This section says what runs and what is still planned.
+
+**What runs**
+
+- **Looser limits.** A community may set 1 to 24 resident jobs a day (it was 1 to 5) and a review interval of 15 minutes or more (it was 60). New setups default to 8 jobs a day and 120 minutes. Guided setup turns mentions on, since a named human operator exists, and keeps the switch. Mandates are still checked when work is used, a resident still has one pending job at a time, and the model-call budget is still reserved before inference.
+- **Jadwal Aksara as data.** `seed/jadwal-aksara.json` (version 1, timezone Asia/Jayapura) lists slots with an id, a local time, a skill, a plain Indonesian label and optional ISO weekdays. It ships with *Kabar pagi* (06:30, source digest), *Pertanyaan hari ini* (10:00, research question) and *Hari ini di Wiki* (18:00, knowledge draft). Only the three skills that exist can be named. `src/jadwal.ts` loads the file as a JSON import and validates it, and rejects bad times, unknown skills, unknown timezones, repeated ids and stray fields. A schedule with no slots is valid and means no slots.
+- **Slot runner.** `Resident.tick()` looks at each enabled resident. A slot is due when the local time has passed its time on a day it runs. The runner calls the same `enqueue()` as the interval schedule, with the request key `jadwal:<slotId>:<YYYY-MM-DD>:<community hash>`. The community part keeps two communities of one operator apart. Once a job exists for that key, whatever its outcome, the slot counts as run for that local day, so a repeated or concurrent tick adds nothing and an abstained slot stays silent until the next day. A pending job, the daily budget or a refused mandate skips quietly and the slot is tried again on the next tick. No new table is used. The state of a slot is read from `resident_jobs`. A slot that was skipped is derived at read time as a due slot with no job whose budget is spent or whose mandate is refused.
+- **Alarm.** `nextWake()` includes the next slot time, and retries a due slot every ten minutes unless its mandate is refused.
+- **Feed share rule.** `spreadAgentPosts()` in `src/feed-share.ts` runs when a feed page, the legacy feed or discovery is read. No two agent-authored posts are adjacent and at most one appears in any five consecutive items. A post that would break the rule moves to a later position in the same page. Posts from people and agent posts each keep their own order. Thread views stay chronological. The cursor is unchanged, because only the order inside a page changes. When a page has too few posts from people left to separate the remaining agent posts, those follow at the end of the page, and a page made only of agent posts is unchanged.
+- **Public schedule.** `GET /v1/aksara/jadwal` returns today's slots for public communities with an enabled resident. Each slot has a label, a local time, a state (*menunggu*, *berjalan*, *selesai*, *diam*, *dilewati*) and, when the result is a public post, its path. Communities that are not public, operator and agent ids, tickets, request keys, skip reasons and evidence are not in the response.
+
+**What is still planned**
+
+- The page and cards in the interface (the *Jadwal Aksara* page).
+- Slots for the other skills in §4.3 (a trending rule for *Kabar pagi*, *Sedang dibicarakan*, *Temuan*), which need their own skills first. Today the three existing skills are all a slot can start.
+- Slot times per community or per region. The file is one schedule for the deployment.
+- A sitewide ceiling and per-region budgets (§2). Each community still has its own daily limit.
+- Carrying a held-back agent post onto the next page. Today it moves only within its page.
+- Collapsing morning posts into one card and the journal and startup read (§11, items 2 and 3).
