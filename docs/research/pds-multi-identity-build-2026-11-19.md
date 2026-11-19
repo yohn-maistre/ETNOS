@@ -1,8 +1,10 @@
 # Multi-account identity host: what was built, tested and measured
 
-19 November 2026 · build note for task 24 (Run 2), following `pds-multi-identity-plan-2026-11-18.md`. Nothing was deployed, no Cloudflare resource was created, no DNS was touched and no DID was registered on the public PLC directory. All identities in tests are synthetic and live in an in-memory fake directory.
+19 November 2026 · build note for task 24 (Run 2), following `pds-multi-identity-plan-2026-11-18.md`. All identities in tests are synthetic and live in an in-memory fake directory.
 
-Status words follow `proposal/claims-2026-11-18.md`: this host is **built** (merged and tested locally), not live.
+**Update, later on 19 November (owner's go-ahead for a test deploy):** the host is **live on workers.dev with sign-up closed**, at `https://etnos-identity-host.giyaibo.workers.dev` (`/health` answers `"signup":"closed"`). It was deployed by the `identity-host` job in `.github/workflows/deploy-etnos.yml` (deploy line `2026-11-19l`). No DNS was touched and no DID was registered on the public PLC directory. AT Protocol spaces (alpha) are built on the host (§9), and the same bundle runs on plain workerd for self-hosting (§10). ETNOS does not offer hosted sign-up until the owner sets `STRATA_ACCOUNT_HOST` (§6).
+
+Status words follow `proposal/claims-2026-11-18.md`: the host is **live for testing, closed to sign-up**; spaces are **built** (alpha upstream); self-hosting on workerd is **built and tested locally**; Docker is a **plan**.
 
 ## 1. What exists now
 
@@ -20,7 +22,11 @@ A second Worker entry in `packages/pds`, `src/host/worker.ts`, hosts many AT acc
 | Lifecycle | `src/host/service.ts` | Sign-up saga (claim → provision → record DID → PLC → active), resumable with the same invite, name and password; deactivate, reactivate, delete (directory `deleting` → purge hub, object and blobs → `deleted`, name kept). |
 | Pages | `src/host/pages.ts` | `/akun/baru` sign-up form and the OAuth pages. No scripts, strict CSP, `frame-ancestors 'none'`. |
 | ETNOS side | `src/oauth.ts`, `src/worker.ts` | Optional `accountHost` (`STRATA_ACCOUNT_HOST`). `/auth/options` returns it; `/auth/start` in sign-up mode accepts `provider: "host"` (authorise at the configured host, which shows the selector) or `handle` (enrol an existing account with an ETNOS invitation). The host is never taken from request input and must be in `allowedHosts`. |
-| Tools | `scripts/measure-host.mjs`, `scripts/host-escrow-key.mjs`, `wrangler.host.example.jsonc` | Local timing; offline escrow key generation; deployment template (not deployed). |
+| Tools | `scripts/measure-host.mjs`, `scripts/host-escrow-key.mjs`, `wrangler.host.example.jsonc` | Local timing; offline escrow key generation; deployment template with D1. |
+| Ports | `src/host/ports.ts`, `src/host/directory-do.ts` | The directory depends on a small `SqlDatabase` port. D1 satisfies it; `DirectoryDurableObject` is the same schema in one SQLite Durable Object (used on workers.dev and on plain workerd). |
+| Deployed config | `wrangler.host.jsonc` | workers.dev, directory in a Durable Object, no D1 or R2, `PLC_WRITES "off"` (sign-up closed, no escrow key needed), spaces on. |
+| Spaces | `src/host/spaces.ts` | AT Protocol spaces (alpha) for many accounts; §9. |
+| Self-hosting | `scripts/selfhost-config.mjs` | Writes a workerd configuration for the same bundle with Durable Objects on local disk; §10. |
 
 What Strata reads after sign-in (checked in `src/oauth.ts`): only the OAuth session's DID and the handle from identity resolution (handle → DID through `bsky.social`'s resolver, DID → document through plc.directory). No profile record. So the host must answer the well-known handle file, OAuth, and the PLC document must list `https://pds.etnos.space` and `at://<name>.etnos.space`. All three are covered.
 
@@ -41,6 +47,10 @@ All in `packages/pds/test/`, run by `npm test` in that package (workerd through 
   - **throttles**: ten failures lock one account's password checks without touching another; one address that spends its budget is refused while another address signs in.
   - **publication boundary and guards**: firehose, Spaces, AppView and import routes return 501; `atproto-proxy` is refused; oversized bodies 413; the public directory is refused without `PLC_WRITES=public-directory-approved`; a short operator token is refused.
 - `host-oauth.test.mjs`: the official client signs in Alice with her `login_hint`; Bob's password does not authorise Alice; a cross-site post is refused; Alice's DPoP grant writes her repository and is refused on Bob's; the steward enrols Bob through ETNOS; Bob on the same device sees his consent page, "Pakai akun lain" shows the selector with Alice remembered; a tampered selection cookie is ignored; Bob's selection and password cannot complete a request for Alice; deleting Alice revokes her grants (her ETNOS agent can no longer write, the hub holds no live tokens for her) while Bob continues; a new person with an ETNOS invitation signs up with `provider: "host"`, picks the account on the selector and is enrolled.
+- `host-runtime.test.mjs`, **closed sign-up**: with `PLC_WRITES "off"` and the public directory configured, the host serves health, `describeServer` and OAuth metadata, refuses `/akun/baru` and `createAccount` (`SignupsClosed`), makes no PLC call and claims no row; a malformed escrow key is still refused.
+- `host-workerd.test.mjs`: the bundle on open-source workerd (not Miniflare), directory in `DirectoryDurableObject`, Durable Objects on a local folder, fake PLC behind workerd's outbound service: invite, sign-up, a reused invite refused, a record written, workerd restarted, then the handle, the record and a password sign-in still work.
+- `host-spaces.test.mjs`: §9.
+- `host-units.test.mjs` also checks that the inlined directory schema equals `migrations/0001_directory.sql`.
 - Root `test/signup.test.ts`: sign-up by handle sends `login_hint`; `provider: "host"` sends none; a node without an account host refuses it; a host outside `allowedHosts` is refused.
 
 ## 3. Measurements
@@ -78,14 +88,14 @@ Reading: the edge Worker's own work is a D1 query, an HKDF and an HMAC, well und
 
 ## 6. What the owner must approve, in order
 
-Each step is one command or one setting. None has been done.
+Done with the owner's go-ahead of 19 November: the Worker deploy on workers.dev (`etnos-identity-host`, sign-up closed), its secrets (the KEK was made once on the runner and exists only as a Worker secret, which is fine while there are no accounts; set the repository secret `STRATA_PDS_KEK` before opening sign-up if a paper copy is wanted, and do it **before** the first account exists, because the workflow never replaces an existing KEK), and the health check. Still to approve, each one setting or one command:
 
 1. **Decide the open questions** (plan §9): Workers Paid or not; where the KEK paper copy and the escrow private key live and who may hold them; whether the custodial wording on `/akun/baru` is acceptable (draft: "Akun ini adalah identitas AT Protocol yang disimpan oleh ETNOS. ETNOS menyimpan kunci akun Anda dan dapat diminta memindahkannya ke penyedia lain."); who may issue invites and takedowns; whether deleted names are held for ever (built) or released after 90 days; whether deletion should also tombstone the DID at PLC (not built).
-2. **Spike, Worker only** (plan §8 steps 1–4, no DNS, no DID): approve deploying the throwaway probe and this host under a `workers.dev` name with a private fake PLC URL. Commands: `cd packages/pds && npx wrangler d1 create etnos-identity-directory-spike`, put the id in a copy of `wrangler.host.example.jsonc`, `npx wrangler d1 migrations apply etnos-identity-directory-spike --remote`, `npx wrangler secret put ACCOUNT_KEK_V1` (value from `openssl rand 32 | basenc --base64url | tr -d =`), `npx wrangler secret put OPERATOR_TOKEN`, `npx wrangler deploy --config <copy>`. Read CPU per request from Workers Logs. Delete afterwards with `npx wrangler delete` and `npx wrangler d1 delete`.
-3. **Escrow key**, on the owner's machine: `node scripts/host-escrow-key.mjs ~/etnos-escrow.key`; put the printed `did:key` in `ESCROW_ROTATION_KEY`; store the file offline.
-4. **DNS and routes** (plan §8 step 5): approve the `pds.etnos.space` custom domain and a proxied wildcard record `*.etnos.space` (originless), plus the route `*.etnos.space/.well-known/atproto-did`. Check that existing subdomains still reach their origins.
-5. **One throwaway DID on the public directory** (plan §8 step 6): set `PLC_URL=https://plc.directory` and `PLC_WRITES=public-directory-approved`, create one account named for the test (for example `uji-1`), check it resolves through `bsky.social` and plc.directory, then deactivate it. The DID stays in the public log for ever.
-6. **ETNOS configuration**: add `pds.etnos.space` to `STRATA_OAUTH_HOSTS` and set `STRATA_ACCOUNT_HOST=https://pds.etnos.space`. The ETNOS worker must reach the host through its public name; same-zone Worker-to-Worker `fetch` may need the `global_fetch_strictly_public` compatibility flag or a service binding **[U]**, to confirm in the spike.
+2. **CPU on Cloudflare**: with accounts closed, CPU can only be read for health, metadata and pages today. The PBKDF2 sign-in figure (about 15 ms locally) is read from Workers Logs after step 5.
+3. **Escrow key**, on the owner's machine: `node scripts/host-escrow-key.mjs ~/etnos-escrow.key`; put the printed `did:key` in the repository variable `STRATA_PDS_ESCROW_KEY`; store the file offline.
+4. **DNS and routes**: add the custom domain `pds.etnos.space` to the `etnos-identity-host` Worker, a proxied wildcard record `*.etnos.space` (originless), and the route `*.etnos.space/.well-known/atproto-did`; then set the repository variable `STRATA_PDS_HOSTNAME=pds.etnos.space`. Check that existing subdomains still reach their origins.
+5. **One throwaway DID on the public directory**: set the repository variable `STRATA_PDS_PLC_WRITES=public-directory-approved`, redeploy (append a line to `deploy/etnos.txt`), create one account named for the test (for example `uji-1`) with an invite from `/admin/invites` (operator token: repository secret `STRATA_PDS_OPERATOR_TOKEN`, then redeploy), check it resolves through `bsky.social` and plc.directory, then deactivate it. The DID stays in the public log for ever.
+6. **ETNOS configuration**: set the repository variable `STRATA_ACCOUNT_HOST=https://pds.etnos.space`. The workflow adds the host to `STRATA_OAUTH_HOSTS`. The ETNOS worker must reach the host through its public name; same-zone Worker-to-Worker `fetch` may need the `global_fetch_strictly_public` compatibility flag or a service binding **[U]**, to confirm at this step.
 7. **Real members**: not before passkeys, recovery and backups (plan phases 5–6). Real members stay on the official PDS track until then.
 
 ## 7. What the interface should show (for the web app)
@@ -93,3 +103,83 @@ Each step is one command or one setting. None has been done.
 - On the sign-in page, when `/auth/options` returns `accountHost`: a button "Buat akun ETNOS" that links to `<accountHost>/akun/baru` (with `?kode=` when the person has a host invite), and a sign-up button that posts `/auth/start` with `{mode: "signup", invitation, provider: "host"}`.
 - After sign-up on the host, the "Masuk ke ETNOS" button goes to `SIGNIN_URL?handle=<name>.etnos.space`; the login page can prefill the handle from that parameter.
 - In Studio, for stewards: an "Undang anggota" action that calls the host's `/admin/invites` through the ETNOS server (needs the operator token as an ETNOS secret; not built, because it would put a host credential in the ETNOS worker and should be decided with the owner).
+- For spaces (§9), when the community UI wants them: a steward action "Buat ruang AT" on a private community that calls `com.atproto.simplespace.createSpace` with the lembaga's account, and member changes that call `addMember` and `removeMember` together with the Strata membership change. The UI should say plainly that the operator can read space data (access control, not encryption) and that spaces are in trial.
+
+## 8. Live deployment (19 November)
+
+- Worker `etnos-identity-host` on `https://etnos-identity-host.giyaibo.workers.dev`, deployed by the `identity-host` job after the ETNOS job in `deploy-etnos.yml`. A failure there does not hold back ETNOS.
+- Bindings: `ACCOUNT`, `AUTH_HUB`, `DIRECTORY_DO`, `SPACES`, `SPACES_INDEX` (all SQLite Durable Objects, available on the Free plan). No D1 and no R2, so blob upload is not available until an R2 bucket is approved.
+- Secrets: `ACCOUNT_KEK_V1` (set once, never replaced by the workflow), `OPERATOR_TOKEN` (from `STRATA_PDS_OPERATOR_TOKEN` when set, otherwise random once).
+- Repository variables the owner may set: `STRATA_PDS_HOSTNAME`, `STRATA_PDS_ESCROW_KEY`, `STRATA_PDS_PLC_WRITES`, `STRATA_ACCOUNT_HOST`.
+- Bundle: 3.5 MiB raw, 690 KiB gzip with spaces (Free limit 3 MiB gzip).
+
+## 9. AT Protocol spaces on this host *(alpha, built 19 November)*
+
+Spec: proposal 0016 ([permissioned data](https://github.com/bluesky-social/proposals/blob/main/0016-permissioned-data/README.md)), alpha announced 20 August 2026 ([atproto.com/blog/atproto-spaces-alpha](https://atproto.com/blog/atproto-spaces-alpha)). Bluesky's own words: not for production, no backups, schema not final. Our earlier trial against the official alpha is in `labs/spaces`. The design this follows is `docs/communities-spaces-2026-11-19.md` §3–4.1.
+
+**What it is.** A space is `at://{authority}/space/{type}/{key}`. The authority is any DID; its PDS is the space host. An individual account can be the authority; for a lembaga the design uses a dedicated account. Policies: member list (`memberListPolicy`), public (`publicPolicy`), or a managing app. Each member's records stay in a per-space repository on that member's own PDS. Readers get a short delegation from their own PDS and exchange it at the space host for a credential (bound to a DPoP key); repo hosts accept that credential.
+
+**How it is built here.** `src/host/spaces.ts` wraps the MIT engine `@getcirrus/spaces` 0.1.0 (pinned to `@atproto/space` alpha 2026-08-18), which was written for one account per deployment:
+
+- Every spaces request is served for one hosted, active account: the signed-in account for writes and management, the `repo` for reads, the space authority for credential and sync calls. Unknown or inactive accounts get `RepoNotFound`.
+- Space objects are named `"{account} {space uri}"`, so two hosted members of one space never share storage; each account has its own index.
+- Space tokens and service JWTs are signed inside the account's object (`signSpaceJwt`). It signs only JWT signing inputs of the space kinds, issued by that account, so it is not a general signing oracle. The key never leaves the object.
+- A session counts only for its own account: Budi's token naming Ana's space repository is refused.
+- **Removal is immediate.** The alpha's credentials live up to two hours and cannot be revoked; the lab showed a removed member still reading. Here the authority's object records whom each credential went to, and every credential read on this host for a space whose authority is also on this host is checked against the space's current policy (member list: still a member; public: allowed). For an authority on another PDS, a credential is accepted only while younger than `SPACES_REMOTE_CREDENTIAL_MAX_AGE` (default 300 seconds); the reader then has to fetch a fresh one, which the remote host grants only to current members.
+- Deleting an account removes its space repositories and index (withdrawal).
+- Calls between accounts on this host stay inside the Worker (a Worker cannot fetch its own host name).
+
+**Modes.**
+
+| Mode | Authority | Space host | Members' records | Status |
+| --- | --- | --- | --- | --- |
+| Host-managed | the lembaga's account on this host | this host | each member's own PDS (this host for hosted members) | built, tested |
+| Own PDS | the lembaga's account on its own PDS (Aksara node, mini PC, own Cloudflare) | that PDS | each member's own PDS | members on this host can write and serve reads; tested against an outside authority |
+
+**Tests** (`test/host-spaces.test.mjs`): the lembaga creates a member-list space; a member cannot manage members; Ana writes into her space repository and Budi's session cannot; the record is absent from Ana's public `listRecords`, `getRecord` and `describeRepo`; Budi reads with a credential; the credential without its key, Budi's session on Ana's repo and an anonymous read are refused; a non-member gets no credential; **after removal Budi's existing credential is refused at once** and a new one is refused; a public space lets a non-member read with a credential, and that credential does not open the private space; after Ana deletes her account her space repository is gone. Second test: a space whose authority is a DID on another PDS; Ana's write is announced to that PDS with `notifyWrite`; a credential it signed is accepted while fresh and refused once older than the limit; a forged credential is refused.
+
+**Not built / alpha gaps.** Blob storage for spaces (needs R2); sync notifications to outside syncers are the engine's, untested here; managing-app policy is accepted only within 60 seconds of issue; OAuth consent text for space scopes is the provider's; credential records are kept until expiry. Strata's private communities stay the store of record; mirroring a community into a space is behind the design doc's per-community flag and not wired into the Strata app.
+
+## 10. Self-hosting: one codebase, plain workerd *(recommendation confirmed; Docker is a plan)*
+
+The owner's recommendation holds, with one change from the original plan: the directory no longer needs D1.
+
+- `packages/pds` is its own package with its own entry (`src/host/worker.ts`) and configs. It imports no Strata app code; Strata talks to it only over XRPC and OAuth (the OAuth test uses Strata's client as an outside client).
+- The seam: `SqlDatabase` for the directory (D1 or `DirectoryDurableObject`), SQLite Durable Objects for accounts, auth, spaces (workerd runs these on local disk), R2 for blobs (optional), and the Workers runtime API for fetch, alarms and secrets, which workerd implements.
+- **Tested**: `host-workerd.test.mjs` runs the production bundle on the open-source `workerd` binary with `scripts/selfhost-config.mjs`, and it survives a restart. So a Node adapter is not needed; nothing in workerd blocked the host.
+- **Not yet**: blobs on workerd (no R2 there). Options: a disk-backed blob object behind the `R2Bucket` subset Cirrus uses, or an S3-compatible store. Records and accounts work without it; voice notes need it.
+
+Docker plan (not shipped: no Docker daemon was available to test a build):
+
+1. Build the bundle: `cd packages/pds && npx wrangler deploy --dry-run --config wrangler.host.jsonc --outdir dist`.
+2. Image: `FROM debian:bookworm-slim`, copy the `workerd` binary from the `@cloudflare/workerd-linux-64` package (or `-arm64` for ARM mini PCs) and `dist/worker.js`; a non-root user; `VOLUME /data`.
+3. At start: `node scripts/selfhost-config.mjs --bundle /app/worker.js --storage /data --port 8080 --address 0.0.0.0 --vars /run/secrets/vars.json --config-dir /app > /app/config.capnp`, then `workerd serve /app/config.capnp --experimental` (the config can also be generated at build time).
+4. In front: Caddy or the node's reverse proxy for TLS, setting `X-Forwarded-Proto: https`; handles need `*.<domain>` pointing at the box.
+5. Backups: copy `/data` while workerd is stopped, or after a nightly export (not built).
+
+## 11. Rust or WebAssembly: plan, not a rewrite
+
+Where this host spends CPU, measured on this machine (Node, 19 November; `@atproto/crypto` and `@atcute/cbor`, the libraries the host uses):
+
+| Work | Median |
+| --- | --- |
+| PBKDF2-SHA256 100,000 iterations (sign-in) | about 15 ms (native WebCrypto) |
+| secp256k1 signature (each commit, each space token) | 0.27 ms (pure JS, noble) |
+| SHA-256 of 32 KiB | 0.17 ms |
+| DAG-CBOR encode of a post | 0.002 ms |
+| CID of a block | 0.002 ms |
+
+A record write is a few CBOR encodes and CIDs (the MST path, about log16 of the repo size), one signature and SQLite writes. Local `createRecord` was 9.8 ms wall in workerd, mostly runtime and storage, not crypto. The one heavy step is the password hash, already native. Repository export (`getRepo`) grows with repo size and is the only other candidate.
+
+What Rust or WASM would change: secp256k1 in WASM is likely a few times faster than pure JS **[U]**, a saving of roughly 0.2 ms per write, well inside the Free plan's 10 ms. It cannot speed up PBKDF2, which is already native, and it would add a build toolchain and a second language. Passkeys remove the password cost entirely.
+
+The ecosystem (licences checked 19 November): **rsky** (Blacksky, Apache-2.0, a full PDS and relay in Rust, with a spaces branch, rsky#319); **atrium** (MIT, Rust client libraries); **rust-pds-cloudflare** (PolyForm Noncommercial, not usable here). Apache-2.0 and MIT code could be used as dependencies in an AGPL project.
+
+Recommendation: no move now. Measure first, then reconsider if any of these holds, read from Workers Logs on the live host:
+
+- p95 CPU above 7 ms on write routes once passwords are excluded;
+- `getRepo` or `listRepoOps` for a 10,000-record repository above 30 ms CPU;
+- signing becomes more than a third of CPU on any route.
+
+Then the first step would be one WASM module for secp256k1 signing and CAR writing behind the same functions, not a rewrite.
+

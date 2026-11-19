@@ -472,6 +472,10 @@ The owner set the **multi-identity PDS first**, so people can log in and post, a
 
 **Progress 19 November:** step 1 is built and tested locally (not deployed): many accounts per Worker, invite sign-up at `/akun/baru`, OAuth with an account step, ETNOS sign-up through its own host (`research/pds-multi-identity-build-2026-11-19.md`). It now waits on the owner's spike, DNS and PLC approvals listed there.
 
+**Progress 19 November, later:**
+- The identity host is live on workers.dev with sign-up closed. The directory is in a Durable Object, so there is no D1, and there was no DNS change and no PLC write. The same bundle runs on plain workerd for self-hosting. AT Protocol spaces (alpha) are built on it, and a removed member is refused at read time (`research/pds-multi-identity-build-2026-11-19.md` §8–11).
+- The knowledge model's first slice is built: entities, statements and witnesses with review, withdrawal and a public view at `/v1/knowledge-model`, and a seed of 110 entities from the verified quotes. The observatory's static files hold clusters against a null model, gaps, questions and similarity (`research/knowledge-model-build-2026-11-19.md`).
+
 Steps 2–4 fit before the proposal only if Run 2 lands by about 23 November; otherwise the proposal describes them as *rencana* and shows step 4's seed import if it is live.
 
 ### 25.3 Small decisions recorded this session

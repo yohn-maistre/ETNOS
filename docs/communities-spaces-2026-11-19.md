@@ -81,6 +81,8 @@ From the Spaces alpha announcement ([atproto.com/blog/atproto-spaces-alpha](http
 - **Removal is checked at read time by Strata too**, not only by credential expiry (see the trial above).
 - **Withdrawal** deletes the record from the member's space repository and from every Strata derivative, as it does today.
 
+*Build note, 19 November:* host-managed and own-PDS modes are built on our PDS (`packages/pds/src/host/spaces.ts`), with removal checked at read time. Tests and limits are in `research/pds-multi-identity-build-2026-11-19.md` §9.
+
 ## 5. The private dictionary and grammar *(proposal)*
 
 A lembaga adat runs a private language community. People talk as usual. Two pages grow beside Diskusi: **Kamus** and **Tata bahasa**.
