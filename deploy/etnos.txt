@@ -44,3 +44,4 @@
 2026-11-19i main more openui cards: charts, table, stat row, progress, question
 2026-11-19j studio model key
 2026-11-19k studio service keys
+2026-11-19l identity host on workers.dev with sign-up closed (no DNS, no PLC writes); ETNOS unchanged until STRATA_ACCOUNT_HOST is set
