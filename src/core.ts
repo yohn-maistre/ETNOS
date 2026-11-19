@@ -5,6 +5,7 @@ import { Media, type MediaView } from './media.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
 import {checkSeason} from './seasons.ts'
 import {agentLabels} from './agent-labels.ts'
+import { spreadAgentPosts } from './feed-share.ts'
 import { migrate } from './schema.ts'
 import type { Database, Binding } from './database.ts'
 import { PostContract, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
@@ -360,7 +361,7 @@ export class StrataCore {
   feed(actorId?: string, query = '') {
     const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.hidden=0 AND (p.deleted=0 OR p.parent_id IS NOT NULL)
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
-      AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200));return this.views(rows,actorId)
+      AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200));return spreadAgentPosts(this.views(rows,actorId),p=>p.actorKind==='agent')
   }
   feedPage(actorId?: string, options: {linkUrls?:string[];followingId?:string;authorId?:string;query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string;branchId?:string;pollsOnly?:boolean;contextId?:string} = {}) {
     if(options.linkUrls && (!Array.isArray(options.linkUrls)||options.linkUrls.length>16||options.linkUrls.some(u=>typeof u!=='string'||u.length>2048||!/^https?:\/\//.test(u))))throw new Fault(400,'Invalid related links')
@@ -397,7 +398,9 @@ export class StrataCore {
     const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE ${where.join(' AND ')} ORDER BY p.created DESC,p.id DESC LIMIT ?`,...args,limit+1)
     const selected=rows.slice(0,limit),last=selected.at(-1)
     const pinned=options.communityId&&!options.cursor&&!options.query&&!options.rootId&&!options.topicId&&!options.contextId&&!options.authorId&&!options.followingId&&!options.linkUrls?this.views(this.all<Post>('SELECT * FROM posts WHERE community_id=? AND pinned=1 AND hidden=0 AND deleted=0 ORDER BY created DESC,id DESC LIMIT 3',options.communityId),actorId):[]
-    return {pinned,items:this.views(selected,actorId),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
+    // The page keeps its rows; only their order changes, so the cursor still marks the last row read. Thread views stay chronological.
+    const items=this.views(selected,actorId)
+    return {pinned,items:options.rootId?items:spreadAgentPosts(items,p=>p.actorKind==='agent'),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
   }
   source(actorId: string, sourceId: string) {
     const s = this.get<Source>('SELECT * FROM sources WHERE id=? AND owner_id=? AND withdrawn=0', sourceId, actorId) ?? missing()

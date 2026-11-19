@@ -1,4 +1,6 @@
 import {StrataCore,Fault} from './core.ts'
+import {spreadAgentPosts} from './feed-share.ts'
+export {spreadAgentPosts}
 export type ExploreSort='balanced'|'active'|'new'
 export type RankCandidate={id:string;author_id:string;community_id:string;created:number;score:number;humanReplies:number;latestReply:number;activeAuthors:number}
 /** Original bounded recipe informed by Lemmy's published decay and X's pipeline stages. */
@@ -26,7 +28,7 @@ export class Ranking {
   // Chronological choice stays chronological. Diversity is a soft discovery pass.
   for(const p of rows){if(sort!=='new'&&((authors.get(p.author_id)??0)>=2||(groups.get(p.community_id)??0)>=3))continue;selected.push(p);authors.set(p.author_id,(authors.get(p.author_id)??0)+1);groups.set(p.community_id,(groups.get(p.community_id)??0)+1);if(selected.length===limit)break}
   for(const p of rows){if(selected.length>=limit)break;if(!selected.some(x=>x.id===p.id))selected.push(p)}
-  const items=selected.map(p=>({...this.store.getPost(undefined,p.id),discovery:{communityTitle:this.store.community(p.community_id).title,reason:sort==='new'?'Terbaru':sort==='active'&&p.humanReplies?'Percakapan aktif':sort==='balanced'?'Aktivitas publik · beragam komunitas':'Baru dibagikan'}}))
+  const items=spreadAgentPosts(selected.map(p=>({...this.store.getPost(undefined,p.id),discovery:{communityTitle:this.store.community(p.community_id).title,reason:sort==='new'?'Terbaru':sort==='active'&&p.humanReplies?'Percakapan aktif':sort==='balanced'?'Aktivitas publik · beragam komunitas':'Baru dibagikan'}})),p=>p.actorKind==='agent')
   return {items,sort,recipe:'commons-explore-v1',asOf:now,candidateCount:rows.length,windowDays:30,pagination:'bounded-selection',personalized:false}
  }
 }
