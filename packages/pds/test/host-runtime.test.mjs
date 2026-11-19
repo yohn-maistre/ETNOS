@@ -270,7 +270,7 @@ test("private keys stay wrapped at rest, never appear in any response, and survi
 		];
 		for (const [path, opts] of paths) await record(await call(mf, path, opts));
 		const keys = await decryptKeys(dir, { 1: cfg.vars.ACCOUNT_KEK_V1 }, alice.did);
-		assert.deepEqual(keys.map((k) => k.purpose).sort(), ["rotation", "signing"]);
+		assert.deepEqual(keys.map((k) => k.purpose).sort(), ["kem", "rotation", "signing"]);
 		assert.ok(keys.every((k) => k.clear.length === 32 && k.version === 1));
 		const raw = readFileSync(keys[0].file);
 		for (const key of keys) {
@@ -401,7 +401,7 @@ test("publication boundary and configuration guards", async () => {
 	try {
 		await migrate(mf);
 		const alice = await signup(mf, "alice");
-		for (const path of ["/xrpc/com.atproto.sync.subscribeRepos", "/xrpc/com.atproto.space.getSpace", "/xrpc/app.bsky.feed.getTimeline", "/xrpc/com.atproto.repo.importRepo"])
+		for (const path of ["/xrpc/com.atproto.sync.subscribeRepos", "/xrpc/com.atproto.space.getBlob", "/xrpc/app.bsky.feed.getTimeline", "/xrpc/com.atproto.repo.importRepo"])
 			assert.equal((await call(mf, path, { token: alice.accessJwt })).status, 501, path);
 		assert.equal((await call(mf, "/xrpc/app.bsky.actor.getProfile?actor=x", { headers: { "atproto-proxy": "did:web:api.bsky.app#bsky_appview" } })).status, 400);
 		assert.equal((await call(mf, "/xrpc/com.atproto.repo.createRecord", { token: alice.accessJwt, body: { ...post("big", "x".repeat(300000)), repo: alice.did } })).status, 413);

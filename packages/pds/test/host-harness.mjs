@@ -25,7 +25,7 @@ export class FakePlc {
 			"@context": ["https://www.w3.org/ns/did/v1"],
 			id: did,
 			alsoKnownAs: op.alsoKnownAs,
-			verificationMethod: [{ id: did + "#atproto", type: "Multikey", controller: did, publicKeyMultibase: op.verificationMethods.atproto.replace("did:key:", "") }],
+			verificationMethod: Object.entries(op.verificationMethods).map(([id, key]) => ({ id: `${did}#${id}`, type: "Multikey", controller: did, publicKeyMultibase: key.replace("did:key:", "") })),
 			service: [{ id: "#atproto_pds", type: "AtprotoPersonalDataServer", serviceEndpoint: op.services.atproto_pds.endpoint }],
 		};
 	}
@@ -48,6 +48,20 @@ export class FakePlc {
 			this.fail = null;
 			if (mode === "network-before-store") throw new Error("synthetic network failure");
 			const op = await request.json();
+			if (op.prev !== null && this.ops.has(did)) {
+				// An update: prev must be the newest operation, signed by one of its rotation keys.
+				const last = this.ops.get(did).at(-1);
+				const { operationCid, unsigned } = await import("../src/host/plc.ts");
+				const { verifySignature } = await import("@atproto/crypto");
+				const { encode } = await import("@atcute/cbor");
+				const { fromB64url } = await import("../src/host/crypto.ts");
+				if (op.prev !== (await operationCid(last))) return new Response("prev is not the newest operation", { status: 400 });
+				let signed = false;
+				for (const key of last.rotationKeys) if (await verifySignature(key, encode(unsigned(op)), fromB64url(op.sig)).catch(() => false)) signed = true;
+				if (!signed) return new Response("not signed by a rotation key", { status: 400 });
+				this.ops.get(did).push(op);
+				return new Response(null, { status: 200 });
+			}
 			if (this.ops.has(did)) return new Response("already registered", { status: 400 });
 			if (op.prev !== null || (await didForGenesis(op)) !== did || !(await verifyGenesis(op))) return new Response("invalid operation", { status: 400 });
 			this.ops.set(did, [op]);

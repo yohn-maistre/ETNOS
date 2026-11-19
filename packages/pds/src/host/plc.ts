@@ -8,6 +8,7 @@
  * outcome is unknown is followed by another read, never by a blind re-POST.
  */
 import { encode } from "@atcute/cbor";
+import { create as createCid, toString as cidToString } from "@atcute/cid";
 import { Secp256k1Keypair, verifySignature } from "@atproto/crypto";
 import { b64url, fromB64url, sha256 } from "./crypto.ts";
 
@@ -76,6 +77,8 @@ export interface GenesisInput {
 	signingDidKey: string;
 	/** Highest priority first. The last entry signs the genesis operation. */
 	rotationKeys: string[];
+	/** P-256 did:key published as #atproto_kem for AT Protocol spaces (MACs on space reads). */
+	kemDidKey?: string;
 }
 
 export function genesisOperation(input: GenesisInput): UnsignedPlcOperation {
@@ -84,11 +87,46 @@ export function genesisOperation(input: GenesisInput): UnsignedPlcOperation {
 	return {
 		type: "plc_operation",
 		rotationKeys: input.rotationKeys,
-		verificationMethods: { atproto: input.signingDidKey },
+		verificationMethods: { atproto: input.signingDidKey, ...(input.kemDidKey ? { atproto_kem: input.kemDidKey } : {}) },
 		alsoKnownAs: [`at://${input.handle}`],
 		services: { atproto_pds: { type: "AtprotoPersonalDataServer", endpoint: input.pdsEndpoint } },
 		prev: null,
 	};
+}
+
+/** CID (dag-cbor, sha-256, base32) of a signed operation, as the next operation's `prev`. */
+export async function operationCid(op: SignedPlcOperation): Promise<string> {
+	return cidToString(await createCid(0x71, encode(op)));
+}
+
+/** An update that keeps everything in `last` and sets one verification method. */
+export function withVerificationMethod(last: SignedPlcOperation, prev: string, id: string, didKey: string): UnsignedPlcOperation {
+	const { sig: _sig, ...rest } = last;
+	return { ...rest, verificationMethods: { ...last.verificationMethods, [id]: didKey }, prev };
+}
+
+/**
+ * Submit a non-genesis operation. Reads the log first and refuses when the
+ * operation's `prev` is no longer the newest entry; after an unknown outcome it
+ * reads again instead of posting twice.
+ */
+export async function submitUpdate(directory: string, did: string, op: SignedPlcOperation, fetcher: Fetcher = fetch): Promise<PlcOutcome> {
+	const base = directory.replace(/\/+$/, "");
+	const before = await readLast(base, did, fetcher);
+	if (before.state !== "present") return { state: "uncertain", reason: before.state === "unknown" ? before.reason : "no operation for this DID" };
+	if (before.op.sig === op.sig) return { state: "registered", already: true };
+	if ((await operationCid(before.op)) !== op.prev) return { state: "rejected", status: 409, reason: "The directory has a newer operation" };
+	let response: Response;
+	try {
+		response = await fetcher(`${base}/${did}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(op) });
+	} catch {
+		return reconcile(base, did, op, fetcher, "network error during submission");
+	}
+	if (response.ok) return { state: "registered", already: false };
+	const reason = (await response.text().catch(() => "")).slice(0, 300);
+	const settled = await reconcile(base, did, op, fetcher, `directory answered ${response.status}`);
+	if (settled.state === "registered" || response.status >= 500 || response.status === 429) return settled;
+	return { state: "rejected", status: response.status, reason };
 }
 
 export type PlcOutcome =

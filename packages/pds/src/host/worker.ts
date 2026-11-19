@@ -16,6 +16,7 @@ import { hostConfigProblem, signupsClosed, type HostEnv } from "./env.ts";
 import { labelForHost } from "./handles.ts";
 import { handleOAuth, provider } from "./oauth.ts";
 import { homePage, messagePage, signupDonePage, signupPage } from "./pages.ts";
+import { readLast, submitUpdate } from "./plc.ts";
 import { READ_ROUTES, SYNC_ROUTES, WRITE_ROUTES, runScoped, scopedStub, type ScopedEnv } from "./repo-routes.ts";
 import { Host } from "./service.ts";
 import { ExpiredTokenError, claimedSubject, issueSession, serviceDid, verifySession } from "./session.ts";
@@ -128,6 +129,20 @@ async function admin(host: Host, request: Request, path: string): Promise<Respon
 		const body = await bodyJson(request);
 		const ok = typeof body.code === "string" && (await host.dir.revokeInvite(body.code));
 		return json(ok ? 200 : 404, { revoked: ok });
+	}
+	// Publish #atproto_kem (spaces MACs) for an account made before accounts got a KEM key at genesis.
+	if (path === "/admin/accounts/kem" && request.method === "POST") {
+		const body = await bodyJson(request);
+		const row = typeof body.did === "string" ? await host.dir.byDid(body.did) : null;
+		if (!row?.did || row.status !== "active") return xerr(404, "AccountNotFound", "No such account");
+		const last = await readLast(host.env.PLC_URL, row.did);
+		if (last.state !== "present") return xerr(502, "UpstreamFailure", "Could not read the directory");
+		const op = await host.account(row).kemPlcUpdate(row.did, last.op);
+		if (!op) return json(200, { published: false, reason: "already published" });
+		const outcome = await submitUpdate(host.env.PLC_URL, row.did, op);
+		if (outcome.state !== "registered") return xerr(502, "UpstreamFailure", outcome.reason);
+		await host.dir.audit("operator", "account.kem", row.did, now);
+		return json(200, { published: true });
 	}
 	if (path === "/admin/accounts" && request.method === "GET")
 		return json(200, {
@@ -359,7 +374,7 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 		// account is refused by the handlers (it does not match this DID).
 		return scoped(host, request, ctx, auth.row, auth);
 	}
-	if (path.startsWith("/xrpc/com.atproto.space.") || path.startsWith("/xrpc/com.atproto.simplespace."))
+	if (path.startsWith("/xrpc/com.atproto.space.") || path.startsWith("/xrpc/com.atproto.memberspace."))
 		return handleSpaces(host, request, ctx, (inner) => worker.fetch(inner, host.env, ctx));
 	return xerr(501, "MethodNotImplemented", "Not available on this host");
 }

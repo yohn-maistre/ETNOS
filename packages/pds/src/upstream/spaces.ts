@@ -11,7 +11,7 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
 import { Secp256k1Keypair, verifySignature } from "@atproto/crypto";
-import { createSpaceToken, spaceHostAud } from "@atproto/space";
+import { createSpaceToken, spaceHostAud } from "@atproto/space-legacy";
 import {
 	SpaceDurableObject as EngineSpaceDurableObject,
 	SpaceIndexDurableObject as EngineSpaceIndexDurableObject,

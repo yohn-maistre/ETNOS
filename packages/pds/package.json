@@ -29,7 +29,8 @@
     "@atproto/lex-data": "0.0.3",
     "@atproto/lex-json": "0.0.11",
     "@atproto/repo": "0.8.12",
-    "@atproto/space": "0.0.0-spaces-alpha-20260818163953",
+    "@atproto/space": "0.0.0-spaces-alpha-20261117141222",
+    "@atproto/space-legacy": "npm:@atproto/space@0.0.0-spaces-alpha-20260818163953",
     "@getcirrus/oauth-provider": "0.6.0",
     "@getcirrus/spaces": "0.1.0",
     "@simplewebauthn/server": "13.2.2",
@@ -45,5 +46,13 @@
     "miniflare": "5.20261023.3-beta",
     "typescript": "7.0.2",
     "wrangler": "4.156.0"
+  },
+  "overrides": {
+    "@atproto/space@0.0.0-spaces-alpha-20260818163953": {
+      "@atproto/crypto": "0.0.0-spaces-alpha-20261029171913"
+    },
+    "@atproto/space-legacy": {
+      "@atproto/crypto": "0.0.0-spaces-alpha-20261029171913"
+    }
   }
 }

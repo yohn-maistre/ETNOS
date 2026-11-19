@@ -73,6 +73,8 @@ All in `packages/pds/test/`, run by `npm test` in that package (workerd through 
 
 Reading: the edge Worker's own work is a D1 query, an HKDF and an HMAC, well under a millisecond of crypto. Password checks moved from bcryptjs in the Worker (91 ms in the 18 November note) to native PBKDF2 inside the account object (about 15 ms). That still exceeds 10 ms, so **the Free question is unchanged: if Durable Objects on Free are held to 10 ms CPU, password sign-in does not fit**, and neither may account creation. The spike in plan §8 is still the way to settle it, and the fix if it fails is Workers Paid. PBKDF2 at 100,000 iterations is also the Workers ceiling and below current OWASP advice for PBKDF2-SHA256; passkeys (planned) avoid both problems.
 
+**Live CPU on Cloudflare (19 November, GraphQL Analytics over the first day).** The edge Worker used p50 2.5 ms, p90 4.3 ms and p99 14.4 ms of CPU across 64 requests. The account objects used 567 ms of CPU for about 26 password checks (sign-ins and the first account), which is **about 21 ms per sign-in, over the 10 ms Free figure**. Cloudflare recorded no exceeded-CPU errors. The directory and OAuth objects used under 1 ms per request. The workflow prints these figures on every deploy (step "CPU over the last day"). Passkeys or Workers Paid remain the fix for sign-in.
+
 ## 4. Licence checks (19 November)
 
 - **Cirrus** (`ascorbic/cirrus`): `packages/pds/package.json` on `main` declares `"license": "MIT"`; no LICENSE file was found at the repository root or package root on `main` today (raw requests returned 404). The fork's grant and notice are kept in `packages/pds/LICENSE.cirrus`. New code in `src/host/` is Strata's (AGPL-3.0-only); it reuses Cirrus files (account object, OAuth storage, repository handlers) by import, with the one change recorded in `UPSTREAM.md`.
@@ -101,7 +103,7 @@ What was done, in order:
 1. **The escrow key was made** with `scripts/host-escrow-key.mjs`. Its public half, `did:key:zQ3shvuJC9x23TnbYs5YtPci6fDyxUj3rHm2gsZhpHP3Za1wP`, is in `wrangler.host.jsonc` as `ESCROW_ROTATION_KEY`. The private half was handed to the owner outside the repository and must be stored offline.
 2. **The KEK is never replaced by the workflow.** The workflow makes a KEK only on the very first deploy, when the Worker has neither the KEK nor the operator token. If the operator token exists without a KEK, the step stops, because that means that the KEK was removed by hand. A lost KEK loses the wrapped account keys, but the escrow key can still rotate each DID to a new key.
 3. **PLC writes are on** (`PLC_WRITES: "public-directory-approved"` in `wrangler.host.jsonc`).
-4. **The test account `uji-1.etnos.space` exists** as `did:plc:5ldynkk4iomg45uu37nmgdhy`. plc.directory serves its DID document with the handle and the workers.dev endpoint, and `resolveHandle` on the host answers with the DID. Sign-in works (§4 has the CPU figures).
+4. **The test account `uji-1.etnos.space` exists** as `did:plc:5ldynkk4iomg45uu37nmgdhy`. plc.directory serves its DID document with the handle and the workers.dev endpoint, and `resolveHandle` on the host answers with the DID. Sign-in works (§3 has the CPU figures).
 5. **ETNOS points at the host.** The deploy workflow sets `STRATA_ACCOUNT_HOST` to the workers.dev origin unless a repository variable overrides it, and adds the host to `STRATA_OAUTH_HOSTS`.
 6. **Five invite codes for the owner** were made with the operator token and handed over outside the repository. They last 30 days.
 
@@ -118,7 +120,7 @@ What is left:
 - On the sign-in page, when `/auth/options` returns `accountHost`: a button "Buat akun ETNOS" that links to `<accountHost>/akun/baru` (with `?kode=` when the person has a host invite), and a sign-up button that posts `/auth/start` with `{mode: "signup", invitation, provider: "host"}`.
 - After sign-up on the host, the "Masuk ke ETNOS" button goes to `SIGNIN_URL?handle=<name>.etnos.space`; the login page can prefill the handle from that parameter.
 - In Studio, for stewards: an "Undang anggota" action that calls the host's `/admin/invites` through the ETNOS server (needs the operator token as an ETNOS secret; not built, because it would put a host credential in the ETNOS worker and should be decided with the owner).
-- For spaces (§9), when the community UI wants them: a steward action "Buat ruang AT" on a private community that calls `com.atproto.simplespace.createSpace` with the lembaga's account, and member changes that call `addMember` and `removeMember` together with the Strata membership change. The UI should say plainly that the operator can read space data (access control, not encryption) and that spaces are in trial.
+- For spaces (§9), when the community UI wants them: a steward action "Buat ruang AT" on a private community that calls `com.atproto.space.createSpace` with a `com.atproto.memberspace.policy` for the lembaga's account, and member changes that call `com.atproto.memberspace.putMembers` and `removeMembers` together with the Strata membership change. The UI should say plainly that the operator can read space data (access control, not encryption) and that spaces are in trial.
 
 ## 8. Live deployment (19 November)
 
@@ -129,32 +131,60 @@ What is left:
 - Public settings live in `wrangler.host.jsonc`. The repository variables `STRATA_PDS_HOSTNAME` and `STRATA_ACCOUNT_HOST` still override the host name and the ETNOS link.
 - Bundle: 3.5 MiB raw, 690 KiB gzip with spaces (Free limit 3 MiB gzip).
 
-## 9. AT Protocol spaces on this host *(alpha, built 19 November)*
+## 9. AT Protocol spaces on this host *(alpha; rebuilt 19 November to the current proposal text)*
 
-Spec: proposal 0016 ([permissioned data](https://github.com/bluesky-social/proposals/blob/main/0016-permissioned-data/README.md)), alpha announced 20 August 2026 ([atproto.com/blog/atproto-spaces-alpha](https://atproto.com/blog/atproto-spaces-alpha)). Bluesky's own words: not for production, no backups, schema not final. Our earlier trial against the official alpha is in `labs/spaces`. The design this follows is `docs/communities-spaces-2026-11-19.md` §3–4.1.
+This host follows proposal 0016 ([permissioned data](https://github.com/bluesky-social/proposals/blob/main/0016-permissioned-data/README.md)) as it reads on 19 November 2026. The proposal says that details are likely to change, and the official implementation is still a work in progress ([atproto PR 5187](https://github.com/bluesky-social/atproto/pull/5187)). Spaces give access control, not encryption: the operator of this host can read space data. The design follows `docs/communities-spaces-2026-11-19.md` §3–4.1.
 
-**What it is.** A space is `at://{authority}/space/{type}/{key}`. The authority is any DID; its PDS is the space host. An individual account can be the authority; for a lembaga the design uses a dedicated account. Policies: member list (`memberListPolicy`), public (`publicPolicy`), or a managing app. Each member's records stay in a per-space repository on that member's own PDS. Readers get a short delegation from their own PDS and exchange it at the space host for a credential (bound to a DPoP key); repo hosts accept that credential.
+**Protocol code comes from the official package.** `src/host/spaces.ts` uses `@atproto/space` `0.0.0-spaces-alpha-20261117141222` (MIT), which is newer than the 2026-10-29 snapshot of the `labs/spaces` trial. From it come credentials and delegation tokens, the RFC 9421 credential signature, the HPKE secret for MACs, LtHash commits and STAR archives. The request handling and storage were written here for Workers and Durable Objects. The official alpha PDS (`@atproto/pds`, MIT) served as the reference for behaviour, and no code was copied from it. The engine `@getcirrus/spaces` stays only in the single-account Cirrus worker (`src/upstream/`), pinned to the August alpha under the alias `@atproto/space-legacy`, because its protocol is out of date.
 
-**How it is built here.** `src/host/spaces.ts` wraps the MIT engine `@getcirrus/spaces` 0.1.0 (pinned to `@atproto/space` alpha 2026-08-18), which upstream serves one account per deployment. This host extends it to serve every account it hosts, so one Worker runs spaces for many people:
+**One object per account holds both roles.** As a repo host, it holds the account's space repos: records in DRISL, the LtHash state, the commit `rev` and an operation log. It also holds the credentials that authorities have revoked. As a space host, it holds the spaces that the account is the authority of: the policy, the member list, the writer set, and each issued credential with the user it was issued for.
 
-- Every spaces request is served for one hosted, active account: the signed-in account for writes and management, the `repo` for reads, the space authority for credential and sync calls. Unknown or inactive accounts get `RepoNotFound`.
-- Space objects are named `"{account} {space uri}"`, so two hosted members of one space never share storage; each account has its own index.
-- Space tokens and service JWTs are signed inside the account's object (`signSpaceJwt`). It signs only JWT signing inputs of the space kinds, issued by that account, so it is not a general signing oracle. The key never leaves the object.
-- A session counts only for its own account: Budi's token naming Ana's space repository is refused.
-- **Removal is immediate.** The alpha's credentials live up to two hours and cannot be revoked; the lab showed a removed member still reading. Here the authority's object records whom each credential went to, and every credential read on this host for a space whose authority is also on this host is checked against the space's current policy (member list: still a member; public: allowed). For an authority on another PDS, a credential is accepted only while younger than `SPACES_REMOTE_CREDENTIAL_MAX_AGE` (default 300 seconds); the reader then has to fetch a fresh one, which the remote host grants only to current members.
-- Deleting an account removes its space repositories and index (withdrawal).
-- Calls between accounts on this host stay inside the Worker (a Worker cannot fetch its own host name).
+What a reader and a writer see:
+
+- **A reader gets a credential the official way.** The reader's PDS issues a delegation token (`getDelegationToken`, 60 seconds, single use, signed inside the account object). The space host issues a credential (`authorizeSpaceSync`) bound to the reader's P-256 key in `cnf.kid`, valid for 10 minutes. Requests carry `Authorization: Atproto-Space-Credential …`, `Atproto-Space-Audience` and an HTTP Message Signature over both.
+- **Reads carry MACs.** `getRecord`, `getLatestCommit`, `getRepo` (a STAR archive) and `listRepoOps` answer a credential read only with the MAC that it asked for in `Accept-Signature`. The MAC uses the account's `#atproto_kem` P-256 key, which is wrapped with the KEK and never leaves the account object.
+- **New accounts publish `#atproto_kem` at genesis.** Older accounts get it through a PLC update that the operator sends with `POST /admin/accounts/kem` (signed by the host rotation key). `uji-1` needs this once after this deploy.
+- **Writes are attributed to the session's own account.** `createRecord`, `putRecord`, `deleteRecord`, `applyWrites` and `clearRecords` are accepted only for the session's own account. Each write announces the new `repoRev` and `data` to the space host. A space host on this host gets the announcement directly. A space host on another PDS gets `notifyRepoUpdate` with service auth, retried 4 times.
+- **The baseline policies are `com.atproto.personalspace.policy` and `com.atproto.memberspace.policy`.** Members are managed with `putMembers`, `removeMembers` and `listMembers`. A refused reader gets `SpaceNotFound`, as the reference PDS answers, so that the space's existence is not revealed.
+
+**Removal takes effect at once, in two ways.** First, every credential read on this host for a space whose authority is also on this host is checked against the space's current policy, so a removed member is refused on the next request (`CredentialRevoked`). Second, when members are removed, when access changes, or when a space is deleted, the authority looks up the unexpired credentials that it issued to those users. It then sends `com.atproto.space.notifyCredentialsRevoked` for them to every writer's repo host, here directly and elsewhere with service auth. A repo host on this host keeps each revocation for 61 minutes, which is longer than any credential can live, and refuses those credentials. Revocations from an authority on another PDS are accepted only when that authority signs them and only for accounts hosted here.
 
 **Modes.**
 
 | Mode | Authority | Space host | Members' records | Status |
 | --- | --- | --- | --- | --- |
 | Host-managed | the lembaga's account on this host | this host | each member's own PDS (this host for hosted members) | built, tested |
-| Own PDS | the lembaga's account on its own PDS (Aksara node, mini PC, own Cloudflare) | that PDS | each member's own PDS | members on this host can write and serve reads; tested against an outside authority |
+| Own PDS | the lembaga's account on its own PDS (Aksara node, mini PC, own Cloudflare) | that PDS | each member's own PDS | members on this host write, announce and serve reads; revocations from that PDS are honoured; tested against an outside authority |
 
-**Tests** (`test/host-spaces.test.mjs`): the lembaga creates a member-list space; a member cannot manage members; Ana writes into her space repository and Budi's session cannot; the record is absent from Ana's public `listRecords`, `getRecord` and `describeRepo`; Budi reads with a credential; the credential without its key, Budi's session on Ana's repo and an anonymous read are refused; a non-member gets no credential; **after removal Budi's existing credential is refused at once** and a new one is refused; a public space lets a non-member read with a credential, and that credential does not open the private space; after Ana deletes her account her space repository is gone. Second test: a space whose authority is a DID on another PDS; Ana's write is announced to that PDS with `notifyWrite`; a credential it signed is accepted while fresh and refused once older than the limit; a forged credential is refused.
+**Tests** are in `test/host-spaces.test.mjs` and check results with the official helpers (`verifyRecord`, `verifyCommitMac`, `verifyRepoStarFull`):
 
-**Not built / alpha gaps.** Blob storage for spaces (needs R2); sync notifications to outside syncers are the engine's, untested here; managing-app policy is accepted only within 60 seconds of issue; OAuth consent text for space scopes is the provider's; credential records are kept until expiry. Strata's private communities stay the store of record; mirroring a community into a space is behind the design doc's per-community flag and not wired into the Strata app.
+- The lembaga creates a memberspace, and a member cannot manage members.
+- Ana writes into her space repo, and Budi's session cannot write there.
+- The record is absent from Ana's public repository.
+- Ana's write appears in `listWriters`.
+- Budi reads with a credential, and the MAC verifies. The record, commit and STAR archive verify too.
+- A delegation token cannot be used twice.
+- A read without a MAC request, with another key or with the wrong audience is refused.
+- A non-member gets `SpaceNotFound`.
+- **After `removeMembers`, Budi's existing credential is refused on the next read**, and a new one is refused.
+- A public-read space issues a credential without a delegation token, and that credential does not open the members-only space.
+- Deleting the space revokes outstanding credentials and answers `SpaceDeleted`.
+- After Ana deletes her account, her space repos are gone.
+- With an authority on another PDS, Ana's write is announced with `notifyRepoUpdate`, a credential that the authority signed works, and a forged one fails. `notifyCredentialsRevoked` from the authority then stops that credential, while a revocation for an account not hosted here is refused.
+- The `#atproto_kem` PLC update path works.
+
+**Where this host differs from the proposal and the reference PDS:**
+
+- Blobs in spaces (`getBlob`, `listBlobs`) are not built and answer 501. Public blobs work (§6).
+- Account migration of spaces (`importRepo`, `exportSpaceMeta`, `importSpaceMeta`) is not built and answers 501.
+- `managedspace.policy`, `memberspace` `allowedApps` (client attestation) and `publishPolicy` / `publishMembers` are refused with `UnsupportedPolicy`.
+- Notification registration (`notify` in `authorizeSpaceSync`, `confirmRegistration`, `notifySpaceUpdate`) is accepted but not acted on, so syncers must poll `listWriters`.
+- OAuth sessions must be full access (`transition:generic`). Narrow `space:` scopes are not checked yet, and password sessions count as full access.
+- `notifyRepoUpdate` and `notifyCredentialsRevoked` to other PDSes are retried 4 times within one request's lifetime, not persisted for 72 hours.
+- Service-auth `jti` values are not stored. Replays within the 60-second token life are possible but harmless, because both methods are idempotent.
+- `SPACES_REMOTE_CREDENTIAL_MAX_AGE` is now off by default. Revocation from a remote authority arrives through `notifyCredentialsRevoked`. Setting the variable still caps how old a remote credential may be.
+
+Strata's private communities stay the store of record. Mirroring a community into a space is behind the design doc's per-community flag and is not wired into the Strata app.
 
 ## 10. Self-hosting: one codebase, plain workerd *(recommendation confirmed; Docker is a plan)*
 

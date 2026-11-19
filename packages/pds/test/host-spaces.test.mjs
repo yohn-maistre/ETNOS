@@ -1,135 +1,186 @@
-// AT Protocol spaces (alpha) on the multi-account host: a lembaga's space hosted here, members
-// on this host, private records readable only by members, removal effective at once, account
-// deletion taking the space data with it, and a space whose authority lives on another PDS.
-// Synthetic accounts only; the PLC directory is the in-memory fake.
+// AT Protocol spaces (proposal 0016 as of 19 November 2026) on the multi-account host, read the
+// way an official client reads them: a delegation token from the reader's PDS, a credential from
+// authorizeSpaceSync bound to a P-256 key, RFC 9421 signatures, and MACs checked with the official
+// @atproto/space helpers. Synthetic accounts only; the PLC directory is the in-memory fake.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { SignJWT, exportJWK, generateKeyPair } from "jose";
-import { Secp256k1Keypair } from "@atproto/crypto";
-import { createDpopProof, createSpaceToken } from "@atproto/space";
-import { FakePlc, call, hostRuntime, migrate, origin, signup } from "./host-harness.mjs";
+import { P256Keypair, Secp256k1Keypair } from "@atproto/crypto";
+import {
+	COMMIT_MAC_PROFILE,
+	RECORD_MAC_PROFILE,
+	createSpaceCredential,
+	createSpaceSigHeaders,
+	encapsulate,
+	formatMacRequest,
+	verifyCommitMac,
+	verifyRecord,
+	verifyRepoStarFull,
+} from "@atproto/space";
+import { FakePlc, call, hostRuntime, migrate, operator, origin, signup } from "./host-harness.mjs";
+import { b64url } from "../src/host/crypto.ts";
 import { didForGenesis, genesisOperation, signOperation } from "../src/host/plc.ts";
 
 const persistDir = () => mkdtempSync(join(tmpdir(), "strata-spaces-"));
 const TYPE = "space.etnos.komunitas";
 const NOTE = "space.etnos.catatan";
+const MEMBERS = { $type: "com.atproto.memberspace.policy" };
+const x = (m) => `/xrpc/${m}`;
 
-/** A DPoP key as @atproto/space expects one (bareJwk, algorithms, createJwt). */
-async function dpopKey() {
-	const { privateKey, publicKey } = await generateKeyPair("ES256", { extractable: true });
-	const jwk = await exportJWK(publicKey);
-	return {
-		bareJwk: { kty: jwk.kty, crv: jwk.crv, x: jwk.x, y: jwk.y },
-		algorithms: ["ES256"],
-		createJwt: (header, payload) => new SignJWT(payload).setProtectedHeader(header).sign(privateKey),
-	};
+/** The reader's whole flow: delegation token from its own PDS, then a credential bound to a fresh key. */
+async function authorize(mf, reader, space) {
+	const key = await P256Keypair.create();
+	const body = { space, credentialKey: key.did() };
+	if (reader) {
+		const d = await call(mf, `${x("com.atproto.space.getDelegationToken")}?space=${encodeURIComponent(space)}`, { token: reader.accessJwt });
+		assert.equal(d.status, 200, await d.clone().text());
+		body.delegationToken = (await d.json()).token;
+	}
+	const r = await call(mf, x("com.atproto.space.authorizeSpaceSync"), { body });
+	return { status: r.status, body: await r.json(), key, delegationToken: body.delegationToken };
 }
 
-const xrpc = (m) => `/xrpc/${m}`;
-
-/** The reader's flow: delegation from their own PDS, then a credential from the space host. */
-async function credentialFor(mf, reader, space, key) {
-	const d = await call(mf, `${xrpc("com.atproto.space.getDelegationToken")}?space=${encodeURIComponent(space)}`, { token: reader.accessJwt });
-	if (d.status !== 200) return { status: d.status, body: await d.json() };
-	const { token } = await d.json();
-	const path = xrpc("com.atproto.space.getSpaceCredential");
-	const proof = await createDpopProof(key, { htm: "POST", htu: origin + path });
-	const r = await call(mf, path, { body: { space }, headers: { authorization: `Bearer ${token}`, dpop: proof } });
-	return { status: r.status, body: await r.json() };
+/** Credential headers for one audience, plus a MAC request when a profile is given. */
+async function credentialHeaders(credential, key, audience, mac) {
+	const authorization = `Atproto-Space-Credential ${credential}`;
+	const { headers } = await createSpaceSigHeaders({ authorization, audience, keypair: key });
+	return { ...headers, authorization, "atproto-space-audience": audience, ...(mac ? { "accept-signature": formatMacRequest(mac.profile, mac.keyShare) } : {}) };
 }
 
-async function readWith(mf, credential, key, space, repo, rkey) {
-	const path = xrpc("com.atproto.space.getRecord");
-	const proof = await createDpopProof(key, { htm: "GET", htu: origin + path, credential });
-	return call(mf, `${path}?space=${encodeURIComponent(space)}&repo=${encodeURIComponent(repo)}&collection=${NOTE}&rkey=${rkey}`, { headers: { authorization: `DPoP ${credential}`, dpop: proof } });
+async function kemOf(plc, did) {
+	const doc = plc.document(did);
+	const m = doc.verificationMethod.find((v) => v.id.endsWith("#atproto_kem"));
+	assert.ok(m, "the DID document publishes #atproto_kem");
+	return `did:key:${m.publicKeyMultibase}`;
 }
 
-test("spaces: members read private records, others cannot, and removal takes effect at once", async () => {
+async function readRecord(mf, plc, credential, key, space, repo, rkey) {
+	const enc = await encapsulate(await kemOf(plc, repo));
+	const headers = await credentialHeaders(credential, key, repo, { profile: RECORD_MAC_PROFILE, keyShare: enc.keyShare });
+	const r = await call(mf, `${x("com.atproto.space.getRecord")}?space=${encodeURIComponent(space)}&repo=${repo}&collection=${NOTE}&rkey=${rkey}`, { headers });
+	return { r, enc };
+}
+
+test("spaces: members read with MACs, others cannot, and removal takes effect at once", async () => {
 	const dir = persistDir(), plc = new FakePlc(), mf = hostRuntime({ persist: dir, plc });
 	try {
 		await migrate(mf);
 		const lembaga = await signup(mf, "lembaga"), ana = await signup(mf, "ana"), budi = await signup(mf, "budi"), citra = await signup(mf, "citra");
 		assert.equal((await (await call(mf, "/health")).json()).spaces, "alpha");
 
-		// The lembaga's own account is the authority; its space is a member list.
-		const created = await call(mf, xrpc("com.atproto.simplespace.createSpace"), { token: lembaga.accessJwt, body: { type: TYPE, skey: "ruang-uji", policy: { $type: "com.atproto.simplespace.defs#memberListPolicy" }, appAccess: { $type: "com.atproto.simplespace.defs#open" } } });
-		assert.equal(created.status, 200, JSON.stringify(await created.clone().json()));
-		const space = (await created.json()).uri;
+		// The lembaga's own account is the authority of a memberspace.
+		const created = await call(mf, x("com.atproto.space.createSpace"), { token: lembaga.accessJwt, body: { spaceType: TYPE, skey: "ruang-uji", policy: MEMBERS } });
+		assert.equal(created.status, 200, await created.clone().text());
+		const space = (await created.json()).space;
 		assert.equal(space, `at://${lembaga.did}/space/${TYPE}/ruang-uji`);
-		// Only the authority manages members; a member's session naming the lembaga is refused.
-		assert.notEqual((await call(mf, xrpc("com.atproto.simplespace.addMember"), { token: ana.accessJwt, body: { space, did: ana.did } })).status, 200);
-		for (const m of [ana, budi]) assert.equal((await call(mf, xrpc("com.atproto.simplespace.addMember"), { token: lembaga.accessJwt, body: { space, did: m.did } })).status, 200);
+		assert.equal((await call(mf, x("com.atproto.space.createSpace"), { token: lembaga.accessJwt, body: { spaceType: TYPE, skey: "ruang-uji", policy: MEMBERS } })).status, 400);
+		assert.equal((await call(mf, x("com.atproto.space.createSpace"), { token: lembaga.accessJwt, body: { spaceType: TYPE, skey: "lain", policy: { $type: "com.atproto.managedspace.policy", managingApp: "did:web:x#y" } } })).status, 400);
+		// Only the authority manages members.
+		const notMine = await call(mf, x("com.atproto.memberspace.putMembers"), { token: ana.accessJwt, body: { space, members: [{ did: ana.did, read: true, write: true }] } });
+		assert.equal((await notMine.json()).error, "NotAuthorized");
+		const put = await call(mf, x("com.atproto.memberspace.putMembers"), { token: lembaga.accessJwt, body: { space, members: [ana, budi].map((m) => ({ did: m.did, read: true, write: true })) } });
+		assert.equal(put.status, 200, await put.clone().text());
+		assert.equal((await (await call(mf, `${x("com.atproto.memberspace.listMembers")}?space=${encodeURIComponent(space)}`, { token: lembaga.accessJwt })).json()).members.length, 2);
 
-		// Ana writes into her own repository for the space.
-		const w = await call(mf, xrpc("com.atproto.space.createRecord"), { token: ana.accessJwt, body: { space, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "Catatan uji untuk anggota", createdAt: new Date().toISOString() } } });
-		assert.equal(w.status, 200, JSON.stringify(await w.clone().json()));
-		const rkey = (await w.json()).uri.split("/").pop();
-		// Budi's session cannot write into Ana's repository.
-		assert.notEqual((await call(mf, xrpc("com.atproto.space.createRecord"), { token: budi.accessJwt, body: { space, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "x" } } })).status, 200);
+		// Ana writes into her own space repo; a session cannot write into someone else's.
+		const w = await call(mf, x("com.atproto.space.createRecord"), { token: ana.accessJwt, body: { space, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "Catatan uji untuk anggota", createdAt: new Date().toISOString() } } });
+		assert.equal(w.status, 200, await w.clone().text());
+		const written = await w.json();
+		const rkey = written.uri.split("/").pop();
+		assert.equal(written.uri, `${space}/${ana.did}/${NOTE}/${rkey}`);
+		assert.equal((await call(mf, x("com.atproto.space.createRecord"), { token: budi.accessJwt, body: { space, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "x" } } })).status, 403);
 
-		// Publication boundary: the record is not in Ana's public repository or its listings.
-		const pub = await call(mf, `/xrpc/com.atproto.repo.listRecords?repo=${ana.did}&collection=${NOTE}`);
-		assert.deepEqual((await pub.json()).records ?? [], []);
-		assert.equal((await call(mf, `/xrpc/com.atproto.repo.getRecord?repo=${ana.did}&collection=${NOTE}&rkey=${rkey}`)).status, 400);
-		const described = await (await call(mf, `/xrpc/com.atproto.repo.describeRepo?repo=${ana.did}`)).json();
-		assert.ok(!(described.collections ?? []).includes(NOTE));
+		// Publication boundary: nothing in Ana's public repository.
+		assert.deepEqual((await (await call(mf, `/xrpc/com.atproto.repo.listRecords?repo=${ana.did}&collection=${NOTE}`)).json()).records ?? [], []);
+		assert.notEqual((await call(mf, `/xrpc/com.atproto.repo.getRecord?repo=${ana.did}&collection=${NOTE}&rkey=${rkey}`)).status, 200);
 
-		// A member reads with a credential.
-		const budiKey = await dpopKey();
-		const cred = await credentialFor(mf, budi, space, budiKey);
-		assert.equal(cred.status, 200, JSON.stringify(cred.body));
-		const read = await readWith(mf, cred.body.credential, budiKey, space, ana.did, rkey);
-		assert.equal(read.status, 200);
-		assert.equal((await read.json()).value.text, "Catatan uji untuk anggota");
-		// A stolen credential without the bound key is useless.
-		assert.notEqual((await readWith(mf, cred.body.credential, await dpopKey(), space, ana.did, rkey)).status, 200);
-		// A session only counts for its own account: Budi's session cannot read Ana's space repository.
-		assert.equal((await call(mf, `${xrpc("com.atproto.space.getRecord")}?space=${encodeURIComponent(space)}&repo=${ana.did}&collection=${NOTE}&rkey=${rkey}`, { token: budi.accessJwt })).status, 401);
-		// Without any credential, nothing.
-		assert.equal((await call(mf, `${xrpc("com.atproto.space.getRecord")}?space=${encodeURIComponent(space)}&repo=${ana.did}&collection=${NOTE}&rkey=${rkey}`)).status, 401);
+		// Ana's write reached the writer set.
+		const lw = await authorize(mf, lembaga, space);
+		assert.equal(lw.status, 200, JSON.stringify(lw.body));
+		const writers = await call(mf, `${x("com.atproto.space.listWriters")}?space=${encodeURIComponent(space)}`, { headers: await credentialHeaders(lw.body.credential, lw.key, lembaga.did) });
+		assert.equal(writers.status, 200, await writers.clone().text());
+		assert.deepEqual((await writers.json()).repos.map((r) => r.repo), [ana.did]);
 
-		// A non-member gets no credential.
-		const outsider = await credentialFor(mf, citra, space, await dpopKey());
-		assert.equal(outsider.status, 403);
-		assert.equal(outsider.body.error, "UserNotAuthorized");
+		// Budi, a member, reads Ana's record with a credential and checks the MAC.
+		const b = await authorize(mf, budi, space);
+		assert.equal(b.status, 200, JSON.stringify(b.body));
+		const { r: read, enc } = await readRecord(mf, plc, b.body.credential, b.key, space, ana.did, rkey);
+		assert.equal(read.status, 200, await read.clone().text());
+		assert.equal(read.headers.get("cache-control"), "no-store");
+		const record = await read.json();
+		assert.equal(record.value.text, "Catatan uji untuk anggota");
+		await verifyRecord(record, { ...enc, headers: read.headers, uri: record.uri });
+		// The delegation token is single use.
+		const replay = await call(mf, x("com.atproto.space.authorizeSpaceSync"), { body: { space, credentialKey: (await P256Keypair.create()).did(), delegationToken: b.delegationToken } });
+		assert.equal((await replay.json()).error, "InvalidDelegationToken");
+		// A credential read must ask for a MAC; the wrong key or audience is refused.
+		const noMac = await call(mf, `${x("com.atproto.space.getRecord")}?space=${encodeURIComponent(space)}&repo=${ana.did}&collection=${NOTE}&rkey=${rkey}`, { headers: await credentialHeaders(b.body.credential, b.key, ana.did) });
+		assert.equal((await noMac.json()).error, "InvalidSpaceMac");
+		assert.equal((await readRecord(mf, plc, b.body.credential, await P256Keypair.create(), space, ana.did, rkey)).r.status, 401);
+		const wrongAud = await call(mf, `${x("com.atproto.space.getRecord")}?space=${encodeURIComponent(space)}&repo=${ana.did}&collection=${NOTE}&rkey=${rkey}`, { headers: await credentialHeaders(b.body.credential, b.key, budi.did) });
+		assert.equal(wrongAud.status, 401);
+		// A session counts only for its own repo.
+		assert.notEqual((await call(mf, `${x("com.atproto.space.getRecord")}?space=${encodeURIComponent(space)}&repo=${ana.did}&collection=${NOTE}&rkey=${rkey}`, { token: budi.accessJwt })).status, 200);
 
-		// Removal: Budi's credential, valid for up to two hours in the alpha, stops working now.
-		assert.equal((await call(mf, xrpc("com.atproto.simplespace.removeMember"), { token: lembaga.accessJwt, body: { space, did: budi.did } })).status, 200);
-		const after = await readWith(mf, cred.body.credential, budiKey, space, ana.did, rkey);
-		assert.equal(after.status, 403);
-		assert.equal((await after.json()).error, "UserNotAuthorized");
-		assert.equal((await credentialFor(mf, budi, space, await dpopKey())).status, 403);
+		// Commit and whole-repo reads verify against the set hash and the MAC.
+		const cEnc = await encapsulate(await kemOf(plc, ana.did));
+		const latest = await call(mf, `${x("com.atproto.space.getLatestCommit")}?space=${encodeURIComponent(space)}&repo=${ana.did}`, { headers: await credentialHeaders(b.body.credential, b.key, ana.did, { profile: COMMIT_MAC_PROFILE, keyShare: cEnc.keyShare }) });
+		assert.equal(latest.status, 200, await latest.clone().text());
+		const commitJson = (await latest.json()).commit;
+		const commit = { ...commitJson, data: Uint8Array.from(Buffer.from(commitJson.data.$bytes, "base64")) };
+		verifyCommitMac(commit, { ...cEnc, headers: latest.headers });
+		const sEnc = await encapsulate(await kemOf(plc, ana.did));
+		const star = await call(mf, `${x("com.atproto.space.getRepo")}?space=${encodeURIComponent(space)}&repo=${ana.did}`, { headers: await credentialHeaders(b.body.credential, b.key, ana.did, { profile: COMMIT_MAC_PROFILE, keyShare: sEnc.keyShare }) });
+		assert.equal(star.status, 200, await star.clone().text());
+		assert.equal(star.headers.get("content-type"), "application/vnd.dasl.star");
+		const full = await verifyRepoStarFull([new Uint8Array(await star.arrayBuffer())], { ...sEnc, headers: star.headers, space, repo: ana.did });
+		assert.equal(full.records.length, 1);
 
-		// A public space lets anyone with a credential read, still never through the public repository.
-		const open = await call(mf, xrpc("com.atproto.simplespace.createSpace"), { token: lembaga.accessJwt, body: { type: TYPE, skey: "ruang-terbuka", policy: { $type: "com.atproto.simplespace.defs#publicPolicy" }, appAccess: { $type: "com.atproto.simplespace.defs#open" } } });
-		const openSpace = (await open.json()).uri;
-		const ow = await call(mf, xrpc("com.atproto.space.createRecord"), { token: ana.accessJwt, body: { space: openSpace, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "Catatan terbuka" } } });
-		const openKey = (await ow.json()).uri.split("/").pop();
-		const citraKey = await dpopKey(), cc = await credentialFor(mf, citra, openSpace, citraKey);
-		assert.equal(cc.status, 200);
-		assert.equal((await readWith(mf, cc.body.credential, citraKey, openSpace, ana.did, openKey)).status, 200);
-		// The members-only credential does not open the other space.
-		assert.notEqual((await readWith(mf, cc.body.credential, citraKey, space, ana.did, rkey)).status, 200);
+		// A non-member gets no credential, and is told nothing about the space.
+		const outsider = await authorize(mf, citra, space);
+		assert.equal(outsider.body.error, "SpaceNotFound");
 
-		// Withdrawal: Ana deletes her account; her space repositories go with it.
-		const lembagaKey = await dpopKey(), lc = await credentialFor(mf, lembaga, space, lembagaKey);
-		assert.equal((await readWith(mf, lc.body.credential, lembagaKey, space, ana.did, rkey)).status, 200);
-		const del = await call(mf, "/xrpc/com.atproto.server.deleteAccount", { body: { did: ana.did, password: ana.password } });
-		assert.equal(del.status, 200);
-		const gone = await readWith(mf, lc.body.credential, lembagaKey, space, ana.did, rkey);
-		assert.notEqual(gone.status, 200);
+		// Removal: Budi's credential, otherwise valid for 10 minutes, is refused on the next read,
+		// and the revocation is recorded at Ana's repo host as notifyCredentialsRevoked would.
+		const removed = await call(mf, x("com.atproto.memberspace.removeMembers"), { token: lembaga.accessJwt, body: { space, dids: [budi.did] } });
+		assert.equal(removed.status, 200, await removed.clone().text());
+		const after = await readRecord(mf, plc, b.body.credential, b.key, space, ana.did, rkey);
+		assert.equal(after.r.status, 401);
+		assert.equal((await after.r.json()).error, "CredentialRevoked");
+		assert.equal((await authorize(mf, budi, space)).body.error, "SpaceNotFound");
+
+		// A public-read space gives a credential without a delegation token.
+		const open = await call(mf, x("com.atproto.space.createSpace"), { token: lembaga.accessJwt, body: { spaceType: TYPE, skey: "terbuka", policy: { ...MEMBERS, publicRead: true } } });
+		const openSpace = (await open.json()).space;
+		assert.equal((await authorize(mf, null, openSpace)).status, 200);
+		// ...which does not open the members-only space.
+		const o = await authorize(mf, null, openSpace);
+		assert.equal((await readRecord(mf, plc, o.body.credential, o.key, space, ana.did, rkey)).r.status, 400);
+
+		// Deleting the space revokes outstanding credentials and answers SpaceDeleted.
+		assert.equal((await call(mf, x("com.atproto.space.deleteSpace"), { token: lembaga.accessJwt, body: { space } })).status, 200);
+		assert.equal((await readRecord(mf, plc, lw.body.credential, lw.key, space, ana.did, rkey)).r.status, 401);
+		assert.equal((await authorize(mf, lembaga, space)).body.error, "SpaceDeleted");
+
+		// Withdrawal: Ana deletes her account; her space repos go with it.
+		const space2 = (await (await call(mf, x("com.atproto.space.createSpace"), { token: lembaga.accessJwt, body: { spaceType: TYPE, skey: "kedua", policy: MEMBERS } })).json()).space;
+		await call(mf, x("com.atproto.memberspace.putMembers"), { token: lembaga.accessJwt, body: { space: space2, members: [{ did: ana.did, read: true, write: true }] } });
+		const w2 = await call(mf, x("com.atproto.space.createRecord"), { token: ana.accessJwt, body: { space: space2, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "kedua" } } });
+		const rkey2 = (await w2.json()).uri.split("/").pop();
+		const l2 = await authorize(mf, lembaga, space2);
+		assert.equal((await readRecord(mf, plc, l2.body.credential, l2.key, space2, ana.did, rkey2)).r.status, 200);
+		assert.equal((await call(mf, "/xrpc/com.atproto.server.deleteAccount", { body: { did: ana.did, password: ana.password } })).status, 200);
+		assert.notEqual((await readRecord(mf, plc, l2.body.credential, l2.key, space2, ana.did, rkey2)).r.status, 200);
 	} finally {
 		await mf.dispose();
 		rmSync(dir, { recursive: true, force: true });
 	}
 });
 
-test("spaces: a space whose authority lives on another PDS, with credentials accepted only while fresh", async () => {
+test("spaces: an authority on another PDS, with notifyRepoUpdate out and notifyCredentialsRevoked in", async () => {
 	const dir = persistDir(), plc = new FakePlc();
-	// The community's own PDS, outside this host: a DID in the PLC fake with its own key.
 	const signing = await Secp256k1Keypair.create(), rotation = await Secp256k1Keypair.create();
 	const op = await signOperation(genesisOperation({ handle: "lembaga.example.test", pdsEndpoint: "https://lembaga-pds.test", signingDidKey: signing.did(), rotationKeys: [rotation.did()] }), rotation);
 	const remote = await didForGenesis(op);
@@ -138,39 +189,75 @@ test("spaces: a space whose authority lives on another PDS, with credentials acc
 	const mf = hostRuntime({
 		persist: dir,
 		plc,
-		vars: { SPACES_REMOTE_CREDENTIAL_MAX_AGE: "2" },
 		outbound: async (request) => {
 			if (new URL(request.url).origin === "https://lembaga-pds.test") {
-				notified.push(new URL(request.url).pathname);
+				notified.push({ path: new URL(request.url).pathname, auth: request.headers.get("authorization"), body: await request.json() });
 				return Response.json({});
 			}
 			return null;
 		},
 	});
+	const serviceJwt = async (aud, lxm) => {
+		const now = Math.floor(Date.now() / 1000);
+		const enc = (v) => b64url(new TextEncoder().encode(JSON.stringify(v)));
+		const input = `${enc({ typ: "JWT", alg: "ES256K" })}.${enc({ iss: remote, aud, lxm, iat: now, exp: now + 60, jti: String(Math.random()) })}`;
+		return `${input}.${b64url(await signing.sign(new TextEncoder().encode(input)))}`;
+	};
 	try {
 		await migrate(mf);
 		const ana = await signup(mf, "ana");
 		const space = `at://${remote}/space/${TYPE}/milik-lembaga`;
-		const w = await call(mf, xrpc("com.atproto.space.createRecord"), { token: ana.accessJwt, body: { space, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "Di PDS lembaga" } } });
-		assert.equal(w.status, 200, JSON.stringify(await w.clone().json()));
+		const w = await call(mf, x("com.atproto.space.createRecord"), { token: ana.accessJwt, body: { space, repo: ana.did, collection: NOTE, record: { $type: NOTE, text: "Di PDS lembaga" } } });
+		assert.equal(w.status, 200, await w.clone().text());
 		const rkey = (await w.json()).uri.split("/").pop();
-		// The write was announced to the space host on the lembaga's own PDS.
-		for (let i = 0; i < 20 && !notified.length; i++) await new Promise((ok) => setTimeout(ok, 50));
-		assert.ok(notified.includes("/xrpc/com.atproto.space.notifyWrite"));
-		// A credential the remote authority signed is accepted while it is fresh...
-		const key = await dpopKey();
-		const jkt = (await import("jose")).calculateJwkThumbprint(key.bareJwk, "sha256");
-		const credential = await createSpaceToken("credential", { iss: remote, sub: space, dpopJkt: await jkt }, signing);
-		assert.equal((await readWith(mf, credential, key, space, ana.did, rkey)).status, 200);
-		// ...and refused once older than this host allows, so removal there reaches here quickly.
-		await new Promise((ok) => setTimeout(ok, 3100));
-		const stale = await readWith(mf, credential, key, space, ana.did, rkey);
-		assert.equal(stale.status, 401);
-		// A credential signed by anyone else is refused outright.
-		const forged = await createSpaceToken("credential", { iss: remote, sub: space, dpopJkt: await jkt }, await Secp256k1Keypair.create());
-		assert.notEqual((await readWith(mf, forged, key, space, ana.did, rkey)).status, 200);
+		for (let i = 0; i < 40 && !notified.length; i++) await new Promise((ok) => setTimeout(ok, 50));
+		const note = notified.find((n) => n.path === "/xrpc/com.atproto.space.notifyRepoUpdate");
+		assert.ok(note, "the write was announced to the authority's PDS");
+		assert.equal(note.body.repo, ana.did);
+		assert.match(note.auth, /^Bearer /);
+
+		// A credential the remote authority signed reads Ana's record here.
+		const key = await P256Keypair.create();
+		const credential = await createSpaceCredential({ iss: remote, sub: space, keyId: key.did(), keypair: signing });
+		assert.equal((await readRecord(mf, plc, credential, key, space, ana.did, rkey)).r.status, 200);
+		// A credential signed by another key is refused.
+		const forged = await createSpaceCredential({ iss: remote, sub: space, keyId: key.did(), keypair: await Secp256k1Keypair.create() });
+		assert.equal((await readRecord(mf, plc, forged, key, space, ana.did, rkey)).r.status, 401);
+
+		// The authority revokes it. Only the authority may, and only for a repo hosted here.
+		const jti = JSON.parse(Buffer.from(credential.split(".")[1], "base64url").toString()).jti;
+		const lxm = "com.atproto.space.notifyCredentialsRevoked";
+		const wrongAud = await call(mf, x(lxm), { body: { space, credentials: [jti] }, token: await serviceJwt("did:plc:notheretestaccount", lxm) });
+		assert.equal(wrongAud.status, 403);
+		const revoked = await call(mf, x(lxm), { body: { space, credentials: [jti] }, token: await serviceJwt(ana.did, lxm) });
+		assert.equal(revoked.status, 200, await revoked.clone().text());
+		const after = await readRecord(mf, plc, credential, key, space, ana.did, rkey);
+		assert.equal(after.r.status, 401);
+		assert.equal((await after.r.json()).error, "CredentialRevoked");
 	} finally {
 		await mf.dispose();
 		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+test("spaces: an account made before KEM keys gets #atproto_kem through a PLC update", async () => {
+	const plc = new FakePlc(), mf = hostRuntime({ plc });
+	try {
+		await migrate(mf);
+		const ana = await signup(mf, "ana");
+		const genesis = plc.ops.get(ana.did)[0];
+		assert.ok(genesis.verificationMethods.atproto_kem, "new accounts publish the KEM key at genesis");
+		// Simulate an older account: the directory's newest operation lacks the KEM key.
+		const { atproto_kem: _kem, ...rest } = genesis.verificationMethods;
+		plc.ops.set(ana.did, [{ ...genesis, verificationMethods: rest }]);
+		const r = await call(mf, "/admin/accounts/kem", { body: { did: ana.did }, token: operator });
+		assert.equal(r.status, 200, await r.clone().text());
+		assert.deepEqual(await r.json(), { published: true });
+		const ops = plc.ops.get(ana.did);
+		assert.equal(ops.length, 2);
+		assert.equal(ops[1].verificationMethods.atproto_kem, genesis.verificationMethods.atproto_kem);
+		assert.equal((await (await call(mf, "/admin/accounts/kem", { body: { did: ana.did }, token: operator })).json()).published, false);
+	} finally {
+		await mf.dispose();
 	}
 });

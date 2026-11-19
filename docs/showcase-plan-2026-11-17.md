@@ -476,6 +476,8 @@ The owner set the **multi-identity PDS first**, so people can log in and post, a
 - The identity host is live on workers.dev with sign-up closed. The directory is in a Durable Object, so there is no D1, and there was no DNS change and no PLC write. The same bundle runs on plain workerd for self-hosting. AT Protocol spaces (alpha) are built on it, and a removed member is refused at read time (`research/pds-multi-identity-build-2026-11-19.md` §8–11).
 - The knowledge model's first slice is built: entities, statements and witnesses with review, withdrawal and a public view at `/v1/knowledge-model`, and a seed of 110 entities from the verified quotes. The observatory's static files hold clusters against a null model, gaps, questions and similarity (`research/knowledge-model-build-2026-11-19.md`).
 
+**Progress 19 November, go-live for a test with 5 to 20 people:** the identity host takes accounts by invite code only, with PLC writes and the owner's escrow key. The PDS stays on its workers.dev name, and handles are `nama.etnos.space`, which need one wildcard DNS record from the owner. The test account `uji-1.etnos.space` signs in to etnos.space from start to finish. Blobs are stored in R2. Spaces follow the current proposal text on the official alpha package, and a removed member is refused on the next read (`research/pds-multi-identity-build-2026-11-19.md` §6 and §9).
+
 Steps 2–4 fit before the proposal only if Run 2 lands by about 23 November; otherwise the proposal describes them as *rencana* and shows step 4's seed import if it is live.
 
 ### 25.3 Small decisions recorded this session

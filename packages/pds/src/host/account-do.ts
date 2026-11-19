@@ -11,7 +11,9 @@
  * when that DID is not its own, so a routing bug cannot make one account act
  * as another (plan §2.2 rule 1). No method returns private key material.
  */
-import { Secp256k1Keypair } from "@atproto/crypto";
+import { P256Keypair, Secp256k1Keypair } from "@atproto/crypto";
+import { p256 } from "@noble/curves/p256";
+import { decapsulate } from "@atproto/space";
 import { AccountDurableObject } from "../upstream/account-do";
 import type { RepoFacet } from "../upstream/repo/facet";
 import type { AccountStore } from "../upstream/account/store";
@@ -25,7 +27,7 @@ import {
 	wrapSecret,
 	type WrappedSecret,
 } from "./crypto.ts";
-import { didForGenesis, genesisOperation, signOperation, type SignedPlcOperation } from "./plc.ts";
+import { didForGenesis, genesisOperation, operationCid, signOperation, withVerificationMethod, type SignedPlcOperation } from "./plc.ts";
 import type { HostEnv } from "./env.ts";
 
 export interface ProvisionInput {
@@ -168,19 +170,23 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 			}
 			const signing = await Secp256k1Keypair.create({ exportable: true });
 			const rotation = await Secp256k1Keypair.create({ exportable: true });
+			const kem = await P256Keypair.create({ exportable: true });
 			const rotationKeys = [...(input.escrowRotationKey ? [input.escrowRotationKey] : []), rotation.did()];
 			const operation = await signOperation(
-				genesisOperation({ handle: input.handle, pdsEndpoint: input.pdsEndpoint, signingDidKey: signing.did(), rotationKeys }),
+				genesisOperation({ handle: input.handle, pdsEndpoint: input.pdsEndpoint, signingDidKey: signing.did(), rotationKeys, kemDidKey: kem.did() }),
 				rotation,
 			);
 			const did = await didForGenesis(operation);
 			const passwordHash = await hashPassword(input.password);
 			const signingBytes = await signing.export();
 			const rotationBytes = await rotation.export();
+			const kemBytes = await kem.export();
 			await this.storeKey(did, "signing", signingBytes);
 			await this.storeKey(did, "rotation", rotationBytes);
+			await this.storeKey(did, "kem", kemBytes);
 			signingBytes.fill(0);
 			rotationBytes.fill(0);
+			kemBytes.fill(0);
 			this.ctx.storage.sql.exec(
 				"INSERT INTO host_identity VALUES (1,?,?,?,?,?,?,?,?)",
 				input.accountId,
@@ -259,11 +265,56 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 		const decode = (part: string) => JSON.parse(new TextDecoder().decode(fromB64url(part))) as Record<string, unknown>;
 		const header = decode(h), payload = decode(p);
 		const spaceToken = header.typ === "atproto-space-delegation+jwt" || header.typ === "atproto-space-credential+jwt";
-		const spaceService = header.typ === "JWT" && typeof payload.lxm === "string" && /^com\.atproto\.(space|simplespace)\./.test(payload.lxm);
+		const spaceService = header.typ === "JWT" && typeof payload.lxm === "string" && /^com\.atproto\.(space|memberspace)\./.test(payload.lxm);
 		if (header.alg !== "ES256K" || payload.iss !== expectedDid || !(spaceToken || spaceService)) throw new Error("Refused to sign");
 		const { signingKey } = await this.loadIdentity();
 		const keypair = await Secp256k1Keypair.import(signingKey);
 		return keypair.sign(signingInput);
+	}
+
+	/** The account's #atproto_kem public key (P-256 did:key), made on first use for older accounts. */
+	async spaceKemKey(expectedDid: string): Promise<string> {
+		this.assertAccount(expectedDid);
+		return (await this.kemKeypair(expectedDid)).did;
+	}
+
+	/**
+	 * The shared secret for one MAC on a space read (proposal 0016, "Shared secret"): HPKE
+	 * export with DHKEM(P-256), derived by the official @atproto/space helper. Only the
+	 * derived 32-byte secret leaves this object, never the KEM private key.
+	 */
+	async spaceKemSecret(expectedDid: string, keyShare: string): Promise<Uint8Array> {
+		this.assertAccount(expectedDid);
+		const { did, privateKey } = await this.kemKeypair(expectedDid);
+		const keypair = { did: () => did, ecdh: (publicKey: Uint8Array) => p256.getSharedSecret(privateKey, publicKey, true).slice(1) };
+		return decapsulate(keypair as never, keyShare as `did:${string}:${string}`);
+	}
+
+	/**
+	 * A PLC update that publishes #atproto_kem for an account made before the KEM key existed.
+	 * Keeps every other field of `last`, which must be the directory's newest operation for
+	 * this DID, and is signed with the host rotation key, which must still be listed in it.
+	 */
+	async kemPlcUpdate(expectedDid: string, last: SignedPlcOperation): Promise<SignedPlcOperation | null> {
+		const row = this.assertAccount(expectedDid);
+		const { did } = await this.kemKeypair(expectedDid);
+		if (last.verificationMethods?.atproto_kem === did) return null;
+		if (!last.rotationKeys.includes(row.rotation_did_key)) throw new Error("The host rotation key is no longer listed");
+		const rotation = await Secp256k1Keypair.import(await this.loadKey(row.did, "rotation"));
+		return signOperation(withVerificationMethod(last, await operationCid(last), "atproto_kem", did), rotation);
+	}
+
+	private async kemKeypair(did: string): Promise<{ did: string; privateKey: Uint8Array }> {
+		const stored = this.ctx.storage.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM account_keys WHERE purpose = 'kem'").one().n;
+		if (!stored) {
+			const fresh = await P256Keypair.create({ exportable: true });
+			const bytes = await fresh.export();
+			await this.storeKey(did, "kem", bytes);
+			bytes.fill(0);
+		}
+		const privateKey = await this.loadKey(did, "kem");
+		const keypair = await P256Keypair.import(privateKey);
+		return { did: keypair.did(), privateKey };
 	}
 
 	async setActive(expectedDid: string, active: boolean): Promise<void> {
