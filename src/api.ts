@@ -21,9 +21,11 @@ import {Offerings} from './offerings.ts'
 import {Ranking} from './ranking.ts'
 import {Clustering} from './clustering.ts'
 import {Knowledge} from './knowledge.ts'
-import {Resident,type ResidentProvider,type ResidentSkill} from './resident.ts'
+import {Resident,type ResidentBudget,type ResidentProvider,type ResidentSkill} from './resident.ts'
 import {catalogue,catalogueSummary,contextFamily} from './catalogue.ts'
 import seedLabels from './catalogues/tanah-papua-seed-labels.json' with { type: 'json' }
+import knowledgeSeed from './catalogues/tanah-papua-knowledge-seed.json' with { type: 'json' }
+import {KnowledgeModel,type KnowledgeSeed} from './knowledge-model.ts'
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -50,7 +52,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -60,8 +62,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
   const wiki=new Wiki(store),seasons=new Seasons(store),founding=new Founding(store)
-  const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups)
+  const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups),model=new KnowledgeModel(store,groups)
   const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
+  if(options.residentBudget)resident.budget=options.residentBudget
   return async (req: Request): Promise<Response> => {
     try {
       const url=new URL(req.url)
@@ -126,6 +129,12 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='spaces')result=groups.spaces(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
+        else if(path==='/v1/knowledge-model')result=model.summary(actor?.id)
+        else if(path==='/v1/knowledge-model/entities')result=model.entities(actor?.id,{class:url.searchParams.get('class')??undefined,q:url.searchParams.get('q')??undefined})
+        else if(parts.length===4&&parts[1]==='knowledge-model'&&parts[2]==='entities')result=model.entity(actor?.id,parts[3])
+        else if(path==='/v1/knowledge-model/graph')result=model.graph(actor?.id,{publicOnly:url.searchParams.get('public')==='1'})
+        else if(path==='/v1/knowledge-model/export')result=model.graph(undefined,{publicOnly:true,train:url.searchParams.get('train')==='1'})
+        else if(path==='/v1/knowledge-model/queue')result=model.queue(authenticated(),url.searchParams.get('community')??undefined)
         else if(path==='/v1/contexts/catalogue')result=catalogueSummary(options.catalogue)
         else if(path==='/v1/contexts/talked')result=groups.talked(Number(url.searchParams.get('days')??7))
         else if(parts.length===3&&parts[1]==='contexts'){const detail=groups.contextDetail(parts[2]);result={...detail,family:contextFamily(detail,options.catalogue),work:work.list({contextId:parts[2]})}}
@@ -201,6 +210,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='promote')result=knowledge.promote(caller,parts[2],b)
       else if(path==='/v1/resident/setup')result=resident.setup(caller,b)
       else if(path==='/v1/resident/config')result=resident.configure(caller,b)
+      else if(path==='/v1/resident/renew')result=resident.renew(caller,b)
       else if(path==='/v1/resident/sitewide')result=resident.routing.setGlobal(caller,b)
       else if(path==='/v1/resident/destinations')result=resident.routing.setDestination(caller,b)
       else if(path==='/v1/resident/jobs')result=resident.enqueue(caller,string(b.communityId),string(b.skill) as ResidentSkill,string(b.requestKey))
@@ -252,6 +262,14 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='retire'){if(typeof b.retired!=='boolean')throw new Fault(400,'Boolean required');result=groups.retireContext(caller,parts[2],b.retired)}
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='aliases')result=groups.setContextAliases(caller,parts[2],b.aliases)
       else if(path==='/v1/contexts/seed-labels')result=groups.applySeedLabels(caller,seedLabels as SeedLabels)
+      else if(path==='/v1/knowledge-model/seed')result=model.importSeed(caller,knowledgeSeed as KnowledgeSeed)
+      else if(path==='/v1/knowledge-model/entities')result=model.proposeEntity(caller,b)
+      else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='entities'&&parts[4]==='review')result=model.reviewEntity(caller,parts[3],b)
+      else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='entities'&&parts[4]==='merge')result=model.mergeEntity(caller,parts[3],b)
+      else if(path==='/v1/knowledge-model/assertions')result=model.proposeAssertion(caller,b)
+      else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='assertions'&&parts[4]==='review')result=model.reviewAssertion(caller,parts[3],b)
+      else if(path==='/v1/knowledge-model/witnesses/post')result=model.citePost(caller,b)
+      else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='witnesses'&&parts[4]==='withdraw')result=model.withdrawWitness(caller,parts[3],b)
       else if(path==='/v1/contexts/catalogue'){const c=catalogue(options.catalogue);result={catalogue:c.key,...groups.importCatalogue(caller,c.catalogue)}}
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='parents')result=b.remove===true?groups.unlinkContext(caller,parts[2],string(b.parentId)):groups.linkContext(caller,parts[2],string(b.parentId))
       else if(parts.length===4&&['posts','groups','wiki'].includes(parts[1])&&parts[3]==='contexts'){
