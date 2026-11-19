@@ -1,10 +1,10 @@
 # Hal, Pernyataan, Rekaman: an ontology for a people's world
 
-> **Updated 19 November.** Read **[epistemic-multiplex-2026-11-19.md](epistemic-multiplex-2026-11-19.md)** first. It renames the layers (Hal → **Entity**, Pernyataan → **Assertion**, Rekaman → **Witness**, computed clusters → **Constellations**; the holder's-account layer *kesaksian* → *tuturan*), keeps all twelve kinds as classes under three top classes, lets measurements be witnesses so science joins the graph as one voice, and replaces sections 8–11 here with a motif library and five lenses on importance. The reasoning below on what the things are, seeding, the first-person voice and "classify their own" still stands.
+> **Updated 19 November.** Read **[epistemic-multiplex-2026-11-19.md](epistemic-multiplex-2026-11-19.md)** first. It renames the layers (Hal → **Entity**, Pernyataan → **Assertion**, Rekaman → **Witness**, computed clusters → **Clusters**; the holder's-account layer *kesaksian* → *tuturan*), keeps all twelve kinds as classes under three top classes, lets measurements be witnesses so science joins the graph as one voice, and replaces sections 8–11 here with a motif library and five lenses on importance. The reasoning below on what the things are, seeding, the first-person voice and "classify their own" still stands.
 
 18 November 2026, evening. Design research; no code changed. It answers two things the owner raised in the same session: the knowledge map shows documents and sentences instead of the things they are about, and the wiki needs a proper object model for everything a people knows about its world. Marks: *(proposal)* for suggestions the owner can overturn, *(not measured)* for estimates, *(to verify)* for open checks. Sources are at the end.
 
-It builds on, and does not replace: `../knowledge-organisation-2026-11-15.md` (label families), `../knowledge-map-design-2026-11-16.md` (six coordinates, lenses), `knowledge-graph-sota-2026-11-16.md` (methods, CIDOC CRM, perspective tags), `topic-primitives-and-knowledge-organisation-2026-11-18.md` (facets, SKOS, Indigenous schemes), `why-these-axes-2026-11-18.md` (place, language, topic, kind) and `aksara-living-program-2026-11-18.md` (Ritme). Those settle the **axes** (how anything is located). This note settles the **things** (what the nodes are).
+It builds on, and does not replace: `../knowledge-organisation-2026-11-15.md` (label families), `../knowledge-map-design-2026-11-16.md` (six coordinates, lenses), `knowledge-graph-sota-2026-11-16.md` (methods, CIDOC CRM, perspective tags), `topic-primitives-and-knowledge-organisation-2026-11-18.md` (facets, SKOS, Indigenous schemes), `why-these-axes-2026-11-18.md` (place, language, topic, kind) and `aksara-living-program-2026-11-18.md` (Jadwal Aksara). Those settle the **axes** (how anything is located). This note settles the **things** (what the nodes are).
 
 ## 1. What the owner asked
 
@@ -249,7 +249,7 @@ That last row says the project's whole stance in one line, and it reads well to 
 3. **Lapisan:** things arranged by pace layer. Tempat and Makhluk sit deep; Praktik, Gagasan and Cerita in the middle; Peristiwa and the news on top. This ties the map to the Strata model.
 4. **Pohon:** pick a scheme (Mee categories, the 18 topics, UU 5/2017, disciplines) and see the same things as a tree. Switching schemes shows how the same world looks under different eyes, which the owner asked for on 16 November.
 5. **Waktu:** the two clocks (when it is about, when it was recorded).
-6. **Celah:** gaps. Things with few sources, or only outsiders' voices, glow. This is the state-of-knowledge report as a picture, and it feeds Ritme's questions.
+6. **Celah:** gaps. Things with few sources, or only outsiders' voices, glow. This is the state-of-knowledge report as a picture, and it feeds Jadwal Aksara's questions.
 
 **Semantic zoom:** region, then kinds, then things, then statements.
 
@@ -281,7 +281,7 @@ The owner wants the option, later, to fine-tune a sovereign model for internal u
 - **Training permission is its own protocol flag.** "Access is not training permission" (Recovery Pipeline v0.1). Only statements, sources and accounts whose protocol says *boleh dipakai melatih* go into a training set.
 - **Exports in open formats:** SKOS for schemes, CIDOC CRM / Linked Art for heritage partners, Wikidata-style JSON for things and statements, and JSONL question-and-answer pairs generated from *reviewed* statements, each carrying its source.
 - **Withdrawal propagates.** A withdrawn source removes the statements that rest on it, and the next training export leaves them out.
-- **Evaluation from the same data.** The negative competency questions in the Ritme note ("never infer a marga from a name" and so on) double as an evaluation set for any model trained on it.
+- **Evaluation from the same data.** The negative competency questions in the Jadwal Aksara note ("never infer a marga from a name" and so on) double as an evaluation set for any model trained on it.
 
 ## 13. Open questions for the owner
 

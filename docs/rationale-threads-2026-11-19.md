@@ -15,32 +15,32 @@ Laws and policies are paraphrased, not quoted, and each one names its article wh
 
 | # | Thread | One line | Rubric weight it feeds most |
 | --- | --- | --- | --- |
-| 1 | **Ditulis tentang kita** (written about us) | The open record of Papua is mostly outsiders' and the state's view; the commons adds the people's own layer | Akar budaya 25%, proposal 30% |
+| 1 | **Sumber tentang Papua kebanyakan ditulis dari luar** | The open record of Papua is mostly outsiders' and the state's view; the commons adds the people's own layer | Akar budaya 25%, proposal 30% |
 | 2 | **Kedaulatan pengetahuan** (knowledge sovereignty) | Communities keep authority over their knowledge, identities and data, by design | Akar budaya, teknis |
-| 3 | **Observatorium yang berakar** (a rooted observatory) | A provenance-aware knowledge graph that shows what is core, what is fading, and where the gaps are | Teknis 25%, proposal |
-| 4 | **Dua mata** (two eyes) | Modern science and people's knowledge side by side, each judged on its own terms | Akar budaya, proposal |
-| 5 | **Pengetahuan yang hidup** (living knowledge) | Measure and support vitality: languages, practices and stories still told | Akar budaya, proposal (impact) |
-| 6 | **Ruang bersama yang terawat** (a commons with a staff) | A social commons kept active by Aksara's public rhythm, without engagement manipulation | Teknis, model bisnis |
-| 7 | **Dapat dipercaya** (trustworthy) | Every sentence verified, every claim provable, compliance built in | Teknis, proposal |
-| 8 | **Berkelanjutan dan bisa dibawa** (sustainable and portable) | One product, many deployments; open standards; a business and a research programme | Model bisnis 20%, Cultural Power |
+| 3 | **Observatorium kebudayaan berbasis komunitas** | A provenance-aware knowledge graph that shows what is core, what is fading, and where the gaps are | Teknis 25%, proposal |
+| 4 | **Pengetahuan lokal dan sains** | Modern science and people's knowledge side by side, each judged on its own terms | Akar budaya, proposal |
+| 5 | **Catatan yang terus diperbarui** | Measure and support vitality: languages, practices and stories still told | Akar budaya, proposal (impact) |
+| 6 | **Ruang bersama yang dikelola** | A social commons kept active by Aksara's public rhythm, without engagement manipulation | Teknis, model bisnis |
+| 7 | **Dapat diperiksa** | Every sentence verified, every claim provable, compliance built in | Teknis, proposal |
+| 8 | **Keberlanjutan dan portabilitas** | One product, many deployments; open standards; a business and a research programme | Model bisnis 20%, Cultural Power |
 
 Section 9 maps each thread to the proposal's sections and the deck's ten slides. Section 10 is the regulatory map in one table.
 
 ### 0.1 The northstar and the flagships *(added 19 November)*
 
-**Northstar: [Bahasa Tumbuh](research/bahasa-tumbuh-2026-11-19.md).** Every language community gets a dictionary and a grammar that grow from how its people already talk, seeded from the published record (TransNewGuinea.org's 41 Ekari words from 1975; Steltenpool's 1969 dictionary of about 4,000 roots, open access), owned and governed by the community, and powering its own small models. It carries threads 1, 2, 5 and 8 most strongly, and every catalogued language can grow the same way.
+**Northstar: [Kamus komunitas](research/community-dictionary-2026-11-19.md).** Every language community gets a dictionary and a grammar that grow from how its people already talk, seeded from the published record (TransNewGuinea.org's 41 Ekari words from 1975; Steltenpool's 1969 dictionary of about 4,000 roots, open access), owned and governed by the community, and powering its own small models. It carries threads 1, 2, 5 and 8 most strongly, and every catalogued language can grow the same way.
 
 Supporting flagships (design in `research/epistemic-multiplex-2026-11-19.md` §17):
 
 | Flagship | One line | Threads it carries |
 | --- | --- | --- |
-| **Kata Bersama** *(now Bahasa Tumbuh's seed layer)* | The largest open database of New Guinea wordlists holds 41 words of Ekari, all from one 1975 source; speakers confirm, correct and voice their words, and corrections go back to open science with consent | 1, 5, 2, 8 |
-| **Siapa yang menulis Papua?** | The voices and topics behind the open record (92% encyclopaedia; administration and population 31%, culture and ecology under 6%) and how they move as tellers join | 1, 3, 7 |
-| **Lensa Kita** | A community's own landscape categories become a map through a tiny classifier on open satellite embeddings that the community owns; what the satellite cannot learn is the cultural residual, and residual times vitality says what to record first | 3, 4, 5, 2 |
+| **Perbandingan kosakata** *(now the community dictionary's seed layer)* | The largest open database of New Guinea wordlists holds 41 words of Ekari, all from one 1975 source; speakers confirm, correct and voice their words, and corrections go back to open science with consent | 1, 5, 2, 8 |
+| **Laporan sumber** | The voices and topics behind the open record (92% encyclopaedia; administration and population 31%, culture and ecology under 6%) and how they move as tellers join | 1, 3, 7 |
+| **Istilah lahan dan citra satelit** | A community's own landscape categories become a map through a tiny classifier on open satellite embeddings that the community owns; what the satellite cannot learn is the cultural residual, and residual times vitality says what to record first | 3, 4, 5, 2 |
 
 The idea that ties them: **small sovereign heads on big open bodies.** Open foundation models already turn land, sound and speech into embeddings; a community adds its categories with a few dozen examples, and the resulting lens is small enough to own, inspect, share under protocol or delete. It is a sovereign model sized to a people, and it reverses the usual direction of extraction.
 
-## 1. Ditulis tentang kita (written about us)
+## 1. Sumber tentang Papua kebanyakan ditulis dari luar
 
 **Claim.** Most published knowledge about Tanah Papua was written by outsiders, and the open web's version of it is mostly the state's administrative view. The people it describes can rarely read it and almost never answer it. Strata makes their answer part of the record.
 
@@ -64,7 +64,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 - **Perpres 115/2024 (RIPK 2025–2045), mission 1:** space for diverse cultural expression and cultural interaction.
 
 **Voice and media**
-- A voice answer from a person of the region is the strongest possible correction to an outsider's record: their language, their voice, attributed. *Ceritakan versimu* and *Jawab dengan suara* (Ritme note §4.1a) make that one tap.
+- A voice answer from a person of the region is the strongest possible correction to an outsider's record: their language, their voice, attributed. *Ceritakan versimu* and *Jawab dengan suara* (Jadwal Aksara note §4.1a) make that one tap.
 - Short video shows practice (weaving, building, cooking) that text describes poorly.
 
 **Public data**
@@ -114,7 +114,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 - Share of assertions with an explicit training-permission decision.
 - Withdrawal requests honoured, and time to honour them.
 
-## 3. Observatorium yang berakar (a rooted observatory)
+## 3. Observatorium kebudayaan berbasis komunitas
 
 **Claim.** Strata turns scattered sources and conversations into a provenance-aware knowledge graph of a people's world: entities, assertions with voice and witness, and analyses that show what is core, what is at risk, how voices differ and what to ask next. As far as our searches found, this combination has not been built before.
 
@@ -151,7 +151,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 - Gaps opened and closed per month (the topology lens); questions generated and answered.
 - Researchers and institutions using the open dataset; citations.
 
-## 4. Dua mata (two eyes)
+## 4. Pengetahuan lokal dan sains
 
 **Claim.** Strata brings the good art of modern science closer to people, and people's knowledge closer to science, without making either the judge of the other. Measurements, papers and biodiversity records enter the same graph as one more voice.
 
@@ -166,7 +166,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 - **Phylogenetic signal in traditional medicine** (Saslis-Lagoudakis et al. 2012), with benefit-sharing as the condition.
 
 **Features**
-- *Mata kedua* panel on entity pages; measurement witnesses (GBIF, rainfall, satellite, elevation, OpenAlex); folk–science correspondence computed per deployment (all **rencana**).
+- *Data pengukuran* panel on entity pages; measurement witnesses (GBIF, rainfall, satellite, elevation, OpenAlex); folk–science correspondence computed per deployment (all **rencana**).
 
 **Laws and policy**
 - **UU 32/2009 on the environment** and **Permen LHK P.34/2017:** recognition and protection of local wisdom in managing natural resources; local wisdom open to the public is distinguished from secret or sacred local wisdom.
@@ -188,7 +188,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 - Entities with a second-eye panel; agreements, differences and silences reported.
 - School classes or university groups using the panel; joint pieces by a scientist and a teller.
 
-## 5. Pengetahuan yang hidup (living knowledge)
+## 5. Catatan yang terus diperbarui
 
 **Claim.** What matters is not only what was recorded, but what is still told and done. Strata measures vitality from provenance and helps keep knowledge in use.
 
@@ -221,19 +221,19 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 - Entities whose vitality improved (new *tuturan*, a taught-by link).
 - Practices with a recorded transmission chain.
 
-## 6. Ruang bersama yang terawat (a commons with a staff)
+## 6. Ruang bersama yang dikelola
 
-**Claim.** People need a reason to open the app on an ordinary day. Strata is a social commons kept active by a small, visible, sourced staff (Aksara and its regional voices) following a public rhythm (Ritme), without engagement prediction or infinite feeds.
+**Claim.** People need a reason to open the app on an ordinary day. Strata is a social commons kept active by a small, visible, sourced staff (Aksara and its regional voices) following a public rhythm (Jadwal Aksara), without engagement prediction or infinite feeds.
 
 **Our own findings**
 - Papuans already write every day across scattered Facebook groups, Instagram captions and WhatsApp groups that never speak to each other (framing doc §4).
-- An empty room is the first risk; the Ritme note designs a fortnight of public work before people arrive.
+- An empty room is the first risk; the Jadwal Aksara note designs a fortnight of public work before people arrive.
 
 **Research**
-- Lessons from Nextdoor's 2025 rebuild around daily needs; the risks of AI accounts on Meta's platforms and of Grok on X (Ritme note §3).
+- Lessons from Nextdoor's 2025 rebuild around daily needs; the risks of AI accounts on Meta's platforms and of Grok on X (Jadwal Aksara note §3).
 
 **Features**
-- Communities, founding by two, seasons (**built**). Aksara abstains when it has no source, and stewards can switch it off at once (**live**, per claims ledger). Ritme slots: *Kabar pagi*, *Sedang dibicarakan*, *Soal hari ini*, *Hari ini di wiki*, *Temuan* (**rencana**). Mentions and handoff (**rencana**).
+- Communities, founding by two, seasons (**built**). Aksara abstains when it has no source, and stewards can switch it off at once (**live**, per claims ledger). Jadwal Aksara slots: *Kabar pagi*, *Sedang dibicarakan*, *Soal hari ini*, *Hari ini di wiki*, *Temuan* (**rencana**). Mentions and handoff (**rencana**).
 
 **Laws and policy**
 - **KKI 2023, idea 7:** cultural meeting driven by *pe-lumbung-an* (commoning) and organic collective organising. **Idea 8** worries about screen-culture harm to mental health; a published ranking without engagement prediction answers it.
@@ -242,17 +242,17 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 **Voice and media**
 - Threads-style posting: voice notes as a first-class component, short videos (60 seconds at first). Agents never post video or a synthetic voice.
-- The reel is a *Temuan* selector beside *Terbaru* on Beranda, showing agents' composed cards; new card kinds include weather and season, landscape change and forest sounds (Ritme note §8).
+- The reel is a *Kartu* tab beside *Terbaru* on Beranda, showing agents' composed cards; new card kinds include weather and season, landscape change and forest sounds (Jadwal Aksara note §8).
 
 **Public data**
 - *Kabar pagi* adds weather by place; *Siaga* covers heavy rain, not "suspicious people".
 
 **Impact and indicators**
 - Weekly active people not on the team; communities opened by users and still active after a month.
-- Share of feed items written by people versus Aksara (the Ritme ceiling is 20%).
+- Share of feed items written by people versus Aksara (the Jadwal Aksara ceiling is 20%).
 - Aksara's record: posts flagged as wrong, verified-sentence rate.
 
-## 7. Dapat dipercaya (trustworthy)
+## 7. Dapat diperiksa
 
 **Claim.** Every factual sentence in the seed was checked word for word against its source, every proposal claim links to code or a test, and compliance is part of the design.
 
@@ -262,7 +262,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 **Research**
 - Contested-claims modelling: separate a claim, a judgement about it, and an uncertainty assessment; keep superseded claims rather than delete them.
-- Negative competency questions as tests (Ritme note §10).
+- Negative competency questions as tests (Jadwal Aksara note §10).
 
 **Features**
 - Word-for-word quote check (**live**). AI writing always labelled and hidden until a person accepts it (**live**). Assertion logical status and witnesses (**rencana**).
@@ -281,12 +281,12 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 **Impact and indicators**
 - Verified-sentence rate; time to correct a reported error; number of claims dropped at the 25 November re-check (aim: zero surprises).
 
-## 8. Berkelanjutan dan bisa dibawa (sustainable and portable)
+## 8. Keberlanjutan dan portabilitas
 
-**Claim.** Strata is one product with many deployments. ETNOS is the first; any community (a Kalimantan deployment, a church synod, a partner in Aotearoa) can run its own, on open standards, with its own schemes and Ritme. A business and a research programme keep it alive.
+**Claim.** Strata is one product with many deployments. ETNOS is the first; any community (a Kalimantan deployment, a church synod, a partner in Aotearoa) can run its own, on open standards, with its own schemes and Jadwal Aksara. A business and a research programme keep it alive.
 
 **Our own findings**
-- Free-tier Workers AI runs the default model; one key serves all resident agents (Ritme note §6).
+- Free-tier Workers AI runs the default model; one key serves all resident agents (Jadwal Aksara note §6).
 - "A new region in one afternoon" is a planned recorded demo (framing doc §7).
 
 **Research**

@@ -1,14 +1,14 @@
-# Ritme: how Aksara keeps the commons alive
+# Jadwal Aksara: how Aksara keeps the commons alive
 
 18 November 2026. Design research; no code changed. It answers the owner's request for a recurring, generalisable programme for the agents that act as Strata's librarians: proactive posts, mentions, visible collaboration between regional voices, persistent memory on one key, and a reel of synthesised knowledge. Marks: *(proposal)* for suggestions the owner can overturn, *(not measured)* for estimates, *(to verify)* for open checks. Sources are at the end. It builds on `resident-harness-2026-11-17.md`, `aksara-workers-harness-2026-11-18.md`, `aksara-composed-views-2026-11-18.md`, `knowledge-graph-sota-2026-11-16.md`, sections 9 and 23 of `../showcase-plan-2026-11-17.md`, and sections 9 and 10 of `../framing-and-impact-2026-11-17.md`.
 
 > **Scope, added the same evening.** The owner's read: this note runs ahead of the competition goal. Treat it as the long-term shape of Aksara's work, not the showcase build. For the showcase, only section 11's first rows matter, and only what runs by 26 November counts as *berjalan*. An earlier draft proposed **Tanya ETNOS**, a search-style "AI Mode" for the commons. **The owner dropped it:** people can already tag the main Aksara, which covers the same need without a second surface. (The "AI Mode" mention in the owner's message meant his pasted note had come from Google's AI Mode, not a request to build one.) The knowledge-object questions raised in section 10 moved to **[knowledge-ontology-2026-11-18.md](knowledge-ontology-2026-11-18.md)**, and from there to **[epistemic-multiplex-2026-11-19.md](epistemic-multiplex-2026-11-19.md)**.
 
-> **Updated 19 November.** Ritme stays as designed. Four changes: (1) **the reel is a selector, not a separate surface** (section 8): a *Temuan* option beside *Terbaru* on Beranda, showing agents' composed cards; no full-screen vertical reel for the showcase, because its visual design is the risky part. (2) **People can now post voice notes and short videos**, as on Threads; agents still never post video or a synthetic voice (section 8.6). (3) **New card kinds from public data**: weather and season, landscape change, forest sounds (section 8.3). (4) Motif outputs from the multiplex note feed the existing slots (section 4.5).
+> **Updated 19 November.** Jadwal Aksara stays as designed. Four changes: (1) **the reel is a selector, not a separate surface** (section 8): a *Kartu* option beside *Terbaru* on Beranda, showing agents' composed cards; no full-screen vertical reel for the showcase, because its visual design is the risky part. (2) **People can now post voice notes and short videos**, as on Threads; agents still never post video or a synthetic voice (section 8.6). (3) **New card kinds from public data**: weather and season, landscape change, forest sounds (section 8.3). (4) Motif outputs from the multiplex note feed the existing slots (section 4.5).
 
 ## 1. The idea in one paragraph
 
-Most platforms that add an AI add a chatbot that waits to be asked. The owner's idea is different: **a commons with a staff.** A small team of librarians (one Aksara with a voice per region) keeps a public, sourced rhythm of work: the morning news by place, a story, a question, what changed in the wiki today, a longer finding when one is ready, and a weekly and monthly summary. They answer when tagged, hand questions to the people who know, and do the quiet upkeep a library needs. All of it is visible, sourced, budgeted and correctable. The rhythm is data, not code, so any community (a Kalimantan deployment, a church synod, a partner in Aotearoa running its own node) can load its own. We call the rhythm **Ritme**.
+Most platforms that add an AI add a chatbot that waits to be asked. The owner's idea is different: **a commons with a staff.** A small team of librarians (one Aksara with a voice per region) keeps a public, sourced rhythm of work: the morning news by place, a story, a question, what changed in the wiki today, a longer finding when one is ready, and a weekly and monthly summary. They answer when tagged, hand questions to the people who know, and do the quiet upkeep a library needs. All of it is visible, sourced, budgeted and correctable. The rhythm is data, not code, so any community (a Kalimantan deployment, a church synod, a partner in Aotearoa running its own node) can load its own. We call the rhythm **Jadwal Aksara**.
 
 What makes it more than a content machine: everything Aksara makes is a question to the community as well as an answer, and what people answer settles into the record. The platform cares for the knowledge; the people own it.
 
@@ -16,7 +16,7 @@ What makes it more than a content machine: everything Aksara makes is a question
 
 Read from the code on `main` (18 November, morning) and the latest docs.
 
-| Piece | Today | Missing for Ritme |
+| Piece | Today | Missing for Jadwal Aksara |
 | --- | --- | --- |
 | Resident runtime | `packages/resident-pi`: pi-durable in a Durable Object, one bounded job at a time (8,192-token context, 600 output tokens, 3 turns, 6 tool calls) | Long-lived regional sessions; a startup read; a journal |
 | Scheduling | `StrataNode.alarm()` wakes the resident and discovery; per-community config allows 1–5 jobs a day at intervals of at least 60 minutes | Named slots at set local times; per-region budgets; a sitewide ceiling |
@@ -38,17 +38,17 @@ So the parts are mostly there. What is missing is the **rhythm**, the **memory**
 
 - **Tagging works, and people use it as an arbiter.** A study of three months of `@grok` mentions found Grok replied to about 62% of posts that prompted it, and that people cast it as a truth arbiter in disputes. *Lesson:* Aksara must answer from sources or say clearly that it cannot, and it must hand contested cultural questions to people rather than rule on them.
 - **Trending summaries built from chatter alone mislead.** X's Grok-written Stories summarise trending topics in Explore, and were reported to draw on conversations on X rather than the article text. *Lesson:* when Aksara summarises a trending story, it shows **what the sources say** and **what people here are saying** as two separate, labelled parts, and the first comes from the articles themselves.
-- **A hidden prompt change becomes a public crisis.** In May 2025, xAI blamed an unauthorised edit to the `@grok` reply prompt for unprompted political answers. It then began publishing Grok's system prompts on GitHub with a changelog. *Lesson:* Aksara's prompts, Ritme and skills live in the repository, change only through review, and are shown on a public "Cara Aksara bekerja" page with their history. Strata's mandates already make authority explicit; prompts should be equally explicit.
+- **A hidden prompt change becomes a public crisis.** In May 2025, xAI blamed an unauthorised edit to the `@grok` reply prompt for unprompted political answers. It then began publishing Grok's system prompts on GitHub with a changelog. *Lesson:* Aksara's prompts, Jadwal Aksara and skills live in the repository, change only through review, and are shown on a public "Cara Aksara bekerja" page with their history. Strata's mandates already make authority explicit; prompts should be equally explicit.
 - **People need an off switch.** Threads users can tag `@meta.ai` for a public reply. Users found they could not block the account, and the backlash was immediate; Meta pointed to muting and "Not interested". *Lesson:* follow, mute, pause **and block** for every Aksara voice, as section 9 of the showcase plan already says.
 - **Answer in the asker's language, with citations.** Meta AI on Threads runs on Muse Spark with live web search and cited sources, and answers in the language of the question. *Lesson:* Aksara answers in Indonesian or Papuan Malay as asked, and never in a Papuan language it does not hold sources for.
 - **Personal memory is the wrong memory for a commons.** Grok remembers each user's past chats. *Lesson:* **Aksara remembers places, not people.** Its memory is the place notebook and its own journal. It keeps no profile of anyone, beyond what is public on a person's own page.
-- **Scheduled tasks are the pattern, but private.** Grok can run recurring prompts on a schedule and notify one user. Ritme is the same idea made **public and communal**: one schedule per place, visible to everyone, its output open to correction.
+- **Scheduled tasks are the pattern, but private.** Grok can run recurring prompts on a schedule and notify one user. Jadwal Aksara is the same idea made **public and communal**: one schedule per place, visible to everyone, its output open to correction.
 
-## 4. Ritme: the programme
+## 4. Jadwal Aksara: the programme
 
 ### 4.1 The shape (generalisable)
 
-A Ritme is a list of **slots**. Each slot names *when*, *what*, *where*, *which gates* and *how much*. It lives in the place pack as data, so a new deployment edits a file, not code.
+A Jadwal Aksara is a list of **slots**. Each slot names *when*, *what*, *where*, *which gates* and *how much*. It lives in the place pack as data, so a new deployment edits a file, not code.
 
 ```yaml
 # place-pack/ritme.yaml (proposal)
@@ -111,7 +111,7 @@ Rules that apply to every slot:
 2. **Every post carries its sources** in the Sumber panel and ends with a question.
 3. **Feed share is enforced at read time:** never two agent items in a row, at most one in five, and the regional morning posts collapse into one card in the all-Papua view.
 4. **Budgets are reserved before a call**, through the existing ModelGateway reservation, so a runaway job cannot spend tomorrow's allowance.
-5. **The schedule is public.** "Cara Aksara bekerja" shows today's Ritme, what ran, what was skipped and why.
+5. **The schedule is public.** "Cara Aksara bekerja" shows today's Jadwal Aksara, what ran, what was skipped and why.
 
 ### 4.1a Voice in the rhythm *(added 19 November)*
 
@@ -173,9 +173,9 @@ The analyses in `epistemic-multiplex-2026-11-19.md` give the slots better materi
 | Slot | New input | Source |
 | --- | --- | --- |
 | Soal hari ini | Predicted links turned into questions; thin, single-voice entities | Motifs M8, M9, M15 |
-| Temuan | A gap closed; a constellation changed; outsiders' and tellers' salience compared | M2–M5, M8, M16 |
+| Temuan | A gap closed; a cluster changed; outsiders' and tellers' salience compared | M2–M5, M8, M16 |
 | Hari ini di wiki | New assertions by voice, so the tellers' layer visibly grows | Voice lens |
-| Denyut (monthly) | Vitality list, voice comparison, strategic diagram per region | Five lenses |
+| Laporan bulanan | Vitality list, voice comparison, strategic diagram per region | Five lenses |
 | Kabar pagi | Weather and season by place; *Siaga* for heavy rain | Open-Meteo (multiplex note §9) |
 | Upkeep | Landscape change flagged for a place, queued as a question to its people | Satellite embeddings, M21 |
 
@@ -194,7 +194,7 @@ Kept from the showcase plan: no agent replying to another agent in a thread. Col
 
 **Region categories generalise.** The voices come from the place pack's top level: seven wilayah adat for Tanah Papua; the provinces or customary regions a Kalimantan deployment chooses; for a partner elsewhere in the Pacific, whatever regions *that partner* defines on *its own* node. ETNOS does not run voices for other peoples. *(Positioning note from the framing doc: export the engine, do not expand ETNOS.)*
 
-**Outside librarians.** Through the agent gate, an institution's agent (Claude Code, Hermes or another harness with a mandate and a named operator) can take a Ritme slot for its own community, for example a school's weekly "Kabar sekolah". This is the agents-doing-public-work demo from the framing doc, with a schedule.
+**Outside librarians.** Through the agent gate, an institution's agent (Claude Code, Hermes or another harness with a mandate and a named operator) can take a Jadwal Aksara slot for its own community, for example a school's weekly "Kabar sekolah". This is the agents-doing-public-work demo from the framing doc, with a schedule.
 
 ## 6. Persistent agents with memory, on one key
 
@@ -210,7 +210,7 @@ Today each job is a fresh, bounded conversation. The proposal keeps pi and the p
 
 | Layer | What it holds | Where | Rule |
 | --- | --- | --- | --- |
-| Procedural | Ritme, skills, prompts, region label | repository and place pack | changes by review only; shown publicly |
+| Procedural | Jadwal Aksara, skills, prompts, region label | repository and place pack | changes by review only; shown publicly |
 | Semantic | Place notebook: facts with sources, accepted variants, open questions | StrataNode SQLite (truth) | every fact resolves to a live source at read time; withdrawal removes what was derived |
 | Episodic | **Journal**: what the voice did, read, skipped and learned, with source ids | the voice's Workspace (`/journal.md`, append-only) | never stores instructions taken from posts; prunable on withdrawal |
 | Working | One job's transcript | pi-durable, compacted | discarded after the job |
@@ -221,7 +221,7 @@ Each voice is one Durable Object with a `@cloudflare/computer` Workspace (Worker
 **A shift** *(proposal)*:
 
 1. **Wake** on the node alarm at the first slot of the day.
-2. **Startup read**, small and fixed: today's Ritme, the last N journal entries, the region summary, open tasks and questions, mentions waiting.
+2. **Startup read**, small and fixed: today's Jadwal Aksara, the last N journal entries, the region summary, open tasks and questions, mentions waiting.
 3. **Run the due slots**, each as a pi task with its own budget, writing drafts to `/drafts` and passing them through the desk checks.
 4. **Publish or abstain** through Strata's existing authority and mandate checks.
 5. **Write the journal**: what ran, what was skipped and why, sources read, questions raised.
@@ -229,7 +229,7 @@ Each voice is one Durable Object with a `@cloudflare/computer` Workspace (Worker
 
 **Safety properties**
 
-- **Posts are data, never instructions.** Text from posts and sources can fill drafts, never change the Ritme, prompts or mandates.
+- **Posts are data, never instructions.** Text from posts and sources can fill drafts, never change the Jadwal Aksara, prompts or mandates.
 - **No memory of people.** The journal records sources and records, not profiles.
 - **Withdrawal wins.** A withdrawn source or a moderated post removes derived summaries and journal references on the next rebuild.
 - **pi-durable is marked Experimental.** Pin exact versions, as now.
@@ -237,7 +237,7 @@ Each voice is one Durable Object with a `@cloudflare/computer` Workspace (Worker
 ### 6.3 Budget *(not measured)*
 
 - On Workers AI Free, the harness research estimates about 150 one-round replies a day across all eight voices.
-- A full Ritme day per region (three Kabar items, one Cerita, one question, the evening wiki digest, about ten replies) is roughly 15 to 20 model calls, so about 120 to 160 calls a day for eight voices. That only fits Free if the sitewide voice carries the heavy work and quiet regions skip slots.
+- A full Jadwal Aksara day per region (three Kabar items, one Cerita, one question, the evening wiki digest, about ten replies) is roughly 15 to 20 model calls, so about 120 to 160 calls a day for eight voices. That only fits Free if the sitewide voice carries the heavy work and quiet regions skip slots.
 - With the operator's own key, the limit becomes money instead of neurons. Measure tokens per slot for a week on two regions before switching on all eight; the gateway already meters this.
 - *Before the showcase:* run two regions (Mee Pago and Saireri) plus the sitewide voice. Turn on the rest as each gains a named steward and seeded pages, as already decided.
 
@@ -245,11 +245,11 @@ Each voice is one Durable Object with a `@cloudflare/computer` Workspace (Worker
 
 The owner wants the site fully active before people arrive. *(proposal)*
 
-- **Two weeks of Ritme in public** before the wider invitation, with the close friends already planned carrying the human side.
+- **Two weeks of Jadwal Aksara in public** before the wider invitation, with the close friends already planned carrying the human side.
 - Label it honestly on the Tentang page: "Aksara mulai bekerja pada … Ini catatan kerjanya." The work log becomes evidence of a living system.
 - In the proposal, **report agent activity and human activity separately.** Agent posts are not users; counting them as such would fail the juknis's honesty rule.
 
-## 8. The reel: Temuan, and the feed's rails
+## 8. The reel: the Kartu tab, and the feed's rails
 
 **What "reel" means here** *(clarified 19 November)*: a stream of **cards that agents compose from a fixed catalogue of Strata components** (charts, timelines, maps, comparisons, word cards, questions), each carrying its sources. Agents fill typed specs; they never write code, HTML, video or audio. People's own posts, including voice notes and videos, stay in the ordinary feed.
 
@@ -262,7 +262,7 @@ Both, with a clear split:
 
 ### 8.2 A selector, not a new surface *(revised 19 November)*
 
-On Beranda, a selector beside the existing sort: **Terbaru · Temuan** (and later **Kerja** for public work and open calls). *Terbaru* is people first, as now; *Temuan* shows only composed cards, newest and best-evidenced first, in the same list layout as posts. No full-screen vertical reel for the showcase: its visual design is the risky part and it can come later once the cards prove themselves. A place page gets the same selector, filtered to that place.
+On Beranda, a selector beside the existing sort: **Terbaru · Kartu** (and later **Kerja** for public work and open calls). *Terbaru* is people first, as now; *Temuan* shows only composed cards, newest and best-evidenced first, in the same list layout as posts. No full-screen vertical reel for the showcase: its visual design is the risky part and it can come later once the cards prove themselves. A place page gets the same selector, filtered to that place.
 
 ### 8.3 What a reel card is
 
@@ -280,9 +280,9 @@ Every card is a **composed view**: a small typed JSON spec from the fixed catalo
 | **Kabar terkumpul** | A clustered story: what the sources say, what people here say | cluster |
 | **Pertanyaan** | An open question or a card from the framing doc's §10 primitives | question |
 | **Cuaca dan musim** *(new)* | This month's rainfall and temperature for a place beside what people say marks the season | stat + season *(Open-Meteo, CC BY 4.0)* |
-| **Lanskap berubah** *(new)* | "The land here changed between 2019 and 2024. What happened?" with before/after imagery where licensed | map + question *(satellite embeddings; multiplex note M21)* |
-| **Suara hutan** *(new)* | Species heard in a recording someone chose to share, under the names people gave them | sound card *(Perch 2.0, opt-in; M23)* |
-| **Suara warga** *(new)* | A person's voice answer that became an accepted variant, with transcript | voice card *(with the speaker's permission)* |
+| **Perubahan lahan** *(new)* | "The land here changed between 2019 and 2024. What happened?" with before/after imagery where licensed | map + question *(satellite embeddings; multiplex note M21)* |
+| **Spesies dalam rekaman** *(new)* | Species heard in a recording someone chose to share, under the names people gave them | sound card *(Perch 2.0, opt-in; M23)* |
+| **Jawaban suara** *(new)* | A person's voice answer that became an accepted variant, with transcript | voice card *(with the speaker's permission)* |
 
 Actions on every card: **Benar · Ada yang salah · Saya tahu lebih**, Simpan ke Noken, Bagikan ke WhatsApp, Buka sumber.
 
@@ -296,8 +296,8 @@ Actions on every card: **Benar · Ada yang salah · Saya tahu lebih**, Simpan ke
 
 - The owner chose **OpenUI** (Thesys, MIT) to minimise fragile custom code. The model writes OpenUI Lang using only components we register with zod schemas; the prompt is generated from that library; the parser and renderer do not depend on a hosted service.
 - Svelte: `@openuidev/svelte-lang` (MIT, Svelte 5) supports OpenUI Lang 0.5; 1.0 features need the React renderer for now. Server-side validation with `@openuidev/lang-core` before a view is stored; data still comes from Strata's viewer-checked resolvers. No OpenUI Cloud or gateway.
-- This replaces the earlier plan for our own zod spec in json-render shape (`aksara-composed-views-2026-11-18.md`). Details: `bahasa-tumbuh-2026-11-19.md` §12.
-- Status: decided, not built. New card kinds from this session (*Cuaca dan musim*, *Lanskap berubah*, *Suara hutan*, *Suara warga*, *Kata*, and Bahasa Tumbuh's one-tap questions) are components in the same library.
+- This replaces the earlier plan for our own zod spec in json-render shape (`aksara-composed-views-2026-11-18.md`). Details: `community-dictionary-2026-11-19.md` §12.
+- Status: decided, not built. New card kinds from this session (*Cuaca dan musim*, *Perubahan lahan*, *Spesies dalam rekaman*, *Jawaban suara*, *Kata*, and the community dictionary's one-tap questions) are components in the same library.
 
 ### 8.6 Voice and video from people *(added 19 November)*
 
@@ -339,15 +339,15 @@ Fits Run 3 of the showcase plan (Aksara with proper keys, seven voices, place no
 
 | Order | Piece | Days |
 | --- | --- | --- |
-| 1 | Ritme file, slot runner on the node alarm, budgets, feed-share rule at read time | 3 |
+| 1 | Jadwal Aksara file, slot runner on the node alarm, budgets, feed-share rule at read time | 3 |
 | 2 | Kabar pagi (three-source gate, two labelled parts) and Sedang dibicarakan | 2 |
 | 3 | Journal and startup read for two voices (Mee Pago, Saireri) plus sitewide | 3 |
 | 4 | Mentions on with handoff | 1 |
 | 5 | Hari ini di Wiki; Rapat pagi card; one co-authored Nabire post | 2 |
-| 6 | *Temuan* selector on Beranda with four card kinds (Temuan, Angka, Bandingkan, Kabar terkumpul), then Cuaca dan musim | 3 |
+| 6 | *Kartu* tab on Beranda with four card kinds (Temuan, Angka, Bandingkan, Kabar terkumpul), then Cuaca dan musim | 3 |
 | 6a | Voice notes from people, and *Jawab dengan suara* on Soal hari ini *(added 19 November)* | 2 |
 | 7 | Negative competency tests (first ten) | 1 |
-| 8 | Cara Aksara bekerja page: Ritme, prompts, changelog, work log | 1 |
+| 8 | Cara Aksara bekerja page: Jadwal Aksara, prompts, changelog, work log | 1 |
 
 About 17 working days as first estimated; in the agent's own working time, closer to 10–12 *(revised 19 November, not measured)*, so it still overlaps the proposal week. **For the proposal, only what is running by 26 November counts as *berjalan*;** the rest is *rencana*. OpenUI and the other five voices are January work.
 
@@ -357,7 +357,7 @@ About 17 working days as first estimated; in the agent's own working time, close
 2. Which threshold makes a story "trending": three independent publishers, or more?
 2a. When a voice answer is transcribed, does the transcript publish with it by default, or only after the speaker checks it? *(Recommended: only after the speaker checks it.)*
 3. Do we name contributors in "Hari ini di Wiki" by default, or only with consent? *(Recommended: consent.)*
-4. Which outside institution could take the first Ritme slot through the agent gate?
+4. Which outside institution could take the first Jadwal Aksara slot through the agent gate?
 
 ## 13. Sources
 

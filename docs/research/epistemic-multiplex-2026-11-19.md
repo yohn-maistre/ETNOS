@@ -20,20 +20,20 @@ From the session of 18–19 November, lightly edited:
 - Use proper technical names, not "things".
 - "We don't want to just cater to the past": bring the good art of modern science closer to people and organise knowledge so it is useful.
 - Find the underlying mathematical motifs that carry across fields and apply as many as we can to communal data, so we see what outsiders, or our old ways of thinking alone, would struggle to see.
-- Ritme stays. The reel's visual design is the risky part, so it waits.
+- Jadwal Aksara stays. The reel's visual design is the risky part, so it waits.
 
 ## 3. What changed since 18 November
 
 | Topic | 18 November | Now |
 | --- | --- | --- |
-| Names | Hal, Pernyataan, Rekaman | **Entity, Assertion, Witness**; computed clusters are **Constellations** |
+| Names | Hal, Pernyataan, Rekaman | **Entity, Assertion, Witness**; computed clusters are **Clusters** |
 | Kinds | Twelve, as Indonesian labels | Twelve **classes** under three **top classes** (continuant, occurrent, information entity), exported in the open data |
 | Science | An outside crosswalk | **Measurements are witnesses**; science is one voice in the multiplex |
 | Predicates | About 25 named by hand | About 12 seeded; extraction proposes more; frequent ones are promoted by a steward |
 | Schemes | Separate "Kerangka" machinery | Scheme concepts are entities, linked by "broader" assertions (SKOS's own design) |
 | Holder's account layer | *kesaksian* | **tuturan** (so it does not clash with Witness) |
 | Analysis | Similarity and keyword domains | A **motif library** (section 6) and **five lenses on importance** (section 7) |
-| Ritme | Unchanged | Unchanged; motif outputs feed its existing slots (section 11) |
+| Jadwal Aksara | Unchanged | Unchanged; motif outputs feed its existing slots (section 11) |
 
 Today's map stays as it is until the new one ships. It remains useful as the "records" view.
 
@@ -48,7 +48,7 @@ Today's map stays as it is until the new one ships. It remains useful as the "re
 | What is said | **Assertion / Pernyataan** | Nanopublication assertion; Wikidata statement | An assertion carries its own provenance |
 | What it rests on | **Witness / Saksi** | Textual criticism (each manuscript attesting a text is a witness); PROV-O entity | Covers documents, recordings, tellers' accounts and measurements alike |
 | Grouping | **Scheme / Kerangka** | SKOS concept scheme | Many schemes side by side, as lenses |
-| Computed clusters | **Constellation / Rasi** | Network communities | Avoids "community", which means people here |
+| Computed clusters | **Cluster (Klaster)** | Network communities | Avoids "community", which means people here |
 | Access and use | **Protocol / Protokol** | Local Contexts labels and notices | Separate from everything else, as decided on 18 November |
 
 ### 4.2 Twelve classes
@@ -151,15 +151,15 @@ Below are the motifs worth running on a people's knowledge graph. Each is a know
 
 **M1. Typed graph and co-occurrence.** Entities linked by assertions, plus co-occurrence of entities in the same witness. From co-word analysis in science mapping (Callon and colleagues, 1980s).
 
-**M2. Constellations.** Community detection (Leiden) groups entities that are densely connected. Hierarchical, so a region splits into constellations and constellations into smaller ones. GraphRAG uses the same step to write summaries per community; Aksara would draft a name and summary for each, marked *tafsir*, renamed by people.
+**M2. Clusters.** Community detection (Leiden) groups entities that are densely connected. Hierarchical, so a region splits into clusters and clusters into smaller ones. GraphRAG uses the same step to write summaries per community; Aksara would draft a name and summary for each, marked *tafsir*, renamed by people.
 
-**M3. Strategic roles.** Callon's diagram places each constellation by centrality (how tied it is to the rest) and density (how developed it is inside): core, foundational-but-thin, specialist, emerging or fading. The **foundational-but-thin** quadrant is a research agenda: what everything leans on but no one has recorded well.
+**M3. Strategic roles.** Callon's diagram places each cluster by centrality (how tied it is to the rest) and density (how developed it is inside): core, foundational-but-thin, specialist, emerging or fading. The **foundational-but-thin** quadrant is a research agenda: what everything leans on but no one has recorded well.
 
 ### 6.2 Voices: the epistemic multiplex
 
-**M4. Multiplex by voice.** Each voice is a layer over the same entities. Multilayer network science (Kivelä et al. 2014; Mucha et al. 2010) gives community detection that respects layers. Infomap's multilayer method lets the same entity sit in different constellations in different layers: sago may cluster with exchange and marriage in tellers' accounts, and with commodities and food security in government pages. **Aggregating the layers would erase exactly that difference.**
+**M4. Multiplex by voice.** Each voice is a layer over the same entities. Multilayer network science (Kivelä et al. 2014; Mucha et al. 2010) gives community detection that respects layers. Infomap's multilayer method lets the same entity sit in different clusters in different layers: sago may cluster with exchange and marriage in tellers' accounts, and with commodities and food security in government pages. **Aggregating the layers would erase exactly that difference.**
 
-**M5. Comparing how voices structure the world.** Quantitative ethnography's Epistemic Network Analysis was built to compare co-occurrence networks between groups, with statistics. Applied here: how differently do colonial records, missions, the state, scholars, Papuan writers and tellers connect the same entities? Layer similarity and per-layer constellations give a numeric answer.
+**M5. Comparing how voices structure the world.** Quantitative ethnography's Epistemic Network Analysis was built to compare co-occurrence networks between groups, with statistics. Applied here: how differently do colonial records, missions, the state, scholars, Papuan writers and tellers connect the same entities? Layer similarity and per-layer clusters give a numeric answer.
 
 **M6. Where voices disagree, measured (sheaves).** Sheaf theory is a mathematics of gluing local views into a global one. Robinson's **consistency radius** measures how far a set of local reports is from a single consistent picture, and a filtration shows which sources disagree with which. Applied to assertions about one entity (when a season starts, where a river rises, who holds a practice), it measures disagreement and finds subsets of voices that agree among themselves: in effect, it finds the variants. Robinson's "multiple foxes" example is exactly this. *(Research spike; to verify on real assertions.)*
 
@@ -225,7 +225,7 @@ Science here does not grade people's knowledge. Disagreement is reported as disa
 
 | Motif | Question it answers | Needs | Effort *(not measured)* | When |
 | --- | --- | --- | --- | --- |
-| M1–M3 constellations, roles | What is the world organised around? | assertions | small | first |
+| M1–M3 clusters, roles | What is the world organised around? | assertions | small | first |
 | M4–M5 multiplex, ENA | How does each voice structure it? | voice tags | small | first |
 | M6 sheaves | Where, exactly, do voices disagree? | numeric or categorical assertion values | research spike | second |
 | M7 hyperedges, motifs | What are the building blocks of practice? | practice and event hubs | medium | second |
@@ -247,7 +247,7 @@ Science here does not grade people's knowledge. Disagreement is reported as disa
 
 ## 7. Five lenses on importance
 
-"What is core to a people" has no single number. We show a **profile** of five lenses for every entity and constellation, never a combined rank.
+"What is core to a people" has no single number. We show a **profile** of five lenses for every entity and cluster, never a combined rank.
 
 | Lens | Measures | Built from | Generalises because |
 | --- | --- | --- | --- |
@@ -276,8 +276,8 @@ Section 5 is the voice lens on today's seed: two voices only, mostly about admin
 1. **Extract.** For each verified sentence, the model proposes entities (with class) and assertions (with predicate), quoting the sentence. Same tasks as the LLMs4OL benchmark.
 2. **Resolve.** Match proposals to existing entities (catalogue contexts, places, languages, beings), using embeddings for candidates and optimal transport for structure; link to Wikidata, Glottolog, GBIF and OpenAlex where they exist.
 3. **Review.** A steward in Studio accepts, merges, splits or rejects. Nothing becomes an entity without a person.
-4. **Build.** A build step computes constellations and the motif outputs, each against its null model, and writes JSON for the web app. The runtime stays TypeScript on Workers; heavy analysis (persistent homology, Infomap) runs in a small Python step at build time, as the map's UMAP and embeddings already run offline.
-5. **Publish.** Entity pages, map lenses, an observatory report page, and inputs for Ritme.
+4. **Build.** A build step computes clusters and the motif outputs, each against its null model, and writes JSON for the web app. The runtime stays TypeScript on Workers; heavy analysis (persistent homology, Infomap) runs in a small Python step at build time, as the map's UMAP and embeddings already run offline.
+5. **Publish.** Entity pages, map lenses, an observatory report page, and inputs for Jadwal Aksara.
 6. **Export.** The open dataset (section 12).
 
 ## 9. The measurement layer: public data and foundation models *(proposal)*
@@ -291,7 +291,7 @@ The owner asked what more we can do with public data, including specialised embe
 | Land | **AlphaEarth Foundations** Satellite Embedding (Google DeepMind) | A 64-number vector for every 10 m pixel per year (2017–2025), summarising optical, radar and other sensors; consistent across years | Earth Engine (free for non-commercial and research use with a registered project); CC BY 4.0; also as COGs in a GCS bucket that is "provider pays" since July 2026 | Place fingerprints, change detection (M21), M20, habitat models for Makhluk |
 | Land | **TESSERA** (University of Cambridge) | 128-number vectors per 10 m pixel per year, 2017–2025, from Sentinel-1 and -2 | Embeddings CC0, encoder MIT; streamed over HTTPS (Zarr) with no request; fine-tunes on a CPU | **The sovereign choice**: fully open, can be cached by us or by a partner in Papua |
 | Land | Clay, Major TOM, Copernicus-Embed and others | Coarser patch embeddings | Various open licences | Not needed for the first wave |
-| Weather and climate | **Open-Meteo** | ERA5 reanalysis from 1940, forecasts from 30+ models, and Google's WeatherNext 2 ensemble since July 2026 | Free for non-commercial use up to 10,000 calls a day, no key; data CC BY 4.0 | Seasons beside climate (M18), *Siaga* weather by place, a Ritme weather card |
+| Weather and climate | **Open-Meteo** | ERA5 reanalysis from 1940, forecasts from 30+ models, and Google's WeatherNext 2 ensemble since July 2026 | Free for non-commercial use up to 10,000 calls a day, no key; data CC BY 4.0 | Seasons beside climate (M18), *Siaga* weather by place, a Jadwal Aksara weather card |
 | Terrain | Copernicus DEM (30 m) | Elevation | Free | Upstream/downstream checks, altitude zones |
 | Species | **GBIF** API | Occurrences, names, vernacular names | Free, no key for reads | Measurement witnesses for Makhluk; crosswalk of folk names |
 | Species | **Pl@ntNet** API | Plant identification from photos (87,000+ species) | Free up to 500 identifications a day, commercial use allowed; more for non-profits | Suggest a species for a posted plant photo; the poster's own name stays first |
@@ -305,7 +305,7 @@ The owner asked what more we can do with public data, including specialised embe
 
 ### 9.2 What the combination makes possible
 
-- **Every place has a landscape fingerprint per year.** Places in the wiki can show how their land changed (with the caveat that an embedding is not a land-cover map), and Aksara can ask the people of that place what happened. This is the "Lanskap berubah" Ritme card (Ritme note §8).
+- **Every place has a landscape fingerprint per year.** Places in the wiki can show how their land changed (with the caveat that an embedding is not a land-cover map), and Aksara can ask the people of that place what happened. This is the "Perubahan lahan" Jadwal Aksara card (Jadwal Aksara note §8).
 - **Seasons meet climate.** Each *Musim* entity can show rainfall and temperature by month from ERA5 beside what people say marks the season (M18).
 - **Living kinds meet occurrence data and sound.** A Makhluk page can show GBIF records, an iNaturalist range, a Pl@ntNet match for a posted photo, and calls identified in consented recordings, always under the people's own name for it.
 - **Words meet concepts.** Concepticon links let language rooms compare their words across Papuan languages without anyone giving up control of their dictionary.
@@ -369,27 +369,27 @@ The owner wants people to post **voice notes and short videos**, as on Threads, 
 
 The reel's visual design waits. The motif outputs flow into surfaces that already exist or are already planned:
 
-- **Entity pages**: a "why this matters" profile (the five lenses), voices side by side, variants with their logical status, a *Mata kedua* (second eye) panel where measurements exist, and open questions from M9.
-- **Map lenses**: Constellations (Jaringan), Places (Peta), Gaps (Celah: thin and single-voice entities glow), Voices (one layer at a time).
+- **Entity pages**: a "why this matters" profile (the five lenses), voices side by side, variants with their logical status, a *Data pengukuran* (measurement data) panel where measurements exist, and open questions from M9.
+- **Map lenses**: Clusters (Jaringan), Places (Peta), Gaps (Celah: thin and single-voice entities glow), Voices (one layer at a time).
 - **Observatory report**: per region, the strategic diagram, the voice comparison, the vitality list and the gap timeline. This is the "cultural observatory" of KKI 2023, idea 10.
-- **Ritme** (unchanged slots; the reel is a selector on Beranda, Ritme note §8): *Soal hari ini* draws from M9 questions; *Temuan* fires when a gap closes or a constellation changes; *Hari ini di wiki* reports new assertions and which voice they added; the monthly *Denyut* carries the vitality and voice charts.
+- **Jadwal Aksara** (unchanged slots; the reel is a selector on Beranda, Jadwal Aksara note §8): *Soal hari ini* draws from M9 questions; *Temuan* fires when a gap closes or a cluster changes; *Hari ini di wiki* reports new assertions and which voice they added; the monthly *Denyut* carries the vitality and voice charts.
 
 ## 12. Open data and a sovereign model
 
-- **Open by default, protocol first.** Computed data (entities, assertions with voice and witness, constellation memberships, motif outputs) is published under an open licence, except what a protocol restricts. Withdrawal removes dependent assertions and recomputes.
+- **Open by default, protocol first.** Computed data (entities, assertions with voice and witness, cluster memberships, motif outputs) is published under an open licence, except what a protocol restricts. Withdrawal removes dependent assertions and recomputes.
 - **Formats.** JSON-LD (CIDOC CRM / Linked Art and Wikidata-style statements), SKOS for schemes, and plain tables (CSV or Parquet) for researchers; one documented package per release.
 - **Training permission is separate.** Only assertions whose protocol says *boleh dipakai melatih* enter a fine-tuning or evaluation set. This follows the Kaitiakitanga Licence's logic (guardianship rather than ownership, and benefit returns to the source) and the CARE principles.
-- **Evaluation sets come free.** Negative competency questions (from the Ritme note), held-out assertions and the folk–science correspondences double as tests for any model trained later.
+- **Evaluation sets come free.** Negative competency questions (from the Jadwal Aksara note), held-out assertions and the folk–science correspondences double as tests for any model trained later.
 
 ## 13. Honesty and guardrails
 
 - **The record is biased; we say so.** Every importance lens is shown per voice. Section 5 is the first example.
-- **Small data.** The seed has 551 verified sentences. Early constellations are drafts; every chart says so.
+- **Small data.** The seed has 551 verified sentences. Early clusters are drafts; every chart says so.
 - **Null models.** Every motif is reported against a randomised baseline, or not reported.
 - **No inference about people.** No clan, marga, kinship or personal attribute is ever inferred; group-level only, consent first. Directed exchange data stays aggregated.
 - **Biological knowledge.** Uses of plants and animals linked to genetic resources follow the Nagoya Protocol (UU 11/2013) and PP 56/2022 on communal intellectual property; nothing is computed or exported without the community's terms.
 - **Science is not the referee.** Disagreements are shown as such.
-- **Aksara writes *tafsir* only.** Constellation names, summaries and analogies are interpretations, renamed and corrected by people.
+- **Aksara writes *tafsir* only.** Cluster names, summaries and analogies are interpretations, renamed and corrected by people.
 
 ## 14. Research outputs *(proposal)*
 
@@ -406,9 +406,9 @@ Co-authorship with Papuan scholars and tellers, by their choice, is the default.
 | --- | --- |
 | Tables for entities, assertions and witnesses; migrate catalogue contexts and page kinds | half a day |
 | Extraction over the seed with quote checks; review queue in Studio | 1–1.5 days |
-| Build step: constellations, roles, voice layers, salience, diversity, topology, link-to-question | 1–1.5 days |
+| Build step: clusters, roles, voice layers, salience, diversity, topology, link-to-question | 1–1.5 days |
 | Linking to Wikidata, Glottolog, GBIF, OpenAlex | 1 day |
-| Map lenses (Constellations, Places, Gaps, Voices) and entity-page profile | 1.5 days |
+| Map lenses (Clusters, Places, Gaps, Voices) and entity-page profile | 1.5 days |
 | Observatory report page per region | 1 day |
 | Second-eye spike: one seasonal assertion set beside one climate series | 1–2 days *(data access to verify)* |
 | Sheaf, hypergraph, optimal-transport and ecological-metric spikes | 2–3 days |
@@ -430,7 +430,7 @@ About 6–7 days for the first wave, 3–5 for the second, and 7–9 more for mu
 
 ## 17. Flagships: what to build with all this *(proposal, 19 November)*
 
-> **Superseded as northstar, same day:** the owner asked for one cleaner, more ambitious purpose. That is **[bahasa-tumbuh-2026-11-19.md](bahasa-tumbuh-2026-11-19.md)**: a dictionary and grammar that grow from how people talk, seeded from the published record. *Kata Bersama* (§17.3) is now its seed layer. *Lensa Kita* and *Siapa yang menulis Papua?* remain as supporting flagships for the showcase and the observatory.
+> **Superseded as northstar, same day:** the owner asked for one cleaner, more ambitious purpose. That is **[community-dictionary-2026-11-19.md](community-dictionary-2026-11-19.md)**: a dictionary and grammar that grow from how people talk, seeded from the published record. *Perbandingan kosakata* (§17.3) is now its seed layer. *Istilah lahan dan citra satelit* and *Laporan sumber* remain as supporting flagships for the showcase and the observatory.
 
 The owner asked for something more ambitious than more charts: a flagship that uses these open models and motifs, in service of preservation, of knowledge organisation, and of paths for science that start from Indigenous knowledge.
 
@@ -447,7 +447,7 @@ Three consequences matter:
 2. **What the lens cannot learn is information too.** Where a community's category is predictable from open embeddings, the open world can reconstruct it. Where it is not (a category defined by history, custody, a story or a relationship), the category is **cultural residual**: knowledge no satellite or sound model can recover. Residual is a measurable signature of irreplaceable knowledge.
 3. **Residual times vitality is a preservation priority.** Knowledge that is both unrecoverable by machines and fading among people (vitality lens, section 7) is what to record first, with whom, now.
 
-### 17.2 Flagship A: **Lensa Kita** (our lens), land first
+### 17.2 Flagship A: **Istilah lahan dan citra satelit**, land first
 
 *What a judge sees:* in a private Mee room, members have dropped pins on a map for five or six of their own landscape categories, named in Mee with a voice note (for example kinds of garden, forest and wetland). A few minutes later the room sees:
 - Paniai in those categories, as a map in the people's own legend.
@@ -482,7 +482,7 @@ Such maps may one day support a customary-forest recognition file (MK 35/PUU-X/2
 
 *Then sound:* the same pattern with Perch 2.0 on consented forest recordings, so bird and frog calls are named by people (M23).
 
-### 17.3 Flagship B: **Kata Bersama** (shared words)
+### 17.3 Flagship B: **Perbandingan kosakata** (word comparison)
 
 *The problem, in one line:* TransNewGuinea.org, the largest open database of New Guinea wordlists (588 languages, 1,027 meanings, 124,464 words; CC BY 4.0 as a Lexibank CLDF dataset), holds **41 words of Ekari, all from a single 1975 source**. The open record of the Mee language is a list a child could say in a minute.
 
@@ -503,7 +503,7 @@ Such maps may one day support a customary-forest recognition file (MK 35/PUU-X/2
 
 The data is on GitHub and Zenodo, so the import can run here.
 
-### 17.4 Flagship C: **Siapa yang menulis Papua?** (who wrote Papua?)
+### 17.4 Flagship C: **Laporan sumber** (source report)
 
 The observatory flagship. Entities and assertions are extracted from the seed and laid out as a multiplex by voice, with gaps (M8) and predicted links turned into question cards (M9).
 
@@ -518,7 +518,7 @@ OpenAlex adds a third series: what scholarship has studied, set against what peo
 
 ### 17.5 How they fit
 
-| | Lensa Kita | Kata Bersama | Siapa yang menulis Papua? |
+| | Istilah lahan dan citra satelit | Perbandingan kosakata | Laporan sumber |
 | --- | --- | --- | --- |
 | Preservation | Residual × vitality says what to record first | Words confirmed, corrected and voiced | Gaps become questions |
 | Knowledge organisation | A people's scheme becomes a working lens | Words linked to standard concepts without losing the community's own | Entities, assertions, voices |
@@ -529,16 +529,16 @@ OpenAlex adds a third series: what scholarship has studied, set against what peo
 
 **Recommended order:**
 1. Voice notes first; the other two use them.
-2. **Kata Bersama**, which is quick, real and proposal-ready.
-3. **Siapa yang menulis Papua?**, the observatory headline.
-4. **Lensa Kita** as the showcase centrepiece, once a Mee room has dropped its pins.
+2. **Perbandingan kosakata**, which is quick, real and proposal-ready.
+3. **Laporan sumber**, the observatory headline.
+4. **Istilah lahan dan citra satelit** as the showcase centrepiece, once a Mee room has dropped its pins.
 
 ### 17.6 Research questions, consolidated
 
 1. Whose Papua? How do colonial, mission, state, scholarly, Papuan and tellers' voices structure the same world? (multiplex)
-2. How much of a people's landscape vocabulary is visible from space, and what is the cultural residual? (Lensa Kita)
+2. How much of a people's landscape vocabulary is visible from space, and what is the cultural residual? (Istilah lahan dan citra satelit)
 3. Which knowledge is irreplaceable and fading, and so should be recorded first? (residual × vitality)
-4. How do Papuan languages carve meaning, and how far has usage moved from the published record? (Kata Bersama, CLICS)
+4. How do Papuan languages carve meaning, and how far has usage moved from the published record? (Perbandingan kosakata, CLICS)
 5. Does a commons learn? Do its knowledge gaps open and close the way science's do? (topology)
 6. Where do folk and scientific classifications of living kinds and landscapes agree? (M18, M22)
 

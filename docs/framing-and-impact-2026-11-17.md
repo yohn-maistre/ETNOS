@@ -183,7 +183,7 @@ Pick one as the headline and use the others as supporting evidence. The first is
 
 1. **Yang hidup tidak tercatat, yang tercatat tidak hidup.** Culture lives in daily conversation, but the tools we have split talk from record. Social media keeps the talk and forgets it within a day. Encyclopedias and archives keep a record, but nobody talks there and the people described rarely write it.
 2. **Tercecer.** Papuans already write every day: on small self-made news sites, in city Facebook groups with fifty members, in Instagram captions with fifty likes, in WhatsApp groups that never speak to each other. None of it is kept, none of it connects, none of it becomes a shared record.
-3. **Ditulis tentang kita, bukan oleh kita.** Most published knowledge about Tanah Papua was written by outsiders and is held in journals, expensive books and museums abroad. The people it describes can rarely read it, and almost never answer it.
+3. **Most of the record was written by outsiders.** Most published knowledge about Tanah Papua was written by outsiders and is held in journals, expensive books and museums abroad. The people it describes can rarely read it, and almost never answer it.
 4. **Tidak ada ruang bersama.** Grassroots groups, churches, sanggar, schools and government offices have no shared public place to coordinate, so every effort starts from zero and every lesson is lost.
 5. **Data kita di rumah orang lain.** Our conversations and cultural records live on platforms that can delete, bury or sell them, and communities have no say over their own data. The juknis names cultural sovereignty in the digital era as a goal, so this framing is welcome.
 
@@ -311,7 +311,7 @@ The point of the demo is that this is **not social media with Wikipedia attached
 3. **Ruang bahasa, where speakers talk.** A speaker records a word, it goes into the room's living dictionary, and the room decides whether it ever becomes public. (See section 11.3 for how this differs from AI language apps.)
 4. **A new region in one afternoon.** A recorded run of the operator's first setup for another place (Toraja, for example), on the Workers AI path. It answers "does this only work in Papua?" and supports both the technical and the business scores.
 5. **Things to hold.** A printed A4 weekly bulletin with the elder's correction on it, and a WhatsApp share card on a phone. The showcase is in person; hand the judges paper.
-6. **Laporan Denyut Budaya.** A monthly cultural pulse for one place, printed: what people talked about, made, corrected and asked. The cultural observatory in a form a Dinas can hold (section 9.2).
+6. **Laporan budaya bulanan.** A monthly cultural pulse for one place, printed: what people talked about, made, corrected and asked. The cultural observatory in a form a Dinas can hold (section 9.2).
 7. **Benar / Salah / Saya tahu lebih.** The review loop as a three-second swipe on a phone (section 10.3).
 
 What appears only as one line or one screenshot: the knowledge map, AT accounts ("your account is yours and can move with you"), Studio, and the regional Aksara voices.
@@ -451,7 +451,7 @@ So the state has registries and counts, and Strata has living content and voices
 
 | Idea | What it does | Why it matters |
 | --- | --- | --- |
-| **Laporan Denyut Budaya** (monthly cultural pulse) | Per place, aggregated and privacy-safe: what is being talked about, new works, events, language-room activity, corrections accepted, gaps filled. Printed and online. | This *is* the cultural observatory of KKI 2023, idea 10. **Recommended demo hero:** hand the judges "Denyut Budaya Mee Pago, November 2026". |
+| **Laporan budaya bulanan** (monthly cultural pulse) | Per place, aggregated and privacy-safe: what is being talked about, new works, events, language-room activity, corrections accepted, gaps filled. Printed and online. | This *is* the cultural observatory of KKI 2023, idea 10. **Recommended demo hero:** hand the judges "Laporan budaya bulanan Mee Pago, November 2026". |
 | **PPKD yang bisa dijawab warga** (a PPKD residents can answer) | Load a regency's PPKD; each claim appears on the place page with "Apakah ini masih benar?". The output is a change list ready for the next revision. | Makes the law's community involvement real, and gives a Dinas Kebudayaan something it can use. |
 | **Indeks vitalitas dari penutur** (a vitality index answered by speakers) | Official figures (Badan Bahasa, BPS regional-language use) beside community-reported transmission: "Do the children in your kampung still speak Mee?" | The sharpest contrast with archive-style language apps; living use, measured by the people living it. |
 | **Berkas usulan WBTb** (a nomination dossier builder) | A community assembles its own nomination (description, practitioners who opt in, photos, video, history) in a private room, then exports it. | Turns the registry gap into a community-led route in. Compare Papua's DAPOBUD counts with Yogyakarta's 162 (check the Papua numbers first). |
@@ -464,7 +464,7 @@ So the state has registries and counts, and Strata has living content and voices
 
 Not now: customary land mapping. It matters greatly, but it is land rights, and it needs a deliberate, consent-led design of its own.
 
-Suggested ranking for the proposal: Denyut Budaya (demo hero), then PPKD and the vitality index (policy plus language), then funding help (sustainability). The rest go in the roadmap.
+Suggested ranking for the proposal: Laporan budaya bulanan (demo hero), then PPKD and the vitality index (policy plus language), then funding help (sustainability). The rest go in the roadmap.
 
 ## 10. Ways to answer: card primitives for knowledge and research
 
@@ -782,7 +782,7 @@ Written as a judge might see it, so we can fix what we can before they do.
 - *Benar / Salah / Saya tahu lebih* as a swipe deck on top of wiki review (section 10).
 - Voice replies, capped at two minutes (section 8.8).
 - *Karya* as a post kind, plus a Galeri tab (section 8.7).
-- One printed *Laporan Denyut Budaya* for Mee Pago (section 9.2).
+- One printed *Laporan budaya bulanan* for Mee Pago (section 9.2).
 - First conversations with the partners named in section 4.4.
 
 **Before the showcase on 18–19 December**

@@ -1,6 +1,6 @@
-# Bahasa Tumbuh: a living dictionary and grammar that grows from how people talk
+# Community dictionary (*Kamus komunitas*): a dictionary and grammar built from published sources and from how people talk
 
-19 November 2026, morning. Design research; no code changed. This is the **northstar** the owner asked for after the multiplex session: cleaner and more ambitious than a set of features. It absorbs "Kata Bersama" from `epistemic-multiplex-2026-11-19.md` §17 and becomes the first build after the multi-identity PDS. Marks: *(proposal)*, *(not measured)*, *(to verify)*, *(rencana)*. Nothing here is built. Sources are at the end.
+19 November 2026, morning. Design research; no code changed. *Renamed 19 November from "Bahasa Tumbuh" under the naming rule (`../naming.md`). Where a language belongs to a people, the dictionary lives in that people's space: see `../platform-2026-11-19.md` §4.* This is the **northstar** the owner asked for after the multiplex session: cleaner and more ambitious than a set of features. It absorbs "Perbandingan kosakata" from `epistemic-multiplex-2026-11-19.md` §17 and becomes the first build after the multi-identity PDS. Marks: *(proposal)*, *(not measured)*, *(to verify)*, *(rencana)*. Nothing here is built. Sources are at the end.
 
 ## 1. The northstar
 
@@ -62,7 +62,7 @@ None of these systems turns a community's everyday conversation into a living, c
 ```
 
 1. **Seed** the public language page from the published record (section 7). Each entry is a *jejak* witness with its source, page and licence.
-2. **Listen** to a language room, only if the room has turned on *Bantu kamus* (section 6). Text posts are tokenised. Voice notes are transcribed where a model can (Whisper for Indonesian and Papuan Malay, Omnilingual for Dani and others), and otherwise wait for "bantu tulis" by members.
+2. **Listen** to a language room, only if the room has turned on *Izin pengolahan mesin* (section 6). Text posts are tokenised. Voice notes are transcribed where a model can (Whisper for Indonesian and Papuan Malay, Omnilingual for Dani and others), and otherwise wait for "bantu tulis" by members.
 3. **Analyse.**
    - Known words are matched to the lexicon across spelling and dialect variants. Steltenpool's older spelling writes *j* where today's writes *y*.
    - Unknown words become candidates. A model proposes a segmentation, a gloss and a part of speech, prompted with retrieved examples from the room and the seed, plus the grammar sketch in long context (the MTOB and in-context glossing approaches).
@@ -73,7 +73,7 @@ None of these systems turns a community's everyday conversation into a living, c
    - it matches a seeded entry;
    - its form fits known morphology;
    - it is used by speakers from one dialect area. The speaker's chosen place is used only as an aggregate; never inferred about a person.
-5. **Ask little.** When one tap would settle something, the room's *Soal hari ini* (Ritme) asks a few members: *"Apakah 'X' artinya Y?"*, or *"Rekam kata ini?"*. There is a small daily cap per room. Answers are evidence, not chores.
+5. **Ask little.** When one tap would settle something, the room's *Soal hari ini* (Jadwal Aksara) asks a few members: *"Apakah 'X' artinya Y?"*, or *"Rekam kata ini?"*. There is a small daily cap per room. Answers are evidence, not chores.
 6. **Publish.** Entries live in the room. Its stewards choose what goes to the public language page, where it shows as *tuturan* with attribution, beside the published record. Several rooms (dialects, diaspora) can publish variants of the same word side by side, with their provenance.
 7. **Learn.** The room's accepted entries, its glossed sentences and its voice clips form a corpus the room owns. With its *training permission*, that corpus can tune a small model the room also owns (section 8).
 
@@ -100,7 +100,7 @@ So the language stays a public entity (today's context kind *language*), and the
 
 The showcase plan §7 says that what is said privately never enters search, export, the map, the cache **or any model**. A dictionary that grows from private talk needs a model to read that talk. Proposed resolution *(owner decision)*:
 
-- **A room permission, *Bantu kamus*, off by default.** Turned on by the room's stewards, it lets machines read the room's posts and voice notes **only to build that room's dictionary**. It is separate from training permission and from publishing.
+- **A room permission, *Izin pengolahan mesin*, off by default.** Turned on by the room's stewards, it lets machines read the room's posts and voice notes **only to build that room's dictionary**. It is separate from training permission and from publishing.
 - **Where the model runs.**
   - For public rooms: Workers AI, as Aksara does now.
   - For private rooms: a local model on a machine the community trusts (the Aksara Node path) by default. Workers AI only if the stewards choose it, after we have confirmed the provider's data-retention terms *(to verify)*.
@@ -164,10 +164,10 @@ Each of these is publishable, with Papuan co-authors by their choice.
 
 - **Learn mode.** Spaced-repetition cards from the room's own words and voices, for young people and diaspora members recovering a language they hear but do not speak.
 - **Spelling and keyboard.** A shared orthography helper (Steltenpool's *j* and today's *y*, tone marks only where meaning changes), decided by the room, not by us.
-- **Place names.** Toponyms from rooms link to the map, and landscape words feed Lensa Kita (multiplex §17.2). Words for land and the land itself meet.
+- **Place names.** Toponyms from rooms link to the map, and landscape words feed Istilah lahan dan citra satelit (multiplex §17.2). Words for land and the land itself meet.
 - **Cognates.** TransNewGuinea.org's cognate sets show how Ekari relates to Moni, Wolani and the other Paniai Lakes languages, as a page people can explore.
 - **Translation, later.** With a grammar sketch and enough glossed sentences, MTOB-style translation between Ekari and Indonesian becomes testable. It is not promised.
-- **Ritme.** *Kata* cards play published, voiced words. *Soal hari ini* asks the one-tap questions. *Hari ini di wiki* counts new words by room.
+- **Jadwal Aksara.** *Kata* cards play published, voiced words. *Soal hari ini* asks the one-tap questions. *Hari ini di wiki* counts new words by room.
 - **Excluded by policy:** kinship terms stay out of the public layer (repository rule), and nothing is inferred about any person.
 
 ## 11. Collaboration *(proposal)*
@@ -201,8 +201,8 @@ After Run 2 (multi-identity PDS), which the owner set as the priority:
 | 1 | Import TransNewGuinea.org (CLDF) for catalogue languages; language page dictionary block | 1 day |
 | 2 | Parse Steltenpool 1969 into entries with licence tags; spot-check 100 entries with a speaker | 1–2 days |
 | 3 | Room dictionary tables (lexeme, form, sense, example, audio, morpheme, grammar note) with protocol, withdrawal and access tests | 1.5 days |
-| 4 | *Bantu kamus* permission; extraction job over room posts and voice-note transcripts; evidence scoring | 1.5–2 days |
-| 5 | One-tap questions through Ritme's *Soal hari ini*; publish-to-page flow | 1 day |
+| 4 | *Izin pengolahan mesin* permission; extraction job over room posts and voice-note transcripts; evidence scoring | 1.5–2 days |
+| 5 | One-tap questions through Jadwal Aksara's *Soal hari ini*; publish-to-page flow | 1 day |
 | 6 | Grammar notes (affix inventory, drafted notes with examples) | 1 day |
 | 7 | Benchmark harness on the seed; first comparison of 3–4 models | 1 day |
 
@@ -226,11 +226,11 @@ About 8–10 days. Steps 1–3 are proposal-visible if started straight after th
 
 ## 15. Open questions for the owner
 
-1. *Bantu kamus*: may a private room's talk be read by a model at all, and if so, local only, or Workers AI after checking its retention terms?
+1. *Izin pengolahan mesin*: may a private room's talk be read by a model at all, and if so, local only, or Workers AI after checking its retention terms?
 2. Steltenpool's CC BY-NC entries: acceptable on a platform that also has a business model, if they are kept out of anything paid?
 3. Which room goes first? A Mee room with the owner and two or three speakers, or a Papuan Malay room where ASR already works?
 4. Should published words carry the speaker's name, a handle, or only the room's name by default? *(Recommended: the speaker chooses.)*
-5. A name: "Bahasa Tumbuh" is a working title.
+5. Name: settled as *Kamus komunitas* under the naming rule (`../naming.md`).
 
 ## 16. Sources
 

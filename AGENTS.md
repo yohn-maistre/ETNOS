@@ -12,4 +12,5 @@ Never blindly retry an uncertain outward action. Keep source bytes and receipts 
 Tests for access isolation, withdrawal, concurrency/replay and durable publication are required for changes to these boundaries.
 No authentication, private federation, scientific computation or security certification is implied by a schema or fixture.
 Do not copy AGPL donor implementation until licensing is settled. Record attribution for actual reuse.
+Names in the interface, documents and proposal are plain and neutral: say what a thing is or does, use the origin, legal or technical term where one exists, and coin no metaphorical feature names. See docs/naming.md.
 Run npm run check and npm test before committing. Never commit tokens, databases or runtime logs.

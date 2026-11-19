@@ -435,7 +435,7 @@ Written 19 November, morning, before implementation starts. The detail lives in 
 
 1. `research/epistemic-multiplex-2026-11-19.md`: the knowledge model (Entity, Assertion, Witness), the motif library, five lenses on importance, how the seed and map were really built (§5), public data and foundation models (§9), voice notes and video (§10), and **three flagships** (§17).
 2. `rationale-threads-2026-11-19.md`: eight proposal threads with findings, research, laws and indicators, plus the flagships table (§0.1).
-3. `research/aksara-living-program-2026-11-18.md`: Ritme (stays as designed; the reel is now a *Temuan* selector beside *Terbaru*).
+3. `research/aksara-living-program-2026-11-18.md`: Jadwal Aksara (stays as designed; the reel is now a *Kartu* tab beside *Terbaru*).
 4. `research/knowledge-ontology-2026-11-18.md`: the reasoning behind the model (naming superseded).
 5. `framing-and-impact-2026-11-17.md`: the case and the competition.
 
@@ -458,26 +458,32 @@ The owner wants a commons where people can simply talk in a private community, s
 
 ### 25.2 Order *(revised 19 November after the owner's answers; estimates are the agent's working time, not measured)*
 
-The owner set the **multi-identity PDS first**, so people can log in and post, and replaced the three flagships with one northstar: **Bahasa Tumbuh** (`research/bahasa-tumbuh-2026-11-19.md`), a dictionary and grammar that grow from how people talk.
+The owner set the **multi-identity PDS first**, so people can log in and post, and replaced the three flagships with one northstar: **Kamus komunitas** (`research/community-dictionary-2026-11-19.md`), a dictionary and grammar that grow from how people talk.
 
 | Order | What | Time | Detail |
 | --- | --- | --- | --- |
 | 1 | **Run 2: multi-identity PDS** (task 24) | as planned | `research/pds-multi-identity-plan-2026-11-18.md` |
 | 2 | Private-room honesty notice; *Obrolan* view | half a day | §25.1 |
 | 3 | **Voice notes** (record, validate, store, waveform, transcript, protocol and withdrawal tests; in private rooms too) | 1.5–2 days | multiplex §10 |
-| 4 | **Bahasa Tumbuh, seed layer**: TransNewGuinea.org import for catalogue languages; Steltenpool 1969 parsed with its CC BY-NC tag; dictionary block on language pages | 2–3 days | bahasa-tumbuh §7, §13 steps 1–2 |
+| 4 | **Kamus komunitas, seed layer**: TransNewGuinea.org import for catalogue languages; Steltenpool 1969 parsed with its CC BY-NC tag; dictionary block on language pages | 2–3 days | community-dictionary §7, §13 steps 1–2 |
 | 5 | Proposal pack (step 10 of §24), citing only what is live | — | `proposal/claims-2026-11-18.md` |
-| 6 | **Bahasa Tumbuh, living layer**: room dictionaries, *Bantu kamus* permission, extraction and evidence, one-tap questions, grammar notes, benchmark | 5–6 days | bahasa-tumbuh §13 steps 3–7 |
-| 7 | Showcase extras: *Siapa yang menulis Papua?*, *Lensa Kita* with a Mee room's pins, video posts, Ritme slots with OpenUI cards (Run 3) | as time allows | multiplex §17 |
+| 6 | **Kamus komunitas, living layer**: room dictionaries, *Izin pengolahan mesin* permission, extraction and evidence, one-tap questions, grammar notes, benchmark | 5–6 days | community-dictionary §13 steps 3–7 |
+| 7 | Showcase extras: *Laporan sumber*, *Istilah lahan dan citra satelit* with a Mee room's pins, video posts, Jadwal Aksara slots with OpenUI cards (Run 3) | as time allows | multiplex §17 |
 
 Steps 2–4 fit before the proposal only if Run 2 lands by about 23 November; otherwise the proposal describes them as *rencana* and shows step 4's seed import if it is live.
 
 ### 25.3 Small decisions recorded this session
 
-- **Cards are OpenUI** (`@openuidev/svelte-lang`, MIT), decided by the owner to minimise custom code (Ritme §8.5, bahasa-tumbuh §12). Decided, not built.
-- **Seeding from TransNewGuinea.org** (CC BY 4.0) is approved; the owner will contact its maintainers after the proposal. Living Dictionaries is a sync target, not something we rebuild (bahasa-tumbuh §11).
-- **Open owner question:** may a private room's talk be read by a model to build its dictionary (*Bantu kamus*), and only on a local model? This changes §7's rule for those rooms (bahasa-tumbuh §6).
+- **Cards are OpenUI** (`@openuidev/svelte-lang`, MIT), decided by the owner to minimise custom code (Jadwal Aksara §8.5, community-dictionary §12). Decided, not built.
+- **Seeding from TransNewGuinea.org** (CC BY 4.0) is approved; the owner will contact its maintainers after the proposal. Living Dictionaries is a sync target, not something we rebuild (community-dictionary §11).
+- **Open owner question:** may a private room's talk be read by a model to build its dictionary (*Izin pengolahan mesin*), and only on a local model? This changes §7's rule for those rooms (community-dictionary §6).
 - **Voice posts back to AT Protocol.** Once our voice-post record has run in production, propose it as a community lexicon to the Atmosphere. After the proposal, not before (multiplex §10.3).
 - **Satellite data.** TESSERA (CC0) by default; AlphaEarth as a second witness where its non-commercial terms allow (owner: both "sound good").
 - **No genomics.** Never human data. For plants and animals, only links to public records (multiplex §9.3).
 - **Agents** never post video or a synthetic voice; people may post both.
+
+### 25.4 Platform and names *(19 November, later)*
+
+- **Naming rule** (owner): plain, neutral names everywhere; see `naming.md`. Bahasa Tumbuh is now *Kamus komunitas*, Ritme is *Jadwal Aksara*, the reel's selector is *Kartu*, and the supporting flagships are *Istilah lahan dan citra satelit* and *Laporan sumber*. The interface labels to check are listed there for the coding agent.
+- **Peoples, languages and private spaces** (`platform-2026-11-19.md` §4): the owner proposed putting each language under its people. Recommended *(proposal)*: a public people page, a private people space that holds the language's community dictionary (like a subreddit's wiki), and a language page linked to one or more spaces rather than nested in one. Several spaces per people are allowed, and none is official (§7 holds). People join by request with a reason, which `join_requests` already supports. No people is ever shown on a profile.
+
