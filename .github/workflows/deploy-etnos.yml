@@ -26,8 +26,30 @@ jobs:
       - run: npm test
       - run: npm run check:worker
       - run: npm run build:ui
-      - run: npx wrangler deploy --config wrangler.web.jsonc
+      # Model settings come from repository variables (Settings → Secrets and variables → Actions → Variables):
+      # STRATA_MODEL_FAST is the model name, e.g. a Gemini model from Google AI Studio. Without it the node stays on
+      # keyless Workers AI. The base URL defaults to Google AI Studio's OpenAI-compatible endpoint.
+      - run: |
+          set -- --config wrangler.web.jsonc
+          if [ -n "$STRATA_MODEL_FAST" ]; then
+            set -- "$@" --var "STRATA_MODEL_FAST:$STRATA_MODEL_FAST" --var "STRATA_MODEL_BASE_URL:${STRATA_MODEL_BASE_URL:-https://generativelanguage.googleapis.com/v1beta/openai}"
+            if [ -n "$STRATA_MODEL_SYNTHESIS" ]; then set -- "$@" --var "STRATA_MODEL_SYNTHESIS:$STRATA_MODEL_SYNTHESIS"; fi
+            if [ -n "$STRATA_RESIDENT_DAILY_CALLS" ]; then set -- "$@" --var "STRATA_RESIDENT_DAILY_CALLS:$STRATA_RESIDENT_DAILY_CALLS"; fi
+          fi
+          npx wrangler deploy "$@"
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STRATA_MODEL_FAST: ${{ vars.STRATA_MODEL_FAST }}
+          STRATA_MODEL_SYNTHESIS: ${{ vars.STRATA_MODEL_SYNTHESIS }}
+          STRATA_MODEL_BASE_URL: ${{ vars.STRATA_MODEL_BASE_URL }}
+          STRATA_RESIDENT_DAILY_CALLS: ${{ vars.STRATA_RESIDENT_DAILY_CALLS }}
+      # The model key (Settings → Secrets and variables → Actions → Secrets: STRATA_MODEL_KEY). Kept as a Worker secret.
+      - name: Pass the model key to the Worker
+        if: ${{ env.STRATA_MODEL_KEY != '' }}
+        run: printf '%s' "$STRATA_MODEL_KEY" | npx wrangler secret put STRATA_MODEL_KEY --config wrangler.web.jsonc
+        env:
+          STRATA_MODEL_KEY: ${{ secrets.STRATA_MODEL_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       # Optional: the literature panel stays hidden without this key.

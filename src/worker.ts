@@ -8,9 +8,9 @@ import {AgentAccess} from './agent-access.ts'
 import {agentRoutes} from './agent-mcp.ts'
 import {BrowserAuth} from './oauth.ts'
 import {Discovery,sourceFetcher} from './discovery.ts'
-import {Resident,parseResidentWork,type ResidentWork} from './resident.ts'
+import {Resident,parseResidentWork,residentBudget,type ResidentWork} from './resident.ts'
 import {piResidentProvider} from './resident-provider.ts'
-import {modelGateway,modelRoute,nodeModels,type ModelEnv} from './models.ts'
+import {keyedProvider,modelGateway,modelRoute,nodeModels,type ModelEnv} from './models.ts'
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
   private handle!: (request: Request) => Promise<Response>
@@ -29,6 +29,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
       const sourceOrigins=(env.STRATA_SOURCE_ORIGINS??'').split(',').map(x=>x.trim()).filter(Boolean)
       const acquire=sourceOrigins.length?sourceFetcher(sourceOrigins):undefined
       const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI,env.STRATA_RESIDENT_RESEARCH==='on'):undefined
+      // A node with its own model key may let Aksara do more each day; the keyless route keeps the small default.
+      const budget=residentBudget(env as {STRATA_RESIDENT_DAILY_CALLS?:string},!!keyedProvider(env as unknown as ModelEnv))
       core.recoverInterrupted()
       if(env.STRATA_AUTH_MODE==='atproto'){
         if(!env.STRATA_OAUTH_JWK || !env.STRATA_AUTH_SEAL_KEY){
@@ -42,14 +44,14 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
             collection:env.STRATA_COLLECTION,publishingEnabled:env.STRATA_PUBLISHING_ENABLED==='true',
             enrollmentMode,clientName:env.STRATA_CLIENT_NAME,accountHost:(env as {STRATA_ACCOUNT_HOST?:string}).STRATA_ACCOUNT_HOST||undefined})
           const access=new AgentAccess(core,{stewardDid:env.STRATA_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access,{desk:workerDesk(env)})
-          this.resident=new Resident(core,access,residentProvider)
+          this.resident=new Resident(core,access,residentProvider);this.resident.budget=budget
           this.discovery=acquire?new Discovery(core,acquire):undefined
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
           this.operatorOf=r=>{const p=auth.principal(r);return !!p&&auth.operatorAllowed(p.id)}
-          const handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
+          const handler=api(core,{sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
-      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
+      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.resident.budget=budget;this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
     })
   }
   private alarmUpdates:Promise<void>=Promise.resolve()

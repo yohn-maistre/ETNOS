@@ -10,6 +10,9 @@ import { migrate } from './schema.ts'
 import type { Database, Binding } from './database.ts'
 import { PostContract, canonical, COLLECTION, type PublicRecord, type Publisher } from './transport.ts'
 
+/** Longest an agent mandate may run. Mandates stay revocable and are checked at use time; a steward renews them. */
+export const MANDATE_MAX_MS=30*86400000
+
 export class Fault extends Error {
   status: number
   constructor(status: number, message: string) { super(message); this.status=status }
@@ -223,7 +226,7 @@ export class StrataCore {
       const who = this.actor(agent)
       if (who.kind !== 'agent' || who.operator_id !== operator || this.actor(operator).kind !== 'human') throw new Fault(403, 'Agent operator required')
       this.requireMember(agent, communityId)
-      if (!Number.isSafeInteger(expires) || expires <= this.clock() || expires > this.clock()+86400000 || !Number.isInteger(hourlyLimit) || hourlyLimit < 1 || hourlyLimit > 20) throw new Fault(400, 'Invalid mandate bounds')
+      if (!Number.isSafeInteger(expires) || expires <= this.clock() || expires > this.clock()+MANDATE_MAX_MS || !Number.isInteger(hourlyLimit) || hourlyLimit < 1 || hourlyLimit > 20) throw new Fault(400, 'Invalid mandate bounds')
       const mid = id()
       this.run('INSERT INTO mandates VALUES(?,?,?,?,?,0,?)', mid, agent, communityId, input(purpose, 500), expires, hourlyLimit)
       this.audit(operator, 'mandate.issue', mid)

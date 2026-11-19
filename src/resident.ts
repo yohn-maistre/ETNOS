@@ -32,7 +32,24 @@ const skills:ResidentSkill[]=[...jadwalSkills]
 export const residentAbstentionText='Sa belum menemukan sumber yang bisa sa pakai untuk menjawab ini. Ada yang tahu, atau punya tulisan, rekaman, atau orang yang bisa ditanya? Ceritakan di sini.\n\n— Aksara (AI) · catatan otomatis: belum ada sumber'
 const noEvidence='No current public source evidence; resident abstained'
 /** Per-job and daily tool ceilings, enforced here rather than in the runtime. */
-const toolLimits={job:6,daily:60,search_reviewed_wiki:3,web_search:3,web_fetch:4} as const
+const toolLimits={job:6,search_reviewed_wiki:3,web_search:3,web_fetch:4} as const
+/** Sitewide daily ceilings for the built-in resident. The keyless route stays small (the free Workers AI
+ * allowance); a node with its own model key may raise them with STRATA_RESIDENT_DAILY_CALLS. */
+export type ResidentBudget={modelCalls:number;toolCalls:number}
+export const keylessBudget:ResidentBudget={modelCalls:10,toolCalls:60}
+export function residentBudget(env:{STRATA_RESIDENT_DAILY_CALLS?:string},keyed:boolean):ResidentBudget{
+ if(!keyed)return keylessBudget
+ const n=Number(env.STRATA_RESIDENT_DAILY_CALLS??200)
+ const calls=Number.isInteger(n)&&n>=10&&n<=2000?n:200
+ return {modelCalls:calls,toolCalls:calls*6}
+}
+/** How long the built-in resident's posting and editorial mandates last when a steward sets it up or renews it. */
+export const MANDATE_DAYS=[1,7,30] as const
+function mandateDays(raw:unknown){
+ const days=raw===undefined?30:Number(raw)
+ if(!(MANDATE_DAYS as readonly number[]).includes(days))throw new Fault(400,'Pilih masa izin 1, 7 atau 30 hari')
+ return days
+}
 type ResidentTool='search_reviewed_wiki'|'web_search'|'web_fetch'
 /** Canonical form for comparing a cited URL with one a tool returned. */
 export function citationUrl(raw:unknown){
@@ -40,7 +57,7 @@ export function citationUrl(raw:unknown){
  try{const u=new URL(raw.replace(/[.,;:!?'"”’]+$/,''));if((u.protocol!=='https:'&&u.protocol!=='http:')||u.username||u.password)return null;u.hash='';return u.href}catch{return null}
 }
 export class Resident{
- readonly store:StrataCore;readonly access:AgentAccess;readonly provider?:ResidentProvider;readonly routing:ResidentRouting;readonly questions:ResidentQuestions;readonly slots:JadwalRunner
+ readonly store:StrataCore;readonly access:AgentAccess;readonly provider?:ResidentProvider;readonly routing:ResidentRouting;readonly questions:ResidentQuestions;readonly slots:JadwalRunner;budget:ResidentBudget=keylessBudget
  constructor(store:StrataCore,access=new AgentAccess(store),provider?:ResidentProvider,jadwal:Jadwal=defaultJadwal){this.store=store;this.access=access;this.provider=provider;this.slots=new JadwalRunner(store,(c,skill)=>this.current(c,skill),jadwal);this.routing=new ResidentRouting(store,access);this.questions=new ResidentQuestions(store,this.routing)}
  /** The public question, scoped work and media/context receipt commit together. */
  createMentionPost(actorId:string,b:Record<string,unknown>,groups=new Groups(this.store)){
@@ -78,9 +95,9 @@ export class Resident{
  /** Native installation uses the same registration, admission and grant checks
   * as external agents. No deployment key, private source or review authority. */
  setup(actorId:string,b:Record<string,unknown>){
-  const communityId=text(b.communityId,100),includeSource=b.includeSource===true,enableAutomation=b.enableAutomation===true,mentionsEnabled=b.mentionsEnabled!==false
+  const communityId=text(b.communityId,100),includeSource=b.includeSource===true,enableAutomation=b.enableAutomation===true,mentionsEnabled=b.mentionsEnabled!==false,days=mandateDays(b.days)
   if(b.consent!==true)throw new Fault(400,'Explicit resident setup consent required')
-  return transition(this.store,actorId,b.requestKey,'resident.setup',{communityId,includeSource,enableAutomation,mentionsEnabled},()=>{
+  return transition(this.store,actorId,b.requestKey,'resident.setup',{communityId,includeSource,enableAutomation,mentionsEnabled,days},()=>{
    publicSteward(this.store,actorId,communityId)
    if(!this.provider)throw new Fault(503,'The built-in resident runtime is not configured')
    if(enableAutomation&&this.store.requireSteward(actorId,communityId).role!=='owner')throw new Fault(403,'Only the community owner can enable agent participation')
@@ -89,7 +106,7 @@ export class Resident{
    const s=this.store
    if(s.get('SELECT 1 FROM resident_configs WHERE community_id=?',communityId))throw new Fault(409,'A resident is already configured; manage its current identity and grants')
    if(!s.community(communityId).automation){s.run('UPDATE communities SET automation=1 WHERE id=?',communityId);s.invalidatePublicContext(communityId);s.audit(actorId,'community.automation.enable',communityId)}
-   const agent=this.access.enroll(actorId,{communityId,name:'Aksara',family:'aksara',role:'steward'}),expires=s.clock()+86400000
+   const agent=this.access.enroll(actorId,{communityId,name:'Aksara',family:'aksara',role:'steward'}),expires=s.clock()+days*86400000
    this.access.admit(actorId,agent.agent_id)
    const posting=this.access.grant(actorId,agent.agent_id,{kind:'posting',purpose:'Built-in resident: source-linked public conversation',expires,hourlyLimit:3}),editorial=this.access.grant(actorId,agent.agent_id,{kind:'editorial',purpose:'Built-in resident: working knowledge proposals; human review remains required',expires,hourlyLimit:3})
    let sourceId:string|null=null
@@ -100,6 +117,69 @@ export class Resident{
    const configured=this.configure(actorId,{communityId,agentId:agent.agent_id,enabled:true,dailyLimit:8,intervalMinutes:120,mentionsEnabled,postingMandateId:posting.id,editorialMandateId:editorial.id,requestKey:hash(key(b.requestKey))+':config'})
    emit(s,actorId,'resident.setup',{kind:'agent-job',id:communityId,revision:configured.config!.revision,communityId})
    return {agentId:agent.agent_id,expires,sourceId,...configured}
+  })
+ }
+ /** Grants fresh posting and editorial mandates to the configured resident and points the configuration at
+  * them. The old grants stay until they expire or are revoked; nothing is extended in place. */
+ /** Every public community the operator stewards, with Aksara's state there. One screen for the on/off switch. */
+ overview(actorId:string){
+  const s=this.store,day=s.clock()-86400000
+  const rooms=s.all<{id:string;title:string;automation:number;role:string}>("SELECT c.id,c.title,c.automation,m.role FROM communities c JOIN memberships m ON m.community_id=c.id WHERE m.actor_id=? AND m.role IN ('owner','moderator') AND c.visibility='public' ORDER BY c.title",actorId)
+  return {budget:this.budget,provider:this.provider?.label??null,communities:rooms.map(r=>{
+   const c=s.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',r.id)
+   let ready=false,reason:string|null=null
+   if(c?.enabled)try{this.current(c);ready=true}catch(error){reason=error instanceof Fault?error.message:'Aksara belum dapat bekerja'}
+   const expires=c?.posting_mandate_id?s.get<{expires:number}>('SELECT expires FROM mandates WHERE id=?',c.posting_mandate_id)?.expires??null:null
+   const jobs=c?s.get<{n:number}>('SELECT count(*) n FROM resident_jobs WHERE community_id=? AND created>?',r.id,day)!.n:0
+   return {id:r.id,title:r.title,owner:r.role==='owner',automation:!!r.automation,configured:!!c,enabled:!!c?.enabled,ready,reason,expires,mine:!!c&&c.operator_id===actorId,jobsToday:jobs,dailyLimit:c?.daily_limit??null}
+  })}
+ }
+ /** Turns Aksara on or off in every public community the operator stewards. On sets it up where it is new (30-day
+  * mandates, mentions on, the daily schedule), renews spent mandates, and re-enables a paused resident with its
+  * settings. Off pauses each resident the operator runs. A room the operator cannot act in is listed with the reason. */
+ switchAll(actorId:string,b:Record<string,unknown>){
+  if(typeof b.enabled!=='boolean')throw new Fault(400,'enabled required')
+  const base=hash(key(b.requestKey)),results:{id:string;title:string;state:'aktif'|'dijeda'|'dilewati';reason?:string}[]=[]
+  for(const room of this.overview(actorId).communities){
+   const k=base+':'+room.id.slice(0,12)
+   try{
+    if(!b.enabled){
+     if(room.configured&&room.enabled&&room.mine){const c=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',room.id)!;this.configure(actorId,{communityId:room.id,agentId:c.agent_id,enabled:false,dailyLimit:c.daily_limit,intervalMinutes:c.interval_minutes,postingMandateId:c.posting_mandate_id,editorialMandateId:c.editorial_mandate_id,mentionsEnabled:!!c.mentions_enabled,announceKnowledge:!!c.announce_knowledge,revision:c.revision,requestKey:k+':off'})}
+     results.push({id:room.id,title:room.title,state:room.configured&&!room.mine&&room.enabled?'dilewati':'dijeda',...(room.configured&&!room.mine&&room.enabled?{reason:'Dijalankan operator lain'}:{})})
+     continue
+    }
+    if(!room.configured){
+     if(!room.automation&&!room.owner){results.push({id:room.id,title:room.title,state:'dilewati',reason:'Pemilik komunitas perlu mengizinkan agen'});continue}
+     this.setup(actorId,{communityId:room.id,consent:true,enableAutomation:!room.automation,days:30,requestKey:k+':setup'})
+    }else if(!room.mine){results.push({id:room.id,title:room.title,state:'dilewati',reason:'Dijalankan operator lain'});continue}
+    else if(!room.expires||room.expires<this.store.clock()+3*86400000)this.renew(actorId,{communityId:room.id,days:30,requestKey:k+':renew'})
+    else if(!room.enabled){const c=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',room.id)!;this.configure(actorId,{communityId:room.id,agentId:c.agent_id,enabled:true,dailyLimit:c.daily_limit,intervalMinutes:c.interval_minutes,postingMandateId:c.posting_mandate_id,editorialMandateId:c.editorial_mandate_id,mentionsEnabled:!!c.mentions_enabled,announceKnowledge:!!c.announce_knowledge,revision:c.revision,requestKey:k+':on'})}
+    results.push({id:room.id,title:room.title,state:'aktif'})
+   }catch(error){results.push({id:room.id,title:room.title,state:'dilewati',reason:error instanceof Fault?error.message:'Belum dapat diubah'})}
+  }
+  return {results}
+ }
+ /** While a resident is on, its mandates are renewed for 30 days when fewer than three days remain, in the name of
+  * the operator who runs it. Renewal re-checks that the operator still stewards the community; pausing stops it,
+  * and a revoked mandate is never renewed: revocation stays a human decision until a human turns Aksara on again. */
+ private renewDue(){
+  const s=this.store,soon=s.clock()+3*86400000
+  const due=s.all<ResidentConfig>("SELECT r.* FROM resident_configs r JOIN mandates m ON m.id=r.posting_mandate_id WHERE r.enabled=1 AND m.revoked=0 AND m.expires<? AND NOT EXISTS(SELECT 1 FROM editorial_mandates e WHERE e.id=r.editorial_mandate_id AND e.revoked=1) AND NOT EXISTS(SELECT 1 FROM resident_jobs j WHERE j.agent_id=r.agent_id AND j.state IN ('queued','running')) LIMIT 3",soon)
+  for(const c of due)try{this.renew(c.operator_id,{communityId:c.community_id,days:30,requestKey:'auto-renew:'+c.community_id+':'+Math.floor(s.clock()/86400000)})}catch{/* A refused renewal leaves the resident to expire; the operator sees why in Studio. */}
+ }
+ renew(actorId:string,b:Record<string,unknown>){
+  const communityId=text(b.communityId,100),days=mandateDays(b.days)
+  return transition(this.store,actorId,b.requestKey,'resident.renew',{communityId,days},()=>{
+   publicSteward(this.store,actorId,communityId)
+   const c=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId)
+   if(!c)throw new Fault(404,'Aksara belum disiapkan di komunitas ini')
+   if(this.store.actor(c.agent_id).operator_id!==actorId)throw new Fault(403,'Hanya operator Aksara yang dapat memperpanjang izinnya')
+  },()=>{
+   const s=this.store,c=s.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId)!,expires=s.clock()+days*86400000
+   const posting=this.access.grant(actorId,c.agent_id,{kind:'posting',purpose:'Built-in resident: source-linked public conversation',expires,hourlyLimit:3}),editorial=this.access.grant(actorId,c.agent_id,{kind:'editorial',purpose:'Built-in resident: working knowledge proposals; human review remains required',expires,hourlyLimit:3})
+   const configured=this.configure(actorId,{communityId,agentId:c.agent_id,enabled:true,dailyLimit:c.daily_limit,intervalMinutes:c.interval_minutes,postingMandateId:posting.id,editorialMandateId:editorial.id,mentionsEnabled:!!c.mentions_enabled,announceKnowledge:!!c.announce_knowledge,revision:c.revision,requestKey:hash(key(b.requestKey))+':renew'})
+   emit(s,actorId,'resident.renew',{kind:'agent-job',id:communityId,revision:configured.config!.revision,communityId})
+   return {expires,...configured}
   })
  }
  configure(actorId:string,b:Record<string,unknown>){
@@ -170,7 +250,7 @@ export class Resident{
    if(job.skill==='knowledge-draft'&&s.get("SELECT 1 FROM resident_jobs j JOIN knowledge_notes n ON n.id=j.result_id WHERE j.community_id=? AND j.skill='knowledge-draft' AND j.state='succeeded' AND j.evidence=? AND n.state!='withdrawn' LIMIT 1",job.community_id,job.evidence))throw new Fault(422,'These sources already have a Wiki starting point; waiting for new evidence')
    let result:ResidentOutput
    if(this.provider){
-    s.tx(()=>{this.recheck(job);if(s.get<{n:number}>('SELECT count(*) n FROM resident_jobs WHERE inference_started_at>?',s.clock()-86400000)!.n>=10)throw new Fault(429,'Daily model-call budget reached');s.run("UPDATE resident_jobs SET checkpoint='model-started',inference_started=1,inference_started_at=?,model=? WHERE id=?",s.clock(),this.provider!.label,id)})
+    s.tx(()=>{this.recheck(job);if(s.get<{n:number}>('SELECT count(*) n FROM resident_jobs WHERE inference_started_at>?',s.clock()-86400000)!.n>=this.budget.modelCalls)throw new Fault(429,'Daily model-call budget reached');s.run("UPDATE resident_jobs SET checkpoint='model-started',inference_started=1,inference_started_at=?,model=? WHERE id=?",s.clock(),this.provider!.label,id)})
     result=await this.provider.draft({skill,community:community.title,language:'id',evidence,...(thread?{question:thread.question}:{}),work:{jobId:id,generation:job.generation,ticket,communityId:job.community_id,agentId:job.agent_id,contextEpoch:job.context_epoch,sessionKey:job.trigger_post_id??job.skill}},AbortSignal.timeout(65000))
    }else{
     const body=evidence.map((e,i)=>`${i+1}. ${e.title}${e.summary?' — '+e.summary:''}`).join('\n')
@@ -254,7 +334,7 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
  authorizeInference(work:ResidentWork,requestKey:string){return this.store.tx(()=>{
   const s=this.store,j=this.validateRuntime(work);key(requestKey)
   if(s.get('SELECT 1 FROM resident_inference_calls WHERE job_id=? AND generation=? AND request_key=?',j.id,j.generation,requestKey))throw new Fault(409,'Inference outcome may be uncertain; do not replay this request')
-  if(s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE job_id=?',j.id)!.n>=3||s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE created>?',s.clock()-86400000)!.n>=10)throw new Fault(429,'Resident inference budget reached')
+  if(s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE job_id=?',j.id)!.n>=3||s.get<{n:number}>('SELECT count(*) n FROM resident_inference_calls WHERE created>?',s.clock()-86400000)!.n>=this.budget.modelCalls)throw new Fault(429,'Resident inference budget reached')
   const id=randomUUID();s.run("INSERT INTO resident_inference_calls VALUES(?,?,?,?,?,'reserved')",id,j.id,j.generation,requestKey,s.clock());return {id,maxOutputTokens:600,contextEpoch:j.context_epoch}
  })}
  /** One dispatch for the private runtime authority entrypoint. Every operation
@@ -270,7 +350,7 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
  }
  private toolBudget(j:ResidentJob,tool:ResidentTool){
   const s=this.store,count=(sql:string,...args:(string|number)[])=>s.get<{n:number}>(sql,...args)!.n
-  if(count('SELECT count(*) n FROM resident_tool_calls WHERE job_id=?',j.id)>=toolLimits.job||count('SELECT count(*) n FROM resident_tool_calls WHERE job_id=? AND tool=?',j.id,tool)>=toolLimits[tool]||count('SELECT count(*) n FROM resident_tool_calls WHERE created>?',s.clock()-86400000)>=toolLimits.daily)throw new Fault(429,'Resident tool budget reached')
+  if(count('SELECT count(*) n FROM resident_tool_calls WHERE job_id=?',j.id)>=toolLimits.job||count('SELECT count(*) n FROM resident_tool_calls WHERE job_id=? AND tool=?',j.id,tool)>=toolLimits[tool]||count('SELECT count(*) n FROM resident_tool_calls WHERE created>?',s.clock()-86400000)>=this.budget.toolCalls)throw new Fault(429,'Resident tool budget reached')
  }
  /** Accepted public Wiki revisions only; results become citable for this job. */
  searchWiki(work:ResidentWork,query:unknown){return this.store.tx(()=>{
@@ -328,7 +408,7 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
   return {timezone:this.slots.jadwal.timezone,date:t.date,asOf:now,communities}
  }
  async tick(){
-  const s=this.store;this.recover();this.runSlots()
+  const s=this.store;this.recover();this.renewDue();this.runSlots()
   for(const c of s.all<ResidentConfig>('SELECT * FROM resident_configs WHERE enabled=1 AND next_run<=? ORDER BY next_run LIMIT 3',s.clock())){
    try{this.enqueue(c.operator_id,c.community_id,'knowledge-draft','schedule:'+hash({scope:c.community_id,at:c.next_run}).slice(0,40))}catch{/* Current authority and quotas can refuse scheduled work. No widening or retry inference. */}
    s.run('UPDATE resident_configs SET next_run=? WHERE community_id=? AND revision=?',s.clock()+c.interval_minutes*60000,c.community_id,c.revision)

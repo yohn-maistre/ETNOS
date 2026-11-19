@@ -1,5 +1,5 @@
 import {randomUUID,createHash} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {StrataCore,Fault,MANDATE_MAX_MS} from './core.ts'
 import {canonical} from './transport.ts'
 import {checkPage,type PageBasis} from './desk.ts'
 
@@ -69,7 +69,7 @@ export class Wiki {
     const agent=s.actor(agentId)
     if(agent.kind!=='agent'||agent.operator_id!==operator)throw new Fault(403,'Registered agent operator required')
     if(s.community(communityId).visibility!=='public')throw new Fault(400,'This editorial path is for public knowledge only')
-    if(!Number.isSafeInteger(expires)||expires<=s.clock()||expires>s.clock()+86400000||!Number.isInteger(hourlyLimit)||hourlyLimit<1||hourlyLimit>10)throw new Fault(400,'Invalid editorial mandate bounds')
+    if(!Number.isSafeInteger(expires)||expires<=s.clock()||expires>s.clock()+MANDATE_MAX_MS||!Number.isInteger(hourlyLimit)||hourlyLimit<1||hourlyLimit>10)throw new Fault(400,'Invalid editorial mandate bounds')
     const id=randomUUID();s.run('INSERT INTO editorial_mandates VALUES(?,?,?,?,?,?,0,?)',id,agentId,communityId,operator,text(purpose,500),expires,hourlyLimit);s.audit(operator,'wiki.mandate.issue',communityId);return {id,expires}
   })}
   revoke(operator:string,mandateId:string){return this.store.tx(()=>{

@@ -52,7 +52,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -100,6 +100,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='history')result=knowledge.history(parts[2],actor?.id)
         else if(path==='/v1/aksara/jadwal')result=resident.publicJadwal()
         else if(path==='/v1/resident/config')result=resident.get(authenticated(),string(url.searchParams.get('community')))
+        else if(path==='/v1/resident/overview')result={...resident.overview(authenticated()),model:options.modelRoute??null}
         else if(path==='/v1/resident/choices')result=resident.routing.choices(authenticated(),string(url.searchParams.get('community')))
         else if(path==='/v1/resident/requests')result=resident.questions.statuses(string(url.searchParams.get('post')),actor?.id)
         else if(path==='/v1/resident/sitewide')result=resident.routing.globalInfo(authenticated())
@@ -133,7 +134,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/knowledge-model/entities')result=model.entities(actor?.id,{class:url.searchParams.get('class')??undefined,q:url.searchParams.get('q')??undefined})
         else if(parts.length===4&&parts[1]==='knowledge-model'&&parts[2]==='entities')result=model.entity(actor?.id,parts[3])
         else if(path==='/v1/knowledge-model/graph')result=model.graph(actor?.id,{publicOnly:url.searchParams.get('public')==='1'})
-        else if(path==='/v1/knowledge-model/export')result=model.graph(undefined,{publicOnly:true,train:url.searchParams.get('train')==='1'})
+        else if(path==='/v1/knowledge-model/export')result=model.graph(undefined,{publicOnly:true,train:url.searchParams.get('train')==='1',excerpts:url.searchParams.get('train')!=='1'})
         else if(path==='/v1/knowledge-model/queue')result=model.queue(authenticated(),url.searchParams.get('community')??undefined)
         else if(path==='/v1/contexts/catalogue')result=catalogueSummary(options.catalogue)
         else if(path==='/v1/contexts/talked')result=groups.talked(Number(url.searchParams.get('days')??7))
@@ -211,6 +212,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(path==='/v1/resident/setup')result=resident.setup(caller,b)
       else if(path==='/v1/resident/config')result=resident.configure(caller,b)
       else if(path==='/v1/resident/renew')result=resident.renew(caller,b)
+      else if(path==='/v1/resident/all')result=resident.switchAll(caller,b)
       else if(path==='/v1/resident/sitewide')result=resident.routing.setGlobal(caller,b)
       else if(path==='/v1/resident/destinations')result=resident.routing.setDestination(caller,b)
       else if(path==='/v1/resident/jobs')result=resident.enqueue(caller,string(b.communityId),string(b.skill) as ResidentSkill,string(b.requestKey))
