@@ -50,7 +50,8 @@ jobs:
           STRATA_MODEL_SYNTHESIS: ${{ vars.STRATA_MODEL_SYNTHESIS }}
           STRATA_MODEL_BASE_URL: ${{ vars.STRATA_MODEL_BASE_URL }}
           STRATA_RESIDENT_DAILY_CALLS: ${{ vars.STRATA_RESIDENT_DAILY_CALLS }}
-          STRATA_ACCOUNT_HOST: ${{ vars.STRATA_ACCOUNT_HOST }}
+          # The identity host on workers.dev (owner decision, 19 November); a repository variable overrides it.
+          STRATA_ACCOUNT_HOST: ${{ vars.STRATA_ACCOUNT_HOST || 'https://etnos-identity-host.giyaibo.workers.dev' }}
       # The model key (Settings → Secrets and variables → Actions → Secrets: STRATA_MODEL_KEY). Kept as a Worker secret.
       - name: Pass the model key to the Worker
         if: ${{ env.STRATA_MODEL_KEY != '' }}
@@ -164,6 +165,24 @@ jobs:
           if [ "$before" != "$after" ]; then echo "::error::An existing name changed how it resolves."; exit 1; fi
         env:
           DOMAIN: etnos.space
+      # CPU per request over the last 24 hours, from the GraphQL Analytics API: the Worker itself and
+      # each Durable Object namespace (sign-in checks the password inside the account object). Counts
+      # and times only; nothing about any account. Needs Account Analytics Read on the token.
+      - name: CPU over the last day
+        shell: bash
+        continue-on-error: true
+        run: |
+          from=$(date -u -d '-24 hours' +%FT%TZ); to=$(date -u +%FT%TZ)
+          q='query($a:String!,$f:Time!,$t:Time!){viewer{accounts(filter:{accountTag:$a}){
+            w:workersInvocationsAdaptive(limit:10,filter:{scriptName:"etnos-identity-host",datetime_geq:$f,datetime_leq:$t}){sum{requests errors}quantiles{cpuTimeP50 cpuTimeP90 cpuTimeP99}dimensions{status}}
+            d:durableObjectsPeriodicGroups(limit:100,filter:{datetime_geq:$f,datetime_leq:$t}){sum{cpuTime activeTime exceededCpuErrors}dimensions{namespaceId}}
+            i:durableObjectsInvocationsAdaptiveGroups(limit:100,filter:{scriptName:"etnos-identity-host",datetime_geq:$f,datetime_leq:$t}){sum{requests errors}quantiles{wallTimeP50 wallTimeP99}dimensions{namespaceId}}}}}'
+          body=$(jq -n --arg q "$q" --arg a "$CLOUDFLARE_ACCOUNT_ID" --arg f "$from" --arg t "$to" '{query:$q,variables:{a:$a,f:$f,t:$t}}')
+          r=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H 'content-type: application/json' https://api.cloudflare.com/client/v4/graphql --data "$body")
+          printf '%s' "$r" | jq -c '.errors // empty'
+          printf '%s' "$r" | jq -c '.data.viewer.accounts[0].w[]? | {status:.dimensions.status, requests:.sum.requests, errors:.sum.errors, cpuMicros:.quantiles}'
+          ns=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/durable_objects/namespaces?per_page=100" | jq -c '[.result[]? | select(.script == "etnos-identity-host") | {id, class}]')
+          printf '%s' "$r" | jq -c --argjson ns "${ns:-[]}" '.data.viewer.accounts[0] as $x | $ns[] as $n | {class:$n.class, cpuMicros:([$x.d[]? | select(.dimensions.namespaceId == $n.id) | .sum.cpuTime] | add), exceededCpu:([$x.d[]? | select(.dimensions.namespaceId == $n.id) | .sum.exceededCpuErrors] | add), requests:([$x.i[]? | select(.dimensions.namespaceId == $n.id) | .sum.requests] | add), wall:([$x.i[]? | select(.dimensions.namespaceId == $n.id) | .quantiles] | first)} | select(.requests != null) | . + {cpuMicrosPerRequest: ((.cpuMicros // 0) / .requests | floor)}'
       - name: Check it answers
         run: |
           for i in 1 2 3 4 5 6; do
