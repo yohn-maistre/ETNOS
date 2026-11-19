@@ -17,7 +17,7 @@ function cookie(request:Request,name:string){
 const setCookie=(name:string,value:string,age:number)=>`${name}=${value}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=${age}`
 type Saved={sealed:string;expires:number}
 type BrowserSession={hash:string;actor_id:string;csrf:string;created:number;expires:number;revoked:number}
-export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean;enrollmentMode?:'open'|'invite'|'closed';clientName?:string}
+export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean;enrollmentMode?:'open'|'invite'|'closed';clientName?:string;accountHost?:string}
 type EnrollmentInvite={id:string;hash:string;issuer_id:string;created:number;expires:number;revoked:number;used_by:string|null;used_at:number|null}
 type FlowContext={browser:string;returnTo:string;enroll?:'open'|'invite';inviteHash?:string;did?:string}
 function returnPath(value:unknown){
@@ -151,6 +151,13 @@ export class BrowserAuth {
   }
   private allowed(did:string){return !!this.config.stewardDid && (did===this.config.stewardDid || !!this.store.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',did))}
   private enrollmentMode(){return this.config.enrollmentMode??'invite'}
+  private accountHost(){
+    const host=this.config.accountHost
+    if(!host)return undefined
+    const url=new URL(host)
+    if(url.protocol!=='https:'||url.origin!==host||!this.config.allowedHosts.includes(url.hostname))throw new Fault(503,'Account host is misconfigured')
+    return url.origin
+  }
   private enrollmentSteward(){
     const actor=this.store.get<Actor>("SELECT * FROM actors WHERE did=? AND kind='human'",this.config.stewardDid)
     if(!actor)throw new Fault(503,'Enrollment is being configured')
@@ -197,7 +204,7 @@ export class BrowserAuth {
     if(path==='/oauth/jwks.json' && request.method==='GET')return json(200,this.client.jwks)
     if(!path.startsWith('/auth/'))return undefined
     try{
-      if(path==='/auth/options' && request.method==='GET')return json(200,{provider:'bluesky',enrollment:this.config.stewardDid?this.enrollmentMode():'closed'})
+      if(path==='/auth/options' && request.method==='GET')return json(200,{provider:'bluesky',enrollment:this.config.stewardDid?this.enrollmentMode():'closed',accountHost:this.accountHost()??null})
       if(path==='/auth/me' && request.method==='GET'){
         const current=this.session(request)
         return json(200,current?{actor:{id:current.actor.id,did:current.actor.did,name:current.actor.name,kind:current.actor.kind},csrf:current.session.csrf,expires:current.session.expires,steward:current.actor.did===this.config.stewardDid}:{actor:null,csrf:null,steward:false})
@@ -220,9 +227,22 @@ export class BrowserAuth {
             if(this.enrollmentMode()!=='open')throw new Fault(403,'An ETNOS invitation code is required')
             context.enroll='open'
           }
-          // A fixed provider, not an arbitrary discovery URL from request input.
-          // Its OAuth UI offers account creation and existing-account sign-in.
-          target='https://bsky.social'
+          if(typeof body.handle==='string' && body.handle){
+            // An account that already exists (for example one just created on the
+            // node's own identity host) enrolls with this invitation.
+            if(body.handle.length>253||!body.handle.includes('.'))throw new Fault(400,'Enter your full AT handle')
+            const identity=await this.client.identityResolver.resolve(body.handle)
+            context.did=identity.did;target=identity.did
+          }else if(body.provider==='host'){
+            // The node's own identity host, configured, never taken from request input.
+            const host=this.accountHost()
+            if(!host)throw new Fault(400,'This node has no account host')
+            target=host
+          }else{
+            // A fixed provider, not an arbitrary discovery URL from request input.
+            // Its OAuth UI offers account creation and existing-account sign-in.
+            target='https://bsky.social'
+          }
         }else{
           if(body.mode!==undefined && body.mode!=='login')throw new Fault(400,'Invalid sign-in mode')
           if(typeof body.handle!=='string'||body.handle.length>253||!body.handle.includes('.'))throw new Fault(400,'Enter your full AT handle')

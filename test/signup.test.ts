@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {createHash} from 'node:crypto'
 import {Strata} from '../src/store.ts'
 import {api} from '../src/api.ts'
-import {fixture,did,origin,issuer} from './oauth-fixture.ts'
+import {fixture,did,origin,issuer,pds} from './oauth-fixture.ts'
 
 const newcomer='did:plc:zzzzzzzzzzzzzzzzzzzzzzzz'
 function req(path:string,body?:unknown,cookie='',csrf=''){
@@ -140,5 +140,25 @@ test('open signup cannot restore a removed enrollment or widen the initial OAuth
   const rejected=await auth.route(req(callback(f.state()),undefined,cookiePart(again)))
   assert.equal(rejected?.headers.get('location'),'/login?error=authentication_failed')
   assert.equal(s.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',newcomer),undefined)
+ }finally{s.close()}
+})
+
+test('signup can target an existing handle or the configured account host, never a host from the request',async()=>{
+ const s=new Strata(':memory:',origin);s.provision(did,'Steward')
+ const f=await fixture(s,{enrollmentMode:'open',accountHost:pds},newcomer,'friend.bsky.social',newcomer)
+ try{
+  const options=await(await f.auth.route(req('/auth/options')))!.json() as {accountHost:string|null}
+  assert.equal(options.accountHost,pds)
+  const byHandle=(await f.auth.route(req('/auth/start',{mode:'signup',handle:'friend.bsky.social'})))!
+  assert.equal(byHandle.status,200,await byHandle.clone().text())
+  assert.equal(f.parameters().get('login_hint'),'friend.bsky.social')
+  assert.equal(JSON.parse((await f.auth.records.get<{appState:string}>('state',f.state()))!.appState).did,newcomer)
+  const byHost=(await f.auth.route(req('/auth/start',{mode:'signup',provider:'host',handle:''})))!
+  assert.equal(byHost.status,200,await byHost.clone().text())
+  assert.equal(f.parameters().has('login_hint'),false)
+  const none=await fixture(s,{enrollmentMode:'open'},newcomer,'friend.bsky.social',newcomer)
+  assert.equal((await none.auth.route(req('/auth/start',{mode:'signup',provider:'host'})))!.status,400)
+  const bad=await fixture(s,{enrollmentMode:'open',accountHost:'https://not-allowed.example'},newcomer,'friend.bsky.social',newcomer)
+  assert.equal((await bad.auth.route(req('/auth/options')))!.status,503)
  }finally{s.close()}
 })

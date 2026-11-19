@@ -40,7 +40,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           const auth=await BrowserAuth.create(core,{origin:env.STRATA_ORIGIN,privateJwk:env.STRATA_OAUTH_JWK,sealKey:env.STRATA_AUTH_SEAL_KEY,
             stewardDid:env.STRATA_STEWARD_DID,allowedHosts:env.STRATA_OAUTH_HOSTS.split(',').map(x=>x.trim()).filter(Boolean),
             collection:env.STRATA_COLLECTION,publishingEnabled:env.STRATA_PUBLISHING_ENABLED==='true',
-            enrollmentMode,clientName:env.STRATA_CLIENT_NAME})
+            enrollmentMode,clientName:env.STRATA_CLIENT_NAME,accountHost:(env as {STRATA_ACCOUNT_HOST?:string}).STRATA_ACCOUNT_HOST||undefined})
           const access=new AgentAccess(core,{stewardDid:env.STRATA_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access,{desk:workerDesk(env)})
           this.resident=new Resident(core,access,residentProvider)
           this.discovery=acquire?new Discovery(core,acquire):undefined
