@@ -1,0 +1,33 @@
+/* Main pages polish: small type floor, desktop gutters, touch targets, and phone gutters for Kerja publik and Cari. */
+.directory-row small,
+.engagement-question p,
+.engagement-question small,
+.engagement-page header > a,
+.engagement-page footer,
+.search-query-summary button {
+  font-size: 12.5px;
+}
+.engagement-page header > a,
+.engagement-page footer a {
+  min-height: 40px;
+}
+.engagement-page footer {
+  gap: 4px;
+}
+.engagement-page h1 {
+  margin-top: 0;
+}
+@media (min-width: 768px) {
+  .search-query-summary {
+    padding-inline: 24px;
+  }
+  .search-filters button {
+    min-height: 40px;
+  }
+}
+@media (max-width: 767px) {
+  .engagement-page,
+  .engagement-compact {
+    padding-inline: 16px;
+  }
+}

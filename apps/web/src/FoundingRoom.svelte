@@ -115,7 +115,7 @@
     margin: 16px 0 4px;
     padding: 16px 18px 18px;
     border: 1px solid color-mix(in oklab, var(--brand) 35%, var(--border));
-    border-radius: 14px;
+    border-radius: 16px;
     background: color-mix(in oklab, var(--brand) 6%, var(--background));
   }
   h2 { margin: 0; font-size: 17px; font-weight: 600; }
@@ -145,7 +145,7 @@
     text-decoration: underline;
     text-underline-offset: 3px;
     cursor: pointer;
-    min-height: 24px;
+    min-height: 40px;
   }
   .founding-inline.muted { justify-self: start; margin: 2px 0 0; font-size: 13px; color: var(--muted-foreground); }
   .founding-inline:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; border-radius: 4px; }

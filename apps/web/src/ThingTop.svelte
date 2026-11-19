@@ -102,7 +102,7 @@
   .lang-facts div { display: grid; gap: 2px; }
   .lang-facts dt { font-size: 12.5px; color: var(--muted-foreground); }
   .lang-facts dd { margin: 0; font-size: 15px; font-weight: 550; }
-  .lang-facts a { display: inline-flex; align-items: center; gap: 3px; min-height: 28px; color: var(--foreground); text-underline-offset: 3px; }
+  .lang-facts a { display: inline-flex; align-items: center; gap: 3px; min-height: 40px; color: var(--foreground); text-underline-offset: 3px; }
   .lang-facts a:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 4px; }
   @media (max-width: 767px) {
     .thing-top h2 { margin-inline: 16px; }

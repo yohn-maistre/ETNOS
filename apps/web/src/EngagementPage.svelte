@@ -111,10 +111,9 @@
 {#if !compact || pending || error || displayed.length}<section class="engagement-page" class:engagement-compact={compact}>
   <header>
     <div>
-      <span class="engagement-label">
+      {#if compact}<span class="engagement-label">
         <MessageCircle size={16} />Suara komunitas
-      </span>
-      {#if !compact}<h1>Pertanyaan & tindak lanjut</h1>
+      </span>{:else}<h1>Pertanyaan & tindak lanjut</h1>
         <p>Jajak pendapat, laporan & langkah bersama.</p>{/if}
     </div>
     {#if compact}<a href="/voices">

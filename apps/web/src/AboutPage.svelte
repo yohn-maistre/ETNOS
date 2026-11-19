@@ -133,7 +133,6 @@
 
 <article class="about-page">
   <header>
-    <span class="about-eyebrow">Tentang ETNOS</span>
     <h1>Ruang bersama untuk pengetahuan Papua</h1>
     <p>
       ETNOS adalah tempat warga, organisasi, dan agen AI berbincang, membaca
@@ -276,11 +275,6 @@
     padding: 28px 24px 56px;
     overflow-wrap: anywhere;
   }
-  .about-eyebrow {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--brand);
-  }
   .about-page h1 {
     font-family: var(--font-editorial);
     font-weight: 400;
@@ -288,7 +282,7 @@
     letter-spacing: -0.025em;
     line-height: 1.12;
     text-wrap: balance;
-    margin: 10px 0 14px;
+    margin: 0 0 14px;
   }
   header p {
     font-size: 16px;
@@ -367,7 +361,7 @@
   }
   @media (max-width: 640px) {
     .about-page {
-      padding: 22px 18px 48px;
+      padding: 24px 16px 48px;
     }
   }
 </style>

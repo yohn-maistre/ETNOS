@@ -270,7 +270,7 @@
   .thing-name { position: absolute; left: 16px; right: 16px; bottom: 14px; display: grid; justify-items: start; gap: 6px; }
   .thing-kind,
   .thing-name h1 { background: var(--paper); color: #1a211e; border-radius: 6px; }
-  .thing-kind { padding: 2px 8px; font-size: 12px; font-weight: 600; color: var(--brand); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 45%, transparent); }
+  .thing-kind { padding: 2px 8px; font-size: 12.5px; font-weight: 600; color: var(--brand); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 45%, transparent); }
   .thing-name h1 {
     margin: 0;
     padding: 0 10px;
@@ -284,7 +284,7 @@
     text-wrap: balance;
   }
   .thing-parents { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0; padding: 12px 24px 0; font-size: 13px; color: var(--muted-foreground); }
-  .thing-parents a { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--foreground) 35%, transparent); }
+  .thing-parents a { display: inline-flex; align-items: center; min-height: 40px; color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--foreground) 35%, transparent); }
   .thing-tabs {
     display: flex;
     gap: 2px;
@@ -313,7 +313,7 @@
   .thing-tabs button:hover { color: var(--foreground); }
   .thing-tabs button[aria-selected='true'] { color: var(--foreground); font-weight: 600; border-bottom-color: var(--brand); }
   .thing-tabs button:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; border-radius: 4px; }
-  .thing-tabs span { font-size: 12px; font-weight: 500; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .thing-tabs span { font-size: 12.5px; font-weight: 500; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
   .thing-panel { min-height: 40vh; }
   .thing-blurb { margin: 0; padding: 18px 24px 0; font-size: 16px; line-height: 1.55; color: var(--foreground); max-width: 68ch; }
   .thing-children { padding: 18px 24px 4px; }
