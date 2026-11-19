@@ -38,7 +38,7 @@
     query = $state(''),
     selected = $state(-1),
     hovered = $state(-1),
-    spinning = $state(true)
+    spinning = $state(false)
 
   const REGION: Record<string, [string, string]> = {
     meepago: ['Mee Pago', '#a8701c'],
@@ -66,7 +66,11 @@
   const SIZE: Record<Node['k'], number> = { region: 7, page: 4.2, source: 3.4, catalogue: 3.2, passage: 1.6 }
   const NOW = new Date().getFullYear()
 
+  // Old phones: no idle spin, and a lighter canvas. The loop also stops whenever nothing is moving.
+  let lowEnd = false
   onMount(() => {
+    lowEnd = matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 2) <= 4
+    spinning = !lowEnd
     void loadMap(src).then((d) => { if (d) data = d as MapData; else failed = true })
   })
 
@@ -119,6 +123,12 @@
     })
     return out
   })
+  // One path per colour instead of a rect per tick: about ten elements in the page instead of 1,500.
+  const bandPaths = $derived.by(() => {
+    const by = new Map<string, string[]>()
+    for (const t of bandTicks) { const l = by.get(t.c) ?? []; l.push(`M${t.x.toFixed(1)} ${t.y.toFixed(1)}h1.6v11h-1.6z`); by.set(t.c, l) }
+    return [...by].map(([c, l]) => [c, l.join('')] as [string, string])
+  })
   const bandYears = [1850, 1900, 1950, 2000]
   const undatedCount = $derived(data ? data.nodes.filter((n) => n.k !== 'region' && !n.y).length : 0)
 
@@ -146,56 +156,77 @@
     const y = clock === 'dicatat' ? n.y : n.ya?.[0]
     return [n.p[0], timeH(y) + (y ? 0 : n.p[1] * 0.06), n.p[2]]
   }
+  // Targets and colours change only with the controls, so they are worked out once, not every frame.
+  const targets = $derived(data ? data.nodes.map((_, i) => targetOf(i)) : [])
+  const colors = $derived(data ? data.nodes.map((n) => colorOf(n)) : [])
+  let palette = new Map<string, string>()
   function css(name: string) { return canvas ? getComputedStyle(canvas).getPropertyValue(name).trim() : '#888' }
-  function resolve(c: string) { return c.startsWith('var(') ? css(c.slice(4, -1)) : c }
+  function resolve(c: string) {
+    if (!c.startsWith('var(')) return c
+    let v = palette.get(c)
+    if (v === undefined) { v = css(c.slice(4, -1)); palette.set(c, v) }
+    return v
+  }
+  function wake() { if (!raf && open && canvas && data) raf = requestAnimationFrame(frame) }
   function frame() {
     if (!canvas || !data) return
     const ctx = canvas.getContext('2d')!
-    const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1)
+    raf = 0
+    palette = new Map()
+    const fg = css('--foreground'), muted = css('--muted-foreground'), border = css('--border'), family = getComputedStyle(canvas).fontFamily || 'sans-serif'
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(lowEnd ? 1.5 : 2, devicePixelRatio || 1)
     if (r.width !== W || r.height !== H) { W = r.width; H = r.height; canvas.width = W * dpr; canvas.height = H * dpr }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     const nodes = data.nodes
     if (cur.length !== nodes.length) cur = nodes.map((n) => [...n.p] as [number, number, number])
     const ease = prefersReducedMotion.current ? 1 : 0.12
-    nodes.forEach((_, i) => { const t = targetOf(i); for (let d = 0; d < 3; d++) cur[i][d] += (t[d] - cur[i][d]) * ease })
+    let moving = 0
+    for (let i = 0; i < nodes.length; i++) { const t = targets[i]; for (let d = 0; d < 3; d++) { const step = (t[d] - cur[i][d]) * ease; cur[i][d] += step; moving = Math.max(moving, Math.abs(step)) } }
     if (spinning && !drag && !prefersReducedMotion.current) rotY += 0.0016
-    if (lens === 'waktu' && !drag) rotX += (0.06 - rotX) * 0.08
+    if (lens === 'waktu' && !drag) { const step = (0.06 - rotX) * 0.08; rotX += step; moving = Math.max(moving, Math.abs(step)) }
     const s = Math.min(W, H) * 0.38 * zoom, cy = Math.cos(rotY), sy = Math.sin(rotY), cx = Math.cos(rotX), sx = Math.sin(rotX)
     proj = cur.map(([x, y, z], i) => { const x1 = x * cy + z * sy, z1 = -x * sy + z * cy, y1 = y * cx - z1 * sx, z2 = y * sx + z1 * cx, f = 3.2 / (3.2 + z2); return [W / 2 + x1 * s * f, H / 2 + y1 * s * f, z2, f, i] })
     ctx.clearRect(0, 0, W, H)
     const focus = selected >= 0 ? new Set([selected, ...adj[selected].map(([j]) => j)]) : null
     const hit = query.trim() ? new Set(nodes.map((n, i) => (matches(n) ? i : -1)).filter((i) => i >= 0)) : null
-    ctx.lineWidth = 0.5; ctx.strokeStyle = css('--border'); ctx.globalAlpha = focus || hit ? 0.25 : 0.6; ctx.beginPath()
+    ctx.lineWidth = 0.5; ctx.strokeStyle = border; ctx.globalAlpha = focus || hit ? 0.25 : 0.6; ctx.beginPath()
     for (const [a, b, k] of data.edges) { if (k === 'from') continue; ctx.moveTo(proj[a][0], proj[a][1]); ctx.lineTo(proj[b][0], proj[b][1]) }
     ctx.stroke(); ctx.globalAlpha = 1
-    if (focus) { ctx.lineWidth = 1; ctx.strokeStyle = css('--foreground'); ctx.beginPath(); for (const [j] of adj[selected]) { ctx.moveTo(proj[selected][0], proj[selected][1]); ctx.lineTo(proj[j][0], proj[j][1]) } ctx.stroke() }
+    if (focus) { ctx.lineWidth = 1; ctx.strokeStyle = fg; ctx.beginPath(); for (const [j] of adj[selected]) { ctx.moveTo(proj[selected][0], proj[selected][1]); ctx.lineTo(proj[j][0], proj[j][1]) } ctx.stroke() }
     for (const [x, y, , f, i] of [...proj].sort((a, b) => b[2] - a[2])) {
       const n = nodes[i], dim = (focus && !focus.has(i)) || (hit && !hit.has(i))
       const rad = SIZE[n.k] * (0.7 + 0.5 * f) * (i === selected || i === hovered ? 1.7 : 1)
       ctx.globalAlpha = dim ? 0.1 : Math.max(0.35, Math.min(1, 0.55 + 0.4 * f))
-      const col = resolve(colorOf(n)); ctx.fillStyle = col; ctx.strokeStyle = col; ctx.lineWidth = 1.1; ctx.beginPath()
+      const col = resolve(colors[i]); ctx.fillStyle = col; ctx.strokeStyle = col; ctx.lineWidth = 1.1; ctx.beginPath()
       if (n.k === 'source') { ctx.rect(x - rad, y - rad, rad * 2, rad * 2); ctx.fill() }
       else if (n.k === 'catalogue') { ctx.moveTo(x, y - rad * 1.2); ctx.lineTo(x + rad * 1.2, y); ctx.lineTo(x, y + rad * 1.2); ctx.lineTo(x - rad * 1.2, y); ctx.closePath(); n.sens === 'sacred' || n.sens === 'restricted' ? ctx.stroke() : ctx.fill() }
       else if (n.k === 'region') { ctx.lineWidth = 2; ctx.arc(x, y, rad, 0, 7); ctx.stroke() }
       else { ctx.arc(x, y, rad, 0, 7); ctx.fill() }
-      if (n.sens === 'conflict' && !dim) { ctx.beginPath(); ctx.strokeStyle = css('--foreground'); ctx.lineWidth = 0.8; ctx.arc(x, y, rad * 2, 0, 7); ctx.stroke() }
+      if (n.sens === 'conflict' && !dim) { ctx.beginPath(); ctx.strokeStyle = fg; ctx.lineWidth = 0.8; ctx.arc(x, y, rad * 2, 0, 7); ctx.stroke() }
     }
-    ctx.globalAlpha = 1; ctx.fillStyle = css('--foreground'); ctx.font = '500 12px ' + (getComputedStyle(canvas).fontFamily || 'sans-serif'); ctx.textBaseline = 'middle'
+    ctx.globalAlpha = 1; ctx.fillStyle = fg; ctx.font = '500 12px ' + family; ctx.textBaseline = 'middle'
     if (lens === 'waktu') {
       // Year marks along the left edge of the layers.
-      ctx.fillStyle = css('--muted-foreground'); ctx.font = '11px ' + (getComputedStyle(canvas).fontFamily || 'sans-serif')
+      ctx.fillStyle = muted; ctx.font = '11px ' + family
       for (const y of [1850, 1900, 1950, 2000]) { const t = timeH(y), y1 = t * cx, z2 = t * sx, f = 3.2 / (3.2 + z2); ctx.fillText(String(y), 6, H / 2 + y1 * s * f) }
-      ctx.fillStyle = css('--foreground'); ctx.font = '500 12px ' + (getComputedStyle(canvas).fontFamily || 'sans-serif')
+      ctx.fillStyle = fg; ctx.font = '500 12px ' + family
     }
     // Region labels: placed top to bottom with at least 16px between them so they never overlap.
     const labels = nodes.map((n, i) => (n.k === 'region' || i === selected ? { i, x: proj[i][0] + 10, y: proj[i][1], text: n.k === 'region' ? REGION[n.reg]?.[0] ?? n.t : short(n.t, 42) } : null)).filter((l): l is { i: number; x: number; y: number; text: string } => !!l).sort((a, b) => a.y - b.y)
     for (let k = 1; k < labels.length; k++) if (labels[k].y - labels[k - 1].y < 16 && Math.abs(labels[k].x - labels[k - 1].x) < 120) labels[k].y = labels[k - 1].y + 16
     for (const l of labels) ctx.fillText(l.text, l.x, l.y)
-    raf = requestAnimationFrame(frame)
+    // Keep drawing only while something moves; a still map costs nothing.
+    if ((spinning && !prefersReducedMotion.current) || drag || moving > 0.0004) raf = requestAnimationFrame(frame)
   }
   $effect(() => {
-    if (open && canvas && data) { raf = requestAnimationFrame(frame); return () => cancelAnimationFrame(raf) }
+    if (!(open && canvas && data)) return
+    raf = requestAnimationFrame(frame)
+    const ro = new ResizeObserver(() => wake())
+    ro.observe(canvas)
+    return () => { cancelAnimationFrame(raf); raf = 0; ro.disconnect() }
   })
+  // Any change of view, selection, hover or search draws again.
+  $effect(() => { void [targets, colors, query, selected, hovered, spinning]; wake() })
   function pick(e: PointerEvent) {
     const r = canvas!.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top
     let best = -1, bd = 14
@@ -204,11 +235,11 @@
   }
   function down(e: PointerEvent) { canvas!.setPointerCapture(e.pointerId); drag = [e.clientX, e.clientY]; moved = 0 }
   function move(e: PointerEvent) {
-    if (drag) { const dx = e.clientX - drag[0], dy = e.clientY - drag[1]; moved += Math.abs(dx) + Math.abs(dy); rotY += dx * 0.006; rotX = Math.max(-1.4, Math.min(1.4, rotX + dy * 0.006)); drag = [e.clientX, e.clientY]; return }
+    if (drag) { const dx = e.clientX - drag[0], dy = e.clientY - drag[1]; moved += Math.abs(dx) + Math.abs(dy); rotY += dx * 0.006; rotX = Math.max(-1.4, Math.min(1.4, rotX + dy * 0.006)); drag = [e.clientX, e.clientY]; wake(); return }
     hovered = pick(e)
   }
-  function up(e: PointerEvent) { if (drag && moved < 6) selected = pick(e); drag = null }
-  function wheel(e: WheelEvent) { e.preventDefault(); zoom = Math.max(0.5, Math.min(5, zoom * Math.exp(-e.deltaY * 0.0015))) }
+  function up(e: PointerEvent) { if (drag && moved < 6) selected = pick(e); drag = null; wake() }
+  function wheel(e: WheelEvent) { e.preventDefault(); zoom = Math.max(0.5, Math.min(5, zoom * Math.exp(-e.deltaY * 0.0015))); wake() }
   const short = (t: string, n: number) => (t.length > n ? t.slice(0, n - 1) + '…' : t)
 
   // Opening and closing morph with a view transition where the browser has one.
@@ -269,7 +300,7 @@
         <span class="km-row-label" style="top: 50%">Tahun dicatat</span>
         <svg viewBox="0 0 {BAND_W} 128" preserveAspectRatio="none" aria-hidden="true">
           <line x1="0" x2={BAND_W} y1="70" y2="70" class="km-rule" />
-          {#each bandTicks as t (t.i + '-' + t.y)}<rect x={t.x} y={t.y} width="1.6" height="11" fill={t.c} opacity="0.75" />{/each}
+          {#each bandPaths as [c, d] (c)}<path {d} fill={c} opacity="0.75" />{/each}
         </svg>
         <span class="km-ticks" aria-hidden="true">
           <span style="left: 0">sebelum 1800</span>
@@ -367,7 +398,7 @@
   .km-ticks span { position: absolute; bottom: 0; white-space: nowrap; }
   .km-band:focus-visible, .km-toggle:focus-visible, .km-seg button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
   .km-band svg { display: block; width: 100%; height: 112px; }
-  .km-band:hover rect { opacity: 1; }
+  .km-band:hover path { opacity: 1; }
   .km-rule { stroke: var(--border); }
   .km-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   .km-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 999px; padding: 2px; background: var(--card); }

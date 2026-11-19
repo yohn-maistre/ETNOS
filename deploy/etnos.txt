@@ -35,3 +35,4 @@
 2026-11-18ag Jelajah: lead story with list, swipe row, map with regions, language picker, topic covers; kind colours from the palette
 2026-11-19a wiki home region map; Jelajah Tempat as list
 2026-11-19b wiki map at top chooses the region
+2026-11-19c lighter wiki map
