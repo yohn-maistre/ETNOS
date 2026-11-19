@@ -119,7 +119,7 @@ Spec: proposal 0016 ([permissioned data](https://github.com/bluesky-social/propo
 
 **What it is.** A space is `at://{authority}/space/{type}/{key}`. The authority is any DID; its PDS is the space host. An individual account can be the authority; for a lembaga the design uses a dedicated account. Policies: member list (`memberListPolicy`), public (`publicPolicy`), or a managing app. Each member's records stay in a per-space repository on that member's own PDS. Readers get a short delegation from their own PDS and exchange it at the space host for a credential (bound to a DPoP key); repo hosts accept that credential.
 
-**How it is built here.** `src/host/spaces.ts` wraps the MIT engine `@getcirrus/spaces` 0.1.0 (pinned to `@atproto/space` alpha 2026-08-18), which was written for one account per deployment:
+**How it is built here.** `src/host/spaces.ts` wraps the MIT engine `@getcirrus/spaces` 0.1.0 (pinned to `@atproto/space` alpha 2026-08-18), which upstream serves one account per deployment. This host extends it to serve every account it hosts, so one Worker runs spaces for many people:
 
 - Every spaces request is served for one hosted, active account: the signed-in account for writes and management, the `repo` for reads, the space authority for credential and sync calls. Unknown or inactive accounts get `RepoNotFound`.
 - Space objects are named `"{account} {space uri}"`, so two hosted members of one space never share storage; each account has its own index.

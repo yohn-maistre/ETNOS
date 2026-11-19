@@ -4,6 +4,8 @@
 
 **Naming rule (19 November, every agent): [naming.md](naming.md).** Plain, neutral names that say what a thing is or does; origin, legal or technical terms where they exist; no metaphorical feature names. It lists the renames of this session's names.
 
+**Voice rule (19 November, every agent): [voice.md](voice.md).** How every public-facing sentence is written: the answer first, everyday words, short complete sentences, no teasers, no wrap-ups, no em dashes.
+
 **What Strata is and its building blocks: [platform-2026-11-19.md](platform-2026-11-19.md)**: what it gives a people, the primitives in the code and planned, and how peoples, languages and private spaces relate (people page, people space holding the language's dictionary, language pages linked to one or more spaces).
 
 For the showcase build, start with **[showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md)** and the build order in [open-work-2026-11-17.md](open-work-2026-11-17.md). Where they disagree with an earlier document, they win until the showcase. Behind them, **[direction-2026-11-16.md](direction-2026-11-16.md)** remains the longer plan of record. For *why* Strata exists, who it helps and how we tell the story (problem, impact, positioning, AT Protocol, business, compliance, the competition), start with **[framing-and-impact-2026-11-17.md](framing-and-impact-2026-11-17.md)**.

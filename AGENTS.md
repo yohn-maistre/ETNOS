@@ -13,4 +13,5 @@ Tests for access isolation, withdrawal, concurrency/replay and durable publicati
 No authentication, private federation, scientific computation or security certification is implied by a schema or fixture.
 Do not copy AGPL donor implementation until licensing is settled. Record attribution for actual reuse.
 Names in the interface, documents and proposal are plain and neutral: say what a thing is or does, use the origin, legal or technical term where one exists, and coin no metaphorical feature names. See docs/naming.md.
+All public-facing writing (interface, errors, Aksara posts, docs, proposal; not inline code comments) follows docs/voice.md.
 Run npm run check and npm test before committing. Never commit tokens, databases or runtime logs.

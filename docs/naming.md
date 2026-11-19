@@ -1,6 +1,6 @@
 # Naming rule
 
-Decided by the owner on 19 November 2026. The rule covers the interface, documents, the proposal and slides. Every agent working in this repository follows it.
+Decided by the owner on 19 November 2026. The rule covers the interface, documents, the proposal and slides. Every agent working in this repository follows it. Sentences follow [voice.md](voice.md).
 
 ## The rule
 
