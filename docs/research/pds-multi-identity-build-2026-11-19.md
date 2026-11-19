@@ -173,6 +173,8 @@ What a reader and a writer see:
 - With an authority on another PDS, Ana's write is announced with `notifyRepoUpdate`, a credential that the authority signed works, and a forged one fails. `notifyCredentialsRevoked` from the authority then stops that credential, while a revocation for an account not hosted here is refused.
 - The `#atproto_kem` PLC update path works.
 
+**Live check on 19 November (deploy 2026-11-19r)** passed with the test account `uji-1`. First, `POST /admin/accounts/kem` published its `#atproto_kem` key on plc.directory. Then `uji-1` created a personalspace, wrote a record, got a delegation token and a credential, and read the record with a MAC. The MAC was verified with the official `verifyRecord`. The record was absent from the public `listRecords`, and the space was deleted afterwards. The script is `node spaces-smoke.mjs`, run from `packages/pds`; it is kept outside the repository, because it reads the test password.
+
 **Where this host differs from the proposal and the reference PDS:**
 
 - Blobs in spaces (`getBlob`, `listBlobs`) are not built and answer 501. Public blobs work (§6).
