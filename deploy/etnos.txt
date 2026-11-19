@@ -48,3 +48,4 @@
 2026-11-19m identity host: AT Protocol spaces (alpha), removal checked at read time; sign-up still closed
 2026-11-19n copy pass voice rule
 2026-11-19o identity host: invite-only sign-up with PLC writes and the escrow key, blobs in R2 with safe headers, handle names under etnos.space
+2026-11-19p periksa: claims and the swipe deck on community pages
