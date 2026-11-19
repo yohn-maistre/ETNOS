@@ -6,6 +6,8 @@ Evidence tags used below: **[V]** verified today against a primary source or by 
 
 Builds on `docs/research/serverless-pds-and-auth-2026-11-17.md` (the earlier research) and `docs/research/free-tier-measurement-2026-11-17.md` (how ETNOS itself uses the Free budget). It does not repeat their market survey. It replaces one claim in `docs/showcase-plan-2026-11-17.md` section 4: that an identity-first host "is a smaller job". It is smaller than a full PDS, but the OAuth and key-custody parts are not small (see section 6).
 
+**Update 19 November:** phases 1 to 3 and most of phase 4 are built and tested locally; see [pds-multi-identity-build-2026-11-19.md](pds-multi-identity-build-2026-11-19.md) for what exists, the tests, the measurements (password check about 15 ms inside the account object, so the Free CPU question still needs the spike) and the owner's ordered approval steps.
+
 ## Summary
 
 1. The fork is built around one identity per deployment. Seven per-deployment values (`DID`, `HANDLE`, `SIGNING_KEY`, `SIGNING_KEY_PUBLIC`, `PASSWORD_HASH`, `JWT_SECRET`, `AUTH_TOKEN`) are read in 116 places across 10 files **[V]**. The good news: the repo engine already takes `did` and `signingKey` as constructor options (`repo/engine.ts:26-34`), so the engine, storage and sequencer can stay as they are.

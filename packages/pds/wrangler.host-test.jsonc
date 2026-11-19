@@ -1,0 +1,41 @@
+// SYNTHETIC LOCAL TEST ONLY. Never deploy this fixture: its KEK, operator
+// token and escrow key are public test values, and PLC_URL is a fake host.
+{
+  "name": "strata-identity-host-test-only",
+  "main": "src/host/worker.ts",
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "PDS_HOSTNAME": "pds.test",
+    "HANDLE_DOMAIN": "people.test",
+    "HOST_DISPLAY_NAME": "Uji",
+    "SIGNIN_URL": "https://client.test/login",
+    "PLC_URL": "https://plc.test",
+    "ESCROW_ROTATION_KEY": "did:key:zQ3shkqLEhXVkM7gq7bps3TyYbNnUdpndYsmpeukyUuX23kgC",
+    "ACCOUNT_KEK_V1": "NuqP7BzCoxjfpTQ3cN03ihO5DMTdqz1ZkeF843bxdPI",
+    "ACCOUNT_KEK_CURRENT": "1",
+    "OPERATOR_TOKEN": "synthetic-operator-token-for-local-tests-only",
+  },
+  "durable_objects": {
+    "bindings": [
+      { "name": "ACCOUNT", "class_name": "HostedAccountDurableObject" },
+      { "name": "AUTH_HUB", "class_name": "AuthHubDurableObject" },
+    ],
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["HostedAccountDurableObject", "AuthHubDurableObject"] },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DIRECTORY",
+      "database_name": "strata-identity-host-test",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "r2_buckets": [{ "binding": "BLOBS", "bucket_name": "strata-identity-host-test-blobs" }],
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
+  "observability": { "enabled": false },
+}

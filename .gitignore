@@ -11,6 +11,7 @@ coverage/
 .dev.vars
 .dev.vars.*
 dist/
+dist-host/
 /web/
 dist-web/
 

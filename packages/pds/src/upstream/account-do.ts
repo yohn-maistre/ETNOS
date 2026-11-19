@@ -35,14 +35,31 @@ export class AccountDurableObject extends DurableObject<PDSEnv> {
 
 	constructor(ctx: DurableObjectState, env: PDSEnv) {
 		super(ctx, env);
+	}
 
-		// Validate required environment variables at startup
-		if (!env.SIGNING_KEY) {
+	/**
+	 * Strata: where this object's identity comes from. The single-identity
+	 * deployment reads it from the environment (upstream behaviour); the
+	 * multi-account host overrides this to load it from the object's own
+	 * storage, so one class serves many accounts.
+	 */
+	protected async loadIdentity(): Promise<{ did: string; signingKey: string }> {
+		if (!this.env.SIGNING_KEY) {
 			throw new Error("Missing required environment variable: SIGNING_KEY");
 		}
-		if (!env.DID) {
+		if (!this.env.DID) {
 			throw new Error("Missing required environment variable: DID");
 		}
+		return { did: this.env.DID, signingKey: this.env.SIGNING_KEY };
+	}
+
+	/** Strata: initial activation state of a new repository. */
+	protected initialActive(): boolean {
+		return (
+			this.env.INITIAL_ACTIVE === undefined ||
+			this.env.INITIAL_ACTIVE === "true" ||
+			this.env.INITIAL_ACTIVE === "1"
+		);
 	}
 
 	private refreshSchema() {
@@ -87,16 +104,13 @@ export class AccountDurableObject extends DurableObject<PDSEnv> {
 	/**
 	 * Initialize the storage adapter. Called lazily on first storage access.
 	 */
-	private async ensureStorageInitialized(): Promise<void> {
+	protected async ensureStorageInitialized(): Promise<void> {
 		if (!this.storageInitialized) {
 			await this.ctx.blockConcurrencyWhile(async () => {
 				if (this.storageInitialized) return; // Double-check after acquiring lock
 
-				// Determine initial active state from env var (default true for new accounts)
-				const initialActive =
-					this.env.INITIAL_ACTIVE === undefined ||
-					this.env.INITIAL_ACTIVE === "true" ||
-					this.env.INITIAL_ACTIVE === "1";
+				const identity = await this.loadIdentity();
+				const initialActive = this.initialActive();
 
 				this.storage = new SqliteRepoStorage(this.ctx.storage.sql, fn => this.ctx.storage.transactionSync(fn));
 				this.storage.initSchema(initialActive);
@@ -111,8 +125,8 @@ export class AccountDurableObject extends DurableObject<PDSEnv> {
 				this.engine = new RepoEngine({
 					storage: this.storage,
 					sequencer: this.sequencer,
-					did: this.env.DID,
-					signingKey: this.env.SIGNING_KEY,
+					did: identity.did,
+					signingKey: identity.signingKey,
 					lock: (fn) => this.ctx.blockConcurrencyWhile(fn),
 					broadcast: (event) => this.firehose!.broadcast(event),
 				});

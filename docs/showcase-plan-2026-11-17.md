@@ -470,6 +470,8 @@ The owner set the **multi-identity PDS first**, so people can log in and post, a
 | 6 | **Kamus komunitas, living layer**: room dictionaries, *Izin pengolahan mesin* permission, extraction and evidence, one-tap questions, grammar notes, benchmark | 5–6 days | community-dictionary §13 steps 3–7 |
 | 7 | Showcase extras: *Laporan sumber*, *Istilah lahan dan citra satelit* with a Mee room's pins, video posts, Jadwal Aksara slots with OpenUI cards (Run 3) | as time allows | multiplex §17 |
 
+**Progress 19 November:** step 1 is built and tested locally (not deployed): many accounts per Worker, invite sign-up at `/akun/baru`, OAuth with an account step, ETNOS sign-up through its own host (`research/pds-multi-identity-build-2026-11-19.md`). It now waits on the owner's spike, DNS and PLC approvals listed there.
+
 Steps 2–4 fit before the proposal only if Run 2 lands by about 23 November; otherwise the proposal describes them as *rencana* and shows step 4's seed import if it is live.
 
 ### 25.3 Small decisions recorded this session

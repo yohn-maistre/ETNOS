@@ -9,7 +9,7 @@
   },
   "scripts": {
     "check": "tsc --noEmit",
-    "build": "wrangler deploy --dry-run --config wrangler.test.jsonc --outdir dist",
+    "build": "wrangler deploy --dry-run --config wrangler.test.jsonc --outdir dist && wrangler deploy --dry-run --config wrangler.host-test.jsonc --outdir dist-host",
     "test": "npm run build && node --test test/*.test.mjs"
   },
   "dependencies": {

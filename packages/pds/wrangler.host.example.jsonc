@@ -1,0 +1,40 @@
+// Template for the ETNOS identity host. NOT deployed. The owner fills in the
+// D1 database_id after `wrangler d1 create`, sets secrets with `wrangler secret
+// put`, and approves the routes and DNS. See
+// docs/research/pds-multi-identity-build-2026-11-19.md for the ordered steps.
+{
+  "name": "etnos-identity-host",
+  "main": "src/host/worker.ts",
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "pds.etnos.space", "custom_domain": true },
+    { "pattern": "*.etnos.space/.well-known/atproto-did", "zone_name": "etnos.space" }
+  ],
+  "vars": {
+    "PDS_HOSTNAME": "pds.etnos.space",
+    "HANDLE_DOMAIN": "etnos.space",
+    "HOST_DISPLAY_NAME": "ETNOS",
+    "SIGNIN_URL": "https://etnos.space/login",
+    // Throwaway spike first: a private test directory, or plc.directory only after the owner says so.
+    "PLC_URL": "https://plc.directory",
+    "PLC_WRITES": "",
+    // Public did:key printed by scripts/host-escrow-key.mjs on the owner's machine.
+    "ESCROW_ROTATION_KEY": "",
+    "ACCOUNT_KEK_CURRENT": "1"
+  },
+  // Secrets (wrangler secret put): ACCOUNT_KEK_V1, OPERATOR_TOKEN
+  "durable_objects": {
+    "bindings": [
+      { "name": "ACCOUNT", "class_name": "HostedAccountDurableObject" },
+      { "name": "AUTH_HUB", "class_name": "AuthHubDurableObject" }
+    ]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["HostedAccountDurableObject", "AuthHubDurableObject"] }],
+  "d1_databases": [
+    { "binding": "DIRECTORY", "database_name": "etnos-identity-directory", "database_id": "FILL-IN-AFTER-d1-create", "migrations_dir": "migrations" }
+  ],
+  "observability": { "enabled": true, "head_sampling_rate": 1 }
+}

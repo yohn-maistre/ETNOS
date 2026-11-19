@@ -13,7 +13,11 @@ Optional, separately deployed AT account hosting inside the Strata repository. E
 - Host checks, bounded request streams (256KiB JSON, 5MiB blobs, 16MiB CAR imports; import requires an inactive empty account), login throttling and disabled implicit AppView/arbitrary-service proxying.
 - Closed account creation, no relay notifications by default, Spaces off. The repository is still public; an unadvertised host is not private.
 
-One Cloudflare deployment hosts **one identity**. Twenty people need isolated per-identity deployments or a future qualified multi-account implementation. Never reuse a shared DID or signing/session key across people. No PDS has been deployed or real identity created by the local test suite.
+## Multi-account identity host (built, not deployed)
+
+`src/host/worker.ts` hosts many accounts on one deployment: one Durable Object per account holding its own wrapped keys, a D1 directory, one OAuth hub, invite-only sign-up at `/akun/baru`, handles served from `<name>.<HANDLE_DOMAIN>/.well-known/atproto-did`, and an account step in OAuth. Keys, signing and password hashing stay inside the account object. Tests: `test/host-*.test.mjs`. Design, measurements, what is missing and the owner's approval steps: [docs/research/pds-multi-identity-build-2026-11-19.md](../../docs/research/pds-multi-identity-build-2026-11-19.md). `wrangler.host-test.jsonc` holds public synthetic values and must never be deployed; `wrangler.host.example.jsonc` is the template for a real deployment.
+
+The single-identity worker below is unchanged. One Cloudflare deployment of it hosts **one identity**. Twenty people need isolated per-identity deployments or a future qualified multi-account implementation. Never reuse a shared DID or signing/session key across people. No PDS has been deployed or real identity created by the local test suite.
 
 ## CLI
 
