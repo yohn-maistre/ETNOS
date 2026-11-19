@@ -33,3 +33,4 @@
 2026-11-18ae Kabar tab renamed Perkembangan; steward tools and masa line padded; carousel one card per swipe; Lini masa says once when empty
 2026-11-18af Jelajah rebuilt on one tile: news mosaic first, then talked, places, languages, topics, communities
 2026-11-18ag Jelajah: lead story with list, swipe row, map with regions, language picker, topic covers; kind colours from the palette
+2026-11-19a wiki home region map; Jelajah Tempat as list

@@ -11,6 +11,19 @@
   import { scopeRegions } from './scope-region.svelte'
   import { clip } from './api'
   const scoped = scopeRegions()
+  import PapuaMap, { type MapRegion } from './PapuaMap.svelte'
+  import type { Atlas } from './RegionArt.svelte'
+  import { REGION_ORDER, loadAtlas, loadContexts, regionTitle, type Ctx } from './explore-data'
+  // The large map of the seven regions, shaded by how many wiki pages each holds. It shows where the wiki is
+  // thin as plainly as where it is full.
+  let atlas = $state<Atlas | null>(null),
+    regionContexts = $state<Ctx[]>([])
+  onMount(() => {
+    void loadAtlas().then((a) => (atlas = a))
+    loadContexts()
+      .then((all) => (regionContexts = all.filter((c) => c.facet === 'customary-region')))
+      .catch(() => {})
+  })
 
   let data = $state<MapData | null>(null)
   onMount(() => { void loadMap().then((d) => (data = d)) })
@@ -36,6 +49,12 @@
         }
       })
   })
+  const mapRegions = $derived<MapRegion[]>(
+    REGION_ORDER.map((slug) => {
+      const c = regionContexts.find((x) => x.slug === slug)
+      return { slug, title: c ? regionTitle(c) : slug, href: '/contexts/' + slug, count: pages.filter((p) => p.reg === slug).length }
+    }),
+  )
   const groupsShown = $derived(domainGroups.filter((g) => pages.some((p) => p.d?.some((t) => g.tags.includes(t)))))
   let group = $state(domainGroups[0].key)
   const day = Math.floor(Date.now() / 86400000)
@@ -52,6 +71,10 @@
 {#if regions.length}
   <section class="wp" aria-labelledby="wp-places">
     <h2 id="wp-places">Tempat dan suku</h2>
+    {#if atlas && regionContexts.length}<div class="wp-map">
+        <PapuaMap {atlas} regions={mapRegions} focus={scoped.list} unit="halaman" />
+        <p class="wp-map-note">Makin gelap wilayahnya, makin banyak halaman wiki tentangnya. Wilayah tanpa halaman masih terbuka untuk ditulis.</p>
+      </div>{/if}
     <div class="wp-regions">
       {#each regions as r (r.reg)}{@const a = art(r.reg)}
         <article class="wp-region">
@@ -86,6 +109,8 @@
 {/if}
 
 <style>
+  .wp-map { margin: 0 0 18px; }
+  .wp-map-note { margin: 8px 2px 0; font-size: 12.5px; line-height: 1.5; color: var(--muted-foreground); max-width: 62ch; }
   .wp { display: grid; gap: 14px; padding: 20px 24px 24px; border-top: 1px solid var(--commons-hairline, var(--border)); }
   h2 { margin: 0; font-size: 18px; font-weight: 600; }
   .wp-regions { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }

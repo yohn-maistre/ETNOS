@@ -1,7 +1,7 @@
 <script lang="ts">
   // Jelajah: news first, then what people are talking about, then places, languages, topics and communities.
   // One tile (ExploreTile) in three shapes, arranged differently per section so the page has a lead and a rhythm:
-  // a lead story with a list beside it, a swipeable row, a map with its regions, one specimen with a picker, a
+  // a lead story with a list beside it, a swipeable row, a list of regions, one specimen with a picker, a
   // dense grid of topics, and two covers for communities. Colours are the kinds' accents from the reader's
   // palette. Every section follows the place chosen in the switcher.
   import { onMount } from 'svelte'
@@ -187,16 +187,10 @@
   <section id="tempat" class="jelajah-section" aria-labelledby="tempat-title">
     <div class="jelajah-head">
       <h2 id="tempat-title">Tempat</h2>
-      <a href="/wiki">Peta di Wiki <ArrowUpRight size={14} /></a>
+      <a href="/wiki#wp-places">Peta di Wiki <ArrowUpRight size={14} /></a>
     </div>
     <p class="jelajah-lede">Tujuh wilayah adat dan kabupaten serta kota di dalamnya.</p>
     {#if strata.length}<div class="place-bento">
-        {#if atlas}<div class="place-map" aria-hidden="true">
-            <svg viewBox={atlas.box.join(' ')} preserveAspectRatio="xMidYMid meet">
-              {#each strata as s (s.slug)}{@const shape = atlas.regions[s.slug]}{#if shape}<a href={s.href} tabindex="-1" aria-label={s.title} class:lit={s.slug === focus}><path d={shape.d} /></a>{/if}{/each}
-              {#each strata as s (s.slug)}{@const shape = atlas.regions[s.slug]}{#if shape}<text x={shape.x} y={shape.y}>{s.title}</text>{/if}{/each}
-            </svg>
-          </div>{/if}
         <div class="place-list">
           {#each strata as s (s.slug)}<ExploreTile shape="row" tone="place" href={s.href} title={s.title} text={s.places.length + ' kabupaten dan kota · ' + s.languages + ' bahasa'}>
               {#snippet art()}{#if atlas}<RegionArt {atlas} lit={[s.slug]} />{/if}{/snippet}
@@ -324,14 +318,8 @@
   :global(.explore-strip::-webkit-scrollbar) { display: none; }
   :global(.explore-strip > *) { scroll-snap-align: start; }
 
-  /* Tempat: the map is the lead; the regions are listed beside it. */
+  /* Tempat: the regions as a list; the large map lives on the wiki home. */
   .place-bento { display: grid; gap: 10px; padding: 0 16px; }
-  .place-map { position: relative; border-radius: 16px; overflow: hidden; background: color-mix(in oklab, var(--tone-place) 10%, var(--card)); border: 1px solid var(--border); padding: 10px; }
-  .place-map svg { display: block; width: 100%; height: auto; }
-  .place-map path { fill: color-mix(in oklab, var(--tone-place) 22%, var(--card)); stroke: color-mix(in oklab, var(--tone-place) 55%, transparent); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; transition: fill 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-  .place-map a:hover path { fill: color-mix(in oklab, var(--tone-place) 48%, var(--card)); }
-  .place-map a.lit path { fill: var(--tone-place); }
-  .place-map text { font-family: var(--font-editorial, serif); font-size: 34px; text-anchor: middle; fill: var(--foreground); paint-order: stroke; stroke: color-mix(in oklab, var(--tone-place) 10%, var(--card)); stroke-width: 6px; stroke-linejoin: round; pointer-events: none; }
   .place-list { display: grid; gap: 8px; align-content: start; }
 
   /* Bahasa: one specimen, a picker to change region. */
@@ -383,9 +371,8 @@
     .news-bento { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
     .news-bento > :global(.cover) { min-height: 380px; }
     .news-bento > :global(.cover h3) { font-size: 23px; }
-    .place-bento { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+    .place-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .topic-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .room-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (prefers-reduced-motion: reduce) { .place-map path { transition: none; } }
 </style>
