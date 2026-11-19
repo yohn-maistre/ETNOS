@@ -11,6 +11,7 @@ import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
 import {Forum} from './forum.ts'
+import {Periksa} from './periksa.ts'
 import { Media } from './media.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
@@ -56,6 +57,7 @@ export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentP
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
+  const periksa=new Periksa(store)
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store)
   const dm=new DirectMessages(store)
@@ -155,6 +157,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (parts.length === 4 && parts[1] === 'wiki' && parts[3] === 'trail') result=wiki.trail(parts[2])
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
+        else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='periksa')result=periksa.queue(authenticated(),parts[2])
+        else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='claims')result=periksa.list(actor?.id,parts[2],url.searchParams.get('state')??undefined)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.list(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-unreviewed') result=wiki.unreviewed(authenticated(),parts[2])
@@ -312,6 +316,10 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='poll')result=forum.poll(caller,parts[2],b.choice)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='rsvp')result=forum.rsvp(caller,parts[2],b.response)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='confirm')result=forum.confirm(caller,parts[2],b.value)
+      else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='claims')result=periksa.propose(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='periksa')result=periksa.setQuorum(caller,parts[2],b.quorum)
+      else if(parts.length===4&&parts[1]==='claims'&&parts[3]==='answer')result=periksa.answer(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='claims'&&parts[3]==='withdraw')result=periksa.withdraw(caller,parts[2])
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'vote') {
         if(typeof b.value!=='number') throw new Fault(400,'Numeric vote required')
         result=social.vote(caller,parts[2],b.value)

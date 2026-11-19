@@ -432,6 +432,11 @@ CREATE TABLE km_mentions(entity TEXT NOT NULL REFERENCES km_entities(slug),excer
 CREATE TABLE km_assertions(id TEXT PRIMARY KEY,subject TEXT NOT NULL REFERENCES km_entities(slug),predicate TEXT NOT NULL,object TEXT REFERENCES km_entities(slug),value TEXT,qualifiers TEXT NOT NULL,layer TEXT NOT NULL CHECK(layer IN ('jejak','tuturan','tafsir')),status TEXT NOT NULL CHECK(status IN ('proposed','accepted','rejected','withdrawn')),logical TEXT NOT NULL CHECK(logical IN ('undisputed','disputed','settled','superseded')),rank TEXT NOT NULL CHECK(rank IN ('preferred','normal','variant','deprecated')),visibility TEXT NOT NULL CHECK(visibility IN ('public','community')),train INTEGER NOT NULL DEFAULT 0,community_id TEXT REFERENCES communities(id),origin TEXT NOT NULL,proposer_id TEXT REFERENCES actors(id),reviewer_id TEXT REFERENCES actors(id),review_note TEXT,digest TEXT NOT NULL UNIQUE,revision INTEGER NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL);
 CREATE INDEX km_assertions_status ON km_assertions(status,community_id);
 CREATE TABLE km_support(assertion_id TEXT NOT NULL REFERENCES km_assertions(id),excerpt_id TEXT NOT NULL REFERENCES km_excerpts(id),PRIMARY KEY(assertion_id,excerpt_id));
+`,`
+CREATE TABLE claims(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),kind TEXT NOT NULL CHECK(kind IN ('word','sense','grammar','name','place','date','wiki','other')),subject TEXT NOT NULL,statement TEXT NOT NULL,evidence TEXT NOT NULL,proposer_id TEXT NOT NULL REFERENCES actors(id),parent_id TEXT REFERENCES claims(id),state TEXT NOT NULL CHECK(state IN ('open','checked','rejected','split','withdrawn')),created INTEGER NOT NULL,settled INTEGER);
+CREATE INDEX claims_queue ON claims(community_id,state,created);
+CREATE TABLE claim_answers(claim_id TEXT NOT NULL REFERENCES claims(id),actor_id TEXT NOT NULL REFERENCES actors(id),answer TEXT NOT NULL CHECK(answer IN ('yes','no')),created INTEGER NOT NULL,PRIMARY KEY(claim_id,actor_id));
+CREATE TABLE claim_settings(community_id TEXT PRIMARY KEY REFERENCES communities(id),quorum INTEGER NOT NULL CHECK(quorum BETWEEN 1 AND 9));
 `]
 
 export const schemaVersion=migrations.length
