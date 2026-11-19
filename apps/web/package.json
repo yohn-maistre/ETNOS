@@ -49,6 +49,7 @@
     "bits-ui": "2.20.2",
     "clsx": "2.1.1",
     "dompurify": "3.4.17",
+    "layerchart": "2.4.0",
     "marked": "18.1.2",
     "svelte": "5.49.1",
     "tailwind-merge": "3.7.0",
