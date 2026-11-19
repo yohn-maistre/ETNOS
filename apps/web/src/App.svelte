@@ -842,7 +842,7 @@
       busy = false
     }
   }
-  async function login(mode: 'login' | 'signup' = 'login', invitation = '') {
+  async function login(mode: 'login' | 'signup' = 'login', invitation = '', provider?: 'host' | 'bluesky') {
     authDialogError = ''
     await mutate(async () => {
       try {
@@ -851,7 +851,7 @@
         {
           mode,
           ...(mode === 'signup'
-            ? { invitation }
+            ? { invitation, ...(provider === 'host' ? { provider: 'host' } : {}) }
             : { handle: handle.trim(), publishing: publishingConsent }),
           returnTo:
             new SvelteURLSearchParams(authSearch).get('returnTo') ||

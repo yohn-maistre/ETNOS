@@ -34,21 +34,27 @@
     initialMode?: 'login' | 'signup'
     embedded?: boolean
     onbrowse?: () => void
-    onsubmit: (mode: 'login' | 'signup', invitation: string) => void
+    onsubmit: (mode: 'login' | 'signup', invitation: string, provider?: 'host' | 'bluesky') => void
   } = $props()
   let signup = $state(
     untrack(() => initialMode ? initialMode === 'signup' : new URLSearchParams(location.search).get('mode') === 'signup'),
   )
   let invitation = $state('')
   let enrollment = $state<'open' | 'invite' | 'closed' | null>(null)
+  // The node's own account server is the default way to join when it has one; Bluesky stays available.
+  let accountHost = $state<string | null>(null)
+  let provider = $state<'host' | 'bluesky'>('host')
+  const hosted = $derived(!!accountHost && provider === 'host')
   let optionsError = $state(false)
   async function options() {
     optionsError = false
     try {
       const result = await request<{
         enrollment: 'open' | 'invite' | 'closed'
+        accountHost?: string | null
       }>('/auth/options')
       enrollment = result.enrollment
+      accountHost = result.accountHost ?? null
     } catch {
       optionsError = true
     }
@@ -64,8 +70,10 @@
       {signup ? 'Bergabung dengan ETNOS' : 'Masuk ke ETNOS'}
     </Card.Title><Card.Description>
       {signup
-        ? 'Buat akun Bluesky atau gunakan akun yang sudah ada.'
-        : 'Gunakan akun Bluesky atau akun AT yang sudah terhubung.'}
+        ? hosted
+          ? 'Buat akun ETNOS. Nama akunmu akan berakhiran .etnos.space.'
+          : 'Buat akun Bluesky atau gunakan akun yang sudah ada.'
+        : 'Masukkan nama akun ETNOS, Bluesky atau akun AT lain yang sudah terhubung.'}
     </Card.Description>
   </Card.Header>
   <Card.Content>
@@ -73,7 +81,7 @@
       onsubmit={(e) => {
         e.preventDefault()
         if (!signup || enrollment === 'open' || enrollment === 'invite')
-          onsubmit(signup ? 'signup' : 'login', invitation.trim())
+          onsubmit(signup ? 'signup' : 'login', invitation.trim(), signup ? (hosted ? 'host' : 'bluesky') : undefined)
       }}
     >
       <FieldGroup>
@@ -81,7 +89,7 @@
             <FieldLabel for="at-handle">Handle akun</FieldLabel><Input
               id="at-handle"
               bind:value={handle}
-              placeholder="nama.bsky.social"
+              placeholder="nama.etnos.space"
               autocomplete="username"
               autocapitalize="none"
               spellcheck={false}
@@ -91,8 +99,9 @@
             </FieldDescription>
           </Field>{:else}
           <p class="text-sm text-muted-foreground">
-            Kamu akan kembali ke ETNOS setelah menyelesaikan pendaftaran di
-            Bluesky. Kata sandi tetap di Bluesky.
+            {hosted
+              ? 'Akun dibuat di server akun ETNOS dengan kode undangan dari pengurus. Setelah itu kamu kembali ke ETNOS.'
+              : 'Kamu akan kembali ke ETNOS setelah menyelesaikan pendaftaran di Bluesky. Kata sandi tetap di Bluesky.'}
           </p>
           {#if enrollment === 'invite'}<Field>
               <FieldLabel for="enrollment-invitation">
@@ -135,9 +144,12 @@
           class="w-full"
         >
           {#if busy}<LoaderCircle class="animate-spin" />{/if}{signup
-            ? 'Lanjutkan dengan Bluesky'
+            ? hosted ? 'Buat akun ETNOS' : 'Lanjutkan dengan Bluesky'
             : 'Lanjutkan'}<ArrowUpRight size={16} />
         </Button>
+        {#if signup && accountHost}<Button type="button" variant="outline" class="w-full" disabled={busy} onclick={() => (provider = provider === 'host' ? 'bluesky' : 'host')}>
+            {provider === 'host' ? 'Gunakan akun Bluesky' : 'Buat akun ETNOS saja'}
+          </Button>{/if}
         <FieldDescription>
           {signup
             ? 'Ruang privat tetap memerlukan persetujuan komunitas.'
