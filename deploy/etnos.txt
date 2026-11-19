@@ -40,3 +40,4 @@
 2026-11-19e jadwal aksara
 2026-11-19f openui cards
 2026-11-19g aksara switch and model key wiring
+2026-11-19h model picker in Studio
