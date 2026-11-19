@@ -95,6 +95,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/knowledge')result=knowledge.list(actor?.id,url.searchParams.get('community')??undefined)
         else if(parts.length===3&&parts[1]==='knowledge')result=knowledge.read(parts[2],actor?.id)
         else if(parts.length===4&&parts[1]==='knowledge'&&parts[3]==='history')result=knowledge.history(parts[2],actor?.id)
+        else if(path==='/v1/aksara/jadwal')result=resident.publicJadwal()
         else if(path==='/v1/resident/config')result=resident.get(authenticated(),string(url.searchParams.get('community')))
         else if(path==='/v1/resident/choices')result=resident.routing.choices(authenticated(),string(url.searchParams.get('community')))
         else if(path==='/v1/resident/requests')result=resident.questions.statuses(string(url.searchParams.get('post')),actor?.id)

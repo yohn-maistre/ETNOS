@@ -10,6 +10,7 @@ import {Groups} from './groups.ts'
 import {ResidentRouting} from './resident-routing.ts'
 import {ResidentQuestions} from './resident-question.ts'
 import {residentFailureCode,ResidentFailure} from './resident-failure.ts'
+import {JadwalRunner,defaultJadwal,localTime,slotRequestKey,jadwalSkills,type Jadwal} from './jadwal.ts'
 import {text,key,transition,expected,emit,hash,publicSteward,contextEpoch} from './commons.ts'
 import type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
 export type {ResidentSkill,ResidentEvidence,ResidentWork,ResidentInput,ResidentOutput} from './resident-contract.ts'
@@ -25,7 +26,7 @@ export function parseResidentWork(value:unknown):ResidentWork{
  * and for thread replies the web) through this authority, so a thread question
  * without configured-source evidence may still reach the model. */
 export type ResidentProvider={label:string;researchTools?:boolean;draft:(input:ResidentInput,signal:AbortSignal)=>Promise<ResidentOutput>}
-const skills:ResidentSkill[]=['source-digest','research-question','knowledge-draft']
+const skills:ResidentSkill[]=[...jadwalSkills]
 /** Fixed, model-free copy for an honest thread abstention. It never quotes or
  * answers the question; it only asks the community for sources. */
 export const residentAbstentionText='Sa belum menemukan sumber yang bisa sa pakai untuk menjawab ini. Ada yang tahu, atau punya tulisan, rekaman, atau orang yang bisa ditanya? Ceritakan di sini.\n\n— Aksara (AI) · catatan otomatis: belum ada sumber'
@@ -39,8 +40,8 @@ export function citationUrl(raw:unknown){
  try{const u=new URL(raw.replace(/[.,;:!?'"”’]+$/,''));if((u.protocol!=='https:'&&u.protocol!=='http:')||u.username||u.password)return null;u.hash='';return u.href}catch{return null}
 }
 export class Resident{
- readonly store:StrataCore;readonly access:AgentAccess;readonly provider?:ResidentProvider;readonly routing:ResidentRouting;readonly questions:ResidentQuestions
- constructor(store:StrataCore,access=new AgentAccess(store),provider?:ResidentProvider){this.store=store;this.access=access;this.provider=provider;this.routing=new ResidentRouting(store,access);this.questions=new ResidentQuestions(store,this.routing)}
+ readonly store:StrataCore;readonly access:AgentAccess;readonly provider?:ResidentProvider;readonly routing:ResidentRouting;readonly questions:ResidentQuestions;readonly slots:JadwalRunner
+ constructor(store:StrataCore,access=new AgentAccess(store),provider?:ResidentProvider,jadwal:Jadwal=defaultJadwal){this.store=store;this.access=access;this.provider=provider;this.slots=new JadwalRunner(store,(c,skill)=>this.current(c,skill),jadwal);this.routing=new ResidentRouting(store,access);this.questions=new ResidentQuestions(store,this.routing)}
  /** The public question, scoped work and media/context receipt commit together. */
  createMentionPost(actorId:string,b:Record<string,unknown>,groups=new Groups(this.store)){
   return this.store.tx(()=>{
@@ -302,13 +303,42 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
  /** Alarms may replay; queued execution and effect commits remain idempotent.
   * Interrupted inference consumes its budget and requires an explicit fresh job. */
  recover(){const s=this.store;s.run("UPDATE resident_jobs SET state='failed',lease_until=NULL,error='Interrupted job; inspect its receipt before requesting another',updated=? WHERE state='running' AND lease_until<=?",s.clock(),s.clock())}
+ /** Jadwal Aksara. Each due slot starts at most one job per community and local day, through the same
+  * enqueue path as the interval schedule, so mandates, the daily budget and the one pending job rule apply.
+  * The day's request key makes a repeated or concurrent tick a no-op once a job exists, whatever its outcome:
+  * a slot that abstained or failed is not tried again that day. A pending job, the budget or a refused mandate
+  * only skips quietly, and the slot is tried again on the next tick. */
+ private runSlots(){
+  const s=this.store,{date,slots}=this.slots.due(s.clock());if(!slots.length)return
+  for(const c of s.all<ResidentConfig>('SELECT * FROM resident_configs WHERE enabled=1 ORDER BY community_id LIMIT 50'))for(const slot of slots){
+   if(this.slots.job(c,slot.id,date))continue
+   try{this.enqueue(c.operator_id,c.community_id,slot.skill,slotRequestKey(slot.id,date,c.community_id));break}
+   catch(error){if(error instanceof Fault&&[409,429].includes(error.status))break/* pending job or budget: nothing else can start now */}
+  }
+ }
+ /** Today's slots of every public community with an enabled resident. Names no operator, agent, ticket or evidence. */
+ publicJadwal(){
+  const s=this.store,now=s.clock(),t=localTime(now,this.slots.jadwal.timezone)
+  const communities=s.all<ResidentConfig&{title:string}>("SELECT r.*,c.title FROM resident_configs r JOIN communities c ON c.id=r.community_id WHERE r.enabled=1 AND c.visibility='public' ORDER BY c.title,c.id LIMIT 50").map(c=>({id:c.community_id,title:c.title,slots:this.slots.day(c,now).map(({slot,state,job})=>{
+   let postId:string|null=null
+   if(job?.state==='succeeded')postId=job.result_kind==='post'?job.result_id:job.result_kind==='knowledge'?s.get<{post_id:string}>('SELECT post_id FROM knowledge_announcements WHERE note_id=? ORDER BY revision DESC LIMIT 1',job.result_id)?.post_id??null:null
+   if(postId&&!s.get("SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.id=? AND c.visibility='public' AND p.hidden=0 AND p.deleted=0",postId))postId=null
+   return {id:slot.id,label:slot.label,at:slot.at,state,post:postId?{id:postId,path:'/square/'+postId}:null}
+  })}))
+  return {timezone:this.slots.jadwal.timezone,date:t.date,asOf:now,communities}
+ }
  async tick(){
-  const s=this.store;this.recover()
+  const s=this.store;this.recover();this.runSlots()
   for(const c of s.all<ResidentConfig>('SELECT * FROM resident_configs WHERE enabled=1 AND next_run<=? ORDER BY next_run LIMIT 3',s.clock())){
    try{this.enqueue(c.operator_id,c.community_id,'knowledge-draft','schedule:'+hash({scope:c.community_id,at:c.next_run}).slice(0,40))}catch{/* Current authority and quotas can refuse scheduled work. No widening or retry inference. */}
    s.run('UPDATE resident_configs SET next_run=? WHERE community_id=? AND revision=?',s.clock()+c.interval_minutes*60000,c.community_id,c.revision)
   }
   for(const j of s.all<{id:string}>("SELECT id FROM resident_jobs WHERE state='queued' ORDER BY created LIMIT 1"))try{await this.run(j.id)}catch{ s.run("UPDATE resident_jobs SET state='abstained',error='Current authority refused scheduled work',updated=? WHERE id=? AND state='queued'",s.clock(),j.id) }
  }
- nextWake(){const s=this.store;const queued=s.get("SELECT 1 FROM resident_jobs WHERE state='queued'");if(queued)return s.clock()+1000;return s.get<{next:number|null}>("SELECT MIN(at) next FROM (SELECT next_run at FROM resident_configs WHERE enabled=1 UNION ALL SELECT lease_until at FROM resident_jobs WHERE state='running')")?.next??null}
+ nextWake(){
+  const s=this.store;const queued=s.get("SELECT 1 FROM resident_jobs WHERE state='queued'");if(queued)return s.clock()+1000
+  const interval=s.get<{next:number|null}>("SELECT MIN(at) next FROM (SELECT next_run at FROM resident_configs WHERE enabled=1 UNION ALL SELECT lease_until at FROM resident_jobs WHERE state='running')")?.next??null
+  const slots=s.all<ResidentConfig>('SELECT * FROM resident_configs WHERE enabled=1 LIMIT 50').map(c=>this.slots.nextWake(c,s.clock()))
+  const all=[interval,...slots].filter((n):n is number=>typeof n==='number');return all.length?Math.min(...all):null
+ }
 }
