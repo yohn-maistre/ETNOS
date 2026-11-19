@@ -456,27 +456,27 @@ The owner wants a commons where people can simply talk in a private community, s
   4. **Storage isolation.** §7 planned one Durable Object per private room; today all communities share the node's database. Keep as planned, after the proposal.
 - **Not for now:** end-to-end encrypted groups (the DM slice shows the way; group keys and recovery are open problems in `architecture.md`). Clan spaces on a self-hosted PDS stay the roadmap path for strong privacy, and AT Spaces (1 December) brings access control, not encryption.
 
-### 25.2 Order *(proposal; estimates are the agent's working time, not measured)*
+### 25.2 Order *(revised 19 November after the owner's answers; estimates are the agent's working time, not measured)*
 
-**Run 1c, before the proposal pack (19–25 November):**
+The owner set the **multi-identity PDS first**, so people can log in and post, and replaced the three flagships with one northstar: **Bahasa Tumbuh** (`research/bahasa-tumbuh-2026-11-19.md`), a dictionary and grammar that grow from how people talk.
 
-| Step | What | Time | Detail |
+| Order | What | Time | Detail |
 | --- | --- | --- | --- |
-| 1 | Private-room notice; *Obrolan* view | half a day | §25.1 |
-| 2 | **Voice notes**: record, validate, store, waveform, transcript (Whisper), protocol and withdrawal tests; in private rooms too | 1.5–2 days | multiplex §10 |
-| 3 | **Kata Bersama**: import TransNewGuinea.org (CLDF, CC BY 4.0), map to catalogue Glottocodes, words on language pages, concept map, *Masih dipakai? / Bukan begitu / Rekam suaramu* | about 2 days | multiplex §17.3 |
-| 4 | **Siapa yang menulis Papua?**: voice and topic charts from the seed (§5 figures), first entity extraction on one region, gaps and question cards | 2–3 days | multiplex §17.4 |
+| 1 | **Run 2: multi-identity PDS** (task 24) | as planned | `research/pds-multi-identity-plan-2026-11-18.md` |
+| 2 | Private-room honesty notice; *Obrolan* view | half a day | §25.1 |
+| 3 | **Voice notes** (record, validate, store, waveform, transcript, protocol and withdrawal tests; in private rooms too) | 1.5–2 days | multiplex §10 |
+| 4 | **Bahasa Tumbuh, seed layer**: TransNewGuinea.org import for catalogue languages; Steltenpool 1969 parsed with its CC BY-NC tag; dictionary block on language pages | 2–3 days | bahasa-tumbuh §7, §13 steps 1–2 |
 | 5 | Proposal pack (step 10 of §24), citing only what is live | — | `proposal/claims-2026-11-18.md` |
+| 6 | **Bahasa Tumbuh, living layer**: room dictionaries, *Bantu kamus* permission, extraction and evidence, one-tap questions, grammar notes, benchmark | 5–6 days | bahasa-tumbuh §13 steps 3–7 |
+| 7 | Showcase extras: *Siapa yang menulis Papua?*, *Lensa Kita* with a Mee room's pins, video posts, Ritme slots with OpenUI cards (Run 3) | as time allows | multiplex §17 |
 
-**Showcase (December):**
-- **Lensa Kita** with a Mee room's pins (multiplex §17.2), video posts, *Temuan* selector with the first card kinds, and the Ritme slots from Run 3.
-- Runs 2 (multi-identity PDS) and 3 (Aksara with Gemini keys) as already planned.
-
-**Owner decision needed:** does Run 1c go before Run 2, as proposed here, or after it? The earlier order put the PDS first.
+Steps 2–4 fit before the proposal only if Run 2 lands by about 23 November; otherwise the proposal describes them as *rencana* and shows step 4's seed import if it is live.
 
 ### 25.3 Small decisions recorded this session
 
-- **Cards** are our own zod schema in the shape of json-render, not OpenUI (Ritme §8.5). Designed, not built.
+- **Cards are OpenUI** (`@openuidev/svelte-lang`, MIT), decided by the owner to minimise custom code (Ritme §8.5, bahasa-tumbuh §12). Decided, not built.
+- **Seeding from TransNewGuinea.org** (CC BY 4.0) is approved; the owner will contact its maintainers after the proposal. Living Dictionaries is a sync target, not something we rebuild (bahasa-tumbuh §11).
+- **Open owner question:** may a private room's talk be read by a model to build its dictionary (*Bantu kamus*), and only on a local model? This changes §7's rule for those rooms (bahasa-tumbuh §6).
 - **Voice posts back to AT Protocol.** Once our voice-post record has run in production, propose it as a community lexicon to the Atmosphere. After the proposal, not before (multiplex §10.3).
 - **Satellite data.** TESSERA (CC0) by default; AlphaEarth as a second witness where its non-commercial terms allow (owner: both "sound good").
 - **No genomics.** Never human data. For plants and animals, only links to public records (multiplex §9.3).

@@ -26,11 +26,15 @@ Laws and policies are paraphrased, not quoted, and each one names its article wh
 
 Section 9 maps each thread to the proposal's sections and the deck's ten slides. Section 10 is the regulatory map in one table.
 
-### 0.1 Three flagships across the threads *(added 19 November; design in `research/epistemic-multiplex-2026-11-19.md` §17)*
+### 0.1 The northstar and the flagships *(added 19 November)*
+
+**Northstar: [Bahasa Tumbuh](research/bahasa-tumbuh-2026-11-19.md).** Every language community gets a dictionary and a grammar that grow from how its people already talk, seeded from the published record (TransNewGuinea.org's 41 Ekari words from 1975; Steltenpool's 1969 dictionary of about 4,000 roots, open access), owned and governed by the community, and powering its own small models. It carries threads 1, 2, 5 and 8 most strongly, and every catalogued language can grow the same way.
+
+Supporting flagships (design in `research/epistemic-multiplex-2026-11-19.md` §17):
 
 | Flagship | One line | Threads it carries |
 | --- | --- | --- |
-| **Kata Bersama** | The largest open database of New Guinea wordlists holds 41 words of Ekari, all from one 1975 source; speakers confirm, correct and voice their words, and corrections go back to open science with consent | 1, 5, 2, 8 |
+| **Kata Bersama** *(now Bahasa Tumbuh's seed layer)* | The largest open database of New Guinea wordlists holds 41 words of Ekari, all from one 1975 source; speakers confirm, correct and voice their words, and corrections go back to open science with consent | 1, 5, 2, 8 |
 | **Siapa yang menulis Papua?** | The voices and topics behind the open record (92% encyclopaedia; administration and population 31%, culture and ecology under 6%) and how they move as tellers join | 1, 3, 7 |
 | **Lensa Kita** | A community's own landscape categories become a map through a tiny classifier on open satellite embeddings that the community owns; what the satellite cannot learn is the cultural residual, and residual times vitality says what to record first | 3, 4, 5, 2 |
 

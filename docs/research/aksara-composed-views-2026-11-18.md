@@ -1,5 +1,7 @@
 # Aksara as a composer of views, not a coding agent
 
+> **Decision changed 19 November:** the owner chose **OpenUI** (`@openuidev/svelte-lang`, MIT) instead of our own spec, to minimise custom code. The safety rules below (locked catalogue, viewer-checked data resolvers, steward approval, withdrawal) still apply; the spec format and renderer come from OpenUI. See `bahasa-tumbuh-2026-11-19.md` §12.
+
 18 November 2026. Research only; no code changed. Marks: [V] read on the source page today, [S] secondary source or memory, [U] unverified. Sources are at the end.
 
 ## Summary and recommendation

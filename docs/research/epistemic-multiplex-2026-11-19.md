@@ -430,6 +430,8 @@ About 6–7 days for the first wave, 3–5 for the second, and 7–9 more for mu
 
 ## 17. Flagships: what to build with all this *(proposal, 19 November)*
 
+> **Superseded as northstar, same day:** the owner asked for one cleaner, more ambitious purpose. That is **[bahasa-tumbuh-2026-11-19.md](bahasa-tumbuh-2026-11-19.md)**: a dictionary and grammar that grow from how people talk, seeded from the published record. *Kata Bersama* (§17.3) is now its seed layer. *Lensa Kita* and *Siapa yang menulis Papua?* remain as supporting flagships for the showcase and the observatory.
+
 The owner asked for something more ambitious than more charts: a flagship that uses these open models and motifs, in service of preservation, of knowledge organisation, and of paths for science that start from Indigenous knowledge.
 
 ### 17.1 The idea that ties it together
