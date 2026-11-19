@@ -130,7 +130,7 @@ test('native resident setup uses real registration, admission and bounded grants
   assert.equal(first.agentId,again.agentId);assert.equal(s.actor(first.agentId).kind,'agent');assert.equal(s.actor(first.agentId).operator_id,owner.actor.id)
   assert.equal(s.get<{n:number}>('SELECT count(*) n FROM agent_deployments WHERE agent_id=?',first.agentId)!.n,0)
   assert.equal(first.expires,s.clock()+86400000);assert.equal(s.get<{role:string}>('SELECT role FROM memberships WHERE community_id=? AND actor_id=?',room.id,first.agentId)!.role,'member')
-  assert.equal(first.config!.daily_limit,3);assert.equal(first.config!.mentions_enabled,0);assert.equal(first.config!.enabled,1)
+  assert.equal(first.config!.daily_limit,8);assert.equal(first.config!.interval_minutes,120);assert.equal(first.config!.mentions_enabled,1);assert.equal(first.config!.enabled,1)
   assert.equal(new Discovery(s).sources(owner.actor.id,room.id)[0].rights,'link-only')
   assert.throws(()=>r.setup(outsider.actor.id,{communityId:room.id,consent:true,requestKey:randomUUID()}),/permission|member|steward|Not found/i)
   assert.throws(()=>r.setup(owner.actor.id,{communityId:room.id,requestKey:randomUUID()}),/consent/)

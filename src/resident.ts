@@ -77,9 +77,9 @@ export class Resident{
  /** Native installation uses the same registration, admission and grant checks
   * as external agents. No deployment key, private source or review authority. */
  setup(actorId:string,b:Record<string,unknown>){
-  const communityId=text(b.communityId,100),includeSource=b.includeSource===true,enableAutomation=b.enableAutomation===true
+  const communityId=text(b.communityId,100),includeSource=b.includeSource===true,enableAutomation=b.enableAutomation===true,mentionsEnabled=b.mentionsEnabled!==false
   if(b.consent!==true)throw new Fault(400,'Explicit resident setup consent required')
-  return transition(this.store,actorId,b.requestKey,'resident.setup',{communityId,includeSource,enableAutomation},()=>{
+  return transition(this.store,actorId,b.requestKey,'resident.setup',{communityId,includeSource,enableAutomation,mentionsEnabled},()=>{
    publicSteward(this.store,actorId,communityId)
    if(!this.provider)throw new Fault(503,'The built-in resident runtime is not configured')
    if(enableAutomation&&this.store.requireSteward(actorId,communityId).role!=='owner')throw new Fault(403,'Only the community owner can enable agent participation')
@@ -96,14 +96,14 @@ export class Resident{
     const d=new Discovery(s),url='https://papua.antaranews.com/rss/terkini.xml',prior=s.get<{id:string}>('SELECT id FROM discovery_sources WHERE community_id=? AND url=? AND state!=?',communityId,url,'withdrawn')
     sourceId=prior?.id??d.add(actorId,{communityId,title:'ANTARA Papua',url,rights:'link-only',mode:'news',kind:'news',requestKey:hash(key(b.requestKey))+':source'}).id
    }
-   const configured=this.configure(actorId,{communityId,agentId:agent.agent_id,enabled:true,dailyLimit:3,intervalMinutes:360,postingMandateId:posting.id,editorialMandateId:editorial.id,requestKey:hash(key(b.requestKey))+':config'})
+   const configured=this.configure(actorId,{communityId,agentId:agent.agent_id,enabled:true,dailyLimit:8,intervalMinutes:120,mentionsEnabled,postingMandateId:posting.id,editorialMandateId:editorial.id,requestKey:hash(key(b.requestKey))+':config'})
    emit(s,actorId,'resident.setup',{kind:'agent-job',id:communityId,revision:configured.config!.revision,communityId})
    return {agentId:agent.agent_id,expires,sourceId,...configured}
   })
  }
  configure(actorId:string,b:Record<string,unknown>){
-  const communityId=text(b.communityId,100),agentId=text(b.agentId,100),dailyLimit=Number(b.dailyLimit??3),interval=Number(b.intervalMinutes??360)
-  if(typeof b.enabled!=='boolean'||!Number.isInteger(dailyLimit)||dailyLimit<1||dailyLimit>5||!Number.isInteger(interval)||interval<60||interval>10080)throw new Fault(400,'Choose 1–5 jobs/day and an interval of at least one hour')
+  const communityId=text(b.communityId,100),agentId=text(b.agentId,100),dailyLimit=Number(b.dailyLimit??8),interval=Number(b.intervalMinutes??120)
+  if(typeof b.enabled!=='boolean'||!Number.isInteger(dailyLimit)||dailyLimit<1||dailyLimit>24||!Number.isInteger(interval)||interval<15||interval>10080)throw new Fault(400,'Pilih 1–24 tugas per hari dan jarak tinjauan minimal 15 menit.')
   const input={communityId,agentId,enabled:b.enabled,dailyLimit,interval,postingMandateId:b.postingMandateId??null,editorialMandateId:b.editorialMandateId??null,revision:b.revision??0,mentionsEnabled:b.mentionsEnabled===true,announceKnowledge:b.announceKnowledge===true}
   return transition(this.store,actorId,b.requestKey,'resident.configure',input,()=>{publicSteward(this.store,actorId,communityId);const a=this.store.actor(agentId);if(a.operator_id!==actorId||a.kind!=='agent')throw new Fault(403,'Resident agent operator required');if(b.enabled)this.access.assertCurrent(agentId)},()=>{
    const s=this.store,prior=s.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',communityId);expected(input.revision,prior?.revision??0)
