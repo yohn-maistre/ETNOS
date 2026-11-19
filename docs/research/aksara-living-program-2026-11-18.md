@@ -422,3 +422,9 @@ The owner asked that an operator can turn Aksara on or off, with sensible defaul
 
 Tests: `test/resident-autonomy.test.ts` covers the budgets, setup durations, renewal and its idempotency, operator-only renewal, the switch (on, off, back on, the private room left alone, the room skipped without owner consent), automatic renewal while on, no renewal while paused, and no renewal of a revoked mandate.
 
+
+### 15.1 Other service keys in Studio
+
+Studio → Penghuni → "Kunci layanan lain" lists every outside service the node can call with a key. The first is OpenAlex (Riset terbit on wiki pages). Each key follows the model-key rules: it is checked against the service before it is kept, stored in node storage under `service-key:<id>`, and never returned (only its last four characters). A Studio key wins over the deploy secret of the same name (`OPENALEX_API_KEY`). The public web worker reads the key through the binding-only RPC `serviceKey(id)`, so it never travels over HTTP.
+
+To add a service, add one entry to `SERVICES` in `src/service-keys.ts` (id, label, use, env name, link, and a cheap check call) and read the key with `serviceKey(id)` where it is used. Endpoints: `GET /v1/ops/service-keys`, `POST /v1/ops/service-keys` (`{service, key}` or `{service, remove:true}`), operator only, CSRF-guarded. Tests: `test/service-keys.test.ts`.

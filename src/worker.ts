@@ -11,6 +11,7 @@ import {Discovery,sourceFetcher} from './discovery.ts'
 import {Resident,parseResidentWork,residentBudget,type ResidentWork} from './resident.ts'
 import {piResidentProvider} from './resident-provider.ts'
 import {defaultModel,effectiveEnv,keyedProvider,listingEnv,modelGateway,modelRoute,nodeModels,providerModels,validKeyInput,validModelChoice,type ModelChoice,type ModelEnv,type StoredKey} from './models.ts'
+import {SERVICES,service,serviceStatus,storageName,validServiceKey,effectiveServiceKey,type ServiceKey} from './service-keys.ts'
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
   private handle!: (request: Request) => Promise<Response>
@@ -77,6 +78,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
     return update
   }
   /** The operator's model choice, read by the model gateway before each call. */
+  /** Binding-only: the key a service call uses. Never reachable over HTTP. */
+  async serviceKey(id:string):Promise<string|undefined>{const s=service(id);return s?effectiveServiceKey(s,await this.ctx.storage.get<ServiceKey>(storageName(s.id)),this.env as unknown as Record<string,unknown>):undefined}
   async modelChoice():Promise<ModelChoice|null>{return validModelChoice(await this.ctx.storage.get('model-choice'))}
   /** For the model gateway (a binding, never a public route): the Studio key and the model choice. */
   async modelSettings():Promise<{stored:StoredKey|null;choice:ModelChoice|null}>{return {stored:(await this.ctx.storage.get<StoredKey>('model-key'))??null,choice:await this.modelChoice()}}
@@ -124,6 +127,24 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
       if(!choice||!available.includes(choice.fast)){const first=defaultModel(available);choice=first?{fast:first}:null;if(choice)await this.ctx.storage.put('model-choice',choice);else await this.ctx.storage.delete('model-choice')}
       Object.assign(this.budget,residentBudget(this.env as {STRATA_RESIDENT_DAILY_CALLS?:string},true))
       return json(200,{last4:stored.key.slice(-4),choice,available:available.length})
+    }
+    // Keys for other outside services, same rules as the model key.
+    if(url.pathname==='/v1/ops/service-keys'){
+      if(!this.operatorOf(request))return json(404,{error:'Not found'})
+      const env=this.env as unknown as Record<string,unknown>
+      if(request.method==='GET'){
+        const rows=[];for(const s of SERVICES)rows.push(serviceStatus(s,await this.ctx.storage.get<ServiceKey>(storageName(s.id)),env))
+        return json(200,{services:rows})
+      }
+      if(request.method!=='POST')return json(405,{error:'Method not allowed'})
+      try{this.writeGuard(request)}catch(error){return json(error instanceof Fault?error.status:403,{error:error instanceof Fault?error.message:'Not allowed'})}
+      let body:{service?:unknown;key?:unknown;remove?:unknown};try{body=await request.json()}catch{return json(400,{error:'Invalid JSON'})}
+      const s=service(body?.service);if(!s)return json(400,{error:'Layanan tidak dikenal'})
+      if(body.remove===true){await this.ctx.storage.delete(storageName(s.id));return json(200,serviceStatus(s,null,env))}
+      const key=validServiceKey(body.key);if(!key)return json(400,{error:'Kunci tidak valid'})
+      if(!await s.check(key,fetch))return json(400,{error:s.label+' menolak kunci ini atau tidak dapat dihubungi. Periksa kuncinya dan coba lagi.'})
+      const stored:ServiceKey={key,added:Date.now()};await this.ctx.storage.put(storageName(s.id),stored)
+      return json(200,serviceStatus(s,stored,env))
     }
     const mark=this.meter.start()
     let status=500

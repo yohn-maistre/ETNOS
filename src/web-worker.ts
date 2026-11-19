@@ -74,7 +74,8 @@ export default {
       try{label=await boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+'/v1/contexts/'+literatureRoute[1]),env))}catch{return json(404,{error:'Not found'})}
       const query=literatureQuery(label,catalogue((env as {STRATA_CATALOGUE?:string}).STRATA_CATALOGUE).catalogue)
       if(!query)return json(404,{error:'Not found'})
-      const response=await publicLiterature(query,(env as {OPENALEX_API_KEY?:string}).OPENALEX_API_KEY)
+      const apiKey=await env.STRATA.getByName(env.STRATA_NODE).serviceKey('openalex').catch(()=>(env as {OPENALEX_API_KEY?:string}).OPENALEX_API_KEY)
+      const response=await publicLiterature(query,apiKey)
       if(response.ok)await edgeCache().put(key,response.clone())
       return response
     }

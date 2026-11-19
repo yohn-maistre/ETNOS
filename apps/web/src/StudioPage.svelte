@@ -11,6 +11,7 @@
  import ContentSkeleton from './ContentSkeleton.svelte'
  import ResidentParticipation from './ResidentParticipation.svelte'
  import AksaraSwitch from './AksaraSwitch.svelte'
+ import ServiceKeys from './ServiceKeys.svelte'
  type Room=Community&{sourceCount:number;knowledgeCount:number;pendingJobs:number}
  type Source={id:string;title:string;url:string;rights:string;state:string;revision:number;last_success:number|null;last_error:string|null;mode:string}
  type Item={id:string;title:string;url:string;summary:string;state:string;revision:number;evidence:{title:string}[]}
@@ -88,6 +89,7 @@
  {#if items.length}<div class="commons-section-heading"><h2>Temuan</h2><span class="cx-hint">{items.filter(i=>i.state==='candidate').length} menunggu tinjauan</span></div>{#each items as item}<article class="commons-source-row"><div><small>{item.evidence.map(e=>e.title).join(' · ')}</small><h3><a href={item.url} target="_blank" rel="noopener noreferrer">{item.title}<ArrowUpRight size={14}/></a></h3>{#if item.summary}<p>{item.summary}</p>{/if}<small>{item.state==='published'?'Ditampilkan':item.state==='candidate'?'Perlu tinjauan':'Ditarik'}</small></div><Button variant="outline" disabled={busy} onclick={()=>act(async()=>{await request('/v1/discovery/items/'+item.id+'/state',{state:item.state==='published'?'withdrawn':'published',revision:item.revision,requestKey:crypto.randomUUID()})})}>{item.state==='published'?'Tarik':'Tampilkan'}</Button>{#if item.state==='published'}<Button variant="ghost" disabled={busy} onclick={()=>act(async()=>{const note=await request<{id:string}>('/v1/knowledge',{communityId:scope,title:item.title,text:item.summary||'Apa yang dapat kita pelajari dari sumber ini?',kind:'source-comparison',citations:[item.url],evidenceIds:[item.id],language:'id',requestKey:crypto.randomUUID()});notify('Catatan dibuat. Buka Catatan bersama untuk meninjau.')})}><BookOpen size={14}/>Buat catatan</Button>{/if}</article>{/each}{/if}
  {:else if section==='resident'}
 <AksaraSwitch onChanged={()=>void loadScope(scope)}/>
+<ServiceKeys/>
  <div class="commons-section-heading"><h2>Aksara · penghuni komunitas</h2><span class="commons-status" class:ready={resident?.ready}>{resident?.ready?'Aktif':'Belum aktif'}</span></div>
  <details class="resident-runtime"><summary>Runtime terhubung</summary><p>{resident?.provider??provider}</p></details>{#if resident?.reason}<p class="commons-alert">{resident.reason}</p>{/if}
  {#if !resident?.config&&provider.startsWith('Pi Durable')}
