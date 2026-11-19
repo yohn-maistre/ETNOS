@@ -163,3 +163,32 @@ export async function providerModels(env:ModelEnv,fetcher:typeof fetch=fetch):Pr
  return [...new Set(names)].sort().slice(0,300)
 }
 
+/** A key the operator added in Studio. It takes precedence over STRATA_MODEL_KEY and is never sent to a browser. */
+export type StoredKey={key:string;baseUrl:string;added:number}
+export const GOOGLE_OPENAI_BASE='https://generativelanguage.googleapis.com/v1beta/openai'
+export function validKeyInput(raw:unknown):{key:string;baseUrl:string}|null{
+ if(!raw||typeof raw!=='object')return null
+ const {key,baseUrl}=raw as {key?:unknown;baseUrl?:unknown}
+ if(typeof key!=='string')return null
+ const k=key.trim()
+ if(k.length<10||k.length>300||/\s/.test(k))return null
+ let base=GOOGLE_OPENAI_BASE
+ if(typeof baseUrl==='string'&&baseUrl.trim()){try{const u=new URL(baseUrl.trim());if(u.protocol!=='https:'||u.username||u.password||u.search||u.hash)return null;base=u.href.replace(/\/+$/,'')}catch{return null}}
+ return {key:k,baseUrl:base}
+}
+/** The environment the node's models run with: the Studio key (if any), then the operator's model choice. */
+export function effectiveEnv<T extends ModelEnv>(env:T,stored:StoredKey|null|undefined,choice:ModelChoice|null|undefined):T{
+ let e:T=env
+ if(stored?.key)e={...e,STRATA_MODEL_KEY:stored.key,STRATA_MODEL_BASE_URL:stored.baseUrl||GOOGLE_OPENAI_BASE}
+ const c=validModelChoice(choice)
+ if(c&&e.STRATA_MODEL_KEY&&e.STRATA_MODEL_BASE_URL)e={...e,STRATA_MODEL_FAST:c.fast,STRATA_MODEL_SYNTHESIS:c.synthesis??c.fast}
+ return e
+}
+/** Lists models for a key before a model is chosen (keyedProvider needs a model name to count as configured). */
+export const listingEnv=(env:ModelEnv):ModelEnv=>({...env,STRATA_MODEL_FAST:env.STRATA_MODEL_FAST||'listing'})
+/** A sensible first model: a general "flash" text model if the provider has one. */
+export function defaultModel(names:string[]):string|null{
+ const text=names.filter(n=>!/(embed|image|imagen|tts|audio|live|vision|veo|aqa|learnlm|robotics|computer-use)/i.test(n))
+ return text.find(n=>/flash/i.test(n)&&!/lite|preview|exp/i.test(n))??text.find(n=>/flash/i.test(n))??text[0]??null
+}
+

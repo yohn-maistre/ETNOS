@@ -10,7 +10,7 @@ import {BrowserAuth} from './oauth.ts'
 import {Discovery,sourceFetcher} from './discovery.ts'
 import {Resident,parseResidentWork,residentBudget,type ResidentWork} from './resident.ts'
 import {piResidentProvider} from './resident-provider.ts'
-import {keyedProvider,modelGateway,modelRoute,nodeModels,providerModels,validModelChoice,withChoice,type ModelChoice,type ModelEnv} from './models.ts'
+import {defaultModel,effectiveEnv,keyedProvider,listingEnv,modelGateway,modelRoute,nodeModels,providerModels,validKeyInput,validModelChoice,type ModelChoice,type ModelEnv,type StoredKey} from './models.ts'
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
   private handle!: (request: Request) => Promise<Response>
@@ -19,6 +19,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private sourceOperatorAllowed:(id:string)=>boolean=()=>false
   private operatorOf:(request:Request)=>boolean=()=>false
   private writeGuard:(request:Request)=>void=()=>{throw new Fault(403,'Not allowed')}
+  /** Shared by both resident instances, so a key added in Studio raises the ceiling without a restart. */
+  private budget={modelCalls:10,toolCalls:60}
   private meter:Meter
   protected database:CloudflareDatabase
   constructor(ctx: DurableObjectState, env: Cloudflare.Env) {
@@ -31,7 +33,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
       const acquire=sourceOrigins.length?sourceFetcher(sourceOrigins):undefined
       const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI,env.STRATA_RESIDENT_RESEARCH==='on'):undefined
       // A node with its own model key may let Aksara do more each day; the keyless route keeps the small default.
-      const budget=residentBudget(env as {STRATA_RESIDENT_DAILY_CALLS?:string},!!keyedProvider(env as unknown as ModelEnv))
+      const stored=await ctx.storage.get<StoredKey>('model-key')
+      const budget=this.budget;Object.assign(budget,residentBudget(env as {STRATA_RESIDENT_DAILY_CALLS?:string},!!keyedProvider(effectiveEnv(listingEnv(env as unknown as ModelEnv),stored,null))))
       core.recoverInterrupted()
       if(env.STRATA_AUTH_MODE==='atproto'){
         if(!env.STRATA_OAUTH_JWK || !env.STRATA_AUTH_SEAL_KEY){
@@ -75,27 +78,52 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   }
   /** The operator's model choice, read by the model gateway before each call. */
   async modelChoice():Promise<ModelChoice|null>{return validModelChoice(await this.ctx.storage.get('model-choice'))}
+  /** For the model gateway (a binding, never a public route): the Studio key and the model choice. */
+  async modelSettings():Promise<{stored:StoredKey|null;choice:ModelChoice|null}>{return {stored:(await this.ctx.storage.get<StoredKey>('model-key'))??null,choice:await this.modelChoice()}}
+  private async modelState(){const {stored,choice}=await this.modelSettings();return {stored,choice,env:effectiveEnv(this.env as unknown as ModelEnv,stored,choice)}}
   async request(request: Request): Promise<Response> {
     const url=new URL(request.url)
-    if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,{...this.meter.report(),models:modelRoute(withChoice(this.env as unknown as ModelEnv,await this.modelChoice()))}):json(404,{error:'Not found'})
+    if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,{...this.meter.report(),models:modelRoute((await this.modelState()).env)}):json(404,{error:'Not found'})
     // The operator picks the keyed provider's model from its own list. Stored in this node's storage, not in a deploy.
     if(url.pathname==='/v1/ops/models'&&request.method==='GET'){
       if(!this.operatorOf(request))return json(404,{error:'Not found'})
-      const env=this.env as unknown as ModelEnv,choice=await this.modelChoice()
-      return json(200,{route:modelRoute(withChoice(env,choice)),choice,available:await providerModels(env)})
+      const {stored,choice,env}=await this.modelState()
+      const key=stored?{source:'studio',last4:stored.key.slice(-4),added:stored.added}:(this.env as unknown as ModelEnv).STRATA_MODEL_KEY?{source:'github',last4:null,added:null}:null
+      return json(200,{route:modelRoute(env),choice,key,available:key?await providerModels(listingEnv(env)):null})
     }
     if(url.pathname==='/v1/ops/model'&&request.method==='POST'){
       if(!this.operatorOf(request))return json(404,{error:'Not found'})
       try{this.writeGuard(request)}catch(error){return json(error instanceof Fault?error.status:403,{error:error instanceof Fault?error.message:'Not allowed'})}
-      const env=this.env as unknown as ModelEnv
-      if(!keyedProvider(env))return json(409,{error:'Belum ada kunci model. Tambahkan STRATA_MODEL_KEY lebih dulu.'})
+      const {env}=await this.modelState()
+      if(!env.STRATA_MODEL_KEY)return json(409,{error:'Belum ada kunci model. Tambahkan kunci lebih dulu.'})
       let body:unknown;try{body=await request.json()}catch{return json(400,{error:'Invalid JSON'})}
-      if((body as {reset?:unknown})?.reset===true){await this.ctx.storage.delete('model-choice');return json(200,{choice:null,route:modelRoute(env)})}
+      if((body as {reset?:unknown})?.reset===true){await this.ctx.storage.delete('model-choice');return json(200,{choice:null})}
       const choice=validModelChoice(body);if(!choice)return json(400,{error:'Nama model tidak valid'})
-      const available=await providerModels(env)
+      const available=await providerModels(listingEnv(env))
       if(available&&(!available.includes(choice.fast)||(choice.synthesis&&!available.includes(choice.synthesis))))return json(400,{error:'Model ini tidak ada di daftar penyedia'})
       await this.ctx.storage.put('model-choice',choice)
-      return json(200,{choice,route:modelRoute(withChoice(env,choice))})
+      return json(200,{choice})
+    }
+    // The operator adds the provider key here instead of in a deploy. It is checked against the provider first,
+    // kept in this node's storage, and never returned; the browser sees only its last four characters.
+    if(url.pathname==='/v1/ops/model-key'&&request.method==='POST'){
+      if(!this.operatorOf(request))return json(404,{error:'Not found'})
+      try{this.writeGuard(request)}catch(error){return json(error instanceof Fault?error.status:403,{error:error instanceof Fault?error.message:'Not allowed'})}
+      let body:unknown;try{body=await request.json()}catch{return json(400,{error:'Invalid JSON'})}
+      if((body as {remove?:unknown})?.remove===true){
+        await this.ctx.storage.delete('model-key')
+        Object.assign(this.budget,residentBudget(this.env as {STRATA_RESIDENT_DAILY_CALLS?:string},!!(this.env as unknown as ModelEnv).STRATA_MODEL_KEY))
+        return json(200,{removed:true})
+      }
+      const input=validKeyInput(body);if(!input)return json(400,{error:'Kunci atau alamat penyedia tidak valid'})
+      const stored:StoredKey={...input,added:Date.now()}
+      const available=await providerModels(listingEnv(effectiveEnv(this.env as unknown as ModelEnv,stored,null)))
+      if(!available)return json(400,{error:'Penyedia menolak kunci ini atau tidak dapat dihubungi. Periksa kuncinya dan coba lagi.'})
+      await this.ctx.storage.put('model-key',stored)
+      let choice=await this.modelChoice()
+      if(!choice||!available.includes(choice.fast)){const first=defaultModel(available);choice=first?{fast:first}:null;if(choice)await this.ctx.storage.put('model-choice',choice);else await this.ctx.storage.delete('model-choice')}
+      Object.assign(this.budget,residentBudget(this.env as {STRATA_RESIDENT_DAILY_CALLS?:string},true))
+      return json(200,{last4:stored.key.slice(-4),choice,available:available.length})
     }
     const mark=this.meter.start()
     let status=500
@@ -133,10 +161,9 @@ export class ResidentAuthority extends WorkerEntrypoint<Cloudflare.Env>{
  * the operator's keyed provider (see models.ts). No public route. */
 export class ModelGateway extends WorkerEntrypoint<Cloudflare.Env>{
  async fetch(request:Request){
-  const env=this.env as unknown as ModelEnv
-  // The operator's choice applies only when a keyed provider is set; reading it costs one call to the node.
-  const choice=keyedProvider(env)?await this.env.STRATA.getByName(this.env.STRATA_NODE).modelChoice().catch(()=>null):null
-  return modelGateway(request,nodeModels(withChoice(env,choice)))
+  // The Studio key and model choice live in the node; reading them costs one call to it.
+  const settings=await this.env.STRATA.getByName(this.env.STRATA_NODE).modelSettings().catch(()=>null)
+  return modelGateway(request,nodeModels(effectiveEnv(this.env as unknown as ModelEnv,settings?.stored,settings?.choice)))
  }
 }
 

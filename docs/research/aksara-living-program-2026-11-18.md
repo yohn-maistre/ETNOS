@@ -409,6 +409,15 @@ The owner asked that an operator can turn Aksara on or off, with sensible defaul
 
   The next deploy passes them to the Worker. The base URL defaults to Google's OpenAI-compatible endpoint. If Google rate-limits or is down, a call falls back once to Gemma 4 on Workers AI. A refused key does not fall back, so a wrong key shows up in Studio.
 - **Choosing the model in Studio.** With a key set, the Aksara panel lists the models the provider offers (OpenAI-compatible `GET /models`, read with the node's key) and lets the operator pick one for ordinary tasks and one for longer pieces. The choice is kept in the node's storage and the model gateway reads it before each call, so changing it needs no deploy. It must be a name from the provider's list. Without a key the panel says Aksara runs on Workers AI and how to add a key. Endpoints, operator only: `GET /v1/ops/models` and `POST /v1/ops/model` (`{fast, synthesis?}` or `{reset:true}`). Tests: `test/model-choice.test.ts`.
+- **Adding the key in Studio.** The operator can paste the provider key into the Aksara panel instead of using GitHub. It is checked against the provider's model list before it is kept, stored in the node's Durable Object storage (encrypted at rest by Cloudflare), and never returned. The page shows only its last four characters and the date. A Studio key takes precedence over `STRATA_MODEL_KEY`. Saving it picks a first model (a general flash text model) when none is chosen, and raises the daily ceiling at once. Removing it falls back to the GitHub key or to keyless Workers AI. The field:
+  - is hidden by default, with a show/hide toggle;
+  - has a paste button and trims pasted text;
+  - is never autofilled or spellchecked, and password managers are told to ignore it;
+  - warns when a Google key does not look like one (it should start with `AIza`);
+  - links to Google AI Studio's key page;
+  - has an optional address for another OpenAI-compatible provider.
+
+  Endpoint, operator only and CSRF-guarded: `POST /v1/ops/model-key` (`{key, baseUrl?}` or `{remove:true}`).
 - **What stays the same:** posts are labelled AI and carry sources; Wiki proposals still need human review; private communities are never touched; the feed shows at most one Aksara item in five.
 
 Tests: `test/resident-autonomy.test.ts` covers the budgets, setup durations, renewal and its idempotency, operator-only renewal, the switch (on, off, back on, the private room left alone, the room skipped without owner consent), automatic renewal while on, no renewal while paused, and no renewal of a revoked mandate.

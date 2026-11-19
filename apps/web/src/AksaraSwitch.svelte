@@ -4,6 +4,7 @@
   // a paused one; off pauses it everywhere. Each community shows what Aksara did today and anything that stopped it.
   import { onMount } from 'svelte'
   import { Switch } from '$lib/components/ui/switch/index.js'
+  import { Eye, EyeOff, ClipboardPaste, ArrowUpRight } from '@lucide/svelte'
   import { request } from './api'
 
   type Room = { id: string; title: string; configured: boolean; enabled: boolean; ready: boolean; reason: string | null; expires: number | null; mine: boolean; jobsToday: number; dailyLimit: number | null }
@@ -17,11 +18,41 @@
   const date = (t: number) => new Date(t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
 
   // The model list comes from the provider itself; only the node operator can read or change it.
-  type Models = { route: { keyless: string | null; keyed: { host: string; fast: string; synthesis: string } | null }; choice: { fast: string; synthesis?: string } | null; available: string[] | null }
+  type Models = { route: { keyless: string | null; keyed: { host: string; fast: string; synthesis: string } | null }; choice: { fast: string; synthesis?: string } | null; key: { source: 'studio' | 'github'; last4: string | null; added: number | null } | null; available: string[] | null }
   let models = $state<Models | null>(null),
     fast = $state(''),
     synthesis = $state(''),
     savedNote = $state('')
+  // The key field: hidden by default, never autofilled or spellchecked, trimmed on paste, checked with the
+  // provider before it is kept. The browser never receives the saved key back; only its last four characters.
+  let keyInput = $state(''),
+    showKey = $state(false),
+    baseUrl = $state(''),
+    editingKey = $state(false),
+    keyNote = $state('')
+  const keyShape = $derived(keyInput.trim() && !baseUrl && !/^AIza[\w-]{30,}$/.test(keyInput.trim()) ? 'Kunci Google AI Studio biasanya diawali “AIza” dan sekitar 39 karakter.' : '')
+  async function pasteKey() {
+    try { keyInput = (await navigator.clipboard.readText()).trim() } catch { keyNote = 'Peramban tidak mengizinkan menempel otomatis. Tempel manual dengan Ctrl+V.' }
+  }
+  async function saveKey() {
+    if (busy || !keyInput.trim()) return
+    busy = true
+    error = ''
+    keyNote = ''
+    try {
+      const r = await request<{ last4: string; choice: { fast: string } | null; available: number }>('/v1/ops/model-key', { key: keyInput.trim(), ...(baseUrl.trim() ? { baseUrl: baseUrl.trim() } : {}) })
+      keyInput = ''
+      showKey = false
+      editingKey = false
+      await load()
+      keyNote = 'Kunci diterima. ' + r.available + ' model tersedia' + (r.choice ? ', model awal ' + r.choice.fast + '.' : '.')
+    } catch (e) { error = e instanceof Error ? e.message : 'Kunci belum tersimpan.' } finally { busy = false }
+  }
+  async function removeKey() {
+    if (busy || !confirm('Hapus kunci model dari Studio? Aksara kembali ke kunci GitHub atau ke Workers AI tanpa kunci.')) return
+    busy = true
+    try { await request('/v1/ops/model-key', { remove: true }); await load(); keyNote = 'Kunci dihapus.' } catch (e) { error = e instanceof Error ? e.message : 'Kunci belum terhapus.' } finally { busy = false }
+  }
   async function load() {
     try { view = await request<Overview>('/v1/resident/overview') } catch (e) { error = e instanceof Error ? e.message : 'Status Aksara belum dapat dimuat.' }
     try {
@@ -77,7 +108,25 @@
         </label>
         <button type="submit" class="as-save" disabled={busy || !fast}>Simpan model</button>
         <small>{models.available.length} model dari {models.route.keyed.host}.{savedNote ? ' ' + savedNote : ''}</small>
-      </form>{:else if models && !models.route.keyed}<p class="as-note">Tanpa kunci, Aksara memakai {models.route.keyless ?? 'Workers AI'}. Untuk memilih model lain, tambahkan secret STRATA_MODEL_KEY di GitHub, lalu deploy ulang.</p>{:else if models?.route.keyed && !models.available}<p class="as-note">Daftar model dari penyedia belum dapat dimuat. Periksa kuncinya.</p>{/if}
+      </form>{:else if models?.route.keyed && !models.available}<p class="as-note">Daftar model dari penyedia belum dapat dimuat. Periksa kuncinya.</p>{/if}
+    {#if models}<div class="as-key">
+        {#if models.key && !editingKey}<div class="as-key-row">
+            <div><span class="as-key-label">Kunci model</span><span class="as-key-value">{models.key.source === 'studio' ? '••••' + models.key.last4 + (models.key.added ? ' · ditambahkan ' + date(models.key.added) : '') : 'Dari GitHub (STRATA_MODEL_KEY)'}</span></div>
+            <div class="as-key-actions"><button type="button" onclick={() => (editingKey = true)}>Ganti</button>{#if models.key.source === 'studio'}<button type="button" onclick={removeKey} disabled={busy}>Hapus</button>{/if}</div>
+          </div>{:else}<form class="as-key-form" autocomplete="off" onsubmit={(e) => { e.preventDefault(); void saveKey() }}>
+            <label for="aksara-key">Kunci model</label>
+            <p class="as-note">{models.key ? 'Kunci baru menggantikan yang lama setelah diperiksa.' : 'Tanpa kunci, Aksara memakai ' + (models.route.keyless ?? 'Workers AI') + ' dengan batas kecil.'} <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Buat kunci di Google AI Studio<ArrowUpRight size={12} /></a></p>
+            <div class="as-key-field">
+              <input id="aksara-key" type={showKey ? 'text' : 'password'} bind:value={keyInput} placeholder="AIza…" autocomplete="off" autocapitalize="off" spellcheck="false" data-1p-ignore data-lpignore="true" onpaste={(e) => { e.preventDefault(); keyInput = (e.clipboardData?.getData('text') ?? '').trim() }} aria-describedby="aksara-key-hint" />
+              <button type="button" onclick={() => (showKey = !showKey)} aria-label={showKey ? 'Sembunyikan kunci' : 'Tampilkan kunci'} aria-pressed={showKey}>{#if showKey}<EyeOff size={16} />{:else}<Eye size={16} />{/if}</button>
+              <button type="button" onclick={pasteKey} aria-label="Tempel dari papan klip"><ClipboardPaste size={16} /></button>
+            </div>
+            <small id="aksara-key-hint">{keyShape || 'Kunci diperiksa ke penyedia sebelum disimpan, disimpan di node, dan tidak pernah ditampilkan lagi.'}</small>
+            <details class="as-provider"><summary>Penyedia lain</summary><label>Alamat API yang kompatibel dengan OpenAI<input type="url" bind:value={baseUrl} placeholder="https://generativelanguage.googleapis.com/v1beta/openai" autocomplete="off" spellcheck="false" /></label></details>
+            <div class="as-key-actions"><button type="submit" class="as-save" disabled={busy || keyInput.trim().length < 10}>{busy ? 'Memeriksa…' : 'Periksa & simpan'}</button>{#if editingKey}<button type="button" onclick={() => { editingKey = false; keyInput = '' }}>Batal</button>{/if}</div>
+          </form>{/if}
+        {#if keyNote}<p class="as-note" role="status">{keyNote}</p>{/if}
+      </div>{/if}
     {#if view.communities.length}<ul class="as-rooms">
         {#each view.communities as c (c.id)}<li>
             <span class="as-dot" class:live={c.enabled && c.ready} aria-hidden="true"></span>
@@ -114,5 +163,19 @@
   .as-model select { min-height: 40px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--foreground); font: inherit; font-size: 14px; }
   .as-save { justify-self: start; min-height: 40px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--brand); color: var(--brand-foreground, #fff); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
   .as-save:disabled { opacity: 0.55; cursor: default; }
+  .as-key { display: grid; gap: 8px; }
+  .as-key-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; }
+  .as-key-row > div:first-child { display: grid; gap: 2px; min-width: 0; }
+  .as-key-label, .as-key-form > label { font-size: 13px; color: var(--muted-foreground); }
+  .as-key-value { font-size: 14px; font-weight: 550; font-variant-numeric: tabular-nums; }
+  .as-key-form { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; }
+  .as-key-field { display: flex; gap: 6px; }
+  .as-key-field input, .as-provider input { flex: 1; min-width: 0; min-height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--foreground); font: inherit; font-size: 14px; font-family: var(--font-mono, ui-monospace, monospace); }
+  .as-key-field button, .as-key-actions button:not(.as-save) { display: inline-grid; place-items: center; min-width: 40px; min-height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--foreground); font: inherit; font-size: 14px; cursor: pointer; }
+  .as-key-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .as-key-form small { font-size: 12.5px; color: var(--muted-foreground); line-height: 1.45; }
+  .as-key-form a { display: inline-flex; align-items: center; gap: 2px; color: var(--foreground); text-underline-offset: 3px; }
+  .as-provider summary { font-size: 13px; color: var(--muted-foreground); cursor: pointer; min-height: 28px; }
+  .as-provider label { display: grid; gap: 4px; margin-top: 6px; font-size: 13px; color: var(--muted-foreground); }
   .as-note { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
 </style>

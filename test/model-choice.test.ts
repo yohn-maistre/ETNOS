@@ -31,3 +31,27 @@ test('the provider list is read from GET /models with the key, names only, dedup
  assert.equal(await providerModels(keyed,broken),null)
  assert.equal(await providerModels({},fetcher),null,'no key, no list')
 })
+
+import {validKeyInput,effectiveEnv,defaultModel,listingEnv,GOOGLE_OPENAI_BASE} from '../src/models.ts'
+
+test('a Studio key is trimmed, must look like a key, and defaults to Google AI Studio',()=>{
+ assert.deepEqual(validKeyInput({key:'  AIzaSyExampleExample12345  '}),{key:'AIzaSyExampleExample12345',baseUrl:GOOGLE_OPENAI_BASE})
+ assert.deepEqual(validKeyInput({key:'sk-example-1234567890',baseUrl:'https://api.example.org/v1/'}),{key:'sk-example-1234567890',baseUrl:'https://api.example.org/v1'})
+ for(const bad of [null,{},{key:'short'},{key:'has space inside key'},{key:'x'.repeat(301)},{key:'validkey12345',baseUrl:'http://plain.example.org'},{key:'validkey12345',baseUrl:'https://u:p@example.org'}])assert.equal(validKeyInput(bad),null,JSON.stringify(bad))
+})
+
+test('the Studio key takes precedence over the deploy key, and the choice applies on top',()=>{
+ const deployed={STRATA_MODEL_KEY:'from-github',STRATA_MODEL_BASE_URL:'https://deployed.example.org/v1',STRATA_MODEL_FAST:'deployed-model'}
+ const e=effectiveEnv(deployed,{key:'from-studio',baseUrl:GOOGLE_OPENAI_BASE,added:1},{fast:'picked'})
+ assert.equal(e.STRATA_MODEL_KEY,'from-studio');assert.equal(e.STRATA_MODEL_BASE_URL,GOOGLE_OPENAI_BASE);assert.equal(e.STRATA_MODEL_FAST,'picked')
+ assert.equal(effectiveEnv(deployed,null,null),deployed)
+ assert.equal((effectiveEnv({},null,{fast:'picked'}) as {STRATA_MODEL_FAST?:string}).STRATA_MODEL_FAST,undefined,'a choice without any key does nothing')
+ assert.equal((listingEnv({}) as {STRATA_MODEL_FAST?:string}).STRATA_MODEL_FAST,'listing')
+})
+
+test('the first model is a general flash text model when the provider has one',()=>{
+ assert.equal(defaultModel(['text-embedding-x','gemini-x-flash-lite','gemini-x-flash','gemini-x-pro']),'gemini-x-flash')
+ assert.equal(defaultModel(['gemini-x-flash-image','gemini-x-flash-preview']),'gemini-x-flash-preview')
+ assert.equal(defaultModel(['model-a','model-b']),'model-a')
+ assert.equal(defaultModel(['text-embedding-x']),null)
+})
