@@ -1274,6 +1274,7 @@
             </Button>{/if}
         </div>
       </div>
+      {#if auth.actor && isMember(community.id)}{#await import('./PeriksaDeck.svelte') then module}<module.default communityId={community.id}/>{/await}{/if}
       <Tabs.Root bind:value={tab}>
         <div class="section-tab-scroll" use:tabScroll>
           <Tabs.List

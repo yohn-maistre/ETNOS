@@ -104,7 +104,9 @@ A lembaga adat runs a private language community. People talk as usual. Two page
 
 Data model: the knowledge model's Entity (the word), Assertions (a sense, a gloss, a part of speech), and Witnesses (the sentences, the seed sources). Nothing new beyond a `context` field on senses.
 
-## 6. Periksa: one checking primitive for every kind of knowledge *(proposal)*
+## 6. Periksa: one checking primitive for every kind of knowledge *(built 19 November: `src/periksa.ts`, `apps/web/src/PeriksaDeck.svelte`, tests in `test/periksa.test.ts`)*
+
+What is built: members propose claims (`POST /v1/communities/{id}/claims`), the deck reads the next ten cards for a member (`GET /v1/communities/{id}/periksa`), answers go to `POST /v1/claims/{id}/answer` (`yes`, `no`, `other` with text, or `null` to take an answer back), and the proposer or a steward withdraws a claim with `POST /v1/claims/{id}/withdraw`. Stewards set the number of agreeing members with `POST /v1/communities/{id}/periksa` (1 to 9, default 2), and existing claims follow the new number at once. Aksara cannot propose claims through this route yet; that will go through its mandate, like its posts.
 
 One reusable component that asks members whether a claim is right. Used for dictionary senses, grammar notes, wiki statements, place names, dates, plant uses: anything shaped as an Assertion.
 
