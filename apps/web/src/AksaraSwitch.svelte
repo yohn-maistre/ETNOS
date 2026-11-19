@@ -16,8 +16,30 @@
   const on = $derived(!!view?.communities.some((c) => c.enabled && c.mine))
   const date = (t: number) => new Date(t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
 
+  // The model list comes from the provider itself; only the node operator can read or change it.
+  type Models = { route: { keyless: string | null; keyed: { host: string; fast: string; synthesis: string } | null }; choice: { fast: string; synthesis?: string } | null; available: string[] | null }
+  let models = $state<Models | null>(null),
+    fast = $state(''),
+    synthesis = $state(''),
+    savedNote = $state('')
   async function load() {
     try { view = await request<Overview>('/v1/resident/overview') } catch (e) { error = e instanceof Error ? e.message : 'Status Aksara belum dapat dimuat.' }
+    try {
+      models = await request<Models>('/v1/ops/models', undefined, undefined, true)
+      fast = models.route.keyed?.fast ?? ''
+      synthesis = models.route.keyed && models.route.keyed.synthesis !== models.route.keyed.fast ? models.route.keyed.synthesis : ''
+    } catch { models = null }
+  }
+  async function saveModel() {
+    if (busy || !fast) return
+    busy = true
+    error = ''
+    savedNote = ''
+    try {
+      await request('/v1/ops/model', { fast, synthesis: synthesis || undefined })
+      await load()
+      savedNote = 'Model disimpan. Tugas berikutnya memakai model ini.'
+    } catch (e) { error = e instanceof Error ? e.message : 'Model belum tersimpan.' } finally { busy = false }
   }
   onMount(load)
   async function toggle(next: boolean) {
@@ -43,9 +65,19 @@
       <Switch checked={on} disabled={busy || !view.communities.length} onCheckedChange={(v) => toggle(v)} aria-label={on ? 'Jeda Aksara' : 'Aktifkan Aksara'} />
     </div>
     <dl class="as-facts">
-      <div><dt>Model</dt><dd>{view.model?.keyed ? view.model.keyed.fast + ' · ' + view.model.keyed.host : (view.model?.keyless ?? 'Belum ada model') + ' · tanpa kunci'}</dd></div>
+      <div><dt>Model</dt><dd>{models?.route.keyed ? models.route.keyed.fast + ' · ' + models.route.keyed.host : view.model?.keyed ? view.model.keyed.fast + ' · ' + view.model.keyed.host : (view.model?.keyless ?? 'Belum ada model') + ' · tanpa kunci'}</dd></div>
       <div><dt>Batas harian</dt><dd>{view.budget.modelCalls} panggilan model untuk seluruh situs</dd></div>
     </dl>
+    {#if models?.route.keyed && models.available?.length}<form class="as-model" onsubmit={(e) => { e.preventDefault(); void saveModel() }}>
+        <label>Model untuk tugas biasa
+          <select bind:value={fast}>{#each models.available as m (m)}<option value={m}>{m}</option>{/each}</select>
+        </label>
+        <label>Model untuk tulisan panjang
+          <select bind:value={synthesis}><option value="">Sama dengan di atas</option>{#each models.available as m (m)}<option value={m}>{m}</option>{/each}</select>
+        </label>
+        <button type="submit" class="as-save" disabled={busy || !fast}>Simpan model</button>
+        <small>{models.available.length} model dari {models.route.keyed.host}.{savedNote ? ' ' + savedNote : ''}</small>
+      </form>{:else if models && !models.route.keyed}<p class="as-note">Tanpa kunci, Aksara memakai {models.route.keyless ?? 'Workers AI'}. Untuk memilih model lain, tambahkan secret STRATA_MODEL_KEY di GitHub, lalu deploy ulang.</p>{:else if models?.route.keyed && !models.available}<p class="as-note">Daftar model dari penyedia belum dapat dimuat. Periksa kuncinya.</p>{/if}
     {#if view.communities.length}<ul class="as-rooms">
         {#each view.communities as c (c.id)}<li>
             <span class="as-dot" class:live={c.enabled && c.ready} aria-hidden="true"></span>
@@ -77,5 +109,10 @@
   small { font-size: 13px; color: var(--muted-foreground); }
   .as-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
   .as-dot.live { background: var(--brand); }
+  .as-model { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; }
+  .as-model label { display: grid; gap: 4px; font-size: 13px; color: var(--muted-foreground); }
+  .as-model select { min-height: 40px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--foreground); font: inherit; font-size: 14px; }
+  .as-save { justify-self: start; min-height: 40px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--brand); color: var(--brand-foreground, #fff); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .as-save:disabled { opacity: 0.55; cursor: default; }
   .as-note { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
 </style>

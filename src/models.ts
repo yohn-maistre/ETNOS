@@ -133,3 +133,33 @@ export async function modelGateway(request:Request,models:Models|undefined):Prom
   return reply(code==='model-output'?502:503,{error:code})
  }
 }
+
+/** A model the operator chose in Studio. It replaces STRATA_MODEL_FAST (and SYNTHESIS) for the keyed provider only. */
+export type ModelChoice={fast:string;synthesis?:string}
+const MODEL_NAME=/^[A-Za-z0-9][A-Za-z0-9._:/-]{0,99}$/
+export function validModelChoice(raw:unknown):ModelChoice|null{
+ if(!raw||typeof raw!=='object')return null
+ const {fast,synthesis}=raw as {fast?:unknown;synthesis?:unknown}
+ if(typeof fast!=='string'||!MODEL_NAME.test(fast))return null
+ if(synthesis!==undefined&&synthesis!==null&&synthesis!==''&&(typeof synthesis!=='string'||!MODEL_NAME.test(synthesis)))return null
+ return {fast,...(typeof synthesis==='string'&&synthesis?{synthesis}:{})}
+}
+/** The environment with the operator's choice applied. Without a keyed provider the choice has no effect. */
+export function withChoice<T extends ModelEnv>(env:T,choice:ModelChoice|null|undefined):T{
+ const c=validModelChoice(choice)
+ if(!c||!keyedProvider(env))return env
+ return {...env,STRATA_MODEL_FAST:c.fast,STRATA_MODEL_SYNTHESIS:c.synthesis??c.fast}
+}
+/** The keyed provider's model list (OpenAI-compatible GET /models), names only. Google's ids come as "models/…". */
+export async function providerModels(env:ModelEnv,fetcher:typeof fetch=fetch):Promise<string[]|null>{
+ const p=keyedProvider(env);if(!p)return null
+ let response:Response
+ try{response=await fetcher(p.baseUrl+'/models',{method:'GET',redirect:'error',headers:{authorization:'Bearer '+p.key},signal:AbortSignal.timeout(10000)})}catch{return null}
+ if(!response.ok){await response.body?.cancel().catch(()=>{});return null}
+ let body:unknown;try{body=JSON.parse(new TextDecoder().decode(await new Response(response.body).arrayBuffer()).slice(0,262144))}catch{return null}
+ const data=(body as {data?:unknown})?.data
+ if(!Array.isArray(data))return null
+ const names=data.map(m=>typeof (m as {id?:unknown})?.id==='string'?((m as {id:string}).id).replace(/^models\//,''):'').filter(n=>MODEL_NAME.test(n))
+ return [...new Set(names)].sort().slice(0,300)
+}
+

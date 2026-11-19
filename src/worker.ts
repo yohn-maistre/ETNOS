@@ -10,7 +10,7 @@ import {BrowserAuth} from './oauth.ts'
 import {Discovery,sourceFetcher} from './discovery.ts'
 import {Resident,parseResidentWork,residentBudget,type ResidentWork} from './resident.ts'
 import {piResidentProvider} from './resident-provider.ts'
-import {keyedProvider,modelGateway,modelRoute,nodeModels,type ModelEnv} from './models.ts'
+import {keyedProvider,modelGateway,modelRoute,nodeModels,providerModels,validModelChoice,withChoice,type ModelChoice,type ModelEnv} from './models.ts'
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
   private handle!: (request: Request) => Promise<Response>
@@ -18,6 +18,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private discovery?:Discovery
   private sourceOperatorAllowed:(id:string)=>boolean=()=>false
   private operatorOf:(request:Request)=>boolean=()=>false
+  private writeGuard:(request:Request)=>void=()=>{throw new Fault(403,'Not allowed')}
   private meter:Meter
   protected database:CloudflareDatabase
   constructor(ctx: DurableObjectState, env: Cloudflare.Env) {
@@ -48,10 +49,11 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           this.discovery=acquire?new Discovery(core,acquire):undefined
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
           this.operatorOf=r=>{const p=auth.principal(r);return !!p&&auth.operatorAllowed(p.id)}
+          this.writeGuard=r=>auth.writeGuard(r)
           const handler=api(core,{sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.STRATA_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
-      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.resident.budget=budget;this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.handle=async r=>(await routes(r))??handler(r)}
+      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.STRATA_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.resident.budget=budget;this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.writeGuard=()=>{};this.handle=async r=>(await routes(r))??handler(r)}
     })
   }
   private alarmUpdates:Promise<void>=Promise.resolve()
@@ -71,9 +73,30 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
     this.alarmUpdates=update.catch(()=>{})
     return update
   }
+  /** The operator's model choice, read by the model gateway before each call. */
+  async modelChoice():Promise<ModelChoice|null>{return validModelChoice(await this.ctx.storage.get('model-choice'))}
   async request(request: Request): Promise<Response> {
     const url=new URL(request.url)
-    if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,{...this.meter.report(),models:modelRoute(this.env as unknown as ModelEnv)}):json(404,{error:'Not found'})
+    if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,{...this.meter.report(),models:modelRoute(withChoice(this.env as unknown as ModelEnv,await this.modelChoice()))}):json(404,{error:'Not found'})
+    // The operator picks the keyed provider's model from its own list. Stored in this node's storage, not in a deploy.
+    if(url.pathname==='/v1/ops/models'&&request.method==='GET'){
+      if(!this.operatorOf(request))return json(404,{error:'Not found'})
+      const env=this.env as unknown as ModelEnv,choice=await this.modelChoice()
+      return json(200,{route:modelRoute(withChoice(env,choice)),choice,available:await providerModels(env)})
+    }
+    if(url.pathname==='/v1/ops/model'&&request.method==='POST'){
+      if(!this.operatorOf(request))return json(404,{error:'Not found'})
+      try{this.writeGuard(request)}catch(error){return json(error instanceof Fault?error.status:403,{error:error instanceof Fault?error.message:'Not allowed'})}
+      const env=this.env as unknown as ModelEnv
+      if(!keyedProvider(env))return json(409,{error:'Belum ada kunci model. Tambahkan STRATA_MODEL_KEY lebih dulu.'})
+      let body:unknown;try{body=await request.json()}catch{return json(400,{error:'Invalid JSON'})}
+      if((body as {reset?:unknown})?.reset===true){await this.ctx.storage.delete('model-choice');return json(200,{choice:null,route:modelRoute(env)})}
+      const choice=validModelChoice(body);if(!choice)return json(400,{error:'Nama model tidak valid'})
+      const available=await providerModels(env)
+      if(available&&(!available.includes(choice.fast)||(choice.synthesis&&!available.includes(choice.synthesis))))return json(400,{error:'Model ini tidak ada di daftar penyedia'})
+      await this.ctx.storage.put('model-choice',choice)
+      return json(200,{choice,route:modelRoute(withChoice(env,choice))})
+    }
     const mark=this.meter.start()
     let status=500
     try{const response=await this.handle(request);status=response.status;await this.arm();return response}
@@ -109,7 +132,12 @@ export class ResidentAuthority extends WorkerEntrypoint<Cloudflare.Env>{
 /** Binding-only model endpoint for the resident runtime: Workers AI Gemma 4, or
  * the operator's keyed provider (see models.ts). No public route. */
 export class ModelGateway extends WorkerEntrypoint<Cloudflare.Env>{
- async fetch(request:Request){return modelGateway(request,nodeModels(this.env as unknown as ModelEnv))}
+ async fetch(request:Request){
+  const env=this.env as unknown as ModelEnv
+  // The operator's choice applies only when a keyed provider is set; reading it costs one call to the node.
+  const choice=keyedProvider(env)?await this.env.STRATA.getByName(this.env.STRATA_NODE).modelChoice().catch(()=>null):null
+  return modelGateway(request,nodeModels(withChoice(env,choice)))
+ }
 }
 
 export default {
