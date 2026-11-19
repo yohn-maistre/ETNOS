@@ -12,6 +12,7 @@
  import ResidentParticipation from './ResidentParticipation.svelte'
  import AksaraSwitch from './AksaraSwitch.svelte'
  import ServiceKeys from './ServiceKeys.svelte'
+ import KnowledgeSeed from './KnowledgeSeed.svelte'
  type Room=Community&{sourceCount:number;knowledgeCount:number;pendingJobs:number}
  type Source={id:string;title:string;url:string;rights:string;state:string;revision:number;last_success:number|null;last_error:string|null;mode:string}
  type Item={id:string;title:string;url:string;summary:string;state:string;revision:number;evidence:{title:string}[]}
@@ -90,6 +91,7 @@
  {:else if section==='resident'}
 <AksaraSwitch onChanged={()=>void loadScope(scope)}/>
 <ServiceKeys/>
+<KnowledgeSeed/>
  <div class="commons-section-heading"><h2>Aksara · penghuni komunitas</h2><span class="commons-status" class:ready={resident?.ready}>{resident?.ready?'Aktif':'Belum aktif'}</span></div>
  <details class="resident-runtime"><summary>Runtime terhubung</summary><p>{resident?.provider??provider}</p></details>{#if resident?.reason}<p class="commons-alert">{resident.reason}</p>{/if}
  {#if !resident?.config&&provider.startsWith('Pi Durable')}
