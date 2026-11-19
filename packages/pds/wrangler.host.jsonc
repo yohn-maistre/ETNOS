@@ -1,0 +1,38 @@
+// The ETNOS identity host as deployed for testing, by .github/workflows/deploy-etnos.yml.
+// No DNS and no PLC writes: it runs on workers.dev with sign-up closed (PLC_WRITES "off").
+// PDS_HOSTNAME is passed at deploy time (the workers.dev host). The directory lives in a
+// Durable Object, so the deploy needs no D1 database and no R2 bucket.
+//
+// To open sign-up, the owner approves, in order (docs/research/pds-multi-identity-build-2026-11-19.md §6):
+//   1. the custom domain pds.etnos.space and the route *.etnos.space/.well-known/atproto-did (DNS),
+//   2. the escrow key (ESCROW_ROTATION_KEY, the public did:key from scripts/host-escrow-key.mjs),
+//   3. PLC_WRITES "public-directory-approved" (real did:plc registrations).
+{
+  "name": "etnos-identity-host",
+  "main": "src/host/worker.ts",
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "HANDLE_DOMAIN": "etnos.space",
+    "HOST_DISPLAY_NAME": "ETNOS",
+    "SIGNIN_URL": "https://etnos.space/login",
+    "PLC_URL": "https://plc.directory",
+    "PLC_WRITES": "off",
+    "ACCOUNT_KEK_CURRENT": "1"
+  },
+  // Secrets: ACCOUNT_KEK_V1, OPERATOR_TOKEN (set by the workflow; never in the repository).
+  "durable_objects": {
+    "bindings": [
+      { "name": "ACCOUNT", "class_name": "HostedAccountDurableObject" },
+      { "name": "AUTH_HUB", "class_name": "AuthHubDurableObject" },
+      { "name": "DIRECTORY_DO", "class_name": "DirectoryDurableObject" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["HostedAccountDurableObject", "AuthHubDurableObject", "DirectoryDurableObject"] }
+  ],
+  // Invocation logs stay off: they would record full URLs.
+  "observability": { "enabled": true, "head_sampling_rate": 1, "logs": { "enabled": true, "invocation_logs": false } }
+}

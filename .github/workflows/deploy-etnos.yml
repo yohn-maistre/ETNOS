@@ -36,6 +36,12 @@ jobs:
             if [ -n "$STRATA_MODEL_SYNTHESIS" ]; then set -- "$@" --var "STRATA_MODEL_SYNTHESIS:$STRATA_MODEL_SYNTHESIS"; fi
             if [ -n "$STRATA_RESIDENT_DAILY_CALLS" ]; then set -- "$@" --var "STRATA_RESIDENT_DAILY_CALLS:$STRATA_RESIDENT_DAILY_CALLS"; fi
           fi
+          # Sign-up through the ETNOS identity host appears only when the owner sets STRATA_ACCOUNT_HOST
+          # (an https origin). Its host name is added to the OAuth allowlist with it.
+          if [ -n "$STRATA_ACCOUNT_HOST" ]; then
+            hosts=$(node -e 'const t=require("fs").readFileSync("wrangler.web.jsonc","utf8");console.log(/"STRATA_OAUTH_HOSTS":\s*"([^"]*)"/.exec(t)[1])')
+            set -- "$@" --var "STRATA_ACCOUNT_HOST:$STRATA_ACCOUNT_HOST" --var "STRATA_OAUTH_HOSTS:$hosts,$(node -e 'console.log(new URL(process.argv[1]).hostname)' "$STRATA_ACCOUNT_HOST")"
+          fi
           npx wrangler deploy "$@"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -44,6 +50,7 @@ jobs:
           STRATA_MODEL_SYNTHESIS: ${{ vars.STRATA_MODEL_SYNTHESIS }}
           STRATA_MODEL_BASE_URL: ${{ vars.STRATA_MODEL_BASE_URL }}
           STRATA_RESIDENT_DAILY_CALLS: ${{ vars.STRATA_RESIDENT_DAILY_CALLS }}
+          STRATA_ACCOUNT_HOST: ${{ vars.STRATA_ACCOUNT_HOST }}
       # The model key (Settings → Secrets and variables → Actions → Secrets: STRATA_MODEL_KEY). Kept as a Worker secret.
       - name: Pass the model key to the Worker
         if: ${{ env.STRATA_MODEL_KEY != '' }}
@@ -60,3 +67,66 @@ jobs:
           OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  # The multi-account identity host (packages/pds), on workers.dev, with sign-up closed until the owner
+  # approves DNS, the escrow key and PLC writes (packages/pds/wrangler.host.jsonc). Its failure does
+  # not hold back the ETNOS deploy above.
+  identity-host:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: packages/pds
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --ignore-scripts
+      - run: npx tsc --noEmit
+      - name: Work out the host name
+        id: host
+        run: |
+          host="$PDS_HOSTNAME"
+          if [ -z "$host" ]; then
+            sub=$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).result.subdomain))')
+            host="etnos-identity-host.$sub.workers.dev"
+          fi
+          echo "name=$host" >> "$GITHUB_OUTPUT"
+        env:
+          PDS_HOSTNAME: ${{ vars.STRATA_PDS_HOSTNAME }}
+      - name: Deploy
+        run: |
+          set -- --config wrangler.host.jsonc --var "PDS_HOSTNAME:${{ steps.host.outputs.name }}"
+          if [ -n "$ESCROW" ]; then set -- "$@" --var "ESCROW_ROTATION_KEY:$ESCROW"; fi
+          if [ -n "$PLC_WRITES" ]; then set -- "$@" --var "PLC_WRITES:$PLC_WRITES"; fi
+          npx wrangler deploy "$@"
+        env:
+          ESCROW: ${{ vars.STRATA_PDS_ESCROW_KEY }}
+          PLC_WRITES: ${{ vars.STRATA_PDS_PLC_WRITES }}
+      # The key-encryption key is set once and never replaced here: replacing it would lock every
+      # account key. A repository secret STRATA_PDS_KEK is used if present; otherwise a random key is
+      # made on the runner and stored only as a Worker secret. The operator token is updated whenever
+      # STRATA_PDS_OPERATOR_TOKEN is set, and made at random once if it is not.
+      - name: Secrets
+        run: |
+          names=$(npx wrangler secret list --config wrangler.host.jsonc --format json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).map(x=>x.name).join(" ")))')
+          case " $names " in *" ACCOUNT_KEK_V1 "*) ;; *)
+            if [ -n "$KEK" ]; then printf '%s' "$KEK"; else node -e 'process.stdout.write(require("crypto").randomBytes(32).toString("base64url"))'; fi | npx wrangler secret put ACCOUNT_KEK_V1 --config wrangler.host.jsonc ;;
+          esac
+          if [ -n "$OPERATOR" ]; then printf '%s' "$OPERATOR" | npx wrangler secret put OPERATOR_TOKEN --config wrangler.host.jsonc
+          else case " $names " in *" OPERATOR_TOKEN "*) ;; *) node -e 'process.stdout.write(require("crypto").randomBytes(32).toString("base64url"))' | npx wrangler secret put OPERATOR_TOKEN --config wrangler.host.jsonc ;; esac
+          fi
+        env:
+          KEK: ${{ secrets.STRATA_PDS_KEK }}
+          OPERATOR: ${{ secrets.STRATA_PDS_OPERATOR_TOKEN }}
+      - name: Check it answers
+        run: |
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS "https://${{ steps.host.outputs.name }}/health"; then echo; exit 0; fi
+            sleep 10
+          done
+          exit 1

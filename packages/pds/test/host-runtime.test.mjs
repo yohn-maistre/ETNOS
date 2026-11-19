@@ -427,3 +427,34 @@ test("publication boundary and configuration guards", async () => {
 		await weak.dispose();
 	}
 });
+
+test("closed sign-up: the host runs against the public PLC directory without writing to it or holding an escrow key", async () => {
+	const dir = persistDir(), plc = new FakePlc();
+	const mf = hostRuntime({ persist: dir, plc, vars: { PLC_URL: "https://plc.directory", PLC_WRITES: "off", ESCROW_ROTATION_KEY: "" } });
+	try {
+		await migrate(mf);
+		const health = await (await call(mf, "/health")).json();
+		assert.equal(health.signup, "closed");
+		assert.equal((await call(mf, "/xrpc/com.atproto.server.describeServer")).status, 200);
+		assert.equal((await call(mf, "/.well-known/oauth-authorization-server")).status, 200);
+		assert.equal((await call(mf, "/akun/baru")).status, 503);
+		const code = await invite(mf);
+		const r = await call(mf, "/xrpc/com.atproto.server.createAccount", { body: { handle: `rumah.${domain}`, password: "synthetic-password", inviteCode: code } });
+		assert.equal(r.status, 503);
+		assert.equal((await r.json()).error, "SignupsClosed");
+		assert.equal(plc.posts + plc.reads, 0);
+		// The invite was not spent and no row was claimed.
+		const db = await mf.getD1Database("DIRECTORY");
+		assert.equal((await db.prepare("SELECT count(*) n FROM accounts").first()).n, 0);
+	} finally {
+		await mf.dispose();
+		rmSync(dir, { recursive: true, force: true });
+	}
+	// A malformed escrow key is still refused when one is given.
+	const bad = hostRuntime({ plc: new FakePlc(), vars: { PLC_WRITES: "off", ESCROW_ROTATION_KEY: "not-a-key" } });
+	try {
+		assert.equal((await call(bad, "/health")).status, 503);
+	} finally {
+		await bad.dispose();
+	}
+});

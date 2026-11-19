@@ -8,7 +8,7 @@
 import { derive, hmac, parseKek } from "./crypto.ts";
 import { Directory, inviteHash, type AccountRow } from "./directory.ts";
 import { directoryOverDurableObject } from "./directory-do.ts";
-import type { HostEnv } from "./env.ts";
+import { signupsClosed, type HostEnv } from "./env.ts";
 import { checkHandle } from "./handles.ts";
 import { registerGenesis } from "./plc.ts";
 
@@ -52,6 +52,8 @@ export class Host {
 	}
 
 	async createAccount(input: { code: unknown; handle: unknown; password: unknown }): Promise<Created | Failure> {
+		if (signupsClosed(this.env) || !this.env.ESCROW_ROTATION_KEY)
+			return fail(503, "SignupsClosed", "Pendaftaran akun di server ini belum dibuka.");
 		if (typeof input.code !== "string" || !/^[A-Za-z0-9_-]{16,100}$/.test(input.code.trim()))
 			return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
 		if (typeof input.handle !== "string") return fail(400, "InvalidHandle", "Nama akun wajib diisi.");
@@ -83,7 +85,7 @@ export class Host {
 				handle: row.handle,
 				password: input.password,
 				pdsEndpoint: this.origin,
-				escrowRotationKey: this.env.ESCROW_ROTATION_KEY,
+				escrowRotationKey: this.env.ESCROW_ROTATION_KEY!,
 			});
 		} catch {
 			return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");

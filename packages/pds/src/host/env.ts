@@ -20,10 +20,12 @@ export interface HostEnv {
 	/**
 	 * Writes to the public directory at https://plc.directory are refused
 	 * unless this is exactly "public-directory-approved" (owner decision).
+	 * "off" closes sign-up entirely: the host serves pages, OAuth metadata and
+	 * existing accounts, creates none, and needs no escrow key yet.
 	 */
 	PLC_WRITES?: string;
 	/** Escrow rotation key (did:key), held offline by the owner. Required. */
-	ESCROW_ROTATION_KEY: string;
+	ESCROW_ROTATION_KEY?: string;
 	/** Key-encryption keys, 32 bytes base64url each, as Workers secrets. */
 	ACCOUNT_KEK_V1: string;
 	ACCOUNT_KEK_V2?: string;
@@ -43,13 +45,16 @@ export interface HostEnv {
 
 export const PUBLIC_PLC = "https://plc.directory";
 
+/** Sign-up is closed until the owner approves PLC writes (see PLC_WRITES). */
+export const signupsClosed = (env: Pick<HostEnv, "PLC_WRITES">) => env.PLC_WRITES === "off";
+
 /** Validate host configuration once per request; never logs values. */
 export function hostConfigProblem(env: HostEnv): string | null {
 	if (!env.PDS_HOSTNAME || !/^[a-z0-9.-]+$/.test(env.PDS_HOSTNAME)) return "PDS_HOSTNAME";
 	if (!env.HANDLE_DOMAIN || !/^[a-z0-9.-]+$/.test(env.HANDLE_DOMAIN)) return "HANDLE_DOMAIN";
 	if (!env.PLC_URL || !/^https:\/\/[a-z0-9.-]+(?::\d+)?$/.test(env.PLC_URL.replace(/\/+$/, ""))) return "PLC_URL";
-	if (env.PLC_URL.replace(/\/+$/, "") === PUBLIC_PLC && env.PLC_WRITES !== "public-directory-approved") return "PLC_WRITES";
-	if (!env.ESCROW_ROTATION_KEY || !/^did:key:z[1-9A-HJ-NP-Za-km-z]+$/.test(env.ESCROW_ROTATION_KEY)) return "ESCROW_ROTATION_KEY";
+	if (env.PLC_URL.replace(/\/+$/, "") === PUBLIC_PLC && env.PLC_WRITES !== "public-directory-approved" && !signupsClosed(env)) return "PLC_WRITES";
+	if (env.ESCROW_ROTATION_KEY ? !/^did:key:z[1-9A-HJ-NP-Za-km-z]+$/.test(env.ESCROW_ROTATION_KEY) : !signupsClosed(env)) return "ESCROW_ROTATION_KEY";
 	if (!env.ACCOUNT_KEK_V1) return "ACCOUNT_KEK_V1";
 	if (!env.OPERATOR_TOKEN || env.OPERATOR_TOKEN.length < 32) return "OPERATOR_TOKEN";
 	if (!env.ACCOUNT || !env.AUTH_HUB || (!env.DIRECTORY && !env.DIRECTORY_DO)) return "bindings";

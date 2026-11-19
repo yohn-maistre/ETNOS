@@ -12,7 +12,7 @@
  */
 import { equal, randomToken } from "./crypto.ts";
 import type { AccountRow } from "./directory.ts";
-import { hostConfigProblem, type HostEnv } from "./env.ts";
+import { hostConfigProblem, signupsClosed, type HostEnv } from "./env.ts";
 import { labelForHost } from "./handles.ts";
 import { handleOAuth, provider } from "./oauth.ts";
 import { homePage, messagePage, signupDonePage, signupPage } from "./pages.ts";
@@ -188,7 +188,7 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 			service: "strata-identity-host",
 			stage: "experimental",
 			multiAccount: true,
-			signup: "invite",
+			signup: signupsClosed(host.env) ? "closed" : "invite",
 			publicRepository: true,
 			firehose: false,
 			passkeys: false,
@@ -199,6 +199,8 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 			id: serviceDid(host.env),
 			service: [{ id: "#atproto_pds", type: "AtprotoPersonalDataServer", serviceEndpoint: host.origin }],
 		});
+	if (path === "/akun/baru" && signupsClosed(host.env))
+		return messagePage("Pendaftaran belum dibuka", "Pendaftaran akun di server ini belum dibuka.", 503);
 	if (path === "/akun/baru" && method === "GET")
 		return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code: (url.searchParams.get("kode") ?? "").slice(0, 100) });
 	if (path === "/akun/baru" && method === "POST") return signupForm(host, request);
