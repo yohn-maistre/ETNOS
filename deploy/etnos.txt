@@ -42,3 +42,4 @@
 2026-11-19g aksara switch and model key wiring
 2026-11-19h model picker in Studio
 2026-11-19i main more openui cards: charts, table, stat row, progress, question
+2026-11-19j studio model key
