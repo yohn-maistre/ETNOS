@@ -28,6 +28,10 @@ It shares what it finds in the community feed and asks people to check it. Tag `
 
 A person grants its permissions, its budget and its time limit. Its work log is public. A steward can pause it at any moment. It never gets the last word.
 
+## What we are building toward
+
+Talk in a community becomes knowledge the community owns. A lembaga adat runs a private language community; people talk as usual; Aksara proposes words, their senses by context of use and grammar notes; members check each one with a swipe; the community decides what to publish. The same works for plants, places, events and customs, and the map shows how it all connects. See [docs/communities-spaces-2026-11-19.md](docs/communities-spaces-2026-11-19.md).
+
 ## What you can do today
 
 - Join communities, post, reply, run polls, share photos and links.
