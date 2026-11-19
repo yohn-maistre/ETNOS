@@ -1,5 +1,7 @@
 # Documents
 
+**Start here, every agent: [what-strata-is.md](what-strata-is.md).** The whole picture in plain words: a social platform first (posts, polls, events, photos, links, video, voice notes, offers, organisations), organised around places and peoples, with a sourced wiki that doubles as a research observatory, assistants (Aksara) that act as librarians, a community dictionary, the kinds of cultural artifacts we plan to hold (recordings, archival scans, 3D models) with their derived views, and twelve ideas that reuse what exists. It ends with a plain Indonesian paragraph for the proposal.
+
 **Naming rule (19 November, every agent): [naming.md](naming.md).** Plain, neutral names that say what a thing is or does; origin, legal or technical terms where they exist; no metaphorical feature names. It lists the renames of this session's names.
 
 **What Strata is and its building blocks: [platform-2026-11-19.md](platform-2026-11-19.md)**: what it gives a people, the primitives in the code and planned, and how peoples, languages and private spaces relate (people page, people space holding the language's dictionary, language pages linked to one or more spaces).
