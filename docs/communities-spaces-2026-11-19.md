@@ -140,9 +140,12 @@ Buttons are always visible; swiping is a shortcut, never the only way. Each card
 6. Candidate extraction and context grouping in Aksara's daily schedule.
 7. Map lenses and clusters over the confirmed entries.
 
-## 8. Open questions for the owner
+## 8. Owner decisions *(19 November)*
 
-1. Quorum default: 2 agreeing members, or 3?
-2. Should a lembaga's private communities be counted on its public page, or not shown at all?
-3. The context list for Kamus: a fixed starting set for every language (Kebun, Hutan, Rumah, Adat, Tubuh, Alam, Keluarga, Gereja, Jual beli), or one each community writes?
-4. Is "Periksa" the right label for the strip and dialog?
+The owner accepted every proposal in this document:
+1. A claim is settled when **2 members agree**, and stewards can raise that number.
+2. A lembaga's public page shows **how many private communities** it has, without their names.
+3. Kamus starts with **one fixed list of contexts** for every language (Kebun, Hutan, Rumah, Adat, Tubuh, Alam, Keluarga, Gereja, Jual beli), and a community can add its own.
+4. The checking strip and dialog are called **Periksa**.
+
+Small labels above headings are allowed where they fit the layout, but they should be used sparingly.
