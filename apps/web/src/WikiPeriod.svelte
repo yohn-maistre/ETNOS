@@ -75,7 +75,7 @@
           </select>
         </label>
         <label class="wide" for={uid + '-note'}>Catatan singkat
-          <input id={uid + '-note'} bind:value={note} maxlength="200" placeholder="Misalnya: menurut arsip gereja" />
+          <input id={uid + '-note'} bind:value={note} maxlength="200" placeholder="Misalnya menurut arsip gereja" />
         </label>
         <p class="hint">Tahun sebelum Masehi ditulis dengan tanda minus, misalnya -1500.</p>
         <div class="actions">

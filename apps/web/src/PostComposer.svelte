@@ -163,7 +163,7 @@
   function changeDestination(next: string) {
     const before = communities.find((c) => c.id === lastCommunity),
       after = communities.find((c) => c.id === next)
-    if(after?.publication==='atproto'&&format&&text.trim()){error='Tulisan berformat disimpan di komunitas lokal. Pilih komunitas lokal atau mulai tulisan teks baru untuk AT.';return false}
+    if(after?.publication==='atproto'&&format&&text.trim()){error='Tulisan berformat hanya dapat disimpan di komunitas lokal. Pilih komunitas lokal, atau mulai tulisan teks baru untuk AT.';return false}
     if (
       hasContent &&
       before &&
@@ -383,7 +383,7 @@
             ><option value="">Tanpa musim</option>{#each seasons as s (s.id)}<option value={s.id}>{s.name}</option>{/each}</select
           ></label
         >{/if}
-      {#if kind === 'offering'}<fieldset class="composer-extras offering-create" disabled={busy||!!pending}><legend>Penawaran atau kebutuhan</legend><Choice aria-label="Menawarkan atau mencari" bind:value={offerKind} items={[{value:'offer',label:'Menawarkan'},{value:'request',label:'Mencari'}]}/><div class="offering-form-pair"><Input aria-label={offerKind==='request'?'Anggaran (Rp)':'Harga (Rp)'} type="number" min="0" step="1" bind:value={offerPrice} placeholder={offerKind==='request'?'Anggaran (opsional)':'Harga (opsional)'}/><Input aria-label="Satuan harga" bind:value={offerUnit} maxlength={60} placeholder="Misalnya per ikat"/></div><Choice aria-label="Masa penawaran" bind:value={offerDays} items={[{value:'7',label:'Berlaku 7 hari'},{value:'30',label:'Berlaku 30 hari'},{value:'90',label:'Berlaku 90 hari'}]}/><p class="cx-hint">Kosongkan harga untuk dibicarakan langsung. Kontak melalui pesan atau diskusi; belum ada pembayaran di ETNOS.</p><Button variant="ghost" size="sm" onclick={()=>kind=''}>Hapus penawaran</Button></fieldset>{/if}
+      {#if kind === 'offering'}<fieldset class="composer-extras offering-create" disabled={busy||!!pending}><legend>Penawaran atau kebutuhan</legend><Choice aria-label="Menawarkan atau mencari" bind:value={offerKind} items={[{value:'offer',label:'Menawarkan'},{value:'request',label:'Mencari'}]}/><div class="offering-form-pair"><Input aria-label={offerKind==='request'?'Anggaran (Rp)':'Harga (Rp)'} type="number" min="0" step="1" bind:value={offerPrice} placeholder={offerKind==='request'?'Anggaran (opsional)':'Harga (opsional)'}/><Input aria-label="Satuan harga" bind:value={offerUnit} maxlength={60} placeholder="Misalnya per ikat"/></div><Choice aria-label="Masa penawaran" bind:value={offerDays} items={[{value:'7',label:'Berlaku 7 hari'},{value:'30',label:'Berlaku 30 hari'},{value:'90',label:'Berlaku 90 hari'}]}/><p class="cx-hint">Kosongkan harga untuk dibicarakan langsung. Kontak dilakukan lewat pesan atau diskusi. ETNOS belum menyediakan pembayaran.</p><Button variant="ghost" size="sm" onclick={()=>kind=''}>Hapus penawaran</Button></fieldset>{/if}
       {#if kind === 'poll'}<fieldset
           class="composer-extras"
           disabled={busy || !!pending}
@@ -495,7 +495,7 @@
         {#if format&&mentionEligible}<Button variant="ghost" size="icon" aria-label="Panggil Aksara" title="Panggil Aksara · atau ketik @aksara" disabled={busy||!!pending||!documentEditor} onclick={callAksara}><AtSign size={20}/><span class="composer-tool-label">Aksara</span></Button>{/if}
         {#if !compact && !parentId && destination?.publication === 'local'}<Button variant="ghost" size="icon" aria-label="Tambahkan penawaran" title="Penawaran atau kebutuhan" aria-pressed={kind==='offering'} disabled={busy||!!pending} onclick={()=>{kind=kind==='offering'?'':'offering';if(kind==='offering')showTitle=true}}><ShoppingBag size={20}/><span class="composer-tool-label">Penawaran</span></Button>{/if}
         {#if !compact && destination?.publication === 'local'}<Button
-          variant="ghost" size="icon" aria-label="Format tulisan" title="Format tulisan: tebal, miring, daftar dan Markdown"
+          variant="ghost" size="icon" aria-label="Format tulisan" title="Format tulisan, termasuk tebal, miring, daftar dan Markdown"
           aria-pressed={format&&showFormatting} disabled={busy || !!pending} onclick={() => {if(!format)format=true;else showFormatting=!showFormatting}}
         ><Bold size={20}/><span class="composer-tool-label">Format</span></Button>{/if}
         <input

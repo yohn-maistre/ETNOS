@@ -138,7 +138,7 @@
   // their regencies, provinces, languages, then topics and kinds of institution.
   const browsing = $derived(!query.trim() && !placeKind)
   const tree = $derived(contextTree(places))
-  const topicBasis = 'Daftar awal yang dapat diubah komunitas. Ranah budaya, jenis lembaga dan jenis komunitas di bawahnya adalah lensa pembanding.'
+  const topicBasis = 'Daftar awal yang dapat diubah komunitas. Ranah budaya, jenis lembaga dan jenis komunitas di bawahnya dipakai sebagai pembanding.'
   const otherPlaces = $derived(tree.other.filter((o) => o.kind !== 'topic')),
     otherTopics = $derived(tree.other.filter((o) => o.kind === 'topic'))
   let languageQuery = $state(''),
@@ -283,7 +283,7 @@
         >
           <h2 id="wilayah-adat-heading">Wilayah adat</h2>
           <p class="context-map-note">
-            Wilayah acuan yang digeneralisasi, bukan batas tanah adat.
+            Wilayah di sini digeneralisasi dan tidak menunjukkan batas tanah adat.
           </p>
           {#each tree.regions as branch (branch.node.id)}{@render branchBlock(branch, true)}{/each}
         </section>{/if}

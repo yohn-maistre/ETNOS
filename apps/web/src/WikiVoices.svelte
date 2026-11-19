@@ -18,19 +18,19 @@
   } = $props()
   const segments = $derived(
     [
-      { key: 'source', n: voices.sources, label: 'Sumber luar, ' + voices.sources },
+      { key: 'source', n: voices.sources, label: 'Sumber luar, ' + voices.sources + ' sumber' },
       { key: 'people', n: voices.people, label: 'Warga, ' + voices.people + ' penulis' },
       { key: 'agent', n: voices.agentRevisions, label: 'Tulisan AI yang sudah ditinjau, ' + voices.agentRevisions + ' revisi' },
       { key: 'unreviewed', n: voices.unreviewedAgent, label: 'Tulisan AI yang belum ditinjau, ' + voices.unreviewedAgent + ' revisi' },
       { key: 'pending', n: voices.pendingAgent, label: 'Draf agen menunggu tinjauan, ' + voices.pendingAgent + ' usulan' },
     ].filter((s) => s.n > 0),
   )
-  const summary = $derived(segments.map((s) => s.label).join('; ') + (voices.people ? '' : '; belum ada suara warga'))
+  const summary = $derived(segments.map((s) => s.label).join('; ') + (voices.people ? '' : '; belum ada tulisan warga'))
 </script>
 
 <div class="wiki-voices">
   {#if segments.length}
-    <div class="voice-bar" role="img" aria-label={'Halaman ini bersandar pada: ' + summary + '.'}>
+    <div class="voice-bar" role="img" aria-label={'Halaman ini memuat ' + summary + '.'}>
       {#each segments as s (s.key)}<span class={'voice-' + s.key} style:flex-grow={s.n}></span>{/each}
     </div>
   {/if}
@@ -39,7 +39,7 @@
   </ul>
   <p class="voice-line">
     {#if current === 'unreviewed'}<span>Versi yang tampil sekarang belum ditinjau.</span>{/if}
-    {#if !voices.people}Belum ada suara warga.
+    {#if !voices.people}Belum ada tulisan dari warga.
       {#if invite.onclick}<button type="button" onclick={invite.onclick}>Tambahkan ceritamu</button>{:else if invite.href}<a href={invite.href}>Tambahkan ceritamu</a>{/if}
     {/if}
     {#if reviewer}<span>Ditinjau {reviewer}{reviewed ? ', ' + reviewed : ''}.</span>{/if}

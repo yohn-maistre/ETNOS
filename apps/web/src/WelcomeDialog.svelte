@@ -94,7 +94,7 @@
     <div class="welcome-form-pane" inert={arriving && morph.current < .65}>
       {#if stage === 'welcome'}
         <div class="welcome-introduction">
-          <h2>Tempat bertemu, berbagi, dan merawat pengetahuan bersama.</h2>
+          <h2>Tempat untuk bertemu, berbagi, dan menyusun pengetahuan bersama.</h2>
           <div class="welcome-actions">
             <Button class="welcome-join" onclick={() => stage = 'signup'}>Bergabung <ArrowRight size={17}/></Button>
             <Button class="welcome-signin" variant="outline" onclick={() => stage = 'login'}>Sudah punya akun? Masuk</Button>

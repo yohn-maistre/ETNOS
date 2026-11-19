@@ -182,7 +182,7 @@
           Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'}
         </h2>
         <p>
-          Pertanyaan dari komunitas tampil di sini.
+          Pertanyaan dari komunitas akan muncul di sini.
         </p>
       </div>{/if}
     {#if !compact && cursor}<Button
@@ -195,8 +195,8 @@
   {/if}
   {#if !compact}<footer>
       <p>
-        Jawaban bersifat sukarela. Hasil menggambarkan peserta yang menjawab,
-        bukan survei representatif atau pemungutan suara rahasia.
+        Jawaban bersifat sukarela. Hasil hanya menggambarkan peserta yang menjawab.
+        Hasil ini tidak mewakili semua warga, dan jawaban tidak bersifat rahasia.
       </p>
       <a href="/work">Jelajahi kerja publik <ArrowRight size={14} /></a>
     </footer>{/if}

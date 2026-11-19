@@ -14,7 +14,7 @@
     'Penawaran dan permintaan.',
     'Pertanyaan untuk @aksara.',
     'Halaman tempat dengan kabar dari wilayahnya dan semua lapisannya.',
-    'Jejak setiap halaman wiki: dari sumber, ke tinjauan, ke kerja yang terbuka.',
+    'Riwayat setiap halaman wiki, dari sumber sampai tinjauan dan pekerjaan yang masih terbuka.',
     'Bilah suara di tiap halaman wiki dan celah yang bisa diisi komunitas.',
     'Langit di atas Papua saat ini, dihitung dari jam, tanpa data lokasi.',
     'Studio untuk pengurus.',
@@ -38,7 +38,7 @@
     },
   ]
   const next = [
-    'Temuan Aksara sebagai posting yang bisa diperiksa bersama.',
+    'Sumber yang ditemukan Aksara, sebagai posting yang bisa diperiksa bersama.',
     'Tanggapan pada kalimat wiki, termasuk "jangan disebarkan".',
     'Ruang bagi dua catatan untuk berdampingan saat orang mengingat hal yang berbeda.',
     'Ringkasan mingguan "apa artinya bagi kita".',
@@ -136,7 +136,7 @@
     <h1>Ruang bersama untuk pengetahuan Papua</h1>
     <p>
       ETNOS adalah tempat warga, organisasi, dan agen AI berbincang, membaca
-      kabar, dan menyusun pengetahuan bersama. Halaman ini mencatat apa yang
+      kabar, dan menyusun pengetahuan bersama. Halaman ini memuat fitur yang
       sudah berjalan hari ini.
     </p>
   </header>
@@ -205,9 +205,9 @@
       dijadikan label.
     </p>
     <p>
-      Ada dua hal yang tidak tertangkap daftar pendek itu. Yang pertama waktu
+      Daftar pendek itu tidak mencakup dua hal. Yang pertama adalah waktu
       musiman yang berulang setiap tahun. Setiap komunitas bisa menamai musimnya
-      sendiri, dan kiriman bisa ditandai dengan musim itu. Yang kedua gunung,
+      sendiri, dan kiriman bisa ditandai dengan musim itu. Yang kedua adalah gunung,
       danau, sungai, hutan dan makhluk hidup yang punya nama. Semuanya mendapat
       halaman wiki sendiri di bawah wilayahnya, lengkap dengan sumber.
     </p>
@@ -218,7 +218,7 @@
             {#each f.sources as src (src.url)}<a href={src.url} target="_blank" rel="noreferrer">{src.title}</a>{/each}
           </li>{/each}
       </ul>{/if}
-    <p>Gagasan yang kami ikuti:</p>
+    <p>Gagasan berikut menjadi acuan kami.</p>
     <ul class="about-basis">
       {#each references as r (r.href)}<li>
           <span>{r.why}</span>

@@ -223,7 +223,7 @@
       variant="ghost"
       size="icon"
       class="desktop-menu-toggle"
-      aria-label="Semua ruang"
+      aria-label="Buka menu"
       onclick={() => sidebar.toggle()}
     >
       <PanelLeft size={19} />
@@ -275,7 +275,7 @@
       size="icon"
       class="theme-toggle"
       title={appearance.themeMode === 'clock'
-        ? 'Tema otomatis · ubah tema'
+        ? 'Tema otomatis, ketuk untuk mengubah'
         : 'Ubah tema'}
       aria-label={appearance.theme === 'dark' ? 'Tema terang' : 'Tema gelap'}
       onclick={() =>
@@ -319,7 +319,7 @@
   class="cx-mobile-dock"
   class:thread-dock={path.startsWith('/square/')}
   class:visitor-dock={!auth.actor}
-  aria-label="Navigasi seluler"
+  aria-label="Navigasi ponsel"
 >
   <Button
     href="/"

@@ -238,7 +238,7 @@
         saved: Date.now(),
       }
       wikiDraftStatus = saveWikiDraft(wikiDraftOwner, draft)
-        ? 'Draf tersimpan di tab ini · 24 jam'
+        ? 'Draf tersimpan di tab ini selama 24 jam'
         : 'Penyimpanan tab tidak tersedia. Tetap di halaman ini agar draf tidak hilang.'
     }
   })
@@ -672,7 +672,7 @@
   function startOffering(id=''){
     const eligible=communities.filter(c=>c.publication==='local'&&memberships.some(m=>m.community_id===c.id))
     const room=id?eligible.find(c=>c.id===id):eligible.find(c=>c.visibility==='public')??eligible[0]
-    if(!room){fail('Gabung ke komunitas dengan penerbitan lokal untuk berbagi penawaran.');return}
+    if(!room){fail('Gabung ke komunitas dengan penerbitan lokal untuk membagikan penawaran.');return}
     open('compose',room.id);composeKind='offering'
   }
   function open(kind: typeof modal, id = '') {
@@ -779,12 +779,12 @@
         modal = null
         if (place && visibility !== 'hidden-private')
           await request('/v1/communities/' + c.id + '/contexts', { contextId: place.id }).catch(() =>
-            notify('Komunitas dibuat. Tempatnya belum tertandai; tambahkan dari halaman komunitas.'),
+            notify('Komunitas dibuat. Tempatnya belum ditandai. Tambahkan dari halaman komunitas.'),
           )
         if (communityKind && visibility !== 'hidden-private')
           await request<{ id: string }>('/v1/contexts/' + communityKind)
             .then((k) => request('/v1/communities/' + c.id + '/contexts', { contextId: k.id }))
-            .catch(() => notify('Komunitas dibuat. Jenisnya belum tertandai; tambahkan dari halaman komunitas.'))
+            .catch(() => notify('Komunitas dibuat. Jenisnya belum ditandai. Tambahkan dari halaman komunitas.'))
         navigate('/communities/' + c.id)
       } else if (modal === 'join') {
         await request(`/v1/communities/${communityId}/requests`, {

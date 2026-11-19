@@ -388,7 +388,7 @@
       }
       await sync(t)
       if (selected?.id !== t.id || vault.current() !== v)
-        throw Error('Percakapan berubah; pesan belum dikirim.')
+        throw Error('Percakapan berubah. Pesan belum dikirim.')
       const result = await crypto.encrypt(
           local.state,
           local.pins,
@@ -398,7 +398,7 @@
         ),
         clientId = globalThis.crypto.randomUUID()
       if (selected?.id !== t.id || vault.current() !== v)
-        throw Error('Percakapan berubah; pesan belum dikirim.')
+        throw Error('Percakapan berubah. Pesan belum dikirim.')
       local.state = result.state
       local.texts[clientId] = body
       local.pending = { clientId, ciphertext: result.ciphertext, text: body }

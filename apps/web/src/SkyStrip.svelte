@@ -92,10 +92,10 @@
   })
   const description = $derived(
     sky.phase === 'malam'
-      ? `Langit di atas ${label} sekarang: malam, ${sky.placed.length} bintang terang terlihat`
+      ? `Langit di atas ${label} sekarang malam, ${sky.placed.length} bintang terang terlihat`
       : sky.phase === 'senja'
-        ? `Langit di atas ${label} sekarang: senja`
-        : `Langit di atas ${label} sekarang: siang`,
+        ? `Langit di atas ${label} sekarang senja`
+        : `Langit di atas ${label} sekarang siang`,
   )
 
   onMount(() => {

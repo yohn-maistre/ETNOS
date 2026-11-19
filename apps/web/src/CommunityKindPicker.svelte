@@ -40,7 +40,7 @@
       {/each}
     </div>
     <p aria-live="polite">
-      {#if chosen}{chosen.description} <span>Misalnya: {chosen.examples.join(', ')}.</span>
+      {#if chosen}{chosen.description} <span>Misalnya {chosen.examples.join(', ')}.</span>
       {:else}Pilih yang paling dekat, atau lewati. Jenis bisa diubah nanti dari halaman komunitas.{/if}
     </p>
   </fieldset>

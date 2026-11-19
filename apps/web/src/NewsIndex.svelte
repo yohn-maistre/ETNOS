@@ -26,7 +26,7 @@
     place = $derived(params.get('place') ?? ''),
     page = $derived(Number(params.get('page') ?? 1))
   const desks = [
-    { value: 'focus', label: 'Sorotan' },
+    { value: 'focus', label: 'Utama' },
     { value: 'all', label: 'Terbaru' },
     { value: 'rights', label: 'HAM & konflik' },
     { value: 'land', label: 'Tanah & lingkungan' },

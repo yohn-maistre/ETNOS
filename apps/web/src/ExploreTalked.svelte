@@ -62,7 +62,7 @@
       </ExploreTile>{/each}
   </div>
   <p class="talked-note">Dari posting publik {days} hari terakhir yang berlabel tempat, bahasa atau topik.</p>
-{:else if fallback.length}<p class="talked-note lead">Belum ada percakapan berlabel dalam {days} hari terakhir. Yang paling banyak tercatat:</p>
+{:else if fallback.length}<p class="talked-note lead">Belum ada percakapan berlabel dalam {days} hari terakhir. Tempat dan topik di bawah ini memiliki catatan terbanyak.</p>
   <div class="explore-strip">
     {#each fallback as c (c.id)}<ExploreTile tone={tone(c.kind)} href={'/contexts/' + c.slug} title={c.title} text={kindName[c.kind] ?? 'Topik'} meta={c.indexed + ' catatan'}>
         {#snippet art()}{@render artFor(c)}{/snippet}

@@ -70,14 +70,14 @@
   }
 </script>
 
-<article class="core-sample" class:embedded aria-labelledby={embedded ? undefined : 'core-title-' + uid} aria-label={embedded ? 'Lapisan ' + context.title : undefined}>
+<article class="core-sample" class:embedded aria-labelledby={embedded ? undefined : 'core-title-' + uid} aria-label={embedded ? 'Ringkasan ' + context.title : undefined}>
   {#if !embedded}<header class="core-cover">
     {#if artwork}<LandscapePrint {artwork} decorative />{/if}
-    <h1 id={'core-title-' + uid}><span class="sr-only">Lapisan tempat </span>{context.title}</h1>
+    <h1 id={'core-title-' + uid}><span class="sr-only">Ringkasan tempat </span>{context.title}</h1>
   </header>
-  <nav class="core-back" aria-label="Navigasi lapisan">
+  <nav class="core-back" aria-label="Navigasi ringkasan">
     <a href={'/contexts/' + encodeURIComponent(context.slug)}><ArrowLeft size={16} />Kembali ke {context.title}</a>
-    <span>Lapisan tempat</span>
+    <span>Ringkasan tempat</span>
   </nav>{/if}
 
   <section class="core-band" aria-labelledby={'core-week-' + uid}>
@@ -146,7 +146,7 @@
     <div class="core-content">
       <h2 id={'core-archive-' + uid}>Arsip dan cerita lama</h2>
       <p class="core-unindexed">Belum terindeks.</p>
-      <p class="core-note">Tulisan lama, rekaman, foto dan cerita orang tua tentang {context.title} belum tercatat di sini. Setiap cerita dan sumber yang ditambahkan ikut mengisi lapisan ini.</p>
+      <p class="core-note">Tulisan lama, rekaman, foto dan cerita orang tua tentang {context.title} belum tercatat di sini. Cerita dan sumber yang ditambahkan akan muncul di bagian ini.</p>
       <div class="core-actions">
         {#if auth.actor && onCompose}<button type="button" class="core-chip primary" onclick={() => onCompose?.({ id: context.id, title: context.title })}>Ceritakan</button>
         {:else}<a class="core-chip primary" href="/login">Ceritakan</a>{/if}
