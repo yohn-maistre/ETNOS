@@ -52,3 +52,4 @@
 2026-11-19q ETNOS points at the identity host (STRATA_ACCOUNT_HOST and OAuth host); CPU read from analytics
 2026-11-19r identity host: spaces follow proposal 0016 of 19 November (official @atproto/space alpha 2026-11-17), notifyCredentialsRevoked on removal
 2026-11-19s sign-up defaults to an ETNOS account
+2026-11-19t studio knowledge seed button
