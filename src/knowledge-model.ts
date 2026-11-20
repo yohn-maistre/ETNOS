@@ -21,6 +21,7 @@ import {Groups} from './groups.ts'
 import {Wiki} from './wiki.ts'
 import {hash,text,expected,transition} from './commons.ts'
 import {hill} from './knowledge-graph.ts'
+import {worldByRule,depthByRule,checkRange,depths,ilcClasses,bandOf,type World,type Depth,type CoordinateBasis} from './world-model.ts'
 
 export const classes=['tempat','makhluk','kelompok','lembaga','orang','benda','bahasa','gagasan','praktik','peristiwa','musim','cerita'] as const
 export type EntityClass=typeof classes[number]
@@ -53,6 +54,7 @@ export const predicates:Record<string,Predicate>={
 type EntityRow={slug:string;class:EntityClass;title:string;description:string;aliases:string;context_slug:string|null;community_id:string|null;state:'proposed'|'accepted'|'rejected'|'merged';merged_into:string|null;origin:string;proposer_id:string|null;reviewer_id:string|null;revision:number;created:number;updated:number}
 type WitnessRow={id:string;key:string;kind:string;title:string;url:string|null;publisher:string;licence:string|null;year:number|null;language:string|null;voice:string;community_id:string|null;post_id:string|null;post_revision:number|null;state:'active'|'withdrawn';withdrawn_reason:string|null;created:number;updated:number}
 type AssertionRow={id:string;subject:string;predicate:string;object:string|null;value:string|null;qualifiers:string;layer:string;status:'proposed'|'accepted'|'rejected'|'withdrawn';logical:string;rank:string;visibility:'public'|'community';train:number;community_id:string|null;origin:string;proposer_id:string|null;reviewer_id:string|null;review_note:string|null;digest:string;revision:number;created:number;updated:number}
+type CoordinateRow={slug:string;size_lo:number|null;size_hi:number|null;size_basis:string|null;size_note:string|null;pace_lo:number|null;pace_hi:number|null;pace_basis:string|null;pace_note:string|null;level:string|null;level_basis:string|null;level_note:string|null;actor_id:string|null;revision:number;updated:number}
 type ExcerptView={id:string;digest:string;text:string;section:string;witness:{id:string;key:string;kind:string;title:string;url:string|null;publisher:string;licence:string|null;year:number|null;voice:string;communityId:string|null}}
 export type KnowledgeSeed={version:number;entities:{slug:string;class:string;title:string;description:string;aliases:string[];context:string|null;origin:string}[];witnesses:{key:string;kind:string;title:string;url:string;publisher:string;licence:string|null;year:number|null;language:string|null;voice:string;excerpts:{digest:string;text:string;section:string}[]}[];mentions:{entity:string;witness:string;excerpt:string;surface:string}[];assertions:{subject:string;predicate:string;object:string;status:'accepted'|'proposed';origin:string;support:{witness:string;excerpt:string}[]}[]}
 
@@ -83,6 +85,34 @@ export class KnowledgeModel{
   for(let i=0;row&&row.state==='merged'&&row.merged_into&&i<8;i++)row=this.store.get<EntityRow>('SELECT * FROM km_entities WHERE slug=?',row.merged_into)
   return row
  }
+ // ---------- world model: coordinates and depth, stored with their basis ----------
+ /** Stored coordinates, or the rule's when none are stored yet. Rules are deterministic, so both give the same answer for a seeded thing. */
+ private worldMap(){
+  const stored=new Map(this.store.all<CoordinateRow>('SELECT * FROM km_coordinates').map(r=>[r.slug,r]))
+  return (e:Pick<EntityRow,'slug'|'class'|'title'|'context_slug'>):World=>{
+   const r=stored.get(e.slug)
+   if(!r)return worldByRule(e)
+   const range=(lo:number|null,hi:number|null,basis:string|null,note:string|null)=>lo===null||hi===null?null:{lo,hi,basis:(basis??'rule') as CoordinateBasis,note:note??''}
+   return {size:range(r.size_lo,r.size_hi,r.size_basis,r.size_note),pace:range(r.pace_lo,r.pace_hi,r.pace_basis,r.pace_note),level:r.level?{code:r.level,band:bandOf(r.level)!,basis:(r.level_basis??'rule') as CoordinateBasis,note:r.level_note??''}:null}
+  }
+ }
+ private depthMap(){
+  const stored=new Map(this.store.all<{assertion_id:string;depth:string|null;basis:string}>('SELECT assertion_id,depth,basis FROM km_depth').map(r=>[r.assertion_id,r]))
+  return (a:{id:string;predicate:string}):{depth:Depth|null;depthBasis:string}=>{const r=stored.get(a.id);return r?{depth:r.depth as Depth|null,depthBasis:r.basis}:{depth:depthByRule(a.predicate),depthBasis:'rule'}}
+ }
+ private storeWorld(slug:string,w:World,actorId:string|null,now:number){
+  this.store.run('INSERT INTO km_coordinates VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,1,?) ON CONFLICT(slug) DO NOTHING',slug,w.size?.lo??null,w.size?.hi??null,w.size?.basis??null,w.size?.note??null,w.pace?.lo??null,w.pace?.hi??null,w.pace?.basis??null,w.pace?.note??null,w.level?.code??null,w.level?.basis??null,w.level?.note??null,actorId,now)
+ }
+ /** Stores the rule's coordinates and depth for every thing and statement that has none yet. Idempotent; values set by a person stay. */
+ private fillWorld(actorId:string){
+  const s=this.store,now=s.clock();let filled=0
+  for(const e of s.all<EntityRow>('SELECT * FROM km_entities WHERE slug NOT IN (SELECT slug FROM km_coordinates) ORDER BY slug')){this.storeWorld(e.slug,worldByRule(e),actorId,now);filled++}
+  for(const a of s.all<{id:string;predicate:string}>('SELECT id,predicate FROM km_assertions WHERE id NOT IN (SELECT assertion_id FROM km_depth) ORDER BY id'))s.run("INSERT INTO km_depth VALUES(?,?,'rule',NULL,?)",a.id,depthByRule(a.predicate),now)
+  return filled
+ }
+ /** Depth counts for one thing: how many of its visible statements say what it is, how it is done, the rules, and what it means. */
+ private static profile(list:{depth:Depth|null}[]){const out:Record<Depth,number>={apa:0,cara:0,aturan:0,makna:0};for(const x of list)if(x.depth)out[x.depth]++;return out}
+
  /** Excerpts a reader can rely on now: witness active, scope readable, cited post present and unchanged. */
  private liveExcerpts(see:ReturnType<KnowledgeModel['reader']>,publicOnly=false){
   const rows=this.store.all<{id:string;digest:string;text:string;section:string;wid:string}&WitnessRow&{deleted:number|null;hidden:number|null;prev:number|null;pcommunity:string|null}>(`SELECT x.id,x.digest,x.text,x.section,w.id wid,w.key,w.kind,w.title,w.url,w.publisher,w.licence,w.year,w.voice,w.community_id,w.post_id,w.post_revision,w.state,p.deleted,p.hidden,p.revision prev,p.community_id pcommunity
@@ -196,8 +226,9 @@ export class KnowledgeModel{
     }
     for(const x of support)s.run('INSERT OR IGNORE INTO km_support VALUES(?,?)',id,x)
    }
+   const world=this.fillWorld(actorId)
    s.audit(actorId,'knowledge-model.seed',`${count.entities}/${count.assertions}`)
-   return count
+   return {...count,world}
   })
  }
 
@@ -211,6 +242,7 @@ export class KnowledgeModel{
    const s=this.store,now=s.clock()
    if(s.get('SELECT 1 FROM km_entities WHERE slug=?',input.slug))throw new Fault(409,'This entity already exists')
    s.run("INSERT INTO km_entities VALUES(?,?,?,?,?,NULL,?,'proposed',NULL,'proposal',?,NULL,1,?,?)",input.slug,input.class,input.title,input.description,JSON.stringify(input.aliases),communityId,actorId,now,now)
+   this.storeWorld(input.slug,worldByRule({slug:input.slug,class:input.class,title:input.title,context_slug:null}),null,now)
    return this.entityRow(input.slug)
   })
  }
@@ -246,7 +278,35 @@ export class KnowledgeModel{
    return {merged:slug,into:this.entityRow(target.slug)}
   })
  }
- private entityRow(slug:string){const r=this.store.get<EntityRow>('SELECT * FROM km_entities WHERE slug=?',slug)!;return {...r,aliases:JSON.parse(r.aliases) as string[]}}
+ private entityRow(slug:string){const r=this.store.get<EntityRow>('SELECT * FROM km_entities WHERE slug=?',slug)!;return {...r,aliases:JSON.parse(r.aliases) as string[],world:this.worldMap()(r)}}
+ /**
+  * A reviewer corrects a thing's coordinates. Each value given is stored as the reviewer's (basis person),
+  * with a note; values not given keep their earlier basis. Ranges are log10 metres and log10 seconds.
+  */
+ setCoordinates(actorId:string,slug:string,b:Record<string,unknown>){
+  const size=checkRange(b.size,-36,27),pace=checkRange(b.pace,-44,18)
+  const levelCode=b.level===undefined||b.level===null?null:text(b.level,1)
+  if(levelCode!==null&&!ilcClasses.includes(levelCode))throw new Fault(400,'Invalid level')
+  if(!size&&!pace&&levelCode===null)throw new Fault(400,'Give a size, a pace or a level')
+  const note=text(b.note??'',300,true)
+  return transition(this.store,actorId,b.requestKey,'knowledge-model.entity.coordinates',{slug,size,pace,level:levelCode,note,revision:b.revision},()=>{
+   const row=this.store.get<EntityRow>('SELECT * FROM km_entities WHERE slug=?',slug)
+   if(!row||row.state==='rejected'||row.state==='merged'||!this.reader(actorId).scope(row.community_id))throw new Fault(404,'Not found')
+   this.reviewer(actorId,row.community_id)
+  },()=>{
+   const s=this.store,now=s.clock(),row=s.get<EntityRow>('SELECT * FROM km_entities WHERE slug=?',slug)!
+   if(!s.get('SELECT 1 FROM km_coordinates WHERE slug=?',slug))this.storeWorld(slug,worldByRule(row),null,now)
+   const current=s.get<CoordinateRow>('SELECT * FROM km_coordinates WHERE slug=?',slug)!
+   expected(b.revision,current.revision)
+   const by=note||'Dikoreksi oleh peninjau.'
+   s.run(`UPDATE km_coordinates SET size_lo=?,size_hi=?,size_basis=?,size_note=?,pace_lo=?,pace_hi=?,pace_basis=?,pace_note=?,level=?,level_basis=?,level_note=?,actor_id=?,revision=revision+1,updated=? WHERE slug=? AND revision=?`,
+    size?size[0]:current.size_lo,size?size[1]:current.size_hi,size?'person':current.size_basis,size?by:current.size_note,
+    pace?pace[0]:current.pace_lo,pace?pace[1]:current.pace_hi,pace?'person':current.pace_basis,pace?by:current.pace_note,
+    levelCode??current.level,levelCode?'person':current.level_basis,levelCode?by:current.level_note,actorId,now,slug,current.revision)
+   s.audit(actorId,'knowledge-model.coordinates',slug)
+   return {slug,revision:current.revision+1,world:this.worldMap()(row)}
+  })
+ }
 
  proposeAssertion(actorId:string,b:Record<string,unknown>){
   const communityId=this.scopeOf(b.communityId),predicate=text(b.predicate,60),p=predicates[predicate]
@@ -256,7 +316,8 @@ export class KnowledgeModel{
   const support=Array.isArray(b.support)?b.support.slice(0,10).map(x=>text(x,100)):[]
   if(!support.length)throw new Fault(400,'An assertion needs at least one excerpt it rests on')
   const qualifiers=b.qualifiers&&typeof b.qualifiers==='object'&&!Array.isArray(b.qualifiers)?Object.fromEntries(Object.entries(b.qualifiers as Record<string,unknown>).slice(0,8).map(([k,v])=>[text(k,40),text(v,200)])):{}
-  const input={communityId,subject,predicate,object,value,qualifiers,support:[...new Set(support)].sort(),layer:oneOf(b.layer??'jejak',layers,'layer'),visibility:oneOf(b.visibility??'public',['public','community'] as const,'visibility'),train:b.train===true,mandateId:b.mandateId===undefined?undefined:text(b.mandateId,100)}
+  const depth=b.depth===undefined||b.depth===null?undefined:oneOf(b.depth,depths,'depth')
+  const input={communityId,subject,predicate,object,value,qualifiers,depth,support:[...new Set(support)].sort(),layer:oneOf(b.layer??'jejak',layers,'layer'),visibility:oneOf(b.visibility??'public',['public','community'] as const,'visibility'),train:b.train===true,mandateId:b.mandateId===undefined?undefined:text(b.mandateId,100)}
   return transition(this.store,actorId,b.requestKey,'knowledge-model.assertion',input,()=>{
    const s=this.store,agent=s.actor(actorId).kind!=='human'
    this.proposer(actorId,communityId,input.mandateId)
@@ -290,6 +351,8 @@ export class KnowledgeModel{
    if(prior)s.run('UPDATE km_assertions SET digest=? WHERE id=?',prior.digest+':'+prior.id,prior.id)
    s.run("INSERT INTO km_assertions VALUES(?,?,?,?,?,?,?,'proposed','undisputed','normal',?,?,?,'proposal',?,NULL,NULL,?,1,?,?)",id,sub.slug,predicate,obj?.slug??null,value,JSON.stringify(input.qualifiers),input.layer,input.visibility,input.train?1:0,communityId,actorId,digest,now,now)
    for(const x of input.support)s.run('INSERT INTO km_support VALUES(?,?)',id,x)
+   // The proposer's depth is a person's (or, for an agent, a model's) reading; without one the predicate's rule applies.
+   s.run('INSERT INTO km_depth VALUES(?,?,?,?,?)',id,input.depth??depthByRule(predicate),input.depth?(s.actor(actorId).kind==='human'?'person':'model'):'rule',input.depth?actorId:null,now)
    return this.assertionView(id,actorId)
   })
  }
@@ -297,7 +360,9 @@ export class KnowledgeModel{
  reviewAssertion(actorId:string,id:string,b:Record<string,unknown>){
   const decision=oneOf(b.decision,['accept','reject','withdraw','update'] as const,'decision')
   const note=b.note===undefined?null:text(b.note,500,true),logical=b.logical===undefined?undefined:oneOf(b.logical,logicals,'logical status'),rank=b.rank===undefined?undefined:oneOf(b.rank,ranks,'rank')
-  return transition(this.store,actorId,b.requestKey,'knowledge-model.assertion.review',{id,decision,note,logical,rank,revision:b.revision},()=>{
+  const depth=b.depth===undefined?undefined:oneOf(b.depth,depths,'depth')
+  if(depth&&decision!=='accept'&&decision!=='update')throw new Fault(400,'Depth is set when accepting or updating a statement')
+  return transition(this.store,actorId,b.requestKey,'knowledge-model.assertion.review',{id,decision,note,logical,rank,depth,revision:b.revision},()=>{
    const row=this.store.get<AssertionRow>('SELECT * FROM km_assertions WHERE id=?',id)
    if(!row||!this.reader(actorId).scope(row.community_id)||(row.visibility==='community'&&!this.reader(actorId).membersOnly(row.community_id)))throw new Fault(404,'Not found')
    if(decision==='withdraw'){if(row.proposer_id!==actorId)throw new Fault(403,'Only the proposer may withdraw a proposal');return}
@@ -315,6 +380,7 @@ export class KnowledgeModel{
     if(decision==='accept'&&!this.liveSupport(row.id,actorId).length)throw new Fault(409,'This statement no longer has a basis')
     s.run('UPDATE km_assertions SET status=?,logical=?,rank=?,review_note=?,reviewer_id=?,revision=revision+1,updated=? WHERE id=? AND revision=?',{accept:'accepted',reject:'rejected',withdraw:'withdrawn'}[decision],logical??row.logical,rank??row.rank,note,decision==='withdraw'?row.reviewer_id:actorId,s.clock(),id,row.revision)
    }
+   if(depth)s.run("INSERT INTO km_depth VALUES(?,?,'person',?,?) ON CONFLICT(assertion_id) DO UPDATE SET depth=excluded.depth,basis='person',actor_id=excluded.actor_id,updated=excluded.updated",id,depth,actorId,s.clock())
    return this.assertionView(id,actorId)
   })
  }
@@ -325,7 +391,7 @@ export class KnowledgeModel{
  private assertionView(id:string,actorId?:string){
   const a=this.store.get<AssertionRow>('SELECT * FROM km_assertions WHERE id=?',id)!
   const {digest:_d,...rest}=a
-  return {...rest,qualifiers:JSON.parse(a.qualifiers) as Record<string,string>,train:a.train===1,support:this.liveSupport(id,actorId)}
+  return {...rest,...this.depthMap()(a),qualifiers:JSON.parse(a.qualifiers) as Record<string,string>,train:a.train===1,support:this.liveSupport(id,actorId)}
  }
 
  // ---------- witnesses ----------
@@ -378,12 +444,12 @@ export class KnowledgeModel{
  summary(actorId?:string){
   const w=this.world(actorId),byClass:Record<string,number>={}
   for(const e of w.entities.values())byClass[e.class]=(byClass[e.class]??0)+1
-  return {entities:w.entities.size,assertions:w.assertions.length,excerpts:w.live.size,byClass,classes,voices,layers,predicates:Object.entries(predicates).map(([slug,p])=>({slug,family:p.family,literal:!!p.literal,added:!!p.added}))}
+  return {entities:w.entities.size,assertions:w.assertions.length,excerpts:w.live.size,byClass,classes,voices,layers,depths,predicates:Object.entries(predicates).map(([slug,p])=>({slug,family:p.family,literal:!!p.literal,added:!!p.added}))}
  }
  entities(actorId?:string,filter:{class?:string;q?:string}={}){
   const w=this.world(actorId),q=filter.q?.trim().toLowerCase()
-  const evidence=this.evidenceCounts(w)
-  return [...w.entities.values()].filter(e=>(!filter.class||e.class===filter.class)&&(!q||e.title.toLowerCase().includes(q)||e.aliases.toLowerCase().includes(q))).map(e=>({slug:e.slug,class:e.class,title:e.title,description:e.description,context:e.context_slug,communityId:e.community_id,...evidence.get(e.slug)??{statements:0,excerpts:0,voices:{}}})).slice(0,500)
+  const evidence=this.evidenceCounts(w),world=this.worldMap()
+  return [...w.entities.values()].filter(e=>(!filter.class||e.class===filter.class)&&(!q||e.title.toLowerCase().includes(q)||e.aliases.toLowerCase().includes(q))).map(e=>({slug:e.slug,class:e.class,title:e.title,description:e.description,context:e.context_slug,communityId:e.community_id,world:world(e),...evidence.get(e.slug)??{statements:0,excerpts:0,voices:{}}})).slice(0,500)
  }
  private evidenceCounts(w:ReturnType<KnowledgeModel['world']>){
   const out=new Map<string,{statements:number;excerpts:number;voices:Record<string,number>}>()
@@ -397,7 +463,8 @@ export class KnowledgeModel{
   const row=this.store.get<EntityRow>('SELECT * FROM km_entities WHERE slug=?',slug),w=this.world(actorId)
   const target=row?.state==='merged'?this.canonical(slug):row
   if(!target||!w.entities.has(target.slug))throw new Fault(404,'Not found')
-  const statements=w.assertions.filter(a=>a.subjectSlug===target.slug||a.objectSlug===target.slug).map(a=>({id:a.id,subject:a.subjectSlug,predicate:a.predicate,object:a.objectSlug,value:a.value,qualifiers:JSON.parse(a.qualifiers) as Record<string,string>,layer:a.layer,logical:a.logical,rank:a.rank,origin:a.origin,revision:a.revision,voices:[...new Set(a.support.map(x=>x.witness.voice))],support:a.support}))
+  const depthOf=this.depthMap()
+  const statements=w.assertions.filter(a=>a.subjectSlug===target.slug||a.objectSlug===target.slug).map(a=>({id:a.id,subject:a.subjectSlug,predicate:a.predicate,object:a.objectSlug,value:a.value,qualifiers:JSON.parse(a.qualifiers) as Record<string,string>,layer:a.layer,...depthOf(a),logical:a.logical,rank:a.rank,origin:a.origin,revision:a.revision,voices:[...new Set(a.support.map(x=>x.witness.voice))],support:a.support}))
   const mentions=[...w.mentions].filter(([,set])=>set.has(target.slug)).map(([id])=>w.live.get(id)!).slice(0,200)
   const voices:Record<string,number>={}
   for(const m of mentions)voices[m.witness.voice]=(voices[m.witness.voice]??0)+1
@@ -406,6 +473,7 @@ export class KnowledgeModel{
   const context=target.context_slug?this.store.get<{id:string;slug:string;title:string}>('SELECT id,slug,title FROM contexts WHERE slug=? AND active=1',target.context_slug)??null:null
   return {
    slug:target.slug,class:target.class,title:target.title,description:target.description,aliases:JSON.parse(target.aliases) as string[],origin:target.origin,revision:target.revision,communityId:target.community_id,context,
+   world:this.worldMap()(target),depth:KnowledgeModel.profile(statements),
    mergedFrom:row&&row.slug!==target.slug?row.slug:undefined,
    statements:statements.map(st=>({...st,subject:names.get(st.subject)!,object:st.object?names.get(st.object)!:null})),
    mentions,voices,diversity,
@@ -414,7 +482,7 @@ export class KnowledgeModel{
  }
  /** Typed edges for the map: accepted statements and co-mentions in one excerpt. Clustering runs offline from this. */
  graph(actorId?:string,options:{publicOnly?:boolean;train?:boolean;excerpts?:boolean}={}){
-  const w=this.world(actorId,options.publicOnly||options.train),evidence=this.evidenceCounts(w)
+  const w=this.world(actorId,options.publicOnly||options.train),evidence=this.evidenceCounts(w),world=this.worldMap(),depthOf=this.depthMap()
   const assertions=options.train?w.assertions.filter(a=>a.train===1):w.assertions
   const co=new Map<string,{a:string;b:string;weight:number;voices:Record<string,number>}>()
   for(const [ex,set] of w.mentions){
@@ -423,8 +491,8 @@ export class KnowledgeModel{
   }
   return {
    version:1,
-   nodes:[...w.entities.values()].map(e=>({id:e.slug,class:e.class,title:e.title,context:e.context_slug,...evidence.get(e.slug)??{statements:0,excerpts:0,voices:{}}})),
-   statements:assertions.map(a=>({id:a.id,source:a.subjectSlug,target:a.objectSlug,value:a.value,predicate:a.predicate,family:predicates[a.predicate]?.family??'lain',layer:a.layer,logical:a.logical,rank:a.rank,origin:a.origin,voices:[...new Set(a.support.map(x=>x.witness.voice))].sort(),support:a.support.map(x=>({excerpt:x.id,digest:x.digest,witness:x.witness.key,...(options.train?{text:x.text,licence:x.witness.licence}:{})}))})),
+   nodes:[...w.entities.values()].map(e=>({id:e.slug,class:e.class,title:e.title,context:e.context_slug,world:world(e),...evidence.get(e.slug)??{statements:0,excerpts:0,voices:{}}})),
+   statements:assertions.map(a=>({id:a.id,source:a.subjectSlug,target:a.objectSlug,value:a.value,predicate:a.predicate,family:predicates[a.predicate]?.family??'lain',layer:a.layer,...depthOf(a),logical:a.logical,rank:a.rank,origin:a.origin,voices:[...new Set(a.support.map(x=>x.witness.voice))].sort(),support:a.support.map(x=>({excerpt:x.id,digest:x.digest,witness:x.witness.key,...(options.train?{text:x.text,licence:x.witness.licence}:{})}))})),
    comentions:options.train?[]:[...co.values()].sort((x,y)=>x.a.localeCompare(y.a)||x.b.localeCompare(y.b)),
    witnesses:[...new Map([...w.live.values()].map(x=>[x.witness.key,{key:x.witness.key,kind:x.witness.kind,title:x.witness.title,url:x.witness.url,publisher:x.witness.publisher,licence:x.witness.licence,voice:x.witness.voice,scope:x.witness.communityId===null?'commons' as const:'community' as const}])).values()].sort((a,b)=>a.key.localeCompare(b.key)),
    /** Excerpts in the view, with their text, for an evidence drawer. Only with `excerpts`; each entry lists the entities it mentions. */

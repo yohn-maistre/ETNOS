@@ -1,0 +1,482 @@
+{
+ "version": 1,
+ "about": "Catatan dataset publik tentang Tanah Papua. Setiap alamat, lisensi, ukuran berkas dan checksum diperiksa pada 20 November 2026. Catatan ini hanya memuat metadata; ETNOS tidak menyimpan isi datasetnya.",
+ "datasets": [
+  {
+   "key": "doi:10.5281/zenodo.24101243",
+   "title": "Glottolog 5.4 dalam format CLDF",
+   "kind": "table",
+   "description": "Daftar bahasa, dialek dan rumpun bahasa di seluruh dunia, dengan kode Glottolog, titik acuan dan klasifikasinya. Semua bahasa di katalog ETNOS memakai kode dari Glottolog.",
+   "publisher": "Max Planck Institute for Evolutionary Anthropology",
+   "publisherUrl": "https://glottolog.org",
+   "landingPage": "https://doi.org/10.5281/zenodo.24101243",
+   "licence": "CC BY 4.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+   "issued": "2026-11-10",
+   "version": "5.4",
+   "languages": [
+    "en"
+   ],
+   "keywords": [
+    "bahasa",
+    "klasifikasi bahasa",
+    "CLDF",
+    "glottocode"
+   ],
+   "spatial": "Seluruh dunia, termasuk Tanah Papua",
+   "distributions": [
+    {
+     "title": "Arsip CLDF Glottolog 5.4",
+     "url": "https://zenodo.org/api/records/24101243/files/glottolog/glottolog-cldf-v5.4.zip/content",
+     "mediaType": "application/zip",
+     "format": "ZIP",
+     "byteSize": 51036755,
+     "checksum": {
+      "algorithm": "md5",
+      "value": "20263d852f16bbfa107f49cbd937267a"
+     }
+    }
+   ],
+   "structure": [
+    {
+     "name": "ID",
+     "dataType": "sc:Text",
+     "description": "Kode Glottolog"
+    },
+    {
+     "name": "Name",
+     "dataType": "sc:Text",
+     "description": "Nama bahasa atau rumpun"
+    },
+    {
+     "name": "Latitude",
+     "dataType": "sc:Float",
+     "description": "Lintang titik acuan"
+    },
+    {
+     "name": "Longitude",
+     "dataType": "sc:Float",
+     "description": "Bujur titik acuan"
+    },
+    {
+     "name": "ISO639P3code",
+     "dataType": "sc:Text",
+     "description": "Kode ISO 639-3"
+    },
+    {
+     "name": "Level",
+     "dataType": "sc:Text",
+     "description": "Bahasa, dialek atau rumpun"
+    },
+    {
+     "name": "Family_ID",
+     "dataType": "sc:Text",
+     "description": "Kode rumpun teratas"
+    }
+   ],
+   "citation": "Hammarström, Harald, Robert Forkel, Martin Haspelmath dan Sebastian Bank. 2026. Glottolog 5.4. Leipzig: Max Planck Institute for Evolutionary Anthropology. https://doi.org/10.5281/zenodo.24101243",
+   "accessTier": "open",
+   "about": [
+    "bahasa-ansus",
+    "bahasa-biak",
+    "bahasa-burumakok",
+    "bahasa-damal",
+    "bahasa-dem",
+    "bahasa-diuwe",
+    "bahasa-ekari",
+    "bahasa-hupla",
+    "bahasa-kamoro",
+    "bahasa-kembra",
+    "bahasa-ketengban",
+    "bahasa-kimki",
+    "bahasa-kopkaka",
+    "bahasa-korowai",
+    "bahasa-kwer",
+    "bahasa-lepki",
+    "bahasa-momuna",
+    "bahasa-moni",
+    "bahasa-murkim",
+    "bahasa-nalca",
+    "bahasa-nggem",
+    "bahasa-nipsan",
+    "bahasa-sempan",
+    "bahasa-serui-laut",
+    "bahasa-silimo",
+    "bahasa-tofanma",
+    "bahasa-towei",
+    "bahasa-una",
+    "bahasa-walak",
+    "bahasa-waropen",
+    "bahasa-western-dani",
+    "bahasa-wolani",
+    "bahasa-yaur",
+    "bahasa-yawa",
+    "bahasa-yerisiam",
+    "bahasa-yetfa"
+   ],
+   "checked": "2026-11-20"
+  },
+  {
+   "key": "doi:10.5281/zenodo.7844558",
+   "title": "Grambank 1.0.3",
+   "kind": "table",
+   "description": "Ciri tata bahasa dari 2.467 bahasa dan dialek, dengan 195 ciri per bahasa dan sumber untuk setiap nilai. Sepuluh bahasa di katalog ETNOS ada di dalamnya, termasuk Ekari, Biak dan Korowai.",
+   "publisher": "Grambank Consortium",
+   "publisherUrl": "https://grambank.clld.org",
+   "landingPage": "https://doi.org/10.5281/zenodo.7844558",
+   "licence": "CC BY 4.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+   "issued": "2023-04-19",
+   "version": "1.0.3",
+   "languages": [
+    "en"
+   ],
+   "keywords": [
+    "tata bahasa",
+    "tipologi",
+    "CLDF"
+   ],
+   "spatial": "Seluruh dunia, termasuk Tanah Papua",
+   "distributions": [
+    {
+     "title": "Arsip CLDF Grambank 1.0.3",
+     "url": "https://zenodo.org/api/records/7844558/files/grambank/grambank-v1.0.3.zip/content",
+     "mediaType": "application/zip",
+     "format": "ZIP",
+     "byteSize": 9113298,
+     "checksum": {
+      "algorithm": "md5",
+      "value": "baf806fa8647c062a7403fa9cd969a50"
+     }
+    },
+    {
+     "title": "Grambank di web",
+     "url": "https://grambank.clld.org/languages/ekar1243",
+     "mediaType": "text/html",
+     "format": "HTML"
+    }
+   ],
+   "structure": [
+    {
+     "name": "Language_ID",
+     "dataType": "sc:Text",
+     "description": "Kode Glottolog bahasa"
+    },
+    {
+     "name": "Parameter_ID",
+     "dataType": "sc:Text",
+     "description": "Kode ciri tata bahasa, misalnya GB020"
+    },
+    {
+     "name": "Value",
+     "dataType": "sc:Text",
+     "description": "Nilai ciri: 0, 1 atau ? bila belum diketahui"
+    },
+    {
+     "name": "Source",
+     "dataType": "sc:Text",
+     "description": "Sumber tertulis untuk nilai itu"
+    }
+   ],
+   "citation": "Skirgård, Hedvig dkk. 2023. Grambank v1.0 (1.0.3). Zenodo. https://doi.org/10.5281/zenodo.7844558",
+   "accessTier": "open",
+   "about": [
+    "bahasa-biak",
+    "bahasa-ekari",
+    "bahasa-kamoro",
+    "bahasa-korowai",
+    "bahasa-nalca",
+    "bahasa-nggem",
+    "bahasa-una",
+    "bahasa-waropen",
+    "bahasa-western-dani",
+    "bahasa-yawa"
+   ],
+   "checked": "2026-11-20"
+  },
+  {
+   "key": "url:https://transnewguinea.org/language/ekari",
+   "title": "Daftar kata bahasa Ekari di TransNewGuinea.org",
+   "kind": "wordlist",
+   "description": "41 kata bahasa Ekari, semuanya dari satu sumber tahun 1975 (Voorhoeve). Setiap kata dicocokkan dengan daftar arti bersama, sehingga bisa dibandingkan dengan bahasa lain di Nugini.",
+   "publisher": "TransNewGuinea.org (Simon J. Greenhill)",
+   "publisherUrl": "https://transnewguinea.org",
+   "landingPage": "https://transnewguinea.org/language/ekari",
+   "licence": "CC BY 4.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+   "languages": [
+    "en",
+    "ekg"
+   ],
+   "keywords": [
+    "daftar kata",
+    "Ekari",
+    "Mee"
+   ],
+   "temporal": {
+    "start": "1975",
+    "end": "1975"
+   },
+   "spatial": "Wilayah tutur bahasa Ekari, Papua Tengah",
+   "distributions": [
+    {
+     "title": "Halaman bahasa Ekari",
+     "url": "https://transnewguinea.org/language/ekari",
+     "mediaType": "text/html",
+     "format": "HTML"
+    }
+   ],
+   "structure": [
+    {
+     "name": "Word",
+     "dataType": "sc:Text",
+     "description": "Arti dalam daftar bersama, dalam bahasa Inggris"
+    },
+    {
+     "name": "Entry",
+     "dataType": "sc:Text",
+     "description": "Bentuk kata dalam bahasa Ekari"
+    },
+    {
+     "name": "Source",
+     "dataType": "sc:Text",
+     "description": "Sumber tertulis"
+    }
+   ],
+   "citation": "Greenhill, Simon J. 2015. TransNewGuinea.org: An Online Database of New Guinea Languages. PLoS ONE 10(10): e0141563.",
+   "accessTier": "open",
+   "about": [
+    "bahasa-ekari"
+   ],
+   "checked": "2026-11-20"
+  },
+  {
+   "key": "url:https://d-place.org/society/Ie1",
+   "title": "D-PLACE: Mee (Kapauku) dalam Ethnographic Atlas",
+   "kind": "table",
+   "description": "Satu baris data tentang masyarakat Mee dalam Ethnographic Atlas (Murdock dkk. 1999), dengan tahun acuan 1950. Datanya dikodekan dari tulisan Leopold Pospisil tahun 1958 sampai 1963. Lisensinya hanya untuk penggunaan non-komersial.",
+   "publisher": "D-PLACE",
+   "publisherUrl": "https://d-place.org",
+   "landingPage": "https://d-place.org/society/Ie1",
+   "licence": "CC BY-NC 4.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by-nc/4.0/",
+   "issued": "2025-12-19",
+   "version": "3.3",
+   "languages": [
+    "en"
+   ],
+   "keywords": [
+    "etnografi",
+    "Mee",
+    "Kapauku",
+    "Ethnographic Atlas"
+   ],
+   "temporal": {
+    "start": "1950",
+    "end": "1950"
+   },
+   "spatial": "Titik acuan 4° LS, 136° BT",
+   "distributions": [
+    {
+     "title": "Halaman masyarakat Mee di D-PLACE",
+     "url": "https://d-place.org/society/Ie1",
+     "mediaType": "text/html",
+     "format": "HTML"
+    },
+    {
+     "title": "Arsip CLDF Ethnographic Atlas 3.3",
+     "url": "https://zenodo.org/api/records/17984267/files/D-PLACE/dplace-dataset-ea-v3.3.zip/content",
+     "mediaType": "application/zip",
+     "format": "ZIP",
+     "byteSize": 7039773,
+     "checksum": {
+      "algorithm": "md5",
+      "value": "539d819a193606dddfef8346a59abfa8"
+     }
+    }
+   ],
+   "citation": "Murdock, G. P., R. Textor, H. Barry III, D. R. White, J. P. Gray dan W. T. Divale. 1999. Ethnographic Atlas. World Cultures 10: 24–136. Melalui D-PLACE, https://doi.org/10.5281/zenodo.17984267",
+   "accessTier": "open",
+   "about": [
+    "suku-mee",
+    "bahasa-ekari"
+   ],
+   "checked": "2026-11-20"
+  },
+  {
+   "key": "url:https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/download.html",
+   "title": "Global Forest Change 2000–2025 (versi 1.13)",
+   "kind": "map-raster",
+   "description": "Peta tutupan pohon tahun 2000 dan tahun hilangnya tutupan pohon sampai 2025, per piksel 30 meter, dari citra Landsat. Data ini menunjukkan arah perubahan, tetapi tidak cocok untuk menghitung luas secara pasti.",
+   "publisher": "University of Maryland, Global Land Analysis and Discovery",
+   "publisherUrl": "https://glad.earthengine.app/view/global-forest-change",
+   "landingPage": "https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/download.html",
+   "licence": "CC BY 4.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+   "version": "1.13",
+   "languages": [
+    "en"
+   ],
+   "keywords": [
+    "hutan",
+    "tutupan pohon",
+    "perubahan lahan",
+    "Landsat"
+   ],
+   "temporal": {
+    "start": "2000",
+    "end": "2025"
+   },
+   "spatial": "Seluruh dunia; tiga petak 10 derajat mencakup Tanah Papua",
+   "distributions": [
+    {
+     "title": "Tahun hilangnya tutupan pohon, petak 0° sampai 10° LS, 130° sampai 140° BT",
+     "url": "https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/Hansen_GFC-2025-v1.13_lossyear_00N_130E.tif",
+     "mediaType": "image/tiff",
+     "format": "GeoTIFF",
+     "byteSize": 25995185,
+     "checksum": {
+      "algorithm": "md5",
+      "value": "bc0557df1fa8d9d7fd9b2b581a83de82"
+     }
+    },
+    {
+     "title": "Tahun hilangnya tutupan pohon, petak 0° sampai 10° LS, 140° sampai 150° BT",
+     "url": "https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/Hansen_GFC-2025-v1.13_lossyear_00N_140E.tif",
+     "mediaType": "image/tiff",
+     "format": "GeoTIFF",
+     "byteSize": 36391861,
+     "checksum": {
+      "algorithm": "md5",
+      "value": "3e78be6c49b60e0bb1133139cda8a849"
+     }
+    },
+    {
+     "title": "Tahun hilangnya tutupan pohon, petak 10° LU sampai 0°, 130° sampai 140° BT",
+     "url": "https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/Hansen_GFC-2025-v1.13_lossyear_10N_130E.tif",
+     "mediaType": "image/tiff",
+     "format": "GeoTIFF",
+     "byteSize": 13341645,
+     "checksum": {
+      "algorithm": "md5",
+      "value": "8957ce8c3fb078372b4076e30150bed2"
+     }
+    }
+   ],
+   "citation": "Hansen, M. C. dkk. 2013. High-Resolution Global Maps of 21st-Century Forest Cover Change. Science 342: 850–853. Data: Hansen/UMD/Google/USGS/NASA, https://glad.earthengine.app/view/global-forest-change",
+   "accessTier": "open",
+   "about": [
+    "provinsi-papua",
+    "provinsi-papua-barat",
+    "provinsi-papua-barat-daya",
+    "provinsi-papua-tengah",
+    "provinsi-papua-pegunungan",
+    "provinsi-papua-selatan"
+   ],
+   "checked": "2026-11-20"
+  },
+  {
+   "key": "doi:10.5281/zenodo.7254221",
+   "title": "ESA WorldCover 10 m 2021 (v200)",
+   "kind": "map-raster",
+   "description": "Peta tutupan lahan tahun 2021 untuk seluruh dunia, per piksel 10 meter, dengan 11 kelas seperti hutan, semak, lahan basah, bakau dan permukiman. Dibuat dari citra Sentinel-1 dan Sentinel-2.",
+   "publisher": "European Space Agency (ESA)",
+   "publisherUrl": "https://esa-worldcover.org",
+   "landingPage": "https://doi.org/10.5281/zenodo.7254221",
+   "licence": "CC BY 4.0",
+   "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+   "issued": "2022-10-28",
+   "version": "v200",
+   "languages": [
+    "en"
+   ],
+   "keywords": [
+    "tutupan lahan",
+    "Sentinel",
+    "peta"
+   ],
+   "temporal": {
+    "start": "2021",
+    "end": "2021"
+   },
+   "spatial": "Seluruh dunia; Tanah Papua ada di petak besar 30° LS sampai 30° LU, 120° sampai 180° BT",
+   "distributions": [
+    {
+     "title": "Petak besar 30° LS sampai 30° LU, 120° sampai 180° BT",
+     "url": "https://zenodo.org/api/records/7254221/files/ESA_WorldCover_10m_2021_v200_60deg_macrotile_S30E120.zip/content",
+     "mediaType": "application/zip",
+     "format": "ZIP berisi GeoTIFF",
+     "byteSize": 6140377503,
+     "checksum": {
+      "algorithm": "md5",
+      "value": "c4c02a74f1b2b28c8dd272a701aea997"
+     }
+    },
+    {
+     "title": "Cara mengunduh per petak 3 derajat",
+     "url": "https://esa-worldcover.org/en/data-access",
+     "mediaType": "text/html",
+     "format": "HTML"
+    }
+   ],
+   "citation": "Zanaga, D. dkk. 2022. ESA WorldCover 10 m 2021 v200. Zenodo. https://doi.org/10.5281/zenodo.7254221",
+   "accessTier": "open",
+   "about": [
+    "provinsi-papua",
+    "provinsi-papua-barat",
+    "provinsi-papua-barat-daya",
+    "provinsi-papua-tengah",
+    "provinsi-papua-pegunungan",
+    "provinsi-papua-selatan"
+   ],
+   "checked": "2026-11-20"
+  },
+  {
+   "key": "doi:10.15468/4tp4nw",
+   "title": "Koleksi kupu-kupu Papua di Universitas Cenderawasih",
+   "kind": "table",
+   "description": "2.082 catatan spesimen kupu-kupu dari koleksi Jurusan Biologi FMIPA Universitas Cenderawasih di Jayapura, dikumpulkan antara 1905 dan 2009. Sebagian besar catatan berasal dari Provinsi Papua dan Papua Barat.",
+   "publisher": "Universitas Cenderawasih",
+      "landingPage": "https://doi.org/10.15468/4tp4nw",
+   "licence": "CC0 1.0",
+   "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "issued": "2024-12-19",
+   "version": "1.2",
+   "languages": [
+    "en"
+   ],
+   "keywords": [
+    "kupu-kupu",
+    "spesimen",
+    "keanekaragaman hayati",
+    "GBIF"
+   ],
+   "temporal": {
+    "start": "1905",
+    "end": "2009"
+   },
+   "spatial": "Nugini dan sebagian Australia; sebagian besar dari Tanah Papua",
+   "distributions": [
+    {
+     "title": "Arsip Darwin Core",
+     "url": "https://cloud.gbif.org/asia/archive.do?r=uncenpapuanbutterflycollection",
+     "mediaType": "application/zip",
+     "format": "Darwin Core Archive"
+    },
+    {
+     "title": "Halaman dataset di GBIF",
+     "url": "https://www.gbif.org/dataset/2072dee7-979c-4d0e-806c-3211c9e976ce",
+     "mediaType": "text/html",
+     "format": "HTML"
+    }
+   ],
+   "citation": "Ramandey E. R., Warikar E. L., Overduin-de Vries A. M. 2024. UNCEN – Cenderawasih University Papuan Butterflies. Versi 1.2. Universitas Cenderawasih. https://doi.org/10.15468/4tp4nw",
+   "accessTier": "open",
+   "about": [
+    "provinsi-papua",
+    "provinsi-papua-barat"
+   ],
+   "checked": "2026-11-20"
+  }
+ ]
+}

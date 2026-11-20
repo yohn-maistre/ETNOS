@@ -1,0 +1,448 @@
+{
+ "version": 1,
+ "about": "Satu titik acuan dan luas untuk setiap wilayah di katalog Tanah Papua, dihitung dari garis batas Badan Informasi Geospasial yang disederhanakan. Titik menandai wilayah pemerintahan atau wilayah acuan, bukan lokasi tertentu.",
+ "source": "Badan Informasi Geospasial, Batas Wilayah (geoservices.big.go.id), disederhanakan untuk tampilan; keanggotaan wilayah acuan dari Narasi RPJMN 2020–2024 (Bappenas). Lihat apps/web/licenses/map-data.txt.",
+ "precision": "0,01 derajat",
+ "places": {
+  "asmat": {
+   "slug": "asmat",
+   "title": "Asmat",
+   "facet": "regency",
+   "areaKm2": 25197,
+   "latitude": -5.32,
+   "longitude": 138.54
+  },
+  "biak-numfor": {
+   "slug": "biak-numfor",
+   "title": "Biak Numfor",
+   "facet": "regency",
+   "areaKm2": 2232,
+   "latitude": -0.98,
+   "longitude": 135.96
+  },
+  "bomberai": {
+   "slug": "bomberai",
+   "title": "Bomberai",
+   "facet": "customary-region",
+   "areaKm2": 27426,
+   "latitude": -3.3,
+   "longitude": 133.66
+  },
+  "boven-digoel": {
+   "slug": "boven-digoel",
+   "title": "Boven Digoel",
+   "facet": "regency",
+   "areaKm2": 23604,
+   "latitude": -5.82,
+   "longitude": 140.43
+  },
+  "deiyai": {
+   "slug": "deiyai",
+   "title": "Deiyai",
+   "facet": "regency",
+   "areaKm2": 2836,
+   "latitude": -4.16,
+   "longitude": 136.28
+  },
+  "dogiyai": {
+   "slug": "dogiyai",
+   "title": "Dogiyai",
+   "facet": "regency",
+   "areaKm2": 3830,
+   "latitude": -4.09,
+   "longitude": 135.85
+  },
+  "domberai": {
+   "slug": "domberai",
+   "title": "Domberai",
+   "facet": "customary-region",
+   "areaKm2": 71434,
+   "latitude": -1.41,
+   "longitude": 132.76
+  },
+  "fakfak": {
+   "slug": "fakfak",
+   "title": "Fakfak",
+   "facet": "regency",
+   "areaKm2": 9709,
+   "latitude": -3.2,
+   "longitude": 133.1
+  },
+  "ha-anim": {
+   "slug": "ha-anim",
+   "title": "Ha Anim",
+   "facet": "customary-region",
+   "areaKm2": 118230,
+   "latitude": -6.64,
+   "longitude": 139.82
+  },
+  "intan-jaya": {
+   "slug": "intan-jaya",
+   "title": "Intan Jaya",
+   "facet": "regency",
+   "areaKm2": 5340,
+   "latitude": -3.56,
+   "longitude": 136.79
+  },
+  "jayawijaya": {
+   "slug": "jayawijaya",
+   "title": "Jayawijaya",
+   "facet": "regency",
+   "areaKm2": 2642,
+   "latitude": -4.06,
+   "longitude": 138.9
+  },
+  "kabupaten-jayapura": {
+   "slug": "kabupaten-jayapura",
+   "title": "Kabupaten Jayapura",
+   "facet": "regency",
+   "areaKm2": 14148,
+   "latitude": -3.08,
+   "longitude": 139.94
+  },
+  "kabupaten-sorong": {
+   "slug": "kabupaten-sorong",
+   "title": "Kabupaten Sorong",
+   "facet": "regency",
+   "areaKm2": 7629,
+   "latitude": -1.17,
+   "longitude": 131.55
+  },
+  "kaimana": {
+   "slug": "kaimana",
+   "title": "Kaimana",
+   "facet": "regency",
+   "areaKm2": 17717,
+   "latitude": -3.35,
+   "longitude": 133.97
+  },
+  "keerom": {
+   "slug": "keerom",
+   "title": "Keerom",
+   "facet": "regency",
+   "areaKm2": 9547,
+   "latitude": -3.3,
+   "longitude": 140.68
+  },
+  "kepulauan-yapen": {
+   "slug": "kepulauan-yapen",
+   "title": "Kepulauan Yapen",
+   "facet": "regency",
+   "areaKm2": 2315,
+   "latitude": -1.76,
+   "longitude": 136.17
+  },
+  "kota-jayapura": {
+   "slug": "kota-jayapura",
+   "title": "Kota Jayapura",
+   "facet": "city",
+   "areaKm2": 815,
+   "latitude": -2.7,
+   "longitude": 140.93
+  },
+  "kota-sorong": {
+   "slug": "kota-sorong",
+   "title": "Kota Sorong",
+   "facet": "city",
+   "areaKm2": 195,
+   "latitude": -0.85,
+   "longitude": 131.31
+  },
+  "la-pago": {
+   "slug": "la-pago",
+   "title": "La Pago",
+   "facet": "customary-region",
+   "areaKm2": 65143,
+   "latitude": -4.21,
+   "longitude": 139.14
+  },
+  "lanny-jaya": {
+   "slug": "lanny-jaya",
+   "title": "Lanny Jaya",
+   "facet": "regency",
+   "areaKm2": 2333,
+   "latitude": -3.94,
+   "longitude": 138.53
+  },
+  "mamberamo-raya": {
+   "slug": "mamberamo-raya",
+   "title": "Mamberamo Raya",
+   "facet": "regency",
+   "areaKm2": 28175,
+   "latitude": -2.31,
+   "longitude": 137.74
+  },
+  "mamberamo-tengah": {
+   "slug": "mamberamo-tengah",
+   "title": "Mamberamo Tengah",
+   "facet": "regency",
+   "areaKm2": 4172,
+   "latitude": -3.61,
+   "longitude": 138.96
+  },
+  "mamta-tabi": {
+   "slug": "mamta-tabi",
+   "title": "Mamta (Tabi)",
+   "facet": "customary-region",
+   "areaKm2": 66803,
+   "latitude": -2.62,
+   "longitude": 138.93
+  },
+  "manokwari": {
+   "slug": "manokwari",
+   "title": "Manokwari",
+   "facet": "regency",
+   "areaKm2": 2809,
+   "latitude": -0.91,
+   "longitude": 133.76
+  },
+  "manokwari-selatan": {
+   "slug": "manokwari-selatan",
+   "title": "Manokwari Selatan",
+   "facet": "regency",
+   "areaKm2": 1827,
+   "latitude": -1.56,
+   "longitude": 134.04
+  },
+  "mappi": {
+   "slug": "mappi",
+   "title": "Mappi",
+   "facet": "regency",
+   "areaKm2": 24380,
+   "latitude": -6.82,
+   "longitude": 139.43
+  },
+  "maybrat": {
+   "slug": "maybrat",
+   "title": "Maybrat",
+   "facet": "regency",
+   "areaKm2": 5450,
+   "latitude": -1.4,
+   "longitude": 132.6
+  },
+  "meepago": {
+   "slug": "meepago",
+   "title": "Mee Pago",
+   "facet": "customary-region",
+   "areaKm2": 47452,
+   "latitude": -4.04,
+   "longitude": 136.54
+  },
+  "merauke": {
+   "slug": "merauke",
+   "title": "Merauke",
+   "facet": "regency",
+   "areaKm2": 45049,
+   "latitude": -7.71,
+   "longitude": 140.42
+  },
+  "mimika": {
+   "slug": "mimika",
+   "title": "Mimika",
+   "facet": "regency",
+   "areaKm2": 18308,
+   "latitude": -4.52,
+   "longitude": 137.25
+  },
+  "nabire": {
+   "slug": "nabire",
+   "title": "Nabire",
+   "facet": "regency",
+   "areaKm2": 11761,
+   "latitude": -3.58,
+   "longitude": 135.69
+  },
+  "nduga": {
+   "slug": "nduga",
+   "title": "Nduga",
+   "facet": "regency",
+   "areaKm2": 5919,
+   "latitude": -4.37,
+   "longitude": 138.31
+  },
+  "paniai": {
+   "slug": "paniai",
+   "title": "Paniai",
+   "facet": "regency",
+   "areaKm2": 5377,
+   "latitude": -3.75,
+   "longitude": 136.34
+  },
+  "papua": {
+   "slug": "papua",
+   "title": "Papua",
+   "facet": "province",
+   "areaKm2": 82777,
+   "latitude": -2.54,
+   "longitude": 138.45
+  },
+  "papua-barat": {
+   "slug": "papua-barat",
+   "title": "Papua Barat",
+   "facet": "province",
+   "areaKm2": 60101,
+   "latitude": -1.78,
+   "longitude": 133.19
+  },
+  "papua-barat-daya": {
+   "slug": "papua-barat-daya",
+   "title": "Papua Barat Daya",
+   "facet": "province",
+   "areaKm2": 38759,
+   "latitude": -1.03,
+   "longitude": 132.1
+  },
+  "papua-pegunungan": {
+   "slug": "papua-pegunungan",
+   "title": "Papua Pegunungan",
+   "facet": "province",
+   "areaKm2": 51425,
+   "latitude": -4.34,
+   "longitude": 139.5
+  },
+  "papua-selatan": {
+   "slug": "papua-selatan",
+   "title": "Papua Selatan",
+   "facet": "province",
+   "areaKm2": 118230,
+   "latitude": -6.64,
+   "longitude": 139.82
+  },
+  "papua-tengah": {
+   "slug": "papua-tengah",
+   "title": "Papua Tengah",
+   "facet": "province",
+   "areaKm2": 61170,
+   "latitude": -3.96,
+   "longitude": 136.81
+  },
+  "pegunungan-arfak": {
+   "slug": "pegunungan-arfak",
+   "title": "Pegunungan Arfak",
+   "facet": "regency",
+   "areaKm2": 3286,
+   "latitude": -1.33,
+   "longitude": 133.84
+  },
+  "pegunungan-bintang": {
+   "slug": "pegunungan-bintang",
+   "title": "Pegunungan Bintang",
+   "facet": "regency",
+   "areaKm2": 13825,
+   "latitude": -4.74,
+   "longitude": 140.56
+  },
+  "puncak": {
+   "slug": "puncak",
+   "title": "Puncak",
+   "facet": "regency",
+   "areaKm2": 7763,
+   "latitude": -3.96,
+   "longitude": 137.71
+  },
+  "puncak-jaya": {
+   "slug": "puncak-jaya",
+   "title": "Puncak Jaya",
+   "facet": "regency",
+   "areaKm2": 5955,
+   "latitude": -3.37,
+   "longitude": 137.85
+  },
+  "raja-ampat": {
+   "slug": "raja-ampat",
+   "title": "Raja Ampat",
+   "facet": "regency",
+   "areaKm2": 6849,
+   "latitude": -0.19,
+   "longitude": 131.03
+  },
+  "saireri": {
+   "slug": "saireri",
+   "title": "Saireri",
+   "facet": "customary-region",
+   "areaKm2": 15974,
+   "latitude": -2.22,
+   "longitude": 136.44
+  },
+  "sarmi": {
+   "slug": "sarmi",
+   "title": "Sarmi",
+   "facet": "regency",
+   "areaKm2": 14118,
+   "latitude": -2.29,
+   "longitude": 138.98
+  },
+  "sorong-selatan": {
+   "slug": "sorong-selatan",
+   "title": "Sorong Selatan",
+   "facet": "regency",
+   "areaKm2": 6636,
+   "latitude": -1.88,
+   "longitude": 132.2
+  },
+  "supiori": {
+   "slug": "supiori",
+   "title": "Supiori",
+   "facet": "regency",
+   "areaKm2": 629,
+   "latitude": -0.76,
+   "longitude": 135.63
+  },
+  "tambrauw": {
+   "slug": "tambrauw",
+   "title": "Tambrauw",
+   "facet": "regency",
+   "areaKm2": 12000,
+   "latitude": -0.8,
+   "longitude": 132.79
+  },
+  "teluk-bintuni": {
+   "slug": "teluk-bintuni",
+   "title": "Teluk Bintuni",
+   "facet": "regency",
+   "areaKm2": 19960,
+   "latitude": -1.78,
+   "longitude": 133.19
+  },
+  "teluk-wondama": {
+   "slug": "teluk-wondama",
+   "title": "Teluk Wondama",
+   "facet": "regency",
+   "areaKm2": 4793,
+   "latitude": -3.24,
+   "longitude": 134.44
+  },
+  "tolikara": {
+   "slug": "tolikara",
+   "title": "Tolikara",
+   "facet": "regency",
+   "areaKm2": 3022,
+   "latitude": -3.56,
+   "longitude": 138.47
+  },
+  "waropen": {
+   "slug": "waropen",
+   "title": "Waropen",
+   "facet": "regency",
+   "areaKm2": 10798,
+   "latitude": -2.66,
+   "longitude": 136.64
+  },
+  "yahukimo": {
+   "slug": "yahukimo",
+   "title": "Yahukimo",
+   "facet": "regency",
+   "areaKm2": 16388,
+   "latitude": -4.52,
+   "longitude": 139.61
+  },
+  "yalimo": {
+   "slug": "yalimo",
+   "title": "Yalimo",
+   "facet": "regency",
+   "areaKm2": 3124,
+   "latitude": -3.83,
+   "longitude": 139.46
+  }
+ }
+}

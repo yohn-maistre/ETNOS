@@ -31,6 +31,8 @@ import {catalogue,catalogueSummary,contextFamily} from './catalogue.ts'
 import seedLabels from './catalogues/tanah-papua-seed-labels.json' with { type: 'json' }
 import knowledgeSeed from './catalogues/tanah-papua-knowledge-seed.json' with { type: 'json' }
 import {KnowledgeModel,type KnowledgeSeed} from './knowledge-model.ts'
+import {Datasets,type DatasetSeed} from './datasets.ts'
+import datasetSeed from './catalogues/tanah-papua-datasets.json' with { type: 'json' }
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -68,7 +70,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
   const wiki=new Wiki(store),seasons=new Seasons(store),founding=new Founding(store)
-  const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups),model=new KnowledgeModel(store,groups)
+  const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups),model=new KnowledgeModel(store,groups),datasets=new Datasets(store,groups,{datasets:datasetSeed as DatasetSeed,things:(knowledgeSeed as KnowledgeSeed).entities.map(e=>({slug:e.slug,class:e.class,title:e.title,context:e.context}))})
   const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   if(options.residentBudget)resident.budget=options.residentBudget
   const requests=new AksaraRequests(store,groups)
@@ -147,6 +149,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/knowledge-model/graph')result=model.graph(actor?.id,{publicOnly:url.searchParams.get('public')==='1'})
         else if(path==='/v1/knowledge-model/export')result=model.graph(undefined,{publicOnly:true,train:url.searchParams.get('train')==='1',excerpts:url.searchParams.get('train')!=='1'})
         else if(path==='/v1/knowledge-model/queue')result=model.queue(authenticated(),url.searchParams.get('community')??undefined)
+        else if(path==='/v1/datasets')result=datasets.list(actor?.id,{thing:url.searchParams.get('thing')??undefined,context:url.searchParams.get('context')??undefined,q:url.searchParams.get('q')??undefined,kind:url.searchParams.get('kind')??undefined})
+        else if(path==='/v1/datasets/queue')result=datasets.queue(authenticated())
+        else if(parts.length===3&&parts[1]==='datasets')result=datasets.read(actor?.id,parts[2])
         else if(path==='/v1/contexts/catalogue')result=catalogueSummary(options.catalogue)
         else if(path==='/v1/contexts/talked')result=groups.talked(Number(url.searchParams.get('days')??7))
         else if(parts.length===3&&parts[1]==='contexts'){const detail=groups.contextDetail(parts[2]);result={...detail,family:contextFamily(detail,options.catalogue),work:work.list({contextId:parts[2]})}}
@@ -280,6 +285,10 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(path==='/v1/contexts/seed-labels')result=groups.applySeedLabels(caller,seedLabels as SeedLabels)
       else if(path==='/v1/knowledge-model/seed')result=model.importSeed(caller,knowledgeSeed as KnowledgeSeed)
       else if(path==='/v1/knowledge-model/entities')result=model.proposeEntity(caller,b)
+      else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='entities'&&parts[4]==='coordinates')result=model.setCoordinates(caller,parts[3],b)
+      else if(path==='/v1/datasets/seed')result=datasets.importSeed(caller,datasetSeed as DatasetSeed)
+      else if(path==='/v1/datasets')result=datasets.propose(caller,b)
+      else if(parts.length===4&&parts[1]==='datasets'&&parts[3]==='review')result=datasets.review(caller,parts[2],b)
       else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='entities'&&parts[4]==='review')result=model.reviewEntity(caller,parts[3],b)
       else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='entities'&&parts[4]==='merge')result=model.mergeEntity(caller,parts[3],b)
       else if(path==='/v1/knowledge-model/assertions')result=model.proposeAssertion(caller,b)
