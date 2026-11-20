@@ -6,24 +6,21 @@
     posts: number
     threads: number
     people: number
-    lead: { id: string; title: string } | null
+    lead: { id: string; title: string; image?: string | null } | null
   }
   export type Recorded = { id: string; slug: string; title: string; kind: string; indexed: number }
 </script>
 
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { request } from './api'
-  import ExploreTile from './ExploreTile.svelte'
-  import RegionArt, { type Atlas } from './RegionArt.svelte'
-  import WordArt from './WordArt.svelte'
-  import { regionsOf, type AtlasLang, type Ctx } from './explore-data'
+  import { request, type Community } from './api'
+  import ExploreRow from './ExploreRow.svelte'
+  import type { Ctx } from './explore-data'
   let {
     recorded,
     within = null,
-    atlas = null,
-    langs = [],
-  }: { recorded: Ctx[]; within?: Set<string> | null; atlas?: Atlas | null; langs?: AtlasLang[] } = $props()
+    communities = [],
+  }: { recorded: Ctx[]; within?: Set<string> | null; communities?: Community[] } = $props()
   let items = $state<TalkedItem[] | null>(null),
     days = $state(7)
   onMount(() => {
@@ -38,40 +35,52 @@
       .catch(() => (items = []))
     return () => abort.abort()
   })
-  const shown = $derived((items ?? []).filter((i) => !within || within.has(i.context.id)).slice(0, 8))
-  const fallback = $derived(recorded.filter((c) => c.indexed > 0 && (!within || within.has(c.id))).sort((a, b) => b.indexed - a.indexed).slice(0, 8))
+  const SIZE = 8
   const kindName: Record<string, string> = { place: 'Kabupaten', region: 'Wilayah adat', language: 'Bahasa', topic: 'Topik' }
-  const tone = (kind: string) => (kind === 'language' ? 'language' : kind === 'topic' ? 'topic' : 'place') as 'place' | 'language' | 'topic'
+  const admission: Record<string, string> = { open: 'Terbuka', approval: 'Perlu persetujuan', invite: 'Dengan undangan' }
+  type Row = { key: string; title: string; text?: string; meta: string; href: string; image?: string | null }
+
+  const talked = $derived(
+    (items ?? [])
+      .filter((i) => !within || within.has(i.context.id))
+      .slice(0, SIZE)
+      .map<Row>((t) => ({
+        key: 'c' + t.context.id,
+        title: t.lead?.title || t.context.title,
+        meta: [(kindName[t.context.kind] ?? 'Topik') + ' ' + t.context.title, t.threads + ' percakapan', t.posts + ' posting', t.people ? t.people + ' orang' : ''].filter(Boolean).join(' · '),
+        href: t.lead ? '/square/' + t.lead.id : '/contexts/' + t.context.slug,
+        image: t.lead?.image ?? null,
+      })),
+  )
+  // A quiet week leaves the list short. The most recorded topics, places and languages fill it, then communities.
+  const filler = $derived.by(() => {
+    const used = new Set((items ?? []).map((i) => i.context.id))
+    const rows: Row[] = recorded
+      .filter((c) => c.indexed > 0 && !used.has(c.id) && (!within || within.has(c.id)))
+      .sort((a, b) => b.indexed - a.indexed)
+      .map((c) => ({ key: 'x' + c.id, title: c.title, meta: (kindName[c.kind] ?? 'Topik') + ' · ' + c.indexed + ' catatan', href: '/contexts/' + c.slug }))
+    const rooms: Row[] = communities.map((c) => ({ key: 'k' + c.id, title: c.title, text: c.description, meta: 'Komunitas · ' + (admission[c.admission] ?? ''), href: '/communities/' + c.id }))
+    // Alternate, so one kind does not take the whole list.
+    const mixed: Row[] = []
+    for (let i = 0; mixed.length < rows.length + rooms.length; i++) {
+      if (rows[i]) mixed.push(rows[i])
+      if (rooms[i]) mixed.push(rooms[i])
+    }
+    return mixed
+  })
+  const shown = $derived(talked.length >= 3 ? talked : [...talked, ...filler].slice(0, SIZE))
 </script>
 
-{#snippet artFor(c: { slug: string; title: string; kind: string })}
-  {#if (c.kind === 'place' || c.kind === 'region') && atlas}<RegionArt {atlas} lit={regionsOf(c.slug, recorded, langs)} />
-  {:else}<WordArt words={[c.title]} />{/if}
-{/snippet}
-
 {#if items === null}<p class="talked-note" role="status">Memuat…</p>
-{:else if shown.length}<div class="explore-strip">
-    {#each shown as t (t.context.id)}<ExploreTile
-        tone={tone(t.context.kind)}
-        href={t.lead ? '/square/' + t.lead.id : '/contexts/' + t.context.slug}
-        title={t.lead?.title || t.context.title}
-        text={(kindName[t.context.kind] ?? 'Topik') + ' · ' + t.context.title}
-        meta={t.threads + ' percakapan · ' + t.posts + ' posting' + (t.people ? ' · ' + t.people + ' orang' : '')}
-      >
-        {#snippet art()}{@render artFor(t.context)}{/snippet}
-      </ExploreTile>{/each}
-  </div>
-  <p class="talked-note">Dari posting publik {days} hari terakhir yang berlabel tempat, bahasa atau topik.</p>
-{:else if fallback.length}<p class="talked-note lead">Belum ada percakapan berlabel dalam {days} hari terakhir. Tempat dan topik di bawah ini memiliki catatan terbanyak.</p>
-  <div class="explore-strip">
-    {#each fallback as c (c.id)}<ExploreTile tone={tone(c.kind)} href={'/contexts/' + c.slug} title={c.title} text={kindName[c.kind] ?? 'Topik'} meta={c.indexed + ' catatan'}>
-        {#snippet art()}{@render artFor(c)}{/snippet}
-      </ExploreTile>{/each}
-  </div>
+{:else if shown.length}
+  {#if !talked.length}<p class="talked-note lead">Belum ada percakapan berlabel dalam {days} hari terakhir. Daftar ini berisi topik, tempat dan komunitas yang paling ramai.</p>{/if}
+  <ul class="open-list talked-list">
+    {#each shown as r (r.key)}<ExploreRow title={r.title} text={r.text} meta={r.meta} href={r.href} image={r.image} />{/each}
+  </ul>
+  {#if talked.length}<p class="talked-note">Dari posting publik {days} hari terakhir yang berlabel tempat, bahasa atau topik.</p>{/if}
 {:else}<p class="talked-note">Belum ada percakapan berlabel. Label tempat, bahasa atau topik pada posting akan muncul di sini.</p>{/if}
 
 <style>
-  .talked-note { margin: 10px 16px 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); max-width: 62ch; }
-  .talked-note.lead { margin: 0 16px 10px; }
-  @media (min-width: 768px) { .talked-note, .talked-note.lead { margin-inline: 24px; } }
+  .talked-note { margin: 12px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); max-width: 62ch; }
+  .talked-note.lead { margin: 0 0 6px; }
 </style>
