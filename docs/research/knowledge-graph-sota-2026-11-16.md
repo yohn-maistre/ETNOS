@@ -2,7 +2,7 @@
 
 Research note · 16 November 2026 · Planning only. Nothing here is built, deployed or decided.
 
-This note builds on [the relational landscape note](knowledge-observatory-2026-11-12.md), [the intelligence catalogue](strata-intelligence-catalogue-2026-11-12.md), [organising knowledge](../knowledge-organisation-2026-11-15.md) and [the 16 November direction](../direction-2026-11-16.md). It does not repeat their reasoning on relationality, CARE, Local Contexts or label families. It adds current tools, licences and costs, and a concrete pipeline.
+This note builds on [the relational landscape note](knowledge-observatory-2026-11-12.md), [the intelligence catalogue](strata-intelligence-catalogue-2026-11-12.md), [organising knowledge](../knowledge/knowledge-organisation-2026-11-15.md) and [the 16 November direction](../plan/direction-2026-11-16.md). It does not repeat their reasoning on relationality, CARE, Local Contexts or label families. It adds current tools, licences and costs, and a concrete pipeline.
 
 How to read the claims. Every tool claim has a source number in square brackets, listed in section 7 with the page, date or version I read. "Unverified" means I could not read a primary source. "Inferred" means my own reasoning from facts I read.
 
@@ -369,7 +369,7 @@ A possible sixth, if time remains: **Aksara menggali, a recorded run.** One Aksa
 - Wikidata linking by model memory is unreliable in Indonesian [S20]. Always retrieve candidates, and accept "none".
 - The embedding map shows text similarity, not meaning in a community's own terms. Label it "kedekatan teks". Do not read clusters as peoples or as cultural categories. This echoes the 12 Nov warning.
 - Layout can leak (closed-shelf position, counts, silhouettes, cluster names built from restricted text). Section 4.5 is the guard. It needs tests before launch.
-- A map of conflict places and organisations can be turned against people. The owner decided on 16 November that conflict, casualties and displacement do go on pages, attributed to their sources (`docs/sources-and-sensitive-material-2026-11-16.md`). On the map, keep them as events and sources; do not add living persons as nodes by default.
+- A map of conflict places and organisations can be turned against people. The owner decided on 16 November that conflict, casualties and displacement do go on pages, attributed to their sources (`docs/knowledge/sources-and-sensitive-material-2026-11-16.md`). On the map, keep them as events and sources; do not add living persons as nodes by default.
 - Colonial sources (Delpher, KITLV, Koloniaal Verslag) use exonyms and a ruling perspective [S77]. Tag them, and do not use a colonial term as a node label without the people's own name beside it.
 - Licence knots. Wikipedia text is CC BY-SA, so verbatim sentences stay under that licence on the map. Marble's data is ODbL, and we do not import it. Seshat has an unresolved licence mismatch [S65, S66]. PARADISEC forbids model use [S71]. jina v5 is non-commercial [S43]. EmbeddingGemma 2 is Apache 2.0 with Google's prohibited-use policy attached [S41].
 - Free-tier surprises. A 24-hour block after exceeding the neuron limit, and model deprecations that break a Worker while REST still works, were both reported [S46]. Run our own neuron counter. EmbeddingGemma 2 on Workers AI is four days old.
@@ -405,7 +405,7 @@ All fetched on 16 November 2026 unless a date is given. "Secondary" means a blog
 
 **Project documents read**
 
-- S0. `docs/research/knowledge-observatory-2026-11-12.md`, `docs/research/strata-intelligence-catalogue-2026-11-12.md`, `docs/knowledge-organisation-2026-11-15.md`, `docs/direction-2026-11-16.md`, `seed/wiki/pages/meepago.json`, `saireri.json`, `la-pago.json` (counts: 39 pages, 525 basis sentences, 87 distinct cited URLs, my own script).
+- S0. `docs/research/knowledge-observatory-2026-11-12.md`, `docs/research/strata-intelligence-catalogue-2026-11-12.md`, `docs/knowledge/knowledge-organisation-2026-11-15.md`, `docs/plan/direction-2026-11-16.md`, `seed/wiki/pages/meepago.json`, `saireri.json`, `la-pago.json` (counts: 39 pages, 525 basis sentences, 87 distinct cited URLs, my own script).
 
 **References**
 

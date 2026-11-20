@@ -6,7 +6,7 @@ Strata is an engine for communities to turn conversation into shared knowledge a
 
 The most useful product promise is: **ask together, investigate under local authority, publish what is approved, and keep the result useful.** This is more concrete than either “an Indigenous social network” or “a knowledge graph.” It should work for an ordinary person without an agent or protocol knowledge.
 
-The owner's later refinements are recorded in [Decision 002](../decision-002-groups-knowledge-and-regional-surfaces.md). In particular, informal requests/offers below stay conversation; PublicWork requires explicit institution/governed-community sponsorship. Durable local Groups/Spaces are intended engine capabilities, with a separate experimental AT adapter.
+The owner's later refinements are recorded in [Decision 002](../decisions/decision-002-groups-knowledge-and-regional-surfaces.md). In particular, informal requests/offers below stay conversation; PublicWork requires explicit institution/governed-community sponsorship. Durable local Groups/Spaces are intended engine capabilities, with a separate experimental AT adapter.
 
 ## Assessment of the supplied summary
 

@@ -1,0 +1,109 @@
+# Accountable Aksara participation and an agent-friendly commons
+
+Research/design checkpoint, 3 November 2026. Runtime changes in this release are limited to the [public decision pilot](../decisions/decision-pilot-2026-11-03.md) and [friends-test UI release](../history/release-2026-11-03-friends.md). This document does not deploy agent enrollment, MCP, WebMCP, institutional verification, attestation or autonomous publication.
+
+## Recommendation
+
+Keep Aksara as the primary agent family. Give each institution/community its own stable logical Aksara identity and scoped roles. Deployment keys may rotate or move between a laptop, VM and Node without moving institutional ownership or rewriting historical attribution. Avoid one global Aksara credential carrying every institution's authority.
+
+An agent can participate alongside people with its own authorship. Participation does not imply official representation, voting eligibility, private-source access or moderator power. Its owner, delegation and human review must remain legible. Other agent families can later use the same enrollment and policy interfaces; no second ungoverned agent API is needed.
+
+Four independent facts are required: who controls the institution; which agent it authorized; which workload is connecting; what this workload may do now. Public names, model brands, AT handles, agent cards and certificates answer only parts of that question.
+
+## Research method and evidence
+
+Time window requested: July 1–November 3, 2026 inclusive. Exa discovery covered 55 search results across agent internet, Linux Foundation/Block, government certification/devices, workload trust and A2A. Relevant primary pages were then read with Firecrawl. Search snippets were not treated as a security specification. Older foundational specifications/regulations are identified below. Live/latest documentation was reviewed on November 3, without inventing a publication date.
+
+| Source/date | What is useful | Limit for ETNOS |
+|---|---|---|
+| [Cloudflare: Agentic Internet](https://blog.cloudflare.com/the-agentic-internet/), Aug 6 | Readable, discoverable, callable interfaces; structured actions; bot authentication; minimize repeated retrieval | Product architecture, not institutional accreditation. Payment features are unnecessary for the current square. |
+| [Cloudflare: next MCP](https://blog.cloudflare.com/mcp-v2/), Aug 6; [MCP 2026-07-28 auth](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) | Stateless request protocol; resource/issuer binding, preregistered clients and metadata; application state remains separate | A stateless protocol does not remove durable jobs, current-policy checks or idempotency. |
+| [Workers OAuth Provider v1](https://developers.cloudflare.com/changelog/post/2026-10-01-workers-oauth-provider-1x/), Oct 1 | Separate authorization/resource server, service-binding token validation, step-up scopes and wrong-audience rejection | Candidate library for the adapter, not evidence that it already implements our institutional grant semantics or every optional OAuth extension. |
+| [MCP client credentials extension](https://modelcontextprotocol.io/extensions/auth/oauth-client-credentials), stable 2026-07-28 spec linked by current docs | Supported noninteractive public-key JWT assertions for registered headless clients | Client authentication does not create institutional representation rights. Use maintained SDK flows, not a new token format. |
+| [Cloudflare WebMCP](https://blog.cloudflare.com/webmcp/), Aug 6; [Commerce follow-up](https://blog.cloudflare.com/webmcp-commerce/), Oct 21 | Typed actions in an active browser session; fewer DOM guesses | Still preview/experimental. It acts in that human browser session, not as a persistent independently enrolled Aksara daemon. |
+| [Block: Buzz](https://engineering.block.xyz/blog/buzz), July 21 | Own agent keys; owner-signed narrow authority while preserving agent authorship; shared channels, reviews and Git | Borrow semantics; no Nostr migration or wholesale donor copy is needed for AT/Strata. |
+| [Block: Buzz on a phone](https://engineering.block.xyz/blog/a-buzz-on-your-phone), July 29; [agent configuration](https://engineering.block.xyz/blog/configuring-agents-in-buzz), Aug 10 | Portable runtime, event-triggered turns, operator control, persistent private memory and encrypted telemetry | Do not adopt the described broad unsandboxed local runtime defaults. A signed public message is still untrusted content and never grants arbitrary local tools. |
+| [LF AGNTCon/MCPCon program](https://events.linuxfoundation.org/archive/2026/agntcon-mcpcon-north-america/), Oct 22–23 | Concrete human-agent collaboration, durable identity, scoped capabilities and review are current operational concerns | Conference descriptions are supporting practitioner context, not conformance claims. |
+| [NIST agent IAM tenets](https://www.nist.gov/blogs/cybersecurity-insights/design-tenets-agent-identity-management-systems), Oct 27 | Distinct identities, attenuated delegation, short-lived/current authorization, signed mandates, independent evidence, deterministic access policy outside reasoning | Proposed design guidance/blog, not a certification or finalized mandatory profile. Particularly aligned with Aksara's current authority invariants. |
+| [IETF WIMSE AIMS draft-01](https://datatracker.ietf.org/doc/html/draft-ietf-wimse-aims-01), Nov 2 | Agent identity, credential provisioning, OAuth and monitoring composed from existing mechanisms | Work in progress, intended Informational; do not advertise draft compliance as a mature universal agent identity standard. |
+| [A2A enterprise guidance](https://a2a-protocol.org/latest/topics/enterprise-ready/), current docs | HTTP authentication and per-skill/data authorization; peer tasks without sharing internal tools/memory | A discovery/agent card is not a credential or institutional mandate. Use for real peer work later; do not add another social posting ingress. |
+| [SPIRE concepts](https://spiffe.io/docs/latest/spire-about/spire-concepts/), older foundational/current docs | Distinct node and workload attestation, trust domains and short-lived workload identities | SPIFFE identifies workloads under a trusted issuer; ETNOS must explicitly trust the issuer and map the subject to an approved deployment. |
+| [BSSN Regulation 6/2024](https://peraturan.bpk.go.id/Details/309806/peraturan-bssn-no-6-tahun-2024), Sept 2024, official entry lists berlaku | BSrE's government certification services include issuance, renewal, revocation and compliance assessment | Does not establish a generic AI delegation credential or nationwide attestation/device-provisioning service. |
+
+The BSrE AMS user guide was discoverable in Exa excerpts describing RA/verifier/user roles and certificate registration/renewal/revocation. Direct retrieval via Firecrawl failed and the direct URL returned 503; its detailed current certificate purposes and integration contract remain unverified. Root CA material found in search was not substituted for the BSrE policy. There is no verified generic remote attestation API from BSSN in this research. Do not present certificate acceptance as an implemented or legally qualified government onboarding service.
+
+## Existing foundations and seams
+
+Aksara catalogue v2.5.8, dated October 31, §§28.15 and 8B.3 already separates legitimate representation, public moderation and optional remote attestation. Attestation is an admission signal; local existence is not dependent on cloud approval. Preserve that decision after the move to ordinary machines.
+
+Read-only inspection of aksara-core at 2017d5b4b9363cad7ccf90e6cf964a1cd9641dfd found a local STDIO MCP gateway advertising resources but no tools, and a loopback read port with explicit principal/lane restrictions. These are not a remote enrollment service. Aksara's current policy invariants require principal, institution, lane audience, purpose, policy epoch and work revision/generation at use. Its resident runtime already exists; do not build a competing Aksara brain inside Strata or migrate its institutional memory into the public forum.
+
+Strata's current operator_id links an agent to a human operator. Posting, editorial and work grants are independent. Government/institution-style group names are user content and are not verified institutions. The existing SQLite audit is not an externally anchored tamper-evident institutional evidence service. The release's real-HTTP local simulation proves current grant checks, not any missing production identity seam.
+
+## Proposed authority model
+
+| Object | Binding and lifecycle |
+|---|---|
+| Institution/community authority | Stable ID; approved administrators; verification method, reviewer and status. Public identity evidence is minimal; sensitive documents stay protected. An institution's own administrative legitimacy is distinct from ETNOS platform moderation. |
+| Logical agent | Stable ID, agent kind, one owning trust domain, visible accountable operator/team and approved software family. Switching institutions creates a new identity; old history remains attributable to the old issuer. |
+| Deployment | Unique public key/workload subject per installation, registered against one agent/institution. Active/suspended/revoked state, key rotation, configuration and optional posture assurance. Never share one private key across offices or machines. |
+| Mandate | Issuer, agent/deployment, institution, community, purpose, exact operations, resource/source eligibility, expiry, budgets and revocation epoch. Local membership and source-release policy still apply. Delegation may narrow rights only. |
+| Task/action | Stable task ID, current revision, lease/generation, request key and payload digest. Cancellation fences new effects. Uncertain remote effects require receipt lookup/reconciliation before another send. |
+| Publication/review receipt | Original agent author, institutional delegation, exact reviewed content digest, reviewer(s), time and outcome. No private original IDs or sensitive source/attestation evidence in public records. |
+
+One institution may authorize multiple Aksara roles and deployments. Aksara can work in several communities only with independent grants for each. A hosting machine may eventually run several institutions with qualified isolation, separate keys, stores and processes; that is not one agent with an institution dropdown. Prefer one logical tenant per process for the first implementation. A shared brand/model is never the trust boundary.
+
+## Enrollment and spoof resistance
+
+1. Verify an institution's representative outside public chat. Domain/DNS control is useful evidence but does not prove legal authority. For government enrollment, verify the named office and current authorized signatory through official channels; retain a private verification receipt. Community/Indigenous authorities need their own locally legitimate process, not mandatory government accreditation.
+2. Where appropriate and technically qualified, accept a valid BSrE/recognized certificate-backed signed appointment as supporting evidence. Validate chain, issuer policy, certificate purpose, expiry, revocation and signer authority under the actual applicable profile. A valid personal certificate does not prove current office-holding or permission to delegate to Aksara. Never copy an official's TTE private key into the agent.
+3. Authorized institutional administrators register the logical agent and deployment public key. The deployment proves possession against a fresh, expiring, single-use challenge bound to this institution, agent, key and ETNOS resource. Sensitive government enrollment and root-admin changes should require two authorized human approvals plus a recovery procedure; no LLM evaluates identity evidence to grant access.
+4. Use the supported OAuth mechanism to issue short-lived, audience-bound credentials for the approved deployment. Keep signing material outside prompts and agent-writable memory. Prefer isolated broker/OS-keystore/TPM-backed signing where available. Registered assertion identity and access-token audience have different purposes; use the maintained extension/SDK validation rather than hand-rolled JWT logic. Add sender-constrained credentials where the selected stack supports them; a signed client assertion alone does not bind a subsequently stolen bearer token to its sender.
+5. On every action resolve the authenticated principal against the server registry. Ignore caller-supplied author/institution/verified flags. Recheck current deployment state, administrators/delegation, membership, mandate, policy epoch, task revision and source eligibility at dispatch and publication. A token valid at task start cannot authorize a later revoked effect.
+6. Support separate emergency switches for one task, deployment, agent, institution and community automation. Suspend active sessions and new effects; preserve real receipts and allow incident review. Rotation/recovery never grants broader scopes or silently replays uncertain work.
+
+Copying the name/avatar, running the open-source Aksara binary or presenting a self-issued key will not reproduce this authorization chain. No cryptographic design guarantees that an authorized but compromised or prompt-injected agent always says sensible things. That risk requires sandboxing, strict source/egress policy, review gates, monitoring, corrections and recovery as well.
+
+## Role labels and official speech
+
+Default public attribution: **Agen** → **Dikelola oleh [institution/community]** → role/mandate details on demand. Server-computed verification/mandate state controls labels; user-authored profile text cannot mint them. Preserve what was authorized at publication time while showing current suspension/revocation separately. Expose enough for people to report/dispute an agent without exposing private admin records, NIK, serial numbers, TPM endorsement keys or internal institution relationships.
+
+A worker's result, a steward's facilitation, a sourced informational reply and an official statement are different actions. Steward privileges are scoped; they do not automatically make the agent a public moderator or publisher. An institution affiliation badge is not an endorsement of each sentence.
+
+For **official statements**, require explicit human authority and exact digest-bound review before publication; use two-person review where the institution's risk policy requires it. The visible label should identify the approval/statement, not suggest every casual agent reply carries a government seal. Agents cannot approve their own wiki changes, certify their own facts or manufacture human poll participation. Public corrections and withdrawals must explain the outcome without promising removal from every public replica.
+
+## Attestation without mandatory special hardware
+
+Start with portable, explicitly registered deployment keys. For managed clouds/Kubernetes, evaluate provider workload identity or SPIFFE/SPIRE mapped to the deployment registry. Trust-domain federation is explicit, not trust-any-SPIFFE-issuer. Node enrollment and workload attestation are separate steps.
+
+For higher-risk institutional capabilities, a policy may require TPM/TEE evidence and non-exportable keys. A qualified verifier must check freshness/nonce, expected hardware identity, measured boot/workload coverage, allowed versions/configuration, revocation and expiry; bind the resulting assurance to the actual credential key to prevent relay/cuckoo substitution. Plan upgrades, recovery and stale/offline evidence behavior. A generic TPM present flag, signed model name or product certificate is insufficient.
+
+Attestation can reduce selected key/runtime risks. It does not establish institutional appointment, consent to release private records, factual correctness or immunity to runtime compromise/prompt injection. Unattested ordinary machines can still run Aksara with appropriately lower privileges. Expired assurance withholds the sensitive remote capability, rather than deleting local institutional work or blocking the agent's existence.
+
+## Pleasant agent entrance and persistent work
+
+Use one core authority/API path with several thin adapters:
+
+- Readable: bounded JSON/Markdown representations, canonical IDs, explicit audience/provenance, revisions/ETags, cursor pagination and current access filtering. HTML, llms.txt and AUTH.md aid discovery; no private metadata in public discovery.
+- Discoverable: a small versioned capability catalog, MCP protected-resource metadata and human-readable auth guidance. Agent cards expose public skills only. An unknown client can discover public interfaces without becoming an approved participant.
+- Callable: a few typed tools mapping to existing use cases: read/search/thread context, inspect own grants, create a scoped post, propose a wiki change, inspect work, submit a result and query action receipts. These are proposed names/use cases, not deployed endpoints. Avoid arbitrary SQL, general admin shells or caller-selected remote URLs.
+- Persistent: durable event inbox and cursor, task states (queued/working/needs_input/review/completed/failed/cancelled), revision-fenced claims/leases, bounded retries for safe reads, no blind write retry, backpressure and explicit budgets. MCP's stateless core does not replace these records. Crash/restart must preserve intent and reconciliation.
+- Cooperative: mentions and allowed subscriptions wake a bounded turn; ordinary community posts are evidence, not commands. An authenticated command source still only has its explicit task permissions. Unsolicited auto-replies default off; rate caps, no agent-to-agent reply loops, quiet hours, per-community mute, report and human handoff keep people in control.
+- Private: Aksara keeps institutional memory, execution and protected sources. Public summaries require an explicit reviewed release; public corrections must invalidate derived indexes and retrieval. Scope procedural memory to the current institution/lane/purpose, never inject another office's knowledge because embeddings are similar.
+- Inspectable: user-facing work items show progress, blockers, citations and review status. Private operator workbench shows jobs, budgets, grants, deployment health and emergency stop. Persistent identity belongs in the normal square; an operator workbench is not a separate unmoderated agent social universe.
+
+Cloudflare Workers can host a thin MCP resource server. The existing Strata DO/core remains the transactional authority for square actions. Authorization-server separation via the October OAuth library is worth a bounded integration test. Aksara runs its resident runtime wherever deployed; schedules/events can wake that runtime without giving Strata all its credentials. Evaluate A2A only when real peer-to-peer tasks need it. WebMCP is an optional human-session convenience after the remote entrance is correct. No mandatory payments, global identity registry or new orchestration framework is needed for this phase.
+
+Decision models perform relevance triage, never identity verification, access decisions or official truth certification. The current Clef pilot remains human-requested/public-only. Automatic clustering can later feed the same review queue after Indonesian/Papuan mixed-language evaluation, abstention checks and duplicate-event testing. No generic free inference endpoint should receive protected institutional content by default.
+
+## Implementation order and release gates
+
+1. Formalize the institution/agent/deployment/mandate model and human enrollment/recovery UI; keep existing human OAuth, community membership and private boundaries intact.
+2. Add registered remote credentials and one read tool, then one bounded post/proposal flow. Show authoritative agent/operator labels and a receipt. Exercise revocation before adding autonomous schedules.
+3. Integrate one local Aksara deployment through that actual authenticated entrance. Test two simulated institutions, separate keys, policy changes and restart/replay; no fake production officials or unlabelled account seeding.
+4. Add durable inbox/tasks and review handoff; then a small opt-in steward pilot. Institution/source publication stays reviewed.
+5. Evaluate hardware/workload attestation for selected capabilities and government enrollment only after the actual issuer/policy/evidence contract is confirmed. Obtain appropriate deployment/security review before claiming high-assurance government qualification.
+
+Required negative tests include copied names/self-issued certificates; wrong issuer/audience/key/tenant; replayed enrollment/assertion/request; stale administrator/deployment/mandate/source rights; cross-institution memory and search; prompt-injected public posts requesting privileged tools; an ordinary agent reply requesting an official label; changed content after review; cancellation/expiry during asynchronous delivery; lost acknowledgements and duplicate workers; malicious callback URLs; compromised verifier and recovery/key rotation. Public/discovery endpoints must reveal no protected group existence, deployment posture or source identifiers. Rate/budget enforcement must survive restarts and multiple grants.
+
+Open choices before runtime implementation: exact government verification partner/profile; institution administrator quorum and recovery; acceptable signing/key storage on ordinary machines; OAuth extension interoperability with the chosen library; which roles need human approval on every public effect versus a tightly bounded task; and which assurance level protects which private or official action. No user approval is needed to document/test these boundaries; activating a verified institution requires that institution's actual authorized representative and evidence.

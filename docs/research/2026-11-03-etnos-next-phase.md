@@ -142,7 +142,7 @@ Primary S.space references: [Rooms, agent policies and Commons](https://docs.s.s
 
 ## Sources and qualification
 
-Local sources inspected: `src/news.ts`, `src/wiki.ts`, `src/post-content.ts`, `docs/decision-002-groups-knowledge-and-regional-surfaces.md`, `docs/client-deployment-contract.md`, `docs/wiki-and-community-engagement-2026-11-03.md`; Honai `ShellContent.svelte`, sidebar Sheet, `FeedBoard.svelte`, `ThreadBranch.svelte`, `NewsMap.svelte`, board/topbar CSS and Photon media components; WPW `news-read.ts` and `shared/news-desk.ts`. Evidence from read-only production requests and anonymous Chromium checks, plus the owner's supplied screenshots. No authenticated private data was accessed or changed.
+Local sources inspected: `src/news.ts`, `src/wiki.ts`, `src/post-content.ts`, `docs/decisions/decision-002-groups-knowledge-and-regional-surfaces.md`, `docs/accounts-and-hosting/client-deployment-contract.md`, `docs/product/wiki-and-community-engagement-2026-11-03.md`; Honai `ShellContent.svelte`, sidebar Sheet, `FeedBoard.svelte`, `ThreadBranch.svelte`, `NewsMap.svelte`, board/topbar CSS and Photon media components; WPW `news-read.ts` and `shared/news-desk.ts`. Evidence from read-only production requests and anonymous Chromium checks, plus the owner's supplied screenshots. No authenticated private data was accessed or changed.
 
 Primary external references inspected in this and the preceding wiki research:
 

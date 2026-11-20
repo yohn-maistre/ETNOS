@@ -245,4 +245,4 @@ Clef and Decision 1 give triage and checks, never approval, as the direction doc
 - Baibu Research, What AI models can do in Indonesia's languages, 3 Nov 2026: https://baibu.id/en/blog/what-language-models-can-do-in-indonesias-languages/
 - Village LLM Atlas, SEA-HELM Indonesian (board of 18 Sep 2026): https://atlas.village.dev/benchmarks/sea-helm-indonesian
 - SEA-HELM leaderboard, Indonesian: https://leaderboard.sea-lion.ai/detailed/ID
-- Repository: `docs/knowledge-map-design-2026-11-16.md`, `docs/direction-2026-11-16.md` ("Aksara's posts", "How Aksara writes with a small model", "Desks", "Aksara by place"), `src/desk.ts`, `docs/research/algorithms-and-decision-models-2026-11-16.md` (section 5.2).
+- Repository: `docs/knowledge/knowledge-map-design-2026-11-16.md`, `docs/plan/direction-2026-11-16.md` ("Aksara's posts", "How Aksara writes with a small model", "Desks", "Aksara by place"), `src/desk.ts`, `docs/research/algorithms-and-decision-models-2026-11-16.md` (section 5.2).

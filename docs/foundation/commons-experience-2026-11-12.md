@@ -1,6 +1,6 @@
 # Commons experience and Node integration — 12 November 2026
 
-Owner refinement, before the 14 November demonstration. This supplements the complete foundation; it does not replace its source or describe unbuilt features as delivered. Canonical UI is `apps/web`. [Execution plan](execution-plan.md), [feature ledger](feature-ledger.md), [next demo sequence](../demo-release-next-2026-11-12.md), [writing experience](../writing-and-context-plan-2026-11-12.md).
+Owner refinement, before the 14 November demonstration. This supplements the complete foundation; it does not replace its source or describe unbuilt features as delivered. Canonical UI is `apps/web`. [Execution plan](execution-plan.md), [feature ledger](feature-ledger.md), [next demo sequence](../competition/demo-release-next-2026-11-12.md), [writing experience](../product/writing-and-context-plan-2026-11-12.md).
 
 ## One understandable model
 

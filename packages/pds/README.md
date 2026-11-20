@@ -71,4 +71,4 @@ npm test
 
 The build command is a dry run against `wrangler.test.jsonc`, containing **public synthetic fixture keys**. Never deploy that fixture. Generated operator profiles are separate. Tests cover signed repository/CAR interoperability, R2 visibility, bounds, restart, refresh replay/logout and real OAuth client integration. They are not a full upstream conformance run, load test, passkey/recovery qualification or independent audit. OAuth grant-management/revocation UX and complete recovery remain qualification gates too; do not infer provider-wide token revocation from local ETNOS logout. Production signup remains closed pending those gates.
 
-Public repo records and private Aksara/community data remain separate. See [Decision 005](../../docs/decision-005-node-account-data-planes.md) for permissioned Spaces, purpose/consent policies and node deployment profiles.
+Public repo records and private Aksara/community data remain separate. See [Decision 005](../../docs/decisions/decision-005-node-account-data-planes.md) for permissioned Spaces, purpose/consent policies and node deployment profiles.

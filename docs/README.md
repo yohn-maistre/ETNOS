@@ -8,87 +8,87 @@ Read these in order to understand the whole project.
 
 | Order | Document | What it gives you |
 | --- | --- | --- |
-| 1 | [what-strata-is.md](what-strata-is.md) | The whole picture in plain words: a social platform organised around places and peoples, with a sourced wiki, Aksara and a community dictionary. It ends with a plain Indonesian paragraph. |
-| 2 | [communities-spaces-2026-11-19.md](communities-spaces-2026-11-19.md) | The flagship. Talk in a community becomes structured knowledge that the community owns. It also covers the site hierarchy, where private things live, AT Protocol spaces and Periksa. |
-| 3 | [platform-2026-11-19.md](platform-2026-11-19.md) | The building blocks in the code and planned, and how peoples, languages and private spaces relate. |
-| 4 | [strata-model-2026-11-17.md](strata-model-2026-11-17.md) | The layers, columns and places that organise a deployment, and how one grows from nothing. |
+| 1 | [what-strata-is.md](plan/what-strata-is.md) | The whole picture in plain words: a social platform organised around places and peoples, with a sourced wiki, Aksara and a community dictionary. It ends with a plain Indonesian paragraph. |
+| 2 | [communities-spaces-2026-11-19.md](plan/communities-spaces-2026-11-19.md) | The flagship. Talk in a community becomes structured knowledge that the community owns. It also covers the site hierarchy, where private things live, AT Protocol spaces and Periksa. |
+| 3 | [platform-2026-11-19.md](plan/platform-2026-11-19.md) | The building blocks in the code and planned, and how peoples, languages and private spaces relate. |
+| 4 | [strata-model-2026-11-17.md](plan/strata-model-2026-11-17.md) | The layers, columns and places that organise a deployment, and how one grows from nothing. |
 | 5 | [research/epistemic-multiplex-2026-11-19.md](research/epistemic-multiplex-2026-11-19.md) | The knowledge model of Entity, Assertion and Witness, with its research programme. |
-| 6 | [framing-and-impact-2026-11-17.md](framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, the evidence, the laws and the competition. |
+| 6 | [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, the evidence, the laws and the competition. |
 
 ## Rules for writing
 
 - [voice.md](voice.md) sets how every public sentence is written. It asks for the answer first, everyday words, short complete sentences, no teasers, no closing summaries and no em dashes.
-- [lessons-2026-11-20.md](lessons-2026-11-20.md) collects what to remember about the design, the identity host, invites, deploys and working alongside helpers.
+- [lessons-2026-11-20.md](plan/lessons-2026-11-20.md) collects what to remember about the design, the identity host, invites, deploys and working alongside helpers.
 - [naming.md](naming.md) sets plain names that say what a thing is or does, and lists the renames of 18 and 19 November.
 
 ## Which document wins
 
-Dates in file names show when a document was written, and older plans are kept as history. The showcase plan and the open-work list decide what is built before the showcase. [direction-2026-11-16.md](direction-2026-11-16.md) remains the longer plan of record. For framing and story, the framing document decides.
+Dates in file names show when a document was written, and older plans are kept as history. The showcase plan and the open-work list decide what is built before the showcase. [direction-2026-11-16.md](plan/direction-2026-11-16.md) remains the longer plan of record. For framing and story, the framing document decides.
 
 | Question | Document |
 | --- | --- |
-| What do we build next, and in what order? | [showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md) §25 and [open-work-2026-11-17.md](open-work-2026-11-17.md) |
-| What may the proposal claim, and where is each claim proven? | [proposal/claims-2026-11-18.md](proposal/claims-2026-11-18.md) |
-| What are the eight threads of rationale, with laws and policy? | [rationale-threads-2026-11-19.md](rationale-threads-2026-11-19.md) |
+| What do we build next, and in what order? | [showcase-plan-2026-11-17.md](plan/showcase-plan-2026-11-17.md) §25 and [open-work-2026-11-17.md](plan/open-work-2026-11-17.md) |
+| What may the proposal claim, and where is each claim proven? | [proposal/claims-2026-11-18.md](competition/claims-2026-11-18.md) |
+| What are the eight threads of rationale, with laws and policy? | [rationale-threads-2026-11-19.md](plan/rationale-threads-2026-11-19.md) |
 | How will the community dictionary and grammar work? | [research/community-dictionary-2026-11-19.md](research/community-dictionary-2026-11-19.md) |
 | What was built for the identity host and the knowledge model? | [research/pds-multi-identity-build-2026-11-19.md](research/pds-multi-identity-build-2026-11-19.md) and [research/knowledge-model-build-2026-11-19.md](research/knowledge-model-build-2026-11-19.md) |
-| Which code is ours and which existed before? | [code-disclosure-2026-11-17.md](code-disclosure-2026-11-17.md) |
+| Which code is ours and which existed before? | [code-disclosure-2026-11-17.md](competition/code-disclosure-2026-11-17.md) |
 | What does the history of the project show? | [evidence/README.md](evidence/README.md) |
 
 ## Plan of record
 
 | Document | What it holds |
 | --- | --- |
-| [communities-spaces-2026-11-19.md](communities-spaces-2026-11-19.md) | The flagship (19 Nov). Talk becomes knowledge the community owns; the site hierarchy; private spaces on three hosting modes; AT Protocol spaces and how ETNOS maps onto them; private Kamus and Tata bahasa; Periksa; build order and owner decisions |
-| [platform-2026-11-19.md](platform-2026-11-19.md) | What Strata gives a people, its building blocks in the code and planned, and how peoples, languages and private spaces relate |
-| [rationale-threads-2026-11-19.md](rationale-threads-2026-11-19.md) | Eight threads of rationale for the proposal (written about us, knowledge sovereignty, a rooted observatory, two eyes, living knowledge, a commons with a staff, trustworthy, sustainable and portable), each with our findings, research, features with status, laws and policy (UUD, UU 5/2017, Otsus, PP 56/2022, Nagoya, Permen LHK P.34/2017, RIPK, AI drafts and more) and indicators; mapped to proposal sections and slides |
-| [framing-and-impact-2026-11-17.md](framing-and-impact-2026-11-17.md) | The case for Strata in one place: the owner's intent, what the BUDAYA GO! 2026 juknis asks for, problem statements and evidence, impact and indicators, flagship demo, last-mile ideas (Karya, voice, lessons from Nextdoor), data flagships built on the state's cultural data, card primitives for knowledge and research, naming, why AT Protocol, models, business, compliance, the field. Living ground truth for framing |
-| [code-disclosure-2026-11-17.md](code-disclosure-2026-11-17.md) | Which code we wrote and which existed before (Cirrus, Photon via Honai, PieFed-inspired behaviour, libraries), with licences. Open item: the Photon notice is missing from the licence files |
-| [showcase-plan-2026-11-17.md](showcase-plan-2026-11-17.md) | What ETNOS is for the showcase and how we build it: framing, accounts, places and claims, language rooms, seven Aksara, plain names, automation, questions for the owner |
-| [strata-model-2026-11-17.md](strata-model-2026-11-17.md) | The Strata model: layers, columns, building upward from a place, social first, places as spine and overlays |
-| [direction-2026-11-16.md](direction-2026-11-16.md) | Current direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work |
-| [status.md](status.md) | What the engine does today, by area |
-| [roadmap.md](roadmap.md) | Earlier public-square-first roadmap |
+| [communities-spaces-2026-11-19.md](plan/communities-spaces-2026-11-19.md) | The flagship (19 Nov). Talk becomes knowledge the community owns; the site hierarchy; private spaces on three hosting modes; AT Protocol spaces and how ETNOS maps onto them; private Kamus and Tata bahasa; Periksa; build order and owner decisions |
+| [platform-2026-11-19.md](plan/platform-2026-11-19.md) | What Strata gives a people, its building blocks in the code and planned, and how peoples, languages and private spaces relate |
+| [rationale-threads-2026-11-19.md](plan/rationale-threads-2026-11-19.md) | Eight threads of rationale for the proposal (written about us, knowledge sovereignty, a rooted observatory, two eyes, living knowledge, a commons with a staff, trustworthy, sustainable and portable), each with our findings, research, features with status, laws and policy (UUD, UU 5/2017, Otsus, PP 56/2022, Nagoya, Permen LHK P.34/2017, RIPK, AI drafts and more) and indicators; mapped to proposal sections and slides |
+| [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | The case for Strata in one place: the owner's intent, what the BUDAYA GO! 2026 juknis asks for, problem statements and evidence, impact and indicators, flagship demo, last-mile ideas (Karya, voice, lessons from Nextdoor), data flagships built on the state's cultural data, card primitives for knowledge and research, naming, why AT Protocol, models, business, compliance, the field. Living ground truth for framing |
+| [code-disclosure-2026-11-17.md](competition/code-disclosure-2026-11-17.md) | Which code we wrote and which existed before (Cirrus, Photon via Honai, PieFed-inspired behaviour, libraries), with licences. Open item: the Photon notice is missing from the licence files |
+| [showcase-plan-2026-11-17.md](plan/showcase-plan-2026-11-17.md) | What ETNOS is for the showcase and how we build it: framing, accounts, places and claims, language rooms, seven Aksara, plain names, automation, questions for the owner |
+| [strata-model-2026-11-17.md](plan/strata-model-2026-11-17.md) | The Strata model: layers, columns, building upward from a place, social first, places as spine and overlays |
+| [direction-2026-11-16.md](plan/direction-2026-11-16.md) | Current direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work |
+| [status.md](plan/status.md) | What the engine does today, by area |
+| [roadmap.md](history/roadmap.md) | Earlier public-square-first roadmap |
 | [research/advisor-review-2026-11-17.md](research/advisor-review-2026-11-17.md) | Two rounds of outside review of the whole platform and the showcase plan, with what was checked and what the owner must decide |
-| [open-work-2026-11-17.md](open-work-2026-11-17.md) | Every planned item not yet built, with the document it comes from; checked against the code on 17 November |
-| [next-2026-11-16.md](next-2026-11-16.md) | What comes next: places as the spine, free-tier model routing, wiki discovery, images, a seed pipeline others can run |
-| [vision-and-roadmap-2026-11-14.md](vision-and-roadmap-2026-11-14.md) | Vision, ideas and a dated roadmap from 14 November |
+| [open-work-2026-11-17.md](plan/open-work-2026-11-17.md) | Every planned item not yet built, with the document it comes from; checked against the code on 17 November |
+| [next-2026-11-16.md](history/next-2026-11-16.md) | What comes next: places as the spine, free-tier model routing, wiki discovery, images, a seed pipeline others can run |
+| [vision-and-roadmap-2026-11-14.md](history/vision-and-roadmap-2026-11-14.md) | Vision, ideas and a dated roadmap from 14 November |
 
 ## Decisions
 
 | Document | Decision |
 | --- | --- |
-| [decision-001-product-and-runtime.md](decision-001-product-and-runtime.md) | What Strata is, where authority sits, the runtime |
-| [decision-002-groups-knowledge-and-regional-surfaces.md](decision-002-groups-knowledge-and-regional-surfaces.md) | Groups, institutional work, regional surfaces |
-| [decision-003-forum-first-alpha.md](decision-003-forum-first-alpha.md) | Forum first, content scoped to communities |
-| [decision-004-at-account-hosting.md](decision-004-at-account-hosting.md) | Full AT accounts, hosted separately |
-| [decision-005-node-account-data-planes.md](decision-005-node-account-data-planes.md) | One node experience, explicit data boundaries |
-| [decision-pilot-2026-11-03.md](decision-pilot-2026-11-03.md) | The public decision-model pilot |
+| [decision-001-product-and-runtime.md](decisions/decision-001-product-and-runtime.md) | What Strata is, where authority sits, the runtime |
+| [decision-002-groups-knowledge-and-regional-surfaces.md](decisions/decision-002-groups-knowledge-and-regional-surfaces.md) | Groups, institutional work, regional surfaces |
+| [decision-003-forum-first-alpha.md](decisions/decision-003-forum-first-alpha.md) | Forum first, content scoped to communities |
+| [decision-004-at-account-hosting.md](decisions/decision-004-at-account-hosting.md) | Full AT accounts, hosted separately |
+| [decision-005-node-account-data-planes.md](decisions/decision-005-node-account-data-planes.md) | One node experience, explicit data boundaries |
+| [decision-pilot-2026-11-03.md](decisions/decision-pilot-2026-11-03.md) | The public decision-model pilot |
 
 ## Product and design
 
 | Document | Topic |
 | --- | --- |
-| [product-shape-2026-11-14.md](product-shape-2026-11-14.md) | Where everything lives; Aksara's limits; ranking; market |
-| [design-direction-2026-11-14.md](design-direction-2026-11-14.md) | One stream; Aksara in the stream; place and wiki pages |
-| [commons-model-2026-11-15.md](commons-model-2026-11-15.md) | The commons model; regional Aksaras |
-| [sitemap-and-communities-2026-11-15.md](sitemap-and-communities-2026-11-15.md) | Sitemap, community kinds, seeding path |
-| [post-first-design-2026-11-11.md](post-first-design-2026-11-11.md) | Posts first; onboarding by place and interest |
-| [identity-and-commons-proposal.md](identity-and-commons-proposal.md) | Identity and a community-governed commons |
-| [wiki-and-community-engagement-2026-11-03.md](wiki-and-community-engagement-2026-11-03.md) | Wiki and engagement design notes; poll privacy |
-| [writing-and-context-plan-2026-11-12.md](writing-and-context-plan-2026-11-12.md) | Writing, editing and community context |
-| [offers-and-writing-2026-11-12.md](offers-and-writing-2026-11-12.md) | Offers and requests; market rules |
-| [ranking-and-steward-demo-2026-11-12.md](ranking-and-steward-demo-2026-11-12.md) | Ranking from public signals only |
-| [piefed-parity.md](piefed-parity.md) | Forum behaviour borrowed from PieFed |
+| [product-shape-2026-11-14.md](product/product-shape-2026-11-14.md) | Where everything lives; Aksara's limits; ranking; market |
+| [design-direction-2026-11-14.md](product/design-direction-2026-11-14.md) | One stream; Aksara in the stream; place and wiki pages |
+| [commons-model-2026-11-15.md](product/commons-model-2026-11-15.md) | The commons model; regional Aksaras |
+| [sitemap-and-communities-2026-11-15.md](product/sitemap-and-communities-2026-11-15.md) | Sitemap, community kinds, seeding path |
+| [post-first-design-2026-11-11.md](product/post-first-design-2026-11-11.md) | Posts first; onboarding by place and interest |
+| [identity-and-commons-proposal.md](product/identity-and-commons-proposal.md) | Identity and a community-governed commons |
+| [wiki-and-community-engagement-2026-11-03.md](product/wiki-and-community-engagement-2026-11-03.md) | Wiki and engagement design notes; poll privacy |
+| [writing-and-context-plan-2026-11-12.md](product/writing-and-context-plan-2026-11-12.md) | Writing, editing and community context |
+| [offers-and-writing-2026-11-12.md](product/offers-and-writing-2026-11-12.md) | Offers and requests; market rules |
+| [ranking-and-steward-demo-2026-11-12.md](product/ranking-and-steward-demo-2026-11-12.md) | Ranking from public signals only |
+| [piefed-parity.md](product/piefed-parity.md) | Forum behaviour borrowed from PieFed |
 
 ## Knowledge, wiki and sources
 
 | Document | Topic |
 | --- | --- |
-| [knowledge-organisation-2026-11-15.md](knowledge-organisation-2026-11-15.md) | Labels, label families, found themes, time, decision-model uses |
-| [knowledge-map-design-2026-11-16.md](knowledge-map-design-2026-11-16.md) | The knowledge map: six coordinates, lenses, agents on the map, state-of-knowledge reports |
-| [sources-and-sensitive-material-2026-11-16.md](sources-and-sensitive-material-2026-11-16.md) | Source catalogue, Aksara digging for earlier sources, conflict and sacred material |
-| [connected-wiki-clustering-2026-11-12.md](connected-wiki-clustering-2026-11-12.md) | Connected wiki and offline clustering |
+| [knowledge-organisation-2026-11-15.md](knowledge/knowledge-organisation-2026-11-15.md) | Labels, label families, found themes, time, decision-model uses |
+| [knowledge-map-design-2026-11-16.md](knowledge/knowledge-map-design-2026-11-16.md) | The knowledge map: six coordinates, lenses, agents on the map, state-of-knowledge reports |
+| [sources-and-sensitive-material-2026-11-16.md](knowledge/sources-and-sensitive-material-2026-11-16.md) | Source catalogue, Aksara digging for earlier sources, conflict and sacred material |
+| [connected-wiki-clustering-2026-11-12.md](knowledge/connected-wiki-clustering-2026-11-12.md) | Connected wiki and offline clustering |
 | [research/knowledge-observatory-2026-11-12.md](research/knowledge-observatory-2026-11-12.md) | A relational knowledge landscape |
 | [research/knowledge-graph-sota-2026-11-16.md](research/knowledge-graph-sota-2026-11-16.md) | Current methods for knowledge graphs and embedding maps; observatory pipeline |
 | [research/ui-components-and-realtime-2026-11-16.md](research/ui-components-and-realtime-2026-11-16.md) | Svelte components, motion, live cursors, map rendering, products to learn from |
@@ -112,35 +112,35 @@ Dates in file names show when a document was written, and older plans are kept a
 
 | Document | Topic |
 | --- | --- |
-| [agent-institution-design-2026-11-03.md](agent-institution-design-2026-11-03.md) | Accountable agents; inbox rules; required negative tests |
-| [agent-entrance-2026-11-03.md](agent-entrance-2026-11-03.md) | The agent gate: keys, tokens, MCP |
-| [agent-seeding-and-clustering-2026-11-11.md](agent-seeding-and-clustering-2026-11-11.md) | Seeding assistants; clustering rules |
-| [steward-interaction-build-2026-11-12.md](steward-interaction-build-2026-11-12.md) | Asking Aksara; one responder per question |
-| [steward-interaction-release-2026-11-12.md](steward-interaction-release-2026-11-12.md) | Sourced thread replies, as released |
-| [resident-runtime-fix-2026-11-12.md](resident-runtime-fix-2026-11-12.md) | Resident runtime repair |
+| [agent-institution-design-2026-11-03.md](aksara/agent-institution-design-2026-11-03.md) | Accountable agents; inbox rules; required negative tests |
+| [agent-entrance-2026-11-03.md](aksara/agent-entrance-2026-11-03.md) | The agent gate: keys, tokens, MCP |
+| [agent-seeding-and-clustering-2026-11-11.md](aksara/agent-seeding-and-clustering-2026-11-11.md) | Seeding assistants; clustering rules |
+| [steward-interaction-build-2026-11-12.md](aksara/steward-interaction-build-2026-11-12.md) | Asking Aksara; one responder per question |
+| [steward-interaction-release-2026-11-12.md](aksara/steward-interaction-release-2026-11-12.md) | Sourced thread replies, as released |
+| [resident-runtime-fix-2026-11-12.md](aksara/resident-runtime-fix-2026-11-12.md) | Resident runtime repair |
 | [research/strata-intelligence-catalogue-2026-11-12.md](research/strata-intelligence-catalogue-2026-11-12.md) | Where models could help, by seam |
 | [research/aksara-composed-views-2026-11-18.md](research/aksara-composed-views-2026-11-18.md) | Aksara composing community views from typed Strata components instead of writing code; spec, storage, approval, first primitives |
 | [research/wiki-beings-seeding-plan-2026-11-18.md](research/wiki-beings-seeding-plan-2026-11-18.md) | Mountains, lakes, forests and species as wiki page kinds: what is built, candidates per region, rules for origin stories and sacred places |
-| [proposal/claims-2026-11-18.md](proposal/claims-2026-11-18.md) | Every proposal claim with its status (live, built, roadmap) and the code and test that prove it; re-check on 25 November |
+| [proposal/claims-2026-11-18.md](competition/claims-2026-11-18.md) | Every proposal claim with its status (live, built, roadmap) and the code and test that prove it; re-check on 25 November |
 
 ## News
 
 | Document | Topic |
 | --- | --- |
-| [portable-commons-and-watch-plan-2026-11-11.md](portable-commons-and-watch-plan-2026-11-11.md) | Moving the Watch news engine into Strata; one installer |
-| [alpha-news-and-video-2026-11-03.md](alpha-news-and-video-2026-11-03.md) | News and video cards |
+| [portable-commons-and-watch-plan-2026-11-11.md](news/portable-commons-and-watch-plan-2026-11-11.md) | Moving the Watch news engine into Strata; one installer |
+| [alpha-news-and-video-2026-11-03.md](news/alpha-news-and-video-2026-11-03.md) | News and video cards |
 
 ## Accounts, hosting and engineering
 
 | Document | Topic |
 | --- | --- |
-| [architecture.md](architecture.md) | Custodial nodes and the AT commons |
-| [engineering.md](engineering.md) | Engineering notes |
-| [client-deployment-contract.md](client-deployment-contract.md) | Engine, clients and deployment profiles |
-| [cloudflare-profile.md](cloudflare-profile.md) | The Cloudflare profile |
-| [pds-hosting.md](pds-hosting.md) | Optional PDS hosting |
-| [handle-portability-2026-11-04.md](handle-portability-2026-11-04.md) | ETNOS handles with an outside account provider |
-| [signup-2026-11-04.md](signup-2026-11-04.md) | Signup through a provider |
+| [architecture.md](accounts-and-hosting/architecture.md) | Custodial nodes and the AT commons |
+| [engineering.md](accounts-and-hosting/engineering.md) | Engineering notes |
+| [client-deployment-contract.md](accounts-and-hosting/client-deployment-contract.md) | Engine, clients and deployment profiles |
+| [cloudflare-profile.md](accounts-and-hosting/cloudflare-profile.md) | The Cloudflare profile |
+| [pds-hosting.md](accounts-and-hosting/pds-hosting.md) | Optional PDS hosting |
+| [handle-portability-2026-11-04.md](accounts-and-hosting/handle-portability-2026-11-04.md) | ETNOS handles with an outside account provider |
+| [signup-2026-11-04.md](accounts-and-hosting/signup-2026-11-04.md) | Signup through a provider |
 | [research/serverless-pds-and-auth-2026-11-17.md](research/serverless-pds-and-auth-2026-11-17.md) | A multi-account PDS on Workers, free-plan CPU, Spaces, sign-up friction, fallbacks |
 | [research/deploy-paths-and-seeding-agent-2026-11-17.md](research/deploy-paths-and-seeding-agent-2026-11-17.md) | Deploying Strata on the Cloudflare free tier or a VPS; the operator's first run; models for seeding; opencode as an optional adapter |
 | [research/opencode-keyless-seeding-2026-11-17.md](research/opencode-keyless-seeding-2026-11-17.md) | opencode's keyless free models read from source (OpenBot, dusk bot, opencode itself); terms, limits, Worker and VPS feasibility, first-run flow |
@@ -149,8 +149,8 @@ Dates in file names show when a document was written, and older plans are kept a
 | [research/aksara-workers-harness-2026-11-18.md](research/aksara-workers-harness-2026-11-18.md) | What Aksara's harness can run on Workers: `@cloudflare/computer` workspace (free), code execution (Paid only), optmem (no licence, shape borrowed), free-tier neuron budget, phased plan and the shared contract with aksara-core |
 | [research/pds-multi-identity-build-2026-11-19.md](research/pds-multi-identity-build-2026-11-19.md) | What was built for the multi-account identity host: files, tests, measurements, licence checks, the owner's go-live decisions, AT Protocol spaces and self-hosting on workerd |
 | [research/pds-multi-identity-plan-2026-11-18.md](research/pds-multi-identity-plan-2026-11-18.md) | Plan for task 24, many identities on one Workers account host: what assumes one identity today (116 places), one Durable Object per DID, key custody and escrow, `*.etnos.space` handles, Free-tier CPU risk, invite-only signup, security tests, a one-day spike and about 14.5 days to a test-identity demo |
-| [serverless-reuse-review.md](serverless-reuse-review.md) | What serverless code we reuse |
-| [language-choice.md](language-choice.md) | Why TypeScript |
+| [serverless-reuse-review.md](accounts-and-hosting/serverless-reuse-review.md) | What serverless code we reuse |
+| [language-choice.md](accounts-and-hosting/language-choice.md) | Why TypeScript |
 | [research/2026-10-31-contextual-commons.md](research/2026-10-31-contextual-commons.md) | Contextual commons research |
 | [research/2026-10-31-private-messaging.md](research/2026-10-31-private-messaging.md) | Private messaging |
 | [research/2026-11-01-community-language-custody.md](research/2026-11-01-community-language-custody.md) | Language custody; the Mee pilot |
@@ -160,37 +160,37 @@ Dates in file names show when a document was written, and older plans are kept a
 
 | Document | Topic |
 | --- | --- |
-| [budaya-go-plan-2026-11-14.md](budaya-go-plan-2026-11-14.md) | BUDAYA GO! audit, build plan, demo script |
-| [demo-status-2026-11-15.md](demo-status-2026-11-15.md) | What was left before the demo, 15 November |
-| [competition-demo-rehearsal-2026-11-12.md](competition-demo-rehearsal-2026-11-12.md) | Demo rehearsal |
-| [demo-release-next-2026-11-12.md](demo-release-next-2026-11-12.md) | Remaining demo work, 12 November |
-| [alpha-20.md](alpha-20.md) | The twenty-person alpha |
+| [budaya-go-plan-2026-11-14.md](competition/budaya-go-plan-2026-11-14.md) | BUDAYA GO! audit, build plan, demo script |
+| [demo-status-2026-11-15.md](competition/demo-status-2026-11-15.md) | What was left before the demo, 15 November |
+| [competition-demo-rehearsal-2026-11-12.md](competition/competition-demo-rehearsal-2026-11-12.md) | Demo rehearsal |
+| [demo-release-next-2026-11-12.md](competition/demo-release-next-2026-11-12.md) | Remaining demo work, 12 November |
+| [alpha-20.md](history/alpha-20.md) | The twenty-person alpha |
 
 ## Releases and checkpoints (history)
 
-[release-2026-11-01-etnos](release-2026-11-01-etnos.md) ·
-[release-2026-11-03-etnos](release-2026-11-03-etnos.md) ·
-[release-2026-11-03-commons](release-2026-11-03-commons.md) ·
-[release-2026-11-03-friends](release-2026-11-03-friends.md) ·
-[release-2026-11-04-agents](release-2026-11-04-agents.md) ·
-[release-2026-11-04-navigation](release-2026-11-04-navigation.md) ·
-[release-2026-11-04-signup](release-2026-11-04-signup.md) ·
-[release-2026-11-04-ui-refinement](release-2026-11-04-ui-refinement.md) ·
-[release-2026-11-11-commons-checkpoint](release-2026-11-11-commons-checkpoint.md) ·
-[release-2026-11-12-commons-polish](release-2026-11-12-commons-polish.md) ·
-[release-2026-11-12-welcome-writing](release-2026-11-12-welcome-writing.md) ·
-[commons-implementation](commons-implementation.md) ·
-[commons-next-implementation](commons-next-implementation.md) ·
-[connected-preview](connected-preview.md) ·
-[forum-media-checkpoint](forum-media-checkpoint.md) ·
-[forum-rich-content-checkpoint](forum-rich-content-checkpoint.md) ·
-[implementation-checkpoint-2026-11-11](implementation-checkpoint-2026-11-11.md) ·
-[etnos-follow-through-2026-11-04](etnos-follow-through-2026-11-04.md) ·
-[sharing-previews-2026-11-03](sharing-previews-2026-11-03.md) ·
-[shell-sorotan-2026-11-12](shell-sorotan-2026-11-12.md) ·
-[ui-reading-pass-2026-11-11](ui-reading-pass-2026-11-11.md) ·
-[welcome-and-profile-2026-11-11](welcome-and-profile-2026-11-11.md) ·
-[writing-release-2026-11-12](writing-release-2026-11-12.md)
+[release-2026-11-01-etnos](history/release-2026-11-01-etnos.md) ·
+[release-2026-11-03-etnos](history/release-2026-11-03-etnos.md) ·
+[release-2026-11-03-commons](history/release-2026-11-03-commons.md) ·
+[release-2026-11-03-friends](history/release-2026-11-03-friends.md) ·
+[release-2026-11-04-agents](history/release-2026-11-04-agents.md) ·
+[release-2026-11-04-navigation](history/release-2026-11-04-navigation.md) ·
+[release-2026-11-04-signup](history/release-2026-11-04-signup.md) ·
+[release-2026-11-04-ui-refinement](history/release-2026-11-04-ui-refinement.md) ·
+[release-2026-11-11-commons-checkpoint](history/release-2026-11-11-commons-checkpoint.md) ·
+[release-2026-11-12-commons-polish](history/release-2026-11-12-commons-polish.md) ·
+[release-2026-11-12-welcome-writing](history/release-2026-11-12-welcome-writing.md) ·
+[commons-implementation](history/commons-implementation.md) ·
+[commons-next-implementation](history/commons-next-implementation.md) ·
+[connected-preview](history/connected-preview.md) ·
+[forum-media-checkpoint](history/forum-media-checkpoint.md) ·
+[forum-rich-content-checkpoint](history/forum-rich-content-checkpoint.md) ·
+[implementation-checkpoint-2026-11-11](history/implementation-checkpoint-2026-11-11.md) ·
+[etnos-follow-through-2026-11-04](history/etnos-follow-through-2026-11-04.md) ·
+[sharing-previews-2026-11-03](history/sharing-previews-2026-11-03.md) ·
+[shell-sorotan-2026-11-12](history/shell-sorotan-2026-11-12.md) ·
+[ui-reading-pass-2026-11-11](history/ui-reading-pass-2026-11-11.md) ·
+[welcome-and-profile-2026-11-11](history/welcome-and-profile-2026-11-11.md) ·
+[writing-release-2026-11-12](history/writing-release-2026-11-12.md)
 
 ## Folders
 

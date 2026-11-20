@@ -20,7 +20,7 @@ Continuing Taste v2 `true-black-flat`, seed 10312026, and the established Thread
 
 The built-browser discovery journey uses an isolated SQLite API and checks own-handle search, hidden-only stranger exclusion, a profile absent from 30 home posts, keyboard selection, following feed, Escape/focus return and appearance persistence. Screenshots cover 390/768/1440px. The first screenshot pass caught double-translated mobile search; explicit dialog viewport bounds assertions were added. Overflow alone did not catch it. Existing forum, governance, MLS messaging and rich-post browser journeys remain required.
 
-Full operational scope, capacity/prices, domain continuity, WPW and Aksara plans live in Strata's `docs/alpha-20.md` and `docs/client-deployment-contract.md`. No hosted PDS signup, AT broadcast, news connector or model-backed resident agent is implied by this UI pass.
+Full operational scope, capacity/prices, domain continuity, WPW and Aksara plans live in Strata's `docs/history/alpha-20.md` and `docs/accounts-and-hosting/client-deployment-contract.md`. No hosted PDS signup, AT broadcast, news connector or model-backed resident agent is implied by this UI pass.
 
 ## Follow-up: navigation, dialogs and account hosting
 

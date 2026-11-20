@@ -1,6 +1,6 @@
 # Security and deployment boundary
 
-This is an unqualified development foundation with a loopback API and a separately configured HTTPS Cloudflare preview. The preview now has official AT OAuth and invitation-controlled enrollment, sealed provider credentials, browser-bound state and an HttpOnly application session. It has no end-to-end encryption, qualified private institutional custody, complete recovery or security audit. Use synthetic/low-risk public data; do not treat the preview as a production activist or institutional vault. See docs/connected-preview.md for exact validation and remaining gates.
+This is an unqualified development foundation with a loopback API and a separately configured HTTPS Cloudflare preview. The preview now has official AT OAuth and invitation-controlled enrollment, sealed provider credentials, browser-bound state and an HttpOnly application session. It has no end-to-end encryption, qualified private institutional custody, complete recovery or security audit. Use synthetic/low-risk public data; do not treat the preview as a production activist or institutional vault. See docs/history/connected-preview.md for exact validation and remaining gates.
 
 The trusted boundary includes the local host/OS operator, trusted provisioning CLI and database. Untrusted HTTP callers cannot select a principal by DID or actor ID: bearer credentials bind a locally provisioned identity, and membership/role/mandate/source checks apply in domain methods. This is not proof of AT DID ownership.
 
@@ -18,7 +18,7 @@ Only explicitly qualified HTTPS provider hosts may receive OAuth discovery/token
 
 ## Experimental direct messages
 
-The forum DM slice uses client-side ts-mls and an encrypted local key/history vault. The library and application have not had an independent security audit; do not use this preview for sensitive activist communications. See [the exact threat model and limitations](docs/commons-implementation.md), including initial service-mediated key trust, metadata, malicious web delivery, a single browser/device, missing recovery/rekey/device migration and origin-bound local keys. No Signal/Matrix interoperability, agents reading DMs or server-side plaintext processing is enabled.
+The forum DM slice uses client-side ts-mls and an encrypted local key/history vault. The library and application have not had an independent security audit; do not use this preview for sensitive activist communications. See [the exact threat model and limitations](docs/history/commons-implementation.md), including initial service-mediated key trust, metadata, malicious web delivery, a single browser/device, missing recovery/rekey/device migration and origin-bound local keys. No Signal/Matrix interoperability, agents reading DMs or server-side plaintext processing is enabled.
 
 ## Experimental PDS package
 

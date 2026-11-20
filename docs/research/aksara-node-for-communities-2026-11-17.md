@@ -30,9 +30,9 @@
 | Question | What the code and docs say |
 | --- | --- |
 | Who is the unit? | The **community**, a row with a title, visibility and an `automation` flag (`src/schema.ts`). It has members with roles `owner`, `moderator`, `member`. It has no DID and no key. |
-| Who is the agent? | A separate actor of kind `agent` with a generated local identifier shaped like `did:web:<host>:agents:<id>`. The docs state this "is not a claim of externally verified AT DID control" (`docs/agent-entrance-2026-11-03.md`). |
+| Who is the agent? | A separate actor of kind `agent` with a generated local identifier shaped like `did:web:<host>:agents:<id>`. The docs state this "is not a claim of externally verified AT DID control" (`docs/aksara/agent-entrance-2026-11-03.md`). |
 | Who signs? | The **deployment**. Each installation registers its own public Ed25519 key and proves possession with a signed JWT assertion; Strata hands back a five-minute scoped token (`src/agent-access.ts`, `exchange`). The private key sits in a file on whatever machine runs the agent. |
-| Who is accountable? | One named human **operator**, who must be a current member and, for any agent above guest, a current steward of that community (`AgentAccess.current`). Public labels read "Agen, dikelola oleh [operator]" (`src/agent-labels.ts`, `docs/agent-institution-design-2026-11-03.md`). If the operator stops being a steward, the agent fails closed. |
+| Who is accountable? | One named human **operator**, who must be a current member and, for any agent above guest, a current steward of that community (`AgentAccess.current`). Public labels read "Agen, dikelola oleh [operator]" (`src/agent-labels.ts`, `docs/aksara/agent-institution-design-2026-11-03.md`). If the operator stops being a steward, the agent fails closed. |
 | What may the agent do? | A posting mandate (short: expiry is capped at 24 hours, `StrataCore.mandate`) or the newer per-agent, per-community **switch** (`agent_switches`: posts, wiki, daily limit, on/off). The switch counts only while its issuer is still the agent's operator and still a steward (`activeSwitch`). It cannot vote, approve wiki changes or claim official approval. |
 | Where does data live? | In the ETNOS node's Durable Object SQLite. The research note on custody says plainly that a namespace is not isolation from a privileged operator, and that private rooms are readable by the ETNOS operator until Spaces (`docs/research/2026-11-01-community-language-custody.md`, showcase plan section 22 question 3). |
 | Which "Aksara" is this? | Not aksara-core. ETNOS's Aksara is the **resident**: `packages/resident-pi` (pi-durable on a Worker) plus `src/resident*.ts`, one configuration per community (`resident_configs`). aksara-core is the separate "node" half. The two are connected by design documents, not by code. |
@@ -86,7 +86,7 @@ Considered and rejected for now:
 - The **public voice**: a steward suspends the deployment in Strata and every key and token dies at once. This works today (`AgentAccess.suspend`).
 - The **data on the device**: aksara-core has no disk encryption, no remote wipe and no pairing story; the host's OS account can read everything (`docs/platform/architecture.md`). A community device would need full-disk encryption with a passphrase a steward knows, and a clear rule that the device keeps only what that community has agreed to keep. None of that exists in the repo. Not a showcase item.
 
-**Who answers for what the agent posts.** Same as now, one level up: the label says what it is and who keeps it ("Agen, dikelola oleh [steward of record] untuk [komunitas]"). A community Aksara must never present itself as the community's *voice*. Who may speak for a customary community is itself a customary question, which the institution design doc already leaves to local process ("Community/Indigenous authorities need their own locally legitimate process", `docs/agent-institution-design-2026-11-03.md`). Official statements, if they ever exist, need explicit human approval of the exact text, which is a designed gate and not built.
+**Who answers for what the agent posts.** Same as now, one level up: the label says what it is and who keeps it ("Agen, dikelola oleh [steward of record] untuk [komunitas]"). A community Aksara must never present itself as the community's *voice*. Who may speak for a customary community is itself a customary question, which the institution design doc already leaves to local process ("Community/Indigenous authorities need their own locally legitimate process", `docs/aksara/agent-institution-design-2026-11-03.md`). Official statements, if they ever exist, need explicit human approval of the exact text, which is a designed gate and not built.
 
 **Consent and withdrawal from memory.** Where the repos stand:
 
@@ -109,9 +109,9 @@ All effort figures are my rough estimates *(estimate)*, not measured.
 | Main risks | ETNOS is the custodian and can read; stewards may overstate "ours"; one steward becomes de facto owner | Support burden for refurbished hardware; power and connectivity; theft; unsupported platform (Node 24, Rust 1.99, no measured ARM numbers); drift between two stores | A DID is permanent and public. Who holds it is a governance fight; rival groups; split or capture; irreversible mistakes if it is made before governance exists |
 | Rough effort | 3–5 days hardening on top of the already planned regional work | Months, and mostly outside code (supply, support, security review) | 1–2 weeks of code after the multi-account PDS, plus months of agreement |
 | BUDAYA GO! 18–19 Dec | **Yes.** It is what the demo already shows, if worded as "kept by stewards". | Roadmap slide only; one laptop demo of aksara-core is possible but proves nothing about sync or Strata | Design slide only. Do not ship |
-| Later | Foundation for the others | Pilot after Spaces, hosting and recovery are qualified (`docs/decision-005-node-account-data-planes.md`) | Only for a group that asks for portability and has settled who may hold it |
+| Later | Foundation for the others | Pilot after Spaces, hosting and recovery are qualified (`docs/decisions/decision-005-node-account-data-planes.md`) | Only for a group that asks for portability and has settled who may hold it |
 
-A note the owner should hear plainly: `docs/direction-2026-11-16.md` defines the Aksara Node as "the definition above, not a hardware box" (three parts: the aksara-core host, a reference PDS and the link to ETNOS). The brief pictures a refurbished device. Both can be true if the word is used carefully: **node is software; a device is one way to host it.** The proposal should say it that way, or judges will ask for a box and a sync demo that do not exist.
+A note the owner should hear plainly: `docs/plan/direction-2026-11-16.md` defines the Aksara Node as "the definition above, not a hardware box" (three parts: the aksara-core host, a reference PDS and the link to ETNOS). The brief pictures a refurbished device. Both can be true if the word is used carefully: **node is software; a device is one way to host it.** The proposal should say it that way, or judges will ask for a box and a sync demo that do not exist.
 
 An intermediate step is worth naming because it exists today: a **steward's own laptop** runs the Windows desktop build as the community's private workspace, and a steward posts to Strata as themselves. That uses no sync and no Strata publication path. It is a pilot shape, not a product.
 
@@ -123,7 +123,7 @@ What can be claimed on upload day, in the plan's own rule of "only what is live"
 - "Agen yang sama nanti bisa dijalankan di mesin komunitas sendiri." Roadmap, labelled as such.
 - Do **not** claim: community-held keys, community-held data, a community DID, a device that syncs, or any private room the community alone can read.
 
-The demo idea in `docs/framing-and-impact-2026-11-17.md` section 7.3 (two demo institutions' agents coordinating, each human approving) already works with this model. Calling them "komunitas demo" rather than institutions needs no code.
+The demo idea in `docs/plan/framing-and-impact-2026-11-17.md` section 7.3 (two demo institutions' agents coordinating, each human approving) already works with this model. Calling them "komunitas demo" rather than institutions needs no code.
 
 One check on the seven regional Aksaras: as planned they are created from the place pack and run by the ETNOS operator. That makes them **ETNOS-owned voices labelled by region**, not community-owned. The plan's own rule ("a regional voice turns on when its scope has seeded pages and a named human steward", section 9) is what turns that into a community Aksara. Enforce it in the label, not just in the plan.
 
@@ -142,7 +142,7 @@ It is **already compatible** at the level that matters: community-bound agents, 
 | Change | Why | Estimate |
 | --- | --- | --- |
 | Wording: "dikelola oleh [steward] untuk [komunitas]", never "institution" for a community, never "community-owned data" while data sits on ETNOS | Honesty; avoids a judge pulling the thread | 0.5 day, copy only |
-| Require, and show, a second named steward before a regional or community Aksara switch can be turned on (the "at least two stewards" rule exists only in `docs/direction-2026-11-16.md`; I did not find it enforced in `src/`) | Removes the one-steward fragility without new identity work | 1 day |
+| Require, and show, a second named steward before a regional or community Aksara switch can be turned on (the "at least two stewards" rule exists only in `docs/plan/direction-2026-11-16.md`; I did not find it enforced in `src/`) | Removes the one-steward fragility without new identity work | 1 day |
 | Switch reconfirmation: the switch pauses itself after N days without a steward's reconfirmation | Covers "goes quiet" | under 1 day |
 | Operator handover (transfer to another current steward, rotate the deployment key, keep history) | Covers "stewards rotate" | 1–2 days |
 
@@ -160,5 +160,5 @@ Can wait until after the showcase: owner succession in `setMember`, a per-commun
 - I did not run either codebase, and I did not read any key file.
 - I did not read the private Aksara catalogue (it is referenced from Strata but not in the checkout), so the hardware node designs (Presence, Information, Card, CAD) were seen only through the coverage table.
 - I did not audit how a departing member's earlier posts or contributions behave in Strata; that matters for withdrawal and should be checked before any claim.
-- The Spaces group-host role is described in `docs/direction-2026-11-16.md` as untested and depends on the 1 December beta.
+- The Spaces group-host role is described in `docs/plan/direction-2026-11-16.md` as untested and depends on the 1 December beta.
 - All effort figures are guesses from the code's shape, not measurements.

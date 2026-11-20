@@ -237,6 +237,6 @@ The showcase plan already asks for a lot before the 26 to 27 November proposal u
 | Slack Block Kit | https://docs.slack.dev/block-kit/ | Read |
 | Cloudflare Dynamic Workers pricing | https://developers.cloudflare.com/dynamic-workers/pricing/ | Read. Paid only |
 | Cloudflare Workers AI JSON Mode | https://developers.cloudflare.com/workers-ai/features/json-mode/ | Read. Gemma 4 not listed |
-| Local | docs/research/aksara-workers-harness-2026-11-18.md; docs/showcase-plan-2026-11-17.md; AGENTS.md; src/agent-mcp.ts, src/agent-access.ts, src/schema.ts, src/desk.ts; apps/web/src components named in section 4 | Read in the repo |
+| Local | docs/research/aksara-workers-harness-2026-11-18.md; docs/plan/showcase-plan-2026-11-17.md; AGENTS.md; src/agent-mcp.ts, src/agent-access.ts, src/schema.ts, src/desk.ts; apps/web/src components named in section 4 | Read in the repo |
 
 Not fetched: Retool, Appsmith, Notion and Coda documentation (marked [S] or [U] above); Workers AI neuron prices were taken from the 18 November harness note.

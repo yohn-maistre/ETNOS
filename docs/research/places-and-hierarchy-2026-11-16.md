@@ -372,8 +372,8 @@ All fetched 16 November 2026 unless noted.
 
 Repository (read 16 November 2026):
 
-- `docs/direction-2026-11-16.md`, sections "Aksara by place", "Studio, news sources and the knowledge map", "Labels, places and groups", and lines 49, 374, 416 on onboarding.
-- `docs/knowledge-organisation-2026-11-15.md`, `docs/sitemap-and-communities-2026-11-15.md`, `docs/knowledge-map-design-2026-11-16.md`, `docs/post-first-design-2026-11-11.md`.
+- `docs/plan/direction-2026-11-16.md`, sections "Aksara by place", "Studio, news sources and the knowledge map", "Labels, places and groups", and lines 49, 374, 416 on onboarding.
+- `docs/knowledge/knowledge-organisation-2026-11-15.md`, `docs/product/sitemap-and-communities-2026-11-15.md`, `docs/knowledge/knowledge-map-design-2026-11-16.md`, `docs/product/post-first-design-2026-11-11.md`.
 - `src/catalogue.ts`, `src/catalogues/tanah-papua.json`, `src/groups.ts`, `apps/web/src/context-tree.ts`, `apps/web/src/App.svelte`.
 
 Platforms and standards:

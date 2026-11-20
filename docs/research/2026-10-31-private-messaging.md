@@ -1,6 +1,6 @@
 # Private messaging: AT identity, separate encrypted delivery
 
-Research checkpoint: 31 October 2026. **Subsequent implementation:** the owner selected forum-only DMs first. An experimental ts-mls client-encrypted 1:1 slice is now implemented; see [its exact limits](../commons-implementation.md). This research is not a claim of independent security review or a Signal/Matrix/Germ integration. The local activity inbox is a different feature and does not deliver private messages. This assessment supplements Decision 002; it does not authorize publication of a person's contact details.
+Research checkpoint: 31 October 2026. **Subsequent implementation:** the owner selected forum-only DMs first. An experimental ts-mls client-encrypted 1:1 slice is now implemented; see [its exact limits](../history/commons-implementation.md). This research is not a claim of independent security review or a Signal/Matrix/Germ integration. The local activity inbox is a different feature and does not deliver private messages. This assessment supplements Decision 002; it does not authorize publication of a person's contact details.
 
 ## Recommendation
 

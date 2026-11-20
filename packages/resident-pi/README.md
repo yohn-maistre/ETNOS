@@ -27,4 +27,4 @@ Default fetch returns 404; only the explicitly bound `ResidentRuntime` entrypoin
 
 Web research needs, in the Cloudflare account that runs this Worker: Workers AI enabled (for the `AI` binding and Markdown conversion), AI Gateway with the `default` gateway and either Web Search credits or a provider key on that gateway. Without them searches fail as tool errors and Aksara continues with reviewed sources or abstains.
 
-Studio config and grants are required separately. Hosted inference, scoped mentions and the wider foundation remain tracked in `../../docs/implementation-checkpoint-2026-11-11.md`. Current runtime is public-source only. Automatic Wiki acceptance, protected cultural-source access and official institutional representation are not agent defaults.
+Studio config and grants are required separately. Hosted inference, scoped mentions and the wider foundation remain tracked in `../../docs/history/implementation-checkpoint-2026-11-11.md`. Current runtime is public-source only. Automatic Wiki acceptance, protected cultural-source access and official institutional representation are not agent defaults.

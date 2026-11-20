@@ -1,6 +1,6 @@
 # Wiki pages for mountains, lakes, forests and species: seeding plan
 
-18 November 2026. Run 1 step 6 (task 56). Decision in `docs/superpowers/specs/2026-11-18-information-architecture-design.md`: more-than-human beings are wiki page kinds, not functional contexts.
+18 November 2026. Run 1 step 6 (task 56). Decision in `docs/product/information-architecture-design-2026-11-18.md`: more-than-human beings are wiki page kinds, not functional contexts.
 
 ## Why
 

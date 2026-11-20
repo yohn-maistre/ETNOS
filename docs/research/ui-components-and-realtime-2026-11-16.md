@@ -1,6 +1,6 @@
 # UI components, motion, live cursors, map rendering and reference products
 
-16 November 2026. Research for the knowledge map explorer in `knowledge-map-design-2026-11-16.md`. Every version, star count and price below was read from the linked primary page on 16 November 2026 unless marked **unverified**. Star counts and download counts drift. Section 9 lists what could not be confirmed.
+16 November 2026. Research for the knowledge map explorer in `knowledge/knowledge-map-design-2026-11-16.md`. Every version, star count and price below was read from the linked primary page on 16 November 2026 unless marked **unverified**. Star counts and download counts drift. Section 9 lists what could not be confirmed.
 
 Short names used: "the band" is the folded time band, "the explorer" is the unfolded map with lenses, "the panel" is the reading panel, "paths" are the Jalur guided paths.
 

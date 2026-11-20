@@ -1,6 +1,6 @@
 # Peoples, places and public data: a reference model and seed sources
 
-17 November 2026. Research for ETNOS (etnos.space) on the Strata engine. It builds on `strata-model-2026-11-17.md` (sections 1-5), `research/places-and-hierarchy-2026-11-16.md`, `research/customary-regions-and-boundaries-2026-11-17.md`, `research/2026-11-01-community-language-custody.md` and `sources-and-sensitive-material-2026-11-16.md`. All links were read on 17 November 2026 unless noted. Items marked **[UNVERIFIED]** rest on a search snippet, a third-party page, or memory, or could not be reached from the research environment.
+17 November 2026. Research for ETNOS (etnos.space) on the Strata engine. It builds on `plan/strata-model-2026-11-17.md` (sections 1-5), `research/places-and-hierarchy-2026-11-16.md`, `research/customary-regions-and-boundaries-2026-11-17.md`, `research/2026-11-01-community-language-custody.md` and `knowledge/sources-and-sensitive-material-2026-11-16.md`. All links were read on 17 November 2026 unless noted. Items marked **[UNVERIFIED]** rest on a search snippet, a third-party page, or memory, or could not be reached from the research environment.
 
 ## Summary of recommendations
 
@@ -247,7 +247,7 @@ Care: village boundaries are legally unsettled (confirmation covers few villages
 | Regulations (peraturan.go.id, JDIHN, regional JDIH) [35] | JDIHN is a hub with member sites that should expose an API; regional JDIH data often outdated. peraturan.go.id and jdihn.go.id were unreachable from here. | Law text; check each member site | UU 14, 15, 16, 29 of 2022; Perda, Perdasus, Pergub | Unconfirmed |
 | Village funds | DJPK per-desa table (above) | Aggregate by desa is public; avoid ranking villages in a way that stigmatises them | Per-desa allocations | See above |
 
-**What to show responsibly.** Aggregates by regency or district, with source and date; budget plans labelled as plans; elected officials' public office data; legal texts. Do not show: per-TPS results for a small kampung (secrecy and reprisal risk), allegations about named living people as fact, or compiled lists of persons by ethnicity or religion. This matches `sources-and-sensitive-material-2026-11-16.md`: attribute everything, hold accusations about named living people as claims by their source.
+**What to show responsibly.** Aggregates by regency or district, with source and date; budget plans labelled as plans; elected officials' public office data; legal texts. Do not show: per-TPS results for a small kampung (secrecy and reprisal risk), allegations about named living people as fact, or compiled lists of persons by ethnicity or religion. This matches `knowledge/sources-and-sensitive-material-2026-11-16.md`: attribute everything, hold accusations about named living people as claims by their source.
 
 ## 3.4 Services
 

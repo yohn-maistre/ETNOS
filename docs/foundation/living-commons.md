@@ -2552,7 +2552,7 @@ This appendix is written for the future person or coding agent who opens the rep
 
 <a id="source-0614"></a>
 
-> Hosted PDS | packages/pds, docs/pds-hosting.md | EXPERIMENTAL package | Hosting, security, migration and production sign-up qualification.
+> Hosted PDS | packages/pds, docs/accounts-and-hosting/pds-hosting.md | EXPERIMENTAL package | Hosting, security, migration and production sign-up qualification.
 
 <a id="source-0615"></a>
 
@@ -2729,7 +2729,7 @@ The sources below anchor particular ideas; they are not all implementation depen
 [P5] Abstraksi_Aksara_Systems_Catalogue_v2_5_8_integrated_2026-10-31.md — §61 communal AI, §39 Aksara/Strata interoperability, §38 sovereignty, §28 public participation, §29 knowledge; strategic baseline, not a code release.
 [P6] ETNOS_Canonical_Dossier_2026-08-22.docx — earlier federation, governance, identity and rights lineage, containing outdated assumptions about upstream federation/naming.
 [P7] abstraksi-proposal-v6.2.docx — broader ecosystem architecture and its historical ETNOS/institutional product framing; not a source of current Strata implementation claims.
-[P8] Strata docs/etnos-follow-through-2026-11-04.md, docs/alpha-20.md, docs/decision-003-forum-first-alpha.md, docs/decision-005-node-account-data-planes.md, docs/pds-hosting.md, docs/research/2026-11-01-community-language-custody.md and labs/spaces/README.md. See the repository for exact per-release caveats.
+[P8] Strata docs/history/etnos-follow-through-2026-11-04.md, docs/history/alpha-20.md, docs/decisions/decision-003-forum-first-alpha.md, docs/decisions/decision-005-node-account-data-planes.md, docs/accounts-and-hosting/pds-hosting.md, docs/research/2026-11-01-community-language-custody.md and labs/spaces/README.md. See the repository for exact per-release caveats.
 [P9] WPW docs/NEWS_PIPELINE.md, content/news-sources.json, services/watch-engine/src/sources/discover.ts, services/watch-engine/src/ingest/{extract,process,relevance}.ts; candidate reusable design/code donors, subject to licensing and security review.
 
 <a id="source-0658"></a>

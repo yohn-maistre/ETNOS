@@ -23,7 +23,7 @@ For the owner to decide, because the review argues against earlier decisions: on
 
 ## Verdict
 
-The strong part is real and rare: sentence-level provenance (verified sentences, Dasar, receipts), an honest agent gate, a founder with standing, and a refusal to fake people. The biggest risk is not technical. It is that the plan is growing much faster than the place. The docs run to about 179,000 words for an engine of about 8,500 lines; the agent model was replaced four times in one day (desks, team, by place, switch, all still in `direction-2026-11-16.md`); and there are three different "orders of work" (`direction`, `knowledge-map-design` §10, `strata-model` §7), none sized to 17 days. Meanwhile the live site has 16 posts by two authors (the founder and Aksara), six communities that all require approval to post in, two of them with placeholder descriptions ("Geng", "Hen tecahi yo onomi tmar ni hanased"), and 367 labels with nothing attached to any of them. ETNOS is at present a knowledge-organisation project presented as a social app. With 30% of the rubric on consistency, the gap between documents and site is the thing most likely to cost you, and the absence of a second human is the thing most likely to kill the pilot.
+The strong part is real and rare: sentence-level provenance (verified sentences, Dasar, receipts), an honest agent gate, a founder with standing, and a refusal to fake people. The biggest risk is not technical. It is that the plan is growing much faster than the place. The docs run to about 179,000 words for an engine of about 8,500 lines; the agent model was replaced four times in one day (desks, team, by place, switch, all still in `plan/direction-2026-11-16.md`); and there are three different "orders of work" (`direction`, `knowledge-map-design` §10, `strata-model` §7), none sized to 17 days. Meanwhile the live site has 16 posts by two authors (the founder and Aksara), six communities that all require approval to post in, two of them with placeholder descriptions ("Geng", "Hen tecahi yo onomi tmar ni hanased"), and 367 labels with nothing attached to any of them. ETNOS is at present a knowledge-organisation project presented as a social app. With 30% of the rubric on consistency, the gap between documents and site is the thing most likely to cost you, and the absence of a second human is the thing most likely to kill the pilot.
 
 ## Ten recommendations, ranked
 
@@ -139,7 +139,7 @@ The one thing that most convinces: a Mee elder's correction to a published accou
 
 # Second round (17 November, night)
 
-The reviewer read `showcase-plan-2026-11-17.md`, its build order, the accounts research and `src/oauth.ts`, after the owner's answers. Condensed here; what the plan adopted is marked in the plan itself.
+The reviewer read `plan/showcase-plan-2026-11-17.md`, its build order, the accounts research and `src/oauth.ts`, after the owner's answers. Condensed here; what the plan adopted is marked in the plan itself.
 
 **Problems left, ranked.**
 

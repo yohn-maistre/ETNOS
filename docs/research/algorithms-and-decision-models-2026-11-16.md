@@ -2,7 +2,7 @@
 
 Research note · 16 November 2026 · Planning only. Nothing here is built or decided.
 
-This note adds to [the knowledge graph survey](knowledge-graph-sota-2026-11-16.md) and [the knowledge map design](../knowledge-map-design-2026-11-16.md). It does not repeat their tool tables for GraphRAG, EVōC, UMAP, Toponymy, embedding models or rendering. It also reads `src/decisions.ts` to see how Clef is used today.
+This note adds to [the knowledge graph survey](knowledge-graph-sota-2026-11-16.md) and [the knowledge map design](../knowledge/knowledge-map-design-2026-11-16.md). It does not repeat their tool tables for GraphRAG, EVōC, UMAP, Toponymy, embedding models or rendering. It also reads `src/decisions.ts` to see how Clef is used today.
 
 How to read the claims. Source numbers in square brackets point to section 9. "Verified" means I read a primary page today. "Unverified" means I could not read a primary source, or only a secondary one. "My arithmetic" and "my inference" mean my own reasoning, not a published fact.
 

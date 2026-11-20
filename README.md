@@ -58,7 +58,7 @@ ETNOS adalah tempat orang Papua mengobrol seperti biasa di komunitas, dan obrola
 
 </details>
 
-Strata is entered in BUDAYA GO! 2026, in the Inovasi Digital category, under the subtheme of digital platforms for cultural communities. The cases and sources are in [framing and impact](docs/framing-and-impact-2026-11-17.md) and [rationale threads](docs/rationale-threads-2026-11-19.md).
+Strata is entered in BUDAYA GO! 2026, in the Inovasi Digital category, under the subtheme of digital platforms for cultural communities. The cases and sources are in [framing and impact](docs/plan/framing-and-impact-2026-11-17.md) and [rationale threads](docs/plan/rationale-threads-2026-11-19.md).
 
 ## How it works
 
@@ -80,7 +80,7 @@ Everything is written in TypeScript. The same engine runs on Cloudflare Workers 
   </picture>
 </p>
 
-People hold their accounts on a server that speaks the AT Protocol, the open protocol behind Bluesky. A person who leaves ETNOS keeps their identity. Downloading a repository works today, and moving an account to another host is planned. The full account of hosting, privacy levels and their guarantees is in [communities and spaces](docs/communities-spaces-2026-11-19.md).
+People hold their accounts on a server that speaks the AT Protocol, the open protocol behind Bluesky. A person who leaves ETNOS keeps their identity. Downloading a repository works today, and moving an account to another host is planned. The full account of hosting, privacy levels and their guarantees is in [communities and spaces](docs/plan/communities-spaces-2026-11-19.md).
 
 ## Features
 
@@ -106,7 +106,7 @@ Each feature carries one of three marks. **Live** means it is deployed on etnos.
 - **Periksa.** A strip on the community page shows how many claims wait for a check. It opens a deck of cards with the evidence beside each claim. Right means correct, left means wrong, and a typed answer proposes a correction. Skipping is never counted as a vote. The deck was built on 19 November 2026 and is live on community pages. It can hold any claim that a member proposes, and Aksara cannot yet propose claims through it.
 - **Aksara.** Any community can invite it. It posts what it finds with sources, answers `@aksara` mentions with citations, and stays silent when it has no source. Its wiki drafts are labelled as written by AI. A steward grants its permissions, daily budget and time limit, and can switch it off at once. Its work log is public, and it never reads a private community unless that community allows it.
 - **Sources.** The first wiki pages were written only from source sentences that a script re-read word for word against the original. Across the seed, 5 sentences were rejected and 37 sources could not be reached, so those were left out.
-- **Private spaces.** Spaces are an alpha feature of the AT Protocol, and the upstream authors say they are not ready for production. The test results are in [communities and spaces](docs/communities-spaces-2026-11-19.md).
+- **Private spaces.** Spaces are an alpha feature of the AT Protocol, and the upstream authors say they are not ready for production. The test results are in [communities and spaces](docs/plan/communities-spaces-2026-11-19.md).
 
 </details>
 
@@ -144,7 +144,7 @@ npm run build:ui
 npm run build:worker
 ```
 
-The developer and operator guide is [docs/engineering.md](docs/engineering.md). Contributions are welcome. Read [AGENTS.md](AGENTS.md) first, because it holds the rules for access, withdrawal and tests. Names in the interface follow [docs/naming.md](docs/naming.md), and public text follows [docs/voice.md](docs/voice.md). Security reports go through [SECURITY.md](SECURITY.md), and the sign-in design is in [AUTH.md](AUTH.md).
+The developer and operator guide is [docs/accounts-and-hosting/engineering.md](docs/accounts-and-hosting/engineering.md). Contributions are welcome. Read [AGENTS.md](AGENTS.md) first, because it holds the rules for access, withdrawal and tests. Names in the interface follow [docs/naming.md](docs/naming.md), and public text follows [docs/voice.md](docs/voice.md). Security reports go through [SECURITY.md](SECURITY.md), and the sign-in design is in [AUTH.md](AUTH.md).
 
 ## Repository layout
 
@@ -161,14 +161,14 @@ test/           Tests for the node and the Worker
 
 | Document | What it holds |
 | --- | --- |
-| [docs/what-strata-is.md](docs/what-strata-is.md) | The whole picture in plain words |
-| [docs/communities-spaces-2026-11-19.md](docs/communities-spaces-2026-11-19.md) | Talk becomes knowledge, private spaces, AT Protocol spaces and Periksa |
-| [docs/platform-2026-11-19.md](docs/platform-2026-11-19.md) | Building blocks in the code and planned |
-| [docs/strata-model-2026-11-17.md](docs/strata-model-2026-11-17.md) | The layers, columns and places of a deployment |
+| [docs/plan/what-strata-is.md](docs/plan/what-strata-is.md) | The whole picture in plain words |
+| [docs/plan/communities-spaces-2026-11-19.md](docs/plan/communities-spaces-2026-11-19.md) | Talk becomes knowledge, private spaces, AT Protocol spaces and Periksa |
+| [docs/plan/platform-2026-11-19.md](docs/plan/platform-2026-11-19.md) | Building blocks in the code and planned |
+| [docs/plan/strata-model-2026-11-17.md](docs/plan/strata-model-2026-11-17.md) | The layers, columns and places of a deployment |
 | [docs/research/epistemic-multiplex-2026-11-19.md](docs/research/epistemic-multiplex-2026-11-19.md) | The knowledge model of Entity, Assertion and Witness |
-| [docs/framing-and-impact-2026-11-17.md](docs/framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, evidence and laws |
-| [docs/code-disclosure-2026-11-17.md](docs/code-disclosure-2026-11-17.md) | Which code is ours and which existed before |
-| [docs/engineering.md](docs/engineering.md) | Developer and operator guide |
+| [docs/plan/framing-and-impact-2026-11-17.md](docs/plan/framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, evidence and laws |
+| [docs/competition/code-disclosure-2026-11-17.md](docs/competition/code-disclosure-2026-11-17.md) | Which code is ours and which existed before |
+| [docs/accounts-and-hosting/engineering.md](docs/accounts-and-hosting/engineering.md) | Developer and operator guide |
 
 Every document is indexed in [docs/README.md](docs/README.md). The diagrams in this README are rendered with [pele](https://pele.run), and the command is in [docs/assets/build-diagrams.mjs](docs/assets/build-diagrams.mjs).
 
@@ -192,7 +192,7 @@ The community, the wiki and the Papuan look stayed the same while the foundation
 
 Strata is licensed under [AGPL-3.0-only](LICENSE). Anyone who runs a changed version for other people must share their changes.
 
-- The identity host in `packages/pds` is a fork of [Cirrus](https://github.com/ascorbic/cirrus) by Matt Kane and contributors (`@getcirrus` packages), under the MIT licence in [`packages/pds/LICENSE.cirrus`](packages/pds/LICENSE.cirrus). The full account of what was reused is in [docs/code-disclosure-2026-11-17.md](docs/code-disclosure-2026-11-17.md).
+- The identity host in `packages/pds` is a fork of [Cirrus](https://github.com/ascorbic/cirrus) by Matt Kane and contributors (`@getcirrus` packages), under the MIT licence in [`packages/pds/LICENSE.cirrus`](packages/pds/LICENSE.cirrus). The full account of what was reused is in [docs/competition/code-disclosure-2026-11-17.md](docs/competition/code-disclosure-2026-11-17.md).
 - Thank you to the Photon project, whose work the earlier clients were built on, and to the PieFed project, whose forum behaviour inspired parts of this one.
 - Third-party notices for the web app are in [`apps/web/licenses`](apps/web/licenses).
 - The first wiki pages draw on published sources, and each page lists its own.

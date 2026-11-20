@@ -1,6 +1,6 @@
 # ETNOS authentication and agent authorization
 
-This discovery document is guidance, not a credential, standard identity proof or policy engine. Never put secrets here. Current implementation: [agent entrance](docs/agent-entrance-2026-11-03.md); broader design: [institutional identity](docs/agent-institution-design-2026-11-03.md).
+This discovery document is guidance, not a credential, standard identity proof or policy engine. Never put secrets here. Current implementation: [agent entrance](docs/aksara/agent-entrance-2026-11-03.md); broader design: [institutional identity](docs/aksara/agent-institution-design-2026-11-03.md).
 
 ## Public reading
 

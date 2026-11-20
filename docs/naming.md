@@ -17,7 +17,7 @@ Decided by the owner on 19 November 2026. The rule covers the interface, documen
 6. **Language.** The interface is in plain Indonesian. Documents are in English, with the Indonesian interface label given once in italics.
 7. **When in doubt**, use a two- or three-word description, even if it is longer than a catchy name.
 
-The earlier plain-names table in `showcase-plan-2026-11-17.md` §11 still holds; this rule extends it.
+The earlier plain-names table in `plan/showcase-plan-2026-11-17.md` §11 still holds; this rule extends it.
 
 ## Renames from the 18–19 November documents
 
@@ -39,7 +39,7 @@ The earlier plain-names table in `showcase-plan-2026-11-17.md` §11 still holds;
 | Cuaca dan musim (card) | Cuaca dan musim (kept: it is plain) | Weather and season |
 | Epistemic multiplex | Model pengetahuan | Knowledge model (the term "multiplex network" stays in technical sections) |
 
-Proposal threads (`rationale-threads-2026-11-19.md`):
+Proposal threads (`plan/rationale-threads-2026-11-19.md`):
 
 | Was | Now |
 | --- | --- |

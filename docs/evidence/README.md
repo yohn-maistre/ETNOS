@@ -12,7 +12,7 @@ The owner prefers a few necessary links rather than a repository catalogue. Leav
 | --- | --- |
 | **March Honai work:** [Papua/Indonesian adaptation](https://github.com/yohn-maistre/honai-metro/commit/ff77dbab9f86238e24710c1d932c0081cc3985bb) and [March 25 Wiki/dashboard/menu work](https://github.com/yohn-maistre/honai-metro/commit/af0af053ecfcabd737c74ac1bd2b9a52c2934a6b) | Project-specific community/cultural interface work before April. The latter diff modifies `src/routes/wiki/+page.svelte` and `src/routes/dashboard/+page.svelte`; it is source evidence, with any contemporaneous demonstration linked separately. |
 | **Optional 2025 continuity:** [Saireri ETNOS](https://github.com/yohn-maistre/saireri-etnos), with selected Meepago material only through arranged private access if needed | Early federated-forum deployment/client experiments based on Photon. Credit the donor; describe the actual plans/configuration/adaptation, not an original client engine. |
-| **Current result:** [Live ETNOS](https://etnos.space), [Honai source](https://github.com/yohn-maistre/honai-metro) and [matched reading-pass receipt](../ui-reading-pass-2026-11-11.md) | The present connected build. Strata's engine can be linked through the owner's chosen review access, without filling the opening page with infrastructure repositories. |
+| **Current result:** [Live ETNOS](https://etnos.space), [Honai source](https://github.com/yohn-maistre/honai-metro) and [matched reading-pass receipt](../history/ui-reading-pass-2026-11-11.md) | The present connected build. Strata's engine can be linked through the owner's chosen review access, without filling the opening page with infrastructure repositories. |
 
 Lead with the March artifacts, use one short 2025 reference if helpful, then let the actual demo show the evolution. The current engine is a later implementation of the continuing ETNOS direction. Do not substitute inherited upstream commits for ETNOS-specific work or rewrite dated history.
 
@@ -62,7 +62,7 @@ Collect proposal/PPT templates and the actual declarations through the official 
 - [Living culture and sustainability refinement](../foundation/living-culture-refinement-2026-11-11.md)
 - [Central implementation plan](../foundation/execution-plan.md)
 - [Complete foundation/feature ledger](../foundation/README.md)
-- [Portable install and Watch engine transplant](../portable-commons-and-watch-plan-2026-11-11.md)
-- [OpenCode/Jev/e-means research and current implementation selection](../agent-seeding-and-clustering-2026-11-11.md)
+- [Portable install and Watch engine transplant](../news/portable-commons-and-watch-plan-2026-11-11.md)
+- [OpenCode/Jev/e-means research and current implementation selection](../aksara/agent-seeding-and-clustering-2026-11-11.md)
 
 The uploaded side-chat text is preserved verbatim with a hash. Its business suggestions are hypotheses and design input, not evidence of paying customers, organizer approval, completed interviews or measured impact.

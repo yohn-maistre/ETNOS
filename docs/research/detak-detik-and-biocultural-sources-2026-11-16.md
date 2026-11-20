@@ -1,6 +1,6 @@
 # Detak Detik, and data sources for biodiversity, terrain and cultural objects
 
-16 November 2026. Research for ETNOS. Part 1 reads the owner's earlier project. Part 2 checks current data sources. Part 3 proposes features and ties each to the six coordinates in `knowledge-map-design-2026-11-16.md` (Tempat, Waktu, Ranah, Bentuk budaya, Suara, Dasar).
+16 November 2026. Research for ETNOS. Part 1 reads the owner's earlier project. Part 2 checks current data sources. Part 3 proposes features and ties each to the six coordinates in `knowledge/knowledge-map-design-2026-11-16.md` (Tempat, Waktu, Ranah, Bentuk budaya, Suara, Dasar).
 
 How to read the evidence. "Measured today" means I ran the query on 16 November 2026. "Reported" means a web page says it, and I did not re-check. "Not checked" means what it says. Counts from keyword searches are rough. They include noise.
 

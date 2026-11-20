@@ -4,7 +4,7 @@
 
 **Update, later on 19 November (owner's go-ahead for a test deploy):** the host is **live on workers.dev with sign-up closed**, at `https://etnos-identity-host.giyaibo.workers.dev` (`/health` answers `"signup":"closed"`). It was deployed by the `identity-host` job in `.github/workflows/deploy-etnos.yml` (deploy line `2026-11-19l`). No DNS was touched and no DID was registered on the public PLC directory. AT Protocol spaces (alpha) are built on the host (§9), and the same bundle runs on plain workerd for self-hosting (§10). ETNOS does not offer hosted sign-up until the owner sets `STRATA_ACCOUNT_HOST` (§6).
 
-Status words follow `proposal/claims-2026-11-18.md`: the host is **live for testing, closed to sign-up**; spaces are **built** (alpha upstream); self-hosting on workerd is **built and tested locally**; Docker is a **plan**.
+Status words follow `competition/claims-2026-11-18.md`: the host is **live for testing, closed to sign-up**; spaces are **built** (alpha upstream); self-hosting on workerd is **built and tested locally**; Docker is a **plan**.
 
 ## 1. What exists now
 
@@ -133,7 +133,7 @@ What is left:
 
 ## 9. AT Protocol spaces on this host *(alpha; rebuilt 19 November to the current proposal text)*
 
-This host follows proposal 0016 ([permissioned data](https://github.com/bluesky-social/proposals/blob/main/0016-permissioned-data/README.md)) as it reads on 19 November 2026. The proposal says that details are likely to change, and the official implementation is still a work in progress ([atproto PR 5187](https://github.com/bluesky-social/atproto/pull/5187)). Spaces give access control, not encryption: the operator of this host can read space data. The design follows `docs/communities-spaces-2026-11-19.md` §3–4.1.
+This host follows proposal 0016 ([permissioned data](https://github.com/bluesky-social/proposals/blob/main/0016-permissioned-data/README.md)) as it reads on 19 November 2026. The proposal says that details are likely to change, and the official implementation is still a work in progress ([atproto PR 5187](https://github.com/bluesky-social/atproto/pull/5187)). Spaces give access control, not encryption: the operator of this host can read space data. The design follows `docs/plan/communities-spaces-2026-11-19.md` §3–4.1.
 
 **Protocol code comes from the official package.** `src/host/spaces.ts` uses `@atproto/space` `0.0.0-spaces-alpha-20261117141222` (MIT), which is newer than the 2026-10-29 snapshot of the `labs/spaces` trial. From it come credentials and delegation tokens, the RFC 9421 credential signature, the HPKE secret for MACs, LtHash commits and STAR archives. The request handling and storage were written here for Workers and Durable Objects. The official alpha PDS (`@atproto/pds`, MIT) served as the reference for behaviour, and no code was copied from it. The engine `@getcirrus/spaces` stays only in the single-account Cirrus worker (`src/upstream/`), pinned to the August alpha under the alias `@atproto/space-legacy`, because its protocol is out of date.
 

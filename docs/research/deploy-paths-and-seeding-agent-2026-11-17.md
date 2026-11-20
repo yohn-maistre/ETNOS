@@ -6,7 +6,7 @@
 
 1. A Cloudflare one-click path is feasible on the free plan for the Strata Worker, its SQLite Durable Object and static assets. It needs a neutral template first (the current configs are tied to the ETNOS preview) and a small setup script for secrets and the first steward.
 2. A VPS path is feasible as one script that installs Docker, the official Bluesky PDS installer and a Strata container, with the PDS's own Caddy serving both. Strata's Node host needs Node 24.19 or later (`package.json` engines) because `src/store.ts` uses `node:sqlite`.
-3. The operator onboarding flow can be built on what exists: the resident (Pi on a Durable Object), the `seed.config.json` pipeline in `next-2026-11-16.md`, and Studio.
+3. The operator onboarding flow can be built on what exists: the resident (Pi on a Durable Object), the `seed.config.json` pipeline in `history/next-2026-11-16.md`, and Studio.
 4. opencode is MIT-licensed and can run headless with an HTTP API and an SDK. Its keyless "free models" exist today but are promotional, are restricted to the opencode client, have unpublished limits, and several of them may keep or train on prompts. It cannot run inside a Worker. Embedding it as the seeding engine of every deployment is not recommended. Using it by choice, for public data only, on a laptop or VPS is reasonable.
 5. "OpenBot" is real (more than one project of that name). "dusk.bot" is a real desktop app. Neither ships its own keyless models. The nearest match is a third-party listing saying OpenBot can use opencode's free models.
 6. The owner's guess in question E is mostly right, with two corrections (section 7).
@@ -68,9 +68,9 @@ So the owner's recollection is half right: such apps let a user plug in opencode
 | Limits | Workers only, github.com and gitlab.com only, monorepos "not fully supported": a subdirectory URL works only if the app and its dependencies are fully isolated in it. | same |
 | Free plan, Durable Objects | SQLite-backed only. Per day: 100,000 requests, 5 million rows read, 100,000 rows written, 13,000 GB-s duration; 5 GB stored; resets 00:00 UTC. | [DO pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/) |
 | Free plan, R2 | 10 GB-month storage, 1 million Class A and 10 million Class B operations a month, free egress. Whether a payment method must be on file to enable R2 is not stated on that page (*unverified*). | [R2 pricing](https://developers.cloudflare.com/r2/pricing/) |
-| Free plan, Workers | 100,000 requests a day and 10 ms CPU per request, as already recorded in `showcase-plan-2026-11-17.md` §3. Sign-in cost on Free is still unmeasured. | repo |
+| Free plan, Workers | 100,000 requests a day and 10 ms CPU per request, as already recorded in `plan/showcase-plan-2026-11-17.md` §3. Sign-in cost on Free is still unmeasured. | repo |
 
-What a Strata template needs, from `wrangler.web.jsonc` and `docs/cloudflare-profile.md`:
+What a Strata template needs, from `wrangler.web.jsonc` and `docs/accounts-and-hosting/cloudflare-profile.md`:
 
 - One Worker (`src/web-worker.ts`) with an `ASSETS` binding for the built Svelte app, one SQLite Durable Object class `StrataNode` with migration `v1`, `nodejs_compat`, observability off.
 - Plain variables: `STRATA_ORIGIN`, `STRATA_NODE`, `STRATA_STEWARD_DID`, `STRATA_CLIENT_NAME`, `STRATA_CATALOGUE`, enrolment and publishing switches.
@@ -79,7 +79,7 @@ What a Strata template needs, from `wrangler.web.jsonc` and `docs/cloudflare-pro
 
 Gaps found in the repository:
 
-- `docs/client-deployment-contract.md` already says the current configs share the preview Worker name and node and must not be deployed unchanged, and that neutral validated templates are needed before calling this an installer.
+- `docs/accounts-and-hosting/client-deployment-contract.md` already says the current configs share the preview Worker name and node and must not be deployed unchanged, and that neutral validated templates are needed before calling this an installer.
 - The web assets live in `apps/web` and are built by `npm run build:ui` before `wrangler deploy`. The button's build step must run that, so a root `deploy` script such as `npm ci && npm run build:ui && wrangler deploy` is needed.
 - The root repository is one package with `apps/web` and `packages/*` inside it, so the button should point at the repository root, not a subdirectory.
 - `STRATA_STEWARD_DID` is an AT identity, which the operator has before they have a deployment only if they already hold a Bluesky or PDS account. The setup flow must say so, or offer to create one on a PDS first.
@@ -99,7 +99,7 @@ Consequences for putting Strata beside it:
 
 - The PDS's Caddy owns ports 80 and 443 and its Caddyfile already claims the wildcard of the PDS hostname. Strata should therefore live on a different hostname (for example `etnos.example.org` for Strata and `pds.example.org` for the PDS, so user handles are `name.pds.example.org`). A second block is added to the same Caddyfile with `reverse_proxy` to Strata's port; one Caddy, one certificate manager. The installer's file is regenerated only on install, so the Strata script must append to it idempotently and reload Caddy (inference; not tested).
 - Do not point the PDS wildcard at the same name as Strata. This is why the PDS `hostname` and the Strata origin must differ.
-- Strata on the VPS runs from the repository's Node host (`npm start` runs `src/cli.ts serve`, which uses `src/http.ts` and `node:sqlite`). `docs/client-deployment-contract.md` calls this host a "loopback developer API; not a production browser-auth server". So the VPS path is **not ready**: the Node host has to be qualified for production sign-in (OAuth, sealed cookies, exact Origin), or Strata on the VPS must run the Worker code under workerd (`wrangler dev` or the open-source `workerd` binary) with the same Durable Object. The second is closer to what is already tested (`test:worker`, `test:web`) and keeps one code path. This choice is a decision for the owner.
+- Strata on the VPS runs from the repository's Node host (`npm start` runs `src/cli.ts serve`, which uses `src/http.ts` and `node:sqlite`). `docs/accounts-and-hosting/client-deployment-contract.md` calls this host a "loopback developer API; not a production browser-auth server". So the VPS path is **not ready**: the Node host has to be qualified for production sign-in (OAuth, sealed cookies, exact Origin), or Strata on the VPS must run the Worker code under workerd (`wrangler dev` or the open-source `workerd` binary) with the same Durable Object. The second is closer to what is already tested (`test:worker`, `test:web`) and keeps one code path. This choice is a decision for the owner.
 - Package as a Docker image (`node:24` or a workerd image), a compose file added next to `/pds/compose.yaml`, and one script (`install.sh`) that: checks the OS and ports, downloads the PDS installer, verifies a published SHA-256, runs it, then adds Strata. The `curl | sh` pattern is acceptable only with a pinned checksum, a version in the URL and a readable script; the PDS README itself downloads then runs, which is the safer shape to copy.
 - Hardware: the PDS recommends 1 GB RAM; add roughly the engine's needs (not measured here). Treat 2 GB RAM as a working guess, *unverified*.
 
@@ -108,8 +108,8 @@ Consequences for putting Strata beside it:
 Existing pieces in the repository:
 
 - `packages/resident-pi`: the optional Aksara resident. One Pi agent session per community/thread on a SQLite Durable Object (`PiResidentSession`), bound to Strata through `ResidentAuthority` (budgets, work tickets, publication) and to a model through a `MODEL_GATEWAY` service binding (today the owner's WPW gateway). Web search and fetch tools need an `AI` binding and AI Gateway. It has no model keys inside.
-- `docs/next-2026-11-16.md`: the seed pipeline (`seed.config.json`, survey, `verify-wiki-seed.py`, writer step, `check-wiki-pages.ts`, `propose-wiki-pages.ts`). Today these are scripts run by the owner.
-- `docs/direction-2026-11-16.md`, "Aksara Node": the separate aksara-core host (Mastra-based harness, alpha, Apache-2.0) for a community's private work. Out of scope for first seeding.
+- `docs/history/next-2026-11-16.md`: the seed pipeline (`seed.config.json`, survey, `verify-wiki-seed.py`, writer step, `check-wiki-pages.ts`, `propose-wiki-pages.ts`). Today these are scripts run by the owner.
+- `docs/plan/direction-2026-11-16.md`, "Aksara Node": the separate aksara-core host (Mastra-based harness, alpha, Apache-2.0) for a community's private work. Out of scope for first seeding.
 - `src/web-worker.ts` shows no model call in the engine itself; inference is behind the resident and a gateway.
 
 | Path | Seeding agent | Why | Data allowed |
@@ -163,4 +163,4 @@ All read 17 November 2026.
 - Durable Objects pricing: https://developers.cloudflare.com/durable-objects/platform/pricing/
 - R2 pricing: https://developers.cloudflare.com/r2/pricing/
 - Bluesky PDS: https://github.com/bluesky-social/pds ; installer: https://raw.githubusercontent.com/bluesky-social/pds/main/installer.sh
-- Repository documents: `docs/showcase-plan-2026-11-17.md`, `docs/next-2026-11-16.md`, `docs/strata-model-2026-11-17.md` §4.5, `docs/research/free-tier-llm-coverage-2026-11-16.md`, `docs/cloudflare-profile.md`, `docs/client-deployment-contract.md`, `docs/pds-hosting.md`, `docs/direction-2026-11-16.md`, `packages/resident-pi/README.md`, `wrangler.web.jsonc`, `package.json`.
+- Repository documents: `docs/plan/showcase-plan-2026-11-17.md`, `docs/history/next-2026-11-16.md`, `docs/plan/strata-model-2026-11-17.md` §4.5, `docs/research/free-tier-llm-coverage-2026-11-16.md`, `docs/accounts-and-hosting/cloudflare-profile.md`, `docs/accounts-and-hosting/client-deployment-contract.md`, `docs/accounts-and-hosting/pds-hosting.md`, `docs/plan/direction-2026-11-16.md`, `packages/resident-pi/README.md`, `wrangler.web.jsonc`, `package.json`.

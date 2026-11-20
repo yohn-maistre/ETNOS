@@ -19,11 +19,11 @@
 
 | Source | Decision | This research |
 | --- | --- | --- |
-| `knowledge-organisation-2026-11-15.md` | Label families need a citable source, about a dozen top entries, and never label a person. Topics are a hand-made list of 23 in three groups. Themes come from posts. | Agrees on all three rules. The three groups are an extra level that this note recommends treating as headings (section 6). |
-| `strata-model-2026-11-17.md` 4.1a, 4.5 | Place spine is administrative, cultural regions are overlays. Topic schemes ship as data and sit side by side. | Agrees. Section 5 applies the same overlay idea to topics. |
+| `knowledge/knowledge-organisation-2026-11-15.md` | Label families need a citable source, about a dozen top entries, and never label a person. Topics are a hand-made list of 23 in three groups. Themes come from posts. | Agrees on all three rules. The three groups are an extra level that this note recommends treating as headings (section 6). |
+| `plan/strata-model-2026-11-17.md` 4.1a, 4.5 | Place spine is administrative, cultural regions are overlays. Topic schemes ship as data and sit side by side. | Agrees. Section 5 applies the same overlay idea to topics. |
 | `advisor-review-2026-11-17.md` section 8 | One working scheme, the fourteen ranah. UU 5/2017 and Western disciplines are crosswalks. | Agrees on the principle. Disagrees that fourteen are enough for a default to every deployment (section 6). |
-| `direction-2026-11-16.md` | Four axes, topic tree two levels at most. | Agrees. |
-| `knowledge-map-design-2026-11-16.md` 2 | Fourteen ranah, multi-label, communities may rename, merge or add. | Agrees. Bridges across ranah are supported by section 3. |
+| `plan/direction-2026-11-16.md` | Four axes, topic tree two levels at most. | Agrees. |
+| `knowledge/knowledge-map-design-2026-11-16.md` 2 | Fourteen ranah, multi-label, communities may rename, merge or add. | Agrees. Bridges across ranah are supported by section 3. |
 | `src/catalogues/tanah-papua.json` | Topic entries carry `facet` values (topic-group, cultural-domain, community-kind, institution-kind) and `parents`. "Iman & gereja" is already titled "Iman & agama" with the old title kept in `previousTitles`. Eight of the ten UU 5/2017 objects have their own entry. Seni and Bahasa reuse existing topics. | The `previousTitles` field is the right shape for rename without loss. Community kinds and institution kinds are stored as topics, which is a data-model convenience. They answer a different question (how people gather, what an organisation is) and should stay a separate facet in the interface. |
 
 ## 2. Classic knowledge organisation
@@ -48,7 +48,7 @@ Implication. Top-level topics should be at the grain people already name in dail
 | Ngā Upoko Tukutuku (Māori Subject Headings) | Standard te reo Māori subject terms, developed by a project sponsored by LIANZA, Te Rōpū Whakahau and the National Library, launched 2006, more than 2,000 terms. Used beside LCSH, with MARC source code "reo". The National Library takes suggestions for new terms by email [V via search summary, https://natlib.govt.nz/librarians/nga-upoko-tukutuku and https://otago.libguides.com/Nga_Upoko_Tukutuku]. | Māori librarians' bodies co-own it. Terms are in Māori first. It runs beside the national scheme, and does not replace it. The library page itself would not load today (bot check). |
 | Mashantucket Pequot Thesaurus | A user-centred thesaurus of American Indian terminology, meant for use with LCSH [V via search, https://main.aisc.ucla.edu/research/past-research-projects/mashantucket-pequot-thesaurus-project]. The main scholarly account is Littletree and Metoyer (2015), *Cataloging & Classification Quarterly* 53 [S, not read]. | Built for the people who search, and the sources note its reach is limited by the variety of tribal knowledge structures [V via search]. |
 | Mukurtu CMS | Organises content around communities, cultural protocols and categories. Protocols control access and belong to a community. Categories are site-specific high-level terms for browsing. TK Labels can be customised on the site [V via search, https://docs.mukurtu.org/digital-heritage-items/DHMetadataFields/]. | The site decides its categories. Access rules are set by the community that holds the item. |
-| Local Contexts TK Labels | Labels for provenance, protocol and permission, such as TK Seasonal, TK Women Restricted, TK Community Use Only. Indigenous communities and local organisations apply them [V, https://localcontexts.org/labels/traditional-knowledge-labels/]. | Only the community sets its labels. This matches the existing line in `direction-2026-11-16.md` that TK Labels are protocol and not topics. |
+| Local Contexts TK Labels | Labels for provenance, protocol and permission, such as TK Seasonal, TK Women Restricted, TK Community Use Only. Indigenous communities and local organisations apply them [V, https://localcontexts.org/labels/traditional-knowledge-labels/]. | Only the community sets its labels. This matches the existing line in `plan/direction-2026-11-16.md` that TK Labels are protocol and not topics. |
 | CARE principles | Collective benefit, Authority to control, Responsibility, Ethics. Written by the International Indigenous Data Sovereignty Interest Group within the Research Data Alliance, as a complement to FAIR. Carroll et al. 2020, Data Science Journal 19(1):43 [V via search, https://doaj.org/article/b3fcded6f18a4d0488c20ce01be01994]. The GIDA page would not load (404). | Authority to control is the principle that bears on categories. People who hold the knowledge have a say over how it is described. |
 | Vanuatu Cultural Centre | Fieldworker programme to record kastom. A 1984 moratorium on foreign research, lifted 1995 with new guidelines, was driven by concerns about who owns kastom knowledge and controls its circulation [V via search, https://press-files.anu.edu.au/downloads/press/p146521/pdf/ch23.pdf]. | Control over circulation is a political question in Melanesia, and categories are part of circulation [S, my reading]. |
 
@@ -96,7 +96,7 @@ Only the rows marked [V] were opened or returned by a search today. The rest are
 
 UNESCO's 2003 Convention, Article 2.2, lists five domains: oral traditions and expressions including language; performing arts; social practices, rituals and festive events; knowledge and practices concerning nature and the universe; traditional craftsmanship [V, https://ich.unesco.org/en/convention].
 
-UU 5/2017 Pasal 5 lists ten objects: tradisi lisan, manuskrip, adat istiadat, ritus, pengetahuan tradisional, teknologi tradisional, seni, bahasa, permainan rakyat, olahraga tradisional [V, as quoted in `knowledge-organisation-2026-11-15.md`, which cites the law's PDF].
+UU 5/2017 Pasal 5 lists ten objects: tradisi lisan, manuskrip, adat istiadat, ritus, pengetahuan tradisional, teknologi tradisional, seni, bahasa, permainan rakyat, olahraga tradisional [V, as quoted in `knowledge/knowledge-organisation-2026-11-15.md`, which cites the law's PDF].
 
 | Observation | Basis |
 | --- | --- |
@@ -132,7 +132,7 @@ How the fourteen ranah relate to everyday interests is the gap. Mapping the inte
 
 ### 6.2 The starter set
 
-Eighteen topics, with the fourteen from `knowledge-map-design-2026-11-16.md` unchanged in name except one rename, and four additions. English names are glosses for operators.
+Eighteen topics, with the fourteen from `knowledge/knowledge-map-design-2026-11-16.md` unchanged in name except one rename, and four additions. English names are glosses for operators.
 
 | # | Indonesian | English | Status |
 | --- | --- | --- | --- |
@@ -179,7 +179,7 @@ Where this disagrees with the advisor review. The review asks for "one working t
 | Rename | A community or steward | Same body that owns the label | Old name as alias. Old id never changes. |
 | Merge | Anyone with a reason | Stewards of the deployment | Redirect from the merged id. Posts keep their labels. Mirrors Stack Exchange synonyms [V via search]. |
 | Withdraw | A steward | Same | Page remains with a note and is removed from browse. Posts keep the label. |
-| Found theme becomes a topic | The theme proposal path from `knowledge-organisation-2026-11-15.md` | Stewards | Kept after months of use, in line with stable tag proportions in Golder and Huberman [V as reported]. |
+| Found theme becomes a topic | The theme proposal path from `knowledge/knowledge-organisation-2026-11-15.md` | Stewards | Kept after months of use, in line with stable tag proportions in Golder and Huberman [V as reported]. |
 
 Rules that hold in all cases.
 
@@ -228,6 +228,6 @@ Accessed 18 November 2026 unless noted.
 - Golder and Huberman, Usage patterns of collaborative tagging systems (2006). https://collablab.northwestern.edu/CollabolabDistro/nucmc/GolderAndHuberman-usage%20patterns%20collab%20tagging.pdf (abstract-level summary only)
 - SKOS Reference, W3C. https://www.w3.org/TR/skos-reference/ (first 100,000 characters read)
 - UNESCO, 2003 Convention. https://ich.unesco.org/en/convention
-- UU 5/2017 Pasal 5, as cited in `docs/knowledge-organisation-2026-11-15.md`. https://dapobud.kemenbud.go.id/docs/dasar-hukum/uu-5-2017.pdf (not reopened today)
+- UU 5/2017 Pasal 5, as cited in `docs/knowledge/knowledge-organisation-2026-11-15.md`. https://dapobud.kemenbud.go.id/docs/dasar-hukum/uu-5-2017.pdf (not reopened today)
 
 Not loaded or not reached: Bluesky starter pack docs (redirect, then 404), Discourse category guidance (404), GIDA CARE page (404), NZ National Library page (bot check). Reddit, Mastodon, Facebook, YouTube, Spotify and Wikidata rows rest on memory. Littletree and Metoyer (2015), Olson's book and Berman's 1971 book were not read.
