@@ -60,3 +60,4 @@
 2026-11-20e sign-up opens the host form directly, entity panel, visitor bar hover
 2026-11-20f Jelajah redesign, Grafit default, no desktop sidebar toggle
 2026-11-20g 3D knowledge map, Kabar without upstream name
+2026-11-20h terrain maps on story pages
