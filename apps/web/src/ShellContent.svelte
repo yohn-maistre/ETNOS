@@ -219,15 +219,15 @@
         <ArrowLeft size={22} />
       </Button>
     {/if}
-    <Button
-      variant="ghost"
-      size="icon"
-      class="desktop-menu-toggle"
-      aria-label="Buka menu"
-      onclick={() => sidebar.toggle()}
-    >
-      <PanelLeft size={19} />
-    </Button>
+    {#if path !== '/'}<Button
+        variant="ghost"
+        size="icon"
+        class="desktop-menu-toggle"
+        aria-label="Buka menu"
+        onclick={() => sidebar.toggle()}
+      >
+        <PanelLeft size={19} />
+      </Button>{/if}
     <div class="surface-heading" class:explore-title={path === '/explore'}>
       {#if path === '/'}<PlaceScopeSwitch onChange={onRefresh} feed={feedMode} {onFeedChange} />{:else if ['/explore', '/wiki'].includes(path)}<h1 class="sr-only">{heading}</h1><PlaceScopeSwitch />{:else if ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
         >
