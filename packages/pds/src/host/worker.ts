@@ -432,7 +432,7 @@ const worker = {
 			if (exceeded) return xerr(413, "PayloadTooLarge", "Request exceeds this host limit");
 			const headers = new Headers(response.headers);
 			headers.set("x-content-type-options", "nosniff");
-			headers.set("referrer-policy", "no-referrer");
+			if (!headers.has("referrer-policy")) headers.set("referrer-policy", "no-referrer");
 			if (url.pathname.startsWith("/xrpc/") || url.pathname.startsWith("/.well-known/")) headers.set("access-control-allow-origin", "*");
 			return new Response(response.body, { status: response.status, headers });
 		} catch (error) {

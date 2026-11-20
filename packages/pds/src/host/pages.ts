@@ -16,28 +16,36 @@ export function esc(value: unknown): string {
 }
 
 const STYLE = `
+:root{color-scheme:light dark;--bg:#faf9f6;--fg:#262329;--card:#fff;--muted:#69636b;--line:#dedbd6;--brand:#6430ab;--btn:#262329;--btn-fg:#faf9f6;--soft:#f1eee9;--err:#fbe9e5;--err-line:#d9a092}
+@media (prefers-color-scheme:dark){:root{--bg:#151516;--fg:#f0ede7;--card:#1c1c1e;--muted:#aaa6ae;--line:#2e2d31;--brand:#a98be0;--btn:#f0ede7;--btn-fg:#151516;--soft:#232226;--err:#3a2320;--err-line:#7a4338}}
 *{box-sizing:border-box}
-body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#f6f4ef;color:#1d1b16}
-main{max-width:28rem;margin:0 auto;padding:2rem 1rem 3rem}
-h1{font-size:1.4rem;line-height:1.25;margin:0 0 1rem}
+html{background:var(--bg)}
+body{margin:0;min-height:100dvh;font:16px/1.55 "Geist","Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+.top{max-width:27rem;margin:0 auto;padding:2.5rem 1.25rem 0}
+.mark{font-size:1.9rem;font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--fg)}
+.mark b{color:var(--brand)}
+main{max-width:27rem;margin:0 auto;padding:1.75rem 1.25rem 2rem}
+h1{font-size:1.6rem;line-height:1.2;letter-spacing:-.015em;margin:0 0 .6rem}
 p{margin:0 0 1rem}
-.muted{color:#5d574b;font-size:.92rem}
+.muted{color:var(--muted);font-size:.93rem}
 form{margin:0 0 1rem}
-label{display:block;font-weight:600;margin:1rem 0 .3rem}
-input[type=text],input[type=password]{width:100%;padding:.7rem .8rem;border:1px solid #b9b2a3;border-radius:.5rem;font:inherit;background:#fff}
-.suffix{display:flex;align-items:center;gap:.4rem}.suffix span{color:#5d574b;white-space:nowrap}
-.check{display:flex;gap:.5rem;align-items:flex-start;font-weight:400}
-button,.button{display:inline-block;width:100%;margin-top:1rem;padding:.75rem 1rem;border:0;border-radius:.5rem;background:#2f4a3a;color:#fff;font:inherit;font-weight:600;text-align:center;text-decoration:none;cursor:pointer}
-button.secondary{background:#e7e2d8;color:#1d1b16}
-.account{background:#fff;color:#1d1b16;border:1px solid #b9b2a3;text-align:left}
-.error{background:#fbe9e5;border:1px solid #d9a092;border-radius:.5rem;padding:.7rem .8rem;margin:0 0 1rem}
-.box{background:#fff;border:1px solid #ddd6c8;border-radius:.5rem;padding:.8rem;margin:0 0 1rem}
+label{display:block;font-weight:600;font-size:.95rem;margin:1.1rem 0 .35rem}
+input[type=text],input[type=password]{width:100%;min-height:2.9rem;padding:.7rem .85rem;border:1px solid var(--line);border-radius:.75rem;font:inherit;background:var(--card);color:var(--fg)}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.suffix{display:flex;align-items:center;gap:.4rem}.suffix span{color:var(--muted);white-space:nowrap}
+.check{display:flex;gap:.55rem;align-items:flex-start;font-weight:400}
+button,.button{display:inline-block;width:100%;margin-top:1.1rem;min-height:2.9rem;padding:.75rem 1rem;border:0;border-radius:.75rem;background:var(--btn);color:var(--btn-fg);font:inherit;font-weight:600;text-align:center;text-decoration:none;cursor:pointer}
+button.secondary{background:var(--soft);color:var(--fg)}
+.account{background:var(--card);color:var(--fg);border:1px solid var(--line);text-align:left}
+.error{background:var(--err);border:1px solid var(--err-line);border-radius:.75rem;padding:.75rem .85rem;margin:0 0 1rem}
+.box{background:var(--card);border:1px solid var(--line);border-radius:.75rem;padding:.85rem;margin:0 0 1rem}
 ul{padding-left:1.2rem;margin:0 0 1rem}
-a{color:#2f4a3a}
+a{color:var(--fg);text-underline-offset:3px}
+.foot{max-width:27rem;margin:0 auto;padding:0 1.25rem 2.5rem;color:var(--muted);font-size:.85rem}
 `;
 
 export function page(title: string, body: string, status = 200): Response {
-	const html = `<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title><style>${STYLE}</style></head><body><main>${body}</main></body></html>`;
+	const html = `<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title><style>${STYLE}</style></head><body><header class="top"><span class="mark">etnos<b>.</b></span></header><main>${body}</main><footer class="foot">Server akun ETNOS. Akunmu memakai AT Protocol, jadi bisa dipakai di aplikasi lain dan dipindahkan.</footer></body></html>`;
 	return new Response(html, {
 		status,
 		headers: {
@@ -45,7 +53,8 @@ export function page(title: string, body: string, status = 200): Response {
 			"content-security-policy": PAGE_CSP,
 			"cache-control": "no-store",
 			"x-frame-options": "DENY",
-			"referrer-policy": "no-referrer",
+			// same-origin keeps the Origin header on this host's own form posts, which the CSRF checks read.
+			"referrer-policy": "same-origin",
 		},
 	});
 }

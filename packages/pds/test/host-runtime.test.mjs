@@ -51,6 +51,9 @@ test("accounts are created by invite, resolve by handle and carry the right PLC 
 		// The HTML sign-up page creates an account too, and refuses bad input plainly.
 		const code = await invite(mf);
 		const page = await call(mf, "/akun/baru?kode=" + code);
+		// Pages keep Origin on their own form posts (no-referrer would make the browser send "Origin: null").
+		assert.equal(page.headers.get("referrer-policy"), "same-origin");
+		assert.equal((await call(mf, "/akun/baru", { form: { code, label: "bob", password: "x", password2: "x", age: "16" }, headers: { origin: "null" } })).status, 403);
 		assert.equal(page.status, 200);
 		assert.match(page.headers.get("content-security-policy"), /frame-ancestors 'none'/);
 		assert.match(await page.text(), /Kode undangan/);
