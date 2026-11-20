@@ -58,3 +58,4 @@
 2026-11-20c cover cards with bottom wash
 2026-11-20d identity host pages in shadcn style
 2026-11-20e sign-up opens the host form directly, entity panel, visitor bar hover
+2026-11-20f Jelajah redesign, Grafit default, no desktop sidebar toggle
