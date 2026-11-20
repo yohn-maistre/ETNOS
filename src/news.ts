@@ -3,7 +3,8 @@ export type NewsPlace={name:string;slug:string;latitude:number|null;longitude:nu
 export type NewsItem={id:string;title:string;url:string;publishedAt:string|null;sourceCount:number;summary:string;image:string|null;imageCredit:string;places:NewsPlace[]}
 export type NewsFeed={source:{name:string;url:string};items:NewsItem[];available:boolean;selection?:{desk:string;place:string;total:number|null};pagination?:{page:number;pageSize:number;hasMore:boolean;nextPage:number|null};placeOptions?:{slug:string;name:string}[]}
 export type NewsStory=NewsItem & {keyPoints:string[];sources:{title:string;url:string;publisher:string;summary:string}[]}
-const source={name:'West Papua Watch',url:'https://westpapua.watch/news/'}
+// The upstream desk is an internal supplier; readers see ETNOS's own news pages and the original publishers.
+const source={name:'ETNOS',url:'/news'}
 const headers={'cache-control':'public, max-age=300, s-maxage=1800','x-content-type-options':'nosniff'}
 const unavailable=(state='unavailable',status=503)=>Response.json({source,items:[],available:false},{status,headers:{...headers,'cache-control':'no-store','x-etnos-news-state':state}})
 const text=(x:unknown,max=300)=>typeof x==='string'?x.trim().slice(0,max):''

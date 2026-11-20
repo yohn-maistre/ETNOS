@@ -7,6 +7,7 @@
   import { markdown } from './markdown'
   import { sourceLinks } from './sources'
   import { request, type Post } from './api'
+  import { localNewsPath } from './wiki-sources'
   let {
     post,
     tail = '',
@@ -97,7 +98,7 @@
   <div class="post-sources-body">
     {#if listed.length}<ol>
         {#each listed as source}<li>
-            <span class="post-source-title">{#if source.url}<a href={source.url} target="_blank" rel="noopener noreferrer nofollow">{source.title}<ExternalLink size={12} aria-hidden="true" /></a>{:else}{source.title}{/if}</span>
+            <span class="post-source-title">{#if source.url && localNewsPath(source.url)}<a href={localNewsPath(source.url)}>{source.title}</a>{:else if source.url}<a href={source.url} target="_blank" rel="noopener noreferrer nofollow">{source.title}<ExternalLink size={12} aria-hidden="true" /></a>{:else}{source.title}{/if}</span>
             {#if source.quote}<q>{source.quote}</q>{/if}
           </li>{/each}
       </ol>{:else if tail}<div class="post-sources-tail">

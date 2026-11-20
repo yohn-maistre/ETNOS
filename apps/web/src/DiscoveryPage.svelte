@@ -211,7 +211,7 @@
       {#if rest.length > 2}<ul class="open-list">
           {#each rest.slice(2) as item (item.id)}<ExploreRow title={item.title} meta={newsMeta(item)} href={'/news/' + item.id} image={item.image} />{/each}
         </ul>{/if}
-      {#if newsSource}<p class="jelajah-foot">Dirangkum dari {newsSource}.</p>{/if}
+      {#if newsSource}<p class="jelajah-foot">Setiap kabar meringkas beberapa liputan. Sumber aslinya tercantum di halaman kabar.</p>{/if}
     {:else}<p class="jelajah-note">{newsFailed ? 'Kabar belum dapat dimuat saat ini.' : 'Belum ada kabar untuk tempat ini.'} <a href="/news">Buka halaman Kabar</a></p>{/if}
   </section>
 

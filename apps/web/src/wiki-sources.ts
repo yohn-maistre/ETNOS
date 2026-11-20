@@ -18,6 +18,17 @@ export function newsStoryId(url: string): string | null {
   return null
 }
 
+/** An upstream news-desk story link opens on ETNOS's own story page instead. */
+export function localNewsPath(url: string): string | null {
+  try {
+    if (new URL(url).hostname !== 'westpapua.watch') return null
+  } catch {
+    return null
+  }
+  const id = newsStoryId(url)
+  return id ? '/news/' + id : null
+}
+
 export type NewsHeadline = { title: string; publishedAt: string | null }
 const headlines = new Map<string, Promise<NewsHeadline | null>>()
 /** One cached public read per story; failures resolve to null and are retried on the next page load. */

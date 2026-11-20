@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ExternalLink } from '@lucide/svelte'
+  import { localNewsPath, newsHeadline, newsStoryId } from './wiki-sources'
   let {
     url,
     title = '',
@@ -20,10 +21,17 @@
     'jubi.id',
     'westpapua.watch',
   ])
+  // Upstream news-desk links open as ETNOS story pages, titled from our own copy of the story.
+  const local = $derived(localNewsPath(url))
   $effect(() => {
     const target = url,
       abort = new AbortController()
     preview = null
+    if (local) {
+      const id = newsStoryId(target)
+      if (id) void newsHeadline(id).then((h) => { if (!abort.signal.aborted && h) preview = { title: h.title, description: '', site: 'Kabar', image: null } })
+      return () => abort.abort()
+    }
     try {
       if (!enabled || !supported.has(new URL(target).hostname)) return
     } catch {
@@ -51,9 +59,9 @@
 
 <a
   class="external-preview"
-  href={url}
-  target="_blank"
-  rel="noopener noreferrer nofollow"
+  href={local ?? url}
+  target={local ? undefined : '_blank'}
+  rel={local ? undefined : 'noopener noreferrer nofollow'}
   referrerpolicy="no-referrer"
   title={preview?.title || title || url}
 >
@@ -64,9 +72,9 @@
       onerror={(e) => e.currentTarget.setAttribute('hidden', '')}
     />{/if}
   <div>
-    <small>{preview?.site ?? new URL(url).hostname}</small>
+    <small>{preview?.site ?? (local ? 'Kabar' : new URL(url).hostname)}</small>
     <strong>{preview?.title || title || url}</strong>
     {#if preview?.description}<p>{preview.description}</p>{/if}
   </div>
-  <ExternalLink size={16} />
+  {#if !local}<ExternalLink size={16} />{/if}
 </a>

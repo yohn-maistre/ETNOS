@@ -1,6 +1,7 @@
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import type { MediaAttachment } from './api'
+import { localNewsPath } from './wiki-sources'
 /** Only text formatting. Raw media, scripts, SVG and remote images are excluded. */
 export function markdown(
   text: string,
@@ -82,6 +83,11 @@ export function markdown(
     const href = a.getAttribute('href') ?? ''
     if (!/^(https?:\/\/|mailto:)/i.test(href)) {
       a.removeAttribute('href')
+      continue
+    }
+    const local = localNewsPath(href)
+    if (local) {
+      a.setAttribute('href', local)
       continue
     }
     a.setAttribute('target', '_blank')

@@ -64,10 +64,7 @@ export function loadNews() {
       loadedAt = Date.now()
     } catch {
       news.feed = {
-        source: {
-          name: 'West Papua Watch',
-          url: 'https://westpapua.watch/news/',
-        },
+        source: { name: 'ETNOS', url: '/news' },
         items: [],
         available: false,
       }

@@ -203,7 +203,7 @@
   <section class="news-discussion">
     <div class="thread-toolbar">
       <h2>Percakapan terkait</h2>
-      <Button onclick={() => onShare(story!.url)}><MessageCircle size={16}/>Bahas di komunitas</Button>
+      <Button onclick={() => onShare(location.origin + '/news/' + story!.id)}><MessageCircle size={16}/>Bahas di komunitas</Button>
     </div>
     {#each posts as post}<PostCard
         {post}
