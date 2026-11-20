@@ -1,6 +1,6 @@
 # Documents
 
-> **New observatory redesign (20 November 2026).** Read [observatory/](observatory/README.md) first if you work on the wiki, the knowledge map, the knowledge model, datasets or deployment setup. It holds [world-model-and-starter-data-2026-11-20.md](observatory/world-model-and-starter-data-2026-11-20.md) and [data-observatory-2026-11-20.md](observatory/data-observatory-2026-11-20.md), plus a [working prototype](assets/peta-pengetahuan-prototipe.html) of the knowledge map. Where these disagree with older knowledge-map documents, they win. Remove this notice after the redesign is implemented.
+> **Observatory redesign, phase 1 built (20 November 2026).** Read [observatory/](observatory/README.md) first if you work on the wiki, the knowledge map, the knowledge model, datasets or deployment setup. Its [build status](observatory/README.md#build-status) lists what phase 1 built (the observatory front, the size and pace chart, the data catalogue, the *Data* tab and place locator maps) and what phase 2 still has to build (the starter-data build, crosswalks, embeddings and access tiers beyond the open tier). Where these documents disagree with older knowledge-map documents, they win. Remove this notice when phase 2 is built.
 
 This folder holds the plans, decisions, research and release records for Strata and ETNOS. The [project README](../README.md) is the shortest way in. Documents sit in folders by subject, and a date in a file name shows when it was written. Read the "Which document wins" table before you trust an older plan.
 
@@ -101,9 +101,9 @@ The design of the observatory from 20 November: the model of a people's world, t
 
 | Document | What it holds | Status |
 | --- | --- | --- |
-| [README.md](observatory/README.md) | The redesign notice, reading order and how it relates to earlier documents. | current |
-| [world-model-and-starter-data-2026-11-20.md](observatory/world-model-and-starter-data-2026-11-20.md) | Things placed by size, pace and level; depth and voice on statements; published schemes as lenses; crosswalks; relations; synthesis notes; embeddings; the starter build; onboarding; the knowledge map as a constellation. | current design, not built |
-| [data-observatory-2026-11-20.md](observatory/data-observatory-2026-11-20.md) | Scope, access tiers, the dataset record, viewers for each modality, access as code, edge and server profiles, Aksara as librarian, use cases and app views. | current design, not built |
+| [README.md](observatory/README.md) | The redesign notice, reading order, how it relates to earlier documents, and the build status of phase 1 and phase 2. | current |
+| [world-model-and-starter-data-2026-11-20.md](observatory/world-model-and-starter-data-2026-11-20.md) | Things placed by size, pace and level; depth and voice on statements; published schemes as lenses; crosswalks; relations; synthesis notes; embeddings; the starter build; onboarding; the knowledge map as a constellation. | current design; phase 1 built (coordinates, depth, size and pace chart) |
+| [data-observatory-2026-11-20.md](observatory/data-observatory-2026-11-20.md) | Scope, access tiers, the dataset record, viewers for each modality, access as code, edge and server profiles, Aksara as librarian, use cases and app views. | current design; phase 1 built (dataset records, open tier, catalogue, *Data* tab) |
 
 ## knowledge/: wiki, knowledge map and sources
 
@@ -305,5 +305,6 @@ Each answer points to the document and the section that holds it.
 | `scripts/check-wiki-pages.ts` | Runs the server's page check on seed pages |
 | `scripts/propose-wiki-pages.ts` | Proposes seed pages as an enrolled agent |
 | `scripts/observatory/` | Builds the knowledge map layout and the knowledge portal files |
-| `apps/web/public/observatory/` | The static map and graph files that the web app reads |
+| `apps/web/public/observatory/` | The static map, graph (with size, pace and level per thing) and place point files that the web app reads |
+| `apps/web/src/Observatorium.svelte` | The observatory front at `/wiki`: the knowledge map lenses, the data catalogue and what is still unknown |
 | `PRODUCT.md` and `.impeccable/` | Product brief and design review notes for the interface |

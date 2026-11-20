@@ -5,7 +5,8 @@
   import { TERRAIN_CREDIT, project } from './terrain.ts'
 
   type Place = { name: string; latitude: number | null; longitude: number | null; href?: string }
-  let { places, label = 'Peta lokasi', aspect = 16 / 10 }: { places: Place[]; label?: string; aspect?: number } = $props()
+  // `area` is an outline in the site map's coordinates (an SVG path, as in papua-atlas.json), drawn under the dots.
+  let { places, area = '', label = 'Peta lokasi', aspect = 16 / 10 }: { places: Place[]; area?: string; label?: string; aspect?: number } = $props()
   let width = $state(0)
 
   const points = $derived(
@@ -15,8 +16,12 @@
   )
   // Fit the points with room around them; never closer than about two degrees across, so a single place
   // still shows its coast and mountains.
+  const outline = $derived.by(() => {
+    const n = area.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? []
+    return { xs: n.filter((_, i) => i % 2 === 0), ys: n.filter((_, i) => i % 2 === 1) }
+  })
   const box = $derived.by((): [number, number, number, number] => {
-    const xs = points.map((p) => p.at[0]), ys = points.map((p) => p.at[1])
+    const xs = [...points.map((p) => p.at[0]), ...outline.xs], ys = [...points.map((p) => p.at[1]), ...outline.ys]
     const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2
     let w = Math.max(760, (Math.max(...xs) - Math.min(...xs)) * 1.5 + 260)
     let h = Math.max((Math.max(...ys) - Math.min(...ys)) * 1.5 + 200, w / aspect)
@@ -42,10 +47,11 @@
   })
 </script>
 
-{#if points.length}
+{#if points.length || outline.xs.length}
   <figure class="locator" bind:clientWidth={width} style:aspect-ratio={aspect}>
-    <svg viewBox={box.join(' ')} preserveAspectRatio="xMidYMid slice" role="img" aria-label={label + ': ' + points.map((p) => p.name).join(', ')}>
+    <svg viewBox={box.join(' ')} preserveAspectRatio="xMidYMid slice" role="img" aria-label={label + (points.length ? ': ' + points.map((p) => p.name).join(', ') : '')}>
       {#if width}<TerrainTiles {box} px={width} />{/if}
+      {#if area}<path class="area" d={area} stroke-width={2 * unit} />{/if}
       {#each labels as l (l.name)}<circle cx={l.at[0]} cy={l.at[1]} r={5 * unit} stroke-width={2 * unit} />{/each}
       {#each labels as l (l.name)}{#if !('hidden' in l)}<g class="pin">
           <rect x={l.x} y={l.y} width={l.w} height={l.h} rx={l.h / 2} />
@@ -60,6 +66,7 @@
   .locator { position: relative; margin: 0; width: 100%; overflow: hidden; border-radius: 16px; background: color-mix(in oklab, var(--foreground) 6%, var(--background)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent); }
   svg { display: block; width: 100%; height: 100%; }
   circle { fill: #1f4e8c; stroke: #ffffff; }
+  .area { fill: rgb(31 78 140 / 0.16); stroke: #14335c; stroke-linejoin: round; }
   rect { fill: #ffffff; fill-opacity: 0.94; }
   text { fill: #171717; font-weight: 600; text-anchor: middle; }
   figcaption { position: absolute; right: 8px; bottom: 6px; padding: 1px 6px; border-radius: 6px; background: color-mix(in oklab, var(--background) 78%, transparent); font-size: 10.5px; color: var(--muted-foreground); }

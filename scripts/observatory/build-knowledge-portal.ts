@@ -19,8 +19,9 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import {leiden,modularity,nullModel,strategicRoles,hill,predictLinks,layout,type WeightedEdge} from '../../src/knowledge-graph.ts'
 import {buildIndex,search,storeIndex,vectorOf} from '../../src/vector-index.ts'
+import {worldByRule,type World} from '../../src/world-model.ts'
 
-type Export={nodes:{id:string;class:string;title:string;context:string|null;statements:number;excerpts:number;voices:Record<string,number>}[];statements:{source:string;target:string|null;value:string|null;predicate:string;family:string;layer:string;logical:string;rank:string;origin:string;voices:string[];support:{digest:string;witness:string}[]}[];comentions:{a:string;b:string;weight:number;voices:Record<string,number>}[];witnesses:{key:string;kind:string;title:string;url:string|null;publisher:string;licence:string|null;voice:string;scope:'commons'|'community'}[];excerpts?:{digest:string;witness:string;section:string;text:string;mentions:string[]}[]}
+type Export={nodes:{id:string;class:string;title:string;context:string|null;world?:World;statements:number;excerpts:number;voices:Record<string,number>}[];statements:{source:string;target:string|null;value:string|null;predicate:string;family:string;layer:string;logical:string;rank:string;origin:string;voices:string[];support:{digest:string;witness:string}[]}[];comentions:{a:string;b:string;weight:number;voices:Record<string,number>}[];witnesses:{key:string;kind:string;title:string;url:string|null;publisher:string;licence:string|null;voice:string;scope:'commons'|'community'}[];excerpts?:{digest:string;witness:string;section:string;text:string;mentions:string[]}[]}
 const root=new URL('../../',import.meta.url).pathname
 const arg=(name:string)=>{const i=process.argv.indexOf(name);return i>0?process.argv[i+1]:undefined}
 const SEED=20261119
@@ -89,6 +90,13 @@ const up=new Map<string,string[]>()
 for(const s of statements)if(['bagian-dari','berada-di','mendiami','dituturkan-di'].includes(s.predicate))up.set(s.source,[...(up.get(s.source)??[]),s.target!])
 const regionOf=(id:string)=>{const seen=new Set<string>(),out=new Set<string>(),stack=[id];while(stack.length){const x=stack.pop()!;if(seen.has(x))continue;seen.add(x);const r=regionEntity.get(x);if(r)out.add(r);stack.push(...(up.get(x)??[]))}return [...out].sort()}
 
+// Size, pace and level (world model §5.2), as the export gives them or by rule for an older export. A rule's note is
+// fixed text and goes into the file; a note a reviewer wrote stays in the live API, which can still change it.
+const worldOut=(n:Export['nodes'][number])=>{
+ const w=n.world??worldByRule({slug:n.id,class:n.class,title:n.title,context_slug:n.context})
+ const range=(r:World['size'])=>r?{lo:r.lo,hi:r.hi,basis:r.basis,...(r.basis==='rule'?{note:r.note}:{})}:null
+ return {size:range(w.size),pace:range(w.pace),level:w.level?{code:w.level.code,band:w.level.band,basis:w.level.basis,...(w.level.basis==='rule'?{note:w.level.note}:{})}:null}
+}
 const nodeOut=ids.map(id=>{
  const n=byId.get(id)!,basis=new Map<string,string>()
  for(const x of excerpts)if(x.mentions.includes(id))basis.set(x.digest,x.witness)
@@ -102,7 +110,7 @@ const nodeOut=ids.map(id=>{
  if(!statements.some(s=>s.source===id||s.target===id))gaps.push('belum-ada-pernyataan')
  if(n.context&&!pageTitles.has(n.context))gaps.push('belum-ada-halaman')
  const [x,y]=pos.get(id)!
- return {id,class:n.class,title:n.title,context:n.context,regions:regionOf(id),x,y,cluster:clusters.get(id)!,degree:Math.round((degree.get(id)??0)*100)/100,witnesses:witnesses.size,excerpts:excerpts.filter(e=>e.mentions.includes(id)).length,statements:statements.filter(s=>s.source===id||s.target===id).length,voices,diversity:h,gaps,pages:n.context?pageTitles.get(n.context)??[]:[]}
+ return {id,class:n.class,title:n.title,context:n.context,regions:regionOf(id),world:worldOut(n),x,y,cluster:clusters.get(id)!,degree:Math.round((degree.get(id)??0)*100)/100,witnesses:witnesses.size,excerpts:excerpts.filter(e=>e.mentions.includes(id)).length,statements:statements.filter(s=>s.source===id||s.target===id).length,voices,diversity:h,gaps,pages:n.context?pageTitles.get(n.context)??[]:[]}
 })
 const clusterOut=roles.map(r=>{
  const members=nodeOut.filter(n=>n.cluster===r.cluster).sort((a,b)=>b.degree-a.degree||a.id.localeCompare(b.id))

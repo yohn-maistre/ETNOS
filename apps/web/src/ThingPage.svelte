@@ -1,12 +1,13 @@
 <script module lang="ts">
-  export type ThingTab = 'tentang' | 'percakapan' | 'perkembangan' | 'komunitas' | 'sumber'
+  export type ThingTab = 'tentang' | 'percakapan' | 'perkembangan' | 'komunitas' | 'sumber' | 'data'
 </script>
 
 <script lang="ts">
   // One page per thing (a place, a language or a topic). The name and kind sit on the engraved band, tinted by kind
   // so places, languages and topics read differently at a glance. Five tabs hold everything about the thing:
   // Tentang is its wiki article, Percakapan its posts (labelled with it or linking to its article), Perkembangan the layers
-  // from today down to the archive, Komunitas the rooms and organisations, Sumber the basis and published research.
+  // from today down to the archive, Komunitas the rooms and organisations, Sumber the basis and published research,
+  // and Data the public datasets about the thing from the observatory's catalogue.
   import { untrack, type Snippet } from 'svelte'
   import { SvelteURLSearchParams } from 'svelte/reactivity'
   import { ArrowUpRight, BookOpen, Building2, PenLine } from '@lucide/svelte'
@@ -17,6 +18,8 @@
   import PlaceCommunities, { type PlaceCommunity } from './PlaceCommunities.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import ThingTop from './ThingTop.svelte'
+  import ThingData from './ThingData.svelte'
+  import PlaceLocator from './PlaceLocator.svelte'
   import { communityArtwork } from './site-branding'
   import { markdown } from './markdown'
   import { orderedParents } from './context-tree'
@@ -78,6 +81,7 @@
     ['perkembangan', 'Perkembangan'],
     ['komunitas', 'Komunitas'],
     ['sumber', 'Sumber'],
+    ['data', 'Data'],
   ]
   // The first tab comes from the route; later changes come from the effect below. (A svelte-ignore comment
   // here would be stripped by script preprocessing, so the initial read goes through untrack.)
@@ -206,6 +210,7 @@
             <div class="thing-chips">{#each thing.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}</div>
           </section>{/if}
       {/snippet}
+      {#if ['place', 'region', 'language'].includes(thing.kind)}<PlaceLocator {thing} />{/if}
       {#if ['place', 'region', 'language', 'topic'].includes(thing.kind)}<ThingTop {thing} fallback={chips} />{:else}{@render chips()}{/if}
       {#if home}
         {#if article?.revision}<section class="thing-article" aria-label={'Halaman wiki ' + article.title}>
@@ -247,6 +252,8 @@
           <h2 id={uid + '-groups'}>Organisasi</h2>
           {#each thing.groups as g (g.id)}<a href={'/groups/' + g.id}><Building2 size={16} /><span>{g.title}</span><ArrowUpRight size={15} /></a>{/each}
         </section>{/if}
+    {:else if tab === 'data'}
+      <ThingData slug={thing.slug} title={thing.title} />
     {:else}
       {#if thing.family}<section class="thing-basis" aria-labelledby={uid + '-basis'}>
           <h2 id={uid + '-basis'}>Dasar label</h2>

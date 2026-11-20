@@ -1,0 +1,36 @@
+Observatory data: place points, the knowledge graph's size and pace, and dataset records
+
+Place points: apps/web/public/observatory/places.json (same as src/catalogues/tanah-papua-places.json)
+Derived by scripts/observatory/build-place-points.ts from the simplified Badan Informasi Geospasial
+(BIG) outlines in apps/web/public/geo/ (see map-data.txt): one reference point and one area per
+catalogue place, rounded to 0.01 degree. Customary-region membership follows Narasi RPJMN 2020-2024
+(Bappenas). The points mark administrative or planning areas, not particular sites, and are not
+for delineating boundaries.
+
+Language points on the observatory map and on language pages: Glottolog 5.4 reference points,
+CC BY 4.0 (see glottolog-data.txt). They are reference points, not boundaries of where a language
+is spoken.
+
+Size, pace and level in apps/web/public/observatory/knowledge/graph.json: computed by the rules in
+src/world-model.ts (Strata, AGPL-3.0). Level classes follow the main classes of the Integrative
+Levels Classification (ILC2, by Claudio Gnoli and colleagues); only the class letters are used,
+no ILC text, because the ILC licence is not stated.
+
+Dataset records: src/catalogues/tanah-papua-datasets.json holds metadata and links only. No dataset
+files are stored or served by ETNOS. Each record names its publisher and licence, checked on
+20 November 2026:
+  Glottolog 5.4 (CLDF) - Max Planck Institute for Evolutionary Anthropology - CC BY 4.0
+    https://doi.org/10.5281/zenodo.24101243
+  Grambank 1.0.3 - Grambank Consortium - CC BY 4.0
+    https://doi.org/10.5281/zenodo.7844558
+  Ekari word list - TransNewGuinea.org (Simon J. Greenhill) - CC BY 4.0
+    https://transnewguinea.org/language/ekari
+  D-PLACE, Ethnographic Atlas 3.3, society Ie1 (Mee) - D-PLACE - CC BY-NC 4.0
+    https://d-place.org/society/Ie1
+  Global Forest Change 2000-2025 v1.13 - University of Maryland, GLAD - CC BY 4.0
+    https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/download.html
+  ESA WorldCover 10 m 2021 v200 - European Space Agency - CC BY 4.0
+    https://doi.org/10.5281/zenodo.7254221
+  Butterfly collection, Universitas Cenderawasih (GBIF) - Universitas Cenderawasih - CC0 1.0
+    https://doi.org/10.15468/4tp4nw
+The record titles and descriptions in Indonesian were written for ETNOS from the publishers' pages.

@@ -18,6 +18,15 @@ export function project(lat: number, lon: number): [number, number] {
   return [x - ORIGIN_X, y - ORIGIN_Y]
 }
 
+/** The site map's coordinates back to latitude and longitude, rounded to 0.01 degree. */
+export function unproject(x: number, y: number): [number, number] {
+  const gx = x + ORIGIN_X, gy = y + ORIGIN_Y
+  const lon = (gx / WORLD) * 360 - 180
+  const n = Math.PI - (2 * Math.PI * gy) / WORLD
+  const lat = (180 / Math.PI) * Math.atan(Math.sinh(n))
+  return [Math.round(lat * 100) / 100, Math.round(lon * 100) / 100]
+}
+
 export type Tile = { href: string; x: number; y: number; size: number }
 
 /**

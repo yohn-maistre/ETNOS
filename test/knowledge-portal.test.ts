@@ -25,6 +25,8 @@ test('static observatory files hold only commons witnesses and are the same on e
   const w=m.citePost(host.actor.id,{postId:post.id,requestKey:'cite-000001'})
   const a=m.proposeAssertion(member.actor.id,{communityId:room.id,subject:'danau-paniai',predicate:'berada-di',object:'mee-pago',support:[w.excerpts[0]!.id],layer:'tuturan',requestKey:'assert-00001'})
   m.reviewAssertion(host.actor.id,a.id,{decision:'accept',revision:a.revision,requestKey:'review-00001'})
+  // A reviewer's note on a thing's size stays in the live API; the static file keeps the range and its basis only.
+  m.setCoordinates(steward.actor.id,'danau-paniai',{size:[3.9,4.2],note:'Catatan peninjau uji tentang luas danau.',revision:1,requestKey:'coord-000001'})
   const exported=m.graph(undefined,{publicOnly:true,excerpts:true})
   assert.ok(JSON.stringify(exported).includes('Kalimat uji dari penutur'))
   writeFileSync(join(dir,'export.json'),JSON.stringify(exported))
@@ -35,6 +37,12 @@ test('static observatory files hold only commons witnesses and are the same on e
   const g=JSON.parse(readFileSync(join(dir,'a','graph.json'),'utf8'))
   assert.ok(!g.statements.some((x:{source:string;predicate:string;target:string})=>x.source==='danau-paniai'&&x.predicate==='berada-di'&&x.target==='mee-pago'))
   assert.ok(g.nodes.every((n:{gaps:string[]})=>n.gaps.includes('belum-ada-penutur')))
+  // Every node carries size, pace and level as ranges with their basis (world model §5.2).
+  type W={size:{lo:number;hi:number;basis:string;note?:string}|null;pace:{lo:number;hi:number;basis:string}|null;level:{code:string;band:string;basis:string}|null}
+  assert.ok(g.nodes.every((n:{world:W})=>n.world.level&&n.world.pace&&n.world.pace.lo<=n.world.pace.hi&&(!n.world.size||n.world.size.lo<=n.world.size.hi)))
+  const paniai=g.nodes.find((n:{id:string})=>n.id==='danau-paniai') as {world:W}
+  assert.deepEqual(paniai.world.size,{lo:3.9,hi:4.2,basis:'person'})
+  assert.ok(!files.includes('Catatan peninjau uji'))
   assert.ok(g.questions.every((q:{status:string})=>q.status==='saran'))
   assert.ok(g.nullModel.z>3)
   // Same input, same files.

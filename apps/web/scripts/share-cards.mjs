@@ -1,5 +1,5 @@
 // Renders the link preview images in public/share/ (1200 x 630 JPEG) with Playwright. Run from apps/web:
-//   node scripts/share-cards.mjs
+//   node scripts/share-cards.mjs [file ...]   (with names, only those cards are drawn again, e.g. wiki)
 // The prints come from public/branding; the maps use the same EOX terrain tiles and atlas shapes as the site's
 // small maps, so the card credits them. Output is committed; nothing renders at request time.
 import { createRequire } from 'node:module'
@@ -71,14 +71,15 @@ const cards = [
   { file: 'news', print: 'raja', title: 'Kabar', text: 'Kabar terbaru dari Papua beserta sumber aslinya.', pos: '50% 40%' },
   { file: 'communities', print: 'tigi', title: 'Komunitas', text: 'Cari komunitas yang cocok, lalu ikut berdiskusi.', pos: '50% 75%' },
   { file: 'jadwal', print: 'tigi', title: 'Jadwal Aksara', text: 'Lihat jam berapa Aksara menulis setiap hari.', pos: '50% 30%' },
-  { file: 'wiki', title: 'Pengetahuan bersama', text: 'Halaman tentang Papua yang ditulis dan diperiksa bersama warga.' },
+  { file: 'wiki', title: 'Observatorium', text: 'Apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan apa yang belum diketahui.' },
   ...Object.keys(atlas.regions).map((id) => ({ file: 'region-' + id, region: id, title: { meepago: 'Mee Pago', 'la-pago': 'La Pago', 'ha-anim': 'Ha Anim', 'mamta-tabi': 'Mamta (Tabi)', saireri: 'Saireri', domberai: 'Domberai', bomberai: 'Bomberai' }[id] ?? id, text: regionText })),
 ]
 
 mkdirSync(here('public/share'), { recursive: true })
 const browser = await chromium.launch()
 const p = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 })
-for (const c of cards) {
+const only = process.argv.slice(2)
+for (const c of cards.filter((c) => !only.length || only.includes(c.file))) {
   await p.setContent(page(c), { waitUntil: 'networkidle' })
   await p.evaluate(() => document.fonts.ready)
   writeFileSync(here(`public/share/${c.file}.jpg`), await p.screenshot({ type: 'jpeg', quality: 86 }))

@@ -1,5 +1,6 @@
 <script lang="ts" module>
-  export type KNode = { id: string; class: string; title: string; context?: string | null; regions: string[]; degree: number; witnesses: number; excerpts?: number; voices?: Record<string, number>; gaps: string[] }
+  import type { World } from './world-scale.ts'
+  export type KNode = { id: string; class: string; title: string; context?: string | null; regions: string[]; degree: number; witnesses: number; excerpts?: number; voices?: Record<string, number>; gaps: string[]; world?: World }
   export type KEdge = { source: string; target: string; predicate: string; logical: string; voices?: string[]; support?: string[] }
   export type KComention = { a: string; b: string; weight: number }
 </script>
@@ -9,6 +10,9 @@
   // mentioned with, and what is still missing. Everything here comes from the public graph and its checked excerpts.
   import * as Sheet from '$lib/components/ui/sheet/index.js'
   import { ArrowUpRight } from '@lucide/svelte'
+  import { appearance } from './appearance.svelte'
+  import { bandOf, sizeWords, paceWords, rangeWords, BASIS } from './world-scale.ts'
+  import { listDatasets, KIND, type Dataset } from './datasets.ts'
 
   type Witness = { key: string; kind: string; title: string; url?: string; publisher?: string; voice?: string }
   type Excerpt = { digest: string; witness: string; section: string; text: string; mentions: string[] }
@@ -75,6 +79,21 @@
     return () => mq.removeEventListener('change', sync)
   })
   const open = (n: KNode) => (id = n.id)
+
+  // Size, pace and level, read as ranges in everyday units, with the basis of each value.
+  const world = $derived(node?.world)
+  const band = $derived(bandOf(world?.level?.code))
+  const bases = $derived([...new Set([world?.size?.basis, world?.pace?.basis, world?.level?.basis].filter((b): b is string => !!b))])
+  const notes = $derived([...new Set([world?.size?.note, world?.pace?.note, world?.level?.note].filter((n): n is string => !!n))])
+  // Datasets about this thing, from the public catalogue.
+  let data = $state<Dataset[] | null>(null)
+  $effect(() => {
+    const slug = id, abort = new AbortController()
+    data = null
+    if (!slug) return
+    listDatasets({ thing: slug }, abort.signal).then((rows) => { if (!abort.signal.aborted) data = rows }).catch(() => { if (!abort.signal.aborted) data = [] })
+    return () => abort.abort()
+  })
 </script>
 
 <Sheet.Root open={!!node} onOpenChange={(v) => { if (!v) id = '' }}>
@@ -86,6 +105,23 @@
         <Sheet.Description class="ep-desc">{voiceList.length ? 'Disebut oleh sumber ' + voiceList.join(' dan ') + '.' : 'Belum ada sumber.'}</Sheet.Description>
       </Sheet.Header>
       <div class="ep-body">
+        {#if world && (world.size || world.pace || world.level)}<section>
+            <h3>Ukuran dan waktu</h3>
+            <ul class="ep-rows ep-world">
+              {#if world.size}<li><span class="ep-k">Ukuran</span><span>sekitar {rangeWords(world.size, sizeWords)}</span></li>{/if}
+              {#if world.pace}<li><span class="ep-k">Lama berubah</span><span>sekitar {rangeWords(world.pace, paceWords)}</span></li>{/if}
+              {#if world.level && band}<li><span class="ep-k">Tingkat</span><span class="ep-band"><span class="ep-dot" style:background={appearance.theme === 'dark' ? band.dark : band.light}></span>{band.label} (ILC {world.level.code})</span></li>{/if}
+            </ul>
+            <p class="ep-note">{bases.length === 1 && bases[0] === 'rule' ? 'Semua angka ini perkiraan dari aturan umum dan belum diukur. Peninjau bisa mengoreksinya.' : 'Dasar angka ini adalah ' + bases.map((b) => BASIS[b] ?? b).join(' dan ') + '.'}</p>
+            {#if notes.length}<details class="ep-basis"><summary>Aturan yang dipakai</summary><ul>{#each notes as n (n)}<li>{n}</li>{/each}</ul></details>{/if}
+          </section>{/if}
+        {#if data?.length}<section>
+            <h3>Data tentang {node.title}</h3>
+            <ul class="ep-data">
+              {#each data.slice(0, 5) as d (d.id)}<li><a href={'/wiki/data/' + d.id}><span>{d.title}</span><small>{KIND[d.kind] ?? d.kind} · {d.licence}</small></a></li>{/each}
+            </ul>
+            {#if data.length > 5}<a class="ep-more" href="/wiki/data">Lihat semua di katalog data</a>{/if}
+          </section>{/if}
         {#if partOf.length || contains.length}<section>
             <h3>Hubungan</h3>
             <ul class="ep-rows">
@@ -147,6 +183,19 @@
   blockquote { margin: 0; padding: 2px 0 2px 12px; border-left: 2px solid var(--border); font-size: 14.5px; line-height: 1.55; }
   .ep-note { margin: 0; font-size: 13px; color: var(--muted-foreground); }
   .ep-gaps { display: grid; gap: 4px; margin: 0; padding-left: 18px; font-size: 14.5px; line-height: 1.5; }
+  .ep-world li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 15px; }
+  .ep-world .ep-k { min-width: 96px; }
+  .ep-band { display: inline-flex; align-items: center; gap: 7px; }
+  .ep-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .ep-basis summary { min-height: 32px; display: flex; align-items: center; font-size: 13px; color: var(--muted-foreground); cursor: pointer; }
+  .ep-basis ul { display: grid; gap: 4px; margin: 4px 0 0; padding-left: 18px; font-size: 13.5px; line-height: 1.45; color: var(--muted-foreground); }
+  .ep-data { display: grid; margin: 0; padding: 0; list-style: none; }
+  .ep-data a { display: grid; gap: 2px; padding: 8px 0; border-top: 1px solid var(--border); color: inherit; text-decoration: none; }
+  .ep-data li:first-child a { border-top: 0; }
+  .ep-data a span { font-size: 15px; font-weight: 600; line-height: 1.35; }
+  .ep-data a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+  .ep-data small { font-size: 13px; color: var(--muted-foreground); }
+  .ep-more { font-size: 13.5px; color: var(--brand, var(--foreground)); }
   :global(.ep-foot) { padding: 14px 22px calc(14px + env(safe-area-inset-bottom)) !important; border-top: 1px solid var(--border); }
   .ep-open { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px; padding: 0 16px; border-radius: 10px; background: var(--foreground); color: var(--background); font-size: 14.5px; font-weight: 600; text-decoration: none; }
 </style>

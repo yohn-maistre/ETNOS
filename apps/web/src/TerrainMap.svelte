@@ -11,17 +11,21 @@
     latitude: number | null
     longitude: number | null
     href?: string
+    color?: string
   }
   let {
     places,
     focus,
     height = 320,
     label = 'Peta wilayah',
+    compact = false,
   }: {
     places: Place[]
     focus?: [[number, number], [number, number]]
     height?: number
     label?: string
+    /** Many places: dots only, with the name shown on hover or focus. */
+    compact?: boolean
   } = $props()
 
   const points = $derived(
@@ -92,15 +96,16 @@
         .trim() || '#1f4e8c'
     for (const p of points) {
       const el = document.createElement(p.href ? 'a' : 'div')
-      el.className = 'tm-place'
+      el.className = compact ? 'tm-place tm-compact' : 'tm-place'
       if (p.href) (el as HTMLAnchorElement).href = p.href
+      if (compact) el.setAttribute('aria-label', p.name)
       const dot = document.createElement('i')
-      dot.style.background = brand
+      dot.style.background = p.color ?? brand
       const name = document.createElement('span')
       name.textContent = p.name
       el.append(dot, name)
       markers.push(
-        new lib.Marker({ element: el, anchor: 'top', offset: [0, -6] })
+        new lib.Marker({ element: el, anchor: compact ? 'center' : 'top', offset: compact ? [0, 0] : [0, -6] })
           .setLngLat([p.longitude!, p.latitude!])
           .addTo(map),
       )
@@ -352,6 +357,35 @@
     border-radius: 999px;
     white-space: nowrap;
     box-shadow: 0 1px 4px rgba(20, 22, 30, 0.22);
+  }
+  /* MapLibre places markers with position: absolute, which also anchors the hidden name below. */
+  .tm :global(.tm-compact) {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+  }
+  .tm :global(.tm-compact span) {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-out;
+  }
+  .tm :global(.tm-compact:hover span),
+  .tm :global(.tm-compact:focus-visible span) {
+    opacity: 1;
+  }
+  .tm :global(.tm-compact:hover),
+  .tm :global(.tm-compact:focus-visible) {
+    z-index: 3;
+  }
+  .tm :global(.tm-compact:focus-visible) {
+    outline: 2px solid var(--ring, #1f4e8c);
+    outline-offset: 2px;
+    border-radius: 999px;
   }
   .tm :global(.maplibregl-ctrl-attrib) {
     background: rgba(255, 255, 255, 0.78);

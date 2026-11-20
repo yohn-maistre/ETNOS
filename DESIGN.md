@@ -20,6 +20,13 @@ colors:
   class-place: "#4f7a5e"
   class-language: "#a2643a"
   class-people: "#5b6ea8"
+  level-matter-sky: "#008b9e"
+  level-rock-earth: "#c9892b"
+  level-living: "#067132"
+  level-mind: "#b54d98"
+  level-language-ritual: "#305eb7"
+  level-society-rules: "#b32228"
+  level-made-knowledge: "#857d0b"
 typography:
   display:
     fontFamily: "Geist Variable, sans-serif"
@@ -129,6 +136,7 @@ The palette is graphite neutrals plus one accent the reader can change.
 ### Data colours
 - **Tempat** (#4f7a5e), **Bahasa** (#a2643a), **Masyarakat** (#5b6ea8): classes of entries on the knowledge map and its legend.
 - **Celah** (#e0a83a): the ring that marks a gap (an entry without a wiki page). Used only on the map.
+- **Level bands** on the observatory (`apps/web/src/world-scale.ts`): seven colours for the seven bands of the Integrative Levels Classification, used in every lens of the knowledge map, its legend and the entry panel. Light theme: Materi dan langit #008b9e, Batuan dan bumi #c9892b, Makhluk hidup #067132, Pikiran #b54d98, Bahasa dan ritus #305eb7, Masyarakat dan aturan #b32228, Buatan dan pengetahuan #857d0b. Dark theme: #0097ab, #c68627, #1d7d3e, #c664a8, #4777d2, #be2e31, #918112. Both sets pass a palette validator for lightness, chroma and contrast, with adjacent colour-blind separation in the 6 to 8 band. That is why the legend always names each band and the chart has a list view. The three bands that hold things today (rock and earth, language and ritual, society and rules) are well apart for every reader.
 
 ### Named Rules
 **The Graphite Rule.** Colour carries meaning or nothing. The accent marks the current or focused thing; data colours mark classes on maps. Decoration stays neutral.
@@ -195,6 +203,10 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 
 ### Entry panel (`EntityPanel.svelte`)
 - **Character:** a shadcn Sheet, right side on desktop (up to 460px), bottom on phones (up to 86% of the screen, 18px top radius). Sections divided by hairlines with 13px muted headings.
+
+### Observatory front (`Observatorium.svelte`, `styles/observatorium.css`)
+- **Character:** the wiki front rebuilt on the Jelajah rhythm: one gutter for every block (24px, 16px on phones), 28px above and 24px below each section, heavy section titles, rows that run to the card edges. The knowledge map comes first with three lenses as a pill group (*Ukuran dan waktu*, *Hubungan*, *Peta*), then wiki pages, the data catalogue, what is unknown and the large groups.
+- **Size and pace chart (`ScaleConstellation.svelte`):** a canvas on the same 3% tinted ground as the network map, log axes in everyday units, level as colour, a dashed box for the selected thing's range. Flat on phones and with reduced motion; a slight 3D turn on wide screens with a mouse.
 
 ### Knowledge map (`KnowledgeGraph3D.svelte`)
 - **Character:** a canvas in 3D on a 3% tinted ground, entries as dots sized by sources, labels with a surface-coloured halo, round 36px controls top right. Drag turns it with the finger.

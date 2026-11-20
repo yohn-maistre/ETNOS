@@ -340,7 +340,7 @@
               : parts[0] === 'communities'
                 ? (community?.title ?? 'Komunitas')
                 : parts[0] === 'wiki'
-                  ? 'Wiki'
+                  ? parts[1] === 'data' ? 'Katalog data' : 'Wiki'
                   : parts[0] === 'saved'
                     ? 'Tersimpan'
                     : parts[0] === 'preferences'
@@ -641,7 +641,7 @@
         replies = thread.items
         repliesCursor = thread.nextCursor
       }
-      if (parts[0] === 'wiki' && parts[1] && parts[1] !== 'notes') {
+      if (parts[0] === 'wiki' && parts[1] && parts[1] !== 'notes' && parts[1] !== 'data') {
         const p = await request<WikiPage>('/v1/wiki/' + parts[1])
         // A region, kabupaten or language article is that thing's Tentang tab; open the thing page instead,
         // unless the reader asked for the article's history and review (?view=riwayat).
@@ -1104,6 +1104,9 @@
         {navigate}
       />{/await}
   {:else if path === '/labs/spaces'}<SpacesLab />
+  {:else if parts[0] === 'wiki' && parts[1] === 'data' && !parts[3]}
+    {#if parts[2]}{#await import('./DatasetPage.svelte')}<ContentSkeleton />{:then module}<module.default id={parts[2]} />{/await}
+    {:else}{#await import('./DatasetCatalogue.svelte')}<ContentSkeleton />{:then module}<module.default />{/await}{/if}
   {:else if parts[0] === 'knowledge' || (parts[0] === 'wiki' && parts[1] === 'notes')}
     {#await import('./KnowledgePage.svelte') then module}<module.default {auth} {path} {navigate}/>{/await}
   {:else if path === '/offers'}

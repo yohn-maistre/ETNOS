@@ -29,7 +29,7 @@
   import { openWorkStates } from './place-layers'
   import { facetNames, orderedParents } from './context-tree'
   // A description that only restates the kind ("Kelompok topik: …") drops that prefix; the badge already says it.
-  const tabNames = ['tentang', 'percakapan', 'perkembangan', 'komunitas', 'sumber']
+  const tabNames = ['tentang', 'percakapan', 'perkembangan', 'komunitas', 'sumber', 'data']
   // The tab was called Lapisan, then Kabar; both old addresses still open Perkembangan.
   const thingTab = $derived.by((): ThingTab => {
     if (segments[2] === 'lapisan') return 'perkembangan'

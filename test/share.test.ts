@@ -40,3 +40,23 @@ test('wiki text for crawlers is escaped, keeps headings and sources, and marks u
   assert.ok(!ld.slice(0, -9).includes('</script>'))
   assert.equal(JSON.parse(ld.replace(/^<script type="application\/ld\+json">|<\/script>$/g, '')).headline, '</script><script>alert(1)')
 })
+test('a dataset record shares only when an anonymous reader can see it',async()=>{
+ const {KnowledgeModel}=await import('../src/knowledge-model.ts'),{Datasets,datasetId}=await import('../src/datasets.ts')
+ const knowledge=(await import('../src/catalogues/tanah-papua-knowledge-seed.json',{with:{type:'json'}})).default
+ const shipped=(await import('../src/catalogues/tanah-papua-datasets.json',{with:{type:'json'}})).default as {datasets:{key:string;title:string}[]}
+ const s=new Strata(':memory:','https://etnos.space'),steward=s.provision('did:web:share-steward.example','Steward'),member=s.provision('did:web:share-member.example','Member'),handler=api(s)
+ const read=async(path:string)=>{const r=await handler(new Request(s.base+path));if(!r.ok)throw Error();return r.json()},news=async()=>null
+ try{
+  const g=new Groups(s,{stewardDid:steward.actor.did});new KnowledgeModel(s,g).importSeed(steward.actor.id,knowledge as never)
+  // A shipped record is public at once, labelled as not yet checked; its card names it.
+  const first=shipped.datasets[0]!,card=await resolveShare('/wiki/data/'+datasetId(first.key),read,news)
+  assert.equal(card.title,first.title+' · Katalog data');assert.equal(card.index,true);assert.equal(card.image,'/share/wiki.jpg')
+  // A member's proposal is seen by its proposer and stewards only, so its link shares as plain ETNOS.
+  const proposal=new Datasets(s,g).propose(member.actor.id,{key:'url:https://data.uji.id/rahasia',title:'SECRET PROPOSAL',description:'Synthetic',kind:'table',publisher:'Uji',landingPage:'https://data.uji.id/rahasia',licence:'CC BY 4.0',distributions:[{title:'CSV',url:'https://data.uji.id/rahasia.csv'}],about:['bahasa-ekari'],requestKey:'share-proposal-1'})
+  for(const path of ['/wiki/data/'+proposal.id,'/wiki/data/ds-'+'0'.repeat(20),'/wiki/data/not-an-id']){
+   const c=await resolveShare(path,read,news);assert.equal(c.title,'ETNOS',path);assert.equal(c.index,false,path);assert.doesNotMatch(JSON.stringify(c),/SECRET/)
+  }
+  assert.equal((await resolveShare('/wiki',read,news)).title,'Observatorium · ETNOS')
+  assert.equal((await resolveShare('/wiki/data',read,news)).title,'Katalog data · ETNOS')
+ }finally{s.close()}
+})

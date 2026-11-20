@@ -30,16 +30,15 @@
   } from './api'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
-  import WikiFront from './WikiFront.svelte'
+  import Observatorium from './Observatorium.svelte'
+  import './styles/observatorium.css'
   import WikiDiscussion from './WikiDiscussion.svelte'
   import WikiContents from './WikiContents.svelte'
   import WikiPlaces from './WikiPlaces.svelte'
-  import PapuaMap, { type MapRegion } from './PapuaMap.svelte'
-  import type { Atlas } from './RegionArt.svelte'
   import { loadMap, highlandRegions, type MapData } from './observatory'
   import { siteBranding } from './site-branding'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
-  import { REGION_ORDER, loadAtlas, loadAtlasLangs, loadContexts, regionTitle, regionsOf } from './explore-data'
+  import { REGION_ORDER, loadAtlasLangs, loadContexts, regionTitle, regionsOf } from './explore-data'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiTrail from './WikiTrail.svelte'
@@ -132,13 +131,12 @@
   // The wiki follows the place chosen in the header switcher, and the map at the top of the wiki home sets it:
   // pressing a region narrows the wiki (and the rest of the site) to it; pressing it again shows all of Papua.
   $effect(() => { context = placeScope.slug })
-  let atlas = $state<Atlas | null>(null)
-  $effect(() => { if (!page && !atlas) void loadAtlas().then((a) => (atlas = a)) })
   const regionPages = (slug: string) => mapData?.nodes.filter((n) => n.k === 'page' && n.reg === slug).length ?? 0
-  const mapRegions = $derived<MapRegion[]>(
+  const regionChoices = $derived<{ slug: string; title: string; count?: number }[]>(
+    !contexts.length ? [] :
     REGION_ORDER.map((slug) => {
       const c = contexts.find((x) => x.slug === slug)
-      return { slug, title: c ? regionTitle(c) : slug, href: '/contexts/' + slug, count: mapData ? regionPages(slug) : undefined }
+      return { slug, title: c ? regionTitle(c) : slug, count: mapData ? regionPages(slug) : undefined }
     }),
   )
   const pickedRegion = $derived(contexts.find((c) => c.slug === context && c.facet === 'customary-region'))
@@ -438,43 +436,77 @@
       </section>{/if}
   </article>
 {:else}
-  <section class="knowledge-atlas wiki-discovery">
-    <header class="wiki-discovery-header">
-      <h1>Pengetahuan bersama</h1>
-      <p>Halaman tentang tempat, bahasa dan sejarah Papua yang ditulis dan diperiksa bersama.</p>
-      <div class="wiki-discovery-actions">{#if memberships.length}<a class="commons-quiet-link" href="/wiki/notes/new">Tambah catatan <Plus size={14}/></a>{/if}{#if memberships.some(m=>m.role!=='member')}<Button variant="outline" onclick={onCreate}><Plus size={15}/>Tulis halaman</Button>{/if}</div>
-    </header>
-    <div class="wiki-discovery-controls"><label class="atlas-search"><Search size={18}/><Input bind:value={query} aria-label="Cari pengetahuan" placeholder="Cari dalam Wiki…"/></label>
-      {#if atlas && contexts.length}<div class="wiki-region-map">
-          <PapuaMap {atlas} regions={mapRegions} focus={mapRegion ? [mapRegion] : []} unit="halaman" onpick={pickRegion} />
-          <p class="wiki-region-note">{#if context}{#if pickedRegion}Menampilkan halaman tentang {regionTitle(pickedRegion)}. <a href={'/contexts/' + pickedRegion.slug}>Buka halaman wilayah</a>{' · '}{:else}Menampilkan halaman tentang {placeScope.title}. {/if}<button type="button" onclick={() => setPlaceScope({ slug: '', title: 'Tanah Papua' })}>Tampilkan semua</button>{:else}Pilih wilayah untuk melihat halamannya. Makin gelap wilayahnya, makin banyak halaman wiki tentangnya.{/if}</p>
-        </div>{/if}
-    </div>
-    {#if discovering}<div class="wiki-discovery-loading" role="status">Menyiapkan bacaan…</div>{:else if discoveryError}<div class="wiki-draft-state"><p>{discoveryError}</p><Button variant="outline" onclick={()=>discover()}>Coba lagi</Button></div>{:else}
-      {#if continued&&!query&&!context&&!communityFilter}<a class="wiki-continue" href={'/wiki/'+continued.id}><Clock3 size={17}/><div><small>Lanjutkan membaca · di perangkat ini</small><strong>{continued.title}</strong></div><ArrowRight size={18}/></a>{/if}
-      {#if featured}{@const art=communityArtwork(featured.community_id)}<div class="wiki-lead"><section class="wiki-featured wiki-front" aria-label="Untuk dibaca">
-        <div class="wiki-front-cover cover-wash">{#if art}<div class="cover-wash-art" aria-hidden="true"><LandscapePrint artwork={art} decorative/></div>{/if}
-          <div class="wiki-front-track" bind:this={track} onscroll={onTrackScroll}>
-            {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><div class="cover-wash-body"><span class="cover-wash-meta wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span><h2 class="cover-wash-title">{item.title}</h2>{#if item.excerpt}<p class="cover-wash-text">{clip(item.excerpt,180)}</p>{/if}</div></a>{/each}
-          </div>
-        </div>
-        {#if featuredList.length>1}<div class="wiki-front-dots" role="tablist" aria-label="Pilih bacaan">{#each featuredList as item,i}<button role="tab" aria-selected={slide===i} aria-label={item.title} onclick={()=>goTo(i)}></button>{/each}</div>{/if}
-        {#if accepted.length}<div class="wiki-front-tools">{#if accepted.length>1}<button onclick={surprise}><Shuffle size={15}/>Halaman acak</button>{/if}<a class="commons-quiet-link" href="/lini-masa">Lini masa</a></div>{/if}
-      </section>
-      {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2></div>{#each recent as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+' · ':p.review==='unreviewed'?(p.authorKind==='agent'?'AI · belum ditinjau · ':'Belum ditinjau · '):''}{relativeLong(p.updated)}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
+  {#snippet reading()}
+    <section class="obs-section" aria-labelledby="obs-read-title">
+      <div class="obs-head">
+        <h2 id="obs-read-title">{query ? 'Hasil pencarian' : 'Halaman wiki'}</h2>
+        {#if accepted.length > 1 && !query}<button type="button" class="obs-more" onclick={surprise}><Shuffle size={15} />Halaman acak</button>{/if}
       </div>
-      {#if !query&&!communityFilter}<WikiFront region={mapRegion} />{/if}
-      {#if !query&&!communityFilter}<WikiPlaces />{/if}
-      {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
-      {:else if !growingMatches.length}<div class="wiki-draft-state"><BookOpen size={27}/><h2>{query||context||communityFilter?'Belum ada halaman yang cocok':'Belum ada halaman wiki'}</h2><p>{query||context||communityFilter?'Coba kata atau pilihan lain.':'Halaman yang sudah ditinjau akan muncul di sini.'}</p></div>{/if}
-      {#if growingMatches.length}<section class="wiki-growing wiki-module" aria-label="Draf"><div class="wiki-module-heading"><h2>Draf</h2><span>Belum ditinjau</span></div>{#each growingMatches as p}<a class="wiki-recent-row" href={'/wiki/notes/'+p.id}><FileText size={19}/><div><h3>{p.title}</h3><p>{opening(p.excerpt)}</p><small>{p.author.name}{p.author.kind==='agent'?' · AI':''} · {p.citationCount?p.citationCount+' sumber':'Belum ada sumber'}{p.evidenceStatus!=='current'?' · sumber perlu ditinjau':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{:else if growingError}<p class="commons-alert" role="status">{growingError}</p>{/if}
-      {#if gaps&&(gaps.contexts.length||gaps.uncited.length)&&!query&&!context&&!communityFilter}<section class="wiki-module wiki-gaps" aria-label="Perlu ditulis"><div class="wiki-module-heading"><h2>Perlu ditulis</h2></div>
-        {#each gaps.contexts.slice(0,3) as c}<a class="wiki-rank-row" href={'/contexts/'+c.slug}><MapPin size={18}/><div><h3>{c.title}</h3><small>{kindName[c.kind]??'Tempat'} · belum ada halaman</small></div><ArrowUpRight size={17}/></a>{/each}
-        {#each gaps.uncited.slice(0,3) as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>Belum ada sumber</small></div><ArrowUpRight size={17}/></a>{/each}
+      {#if !query}<p class="obs-lede">Halaman yang ditulis dan diperiksa bersama warga, masing-masing dengan sumbernya.</p>{/if}
+      {#if regionChoices.length && !query}<div class="obs-chips" role="group" aria-label="Pilih wilayah adat">
+          <button type="button" aria-pressed={!context} onclick={() => setPlaceScope({ slug: '', title: 'Tanah Papua' })}>Semua</button>
+          {#each regionChoices as r (r.slug)}<button type="button" aria-pressed={context === r.slug} onclick={() => pickRegion(r.slug)}>{r.title}{#if r.count !== undefined}<small>{r.count}</small>{/if}</button>{/each}
+        </div>
+        {#if context}<p class="obs-foot">{#if pickedRegion}Menampilkan halaman tentang {regionTitle(pickedRegion)}. <a href={'/contexts/' + pickedRegion.slug}>Buka halaman wilayahnya</a>{:else}Menampilkan halaman tentang {placeScope.title}.{/if}</p>{/if}{/if}
+      {#if discovering}<div class="obs-skeleton" aria-hidden="true"></div><p class="sr-only" role="status">Menyiapkan bacaan</p>
+      {:else if discoveryError}<p class="obs-note">{discoveryError} <button type="button" class="obs-inline" onclick={() => discover()}>Coba lagi</button></p>
+      {:else if featured}
+        {#if continued && !query && !context && !communityFilter}<a class="obs-row obs-continue" href={'/wiki/' + continued.id}><Clock3 size={17} /><span class="obs-row-main"><span class="obs-row-meta">Lanjutkan membaca di perangkat ini</span><span class="obs-row-title">{continued.title}</span></span><ArrowRight size={17} /></a>{/if}
+        {@const art = communityArtwork(featured.community_id)}
+        <div class="obs-featured" aria-label="Untuk dibaca">
+          <div class="wiki-front-cover cover-wash">{#if art}<div class="cover-wash-art" aria-hidden="true"><LandscapePrint artwork={art} decorative /></div>{/if}
+            <div class="wiki-front-track" bind:this={track} onscroll={onTrackScroll}>
+              {#each featuredList as item (item.id)}<a class="wiki-front-card" href={'/wiki/' + item.id}><div class="cover-wash-body"><span class="cover-wash-meta wiki-featured-meta">{languageName(item.language)} · {item.citationCount ? item.citationCount + ' sumber' : 'Sumber belum ditautkan'}{item.reviewer ? ' · ditinjau ' + item.reviewer.name : item.review === 'unreviewed' ? ' · belum ditinjau' : ''}</span><h3 class="cover-wash-title">{item.title}</h3>{#if item.excerpt}<p class="cover-wash-text">{clip(item.excerpt, 180)}</p>{/if}</div></a>{/each}
+            </div>
+          </div>
+          {#if featuredList.length > 1}<div class="wiki-front-dots" role="tablist" aria-label="Pilih bacaan">{#each featuredList as item, i (item.id)}<button role="tab" aria-selected={slide === i} aria-label={item.title} onclick={() => goTo(i)}></button>{/each}</div>{/if}
+        </div>
+        {#if recent.length}<div>
+            <h3 class="obs-sub">Baru diperbarui</h3>
+            <div class="obs-rows">{#each recent as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">{p.reviewer ? 'Ditinjau ' + p.reviewer.name + ' · ' : p.review === 'unreviewed' ? (p.authorKind === 'agent' ? 'AI · belum ditinjau · ' : 'Belum ditinjau · ') : ''}{relativeLong(p.updated)}</span></span><ArrowUpRight size={16} /></a>{/each}</div>
+          </div>{/if}
+        <p class="obs-foot"><a href="/lini-masa">Lihat lini masa</a> untuk membaca halaman menurut urutan waktu.</p>
+      {:else if !growingMatches.length}<p class="obs-note">{query || context || communityFilter ? 'Belum ada halaman yang cocok. Coba kata atau pilihan lain.' : 'Belum ada halaman wiki. Halaman yang sudah ditinjau akan muncul di sini.'}</p>{/if}
+    </section>
+  {/snippet}
+  {#snippet more()}
+    {#if !query && !communityFilter}<WikiPlaces />{/if}
+    {#if growingMatches.length}<section class="obs-section" aria-labelledby="obs-growing-title">
+        <div class="obs-head"><h2 id="obs-growing-title">Draf</h2></div>
+        <p class="obs-lede">Catatan ini belum ditinjau dan bisa berubah.</p>
+        <div class="obs-rows">{#each growingMatches as p (p.id)}<a class="obs-row" href={'/wiki/notes/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-text">{opening(p.excerpt)}</span><span class="obs-row-meta">{p.author.name}{p.author.kind === 'agent' ? ' · AI' : ''} · {p.citationCount ? p.citationCount + ' sumber' : 'Belum ada sumber'}{p.evidenceStatus !== 'current' ? ' · sumber perlu ditinjau' : ''}</span></span><ArrowUpRight size={16} /></a>{/each}</div>
+      </section>{:else if growingError}<p class="commons-alert" role="status">{growingError}</p>{/if}
+    {#if fromNews.length && !query && !context && !communityFilter}<section class="obs-section" aria-labelledby="obs-news-title">
+        <h2 id="obs-news-title">Dari kabar</h2>
+        <p class="obs-lede">Halaman ini mengutip kabar yang dirangkum di ETNOS.</p>
+        <div class="obs-rows">{#each fromNews as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><Newspaper size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">Mengutip {p.newsCitations} kabar{p.citationCount > (p.newsCitations ?? 0) ? ' dan ' + (p.citationCount - (p.newsCitations ?? 0)) + ' sumber lain' : ''}</span></span><ArrowUpRight size={16} /></a>{/each}</div>
       </section>{/if}
-      {#if groups.length>1}<section class="wiki-browse"><div class="wiki-module-heading"><h2>Jelajahi komunitas</h2>{#if communityFilter}<button onclick={()=>communityFilter=''}>Lihat semua</button>{/if}</div><div class="wiki-community-grid">{#each groups as c}<button aria-pressed={communityFilter===c.id} onclick={()=>communityFilter=communityFilter===c.id?'':c.id}><BookOpen size={18}/><strong>{c.title}</strong><span>{c.count} halaman</span></button>{/each}</div></section>{/if}
-      {#if drafts.length}<section class="wiki-drafts"><div class="wiki-module-heading"><h2>Dalam tinjauan</h2></div>{#each drafts as p}<a href={'/wiki/'+p.id}>{p.title}<span>Draf</span><ArrowUpRight size={15}/></a>{/each}</section>{/if}
-    {/if}
-    <footer class="wiki-discovery-footer"><BookOpen size={19}/><p><a href="/knowledge">Tambah sumber atau catatan <ArrowRight size={13}/></a></p></footer>
-  </section>
+    {#if gaps && (gaps.contexts.length || gaps.uncited.length) && !query && !context && !communityFilter}<section class="obs-section" aria-labelledby="obs-write-title">
+        <h2 id="obs-write-title">Perlu ditulis</h2>
+        <div class="obs-rows">
+          {#each gaps.contexts.slice(0, 3) as c (c.id)}<a class="obs-row" href={'/contexts/' + c.slug}><MapPin size={18} /><span class="obs-row-main"><span class="obs-row-title">{c.title}</span><span class="obs-row-meta">{kindName[c.kind] ?? 'Tempat'} · belum ada halaman</span></span><ArrowUpRight size={16} /></a>{/each}
+          {#each gaps.uncited.slice(0, 3) as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">Belum ada sumber</span></span><ArrowUpRight size={16} /></a>{/each}
+        </div>
+      </section>{/if}
+    {#if groups.length > 1}<section class="obs-section" aria-labelledby="obs-browse-title">
+        <div class="obs-head"><h2 id="obs-browse-title">Halaman menurut komunitas</h2>{#if communityFilter}<button type="button" class="obs-more" onclick={() => (communityFilter = '')}>Lihat semua</button>{/if}</div>
+        <div class="obs-chips">{#each groups as c (c.id)}<button type="button" aria-pressed={communityFilter === c.id} onclick={() => (communityFilter = communityFilter === c.id ? '' : c.id)}>{c.title}<small>{c.count}</small></button>{/each}</div>
+      </section>{/if}
+    {#if drafts.length}<section class="obs-section" aria-labelledby="obs-review-title">
+        <h2 id="obs-review-title">Dalam tinjauan</h2>
+        <div class="obs-rows">{#each drafts as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">Draf</span></span><ArrowUpRight size={16} /></a>{/each}</div>
+      </section>{/if}
+  {/snippet}
+  <div class="obs obs-front">
+    <header class="obs-section obs-top">
+      <div class="obs-head">
+        <h1>Observatorium</h1>
+        <div class="obs-actions">{#if memberships.length}<a class="obs-more" href="/wiki/notes/new">Tambah catatan <Plus size={14} /></a>{/if}{#if memberships.some((m) => m.role !== 'member')}<Button variant="outline" onclick={onCreate}><Plus size={15} />Tulis halaman</Button>{/if}</div>
+      </div>
+      <p class="obs-lede">Observatorium memuat apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan juga menunjukkan apa yang belum diketahui.</p>
+      <label class="obs-search"><Search size={18} aria-hidden="true" /><input bind:value={query} type="search" aria-label="Cari halaman wiki" placeholder="Cari halaman wiki" /></label>
+    </header>
+    {#if !query && !communityFilter}<Observatorium region={mapRegion} {reading} {more} />{:else}{@render reading()}{@render more()}{/if}
+    <footer class="obs-section obs-end"><p class="obs-foot"><a href="/knowledge">Tambah sumber atau catatan</a> untuk melengkapi halaman dan peta pengetahuan.</p></footer>
+  </div>
 {/if}

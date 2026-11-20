@@ -8,18 +8,24 @@ type Read=(path:string)=>Promise<any>
 const pages:Record<string,[string,string]>={
  '/':['ETNOS · Ruang Digital Tanah Papua',description],'/explore':['Jelajah ETNOS','Lihat apa yang sedang dibicarakan warga Papua hari ini.'],
  '/news':['Kabar · ETNOS','Kabar terbaru dari Papua beserta sumber aslinya.'],'/communities':['Komunitas · ETNOS','Cari komunitas yang cocok, lalu ikut berdiskusi.'],
- '/groups':['Organisasi · ETNOS','Ruang dan karya bersama dari organisasi.'],'/wiki':['Pengetahuan bersama · ETNOS','Halaman tentang Papua yang ditulis dan diperiksa bersama warga.'],
+ '/groups':['Organisasi · ETNOS','Ruang dan karya bersama dari organisasi.'],'/wiki':['Observatorium · ETNOS','Apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan apa yang belum diketahui.'],'/wiki/data':['Katalog data · ETNOS','Dataset publik tentang Tanah Papua beserta penerbit, lisensi dan cara mengutipnya.'],
  '/voices':['Suara komunitas · ETNOS','Pertanyaan, jajak pendapat dan tindak lanjut komunitas.'],'/work':['Kerja publik · ETNOS','Karya, laporan dan tindak lanjut yang disponsori.'],'/board':['Lajur · ETNOS','Jelajahi percakapan dalam beberapa linimasa.'],
  '/jadwal':['Jadwal Aksara · ETNOS','Lihat jam berapa Aksara menulis setiap hari.'],
 }
 // Static preview cards made by apps/web/scripts/share-cards.mjs (1200 x 630).
-const sectionCard:Record<string,string>={'/explore':'explore','/news':'news','/communities':'communities','/groups':'communities','/wiki':'wiki','/jadwal':'jadwal'}
+const sectionCard:Record<string,string>={'/explore':'explore','/news':'news','/communities':'communities','/groups':'communities','/wiki':'wiki','/wiki/data':'wiki','/jadwal':'jadwal'}
 const regionCards=new Set(['ha-anim','saireri','meepago','bomberai','la-pago','mamta-tabi','domberai'])
 const card=(name:string)=>'/share/'+name+'.jpg'
 function videoCover(raw:unknown){try{const u=new URL(String(raw));if(u.protocol!=='https:'||u.username||u.password||u.port)return null;let id='';if(['youtube.com','www.youtube.com','m.youtube.com'].includes(u.hostname))id=u.searchParams.get('v')||u.pathname.match(/^\/(?:shorts|embed)\/([\w-]{11})$/)?.[1]||'';if(u.hostname==='youtu.be')id=u.pathname.slice(1);if(/^[\w-]{11}$/.test(id))return '/v1/video-preview/youtube/'+id+'/image';if(['vimeo.com','www.vimeo.com'].includes(u.hostname)&&/^\/\d{6,12}$/.test(u.pathname))return '/v1/video-preview/vimeo'+u.pathname+'/image'}catch{}return null}
 export async function resolveShare(path:string,read:Read,news:(id:string)=>Promise<any>):Promise<Share>{
  const fallback=defaultShare(),p=path.replace(/\/$/,'')||'/',route=p.split('/').slice(1)
  if(pages[p])return {...fallback,title:pages[p][0],description:pages[p][1],path:p,image:sectionCard[p]?card(sectionCard[p]):fallback.image,index:true}
+ // A dataset record: anonymous reads see only seeded or accepted records that point to public things.
+ if(route.length===3&&route[0]==='wiki'&&route[1]==='data'&&/^(ds-[a-f0-9]{20}|[a-f0-9-]{36})$/.test(route[2])){
+  try{const d=await read('/v1/datasets/'+route[2]);if(!d?.title)return fallback
+   return {...fallback,title:previewText(d.title+' · Katalog data',200),description:previewText(d.description)||description,path:p,image:card('wiki'),imageAlt:previewText(d.title,300),index:true}
+  }catch{return fallback}
+ }
  if(route.length!==2)return fallback
  const [kind,id]=route
  try{
