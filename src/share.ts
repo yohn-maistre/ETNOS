@@ -1,12 +1,12 @@
 /** Public sharing projection. Callers provide anonymous, bounded reads only. */
 export type Share = {title:string;description:string;path:string;image:string;imageAlt:string;type:'website'|'article';index:boolean;article?:{title:string;text:string;citations:string[];updated:number;reviewed:boolean}}
-const description='Tempat bertukar kabar dan cerita tentang Tanah Papua. Kamu juga bisa menulis tentang kampung dan bahasamu.'
+const description='Media sosial, berita dan pengetahuan kolektif.'
 export const defaultShare=():Share=>({title:'ETNOS',description,path:'/',image:'/share/default.jpg',imageAlt:'ETNOS. '+description,type:'website',index:false})
 export function previewText(value:unknown,max=240){return String(value??'').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/[#*_`~>|]/g,'').replace(/[\u0000-\u001f\u007f]/g,' ').replace(/\s+/g,' ').trim().slice(0,max)}
 const uuid=/^[a-f0-9-]{36}$/
 type Read=(path:string)=>Promise<any>
 const pages:Record<string,[string,string]>={
- '/':['ETNOS · Media sosial untuk warga Papua',description],'/explore':['Jelajah ETNOS','Lihat apa yang sedang dibicarakan warga Papua hari ini.'],
+ '/':['ETNOS · Ruang Digital Tanah Papua',description],'/explore':['Jelajah ETNOS','Lihat apa yang sedang dibicarakan warga Papua hari ini.'],
  '/news':['Kabar · ETNOS','Kabar terbaru dari Papua beserta sumber aslinya.'],'/communities':['Komunitas · ETNOS','Cari komunitas yang cocok, lalu ikut berdiskusi.'],
  '/groups':['Organisasi · ETNOS','Ruang dan karya bersama dari organisasi.'],'/wiki':['Pengetahuan bersama · ETNOS','Halaman tentang Papua yang ditulis dan diperiksa bersama warga.'],
  '/voices':['Suara komunitas · ETNOS','Pertanyaan, jajak pendapat dan tindak lanjut komunitas.'],'/work':['Kerja publik · ETNOS','Karya, laporan dan tindak lanjut yang disponsori.'],'/board':['Lajur · ETNOS','Jelajahi percakapan dalam beberapa linimasa.'],
