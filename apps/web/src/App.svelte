@@ -297,7 +297,7 @@
     if (!id || id in kamusStarted) return
     kamusStarted[id] = false
     request<{ settings: { language: string }; counts: Record<string, number> }>('/v1/communities/' + encodeURIComponent(id) + '/kamus?limit=0', undefined, undefined, true)
-      .then((k) => { kamusStarted[id] = !!k.settings.language || Object.values(k.counts).some((n) => n > 0) })
+      .then((k) => { kamusStarted[id] = !!k.settings.language })
       .catch(() => {})
   })
   const currentMembership = $derived(
@@ -896,7 +896,13 @@
       )
       location.assign(result.authorizationUrl)
       } catch (e) {
-        authDialogError = e instanceof Error ? e.message : 'Masuk belum dapat dilanjutkan. Coba lagi.'
+        const status = (e as { status?: number })?.status
+        authDialogError =
+          mode === 'login' && status === 403
+            ? 'Akun ini belum terdaftar di ETNOS. Pilih Bergabung di bawah, lalu masukkan kode undangan.'
+            : mode === 'login' && status === 400
+              ? 'Nama akun belum ditemukan. Tulis lengkap, misalnya nama.bsky.social atau nama.etnos.space.'
+              : e instanceof Error ? e.message : 'Masuk belum dapat dilanjutkan. Coba lagi.'
         throw e
       }
     })
@@ -1325,7 +1331,7 @@
               value="wiki"
             >
               Wiki
-            </Tabs.Trigger>{#if kamusStarted[community.id] || isSteward(community.id)}<Tabs.Trigger value="kamus">Kamus</Tabs.Trigger>{/if}<Tabs.Trigger value="media">
+            </Tabs.Trigger>{#if kamusStarted[community.id] || auth.steward}<Tabs.Trigger value="kamus">Kamus</Tabs.Trigger>{/if}<Tabs.Trigger value="media">
               Media
             </Tabs.Trigger><Tabs.Trigger value="voices">
               Suara
@@ -1333,7 +1339,7 @@
           </Tabs.List>
         </div>
         <Tabs.Content value={tab}>
-          {#if tab==='kamus'}{#await import('./KamusTab.svelte') then module}<module.default communityId={community.id} steward={isSteward(community.id)} member={isMember(community.id)} visibility={community.visibility} onChanged={() => { kamusStarted[community.id] = true; periksaTick++ }}/>{/await}{:else if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
+          {#if tab==='kamus'}{#await import('./KamusTab.svelte') then module}<module.default communityId={community.id} steward={isSteward(community.id)} operator={auth.steward} member={isMember(community.id)} visibility={community.visibility} onChanged={() => { kamusStarted[community.id] = true; periksaTick++ }}/>{/await}{:else if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
                 {auth}
                 communityId={community.id}
                 onAsk={() => {

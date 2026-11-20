@@ -11,8 +11,8 @@
   type Example = { postId: string; text: string }
   type Entry = { id: string; lemma: string; gloss: string; pos: string; context: string; source: string; licence: string; page: number | null; state: string; uses: number; speakers: number; examples: Example[]; claimId: string | null }
   type Language = { id: string; name: string; sources: Record<string, { citation: string; licence: string; url: string | null }> }
-  type View = { settings: { machineReading: boolean; language: string }; contexts: string[]; languages: Language[]; counts: Record<string, number>; entries: Entry[] }
-  let { communityId, steward = false, member = false, visibility = 'public', onChanged }: { communityId: string; steward?: boolean; member?: boolean; visibility?: string; onChanged?: () => void } = $props()
+  type View = { settings: { machineReading: boolean; language: string; languageName: string; languageSource: '' | 'label' | 'operator'; seeded: boolean }; contexts: string[]; languages: Language[]; counts: Record<string, number>; entries: Entry[] }
+  let { communityId, steward = false, operator = false, member = false, visibility = 'public', onChanged }: { communityId: string; steward?: boolean; operator?: boolean; member?: boolean; visibility?: string; onChanged?: () => void } = $props()
 
   let view = $state<View | null>(null),
     q = $state(''),
@@ -89,7 +89,7 @@
   {:else if view}
     <header class="kamus-head">
       <div>
-        <h2>Kamus {language?.name ?? 'komunitas'}</h2>
+        <h2>Kamus {view.settings.languageName || 'komunitas'}</h2>
         <p class="kamus-sum">
           {#if total}
             {fmt(view.counts.seed ?? 0)} kata dari sumber tertulis, {fmt(view.counts.candidate ?? 0)} kata baru dari percakapan, {fmt(view.counts.proposed ?? 0)} sudah diusulkan artinya.
@@ -98,14 +98,14 @@
           {/if}
         </p>
       </div>
-      {#if steward}
+      {#if steward || operator}
         <Button variant="outline" size="sm" type="button" aria-expanded={settingsOpen} onclick={() => (settingsOpen = !settingsOpen)}>
           Atur kamus <ChevronDown size={14} class={settingsOpen ? 'kamus-flip' : ''} />
         </Button>
       {/if}
     </header>
 
-    {#if steward && (settingsOpen || !total)}
+    {#if (steward || operator) && (settingsOpen || !total)}
       <div class="kamus-panel">
         <label class="kamus-row">
           <span>
@@ -114,15 +114,19 @@
           </span>
           <Switch checked={view.settings.machineReading} disabled={!!busy} onCheckedChange={(v) => act('settings', { machineReading: v })} />
         </label>
-        <label class="kamus-row">
-          <span><strong>Bahasa kamus</strong><small>Menentukan sumber tertulis yang dipakai sebagai titik awal.</small></span>
-          <select class="kamus-select" value={view.settings.language} disabled={!!busy} onchange={(e) => act('settings', { language: e.currentTarget.value })}>
-            <option value="">Pilih bahasa</option>
-            {#each view.languages as l (l.id)}<option value={l.id}>{l.name}</option>{/each}
-          </select>
-        </label>
+        {#if operator}
+          <label class="kamus-row">
+            <span><strong>Bahasa kamus</strong><small>{view.settings.languageSource === 'label' ? 'Diambil dari label bahasa komunitas ini. Pengelola node dapat menggantinya.' : 'Hanya pengelola node yang dapat mengubah bahasa. Kosongkan untuk memakai label bahasa komunitas.'}</small></span>
+            <select class="kamus-select" value={view.settings.languageSource === 'operator' ? view.settings.language : ''} disabled={!!busy} onchange={(e) => act('settings', { language: e.currentTarget.value })}>
+              <option value="">{view.settings.languageSource === 'label' ? 'Ikuti label (' + view.settings.languageName + ')' : 'Belum ada bahasa'}</option>
+              {#each view.languages as l (l.id)}<option value={l.id}>{l.name}</option>{/each}
+            </select>
+          </label>
+        {:else}
+          <p class="kamus-row"><span><strong>Bahasa {view.settings.languageName}</strong><small>{view.settings.languageSource === 'label' ? 'Diambil dari label bahasa komunitas ini.' : 'Ditetapkan oleh pengelola node.'} {view.settings.seeded ? '' : 'Belum ada sumber tertulis untuk bahasa ini, jadi kamus dimulai dari percakapan.'}</small></span></p>
+        {/if}
         <div class="kamus-steps">
-          <Button size="sm" variant="outline" type="button" disabled={!!busy || !view.settings.language} onclick={() => act('seed')}>{busy === 'seed' ? 'Memuat…' : 'Muat kata dari sumber'}</Button>
+          <Button size="sm" variant="outline" type="button" disabled={!!busy || !view.settings.seeded} onclick={() => act('seed')}>{busy === 'seed' ? 'Memuat…' : 'Muat kata dari sumber'}</Button>
           <Button size="sm" variant="outline" type="button" disabled={!!busy || !view.settings.machineReading} onclick={() => act('scan')}>{busy === 'scan' ? 'Membaca…' : 'Cari kata baru'}</Button>
           <Button size="sm" type="button" disabled={!!busy || !view.settings.machineReading || visibility !== 'public' || !view.counts.candidate} onclick={() => act('describe')}>{busy === 'describe' ? 'Aksara sedang menulis…' : 'Minta Aksara mengusulkan arti'}</Button>
         </div>

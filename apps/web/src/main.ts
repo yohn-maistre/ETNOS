@@ -26,8 +26,10 @@ import './styles/context-hierarchy.css'
 import './styles/main-pages.css'
 import { restoreAppearance } from './appearance.svelte'
 import { observeScrollbarActivity } from './scrollbar-activity'
+import { enableSidewaysScroll } from './horizontal-scroll'
 import { restoreNotificationPreferences } from './notifications.svelte'
 restoreAppearance()
+enableSidewaysScroll()
 restoreNotificationPreferences()
 const stopScrollbarActivity = observeScrollbarActivity()
 import.meta.hot?.dispose(stopScrollbarActivity)

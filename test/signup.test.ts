@@ -162,3 +162,24 @@ test('signup can target an existing handle or the configured account host, never
   assert.equal((await bad.auth.route(req('/auth/options')))!.status,503)
  }finally{s.close()}
 })
+
+test('an account on the node identity host signs in and enrolls; other hosts and closed nodes still need an invitation',async()=>{
+ for(const [config,allowed] of [[{enrollmentMode:'invite' as const,accountHost:pds},true],[{enrollmentMode:'invite' as const},false],[{enrollmentMode:'closed' as const,accountHost:pds},false]] as const){
+  const s=new Strata(':memory:',origin);s.provision(did,'Steward')
+  const f=await fixture(s,config,newcomer,'friend.bsky.social',newcomer)
+  try{
+   const start=(await f.auth.route(req('/auth/start',{mode:'login',handle:'friend.bsky.social'})))!
+   if(!allowed){assert.equal(start.status,403);assert.equal(s.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',newcomer),undefined);continue}
+   assert.equal(start.status,200,await start.clone().text())
+   const signed=(await f.auth.route(req(callback(f.state()),undefined,cookiePart(start))))!
+   assert.ok(signed.headers.get('location')?.startsWith('/'),'signed in')
+   assert.ok(s.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',newcomer),'enrolled')
+   // A removed enrollment does not come back by signing in again.
+   s.run('DELETE FROM enrollment_allowlist WHERE did=?',newcomer)
+   const again=(await f.auth.route(req('/auth/start',{mode:'login',handle:'friend.bsky.social'})))!
+   const back=(await f.auth.route(req(callback(f.state()),undefined,cookiePart(again))))!
+   assert.equal(back.headers.get('location'),'/login?error=authentication_failed')
+   assert.equal(s.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',newcomer),undefined)
+  }finally{s.close()}
+ }
+})

@@ -61,7 +61,7 @@ export type ApiOptions={models?:()=>Promise<Models|undefined>;sourceFetcher?:Sou
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
-  const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon())
+  const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon(),{operator:id=>!!options.stewardDid&&store.actor(id).did===options.stewardDid})
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store)
   const dm=new DirectMessages(store)
@@ -343,7 +343,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         if(!items.length)result={proposed:0}
         else{
           const models=await options.models?.();if(!models)throw new Fault(503,'No model is available')
-          const reply=await models.chat({purpose:'fast',messages:glossPrompt(kamusLexicon().seeds[kamus.settings(parts[2]).language]?.language.name??'daerah',items),maxTokens:900,temperature:0.2}).catch(()=>{throw new Fault(503,'The model did not answer')})
+          const reply=await models.chat({purpose:'fast',messages:glossPrompt(kamus.settings(parts[2]).languageName||'daerah',items),maxTokens:900,temperature:0.2}).catch(()=>{throw new Fault(503,'The model did not answer')})
           result=kamus.applyGlosses(caller,parts[2],parseGlosses(reply.text,new Set(items.map(i=>i.id))))
         }
       }

@@ -19,7 +19,7 @@ type Saved={sealed:string;expires:number}
 type BrowserSession={hash:string;actor_id:string;csrf:string;created:number;expires:number;revoked:number}
 export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean;enrollmentMode?:'open'|'invite'|'closed';clientName?:string;accountHost?:string}
 type EnrollmentInvite={id:string;hash:string;issuer_id:string;created:number;expires:number;revoked:number;used_by:string|null;used_at:number|null}
-type FlowContext={browser:string;returnTo:string;enroll?:'open'|'invite';inviteHash?:string;did?:string}
+type FlowContext={browser:string;returnTo:string;enroll?:'open'|'invite'|'host';inviteHash?:string;did?:string}
 function returnPath(value:unknown){
   if(value===undefined)return '/'
   if(typeof value!=='string'||value.length>1024||!value.startsWith('/')||value.startsWith('//')||/[\\\x00-\x20\x7f]/.test(value))throw new Fault(400,'Invalid return destination')
@@ -151,6 +151,12 @@ export class BrowserAuth {
   }
   private allowed(did:string){return !!this.config.stewardDid && (did===this.config.stewardDid || !!this.store.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',did))}
   private enrollmentMode(){return this.config.enrollmentMode??'invite'}
+  /** Whether a DID document names this node's own identity host as its PDS. */
+  private onOwnHost(doc:{service?:unknown}){
+    const host=this.accountHost();if(!host)return false
+    const services=Array.isArray(doc.service)?doc.service as {id?:string;serviceEndpoint?:unknown}[]:[]
+    return services.some(x=>typeof x.id==='string'&&x.id.endsWith('#atproto_pds')&&typeof x.serviceEndpoint==='string'&&x.serviceEndpoint.replace(/\/+$/,'')===host)
+  }
   private accountHost(){
     const host=this.config.accountHost
     if(!host)return undefined
@@ -247,7 +253,12 @@ export class BrowserAuth {
           if(body.mode!==undefined && body.mode!=='login')throw new Fault(400,'Invalid sign-in mode')
           if(typeof body.handle!=='string'||body.handle.length>253||!body.handle.includes('.'))throw new Fault(400,'Enter your full AT handle')
           const identity=await this.client.identityResolver.resolve(body.handle)
-          if(!this.allowed(identity.did))throw new Fault(403,'Join ETNOS first to enroll this account')
+          // An account made on this node's own identity host already passed that host's invitation, so it enrolls
+          // on first sign-in. Accounts elsewhere still need an ETNOS invitation through sign-up.
+          if(!this.allowed(identity.did)){
+            if(this.enrollmentMode()==='closed'||!this.onOwnHost(identity.didDoc))throw new Fault(403,'Join ETNOS first to enroll this account')
+            context.enroll='host'
+          }
           context.did=identity.did;target=identity.did
         }
         const flow=token(),scope=body.mode!=='signup' && body.publishing===true && this.config.publishingEnabled?this.client.clientMetadata.scope:'atproto'
@@ -276,12 +287,13 @@ export class BrowserAuth {
             if(context.enroll){
               if(this.enrollmentMode()==='closed')throw new Fault(403,'Registration is closed')
               if(context.enroll==='invite')invitation=this.invite(context.inviteHash??'')
+              else if(context.enroll==='host'){if(!this.onOwnHost(identity.didDoc))throw new Fault(403,'Join ETNOS first to enroll this account')}
               else if(this.enrollmentMode()!=='open')throw new Fault(403,'Registration now requires an invitation')
             }else if(!this.allowed(session.did))throw new Fault(403,'Enrollment is by invitation')
             let person=this.store.get<Actor>('SELECT * FROM actors WHERE did=?',session.did)
             // Existing enrollment removal must not become self-reversible simply
             // because new-account registration is open. A steward can reinstate.
-            if(person && !this.allowed(session.did) && context.enroll==='open')throw new Fault(403,'Account enrollment is inactive; contact the steward')
+            if(person && !this.allowed(session.did) && (context.enroll==='open'||context.enroll==='host'))throw new Fault(403,'Account enrollment is inactive; contact the steward')
             if(!person){const id=crypto.randomUUID();this.store.run("INSERT INTO actors VALUES(?,?,?,'human',NULL)",id,session.did,identity.handle);person=this.store.actor(id)}
             if(person.kind!=='human')throw new Fault(403,'Service actors cannot use human enrollment')
             if(!this.allowed(session.did)){

@@ -21,10 +21,10 @@ test('sharing reads only anonymous public views; protected identities, groups an
 })
 test('sharing bounds metadata, escapes injected markup, honors warnings and pins public image ports',async()=>{
  const id='a'.repeat(36),community={visibility:'public'},base={id,community_id:'public',text:'Hidden spoiler',author:{name:'Writer'},content:{warning:'Spoiler'},media:[{url:'/v1/media/'+id,alt:'Spoiler'}]},news=async()=>null
- const warning=await resolveShare('/square/'+id,async path=>path.includes('communities')?community:base,news);assert.equal(warning.image,'/share/default.png');assert.doesNotMatch(JSON.stringify(warning),/Hidden spoiler/)
+ const warning=await resolveShare('/square/'+id,async path=>path.includes('communities')?community:base,news);assert.equal(warning.image,'/share/default.jpg');assert.doesNotMatch(JSON.stringify(warning),/Hidden spoiler/)
  const video=await resolveShare('/square/'+id,async path=>path.includes('communities')?community:{...base,media:[],content:{url:'https://youtu.be/ZWp5904RkJY'}},news);assert.equal(video.image,'/v1/video-preview/youtube/ZWp5904RkJY/image')
  const card=await resolveShare('/news/42',async()=>null,async()=>({id:'42',title:'Public news',summary:'x'.repeat(2000),image:'/v1/news/42/image?asset='+'a'.repeat(24),imageCredit:'Publisher'}));assert.equal(card.description.length,240);assert.ok(card.image.endsWith('a'.repeat(24)))
- const invalid=await resolveShare('/news/42',async()=>null,async()=>({id:'42',title:'News',image:'https://evil.example/image'}));assert.equal(invalid.image,'/share/default.png')
+ const invalid=await resolveShare('/news/42',async()=>null,async()=>({id:'42',title:'News',image:'https://evil.example/image'}));assert.equal(invalid.image,'/share/news.jpg','an outside image is refused; the Kabar card is used')
  const html=shareTags({...card,title:'"><script>alert(1)</script>',description:'& " \' <'},'https://etnos.space');assert.doesNotMatch(html,/<script>/);assert.match(html,/&lt;script&gt;/);assert.match(html,/og:url" content="https:\/\/etnos.space\/news\/42"/)
 })
 test('wiki text for crawlers is escaped, keeps headings and sources, and marks unreviewed pages', () => {

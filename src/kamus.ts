@@ -45,22 +45,44 @@ export class Kamus{
  private store:StrataCore
  private periksa:Periksa
  private lexicon:KamusLexicon
- constructor(store:StrataCore,lexicon:KamusLexicon){this.store=store;this.periksa=new Periksa(store);this.lexicon=lexicon}
+ private operator:(actorId:string)=>boolean
+ constructor(store:StrataCore,lexicon:KamusLexicon,o:{operator?:(actorId:string)=>boolean}={}){this.store=store;this.periksa=new Periksa(store);this.lexicon=lexicon;this.operator=o.operator??(()=>false)}
 
+ /** The dictionary belongs to a language community. Its language comes from the community's language label (a
+  * language context with a glottocode); the node operator can set it instead, which is the only way for a hidden
+  * community, since hidden communities carry no public labels. Community stewards never pick the language. */
  settings(communityId:string){
   const r=this.store.get<{machine_reading:number;language:string}>('SELECT machine_reading,language FROM kamus_settings WHERE community_id=?',communityId)
-  return {machineReading:!!r?.machine_reading,language:r?.language??''}
+  const label=this.labelledLanguage(communityId),override=r?.language??''
+  const code=override||label?.code||''
+  const name=this.lexicon.seeds[code]?.language.name??(code===label?.code?label.name:this.languageName(code))??code
+  return {machineReading:!!r?.machine_reading,language:code,languageName:code?name:'',languageSource:(override?'operator':label?'label':'') as ''|'label'|'operator',seeded:!!this.lexicon.seeds[code]}
  }
- /** Stewards turn machine reading on or off and choose the language the seed comes from. */
+ private labelledLanguage(communityId:string){
+  const rows=this.store.all<{title:string;aliases:string}>("SELECT c.title,c.aliases FROM community_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.community_id=? AND c.kind='language' AND c.active=1 ORDER BY l.created",communityId)
+  for(const r of rows){const code=(JSON.parse(r.aliases) as string[]).find(a=>a.startsWith('glottocode:'))?.slice(11);if(code)return {code,name:r.title}}
+  return null
+ }
+ private languageName(code:string){
+  if(!code)return undefined
+  return this.store.get<{title:string}>("SELECT title FROM contexts WHERE kind='language' AND aliases LIKE ?",`%"glottocode:${code}"%`)?.title
+ }
+ /** Stewards turn machine reading on or off. Only the node operator sets or clears the language. */
  setSettings(actor:string,communityId:string,b:{machineReading?:unknown;language?:unknown}){
   const s=this.store;return s.tx(()=>{
-   s.requireSteward(actor,communityId);if(s.actor(actor).kind!=='human')throw new Fault(403,'Human steward required')
-   const cur=this.settings(communityId)
-   const on=typeof b.machineReading==='boolean'?b.machineReading:cur.machineReading
-   const lang=typeof b.language==='string'?b.language.trim():cur.language
-   if(lang&&!this.lexicon.seeds[lang])throw new Fault(400,'Unknown language')
+   const changingLanguage=typeof b.language==='string',switching=typeof b.machineReading==='boolean'
+   if(!changingLanguage&&!switching)throw new Fault(400,'Nothing to change')
+   if(changingLanguage&&!this.operator(actor))throw new Fault(403,'Only the node operator changes the language')
+   if(switching){s.requireSteward(actor,communityId);if(s.actor(actor).kind!=='human')throw new Fault(403,'Human steward required')}
+   s.community(communityId)
+   const row=s.get<{machine_reading:number;language:string}>('SELECT machine_reading,language FROM kamus_settings WHERE community_id=?',communityId)
+   const on=switching?b.machineReading as boolean:!!row?.machine_reading
+   const lang=changingLanguage?(b.language as string).trim():row?.language??''
+   if(lang&&!this.lexicon.seeds[lang]&&!this.languageName(lang))throw new Fault(400,'Unknown language')
+   if(!lang&&!this.labelledLanguage(communityId)&&on)throw new Fault(409,'This community has no language')
    s.run('INSERT INTO kamus_settings(community_id,machine_reading,language,updated,updated_by) VALUES(?,?,?,?,?) ON CONFLICT(community_id) DO UPDATE SET machine_reading=excluded.machine_reading,language=excluded.language,updated=excluded.updated,updated_by=excluded.updated_by',communityId,on?1:0,lang,s.clock(),actor)
-   s.audit(actor,on?'kamus.reading.on':'kamus.reading.off',communityId)
+   if(changingLanguage)s.audit(actor,'kamus.language',communityId)
+   if(switching)s.audit(actor,on?'kamus.reading.on':'kamus.reading.off',communityId)
    return this.settings(communityId)
   })
  }
@@ -71,7 +93,7 @@ export class Kamus{
   const s=this.store;return s.tx(()=>{
    s.requireSteward(actor,communityId);if(s.actor(actor).kind!=='human')throw new Fault(403,'Human steward required')
    const lang=this.settings(communityId).language,set=this.lexicon.seeds[lang]
-   if(!set)throw new Fault(409,'Choose a language first')
+   if(!set)throw new Fault(409,'No written source for this language yet')
    let added=0
    for(const e of set.entries){
     // Scanned sources carry stray dots and empty senses; an entry needs a clean headword and some meaning.

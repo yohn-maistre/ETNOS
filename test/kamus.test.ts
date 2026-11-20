@@ -12,8 +12,8 @@ const lexicon:KamusLexicon={
  seeds:{test:{language:{name:'Uji',glottocode:'test'},sources:{list:{licence:'CC BY 4.0'}},entries:[{lemma:'ugee',gloss_id:'ubi jalar',source:'list',page:3},{lemma:'jamoo',modern:'yamoo',gloss_id:'rumah',source:'list'}]}},
 }
 function fixture(visibility:'public'|'hidden-private'='public'){
- const s=new Strata(':memory:','https://forum.example'),k=new Kamus(s,lexicon),p=new Periksa(s)
- const a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:b.example','Budi'),c=s.provision('did:web:c.example','Citra'),o=s.provision('did:web:o.example','Outside')
+ let opId='';const s=new Strata(':memory:','https://forum.example'),k=new Kamus(s,lexicon,{operator:id=>id===opId}),p=new Periksa(s)
+ const a=s.provision('did:web:owner.example','Owner');opId=a.actor.id;const b=s.provision('did:web:b.example','Budi'),c=s.provision('did:web:c.example','Citra'),o=s.provision('did:web:o.example','Outside')
  const room=s.createCommunity(a.actor.id,'Mee','Ruang bahasa',visibility,true)
  for(const m of [b,c])s.setMember(a.actor.id,room.id,m.actor.id,true)
  const ag=s.provision('did:web:aksara.example','Aksara',a.actor.id);s.setMember(a.actor.id,room.id,ag.actor.id,true)
@@ -128,7 +128,7 @@ test('the describe route checks every gate before any text reaches a model',asyn
  for(const visibility of ['public','hidden-private'] as const){
   const s=new Strata(':memory:','https://forum.example');try{
    let calls=0
-   const handler=api(s,{models:async()=>({chat:async()=>{calls++;return {text:'{"items":[]}',model:'m',route:'keyless',inputTokens:0,outputTokens:0}}})})
+   const handler=api(s,{stewardDid:'did:web:owner.example',models:async()=>({chat:async()=>{calls++;return {text:'{"items":[]}',model:'m',route:'keyless',inputTokens:0,outputTokens:0}}})})
    const a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:b.example','Budi'),c=s.provision('did:web:c.example','Citra')
    const room=s.createCommunity(a.actor.id,'Mee','Ruang bahasa',visibility,true)
    for(const m of [b,c])s.setMember(a.actor.id,room.id,m.actor.id,true)
@@ -162,5 +162,21 @@ test('a member writes a meaning by hand in a private community; no model, member
   assert.throws(()=>f.k.proposeMeaning(f.c,f.room,c.id,{gloss:'lain'}),/already/)
   const card=f.p.list(f.b,f.room)[0];f.p.withdraw(f.b,card.id)
   assert.equal(f.k.proposeMeaning(f.c,f.room,c.id,{gloss:'jagung muda',context:'Kebun'}).gloss,'jagung muda','a withdrawn card frees the word')
+ }finally{f.s.close()}
+})
+
+test('the language comes from the community label; stewards cannot change it, the operator can',()=>{
+ const f=fixture();try{
+  // No language label and no operator choice: no dictionary to run.
+  assert.equal(f.k.settings(f.room).language,'')
+  assert.throws(()=>f.k.setSettings(f.b,f.room,{machineReading:true}))
+  const steward=f.s.provision('did:web:steward.example','Steward');f.s.setMember(f.a,f.room,steward.actor.id,true);f.s.run("UPDATE memberships SET role='moderator' WHERE actor_id=?",steward.actor.id)
+  assert.throws(()=>f.k.setSettings(steward.actor.id,f.room,{machineReading:true}),/no language/)
+  f.s.run(`INSERT INTO contexts(id,slug,title,kind,description,language,aliases,created,active) VALUES('ctx-test','bahasa-uji','Uji','language','x','id','["glottocode:test"]',0,1)`)
+  f.s.run('INSERT INTO community_contexts VALUES(?,?,?,?)',f.room,'ctx-test',f.a,0)
+  const st=f.k.settings(f.room);assert.equal(st.language,'test');assert.equal(st.languageSource,'label');assert.equal(st.seeded,true)
+  assert.equal(f.k.setSettings(steward.actor.id,f.room,{machineReading:true}).machineReading,true,'a steward switches reading on')
+  assert.throws(()=>f.k.setSettings(steward.actor.id,f.room,{language:''}),/operator/,'a steward cannot change the language')
+  assert.equal(f.k.setSettings(f.a,f.room,{language:''}).languageSource,'label','clearing the override falls back to the label')
  }finally{f.s.close()}
 })
