@@ -64,14 +64,14 @@ function page(c) {
   <div class="foot"><b>etnos.space</b>${caption ? `<span>${caption}</span>` : ''}</div></div>`
 }
 
-const regionText = 'Halaman dan kabar tentang wilayah ini.'
+const regionText = 'Baca kabar dan halaman tentang wilayah ini.'
 const cards = [
-  { file: 'default', print: 'tigi', title: 'Kabar, komunitas dan pengetahuan tentang Tanah Papua' },
-  { file: 'explore', print: 'raja', title: 'Jelajah', text: 'Kabar, topik, komunitas dan tempat di Tanah Papua.', pos: '50% 60%' },
-  { file: 'news', print: 'raja', title: 'Kabar', text: 'Ringkasan kabar Papua beserta sumber liputannya.', pos: '50% 40%' },
-  { file: 'communities', print: 'tigi', title: 'Komunitas', text: 'Ruang percakapan warga dan organisasi.', pos: '50% 75%' },
-  { file: 'jadwal', print: 'tigi', title: 'Jadwal Aksara', text: 'Waktu terbit tulisan Aksara setiap hari.', pos: '50% 30%' },
-  { file: 'wiki', title: 'Pengetahuan bersama', text: 'Halaman tentang tempat, bahasa dan sejarah Papua.' },
+  { file: 'default', print: 'tigi', title: 'Tempat warga Papua bertukar kabar dan cerita' },
+  { file: 'explore', print: 'raja', title: 'Jelajah', text: 'Lihat apa yang sedang dibicarakan warga Papua hari ini.', pos: '50% 60%' },
+  { file: 'news', print: 'raja', title: 'Kabar', text: 'Kabar terbaru dari Papua beserta sumber aslinya.', pos: '50% 40%' },
+  { file: 'communities', print: 'tigi', title: 'Komunitas', text: 'Cari komunitas yang cocok, lalu ikut ngobrol.', pos: '50% 75%' },
+  { file: 'jadwal', print: 'tigi', title: 'Jadwal Aksara', text: 'Lihat jam berapa Aksara menulis setiap hari.', pos: '50% 30%' },
+  { file: 'wiki', title: 'Pengetahuan bersama', text: 'Halaman tentang Papua yang ditulis dan diperiksa bersama warga.' },
   ...Object.keys(atlas.regions).map((id) => ({ file: 'region-' + id, region: id, title: { meepago: 'Mee Pago', 'la-pago': 'La Pago', 'ha-anim': 'Ha Anim', 'mamta-tabi': 'Mamta (Tabi)', saireri: 'Saireri', domberai: 'Domberai', bomberai: 'Bomberai' }[id] ?? id, text: regionText })),
 ]
 

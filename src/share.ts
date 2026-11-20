@@ -1,16 +1,16 @@
 /** Public sharing projection. Callers provide anonymous, bounded reads only. */
 export type Share = {title:string;description:string;path:string;image:string;imageAlt:string;type:'website'|'article';index:boolean;article?:{title:string;text:string;citations:string[];updated:number;reviewed:boolean}}
-const description='Kabar, komunitas dan pengetahuan tentang Tanah Papua.'
+const description='Tempat warga Papua bertukar kabar dan cerita.'
 export const defaultShare=():Share=>({title:'ETNOS',description,path:'/',image:'/share/default.jpg',imageAlt:'ETNOS — '+description,type:'website',index:false})
 export function previewText(value:unknown,max=240){return String(value??'').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/[#*_`~>|]/g,'').replace(/[\u0000-\u001f\u007f]/g,' ').replace(/\s+/g,' ').trim().slice(0,max)}
 const uuid=/^[a-f0-9-]{36}$/
 type Read=(path:string)=>Promise<any>
 const pages:Record<string,[string,string]>={
- '/':['ETNOS',description],'/explore':['Jelajah ETNOS','Kabar, topik, komunitas dan tempat di Tanah Papua.'],
- '/news':['Kabar · ETNOS','Ringkasan kabar Papua beserta sumber liputannya.'],'/communities':['Komunitas · ETNOS','Ruang percakapan warga dan organisasi.'],
- '/groups':['Organisasi · ETNOS','Ruang dan karya bersama dari organisasi.'],'/wiki':['Pengetahuan bersama · ETNOS','Halaman tentang tempat, bahasa dan sejarah Papua.'],
+ '/':['ETNOS',description],'/explore':['Jelajah ETNOS','Lihat apa yang sedang dibicarakan warga Papua hari ini.'],
+ '/news':['Kabar · ETNOS','Kabar terbaru dari Papua beserta sumber aslinya.'],'/communities':['Komunitas · ETNOS','Cari komunitas yang cocok, lalu ikut ngobrol.'],
+ '/groups':['Organisasi · ETNOS','Ruang dan karya bersama dari organisasi.'],'/wiki':['Pengetahuan bersama · ETNOS','Halaman tentang Papua yang ditulis dan diperiksa bersama warga.'],
  '/voices':['Suara komunitas · ETNOS','Pertanyaan, jajak pendapat dan tindak lanjut komunitas.'],'/work':['Kerja publik · ETNOS','Karya, laporan dan tindak lanjut yang disponsori.'],'/board':['Lajur · ETNOS','Jelajahi percakapan dalam beberapa linimasa.'],
- '/jadwal':['Jadwal Aksara · ETNOS','Waktu terbit tulisan Aksara setiap hari.'],
+ '/jadwal':['Jadwal Aksara · ETNOS','Lihat jam berapa Aksara menulis setiap hari.'],
 }
 // Static preview cards made by apps/web/scripts/share-cards.mjs (1200 x 630).
 const sectionCard:Record<string,string>={'/explore':'explore','/news':'news','/communities':'communities','/groups':'communities','/wiki':'wiki','/jadwal':'jadwal'}
