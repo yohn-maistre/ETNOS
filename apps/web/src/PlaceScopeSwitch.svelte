@@ -7,6 +7,7 @@
   import { request } from './api'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
   import { scopeRegions } from './scope-region.svelte'
+  import { homeFilter, setHomeFilter, type HomeKind, type HomeSort } from './home-filter.svelte'
   type Feed = 'new' | 'mine' | 'following'
   let {
     onChange,
@@ -20,6 +21,33 @@
     ['mine', 'Komunitasku', 'Posting dari komunitas yang saya ikuti.'],
     ['following', 'Mengikuti', 'Posting dari orang yang saya ikuti.'],
   ]
+  const kinds: [HomeKind, string][] = [
+    ['all', 'Semua'],
+    ['aksara', 'Aksara'],
+    ['kerja', 'Kerja'],
+  ]
+  const sorts: [HomeSort, string][] = [
+    ['new', 'Terbaru'],
+    ['discussed', 'Paling dibahas'],
+  ]
+  let programs = $state<{ id: string; label: string }[]>([])
+  $effect(() => {
+    if (!open || programs.length) return
+    request<{ programs?: { id: string; label: string }[] }>('/v1/aksara/jadwal')
+      .then((r) => (programs = r.programs ?? []))
+      .catch(() => {})
+  })
+  function pick(patch: Parameters<typeof setHomeFilter>[0]) {
+    setHomeFilter(patch)
+    onChange?.()
+  }
+  const filterLabel = $derived(
+    homeFilter.kind === 'aksara'
+      ? (programs.find((p) => p.id === homeFilter.program)?.label ?? 'Aksara')
+      : homeFilter.kind === 'kerja'
+        ? 'Kerja'
+        : '',
+  )
   let open = $state(false),
     query = $state(''),
     all = $state<Ctx[]>([]),
@@ -46,7 +74,7 @@
     if (!q) return []
     return all.filter((c) => (c.kind === 'place' || c.kind === 'region') && c.title.toLowerCase().includes(q)).slice(0, 30)
   })
-  const feedLabel = $derived(feeds.find(([m]) => m === feed)?.[1] ?? 'Terbaru')
+  const feedLabel = $derived((feeds.find(([m]) => m === feed)?.[1] ?? 'Terbaru') + (filterLabel ? ' · ' + filterLabel : ''))
   const feedHint = $derived(feeds.find(([m]) => m === feed)?.[2] ?? '')
   function choose(c: { slug: string; title: string }) {
     setPlaceScope({ slug: c.slug, title: name(c.title) })
@@ -81,8 +109,28 @@
           </div>
           <p class="view-hint">{feedHint}</p>
         </div>
-        <!-- Room for the sort control (urutkan): it sits beside the feed choice and wraps below it on a phone. -->
-      </div>{/if}
+      <div class="view-filter">
+        <div role="radiogroup" aria-labelledby="view-kind-label">
+          <span id="view-kind-label" class="view-label">Jenis posting</span>
+          <div class="view-choices">
+            {#each kinds as [kind, label] (kind)}<button type="button" role="radio" aria-checked={homeFilter.kind === kind} onclick={() => pick({ kind })}><i aria-hidden="true"></i>{label}</button>{/each}
+          </div>
+        </div>
+        {#if homeFilter.kind === 'aksara' && programs.length}<div role="radiogroup" aria-labelledby="view-program-label">
+            <span id="view-program-label" class="view-label">Program Aksara</span>
+            <div class="view-choices">
+              <button type="button" role="radio" aria-checked={!homeFilter.program} onclick={() => pick({ program: '' })}><i aria-hidden="true"></i>Semua</button>
+              {#each programs as p (p.id)}<button type="button" role="radio" aria-checked={homeFilter.program === p.id} onclick={() => pick({ program: p.id })}><i aria-hidden="true"></i>{p.label}</button>{/each}
+            </div>
+          </div>{/if}
+        <div role="radiogroup" aria-labelledby="view-sort-label">
+          <span id="view-sort-label" class="view-label">Urutan</span>
+          <div class="view-choices">
+            {#each sorts as [sort, label] (sort)}<button type="button" role="radio" aria-checked={homeFilter.sort === sort} onclick={() => pick({ sort })}><i aria-hidden="true"></i>{label}</button>{/each}
+          </div>
+        </div>
+      </div>
+    </div>{/if}
     <div class="place-pick">
       <span class="view-label">Tempat</span>
       <label class="place-scope-search"><Search size={16} /><input bind:value={query} placeholder="Cari kabupaten, kota atau kampung" aria-label="Cari tempat" /></label>
@@ -123,12 +171,13 @@
   /* What the feed shows: a radio choice, not tabs. The sort control will sit beside it. */
   .view-options { display: flex; flex-wrap: wrap; gap: 12px 24px; padding-bottom: 12px; border-bottom: 1px solid var(--commons-hairline, var(--border)); }
   .view-feed { flex: 1 1 260px; min-width: 0; }
+  .view-filter { flex: 1 1 100%; display: grid; gap: 12px; }
   .view-choices { display: flex; flex-wrap: wrap; gap: 6px; }
   .view-choices button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px 0 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 14px; color: var(--foreground); cursor: pointer; }
   .view-choices button i { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--muted-foreground); box-sizing: border-box; }
   .view-choices button[aria-checked='true'] { border-color: var(--foreground); font-weight: 600; }
   .view-choices button[aria-checked='true'] i { border: 4px solid var(--foreground); }
-  .view-choices button:hover { background: var(--muted); }
+  .view-choices button:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
   .view-choices button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
   .view-hint { margin: 6px 0 0; font-size: 13px; line-height: 1.4; color: var(--muted-foreground); }
   .place-pick { display: grid; gap: 0; min-height: 0; }
@@ -136,7 +185,7 @@
   .place-scope-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; }
   .place-body { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 12px; align-items: start; margin-top: 8px; }
   .place-body.searching { grid-template-columns: minmax(0, 1fr); }
-  .place-map { padding-top: 6px; }
+  .place-map { padding-top: 6px; overflow: hidden; }
   .place-scope-list { list-style: none; margin: 0; padding: 0; display: grid; }
   .place-scope-list button { all: unset; box-sizing: border-box; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 40px; padding: 0 8px; border-radius: 8px; font-size: 14px; cursor: pointer; }
   .place-scope-list button:hover, .place-scope-list button[aria-pressed='true'] { background: var(--muted); }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RequestsPanel from './RequestsPanel.svelte'
   import {avatarTone} from './avatar-tone'
   import { markdown } from './markdown'
   import { tabScroll } from './tab-scroll'
@@ -538,7 +539,7 @@
           value="work"
         >
           Kerja publik
-        </Tabs.Trigger><Tabs.Trigger value="about">Tentang</Tabs.Trigger>
+        </Tabs.Trigger>{#if canManage(group.id)}<Tabs.Trigger value="requests">Permintaan</Tabs.Trigger>{/if}<Tabs.Trigger value="about">Tentang</Tabs.Trigger>
       </Tabs.List>
     </div>
     <Tabs.Content value="spaces">
@@ -577,6 +578,7 @@
           <h2>Belum ada kerja publik</h2>
         </div>{/if}
     </Tabs.Content>
+    {#if canManage(group.id)}<Tabs.Content value="requests"><RequestsPanel groupId={group.id} onError={onError} /></Tabs.Content>{/if}
     <Tabs.Content value="about">
       <Card.Root class="strata-card">
         <h2>
@@ -761,22 +763,6 @@
     onStartCommunity={onStartCommunity ? () => onStartCommunity({ id: context!.id, title: context!.title }) : undefined}
     stewardTools={auth.steward ? stewardNews : undefined}
   />
-{:else if segments[0] === 'work'}
-  <div class="cx-page-head">
-    <h1>Kerja publik</h1>
-    {#if eligible.length}<Button onclick={() => open('work')}>
-        <Plus size={15} />Kerja
-      </Button>{/if}
-  </div>
-  {@render workList(works)}
-  {#if !works.length}<div class="strata-nodata">
-      <ListTodo size={26} />
-      <h2>Belum ada kerja publik</h2>
-      <p>
-        Pekerjaan yang disponsori institusi atau kelompok akan muncul di sini.
-      </p>
-      <Button href="/groups" variant="outline">Lihat kelompok</Button>
-    </div>{/if}
 {:else if segments[0] === 'groups'}
   <div class="cx-page-head">
     <h1>Organisasi</h1>

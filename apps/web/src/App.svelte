@@ -35,6 +35,7 @@
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiContents from './WikiContents.svelte'
   import { placeScope } from './place-scope.svelte'
+  import { homeFilter, setHomeFilter, homeFilterParams } from './home-filter.svelte'
   import VaultTransfer from './messaging/VaultTransfer.svelte'
   import SearchDialog from './SearchDialog.svelte'
   import SearchPage from './SearchPage.svelte'
@@ -129,7 +130,7 @@
     authDialogError = $state(''),
     welcomeIntro = $state(initialBoot),
     authDialogLeaving = $state(false)
-  let path = $state(['/board', '/login'].includes(location.pathname) ? '/' : directoryTarget(location.pathname, location.search) ? '/explore' : commonsPath(location.pathname)),
+  let path = $state(['/board', '/login', '/work'].includes(location.pathname) ? '/' : directoryTarget(location.pathname, location.search) ? '/explore' : commonsPath(location.pathname)),
     search = $state(location.pathname === '/login' ? '' : location.search),
     loading = $state(true),
     busy = $state(false),
@@ -288,6 +289,17 @@
     memberships.some(
       (m) => m.community_id === id && ['owner', 'moderator'].includes(m.role),
     )
+  // The Kamus tab shows where a community has started a dictionary, and always for its stewards.
+  let kamusStarted = $state<Record<string, boolean>>({}),
+    periksaTick = $state(0)
+  $effect(() => {
+    const id = community?.id
+    if (!id || id in kamusStarted) return
+    kamusStarted[id] = false
+    request<{ settings: { language: string }; counts: Record<string, number> }>('/v1/communities/' + encodeURIComponent(id) + '/kamus?limit=0', undefined, undefined, true)
+      .then((k) => { kamusStarted[id] = !!k.settings.language || Object.values(k.counts).some((n) => n > 0) })
+      .catch(() => {})
+  })
   const currentMembership = $derived(
     community
       ? memberships.find((m) => m.community_id === community.id)
@@ -317,6 +329,8 @@
         ? 'Lini masa'
       : parts[0] === 'voices'
         ? 'Suara komunitas'
+        : parts[0] === 'jadwal'
+          ? 'Jadwal Aksara'
         : parts[0] === 'news'
           ? 'Kabar'
           : path === '/'
@@ -387,6 +401,11 @@
       u.hash = section
     }
     if (u.pathname === '/board') u.pathname = '/'
+    // Work between organisations is a filter on Beranda, not a page of its own.
+    if (u.pathname === '/work') {
+      setHomeFilter({ kind: 'kerja' })
+      u.pathname = '/'
+    }
     if (
       u.pathname === '/login' &&
       path !== '/login' &&
@@ -458,7 +477,8 @@
     pulse()
     const entry = location.href,
       top = window.history.state?.etnosScroll ?? 0
-    if (location.pathname === '/board')
+    if (location.pathname === '/work') setHomeFilter({ kind: 'kerja' })
+    if (location.pathname === '/board' || location.pathname === '/work')
       window.history.replaceState(
         window.history.state,
         '',
@@ -538,6 +558,7 @@
       if (path === '/' && feedTab === 'following' && identity.actor)
         filters.set('following', 'true')
       if (path === '/' && placeScope.slug) filters.set('context', placeScope.slug)
+      if (path === '/') homeFilterParams(filters)
       if (parts[0] === 'people' && parts[1]) {
         filters.set('author', parts[1])
         filters.set('roots', 'false')
@@ -914,6 +935,7 @@
       }
       if (path === '/' && feedTab === 'following') q.set('following', 'true')
       if (path === '/' && placeScope.slug) q.set('context', placeScope.slug)
+      if (path === '/') homeFilterParams(q)
       const page = await request<{ items: Post[]; nextCursor: string | null }>(
         '/v1/feed/page?' + q,
       )
@@ -954,7 +976,8 @@
     } catch {
       /* Optional old layout storage. */
     }
-    if (location.pathname === '/board')
+    if (location.pathname === '/work') setHomeFilter({ kind: 'kerja' })
+    if (location.pathname === '/board' || location.pathname === '/work')
       window.history.replaceState(
         window.history.state,
         '',
@@ -1025,7 +1048,7 @@
     searchDialogOpen = true
   }}
 >
-  {#if loading && !posts.length && !selectedPost && path !== '/' && path !== '/saved' && path !== '/find' && !['messages', 'notifications', 'groups', 'work', 'contexts', 'topics', 'explore', 'news', 'login', 'wiki'].includes(parts[0])}<ContentSkeleton
+  {#if loading && !posts.length && !selectedPost && path !== '/' && path !== '/saved' && path !== '/find' && !['messages', 'notifications', 'groups', 'work', 'contexts', 'topics', 'explore', 'news', 'login', 'wiki', 'jadwal'].includes(parts[0])}<ContentSkeleton
     />
   {:else if path === '/recover-messages'}<VaultTransfer recovery />
   {:else if error && errorStatus === 404}<div class="page-missing" role="alert">
@@ -1048,6 +1071,7 @@
         <RefreshCw size={14} />Coba lagi
       </Button>
     </div>
+  {:else if path === '/jadwal'}{#await import('./JadwalPage.svelte') then module}<module.default />{/await}
   {:else if parts[0] === 'news' && parts[1]}{#await import('./NewsPage.svelte')}<ContentSkeleton
       />{:then { default: NewsPage }}<NewsPage
         id={parts[1]}
@@ -1289,7 +1313,7 @@
             </Button>{/if}
         </div>
       </div>
-      {#if auth.actor && isMember(community.id)}{#await import('./PeriksaDeck.svelte') then module}<module.default communityId={community.id}/>{/await}{/if}
+      {#if auth.actor && isMember(community.id)}{#key periksaTick}{#await import('./PeriksaDeck.svelte') then module}<module.default communityId={community.id}/>{/await}{/key}{/if}
       <Tabs.Root bind:value={tab}>
         <div class="section-tab-scroll" use:tabScroll>
           <Tabs.List
@@ -1301,7 +1325,7 @@
               value="wiki"
             >
               Wiki
-            </Tabs.Trigger><Tabs.Trigger value="media">
+            </Tabs.Trigger>{#if kamusStarted[community.id] || isSteward(community.id)}<Tabs.Trigger value="kamus">Kamus</Tabs.Trigger>{/if}<Tabs.Trigger value="media">
               Media
             </Tabs.Trigger><Tabs.Trigger value="voices">
               Suara
@@ -1309,7 +1333,7 @@
           </Tabs.List>
         </div>
         <Tabs.Content value={tab}>
-          {#if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
+          {#if tab==='kamus'}{#await import('./KamusTab.svelte') then module}<module.default communityId={community.id} steward={isSteward(community.id)} visibility={community.visibility} onChanged={() => { kamusStarted[community.id] = true; periksaTick++ }}/>{/await}{:else if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
                 {auth}
                 communityId={community.id}
                 onAsk={() => {
@@ -1663,14 +1687,22 @@
                 ? 'Belum ada hasil'
                 : feedTab === 'following'
                   ? 'Ikuti percakapan mereka'
-                  : 'Belum ada percakapan'}
+                  : homeFilter.kind === 'kerja'
+                    ? 'Belum ada kerja bersama'
+                    : homeFilter.kind === 'aksara'
+                      ? 'Belum ada posting Aksara'
+                      : 'Belum ada percakapan'}
           </h2>
           <p>
             {path === '/saved'
               ? 'Posting yang kamu simpan tersedia selama kamu memiliki akses.'
               : feedTab === 'following'
                 ? 'Cari peserta dan pilih Ikuti di profil mereka.'
-                : 'Jelajahi komunitas atau mulai percakapan.'}
+                : homeFilter.kind === 'kerja'
+                  ? 'Pekerjaan organisasi dan permintaan antar Aksara muncul di sini.'
+                  : homeFilter.kind === 'aksara'
+                    ? 'Pilih program lain atau kembali ke semua posting.'
+                    : 'Jelajahi komunitas atau mulai percakapan.'}
           </p>
           <Button
             href={path === '/saved' && !auth.actor ? '/login' : '/communities'}
@@ -1699,7 +1731,7 @@
     </div>{/if}
   {#snippet rail()}
     {#if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
-    {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts', 'gabung'].includes(parts[0])}<NewsSection
+    {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts', 'gabung', 'jadwal'].includes(parts[0])}<NewsSection
         compact
       />
     {/if}

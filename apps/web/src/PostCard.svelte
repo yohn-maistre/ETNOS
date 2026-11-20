@@ -16,6 +16,7 @@
   } from '@lucide/svelte'
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js'
   import OfferingCard from './OfferingCard.svelte'
+  import WorkLine from './WorkLine.svelte'
   import RichPost from './RichPost.svelte'
   import * as Card from '$lib/components/ui/card/index.js'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
@@ -297,6 +298,7 @@
       {onAnswered}
       externalPreview={community?.visibility === 'public'}
     />
+    {#if post.work}<WorkLine work={post.work} />{/if}
     {#if post.offering}<OfferingCard {post} {community} {loggedIn} onUpdated={value=>post=value} {onError}/>{/if}
     {#if post.contexts?.length || post.season}<div class="context-links mt-3">
         {#if post.season}<span class="post-season" title="Musim yang dipilih penulis"><Sprout size={13} aria-hidden="true" />{post.season.name}</span>{/if}

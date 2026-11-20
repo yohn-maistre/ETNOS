@@ -366,7 +366,7 @@ export class StrataCore {
       AND (c.visibility='public' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
       AND instr(lower(p.text||' '||COALESCE(json_extract(p.content,'$.title'),'')),lower(?))>0 ORDER BY p.created DESC,p.id DESC LIMIT 100`, actorId ?? null, query.slice(0,200));return spreadAgentPosts(this.views(rows,actorId),p=>p.actorKind==='agent')
   }
-  feedPage(actorId?: string, options: {linkUrls?:string[];followingId?:string;authorId?:string;query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string;branchId?:string;pollsOnly?:boolean;contextId?:string} = {}) {
+  feedPage(actorId?: string, options: {linkUrls?:string[];followingId?:string;authorId?:string;query?:string;communityId?:string;topicId?:string;cursor?:string;limit?:number;rootsOnly?:boolean;rootId?:string;branchId?:string;pollsOnly?:boolean;contextId?:string;aksara?:boolean;work?:boolean;programSkill?:string;sort?:'new'|'discussed'} = {}) {
     if(options.linkUrls && (!Array.isArray(options.linkUrls)||options.linkUrls.length>16||options.linkUrls.some(u=>typeof u!=='string'||u.length>2048||!/^https?:\/\//.test(u))))throw new Fault(400,'Invalid related links')
     const limit=options.limit ?? 30
     if(!Number.isInteger(limit) || limit<1 || limit>100) throw new Fault(400,'Limit must be between 1 and 100')
@@ -393,17 +393,25 @@ export class StrataCore {
     if(options.topicId!=null)add('EXISTS(SELECT 1 FROM community_topics ct WHERE ct.community_id=c.id AND ct.topic_id=?)',options.topicId)
     if(options.contextId!=null)add("EXISTS(SELECT 1 FROM record_contexts rc JOIN contexts cx ON cx.id=rc.context_id WHERE rc.record_kind='post' AND rc.record_id=p.id AND cx.active=1 AND rc.context_id IN (WITH RECURSIVE down(id,depth) AS (SELECT ?,0 UNION SELECT l.context_id,down.depth+1 FROM context_parents l JOIN down ON l.parent_id=down.id WHERE down.depth<8) SELECT id FROM down))",options.contextId)
     if(options.pollsOnly)add("json_type(p.content,'$.poll')='object'")
+    if(options.aksara)add("(EXISTS(SELECT 1 FROM agent_registrations ar WHERE ar.agent_id=p.author_id AND ar.family='aksara') OR EXISTS(SELECT 1 FROM resident_sitewide rs WHERE rs.agent_id=p.author_id))")
+    if(options.work)add("EXISTS(SELECT 1 FROM work_posts wp WHERE wp.post_id=p.id AND wp.status!='ditarik')")
+    // A program is one Jadwal slot. Its posts are the results of that slot's skill, recorded on the finished job.
+    if(options.programSkill!=null)add("EXISTS(SELECT 1 FROM resident_jobs j WHERE j.skill=? AND j.work_kind='editorial' AND j.state='succeeded' AND ((j.result_kind='post' AND j.result_id=p.id) OR (j.result_kind='knowledge' AND EXISTS(SELECT 1 FROM knowledge_announcements ka WHERE ka.note_id=j.result_id AND ka.post_id=p.id))))",options.programSkill)
+    // Paling dibahas: opening posts of the last two weeks by reply count. Bounded, so it has no cursor.
+    const discussed=options.sort==='discussed'&&!options.rootId&&!options.cursor
+    if(discussed){add('+p.parent_id IS NULL');add('p.created>?',this.clock()-14*86400000)}
     // Unary plus keeps SQLite walking posts newest first; an index on parent_id here reads every root.
     if(options.rootsOnly)add('+p.parent_id IS NULL')
     if(options.rootId!=null)add('p.root_id=? AND p.id!=?',options.rootId,options.rootId)
     if(options.branchId!=null)add('p.id IN (WITH RECURSIVE descendants(id) AS (SELECT id FROM posts WHERE parent_id=? UNION SELECT child.id FROM posts child JOIN descendants d ON child.parent_id=d.id) SELECT id FROM descendants)',options.branchId)
     if(before)add('(p.created<? OR (p.created=? AND p.id<?))',before[0],before[0],before[1])
-    const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE ${where.join(' AND ')} ORDER BY p.created DESC,p.id DESC LIMIT ?`,...args,limit+1)
+    const order=discussed?'(SELECT COUNT(*) FROM posts r WHERE r.root_id=p.id AND r.id!=p.id AND r.hidden=0) DESC,p.created DESC,p.id DESC':'p.created DESC,p.id DESC'
+    const rows=this.all<Post>(`SELECT p.* FROM posts p JOIN communities c ON c.id=p.community_id WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ?`,...args,limit+1)
     const selected=rows.slice(0,limit),last=selected.at(-1)
     const pinned=options.communityId&&!options.cursor&&!options.query&&!options.rootId&&!options.topicId&&!options.contextId&&!options.authorId&&!options.followingId&&!options.linkUrls?this.views(this.all<Post>('SELECT * FROM posts WHERE community_id=? AND pinned=1 AND hidden=0 AND deleted=0 ORDER BY created DESC,id DESC LIMIT 3',options.communityId),actorId):[]
     // The page keeps its rows; only their order changes, so the cursor still marks the last row read. Thread views stay chronological.
     const items=this.views(selected,actorId)
-    return {pinned,items:options.rootId?items:spreadAgentPosts(items,p=>p.actorKind==='agent'),nextCursor:rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
+    return {pinned,items:options.rootId||discussed?items:spreadAgentPosts(items,p=>p.actorKind==='agent'),nextCursor:!discussed&&rows.length>limit && last ? Buffer.from(JSON.stringify([last.created,last.id])).toString('base64url') : null}
   }
   source(actorId: string, sourceId: string) {
     const s = this.get<Source>('SELECT * FROM sources WHERE id=? AND owner_id=? AND withdrawn=0', sourceId, actorId) ?? missing()

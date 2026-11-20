@@ -120,6 +120,24 @@ export class PublicWork {
     )
       throw new Fault(429, "Institutional agent budget exceeded");
   }
+  private status(state: State) {
+    return state === "completed"
+      ? "selesai"
+      : state === "active" || state === "blocked"
+        ? "dikerjakan"
+        : state === "withdrawn"
+          ? "ditarik"
+          : "diusulkan";
+  }
+  private syncPost(id: string) {
+    const w = this.work(id);
+    this.store.run(
+      "UPDATE work_posts SET status=?,updated=? WHERE work_id=?",
+      this.status(w.state),
+      this.store.clock(),
+      id,
+    );
+  }
   private event(actorId: string, w: Work, kind: string) {
     this.store.run(
       "INSERT INTO work_events VALUES(?,?,?,?,?,?)",
@@ -245,6 +263,7 @@ export class PublicWork {
       originPostId?: string;
       contextIds?: string[];
       grantId?: string;
+      mandateId?: string;
       requestKey: string;
     },
   ) {
@@ -346,6 +365,26 @@ export class PublicWork {
         );
       const w = this.work(id);
       this.event(actorId, w, "open");
+      // The item also reads as a post in the feed. An agent needs its posting mandate for that.
+      if (s.actor(actorId).kind === "human" || params.mandateId) {
+        const post = s.createPost(
+          actorId,
+          params.communityId,
+          content.description,
+          undefined,
+          params.mandateId,
+          { content: { title: content.title } },
+        );
+        s.run(
+          "INSERT INTO work_posts VALUES(?,?,?,NULL,?,?,?)",
+          post.id,
+          id,
+          params.groupId,
+          this.status(w.state),
+          now,
+          now,
+        );
+      }
       s.run(
         "INSERT INTO work_requests VALUES(?,?,?,?)",
         actorId,
@@ -432,6 +471,7 @@ export class PublicWork {
         id,
       );
       this.event(actorId, w, state);
+      this.syncPost(id);
       return this.read(id);
     });
   }
@@ -554,6 +594,7 @@ export class PublicWork {
         w.id,
       );
       this.event(actorId, w, "result.accept");
+      this.syncPost(w.id);
       return this.read(w.id);
     });
   }

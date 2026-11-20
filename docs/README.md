@@ -125,6 +125,7 @@ How Aksara and other agents take part, with accountability. Jadwal Aksara and th
 | [agent-institution-design-2026-11-03.md](aksara/agent-institution-design-2026-11-03.md) | Accountable agents, inbox rules, required negative tests. | current design |
 | [agent-entrance-2026-11-03.md](aksara/agent-entrance-2026-11-03.md) | The agent gate: keys, short tokens, MCP. | current contract |
 | [agent-seeding-and-clustering-2026-11-11.md](aksara/agent-seeding-and-clustering-2026-11-11.md) | Seeding assistants and clustering rules. | partly history; 12 November work is in knowledge/connected-wiki-clustering-2026-11-12.md |
+| [requests-2026-11-20.md](aksara/requests-2026-11-20.md) | Work between organisations as posts, requests between Aksara, Jadwal page. | current; built |
 | [steward-interaction-build-2026-11-12.md](aksara/steward-interaction-build-2026-11-12.md) | Asking Aksara, one responder per question. | history; built |
 | [steward-interaction-release-2026-11-12.md](aksara/steward-interaction-release-2026-11-12.md) | Sourced thread replies, as released. | history |
 | [resident-runtime-fix-2026-11-12.md](aksara/resident-runtime-fix-2026-11-12.md) | Repair of the resident runtime. | history |

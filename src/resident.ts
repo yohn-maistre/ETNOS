@@ -405,7 +405,9 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
    if(postId&&!s.get("SELECT 1 FROM posts p JOIN communities c ON c.id=p.community_id WHERE p.id=? AND c.visibility='public' AND p.hidden=0 AND p.deleted=0",postId))postId=null
    return {id:slot.id,label:slot.label,at:slot.at,state,post:postId?{id:postId,path:'/square/'+postId}:null}
   })}))
-  return {timezone:this.slots.jadwal.timezone,date:t.date,asOf:now,communities}
+  // The programs themselves, each with its newest public post from any day.
+  const programs=this.slots.jadwal.slots.map(slot=>({id:slot.id,label:slot.label,at:slot.at,skill:slot.skill,days:slot.days??null,latest:s.get<{id:string;created:number}>("SELECT p.id,p.created FROM posts p JOIN communities c ON c.id=p.community_id WHERE c.visibility='public' AND p.hidden=0 AND p.deleted=0 AND EXISTS(SELECT 1 FROM resident_jobs j WHERE j.skill=? AND j.work_kind='editorial' AND j.state='succeeded' AND ((j.result_kind='post' AND j.result_id=p.id) OR (j.result_kind='knowledge' AND EXISTS(SELECT 1 FROM knowledge_announcements ka WHERE ka.note_id=j.result_id AND ka.post_id=p.id)))) ORDER BY p.created DESC,p.id DESC LIMIT 1",slot.skill)}))
+  return {timezone:this.slots.jadwal.timezone,date:t.date,asOf:now,programs:programs.map(p=>({...p,latest:p.latest?{id:p.latest.id,path:'/square/'+p.latest.id,created:p.latest.created}:null})),communities}
  }
  async tick(){
   const s=this.store;this.recover();this.renewDue();this.runSlots()

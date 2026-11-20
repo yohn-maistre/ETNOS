@@ -10,6 +10,7 @@ import {Groups,strings,type Group,type Context,type SeedLabels} from './groups.t
 import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
+import {AksaraRequests} from './aksara-requests.ts'
 import {Forum} from './forum.ts'
 import {Periksa} from './periksa.ts'
 import { Media } from './media.ts'
@@ -67,6 +68,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups),model=new KnowledgeModel(store,groups)
   const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   if(options.residentBudget)resident.budget=options.residentBudget
+  const requests=new AksaraRequests(store,groups)
+  const programSkill=(id:string|null)=>{if(id===null)return undefined;const slot=resident.slots.jadwal.slots.find(x=>x.id===id);if(!slot)throw new Fault(400,'Unknown program');return slot.skill}
   return async (req: Request): Promise<Response> => {
     try {
       const url=new URL(req.url)
@@ -129,6 +132,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/groups')result=groups.list(actor?.id)
         else if(path==='/v1/group-memberships')result=groups.memberships(authenticated())
         else if(parts.length===3&&parts[1]==='groups')result=groups.read(actor?.id,parts[2])
+        // Requests between organisations
+        else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='requests')result=url.searchParams.get('direction')==='out'?requests.outgoing(authenticated(),parts[2]):requests.incoming(authenticated(),parts[2])
+        else if(parts.length===3&&parts[1]==='aksara-requests')result=requests.open(authenticated(),parts[2])
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='spaces')result=groups.spaces(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
@@ -175,18 +181,18 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
           result = {...c,forming:Founding.state(c,store.clock()),contexts:groups.communityContexts(c.id)} // Listed-private metadata is intentionally public; no membership or counts.
         }
         else if (path === '/v1/feed') result = store.feed(actor?.id, url.searchParams.get('q') ?? '')
-        else if (path === '/v1/feed/page') result=store.feedPage(actor?.id,{
+        else if (path === '/v1/feed/page') {const page=store.feedPage(actor?.id,{aksara:url.searchParams.get('aksara')==='true',work:url.searchParams.get('work')==='true',programSkill:programSkill(url.searchParams.get('program')),sort:url.searchParams.get('sort')==='discussed'?'discussed':undefined,
           linkUrls:url.searchParams.has('links')?(()=>{try{return JSON.parse(url.searchParams.get('links')!)}catch{throw new Fault(400,'Invalid related links')}})():undefined,
           followingId:url.searchParams.get('following')==='true'?authenticated():undefined,authorId:url.searchParams.get('author')??undefined,query:url.searchParams.get('q')??undefined,communityId:url.searchParams.get('community')??undefined,
           topicId:url.searchParams.get('topic')??undefined,cursor:url.searchParams.get('cursor')??undefined,
           limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined,
           pollsOnly:url.searchParams.get('polls')==='true',rootsOnly:url.searchParams.get('roots')==='true',contextId:url.searchParams.has('context')?groups.context(url.searchParams.get('context')!).id:undefined,
-        })
+        });result={...page,items:requests.annotate(page.items,actor?.id),pinned:requests.annotate(page.pinned,actor?.id)}}
         else if (parts.length===4 && parts[1]==='posts' && parts[3]==='replies') {
           const target=store.getPost(actor?.id,parts[2])
           result=store.feedPage(actor?.id,{rootId:target.rootId,branchId:target.id===target.rootId?undefined:target.id,limit:100,cursor:url.searchParams.get('cursor')??undefined})
         }
-        else if (parts.length === 3 && parts[1] === 'posts') result = store.getPost(actor?.id,parts[2])
+        else if (parts.length === 3 && parts[1] === 'posts') result = requests.annotate([store.getPost(actor?.id,parts[2])],actor?.id)[0]
         else if (parts.length === 3 && parts[1] === 'sources') {
           const s = store.source(authenticated(),parts[2]); result = { ...s, bytes: Buffer.from(s.bytes).toString('base64') }
         }
@@ -282,7 +288,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         const kind=parts[1]==='posts'?'post':parts[1]==='groups'?'group':'wiki'
         result=b.remove===true?groups.detach(caller,kind,parts[2],string(b.contextId)):groups.attach(caller,kind,parts[2],string(b.contextId))
       }
-      else if(path==='/v1/work')result=work.create(caller,{groupId:string(b.groupId),communityId:string(b.communityId),title:string(b.title),description:string(b.description),requestKey:string(b.requestKey),originPostId:b.originPostId===undefined?undefined:string(b.originPostId),contextIds:strings(b.contextIds??[]),grantId:b.grantId===undefined?undefined:string(b.grantId)})
+      else if(path==='/v1/work')result=work.create(caller,{mandateId:b.mandateId===undefined?undefined:string(b.mandateId),groupId:string(b.groupId),communityId:string(b.communityId),title:string(b.title),description:string(b.description),requestKey:string(b.requestKey),originPostId:b.originPostId===undefined?undefined:string(b.originPostId),contextIds:strings(b.contextIds??[]),grantId:b.grantId===undefined?undefined:string(b.grantId)})
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='work-consent')result=b.revoke===true?work.revokeConsent(caller,parts[2],string(b.groupId)):work.consent(caller,parts[2],string(b.groupId),Number(b.expires))
       else if(parts.length===4&&parts[1]==='work'&&parts[3]==='state')result=work.update(caller,parts[2],Number(b.revision),string(b.state) as 'active'|'blocked'|'withdrawn',b.grantId===undefined?undefined:string(b.grantId))
       else if(parts.length===4&&parts[1]==='work'&&parts[3]==='proposals')result=work.proposeResult(caller,parts[2],string(b.text),strings(b.citations??[],20),b.grantId===undefined?undefined:string(b.grantId))
@@ -307,6 +313,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         if (typeof b.active !== 'boolean') throw new Fault(400,'Boolean required')
         result = store.setMember(caller,parts[2],string(b.actorId),b.active,b.role === undefined ? 'member' : string(b.role) as 'member'|'moderator')
       }
+      else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='decide')result=requests.decide(caller,parts[2],b.decision)
+      else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='withdraw')result=requests.withdraw(caller,parts[2])
+      else if (path === '/v1/posts'&&b.requestOf!==undefined) result=requests.createPost(caller,b,forum)
       else if (path === '/v1/posts') result=b.agentMention===undefined?forum.create(caller,b,groups):resident.createMentionPost(caller,b,groups)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='edit')result=forum.edit(caller,parts[2],b)
       else if(parts.length===5&&parts[1]==='desk'&&parts[2]==='drafts'&&parts[4]==='review'){if(b.state!=='released'&&b.state!=='rejected')throw new Fault(400,'Release or reject');result=desk.review(caller,parts[3],{state:b.state,draft:b.draft as string|undefined})}

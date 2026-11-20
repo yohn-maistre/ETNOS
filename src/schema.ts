@@ -437,6 +437,38 @@ CREATE TABLE claims(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES co
 CREATE INDEX claims_queue ON claims(community_id,state,created);
 CREATE TABLE claim_answers(claim_id TEXT NOT NULL REFERENCES claims(id),actor_id TEXT NOT NULL REFERENCES actors(id),answer TEXT NOT NULL CHECK(answer IN ('yes','no')),created INTEGER NOT NULL,PRIMARY KEY(claim_id,actor_id));
 CREATE TABLE claim_settings(community_id TEXT PRIMARY KEY REFERENCES communities(id),quorum INTEGER NOT NULL CHECK(quorum BETWEEN 1 AND 9));
+`, `
+CREATE TABLE work_posts(
+ post_id TEXT PRIMARY KEY REFERENCES posts(id),
+ work_id TEXT UNIQUE REFERENCES public_work(id),
+ group_id TEXT NOT NULL REFERENCES groups(id),
+ requested_of TEXT REFERENCES groups(id),
+ status TEXT NOT NULL CHECK(status IN ('diusulkan','dikerjakan','selesai','ditarik')),
+ created INTEGER NOT NULL,
+ updated INTEGER NOT NULL
+);
+CREATE INDEX work_posts_group ON work_posts(group_id,status);
+CREATE TABLE aksara_requests(
+ id TEXT PRIMARY KEY,
+ requester_group_id TEXT NOT NULL REFERENCES groups(id),
+ target_group_id TEXT NOT NULL REFERENCES groups(id),
+ post_id TEXT NOT NULL REFERENCES posts(id),
+ agent_id TEXT NOT NULL REFERENCES actors(id),
+ state TEXT NOT NULL CHECK(state IN ('pending','approved','declined','withdrawn')),
+ decided_by TEXT REFERENCES actors(id),
+ decided INTEGER,
+ created INTEGER NOT NULL,
+ updated INTEGER NOT NULL,
+ UNIQUE(post_id,target_group_id)
+);
+CREATE INDEX aksara_requests_target ON aksara_requests(target_group_id,state,created DESC);
+CREATE INDEX aksara_requests_requester ON aksara_requests(requester_group_id,created DESC);
+INSERT INTO posts(id,author_id,community_id,parent_id,text,created,hidden,root_id,content,updated)
+ SELECT w.id,(SELECT e.actor_id FROM work_events e WHERE e.work_id=w.id ORDER BY e.created,e.rowid LIMIT 1),w.community_id,NULL,w.description,w.created,0,w.id,json_object('title',w.title),w.updated
+ FROM public_work w WHERE EXISTS(SELECT 1 FROM work_events e WHERE e.work_id=w.id) AND NOT EXISTS(SELECT 1 FROM posts p WHERE p.id=w.id);
+INSERT INTO work_posts(post_id,work_id,group_id,requested_of,status,created,updated)
+ SELECT w.id,w.id,w.group_id,NULL,CASE w.state WHEN 'completed' THEN 'selesai' WHEN 'active' THEN 'dikerjakan' WHEN 'blocked' THEN 'dikerjakan' WHEN 'withdrawn' THEN 'ditarik' ELSE 'diusulkan' END,w.created,w.updated
+ FROM public_work w WHERE EXISTS(SELECT 1 FROM posts p WHERE p.id=w.id);
 `]
 
 export const schemaVersion=migrations.length

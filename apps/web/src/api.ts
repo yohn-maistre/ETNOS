@@ -72,7 +72,15 @@ export type PostContent = {
 export type OfferingView={kind:'offer'|'request';price:number|null;currency:'IDR';unit:string;status:'open'|'paused'|'fulfilled'|'withdrawn'|'expired';expiresAt:number|null;place:{id:string;title:string}|null;revision:number;updated:number;canManage:boolean;canContact:boolean}
 /** A season a community names for itself. Retired seasons stay on old posts and cannot be chosen again. */
 export type Season = { id: string; name: string; note: string; position: number; archived: boolean }
+export type WorkLabel = {
+  status: 'diusulkan' | 'dikerjakan' | 'selesai' | 'ditarik'
+  workId: string | null
+  group: { id: string; title: string }
+  requestedOf: { id: string; title: string } | null
+  requestState: 'pending' | 'approved' | 'declined' | 'withdrawn' | null
+}
 export type Post = {
+  work?: WorkLabel
   offering?: OfferingView|null
   content?: PostContent
   revision?: number
