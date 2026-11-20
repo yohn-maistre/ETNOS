@@ -66,7 +66,7 @@ function page(c) {
 
 const regionText = 'Baca kabar dan halaman tentang wilayah ini.'
 const cards = [
-  { file: 'default', print: 'tigi', title: 'Tempat warga Papua bertukar kabar dan cerita' },
+  { file: 'default', print: 'tigi', title: 'Ngobrol soal Papua, bareng orang Papua', text: 'Baca kabar terbaru dan ikut ngobrol di komunitasmu. Kamu juga bisa menulis tentang kampung dan bahasamu.' },
   { file: 'explore', print: 'raja', title: 'Jelajah', text: 'Lihat apa yang sedang dibicarakan warga Papua hari ini.', pos: '50% 60%' },
   { file: 'news', print: 'raja', title: 'Kabar', text: 'Kabar terbaru dari Papua beserta sumber aslinya.', pos: '50% 40%' },
   { file: 'communities', print: 'tigi', title: 'Komunitas', text: 'Cari komunitas yang cocok, lalu ikut ngobrol.', pos: '50% 75%' },
