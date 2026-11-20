@@ -118,8 +118,21 @@ export class Groups implements GroupAuthority {
     return {
       ...g,
       spaces: this.spaces(actorId, groupId),
+      hiddenSpaces: this.hiddenSpaceCount(actorId, groupId),
       contexts: this.contextLinks("group", groupId),
     };
+  }
+  /** Owner decision (19 November): a public lembaga page says how many hidden private communities it has, never
+   * their names. Only public lembaga show the count, and communities the reader already belongs to are listed, not counted. */
+  hiddenSpaceCount(actorId: string | undefined, groupId: string) {
+    if (this.group(groupId).visibility !== "public") return 0;
+    return (
+      this.store.get<{ n: number }>(
+        `SELECT COUNT(*) n FROM spaces s JOIN communities c ON c.id=s.community_id WHERE s.group_id=? AND c.visibility='hidden-private' AND NOT EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1)`,
+        groupId,
+        actorId ?? null,
+      )?.n ?? 0
+    );
   }
   list(actorId?: string) {
     return this.store

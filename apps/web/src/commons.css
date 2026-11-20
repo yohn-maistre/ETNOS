@@ -2584,3 +2584,6 @@ body:has(.cx-root) {
     padding: 20px 17px;
   }
 }
+
+/* Lembaga page: the count of hidden private communities under the list of rooms. */
+.hidden-spaces { display: flex; align-items: center; gap: 8px; margin: 16px 0 0; }

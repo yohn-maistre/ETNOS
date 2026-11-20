@@ -73,6 +73,7 @@
     visibility: 'public' | 'hidden-private'
     sponsorship: string
     spaces: Community[]
+    hiddenSpaces?: number
     contexts: Context[]
   }
   type Work = {
@@ -563,7 +564,8 @@
             </Card.Content>
           </Card.Root>{/each}
       </div>
-      {#if !group.spaces.length}<div class="strata-nodata">
+      {#if group.hiddenSpaces}<p class="cx-hint hidden-spaces"><LockKeyhole size={14} aria-hidden="true" />{group.spaces.length ? 'Lembaga ini juga punya' : 'Lembaga ini punya'} {group.hiddenSpaces} ruang tertutup. Isinya hanya untuk anggota, dan nama ruangnya tidak ditampilkan.</p>{/if}
+      {#if !group.spaces.length && !group.hiddenSpaces}<div class="strata-nodata">
           <Users size={26} />
           <h2>Belum ada ruang yang tersedia</h2>
         </div>{/if}
