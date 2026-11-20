@@ -13,6 +13,9 @@ import {PublicWork} from './public-work.ts'
 import {AksaraRequests} from './aksara-requests.ts'
 import {Forum} from './forum.ts'
 import {Periksa} from './periksa.ts'
+import {Kamus,glossPrompt,parseGlosses} from './kamus.ts'
+import {kamusLexicon} from './kamus-data.ts'
+import type {Models} from './models.ts'
 import { Media } from './media.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
@@ -54,11 +57,11 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={models?:()=>Promise<Models|undefined>;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
-  const periksa=new Periksa(store)
+  const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon())
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store)
   const dm=new DirectMessages(store)
@@ -164,6 +167,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (path === '/v1/bookmarks') result=social.bookmarks(authenticated())
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='periksa')result=periksa.queue(authenticated(),parts[2])
+        else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kamus')result=kamus.list(actor?.id,parts[2],{q:url.searchParams.get('q')??undefined,state:url.searchParams.get('state')??undefined,context:url.searchParams.get('context')??undefined,limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined})
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='claims')result=periksa.list(actor?.id,parts[2],url.searchParams.get('state')??undefined)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.list(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])
@@ -325,6 +329,23 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='poll')result=forum.poll(caller,parts[2],b.choice)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='rsvp')result=forum.rsvp(caller,parts[2],b.response)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='confirm')result=forum.confirm(caller,parts[2],b.value)
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='settings')result=kamus.setSettings(caller,parts[2],b)
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='seed')result=kamus.importSeed(caller,parts[2])
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='scan')result=kamus.scan(caller,parts[2])
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='describe'){
+        // Check every gate before any text leaves for the model; applyGlosses checks them again when writing.
+        store.requireSteward(caller,parts[2])
+        if(!kamus.settings(parts[2]).machineReading)throw new Fault(409,'Machine reading is off for this community')
+        if(!kamus.modelAllowed(parts[2]))throw new Fault(409,'A hosted model may not read a private community')
+        if(!kamus.aksara(parts[2]))throw new Fault(409,'Aksara is not active in this community')
+        const items=kamus.candidatesForGloss(parts[2],5)
+        if(!items.length)result={proposed:0}
+        else{
+          const models=await options.models?.();if(!models)throw new Fault(503,'No model is available')
+          const reply=await models.chat({purpose:'fast',messages:glossPrompt(kamusLexicon().seeds[kamus.settings(parts[2]).language]?.language.name??'daerah',items),maxTokens:900,temperature:0.2}).catch(()=>{throw new Fault(503,'The model did not answer')})
+          result=kamus.applyGlosses(caller,parts[2],parseGlosses(reply.text,new Set(items.map(i=>i.id))))
+        }
+      }
       else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='claims')result=periksa.propose(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='periksa')result=periksa.setQuorum(caller,parts[2],b.quorum)
       else if(parts.length===4&&parts[1]==='claims'&&parts[3]==='answer')result=periksa.answer(caller,parts[2],b)

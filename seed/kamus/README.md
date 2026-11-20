@@ -59,3 +59,13 @@ node scripts/kamus/build-id-words.mjs      # reads seed/kamus/ekari.json, so run
 Built only from text already in this repo: `seed/wiki/**/*.json` (not the receipts and verify files), `src/catalogues/*.json`, visible strings in `apps/web/src/**/*.svelte`, and `docs/voice.md`; 274 files, listed in `from`. Text is split into letters (internal hyphens and apostrophes kept), lowercased, and a word is kept if seen at least twice. Left out: strings with digits; single letters; strings that read as English (more English than Indonesian function words); a short English function-word list; and anything that is also an Ekari lemma, modern spelling or variant (37 words, for example `ada`). `papuanMalay` is a hand-written list of Papuan Malay function words, kept apart from `indonesian`.
 
 Not a clean dictionary: it comes from the repo's own texts, so it still holds some English technical terms (`canvas`, `footer`), Dutch place-name forms and Papuan place and people names that appear twice. Treat it as a hint for a word finder, not as a vocabulary.
+
+## id-frequency.json
+
+The 20,000 most frequent Indonesian word forms from FrequencyWords (`id_50k.txt`, built from OpenSubtitles 2018; code MIT, word lists CC BY-SA 4.0, https://github.com/hermitdave/FrequencyWords). Built by `node scripts/kamus/build-id-frequency.mjs /path/to/id_50k.txt`, keeping lowercase letter-only forms. Added on 20 November because `id-words.json` alone missed everyday words: on a test room, `pakai`, `mau`, `buka` and `tadi` were counted as Ekari.
+
+Words that are also Ekari headwords (about 170, such as `ama`, `abu`, `ada`) stay in this list. The finder in `src/kamus.ts` decides them per sentence: such a word counts as Ekari only inside a sentence where at least half the words are not Indonesian, Papuan Malay or English. Elsewhere it is skipped.
+
+## Import rules
+
+`Kamus.importSeed` skips entries with no gloss and headwords that are not plain letters (OCR leftovers such as `.idaiga`). From the 2,905 Ekari entries, 2,750 load. Glosses from Steltenpool 1969 keep the pre-1972 spelling (`sedjenis`, `daunnja`) and OCR slips; the Kamus page says so.

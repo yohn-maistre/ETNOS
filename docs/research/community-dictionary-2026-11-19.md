@@ -248,3 +248,15 @@ Read 19 November 2026.
 - Living Dictionaries: <https://livingdictionaries.app/>, about and API: <https://livingdictionaries.app/about>, FAQ: <https://livingdictionaries.app/faq>, code: <https://github.com/livingtongues/living-dictionaries>
 - OpenUI: <https://github.com/thesysdev/openui/>, <https://www.openui.com/>, `@openuidev/svelte-lang`: <https://www.npmjs.com/package/@openuidev/svelte-lang>, OpenUI Lang overview: <https://github.com/thesysdev/openui/blob/main/docs/content/docs/openui-lang/overview.mdx>
 - In this repository: `epistemic-multiplex-2026-11-19.md` (§9, §10, §17), `aksara-living-program-2026-11-18.md`, `aksara-composed-views-2026-11-18.md`, `../showcase-plan-2026-11-17.md` (§7, §25), `../framing-and-impact-2026-11-17.md`.
+
+
+## Build status, 20 November
+
+Built as Kamus komunitas v1 (`src/kamus.ts`, `src/kamus-data.ts`, `apps/web/src/KamusTab.svelte`, tests in `test/kamus.test.ts`).
+
+- Stewards turn machine reading on (off by default) and choose the language. Only human stewards can.
+- "Muat kata dari sumber" loads the seed (Ekari: TransNewGuinea.org CC BY 4.0, Steltenpool 1969 CC BY-NC 3.0) with source, page and licence on each entry.
+- "Cari kata baru" counts words in visible posts by people, never agents. Indonesian, Papuan Malay and English are skipped, with words shared with the seed decided per sentence. A new word needs two uses. Evidence is recounted each time, and a hidden or deleted post stops showing at once.
+- "Minta Aksara mengusulkan arti" sends up to five candidates with example sentences to the node's model and turns the answers into Periksa cards written by the community's Aksara (20 a day). Members answer; the entry follows the card. Every gate is checked before any text leaves for the model: steward, machine reading on, public community, Aksara active.
+- Private communities: no hosted model reads them (owner decision, 20 November). Seed and counting still work there.
+- Not built yet: a member writing a meaning by hand from the Kamus page (Periksa propose exists in the API), audio, per-dialect entries, export.

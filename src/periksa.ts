@@ -47,6 +47,21 @@ export class Periksa{
    return this.view(this.row(id),actor)
   })
  }
+ /** Aksara proposes a card only while it may act in this community (an active switch or mandate, checked now),
+  * at most 20 a day. Its cards are labelled as AI by their author and never count as answers. */
+ proposeAsAgent(agent:string,communityId:string,b:{kind?:unknown;subject?:unknown;statement?:unknown;evidence?:unknown}):Claim{
+  const s=this.store;return s.tx(()=>{
+   if(s.actor(agent).kind!=='agent')throw new Fault(403,'Agent required')
+   s.checkWrite(agent,communityId,s.get<{id:string}>('SELECT id FROM mandates WHERE agent_id=? AND community_id=? AND revoked=0 AND expires>? ORDER BY expires DESC',agent,communityId,s.clock())?.id??null,false)
+   const today=s.get<{n:number}>('SELECT COUNT(*) n FROM claims WHERE proposer_id=? AND community_id=? AND created>?',agent,communityId,s.clock()-86400000)!.n
+   if(today>=20)throw new Fault(429,'Agent budget exceeded')
+   if(!CLAIM_KINDS.includes(b.kind as ClaimKind))throw new Fault(400,'Invalid claim kind')
+   const evidence=(Array.isArray(b.evidence)?b.evidence:[]).slice(0,5).map(e=>({text:text((e as Evidence)?.text,500,'Evidence')}))
+   const id=randomUUID()
+   s.run('INSERT INTO claims VALUES(?,?,?,?,?,?,?,?,?,?,NULL)',id,communityId,b.kind as ClaimKind,text(b.subject,120,'Subject'),text(b.statement,500,'Statement'),JSON.stringify(evidence),agent,null,'open',s.clock())
+   return this.view(this.row(id),agent)
+  })
+ }
  /** The next cards for this member: open, not theirs, not yet answered. Oldest first, so nothing waits forever. */
  queue(actor:string,communityId:string){
   const s=this.store;s.requireMember(actor,communityId);this.human(actor)

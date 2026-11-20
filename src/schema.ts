@@ -469,6 +469,10 @@ INSERT INTO posts(id,author_id,community_id,parent_id,text,created,hidden,root_i
 INSERT INTO work_posts(post_id,work_id,group_id,requested_of,status,created,updated)
  SELECT w.id,w.id,w.group_id,NULL,CASE w.state WHEN 'completed' THEN 'selesai' WHEN 'active' THEN 'dikerjakan' WHEN 'blocked' THEN 'dikerjakan' WHEN 'withdrawn' THEN 'ditarik' ELSE 'diusulkan' END,w.created,w.updated
  FROM public_work w WHERE EXISTS(SELECT 1 FROM posts p WHERE p.id=w.id);
+`,`
+CREATE TABLE kamus_settings(community_id TEXT PRIMARY KEY REFERENCES communities(id),machine_reading INTEGER NOT NULL DEFAULT 0,language TEXT NOT NULL DEFAULT '',updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id));
+CREATE TABLE kamus_entries(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),lemma TEXT NOT NULL,norm TEXT NOT NULL,gloss TEXT NOT NULL,pos TEXT NOT NULL,context TEXT NOT NULL,source TEXT NOT NULL,licence TEXT NOT NULL,page INTEGER,state TEXT NOT NULL CHECK(state IN ('seed','candidate','proposed')),claim_id TEXT REFERENCES claims(id),uses INTEGER NOT NULL,speakers INTEGER NOT NULL,examples TEXT NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL);
+CREATE INDEX kamus_entries_norm ON kamus_entries(community_id,norm);
 `]
 
 export const schemaVersion=migrations.length
