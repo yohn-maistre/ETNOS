@@ -1085,3 +1085,9 @@
     display: none;
   }
 }
+.news-map-note {
+  display: block;
+  padding: 6px 2px 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}

@@ -13,6 +13,7 @@ Status: draft for the BUDAYA GO! proposal, 17 November 2026. The rules ask us to
 | Clustering batch | `packages/clustering-cpu/` | Our script calling Faiss `NumpyEmeans` as a dependency | Our code AGPL-3.0-only; Faiss MIT | No reimplementation |
 | Forum behaviour | Throughout | Inspired by PieFed (communities, voting, moderation vocabulary) | PieFed is AGPL-3.0 | Behaviour only. No PieFed code copied (`docs/accounts-and-hosting/serverless-reuse-review.md`) |
 | Libraries, fonts, map data | `apps/web/licenses/`, `apps/web/public/third-party-notices.txt` | Third parties | MIT, OFL and others as listed | Used as dependencies |
+| Story map | `apps/web/src/TerrainMap.svelte`, `apps/web/src/map-basemaps.ts`, `apps/web/public/geo/` | maplibre-gl 5.24.0 (BSD-3-Clause) as a lazily loaded dependency; map runtime adapted from the owner's West Papua Watch project (same owner, own code); EOX basemaps (non-commercial licence); outlines from Badan Informasi Geospasial, simplified with mapshaper | Our code AGPL-3.0-only | Basemap switcher, place chips and outlines written for ETNOS. pmtiles is not used. Notices in `apps/web/licenses/map-data.txt` |
 
 ## Open items before the proposal
 

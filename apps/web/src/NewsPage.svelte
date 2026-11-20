@@ -4,7 +4,7 @@
   import { Button } from '$lib/components/ui/button/index.js'
   import ContentSkeleton from './ContentSkeleton.svelte'
   import PostCard from './PostCard.svelte'
-  import NewsMap from './NewsMap.svelte'
+  import TerrainMap from './TerrainMap.svelte'
   import {
     request,
     type Post,
@@ -164,7 +164,15 @@
               <MapPin size={13} />{place.name}
             </span>{/each}
         </div>
-        <NewsMap places={story.places} />
+        <TerrainMap
+          places={story.places}
+          height={300}
+          label="Peta wilayah yang disebut dalam liputan"
+        />
+        <small class="news-map-note"
+          >Titik menunjukkan wilayah yang disebut dalam liputan, bukan lokasi
+          tepat peristiwa.</small
+        >
       </section>{/if}
     <div class="news-reader-actions">
       <Button

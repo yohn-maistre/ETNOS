@@ -1,0 +1,23 @@
+Story and place maps — basemaps, outlines and library
+
+Library: maplibre-gl 5.24.0, BSD-3-Clause, https://github.com/maplibre/maplibre-gl-js
+Loaded only when a map scrolls into view.
+
+Basemap imagery (loaded from EOX at view time, not stored here):
+  Terrain: Terrain Light © EOX IT Services GmbH, includes OpenStreetMap
+    contributors (ODbL) and NASA / METI data. https://maps.eox.at/
+  Satellite: EOxCloudless 2025, modified Copernicus Sentinel data 2025.
+    https://cloudless.eox.at/
+  Night: Black Marble composite, NASA Earth Observatory / EOX.
+EOX terrain and Sentinel-2 cloudless 2018 layers are free for non-commercial
+use only. Operators of other Strata instances must replace them
+(see src/map-basemaps.ts).
+
+Outlines: apps/web/public/geo/provinsi.geojson and kabupaten.geojson
+Source: Badan Informasi Geospasial (BIG), Batas Wilayah administrative areas,
+public map services at geoservices.big.go.id and kspservices.big.go.id.
+Fetched 20 November 2026, simplified with mapshaper (Visvalingam, shapes kept),
+provinces dissolved from kabupaten. Generalised for display; not for
+delineating boundaries.
+
+Place labels and dots are drawn from the story's own place metadata.
