@@ -15,10 +15,10 @@
   }: { onChange?: () => void; feed?: Feed; onFeedChange?: (mode: Feed) => void } = $props()
   const scoped = scopeRegions()
   type Ctx = { id: string; slug: string; title: string; kind: string; facet?: string; parents?: string[]; active?: number }
-  const feeds: [Feed, string][] = [
-    ['new', 'Terbaru'],
-    ['mine', 'Komunitasku'],
-    ['following', 'Mengikuti'],
+  const feeds: [Feed, string, string][] = [
+    ['new', 'Terbaru', 'Posting terbaru dari semua orang.'],
+    ['mine', 'Komunitasku', 'Posting dari komunitas yang saya ikuti.'],
+    ['following', 'Mengikuti', 'Posting dari orang yang saya ikuti.'],
   ]
   let open = $state(false),
     query = $state(''),
@@ -47,6 +47,7 @@
     return all.filter((c) => (c.kind === 'place' || c.kind === 'region') && c.title.toLowerCase().includes(q)).slice(0, 30)
   })
   const feedLabel = $derived(feeds.find(([m]) => m === feed)?.[1] ?? 'Terbaru')
+  const feedHint = $derived(feeds.find(([m]) => m === feed)?.[2] ?? '')
   function choose(c: { slug: string; title: string }) {
     setPlaceScope({ slug: c.slug, title: name(c.title) })
     open = false
@@ -70,23 +71,35 @@
   <Dialog.Content class="place-scope-dialog">
     <Dialog.Header>
       <Dialog.Title>{feed ? 'Tampilan Beranda' : 'Pilih tempat'}</Dialog.Title>
-      <Dialog.Description>Tempat yang dipilih ikut menampilkan isi dari tempat di bawahnya. Pilihan ini hanya disimpan di perangkat ini.</Dialog.Description>
+      <Dialog.Description>Tempat yang dipilih ikut menampilkan isi dari tempat di bawahnya. Pilihan disimpan di perangkat ini.</Dialog.Description>
     </Dialog.Header>
-    {#if feed}<div class="view-feeds" role="group" aria-label="Linimasa">
-        {#each feeds as [mode, label] (mode)}<button aria-pressed={feed === mode} onclick={() => pickFeed(mode)}>{label}</button>{/each}
+    {#if feed}<div class="view-options">
+        <div class="view-feed" role="radiogroup" aria-labelledby="view-feed-label">
+          <span id="view-feed-label" class="view-label">Isi Beranda</span>
+          <div class="view-choices">
+            {#each feeds as [mode, label] (mode)}<button type="button" role="radio" aria-checked={feed === mode} onclick={() => pickFeed(mode)}><i aria-hidden="true"></i>{label}</button>{/each}
+          </div>
+          <p class="view-hint">{feedHint}</p>
+        </div>
+        <!-- Room for the sort control (urutkan): it sits beside the feed choice and wraps below it on a phone. -->
       </div>{/if}
-    {#if !query.trim() && regions.length}<AtlasMap {regions} selected={placeScope.slug} within={scoped.list} onpick={choose} />{/if}
-    <label class="place-scope-search"><Search size={16} /><input bind:value={query} placeholder="Cari kabupaten, kota atau kampung" aria-label="Cari tempat" /></label>
-    <ul class="place-scope-list">
-      {#if !query.trim()}
-        <li><button onclick={() => choose({ slug: '', title: 'Tanah Papua' })} aria-pressed={!placeScope.slug}>Tanah Papua{#if !placeScope.slug}<Check size={15} />{/if}</button></li>
-        {#each regions as r (r.id)}<li><button onclick={() => choose(r)} aria-pressed={placeScope.slug === r.slug}>Wilayah adat {r.title}{#if placeScope.slug === r.slug}<Check size={15} />{/if}</button></li>{/each}
-        {#if !loaded}<li class="place-scope-note">Memuat tempat…</li>{/if}
-      {:else}
-        {#each matches as c (c.id)}<li><button onclick={() => choose(c)} aria-pressed={placeScope.slug === c.slug}>{c.title}{#if placeScope.slug === c.slug}<Check size={15} />{/if}</button></li>{/each}
-        {#if loaded && !matches.length}<li class="place-scope-note">Tempat itu belum ada di katalog.</li>{/if}
-      {/if}
-    </ul>
+    <div class="place-pick">
+      <span class="view-label">Tempat</span>
+      <label class="place-scope-search"><Search size={16} /><input bind:value={query} placeholder="Cari kabupaten, kota atau kampung" aria-label="Cari tempat" /></label>
+      <div class="place-body" class:searching={!!query.trim()}>
+        {#if !query.trim() && regions.length}<div class="place-map"><AtlasMap {regions} selected={placeScope.slug} within={scoped.list} labels={false} onpick={choose} /></div>{/if}
+        <ul class="place-scope-list">
+          {#if !query.trim()}
+            <li><button onclick={() => choose({ slug: '', title: 'Tanah Papua' })} aria-pressed={!placeScope.slug}>Tanah Papua{#if !placeScope.slug}<Check size={15} />{/if}</button></li>
+            {#each regions as r (r.id)}<li><button onclick={() => choose(r)} aria-pressed={placeScope.slug === r.slug}>Wilayah adat {r.title}{#if placeScope.slug === r.slug}<Check size={15} />{/if}</button></li>{/each}
+            {#if !loaded}<li class="place-scope-note">Memuat tempat…</li>{/if}
+          {:else}
+            {#each matches as c (c.id)}<li><button onclick={() => choose(c)} aria-pressed={placeScope.slug === c.slug}>{c.title}{#if placeScope.slug === c.slug}<Check size={15} />{/if}</button></li>{/each}
+            {#if loaded && !matches.length}<li class="place-scope-note">Tempat itu belum ada di katalog.</li>{/if}
+          {/if}
+        </ul>
+      </div>
+    </div>
   </Dialog.Content>
 </Dialog.Root>
 
@@ -104,16 +117,30 @@
   }
   .view-switch :global(svg) { flex: none; color: var(--muted-foreground); }
   .view-switch:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; border-radius: 6px; }
-  :global(.place-scope-dialog) { max-width: 460px; max-height: 92dvh; overflow: auto; }
-  .view-feeds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; background: var(--muted); }
-  .view-feeds button { all: unset; box-sizing: border-box; min-height: 40px; display: grid; place-items: center; border-radius: 9px; font-size: 14px; color: var(--muted-foreground); cursor: pointer; }
-  .view-feeds button[aria-pressed='true'] { background: var(--background); color: var(--foreground); font-weight: 600; box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 12%, transparent); }
-  .view-feeds button:focus-visible { outline: 2px solid var(--foreground); outline-offset: -2px; }
-  .place-scope-search { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; color: var(--muted-foreground); }
-  .place-scope-search input { flex: 1; border: 0; outline: none; background: transparent; color: var(--foreground); font: inherit; }
+  :global(.place-scope-dialog) { max-width: 460px; max-height: 92dvh; overflow: auto; gap: 12px; }
+  :global(.place-scope-dialog [data-slot='dialog-description']) { font-size: 13px; line-height: 1.45; }
+  .view-label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: var(--muted-foreground); }
+  /* What the feed shows: a radio choice, not tabs. The sort control will sit beside it. */
+  .view-options { display: flex; flex-wrap: wrap; gap: 12px 24px; padding-bottom: 12px; border-bottom: 1px solid var(--commons-hairline, var(--border)); }
+  .view-feed { flex: 1 1 260px; min-width: 0; }
+  .view-choices { display: flex; flex-wrap: wrap; gap: 6px; }
+  .view-choices button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px 0 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 14px; color: var(--foreground); cursor: pointer; }
+  .view-choices button i { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--muted-foreground); box-sizing: border-box; }
+  .view-choices button[aria-checked='true'] { border-color: var(--foreground); font-weight: 600; }
+  .view-choices button[aria-checked='true'] i { border: 4px solid var(--foreground); }
+  .view-choices button:hover { background: var(--muted); }
+  .view-choices button:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
+  .view-hint { margin: 6px 0 0; font-size: 13px; line-height: 1.4; color: var(--muted-foreground); }
+  .place-pick { display: grid; gap: 0; min-height: 0; }
+  .place-scope-search { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px; min-height: 40px; color: var(--muted-foreground); }
+  .place-scope-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; }
+  .place-body { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 12px; align-items: start; margin-top: 8px; }
+  .place-body.searching { grid-template-columns: minmax(0, 1fr); }
+  .place-map { padding-top: 6px; }
   .place-scope-list { list-style: none; margin: 0; padding: 0; display: grid; }
-  .place-scope-list button { all: unset; box-sizing: border-box; width: 100%; display: flex; justify-content: space-between; align-items: center; min-height: 44px; padding: 0 8px; border-radius: 8px; cursor: pointer; }
+  .place-scope-list button { all: unset; box-sizing: border-box; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 40px; padding: 0 8px; border-radius: 8px; font-size: 14px; cursor: pointer; }
   .place-scope-list button:hover, .place-scope-list button[aria-pressed='true'] { background: var(--muted); }
+  .place-scope-list button[aria-pressed='true'] { font-weight: 600; }
   .place-scope-list button:focus-visible { outline: 2px solid var(--foreground); outline-offset: -2px; }
   .place-scope-note { padding: 10px 8px; font-size: 14px; color: var(--muted-foreground); }
 </style>

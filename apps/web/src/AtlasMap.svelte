@@ -6,7 +6,7 @@
   type Atlas = { box: number[]; regions: Record<string, Shape>; contested: { slug: string; regions: string[]; d: string }[] }
   // within: the regions a chosen kabupaten or language sits in, tinted so a place that is not itself a region
   // still shows where it is. A kabupaten whose region is disputed (Nabire, Mimika, Puncak Jaya) is drawn too.
-  let { regions, selected, within = [], onpick }: { regions: { slug: string; title: string }[]; selected: string; within?: string[]; onpick: (r: { slug: string; title: string }) => void } = $props()
+  let { regions, selected, within = [], labels = true, onpick }: { regions: { slug: string; title: string }[]; selected: string; within?: string[]; labels?: boolean; onpick: (r: { slug: string; title: string }) => void } = $props()
   let atlas = $state<Atlas | null>(null),
     over = $state<string | null>(null)
   const place = $derived(atlas?.contested.find((c) => c.slug === selected) ?? null)
@@ -25,9 +25,9 @@
           onpointerenter={() => (over = r.slug)}
           onpointerleave={() => (over = null)}><path d={shape.d} /></g>{/if}{/each}
     {#if place}<path class="pick-place" d={place.d} />{/if}
-    <g class="pick-labels">
+    {#if labels}<g class="pick-labels">
       {#each regions as r (r.slug)}{@const shape = atlas.regions[r.slug]}{#if shape}<text x={shape.x} y={shape.y} class:on={selected === r.slug}>{r.title}</text>{/if}{/each}
-    </g>
+    </g>{/if}
   </svg>{/if}
 
 <style>
