@@ -31,7 +31,10 @@
   position: absolute; right: 14px; top: 14px; z-index: 3;
   width: 44px; height: 44px;
   border-radius: 50%; background: color-mix(in srgb, var(--reading-surface) 92%, transparent);
+  /* Hidden while only the wordmark shows; it fades in with the form. */
+  opacity: clamp(0, calc((var(--arrival) - .45) * 2), 1);
 }
+.welcome-dialog[data-arriving='true'] .welcome-close[data-slot='button'] { pointer-events: none; }
 .welcome-form-pane {
   position: relative; height: 100%; width: 58%;
   padding: 116px 40px 28px; overflow: auto; overscroll-behavior: contain;
