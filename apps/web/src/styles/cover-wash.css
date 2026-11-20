@@ -1,0 +1,92 @@
+/* Cover cards: the image fills the card, a dark wash rises from the bottom, and the text sits on the wash in white.
+   One primitive for Jelajah tiles, the wiki front page and the region cards.
+   Markup: <a|article class="cover-wash"><div class="cover-wash-art">image</div><div class="cover-wash-body"> meta, title, text </div></a>
+   The card looks the same in light and dark, so its colours are fixed, not themed. The fade at the top of the body is
+   a fixed 56px, so the text always stands on at least 72% black, whatever the length of the copy. */
+.cover-wash {
+  --wash-fade: 56px;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+  min-height: var(--wash-min, 240px);
+  overflow: hidden;
+  border-radius: 22px;
+  background: color-mix(in oklab, var(--wash-tone, var(--brand)) 40%, #0b0f12);
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.cover-wash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.35), transparent 70%);
+  pointer-events: none;
+}
+.cover-wash-art { position: absolute; inset: 0; z-index: -2; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.cover-wash-art > :is(img, .landscape-print, .crop) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.cover-wash:hover > .cover-wash-art { transform: scale(1.03); }
+.cover-wash:focus-visible { outline: 3px solid var(--ring, var(--brand)); outline-offset: 3px; }
+.cover-wash:has(a:focus-visible) { outline: 3px solid var(--ring, var(--brand)); outline-offset: 3px; }
+.cover-wash-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: var(--wash-fade) clamp(16px, 3vw, 24px) clamp(16px, 3vw, 24px);
+  background: linear-gradient(
+    to top,
+    rgb(0 0 0 / 0.8),
+    rgb(0 0 0 / 0.72) calc(100% - var(--wash-fade)),
+    rgb(0 0 0 / 0.38) calc(100% - var(--wash-fade) / 2),
+    transparent
+  );
+}
+.cover-wash-meta {
+  order: -1;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  color: rgb(255 255 255 / 0.85);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.cover-wash-title {
+  margin: 0;
+  font-family: var(--font-sans, 'Geist Variable', sans-serif);
+  font-size: clamp(22px, 6.4vw, var(--wash-title-max, 30px));
+  font-weight: 750;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  color: #fff;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+.cover-wash-text {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: rgb(255 255 255 / 0.9);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+.cover-wash.lead { --wash-min: 320px; --wash-title-max: 44px; }
+@media (min-width: 900px) { .cover-wash.lead { --wash-min: 380px; } }
+@media (prefers-reduced-motion: reduce) {
+  .cover-wash-art { transition: none; }
+  .cover-wash:hover > .cover-wash-art { transform: none; }
+}

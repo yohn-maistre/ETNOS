@@ -337,14 +337,13 @@
 
   /* Kabar: one headline, the rest as rows. */
   .news-bento { display: grid; gap: 14px; }
-  .news-bento > :global(.cover) { min-height: 280px; }
-  .news-bento > :global(.cover h3) { font-size: 19px; }
+  .news-bento > :global(.cover-wash) { --wash-min: 320px; --wash-title-max: 38px; }
   .news-bento > :global(.open-list) { align-self: start; }
 
   /* Komunitas: two headline covers, then rows. */
-  .room-covers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .room-covers > :global(.cover) { min-height: 220px; }
-  .room-covers > :global(.cover .tile-body) { background: var(--card); }
+  .room-covers { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  @media (min-width: 560px) { .room-covers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .room-covers > :global(.cover-wash) { --wash-min: 220px; --wash-title-max: 28px; }
   .crop { position: absolute; inset: 0; }
   .crop :global(.landscape-print) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% var(--y, 50%); }
   .jelajah-links { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 16px 0 0; font-size: 14px; }
@@ -396,10 +395,9 @@
     .jelajah-section { scroll-margin-top: 124px; padding-top: 64px; }
     .jelajah-head h2 { font-size: 30px; }
     .news-bento { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 32px; }
-    .news-bento > :global(.cover) { min-height: 360px; }
-    .news-bento > :global(.cover h3) { font-size: 23px; }
+    .news-bento > :global(.cover-wash) { --wash-min: 400px; --wash-title-max: 46px; }
     .room-covers { gap: 14px; }
-    .room-covers > :global(.cover) { min-height: 260px; }
+    .room-covers > :global(.cover-wash) { --wash-min: 280px; }
     :global(.open-list.cols), :global(.talked-list) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
     .topic-set { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 28px; }
     .place-scroll li { width: 168px; }

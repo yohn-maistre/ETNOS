@@ -453,9 +453,9 @@
     {#if discovering}<div class="wiki-discovery-loading" role="status">Menyiapkan bacaan…</div>{:else if discoveryError}<div class="wiki-draft-state"><p>{discoveryError}</p><Button variant="outline" onclick={()=>discover()}>Coba lagi</Button></div>{:else}
       {#if continued&&!query&&!context&&!communityFilter}<a class="wiki-continue" href={'/wiki/'+continued.id}><Clock3 size={17}/><div><small>Lanjutkan membaca · di perangkat ini</small><strong>{continued.title}</strong></div><ArrowRight size={18}/></a>{/if}
       {#if featured}{@const art=communityArtwork(featured.community_id)}<div class="wiki-lead"><section class="wiki-featured wiki-front" aria-label="Untuk dibaca">
-        <div class="wiki-front-cover">{#if art}<LandscapePrint artwork={art} decorative/>{/if}
+        <div class="wiki-front-cover cover-wash">{#if art}<div class="cover-wash-art" aria-hidden="true"><LandscapePrint artwork={art} decorative/></div>{/if}
           <div class="wiki-front-track" bind:this={track} onscroll={onTrackScroll}>
-            {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><h2>{item.title}</h2>{#if item.excerpt}<p>{clip(item.excerpt,180)}</p>{/if}<span class="wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span></a>{/each}
+            {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><div class="cover-wash-body"><span class="cover-wash-meta wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span><h2 class="cover-wash-title">{item.title}</h2>{#if item.excerpt}<p class="cover-wash-text">{clip(item.excerpt,180)}</p>{/if}</div></a>{/each}
           </div>
         </div>
         {#if featuredList.length>1}<div class="wiki-front-dots" role="tablist" aria-label="Pilih bacaan">{#each featuredList as item,i}<button role="tab" aria-selected={slide===i} aria-label={item.title} onclick={()=>goTo(i)}></button>{/each}</div>{/if}

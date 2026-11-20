@@ -53,11 +53,11 @@
     <h2 id="wp-places">Tempat dan suku</h2>
     <div class="wp-regions">
       {#each regions as r (r.reg)}{@const a = art(r.reg)}
-        <article class="wp-region">
-          <div class="wp-cover" aria-hidden="true">{#if a}<LandscapePrint artwork={a} decorative />{/if}</div>
-          <div class="wp-body">
-            {#if r.href}<a class="wp-title" href={r.href}>{r.title}</a>{:else}<span class="wp-title">{r.title}</span>{/if}
-            <p class="wp-count">{r.places} halaman kabupaten</p>
+        <article class="wp-region cover-wash">
+          <div class="cover-wash-art" aria-hidden="true">{#if a}<LandscapePrint artwork={a} decorative />{/if}</div>
+          <div class="cover-wash-body wp-body">
+            <p class="cover-wash-meta wp-count">{r.places} halaman kabupaten</p>
+            {#if r.href}<a class="cover-wash-title wp-title" href={r.href}>{r.title}</a>{:else}<span class="cover-wash-title wp-title">{r.title}</span>{/if}
             {#if r.beings.length}<p class="wp-list"><span>Alam</span>{#each r.beings as p, i}<a href={p.href}>{p.t}</a>{i < r.beings.length - 1 ? ', ' : ''}{/each}</p>{/if}
             {#if r.peoples.length}<p class="wp-list"><span>Suku</span>{#each r.peoples as p, i}<a href={p.href}>{p.t.replace(/^Suku /, '')}</a>{i < r.peoples.length - 1 ? ', ' : ''}{/each}</p>{/if}
             {#if r.languages.length}<p class="wp-list"><span>Bahasa</span>{#each r.languages as p, i}<a href={p.href}>{p.t.replace(/^Bahasa /, '')}</a>{i < r.languages.length - 1 ? ', ' : ''}{/each}</p>{/if}
@@ -88,16 +88,17 @@
   .wp { display: grid; gap: 14px; padding: 20px 24px 24px; border-top: 1px solid var(--commons-hairline, var(--border)); }
   h2 { margin: 0; font-size: 18px; font-weight: 600; }
   .wp-regions { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-  .wp-region { display: grid; grid-template-rows: 96px auto; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--card); }
-  .wp-cover { position: relative; overflow: hidden; background: var(--muted); }
-  .wp-cover :global(.landscape-print) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 68%; }
-  .wp-body { display: grid; align-content: start; gap: 6px; padding: 12px 14px 14px; min-width: 0; }
-  .wp-title { font-family: var(--font-editorial, inherit); font-size: 22px; line-height: 1.15; color: var(--foreground); text-decoration: none; }
+  .wp-region { --wash-min: 300px; --wash-title-max: 30px; }
+  .wp-region :global(.landscape-print) { object-position: 50% 68%; }
+  .wp-body { gap: 6px; }
+  .wp-title { text-decoration: none; }
   a.wp-title:hover { text-decoration: underline; text-underline-offset: 4px; }
-  .wp-count { margin: 0; font-size: 13px; color: var(--muted-foreground); }
-  .wp-list { margin: 0; font-size: 14px; line-height: 1.5; }
-  .wp-list span { color: var(--muted-foreground); margin-right: 6px; }
-  .wp-list a { color: var(--foreground); text-underline-offset: 3px; }
+  .wp-body { padding-top: 72px; --wash-fade: 72px; }
+  .wp-list { margin: 0; font-size: 14px; line-height: 1.5; color: rgb(255 255 255 / 0.9); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+  .wp-list span { color: rgb(255 255 255 / 0.85); margin-right: 6px; }
+  .wp-list a { color: #fff; text-underline-offset: 3px; }
+  .wp-region:has(a:focus-visible) { outline: 3px solid var(--ring, var(--brand)); outline-offset: 3px; }
+  .wp-list a:focus-visible, a.wp-title:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 3px; }
   .wp-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
   .wp-tabs button { all: unset; cursor: pointer; padding: 6px 12px; min-height: 24px; border: 1px solid var(--border); border-radius: 999px; font-size: 14px; color: var(--muted-foreground); }
   .wp-tabs button[aria-selected='true'] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
