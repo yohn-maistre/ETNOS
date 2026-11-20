@@ -1,7 +1,7 @@
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import type { MediaAttachment } from './api'
-import { localNewsPath } from './wiki-sources'
+import { localNewsPath } from './wiki-sources.ts'
 /** Only text formatting. Raw media, scripts, SVG and remote images are excluded. */
 export function markdown(
   text: string,
