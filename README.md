@@ -26,6 +26,9 @@
 
 </div>
 
+> [!IMPORTANT]
+> **New observatory redesign (20 November 2026).** The wiki front and knowledge map are being redesigned into a full observatory: a model of a people's whole world placed by size, pace and level of organisation, a starter dataset built from public sources for any deployment, a catalogue of datasets and artifacts with a viewer for each kind of data, access tiers, and two deployment profiles (Cloudflare and server). Start with [docs/observatory/](docs/observatory/README.md): the [world model and starter data](docs/observatory/world-model-and-starter-data-2026-11-20.md), the [data observatory](docs/observatory/data-observatory-2026-11-20.md), and the [knowledge map prototype](docs/assets/peta-pengetahuan-prototipe.html). Remove this notice after the redesign is implemented.
+
 **ETNOS** at [etnos.space](https://etnos.space) is the first deployment of Strata, built for Tanah Papua. Anyone can read it, and people join with an ETNOS account or an existing Bluesky account.
 
 <details>

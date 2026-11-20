@@ -1,10 +1,12 @@
 # Documents
 
+> **New observatory redesign (20 November 2026).** Read [observatory/](observatory/README.md) first if you work on the wiki, the knowledge map, the knowledge model, datasets or deployment setup. It holds [world-model-and-starter-data-2026-11-20.md](observatory/world-model-and-starter-data-2026-11-20.md) and [data-observatory-2026-11-20.md](observatory/data-observatory-2026-11-20.md), plus a [working prototype](assets/peta-pengetahuan-prototipe.html) of the knowledge map. Where these disagree with older knowledge-map documents, they win. Remove this notice after the redesign is implemented.
+
 This folder holds the plans, decisions, research and release records for Strata and ETNOS. The [project README](../README.md) is the shortest way in. Documents sit in folders by subject, and a date in a file name shows when it was written. Read the "Which document wins" table before you trust an older plan.
 
 ## Start here
 
-These seven documents give the whole project in reading order.
+These documents give the whole project in reading order.
 
 | Order | Document | What you get |
 | --- | --- | --- |
@@ -15,6 +17,7 @@ These seven documents give the whole project in reading order.
 | 5 | [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, the evidence and numbers, the laws, and what the BUDAYA GO! guide asks for. |
 | 6 | [showcase-plan-2026-11-17.md](plan/showcase-plan-2026-11-17.md) | What ETNOS is for the showcase and the build order. Section 25 says what to build next. |
 | 7 | [lessons-2026-11-20.md](plan/lessons-2026-11-20.md) | The latest notes on design, the identity host, invites, deploys and working alongside helpers. |
+| 8 | [observatory/](observatory/README.md) | The observatory redesign of 20 November: the model of a people's world, the starter dataset for any deployment, datasets with viewers, access tiers and two deployment profiles. |
 
 ## Rules for writing
 
@@ -35,6 +38,7 @@ The plan of record decides what is built. Older dated plans stay as history. Whe
 | Which architecture and product boundaries are frozen? | The decision records in [decisions/](decisions/README.md) |
 | How does the visual design look today? | [lessons §Design](plan/lessons-2026-11-20.md#design) and [PRODUCT.md](../PRODUCT.md), not [design-direction-2026-11-14.md](product/design-direction-2026-11-14.md) |
 | How is the knowledge model defined? | [epistemic-multiplex](research/epistemic-multiplex-2026-11-19.md), not [knowledge-ontology-2026-11-18.md](research/knowledge-ontology-2026-11-18.md) |
+| How should the observatory, knowledge map, starter data and datasets work? | [observatory/](observatory/README.md), which extends the knowledge model and replaces the older knowledge-map designs |
 | When are the dates? | [showcase-plan §1](plan/showcase-plan-2026-11-17.md#1-dates). It replaces the 4-5 December showcase date in earlier documents. |
 | Which code is ours and which existed before? | [code-disclosure](competition/code-disclosure-2026-11-17.md) |
 | What does the history of the project show? | [evidence/README.md](evidence/README.md) |
@@ -90,6 +94,16 @@ How the product is shaped, organised and designed.
 | [offers-and-writing-2026-11-12.md](product/offers-and-writing-2026-11-12.md) | Offers and requests, market rules. | history; built |
 | [ranking-and-steward-demo-2026-11-12.md](product/ranking-and-steward-demo-2026-11-12.md) | Ranking from public signals only. | history; built |
 | [piefed-parity.md](product/piefed-parity.md) | Forum behaviour borrowed from PieFed, as a delivery ledger. | current ledger |
+
+## observatory/: the observatory redesign
+
+The design of the observatory from 20 November: the model of a people's world, the starter dataset, the catalogue of datasets and artifacts, viewers, access and deployment.
+
+| Document | What it holds | Status |
+| --- | --- | --- |
+| [README.md](observatory/README.md) | The redesign notice, reading order and how it relates to earlier documents. | current |
+| [world-model-and-starter-data-2026-11-20.md](observatory/world-model-and-starter-data-2026-11-20.md) | Things placed by size, pace and level; depth and voice on statements; published schemes as lenses; crosswalks; relations; synthesis notes; embeddings; the starter build; onboarding; the knowledge map as a constellation. | current design, not built |
+| [data-observatory-2026-11-20.md](observatory/data-observatory-2026-11-20.md) | Scope, access tiers, the dataset record, viewers for each modality, access as code, edge and server profiles, Aksara as librarian, use cases and app views. | current design, not built |
 
 ## knowledge/: wiki, knowledge map and sources
 

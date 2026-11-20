@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="Inter, system-ui, sans-serif">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="30" y="36" font-size="20" font-weight="800" fill="#171717">Dunia satu masyarakat menurut ukuran dan lama waktu (contoh rancangan)</text>
+<text x="30" y="58" font-size="13" fill="#666">71 contoh hal, posisi perkiraan orde besaran. Bukan data ETNOS. Warna adalah tingkat kenyataan menurut Integrative Levels Classification.</text>
+<line x1="90" y1="70" x2="90" y2="580" stroke="#eee"/><text x="90" y="598" font-size="12" fill="#666" text-anchor="middle">1 nm</text>
+<line x1="202" y1="70" x2="202" y2="580" stroke="#eee"/><text x="202" y="598" font-size="12" fill="#666" text-anchor="middle">1 µm</text>
+<line x1="314" y1="70" x2="314" y2="580" stroke="#eee"/><text x="314" y="598" font-size="12" fill="#666" text-anchor="middle">1 mm</text>
+<line x1="426" y1="70" x2="426" y2="580" stroke="#eee"/><text x="426" y="598" font-size="12" fill="#666" text-anchor="middle">1 m</text>
+<line x1="538" y1="70" x2="538" y2="580" stroke="#eee"/><text x="538" y="598" font-size="12" fill="#666" text-anchor="middle">1 km</text>
+<line x1="650" y1="70" x2="650" y2="580" stroke="#eee"/><text x="650" y="598" font-size="12" fill="#666" text-anchor="middle">1.000 km</text>
+<line x1="762" y1="70" x2="762" y2="580" stroke="#eee"/><text x="762" y="598" font-size="12" fill="#666" text-anchor="middle">1 juta km</text>
+<line x1="1023" y1="70" x2="1023" y2="580" stroke="#eee"/><text x="1023" y="598" font-size="12" fill="#666" text-anchor="middle">1 tahun cahaya</text>
+<line x1="90" y1="548" x2="1060" y2="548" stroke="#eee"/><text x="82" y="552" font-size="12" fill="#666" text-anchor="end">1 detik</text>
+<line x1="90" y1="435" x2="1060" y2="435" stroke="#eee"/><text x="82" y="439" font-size="12" fill="#666" text-anchor="end">1 jam</text>
+<line x1="90" y1="391" x2="1060" y2="391" stroke="#eee"/><text x="82" y="395" font-size="12" fill="#666" text-anchor="end">1 hari</text>
+<line x1="90" y1="309" x2="1060" y2="309" stroke="#eee"/><text x="82" y="313" font-size="12" fill="#666" text-anchor="end">1 tahun</text>
+<line x1="90" y1="245" x2="1060" y2="245" stroke="#eee"/><text x="82" y="249" font-size="12" fill="#666" text-anchor="end">1 abad</text>
+<line x1="90" y1="213" x2="1060" y2="213" stroke="#eee"/><text x="82" y="217" font-size="12" fill="#666" text-anchor="end">1.000 tahun</text>
+<line x1="90" y1="118" x2="1060" y2="118" stroke="#eee"/><text x="82" y="122" font-size="12" fill="#666" text-anchor="end">1 juta tahun</text>
+<text x="575.0" y="620" font-size="13" fill="#171717" text-anchor="middle">Ukuran (skala log)</text>
+<text transform="translate(22,325.0) rotate(-90)" font-size="13" fill="#171717" text-anchor="middle">Lama berubah (skala log)</text>
+<line x1="463.1" y1="270.8" x2="537.7" y2="245.3" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="463.1" y1="388.8" x2="463.1" y2="270.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="127.3" y1="420.6" x2="463.1" y2="270.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="127.3" y1="420.6" x2="407.1" y2="318.6" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="463.1" y1="388.8" x2="127.3" y2="420.6" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="407.1" y1="318.6" x2="500.4" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="425.8" y1="229.4" x2="500.4" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="668.3" y1="309.1" x2="500.4" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="686.9" y1="286.8" x2="668.3" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="686.9" y1="286.8" x2="548.9" y2="261.2" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="686.9" y1="286.8" x2="668.3" y2="325.0" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="668.3" y1="344.1" x2="649.6" y2="401.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="761.5" y1="309.1" x2="668.3" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="1022.7" y1="309.1" x2="612.3" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="575.0" y1="325.0" x2="612.3" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="309.1" x2="500.4" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="351.2" y1="347.3" x2="239.2" y2="382.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="239.2" y1="382.4" x2="433.2" y2="251.7" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="351.2" y1="347.3" x2="612.3" y2="325.0" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="325.0" x2="433.2" y2="251.7" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="556.3" y1="436.6" x2="593.7" y2="379.2" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="556.3" y1="436.6" x2="519.0" y2="468.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="500.3" x2="519.0" y2="468.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="642.2" y1="101.9" x2="612.3" y2="500.3" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="575.0" y1="149.7" x2="642.2" y2="101.9" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="433.2" y1="261.2" x2="593.7" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="407.1" y1="270.8" x2="593.7" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="433.2" y1="261.2" x2="537.7" y2="372.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="537.7" y1="372.8" x2="593.7" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="277.2" x2="593.7" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="270.8" x2="612.3" y2="277.2" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="425.8" y1="283.6" x2="575.0" y2="283.6" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="425.8" y1="283.6" x2="481.7" y2="398.3" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="407.1" y1="318.6" x2="481.7" y2="398.3" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="425.8" y1="283.6" x2="537.7" y2="356.9" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="537.7" y1="356.9" x2="575.0" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="575.0" y1="229.4" x2="575.0" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="575.0" y1="229.4" x2="537.7" y2="245.3" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="575.0" y1="229.4" x2="593.7" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="286.8" x2="649.6" y2="267.6" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="537.7" y1="245.3" x2="612.3" y2="286.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="463.1" y1="277.2" x2="537.7" y2="245.3" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="399.7" y1="229.4" x2="500.4" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="201.9" y1="133.8" x2="425.8" y2="293.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="463.1" y1="293.1" x2="668.3" y2="325.0" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="425.8" y1="293.1" x2="463.1" y2="293.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="414.6" y1="277.2" x2="481.7" y2="452.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="481.7" y1="452.5" x2="575.0" y2="283.6" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="197.5" x2="612.3" y2="197.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="575.0" y1="213.4" x2="612.3" y2="197.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="575.0" y1="213.4" x2="425.8" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="425.8" y1="197.5" x2="612.3" y2="197.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="500.4" y1="229.4" x2="90.0" y2="548.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="90.0" y1="548.1" x2="463.1" y2="277.2" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="500.4" y1="229.4" x2="433.2" y2="251.7" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="293.1" x2="433.2" y2="251.7" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="463.1" y1="277.2" x2="612.3" y2="293.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="407.1" y1="318.6" x2="500.4" y2="388.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="463.1" y1="277.2" x2="500.4" y2="388.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="649.6" y1="261.2" x2="612.3" y2="197.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="293.1" x2="612.3" y2="388.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="481.7" y1="427.0" x2="649.6" y2="235.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="649.6" y1="235.8" x2="500.4" y2="309.1" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="612.3" y1="197.5" x2="582.5" y2="181.6" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="649.6" y1="401.5" x2="548.9" y2="251.7" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="414.6" y1="340.9" x2="500.4" y2="388.8" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="425.8" y1="325.0" x2="481.7" y2="452.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="388.5" y1="420.6" x2="612.3" y2="197.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="548.9" y1="251.7" x2="575.0" y2="197.5" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<line x1="537.7" y1="245.3" x2="575.0" y2="229.4" stroke="#bbb" stroke-width="0.6" opacity="0.35"/>
+<circle cx="127.3" cy="420.6" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="90.0" cy="548.1" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="201.9" cy="133.8" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="556.3" cy="436.6" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="668.3" cy="309.1" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="686.9" cy="286.8" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="649.6" cy="401.5" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="668.3" cy="344.1" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="761.5" cy="309.1" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="1022.7" cy="309.1" r="5" fill="#5b6fd6" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="500.3" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="642.2" cy="101.9" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="575.0" cy="149.7" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="425.8" cy="229.4" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="582.5" cy="181.6" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="593.7" cy="379.2" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="519.0" cy="468.4" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="548.9" cy="261.2" r="5" fill="#b5732f" stroke="#fff" stroke-width="1"/>
+<circle cx="239.2" cy="382.4" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="351.2" cy="347.3" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="463.1" cy="270.8" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="407.1" cy="318.6" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="463.1" cy="277.2" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="425.8" cy="283.6" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="433.2" cy="261.2" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="407.1" cy="270.8" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="668.3" cy="325.0" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="593.7" cy="229.4" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="537.7" cy="245.3" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="548.9" cy="251.7" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="575.0" cy="197.5" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="537.7" cy="372.8" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="277.2" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="433.2" cy="251.7" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="293.1" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="325.0" r="5" fill="#2f8f5b" stroke="#fff" stroke-width="1"/>
+<circle cx="388.5" cy="420.6" r="5" fill="#9a55b8" stroke="#fff" stroke-width="1"/>
+<circle cx="425.8" cy="325.0" r="5" fill="#9a55b8" stroke="#fff" stroke-width="1"/>
+<circle cx="575.0" cy="325.0" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="425.8" cy="197.5" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="197.5" r="5" fill="#b8860b" stroke="#fff" stroke-width="1"/>
+<circle cx="575.0" cy="213.4" r="5" fill="#b8860b" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="197.5" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="481.7" cy="398.3" r="5" fill="#b8860b" stroke="#fff" stroke-width="1"/>
+<circle cx="575.0" cy="283.6" r="5" fill="#b8860b" stroke="#fff" stroke-width="1"/>
+<circle cx="481.7" cy="452.5" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="481.7" cy="427.0" r="5" fill="#b8860b" stroke="#fff" stroke-width="1"/>
+<circle cx="575.0" cy="229.4" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="537.7" cy="356.9" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="537.7" cy="245.3" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="500.4" cy="388.8" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="500.4" cy="309.1" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="463.1" cy="388.8" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="286.8" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="649.6" cy="267.6" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="575.0" cy="229.4" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="649.6" cy="235.8" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="500.4" cy="309.1" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="649.6" cy="261.2" r="5" fill="#c4402f" stroke="#fff" stroke-width="1"/>
+<circle cx="414.6" cy="340.9" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="463.1" cy="277.2" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="399.7" cy="229.4" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="463.1" cy="293.1" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="414.6" cy="277.2" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="425.8" cy="293.1" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="293.1" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="270.8" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="425.8" cy="293.1" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="500.4" cy="229.4" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="309.1" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<circle cx="612.3" cy="388.8" r="5" fill="#1f8a92" stroke="#fff" stroke-width="1"/>
+<text x="135.3" y="412.6" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Pati</text>
+<text x="98.0" y="540.1" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Senyawa dalam tumbuhan</text>
+<text x="676.3" y="301.1" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Musim hujan dan kemarau</text>
+<text x="694.9" y="278.8" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">El Niño</text>
+<text x="657.6" y="393.5" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Pasang surut</text>
+<text x="1014.7" y="301.1" font-size="12" fill="#171717" text-anchor="end" paint-order="stroke" stroke="#fff" stroke-width="3">Bintang penunjuk</text>
+<text x="620.3" y="492.3" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Gempa bumi</text>
+<text x="650.2" y="93.9" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Terangkatnya pegunungan tengah</text>
+<text x="556.9" y="253.2" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Gletser Puncak Jaya</text>
+<text x="247.2" y="374.4" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Parasit malaria</text>
+<text x="359.2" y="339.3" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Nyamuk Anopheles</text>
+<text x="471.1" y="262.8" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Pohon sagu</text>
+<text x="620.3" y="269.2" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Hilangnya tutupan hutan</text>
+<text x="620.3" y="189.5" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Bahasa Ekari</text>
+<text x="583.0" y="221.4" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Marga dan klan</text>
+<text x="508.4" y="301.1" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Kebun ubi</text>
+<text x="471.1" y="380.8" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Mengolah sagu</text>
+<text x="620.3" y="380.8" font-size="12" fill="#171717" text-anchor="start" paint-order="stroke" stroke="#fff" stroke-width="3">Berita</text>
+<circle cx="90" cy="660" r="5" fill="#5b6fd6"/><text x="100" y="664" font-size="12" fill="#171717">Materi dan langit</text>
+<circle cx="243" cy="660" r="5" fill="#b5732f"/><text x="253" y="664" font-size="12" fill="#171717">Batuan dan bumi</text>
+<circle cx="382" cy="660" r="5" fill="#2f8f5b"/><text x="392" y="664" font-size="12" fill="#171717">Makhluk hidup</text>
+<circle cx="507" cy="660" r="5" fill="#9a55b8"/><text x="517" y="664" font-size="12" fill="#171717">Pikiran</text>
+<circle cx="590" cy="660" r="5" fill="#b8860b"/><text x="600" y="664" font-size="12" fill="#171717">Bahasa dan ritus</text>
+<circle cx="736" cy="660" r="5" fill="#c4402f"/><text x="746" y="664" font-size="12" fill="#171717">Masyarakat dan aturan</text>
+<circle cx="917" cy="660" r="5" fill="#1f8a92"/><text x="927" y="664" font-size="12" fill="#171717">Buatan dan pengetahuan</text>
+</svg>

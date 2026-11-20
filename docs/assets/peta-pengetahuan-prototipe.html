@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peta pengetahuan Strata</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday-to-research tool, calm, exact
+   IDEA a night-sky star atlas of one people's world: every star is a thing they know, placed by size, pace and level
+   PICTURE the live 3D constellation, which can be rearranged by scale, level of organisation, field of science or need
+   COLOUR Grafit night ground #0b0d10, near-white ink, seven level colours taken from earth, leaf, sky, ochre, gold, red and sea
+   TYPE Geist 800 for titles, Geist 400/500 for text
+   LAYOUT laptop: title strip, constellation fills the left, detail panel at right; phone: title, constellation, then panel */
+:root{color-scheme:dark;--bg:#0b0d10;--panel:#12151a;--line:#262b33;--ink:#eef0f2;--muted:#9aa3ad;--accent:#f2c14e}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Geist,system-ui,sans-serif;overflow-x:clip}
+.app{display:grid;grid-template-rows:auto minmax(0,1fr);height:100%}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;padding:16px max(2vw,16px) 12px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:clamp(26px,3vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.lede{margin:4px 0 0;color:var(--muted);font-size:15px;max-width:62ch}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;flex-wrap:wrap;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.seg button{min-height:38px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:500 14px Geist,system-ui,sans-serif;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible,.chip:focus-visible,.rel button:focus-visible,#q:focus-visible,.list button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#q{height:44px;width:min(240px,100%);padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);font:16px Geist,system-ui,sans-serif}
+main{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
+.stage{position:relative;min-height:0;overflow:hidden;touch-action:none}
+canvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab}
+canvas.drag{cursor:grabbing}
+.legend{position:absolute;left:16px;bottom:14px;right:16px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.chip{pointer-events:auto;display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:rgba(18,21,26,.86);color:var(--ink);font:500 13px Geist,system-ui,sans-serif;cursor:pointer}
+.chip[aria-pressed=false]{color:var(--muted);opacity:.55}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.note{position:absolute;left:16px;top:12px;right:16px;margin:0;color:var(--muted);font-size:13px;pointer-events:none}
+aside{border-left:1px solid var(--line);background:var(--panel);overflow:auto;padding:20px 20px 28px}
+aside h2{margin:0 0 6px;font-size:24px;font-weight:800;letter-spacing:-.015em;line-height:1.15}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.meta>span{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--muted)}
+.scale{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.desc{margin:0 0 18px}
+h3{margin:18px 0 8px;font-size:15px;font-weight:600}
+.rel{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.rel button{display:flex;align-items:center;gap:8px;width:100%;min-height:40px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);font:15px Geist,system-ui,sans-serif;text-align:left;cursor:pointer}
+.rel button:hover{background:#1a1e25}
+.rel small{color:var(--muted);font-size:13px;margin-left:auto;white-space:nowrap}
+.locked{padding:8px 10px;border:1px dashed #5a616b;border-radius:10px;color:var(--muted);font-size:14px}
+.qs{margin:0;padding-left:18px;color:var(--ink)}
+.qs li{margin:4px 0}
+.syn{margin-top:18px;padding:12px 14px;border-left:3px solid var(--accent);background:#171a20;border-radius:0 10px 10px 0}
+.syn p{margin:6px 0;font-size:15px}
+.syn .src{font-size:13px;color:var(--muted)}
+details.list{margin-top:22px;border-top:1px solid var(--line);padding-top:12px}
+details.list summary{cursor:pointer;color:var(--muted);font-size:14px;min-height:32px}
+.list ul{columns:2;column-gap:12px;margin:8px 0 0;padding:0;list-style:none}
+.list button{border:0;background:none;color:var(--ink);font:14px Geist,system-ui,sans-serif;padding:3px 0;cursor:pointer;text-align:left}
+@media(max-width:760px){html,body{height:auto}.app{height:auto}main{grid-template-columns:minmax(0,1fr)}.stage{height:62svh}aside{border-left:0;border-top:1px solid var(--line)}#q{width:100%}.controls{width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div>
+<h1>Peta pengetahuan</h1>
+<p class="lede">Setiap titik adalah sesuatu dari dunia satu masyarakat. Susun ulang titik-titik itu menurut ukuran dan lama waktunya, tingkat kenyataannya, bidang ilmunya, atau kebutuhan yang dipenuhinya.</p>
+</div>
+<div class="controls">
+<div class="seg" role="group" aria-label="Susunan">
+<button type="button" data-a="skala" aria-pressed="true">Ukuran dan waktu</button>
+<button type="button" data-a="tingkat" aria-pressed="false">Tingkat</button>
+<button type="button" data-a="ilmu" aria-pressed="false">Bidang ilmu</button>
+<button type="button" data-a="butuh" aria-pressed="false">Kebutuhan</button>
+</div>
+<input id="q" type="search" placeholder="Cari, misalnya sagu" aria-label="Cari titik">
+</div>
+</header>
+<main>
+<div class="stage" id="stage">
+<canvas id="c" aria-label="Peta tiga dimensi. Daftar semua titik ada di panel samping."></canvas>
+<p class="note" id="note"></p>
+<div class="legend" id="legend"></div>
+</div>
+<aside id="panel" aria-live="polite"></aside>
+</main>
+</div>
+<script>
+{
+const DATA={"nodes": [["pati", "Pati (zat tepung)", "f", -8, 4, "Kimia", "pangan", "Zat tepung yang disimpan sagu dan ubi. Pati mengendap di dasar air, sehingga bisa dipisahkan dari serat."], ["senyawa", "Senyawa dalam tumbuhan", "f", -9, 0, "Kimia", "obat", "Zat kimia yang dibuat tumbuhan, misalnya untuk melindungi diri. Kimia bahan alam mencatat zat seperti ini per jenis tumbuhan."], ["oker", "Oker merah", "i", -6, 13, "Ilmu kebumian", "bahan", "Tanah berwarna dari oksida besi. Dipakai sebagai cat."], ["hujan", "Hujan", "g", 3.5, 3.5, "Ilmu kebumian", "air", "Hujan lebat yang turun dalam hitungan jam di satu lembah."], ["musim", "Musim hujan dan kemarau", "g", 6.5, 7.5, "Ilmu kebumian", "pangan", "Pergantian musim dalam satu tahun, yang mengatur waktu tanam dan panen."], ["elnino", "El Niño", "g", 7, 8.2, "Ilmu kebumian", "", "Pemanasan Samudra Pasifik setiap beberapa tahun. Di Papua, El Niño membawa kemarau yang lebih kering."], ["pasang", "Pasang surut", "g", 6, 4.6, "Ilmu kebumian", "", "Naik turunnya muka laut dua kali sehari."], ["bulan", "Bulan dan fasenya", "h", 6.5, 6.4, "Fisika dan astronomi", "", "Bulan berganti fase setiap 29,5 hari dan menarik air laut."], ["matahari", "Matahari dan tahun", "h", 9, 7.5, "Fisika dan astronomi", "", "Bumi mengelilingi matahari dalam satu tahun. Inilah dasar musim."], ["bintang", "Bintang penunjuk", "h", 16, 7.5, "Fisika dan astronomi", "", "Bintang yang terbit pada bulan tertentu dan dipakai sebagai penunjuk arah atau waktu."], ["gempa", "Gempa bumi", "j", 5, 1.5, "Ilmu kebumian", "", "Guncangan dari patahan di kerak bumi, yang berlangsung beberapa detik."], ["pegunungan", "Terangkatnya pegunungan tengah", "j", 5.8, 14, "Ilmu kebumian", "", "Tumbukan lempeng mengangkat pegunungan tengah Papua selama jutaan tahun."], ["karst", "Batu kapur dan gua", "i", 4, 12.5, "Ilmu kebumian", "", "Batuan kapur yang larut perlahan oleh air dan membentuk gua."], ["tanah", "Tanah kebun", "j", 0, 10, "Ilmu kebumian", "pangan", "Lapisan tanah yang terbentuk selama ribuan tahun dan menentukan tanaman apa yang tumbuh."], ["paniai", "Danau Paniai", "j", 4.2, 11.5, "Ilmu kebumian", "air", "Danau di dataran tinggi Paniai."], ["banjir", "Banjir sungai", "j", 4.5, 5.3, "Ilmu kebumian", "perlindungan", "Sungai meluap selama beberapa hari setelah hujan lebat."], ["longsor", "Tanah longsor", "j", 2.5, 2.5, "Ilmu kebumian", "perlindungan", "Lereng runtuh dalam hitungan menit, sering setelah hujan atau gempa."], ["gletser", "Gletser Puncak Jaya", "j", 3.3, 9, "Ilmu kebumian", "", "Gletser tropis terakhir di Kolam Hangat Pasifik Barat. Esnya menipis cepat."], ["plasmodium", "Parasit malaria", "m", -5, 5.2, "Kedokteran", "", "Parasit bersel satu yang hidup di darah dan menyebabkan malaria."], ["nyamuk", "Nyamuk Anopheles", "m", -2, 6.3, "Ilmu hayati", "", "Nyamuk yang membawa parasit malaria dari satu orang ke orang lain."], ["sagu", "Pohon sagu", "m", 1, 8.7, "Ilmu hayati", "pangan", "Palem rawa yang menyimpan pati di batangnya selama belasan tahun."], ["ubi", "Ubi jalar", "m", -0.5, 7.2, "Ilmu hayati", "pangan", "Tanaman umbi utama di kebun dataran tinggi, dengan banyak jenis lokal."], ["pandan", "Pandan buah merah", "m", 1, 8.5, "Ilmu hayati", "pangan", "Pandan yang buahnya merah dan berminyak, dimakan dan dijual di pasar."], ["babi", "Babi", "m", 0, 8.3, "Ilmu hayati", "pertukaran", "Hewan ternak yang dipelihara keluarga dan dipakai dalam pertukaran dan pesta."], ["kasuari", "Kasuari", "m", 0.2, 9, "Ilmu hayati", "pangan", "Burung besar yang tidak terbang dan memakan buah hutan."], ["cenderawasih", "Cenderawasih", "m", -0.5, 8.7, "Ilmu hayati", "hiasan", "Burung hutan dengan bulu indah, yang jantannya menari untuk betina."], ["tuna", "Tuna dan jalur ruayanya", "n", 6.5, 7, "Ilmu hayati", "pangan", "Ikan laut lepas yang berpindah ribuan kilometer mengikuti suhu air."], ["hutan", "Hutan pegunungan", "n", 4.5, 10, "Ilmu hayati", "bahan", "Hutan lebat di lereng pegunungan, tempat tinggal banyak burung dan tumbuhan."], ["dusunsagu", "Dusun sagu", "n", 3, 9.5, "Ilmu hayati", "pangan", "Rawa tempat sagu tumbuh dan dirawat dari generasi ke generasi."], ["bakau", "Hutan bakau", "n", 3.3, 9.3, "Ilmu hayati", "perlindungan", "Hutan pantai yang menahan ombak dan menjadi tempat ikan bertelur."], ["terumbu", "Terumbu karang", "n", 4, 11, "Ilmu hayati", "pangan", "Karang yang tumbuh perlahan selama ribuan tahun dan menjadi rumah ikan."], ["sebarbiji", "Kasuari menyebarkan biji", "n", 3, 5.5, "Ilmu hayati", "", "Biji buah yang dimakan kasuari keluar jauh dari pohon induknya dan tumbuh di tempat baru."], ["tutupan", "Hilangnya tutupan hutan", "n", 5, 8.5, "Ilmu lingkungan", "", "Hutan yang hilang dari tahun ke tahun, seperti tercatat dari citra satelit."], ["tubuh", "Tubuh dan kesehatan", "m", 0.2, 9.3, "Kedokteran", "obat", "Tubuh manusia sepanjang hidupnya: tumbuh, sakit, sembuh."], ["gizi", "Gizi anak", "n", 5, 8, "Kedokteran", "pangan", "Cukup tidaknya makanan bergizi bagi anak-anak di satu wilayah."], ["malaria", "Penularan malaria", "n", 5, 7, "Kedokteran", "", "Naik turunnya kasus malaria di satu wilayah dari musim ke musim."], ["mimpi", "Mimpi dan tafsirnya", "p", -1, 4, "Psikologi", "", "Mimpi yang diceritakan dan ditafsirkan bersama."], ["duka", "Duka dan perkabungan", "p", 0, 7, "Psikologi", "", "Cara orang dan keluarga menjalani duka setelah kematian."], ["tanda", "Tanda-tanda alam", "y", 4, 7, "Ilmu lingkungan", "pangan", "Pengetahuan membaca alam, misalnya bunga atau burung yang menandai musim."], ["bilangan", "Cara menghitung", "y", 0, 11, "Matematika", "", "Sistem bilangan dan cara menghitung dalam bahasa setempat."], ["ekari", "Bahasa Ekari", "q", 5, 11, "Seni dan humaniora", "", "Bahasa Mee atau Ekari, dituturkan di sekitar danau-danau Paniai."], ["katatanah", "Kata untuk jenis lahan", "q", 4, 10.5, "Seni dan humaniora", "", "Kata-kata setempat untuk jenis kebun, hutan, rawa dan lereng."], ["cerita", "Cerita asal-usul", "x", 5, 11, "Seni dan humaniora", "belajar", "Cerita tentang asal manusia, tempat dan marga."], ["bakarbatu", "Bakar batu", "r", 1.5, 4.7, "Ilmu sosial", "pangan", "Memasak bersama dengan batu panas di lubang tanah, untuk pesta dan upacara."], ["pestababi", "Pesta babi", "r", 4, 8.3, "Ilmu sosial", "pertukaran", "Pesta besar dengan pertukaran babi antarkelompok."], ["lagu", "Lagu dan tari", "x", 1.5, 3, "Seni dan humaniora", "belajar", "Lagu dan tari untuk pesta, duka dan penyambutan."], ["ibadah", "Ibadah gereja", "r", 1.5, 3.8, "Ilmu sosial", "", "Ibadah mingguan di gereja kampung."], ["marga", "Marga dan klan", "s", 4, 10, "Ilmu sosial", "", "Kelompok keturunan yang mengikat orang, tanah dan cerita."], ["maskawin", "Maskawin", "s", 3, 6, "Ilmu sosial", "pertukaran", "Harta yang diberikan keluarga laki-laki kepada keluarga perempuan saat menikah."], ["kampung", "Kampung", "s", 3, 9.5, "Ilmu sosial", "", "Tempat tinggal bersama beberapa keluarga dan marga."], ["pasar", "Pasar mama-mama", "u", 2, 5, "Ekonomi", "pertukaran", "Pasar tempat perempuan Papua menjual hasil kebun."], ["kebun", "Kebun ubi", "u", 2, 7.5, "Ilmu hayati", "pangan", "Kebun yang dibuka, ditanami dan diistirahatkan bergiliran."], ["olahsagu", "Mengolah sagu", "u", 1, 5, "Ilmu hayati", "pangan", "Menebang, memarut dan meremas empulur sagu dengan air sampai patinya mengendap."], ["kabupaten", "Pemerintah kabupaten", "t", 5, 8.2, "Ilmu sosial", "", "Pemerintah daerah yang mengurus sekolah, jalan dan puskesmas."], ["otsus", "Otonomi Khusus Papua", "t", 6, 8.8, "Ilmu sosial", "", "UU 21/2001, diubah dengan UU 2/2021, tentang Otonomi Khusus bagi Provinsi Papua."], ["ulayat", "Hak ulayat", "t", 4, 10, "Ilmu sosial", "", "Hak masyarakat hukum adat atas tanah, hutan dan airnya."], ["gereja", "Gereja dan misi", "s", 6, 9.8, "Ilmu sosial", "belajar", "Gereja yang datang bersama misi lebih dari seabad lalu dan kini dipimpin orang Papua."], ["sekolah", "Sekolah", "s", 2, 7.5, "Ilmu sosial", "belajar", "Sekolah kampung dan kota, satu tahun ajaran demi satu tahun ajaran."], ["merantau", "Merantau ke kota", "s", 6, 9, "Ilmu sosial", "", "Anak muda yang pindah ke kota untuk sekolah atau kerja."], ["noken", "Noken", "w", -0.3, 6.5, "Seni dan humaniora", "bahan", "Tas rajut dari serat kayu. UNESCO mencatatnya sebagai warisan budaya takbenda."], ["honai", "Honai", "w", 1, 8.5, "Seni dan humaniora", "perlindungan", "Rumah bulat beratap jerami di dataran tinggi."], ["kapak", "Kapak batu", "w", -0.7, 10, "Seni dan humaniora", "alat", "Kapak dari batu yang diasah, dulu dipakai membuka kebun."], ["perahu", "Perahu", "w", 1, 8, "Teknik", "alat", "Perahu untuk mencari ikan dan berpindah antarpulau."], ["tifa", "Tifa", "w", -0.3, 8.5, "Seni dan humaniora", "belajar", "Gendang kayu berkulit biawak yang mengiringi tari."], ["ukiran", "Ukiran", "x", 0, 8, "Seni dan humaniora", "belajar", "Ukiran kayu pada perahu, tiang dan perisai."], ["seluler", "Jaringan seluler", "v", 5, 8, "Teknik", "belajar", "Sinyal telepon yang menjangkau kampung satu per satu."], ["jalan", "Jalan darat", "v", 5, 8.7, "Teknik", "", "Jalan yang menghubungkan lembah dengan kota."], ["motor", "Motor tempel", "v", 0, 8, "Teknik", "alat", "Mesin perahu yang memperpendek perjalanan di laut dan sungai."], ["obat", "Pengetahuan obat dari tumbuhan", "y", 2, 10, "Farmasi", "obat", "Pengetahuan tentang tumbuhan untuk merawat orang sakit, yang dijaga oleh komunitas."], ["kalender", "Kalender musim", "y", 5, 7.5, "Ilmu lingkungan", "pangan", "Urutan tanda alam, pekerjaan dan pesta dalam satu tahun."], ["berita", "Berita", "y", 5, 5, "Ilmu sosial", "belajar", "Kabar yang beredar dalam hitungan hari."]], "edges": [["sagu", "dusunsagu", "hidup"], ["olahsagu", "sagu", "pakai"], ["pati", "sagu", "bagian"], ["pati", "ubi", "bagian"], ["olahsagu", "pati", "jelas"], ["ubi", "kebun", "hidup"], ["tanah", "kebun", "pengaruh"], ["musim", "kebun", "pengaruh"], ["elnino", "musim", "pengaruh"], ["elnino", "gletser", "pengaruh"], ["elnino", "tuna", "pengaruh"], ["bulan", "pasang", "pengaruh"], ["matahari", "musim", "pengaruh"], ["bintang", "kalender", "pakai"], ["tanda", "kalender", "bagian"], ["kalender", "kebun", "pakai"], ["nyamuk", "plasmodium", "tular"], ["plasmodium", "tubuh", "pengaruh"], ["nyamuk", "malaria", "bagian"], ["malaria", "tubuh", "pengaruh"], ["hujan", "banjir", "pengaruh"], ["hujan", "longsor", "pengaruh"], ["gempa", "longsor", "pengaruh"], ["pegunungan", "gempa", "pengaruh"], ["karst", "pegunungan", "bagian"], ["kasuari", "hutan", "hidup"], ["cenderawasih", "hutan", "hidup"], ["kasuari", "sebarbiji", "bagian"], ["sebarbiji", "hutan", "pengaruh"], ["tutupan", "hutan", "pengaruh"], ["jalan", "tutupan", "pengaruh"], ["babi", "pestababi", "pakai"], ["babi", "bakarbatu", "pakai"], ["ubi", "bakarbatu", "pakai"], ["babi", "maskawin", "pakai"], ["maskawin", "marga", "atur"], ["marga", "ulayat", "atur"], ["ulayat", "dusunsagu", "atur"], ["ulayat", "hutan", "atur"], ["kabupaten", "otsus", "atur"], ["kampung", "kabupaten", "atur"], ["honai", "kampung", "bagian"], ["kapak", "kebun", "pakai"], ["oker", "ukiran", "pakai"], ["perahu", "tuna", "pakai"], ["motor", "perahu", "bagian"], ["tifa", "lagu", "pakai"], ["lagu", "pestababi", "bagian"], ["cerita", "ekari", "tutur"], ["katatanah", "ekari", "bagian"], ["katatanah", "tanah", "jelas"], ["bilangan", "ekari", "bagian"], ["obat", "senyawa", "tutup"], ["senyawa", "pandan", "bagian"], ["obat", "tubuh", "pakai"], ["gizi", "tubuh", "pengaruh"], ["pandan", "gizi", "pakai"], ["ubi", "pasar", "pakai"], ["pandan", "pasar", "pakai"], ["merantau", "ekari", "pengaruh"], ["seluler", "berita", "pengaruh"], ["ibadah", "gereja", "bagian"], ["gereja", "sekolah", "pengaruh"], ["ekari", "paniai", "tempat"], ["pasang", "bakau", "pengaruh"], ["noken", "pasar", "pakai"], ["duka", "lagu", "pakai"], ["mimpi", "cerita", "pengaruh"], ["bakau", "terumbu", "pengaruh"], ["kampung", "marga", "bagian"]]};
+const LETTERS='abcdefghijklmnopqrstuvwxy';
+const ILC={f:'molekul',g:'benda alir (air, udara)',h:'benda langit',i:'batuan',j:'daratan',m:'organisme',n:'populasi dan ekosistem',p:'kesadaran',q:'bahasa',r:'ritus',s:'komunitas',t:'pemerintahan',u:'usaha',v:'teknologi',w:'artefak',x:'karya seni',y:'pengetahuan'};
+const BANDS=[['Materi dan langit','#8fa8ff','abcdefgh'],['Batuan dan bumi','#d39a5c','ij'],['Makhluk hidup','#5fc28a','klmn'],['Pikiran','#c78be0','op'],['Bahasa dan ritus','#f2c14e','qr'],['Masyarakat dan aturan','#ef6f5e','stu'],['Buatan dan pengetahuan','#5ccfd6','vwxy']];
+const NEEDS={pangan:'Pangan',obat:'Obat dan perawatan',bahan:'Bahan',alat:'Alat',air:'Air',pertukaran:'Pertukaran',perlindungan:'Perlindungan',belajar:'Belajar dan cerita',hiasan:'Hiasan'};
+const REL={hidup:['hidup di','tempat hidup bagi'],pakai:['dipakai untuk','memakai'],bagian:['bagian dari','memuat'],jelas:['dijelaskan oleh','menjelaskan'],pengaruh:['memengaruhi','dipengaruhi oleh'],tular:['menularkan','ditularkan oleh'],atur:['diatur oleh','mengatur'],tutur:['dituturkan dalam','tempat bertutur bagi'],tempat:['berada di sekitar','tempat bagi'],tutup:['','']};
+const N=DATA.nodes.map((r,i)=>({i,id:r[0],t:r[1],l:r[2],s:r[3],tm:r[4],f:r[5],need:r[6],d:r[7],li:LETTERS.indexOf(r[2]),b:BANDS.findIndex(b=>b[2].includes(r[2]))}));
+const byId=new Map(N.map(n=>[n.id,n]));
+const E=DATA.edges.map(e=>({a:byId.get(e[0]),b:byId.get(e[1]),k:e[2]}));
+const h=s=>{let x=2166136261;for(const c of s)x=Math.imul(x^c.charCodeAt(0),16777619);return((x>>>0)%1000)/1000-.5};
+const SMIN=-9,SMAX=17,TMIN=-1,TMAX=15;
+function clusterLayout(key,label){
+  const groups=[...new Set(N.map(key))].filter(g=>g!=='');const out=new Map(),centers=[];
+  groups.forEach((g,k)=>{const a=k/groups.length*Math.PI*2-Math.PI/2;centers.push({g,label:label(g),x:Math.cos(a)*.86,y:-Math.sin(a)*.72,z:(k%2?.12:-.12)})});
+  for(const c of centers){const m=N.filter(n=>key(n)===c.g);const r=.04+Math.sqrt(m.length)*.034;m.forEach((n,j)=>{const t=Math.acos(1-2*(j+.5)/m.length),p=j*2.39996;out.set(n.id,[c.x+r*Math.sin(t)*Math.cos(p),c.y+r*Math.cos(t),c.z+r*Math.sin(t)*Math.sin(p)])})}
+  N.filter(n=>key(n)==='').forEach((n,j,arr)=>{const t=Math.acos(1-2*(j+.5)/arr.length),p=j*2.39996,r=.32;out.set(n.id,[r*Math.sin(t)*Math.cos(p),r*Math.cos(t),r*Math.sin(t)*Math.sin(p)])});
+  return {pos:out,centers};
+}
+const LAYOUTS={
+  skala:{pos:new Map(N.map(n=>[n.id,[((n.s-SMIN)/(SMAX-SMIN))*1.9-.95+h(n.id)*.03,((n.tm-TMIN)/(TMAX-TMIN))*1.9-.95+h(n.id+'y')*.03,(n.li/24)*1.8-.9]])),centers:[]},
+  tingkat:clusterLayout(n=>String(n.b),g=>BANDS[+g][0]),
+  ilmu:clusterLayout(n=>n.f,g=>g),
+  butuh:clusterLayout(n=>n.need,g=>NEEDS[g])
+};
+const NOTES={skala:'Ke kanan makin besar, ke atas makin lama berubah, ke belakang makin tinggi tingkatnya. Contoh rancangan dengan posisi perkiraan orde besaran. Bukan data ETNOS dan belum diperiksa warga.',tingkat:'Dikelompokkan menurut tingkat kenyataan dalam Integrative Levels Classification, dari molekul sampai pengetahuan.',ilmu:'Dikelompokkan menurut bidang ilmu yang mempelajarinya. Pengelompokan ini contoh, belum dicocokkan dengan OpenAlex.',butuh:'Dikelompokkan menurut kebutuhan yang dipenuhi. Titik di tengah tidak terkait langsung dengan satu kebutuhan.'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),stage=document.getElementById('stage');
+let W=0,H=0,dpr=1,yaw=-.2,pitch=.1,zoom=1,arr='skala',cur=N.map(n=>LAYOUTS.skala.pos.get(n.id).slice()),from=null,t0=0,sel=byId.get('sagu'),hov=null,off=new Set(),proj=[];
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function resize(){const r=stage.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;fit(LAYOUTS[arr]);draw()}
+let FIT={r:1,cx:0,cy:0};
+function raw(x,y,z){const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);let X=x*cy-z*sy,Z=x*sy+z*cy;let Y=y*cp-Z*sp;Z=y*sp+Z*cp;const k=5/(5+Z);return[X*k,Y*k,k,Z]}
+function fit(layout){const pts=[...layout.pos.values()];if(layout===LAYOUTS.skala)for(const x of[-.95,.95])for(const y of[-.95,.95])for(const z of[-.9,.9])pts.push([x,y,z]);else for(const c of layout.centers)pts.push([c.x,c.y+.3,c.z]);
+  let a=1e9,b=-1e9,c=1e9,d=-1e9;for(const q of pts){const r=raw(...q);a=Math.min(a,r[0]);b=Math.max(b,r[0]);c=Math.min(c,r[1]);d=Math.max(d,r[1])}
+  const top=W<600?64:56,bot=document.getElementById('legend').offsetHeight+(layout===LAYOUTS.skala?44:24),left=layout===LAYOUTS.skala?(W<600?62:92):24,right=layout===LAYOUTS.skala?(W<600?24:150):24;FIT={r:Math.min((W-left-right)/(b-a),(H-top-bot)/(d-c)),cx:left+(W-left-right)/2-(a+b)/2*0,ox:(a+b)/2,oy:(c+d)/2,cyy:top+(H-top-bot)/2}}
+function P(x,y,z){const r=raw(x,y,z),R=FIT.r*zoom;return[FIT.cx+(r[0]-FIT.ox)*R,FIT.cyy-(r[1]-FIT.oy)*R,r[2],r[3]]}
+const fmt=v=>v>=100?Math.round(v).toLocaleString('id-ID'):(+v.toPrecision(2)).toLocaleString('id-ID');
+function sizeWord(s){const m=10**s;if(s>=15)return fmt(m/9.46e15)+' tahun cahaya';if(s>=9)return fmt(m/1e9)+' juta km';if(s>=3)return fmt(m/1e3)+' km';if(s>=0)return fmt(m)+' m';if(s>=-2)return fmt(m*100)+' cm';if(s>=-3)return fmt(m*1000)+' mm';if(s>=-6)return fmt(m*1e6)+' µm';return fmt(m*1e9)+' nm'}
+function timeWord(t){const v=10**t;const u=[[3.15e13,'juta tahun'],[3.15e10,'ribu tahun'],[3.15e9,'abad'],[3.15e7,'tahun'],[2.6e6,'bulan'],[86400,'hari'],[3600,'jam'],[60,'menit'],[1,'detik']];for(const[s,w]of u)if(v>=s)return fmt(v/s)+' '+w;return 'kurang dari satu detik'}
+function axes(){
+  const L=(a,b,c)=>{const p=P(...a),q=P(...b);ctx.strokeStyle=c;ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke()};
+  ctx.lineWidth=1;const o=[-.95,-.95,-.9];
+  L(o,[.95,-.95,-.9],'#39404a');L(o,[-.95,.95,-.9],'#39404a');L(o,[-.95,-.95,.9],'#39404a');
+  ctx.font='500 12px Geist,system-ui,sans-serif';ctx.fillStyle='#8a939d';ctx.textAlign='center';
+  const sx=[[-9,'1 nm'],[-6,'1 µm'],[-3,'1 mm'],[0,'1 m'],[3,'1 km'],[6,'1.000 km'],[9,'1 juta km'],[16,'1 tahun cahaya']];
+  for(const[s,l]of sx){if(W<600&&(s===-6||s===0||s===6||s===9))continue;const x=((s-SMIN)/(SMAX-SMIN))*1.9-.95,p=P(x,-.95,-.9);ctx.fillText(l,p[0],p[1]+16)}
+  ctx.textAlign='right';const tx=[[0,'1 detik'],[3.56,'1 jam'],[4.94,'1 hari'],[7.5,'1 tahun'],[9.5,'1 abad'],[10.5,'1.000 tahun'],[13.5,'1 juta tahun']];
+  for(const[t,l]of tx){const y=((t-TMIN)/(TMAX-TMIN))*1.9-.95,p=P(-.95,y,-.9);ctx.fillText(l,p[0]-8,p[1]+4)}
+  ctx.textAlign='left';if(W>=600){const p=P(.95,-.95,.9);ctx.fillText('makin tinggi tingkatnya',p[0]+8,p[1]+4)}L([.95,-.95,-.9],[.95,-.95,.9],'#39404a');
+}
+function draw(){
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  if(arr==='skala'&&!from)axes();
+  proj=cur.map(p=>P(...p));
+  const near=new Set(sel?[sel.id,...E.filter(e=>e.a===sel||e.b===sel).flatMap(e=>[e.a.id,e.b.id])]:[]);
+  for(const e of E){const p=proj[e.a.i],q=proj[e.b.i],on=sel&&(e.a===sel||e.b===sel);if(!on&&(off.has(e.a.b)||off.has(e.b.b)))continue;
+    ctx.strokeStyle=on?(e.k==='tutup'?'#8a8f96':'rgba(238,240,242,.75)'):'rgba(160,170,185,.11)';ctx.lineWidth=on?1.4:1;ctx.setLineDash(e.k==='tutup'?[4,4]:[]);
+    ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke()}
+  ctx.setLineDash([]);
+  if(arr!=='skala'&&!from){ctx.font='600 13px Geist,system-ui,sans-serif';ctx.textAlign='center';for(const c of LAYOUTS[arr].centers){const p=P(c.x,c.y,c.z);const rr=(.04+Math.sqrt(N.filter(n=>String(arr==='tingkat'?n.b:arr==='ilmu'?n.f:n.need)===c.g).length)*.034)*FIT.r*zoom;p[1]-=rr+12;ctx.fillStyle='rgba(238,240,242,.8)';ctx.fillText(c.label,p[0],p[1])}}
+  const order=N.map(n=>n.i).sort((a,b)=>proj[b][3]-proj[a][3]);
+  for(const i of order){const n=N[i],p=proj[i],faint=off.has(n.b)||(arr==='butuh'&&!n.need);const r=(3.2+2.2*p[2])*(n===sel?1.6:1);const c=BANDS[n.b][1];
+    ctx.globalAlpha=faint?.18:(sel&&!near.has(n.id)?.45:1);
+    const g=ctx.createRadialGradient(p[0],p[1],0,p[0],p[1],r*3.2);g.addColorStop(0,c+'66');g.addColorStop(1,c+'00');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p[0],p[1],r*3.2,0,7);ctx.fill();
+    ctx.fillStyle=c;ctx.beginPath();ctx.arc(p[0],p[1],r,0,7);ctx.fill();
+    if(n===sel){ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p[0],p[1],r+4,0,7);ctx.stroke()}}
+  ctx.globalAlpha=1;ctx.font='500 13px Geist,system-ui,sans-serif';ctx.textAlign='left';
+  const lab=new Set([sel,hov].filter(Boolean));if(sel)for(const e of E){if(e.a===sel)lab.add(e.b);if(e.b===sel)lab.add(e.a)}
+  for(const n of lab){const p=proj[n.i];ctx.lineWidth=4;ctx.strokeStyle='#0b0d10';ctx.strokeText(n.t,p[0]+9,p[1]-7);ctx.fillStyle=n===sel||n===hov?'#fff':'#c9ced4';ctx.fillText(n.t,p[0]+9,p[1]-7)}
+}
+function tick(now){if(!from)return;const k=Math.min(1,(now-t0)/900),e=k<.5?2*k*k:1-((-2*k+2)**2)/2,tg=LAYOUTS[arr].pos;
+  cur=N.map((n,i)=>{const a=from[i],b=tg.get(n.id);return[a[0]+(b[0]-a[0])*e,a[1]+(b[1]-a[1])*e,a[2]+(b[2]-a[2])*e]});
+  if(k>=1)from=null;draw();if(from)requestAnimationFrame(tick)}
+function arrange(a){arr=a;document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.a===a));document.getElementById('note').textContent=NOTES[a];
+  if(a==='skala'){yaw=-.2;pitch=.1}fit(LAYOUTS[a]);if(reduce){cur=N.map(n=>LAYOUTS[a].pos.get(n.id).slice());from=null;draw();return}from=cur.map(p=>p.slice());t0=performance.now();requestAnimationFrame(tick)}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function questions(n){const b=n.b,qs=[];qs.push('Apa nama '+n.t.toLowerCase()+' dalam bahasamu?');
+  if(b===2)qs.push('Kapan dan di mana '+n.t.toLowerCase()+' paling sering terlihat?');else if(b<=1)qs.push('Apa yang orang tua ceritakan tentang '+n.t.toLowerCase()+'?');else if(b===5)qs.push('Siapa yang memutuskan hal tentang '+n.t.toLowerCase()+', dan bagaimana caranya?');else qs.push('Siapa yang paling tahu tentang '+n.t.toLowerCase()+' di kampungmu?');return qs}
+function panel(){const n=sel,el=document.getElementById('panel');if(!n){el.innerHTML='<p>Ketuk satu titik.</p>';return}
+  const groups={};for(const e of E){if(e.a===n)(groups[e.k+'>']??=[]).push(e.b);if(e.b===n)(groups[e.k+'<']??=[]).push(e.a)}
+  let rel='';for(const[k,list]of Object.entries(groups)){const kind=k.slice(0,-1),dir=k.endsWith('>')?0:1;
+    if(kind==='tutup'){rel+='<li class="locked">Hubungan antara pengetahuan obat dan senyawa tumbuhan tertutup. Hanya anggota komunitas yang bisa melihatnya, kecuali komunitas memutuskan lain.</li>';continue}
+    rel+=list.map(m=>'<li><button type="button" data-go="'+m.id+'"><span class="dot" style="background:'+BANDS[m.b][1]+'"></span>'+esc(m.t)+'<small>'+REL[kind][dir]+'</small></button></li>').join('')}
+  const syn=n.id==='gletser'?'<div class="syn"><h3 style="margin-top:0">Catatan sintesis</h3><p>Ilmu mencatat bahwa gletser di dekat Puncak Jaya adalah gletser tropis terakhir di Kolam Hangat Pasifik Barat. Laju penipisannya naik sekitar 5,4 kali, diperkuat El Niño 2015 sampai 2016, dan gletser ini diperkirakan hilang dalam satu dasawarsa.</p><p>Warga belum mencatat apa pun di sini. Apa arti gunung dan esnya bagi masyarakat di sekitarnya hanya bisa dijawab oleh mereka.</p><p class="src">Sumber: Permana dkk. (2019), PNAS 116(52). Ditulis Aksara dari sumber, belum diperiksa warga.</p></div>':'';
+  el.innerHTML='<h2>'+esc(n.t)+'</h2><div class="meta"><span><span class="dot" style="background:'+BANDS[n.b][1]+'"></span>Tingkat '+ILC[n.l]+' ('+n.l+')</span><span>'+esc(n.f)+'</span>'+(n.need?'<span>'+NEEDS[n.need]+'</span>':'')+'</div><p class="scale">Ukuran sekitar '+sizeWord(n.s)+'. Berubah dalam sekitar '+timeWord(n.tm)+'.</p><p class="desc">'+esc(n.d)+'</p>'+(rel?'<h3>Terhubung dengan</h3><ul class="rel">'+rel+'</ul>':'<h3>Terhubung dengan</h3><p class="scale">Belum ada hubungan yang tercatat.</p>')+syn+'<h3>Pertanyaan untuk warga</h3><ol class="qs">'+questions(n).map(q=>'<li>'+esc(q)+'</li>').join('')+'</ol><details class="list"><summary>Daftar semua titik ('+N.length+')</summary><ul>'+[...N].sort((a,b)=>a.t.localeCompare(b.t,'id')).map(m=>'<li><button type="button" data-go="'+m.id+'">'+esc(m.t)+'</button></li>').join('')+'</ul></details>';}
+function select(n){sel=n;panel();draw()}
+document.getElementById('panel').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)select(byId.get(b.dataset.go))});
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>arrange(b.dataset.a)));
+document.getElementById('legend').innerHTML=BANDS.map((b,i)=>'<button type="button" class="chip" aria-pressed="true" data-b="'+i+'"><span class="dot" style="background:'+b[1]+'"></span>'+b[0]+'</button>').join('');
+document.getElementById('legend').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;const i=+c.dataset.b;off.has(i)?off.delete(i):off.add(i);c.setAttribute('aria-pressed',!off.has(i));draw()});
+const q=document.getElementById('q');q.addEventListener('input',()=>{const v=q.value.trim().toLowerCase();if(!v)return;const m=N.find(n=>n.t.toLowerCase().includes(v));if(m)select(m)});
+function pick(x,y){let best=null,bd=18*18;proj.forEach((p,i)=>{const d=(p[0]-x)**2+(p[1]-y)**2;if(d<bd){bd=d;best=N[i]}});return best}
+let down=null,moved=0;
+cv.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];moved=0;cv.setPointerCapture(e.pointerId);cv.classList.add('drag')});
+cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();if(down){const dx=e.clientX-down[0],dy=e.clientY-down[1];moved+=Math.abs(dx)+Math.abs(dy);yaw+=dx*.008;pitch=Math.max(-1.3,Math.min(1.3,pitch+dy*.006));down=[e.clientX,e.clientY];draw()}else{const n=pick(e.clientX-r.left,e.clientY-r.top);if(n!==hov){hov=n;draw()}}});
+cv.addEventListener('pointerup',e=>{const r=cv.getBoundingClientRect();cv.classList.remove('drag');if(moved<6){const n=pick(e.clientX-r.left,e.clientY-r.top);if(n)select(n)}down=null});
+cv.addEventListener('pointerleave',()=>{if(hov){hov=null;draw()}});
+cv.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.6,Math.min(3,zoom*Math.exp(-e.deltaY*.0015)));draw()},{passive:false});
+const ro=new ResizeObserver(resize);ro.observe(stage);
+document.getElementById('note').textContent=NOTES.skala;panel();resize();
+}
+</script>
+</body>
+</html>
