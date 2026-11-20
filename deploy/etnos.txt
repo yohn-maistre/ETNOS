@@ -54,3 +54,4 @@
 2026-11-19s sign-up defaults to an ETNOS account
 2026-11-19t studio knowledge seed button
 2026-11-20a identity host: forms keep Origin, pages in ETNOS style
+2026-11-20b wiki home on the knowledge model, Jelajah open lists, place dialog, README
