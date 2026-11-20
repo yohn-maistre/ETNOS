@@ -122,7 +122,7 @@ export function signupPage(name: string, domain: string, values: SignupValues, s
 		`Buat akun ${name}`,
 		card(
 			`Buat akun ${name}`,
-			`Akun ini adalah identitas AT Protocol yang disimpan oleh ${esc(name)}. ${esc(name)} menyimpan kunci akun Anda dan dapat diminta memindahkannya ke penyedia lain.`,
+			`Akun ini adalah identitas AT Protocol yang disimpan oleh ${esc(name)}. ${esc(name)} menyimpan kunci akunmu dan bisa diminta memindahkannya ke penyedia lain.`,
 			`${errorBox(values.error)}
 <form class="stack form" method="post" action="/akun/baru">
 <div class="field"><label class="label" for="code">Kode undangan</label>
@@ -148,10 +148,10 @@ export function signupDonePage(name: string, handle: string, signinUrl: string |
 	return page(
 		"Akun sudah dibuat",
 		card(
-			"Akun Anda sudah dibuat",
+			"Akunmu sudah dibuat",
 			"",
-			`<p>Nama akun Anda <strong>${esc(handle)}</strong>.</p>
-<p class="desc">Simpan kata sandi Anda di tempat yang aman. Pengurus tidak bisa melihat kata sandi Anda.</p>
+			`<p>Nama akunmu <strong>${esc(handle)}</strong>.</p>
+<p class="desc">Simpan kata sandimu di tempat yang aman. Pengurus tidak bisa melihat kata sandimu.</p>
 ${link}`,
 		),
 	);
@@ -165,10 +165,10 @@ export function messagePage(title: string, text: string, status: number): Respon
 export function describeScope(scope: string): string[] {
 	const lines: string[] = [];
 	for (const part of scope.split(/\s+/).filter(Boolean)) {
-		if (part === "atproto") lines.push("Mengenali akun Anda, yaitu nama akun dan DID.");
-		else if (part.startsWith("repo:")) lines.push(`Menulis catatan jenis ${part.slice(5).split("?")[0]} di akun Anda.`);
-		else if (part === "transition:generic") lines.push("Membaca dan menulis semua catatan di akun Anda.");
-		else if (part === "transition:email") lines.push("Melihat alamat email akun Anda.");
+		if (part === "atproto") lines.push("Mengenali akunmu, yaitu nama akun dan DID.");
+		else if (part.startsWith("repo:")) lines.push(`Menulis catatan jenis ${part.slice(5).split("?")[0]} di akunmu.`);
+		else if (part === "transition:generic") lines.push("Membaca dan menulis semua catatan di akunmu.");
+		else if (part === "transition:email") lines.push("Melihat alamat email akunmu.");
 		else lines.push(`Izin teknis ${part}.`);
 	}
 	return lines;
@@ -196,7 +196,7 @@ export function selectorPage(name: string, domain: string, ctx: OAuthPageContext
 		`Masuk ke ${ctx.clientName}`,
 		card(
 			`Masuk ke ${ctx.clientName}`,
-			`Pilih akun ${esc(name)} yang ingin Anda pakai.`,
+			`Pilih akun ${esc(name)} yang ingin kamu pakai.`,
 			`${errorBox(error)}
 ${list}
 <form class="stack form" method="post" action="/oauth/select">${hidden(ctx)}
