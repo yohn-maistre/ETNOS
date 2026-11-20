@@ -67,3 +67,4 @@
 2026-11-20l identity-host sign-in, kamus on language communities, preview cards, sideways scroll
 2026-11-20m preview copy in a natural voice
 2026-11-20n casual home preview card
+2026-11-20o home preview card copy
