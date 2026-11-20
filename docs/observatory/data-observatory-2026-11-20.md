@@ -249,7 +249,29 @@ A museum abroad holds photographs from an expedition a century ago and publishes
 - **No custom file formats** where a standard exists.
 - **No ranking of people.** Datasets and things can be ranked by use, but people cannot.
 
-## 13. Order of work
+## 13. Notes from Engagic, a comparable civic data system
+
+The owner pointed to [Engagic](https://github.com/Longissima/engagic) on 20 November. Engagic collects what local governments in the United States publish (agendas, packets, minutes, votes, reports), keeps the originals, and turns them into structured, summarised and searchable records at engagic.org. It is AGPL-3.0 like Strata. It runs as one VPS with PostgreSQL and PostGIS for the core and a SvelteKit site on Cloudflare Workers for the front, with originals in R2. That is the edge and server split from section 8, already working in production. The notes below were read from its README and design documents. `AGENTS.md` forbids copying AGPL donor code until licensing is settled, so these are patterns to adopt, not code to copy.
+
+| Engagic pattern | What it does there | What Strata should take |
+| --- | --- | --- |
+| Content-addressed corpus | Every original is stored once in R2 under the SHA-256 of its bytes, with its extracted text beside it. | Store every dataset distribution and witness source the same way. This fulfils the `AGENTS.md` rule to keep source bytes and receipts durable, and it removes duplicates for free. |
+| Bytes and sightings are separate | One table describes each unique file, and another records where and when those bytes were seen. | A dataset distribution points to a blob. A source sighting records the URL, when it was last seen and when it was last checked. One URL can serve new bytes later without breaking old citations. |
+| Freshness contract | A recently checked original is served from the corpus. After 24 hours a conditional request checks it again. A failed check serves the archived copy and backs off for an hour. | Aksara's watch duty (section 9) should use the same rule, so that a regional portal going offline never blocks a page or causes a storm of requests. |
+| One write path, one place that mints identifiers | All meetings and items enter through one orchestrator, and one module creates every identifier. | Harvested dataset records and Aksara proposals should enter through one function and receive identifiers in one place. |
+| Identity from the publisher's own text | A matter keeps the identifier printed by the government, and the vendor's identifier is the fallback. | Use the publisher's own number for laws, budgets and statistics tables (for example a Perda number or a BPS table code), and keep BPS region codes as the key for places. |
+| Summaries frozen per appearance | Once an item has a summary, a later sync keeps it, and an unchanged item reuses it with no new model call. | Aksara summaries and synthesis notes should be keyed to the hash of their inputs and reused while the inputs are unchanged. This saves free-tier quota and keeps the record stable. |
+| Page-span citations | Each item cites whole documents or a page range of a meeting PDF. | Witness excerpts from documents should carry page spans, so a reader can open the exact pages in the PDF viewer. |
+| Evidence, validation and publication kept apart | Vote extraction stores the exact text, each parser run, every observation with its checks, and a pointer to the run behind the public view. Runs can be replayed with a newer parser. | Aksara's extraction of statements from sources and posts should keep runs and observations the same way, so a better model can be replayed on the same inputs and compared before anything changes in public. |
+| Change signals plus sweeps | A fast change signal syncs places whose sources moved, and daily or weekly sweeps cover the rest. | The same split fits the starter build: re-fetch a source when its record changes, and sweep the slow sources monthly. |
+| Structured public input modelled on Polis | Residents post short statements and vote agree, disagree or pass on each other's. Clustering then shows the groups of opinion and where they agree. | A *Pendapat warga* (public input) feature for a policy dossier (*Berkas*) or a regency plan. This builds on polls and Periksa, and the clustering fits in `knowledge-graph.ts`. *(proposal)* |
+| Weekly digest by watched place and keywords | One email a week per watched city, with repeated hearings of the same matter merged into one alert. | A weekly digest per place for followers of a place page, with news, new datasets and open questions, and repeated items merged. |
+| Layers and funding | A free open data layer, consumer features on top, read-only bridges such as AT Protocol feeds, and a paid layer for organisations (API keys, coverage filters, webhooks). | This matches the sustainability plan: the commons stays free, and institutions pay for API access, Aksara Nodes and support. |
+| MCP server | Exposes the data to AI clients. | Strata already has `src/agent-mcp.ts`. The catalogue and the place data packs should be added to it. |
+
+The closest Indonesian equivalents of Engagic's vendor adapters are the national platforms that regencies publish on, such as JDIH portals for regulations, SPSE and SIRUP for procurement, Satu Data portals and BPS. Each would need one adapter *(to verify which of these offer machine-readable access)*. That makes a **regency document and data tracker** a natural extension of the place data pack in section 10.2. It would follow regulations, budgets, procurement and public plans for each regency in Tanah Papua, keep the originals, and summarise them in plain Indonesian.
+
+## 14. Order of work
 
 The order follows the plan in the world model doc and adds the observatory in three steps.
 
@@ -269,7 +291,7 @@ The order follows the plan in the world model doc and adds the observatory in th
    - Add a IIIF server, point clouds, IFC models and server-side conversion.
    - Run one deployment in a regency or university data centre.
 
-## 14. Risks
+## 15. Risks
 
 - **Scope.** The observatory can grow without end. The admission test (section 4) and the "will not build" list (section 12) are the brakes.
 - **Stale data.** A catalogue of outdated datasets misleads people. Every record shows its last check, and Aksara's watch duty flags changes.
@@ -277,15 +299,16 @@ The order follows the plan in the world model doc and adds the observatory in th
 - **Viewer weight.** Heavy viewers load only on demand, and phones get a light preview and a list first.
 - **Duplication with government portals.** Strata harvests and links to official portals rather than copying them, and it keeps the official publisher as the publisher.
 
-## 15. Open questions for the owner
+## 16. Open questions for the owner
 
 1. Is *Observatorium* the right interface name for the rebuilt wiki front, or should it stay *Wiki* with *Katalog data* beside it?
 2. Should the controlled tier exist in the first release, or only open and community?
 3. Which regency would try a place data pack first?
 4. Which server should host the first server-profile deployment: a VPS, a university machine or an Aksara Node?
 5. Should Strata apply to be a Local Contexts integration partner now, or after the request flow exists?
+6. Should a regency document and data tracker, on the Engagic pattern (section 13), be part of the place data pack, or a separate project?
 
-## 16. Sources
+## 17. Sources
 
 Read or checked on 20 November 2026.
 
@@ -313,6 +336,9 @@ Viewers and formats
 - Schütz, M. (2016). Potree: rendering large point clouds in web browsers. TU Wien; COPC support in Potree, https://github.com/potree/potree/pull/1381
 - Spark, a 3D Gaussian splatting renderer for three.js. https://github.com/sparkjsdev/spark
 - web-ifc by That Open Company. https://github.com/ThatOpen/engine_web-ifc
+
+Comparable system
+- Engagic (AGPL-3.0), README and docs/CORPUS_ARCHITECTURE.md, docs/MOTION_DATA_CONTRACT.md, deliberation/README.md, userland/README.md, docs/VISION.md. https://github.com/Longissima/engagic
 
 Hosting limits
 - Cloudflare D1 limits. https://developers.cloudflare.com/d1/platform/limits/
