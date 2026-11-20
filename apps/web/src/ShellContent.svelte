@@ -18,7 +18,6 @@
     Plus,
     Sun,
     Moon,
-    PanelLeft,
     Menu,
     X,
     ListTodo,
@@ -219,15 +218,7 @@
         <ArrowLeft size={22} />
       </Button>
     {/if}
-    {#if path !== '/'}<Button
-        variant="ghost"
-        size="icon"
-        class="desktop-menu-toggle"
-        aria-label="Buka menu"
-        onclick={() => sidebar.toggle()}
-      >
-        <PanelLeft size={19} />
-      </Button>{/if}
+    <!-- The sidebar stays put on desktop; phones open it from the dock's Menu. -->
     <div class="surface-heading" class:explore-title={path === '/explore'}>
       {#if path === '/'}<PlaceScopeSwitch onChange={onRefresh} feed={feedMode} {onFeedChange} />{:else if ['/explore', '/wiki'].includes(path)}<h1 class="sr-only">{heading}</h1><PlaceScopeSwitch />{:else if ['/communities', '/groups', '/contexts','/topics'].includes(path)}<h1
         >

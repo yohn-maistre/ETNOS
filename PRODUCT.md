@@ -1,0 +1,42 @@
+# Product
+
+<!-- impeccable:product-schema 1 -->
+
+## Platform
+
+web
+
+## Users
+
+Papuans, Papuan communities and lembaga adat in Tanah Papua. They talk in communities, read local news and build shared knowledge about their places, peoples and languages, mostly on phones. Researchers and the public read without an account. (Confirmed by the owner, 20 November 2026.)
+
+## Product Purpose
+
+ETNOS (etnos.space) is the first deployment of Strata, open-source software (AGPL-3.0) that turns a region's everyday conversation into a record its people own, check and correct. Success is a community whose talk becomes checked knowledge it controls: wiki pages with sources, a dictionary, a map of what is known and what is not.
+
+## Positioning
+
+Conversation and knowledge in one place, owned by the community. Aksara, an AI assistant, proposes words, meanings and claims from the talk; members check them one card at a time (Periksa); the community decides what is published. Accounts use the AT Protocol, so people can take their account and data elsewhere.
+
+## Operating Context
+
+Phones first, often on slow or costly connections. Most people meet ETNOS through Beranda (the feed), Jelajah (discovery), Wiki and community pages. The theme follows the time of day until the reader picks one. Entered in BUDAYA GO! 2026 (Inovasi Digital); the showcase is 26 to 27 November 2026.
+
+## Capabilities and Constraints
+
+Svelte 5 web app with shadcn-svelte and bits-ui components on Cloudflare Workers and SQLite Durable Objects, free tier first. Interface language is plain neutral Indonesian following docs/voice.md and docs/naming.md: no colon lists, no "bukan X tapi Y", no poetic phrasing, no em dashes, eyebrows only rarely. Components come from the libraries already in use wherever they fit.
+
+## Brand Commitments
+
+The wordmark "etnos." and the ink-print landscapes of Tanah Papua are ETNOS's imagery. The UI was first inspired by Threads and keeps that lineage: clean, weighty, well spaced. Grafit is the default base palette (owner, 20 November 2026).
+
+## Evidence on Hand
+
+Real public content only: posts, communities, wiki pages with cited sources, the knowledge model in apps/web/public/observatory/knowledge, news summarised from West Papua Watch. No invented users, numbers, testimonials or claims.
+
+## Product Principles
+
+- Private content and metadata never reach public paths.
+- Every statement keeps its source; gaps are shown, not hidden.
+- The community decides what is published; the AI proposes and never votes.
+- Plain words for everyone; nothing that reads as marketing.

@@ -15,11 +15,12 @@ export const palettes = [
   { id: 'ochre', name: 'Oker', color: '#bc945e' },
   { id: 'rose', name: 'Ros', color: '#b9848a' },
 ] as const
+const APPEARANCE_VERSION = 2
 export const appearance = $state({
   theme: 'dark' as 'dark' | 'light',
   themeMode: 'clock' as ThemeMode,
   accent: '#1f4e8c',
-  base: 'kabut',
+  base: 'graphite',
   texture: 'grain',
   textureStrength: 'soft',
   fontPair: 'geist',
@@ -81,7 +82,7 @@ export function applyAppearance() {
   }
   if (!shift) finishTheme()
   root.dataset.themeMode = appearance.themeMode
-  if (!bases.some((b) => b.id === appearance.base)) appearance.base = 'kabut'
+  if (!bases.some((b) => b.id === appearance.base)) appearance.base = 'graphite'
   if (!['none', 'grain', 'dither'].includes(appearance.texture))
     appearance.texture = 'grain'
   root.dataset.texture = appearance.texture
@@ -159,7 +160,7 @@ export function applyAppearance() {
     }
   }
   try {
-    localStorage.setItem('strata.ui.appearance', JSON.stringify(appearance))
+    localStorage.setItem('strata.ui.appearance', JSON.stringify({ ...appearance, version: APPEARANCE_VERSION }))
   } catch {
     /* Optional presentation storage. */
   }
@@ -175,7 +176,9 @@ export function restoreAppearance() {
       appearance.themeMode = saved.themeMode
     else if (theme === 'light' || theme === 'dark') appearance.themeMode = theme
     if (/^#[0-9a-f]{6}$/i.test(saved?.accent)) appearance.accent = saved.accent
-    if (bases.some((b) => b.id === saved?.base)) appearance.base = saved.base
+    // Version 2 made Grafit the default base; earlier saves move to it once.
+    const current = saved?.version === APPEARANCE_VERSION
+    if (current && bases.some((b) => b.id === saved?.base)) appearance.base = saved.base
     if (typeof saved?.externalMedia === 'boolean')
       appearance.externalMedia = saved.externalMedia
     if (fontPairs.some((p) => p.id === saved?.fontPair))
