@@ -4,6 +4,7 @@
   // connections fall into. The graph holds only checked public sources, so nothing private reaches this page.
   import { onMount } from 'svelte'
   import { ArrowUpRight } from '@lucide/svelte'
+  import EntityPanel from './EntityPanel.svelte'
 
   type Node = { id: string; class: string; title: string; context?: string; regions: string[]; x: number; y: number; cluster: number; degree: number; witnesses: number; gaps: string[] }
   type Edge = { source: string; target: string; predicate: string; logical: string }
@@ -16,7 +17,8 @@
   let graph = $state<Graph | null>(null),
     lens = $state<'jaringan' | 'celah'>('jaringan'),
     hover = $state<Node | null>(null),
-    narrow = $state(false)
+    narrow = $state(false),
+    selected = $state('')
   const byId = $derived(new Map((graph?.nodes ?? []).map((n) => [n.id, n])))
   const CLASS: Record<string, string> = { tempat: 'Tempat', bahasa: 'Bahasa', kelompok: 'Masyarakat' }
   const href = (n: Node | undefined) => (n?.context ? '/contexts/' + n.context : '/wiki?q=' + encodeURIComponent(n?.title ?? ''))
@@ -54,6 +56,9 @@
   const missingPage = (n: Node) => n.gaps.includes('belum-ada-halaman')
   const sections = $derived((graph?.clusters ?? []).filter((c) => c.size >= 5).sort((a, b) => b.size - a.size))
   const coverage = $derived((graph?.gaps.coverage ?? []).filter((c) => c.contextsWithoutPage.length).sort((a, b) => b.contextsWithoutPage.length - a.contextsWithoutPage.length))
+  const regionTitles = $derived(new Map((graph?.gaps.coverage ?? []).map((c) => [c.region, c.title])))
+  // A plain click opens the entry's panel; a modified click still follows the link.
+  const pick = (n: Node) => (e: MouseEvent) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); selected = n.id }
   const ROLE: Record<string, string> = { inti: 'Banyak terhubung', 'dasar-tipis': 'Sumber masih sedikit', khusus: 'Kelompok khusus', 'baru-atau-memudar': 'Baru muncul' }
 
   onMount(async () => {
@@ -82,7 +87,7 @@
           {#each graph.statements as e}{@const a = byId.get(e.source)}{@const b = byId.get(e.target)}{#if a && b}<line x1={px(a)} y1={py(a)} x2={px(b)} y2={py(b)} class:dim={!!region && !(a.regions.includes(region) || b.regions.includes(region))} class:disputed={e.logical === 'disputed'} />{/if}{/each}
         </g>
         <g class="wf-nodes">
-          {#each graph.nodes as n (n.id)}<a href={href(n)} aria-label={n.title} onpointerenter={() => (hover = n)} onpointerleave={() => (hover = null)} onfocus={() => (hover = n)} onblur={() => (hover = null)}>
+          {#each graph.nodes as n (n.id)}<a href={href(n)} aria-label={n.title} onclick={pick(n)} onpointerenter={() => (hover = n)} onpointerleave={() => (hover = null)} onfocus={() => (hover = n)} onblur={() => (hover = null)}>
               <circle cx={px(n)} cy={py(n)} r={r(n)} class={'c-' + n.class} class:gap={lens === 'celah' && missingPage(n)} class:quiet={lens === 'celah' && !missingPage(n)} />
             </a>{/each}
         </g>
@@ -123,11 +128,12 @@
             <h3>{c.label}</h3>
             <p class="wf-meta">{c.size} entri · {ROLE[c.role] ?? c.role}</p>
             <ul class="wf-list compact">
-              {#each c.top.slice(0, 6) as id}{@const n = byId.get(id)}{#if n}<li><a href={href(n)}><span class="wf-item">{n.title}</span><ArrowUpRight size={14} aria-hidden="true" /></a></li>{/if}{/each}
+              {#each c.top.slice(0, 6) as id}{@const n = byId.get(id)}{#if n}<li><a href={href(n)} onclick={pick(n)}><span class="wf-item">{n.title}</span><ArrowUpRight size={14} aria-hidden="true" /></a></li>{/if}{/each}
             </ul>
           </article>{/each}
       </div>
     </section>{/if}
+  <EntityPanel bind:id={selected} nodes={byId} statements={graph.statements} comentions={graph.comentions ?? []} regionTitle={(r) => regionTitles.get(r) ?? r} />
 {/if}
 
 <style>

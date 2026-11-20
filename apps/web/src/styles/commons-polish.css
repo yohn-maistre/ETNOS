@@ -196,6 +196,8 @@
 }
 /* Visitors: the writing bar becomes one wide link to Masuk. */
 .cx-composer-bar.visitor-bar > [data-slot='button'], .cx-composer-bar.visitor-bar > [data-slot='button']:last-child { background: color-mix(in srgb, var(--secondary) 65%, transparent); border: 1px solid var(--commons-hairline); box-shadow: none; font-weight: 400; flex: 1; min-width: 0; min-height: 44px; border-radius: 16px; justify-content: flex-start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted-foreground); }
+/* Hover only warms the bar a little; it stays an input-like field, never a dark button. */
+.cx-composer-bar.visitor-bar > [data-slot='button']:hover, .cx-composer-bar.visitor-bar > [data-slot='button']:last-child:hover { background: var(--secondary); border-color: color-mix(in srgb, var(--foreground) 18%, transparent); color: var(--foreground); }
 /* Visitors' dock has three plain places; the third (Menu) must not take the Posting fill. */
 .cx-mobile-dock.visitor-dock:not(.thread-dock) { justify-content: space-around; inset-inline: 0; margin-inline: auto; width: min(300px, calc(100% - 24px)); }
 .cx-mobile-dock.visitor-dock:not(.thread-dock) > [data-slot='button']:nth-child(3) { height: 54px; min-height: 54px; max-width: 72px; background: transparent; color: var(--muted-foreground); border-radius: 19px; }

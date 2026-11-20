@@ -487,7 +487,8 @@
       requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' }))
   }
   function intercept(e: MouseEvent) {
-    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey)
+    // A component that handled the click itself (for example the knowledge map opening a panel) wins.
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey)
       return
     const a = e.target instanceof Element ? e.target.closest('a') : null
     if (!a || a.target || a.hasAttribute('download')) return
