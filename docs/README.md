@@ -18,6 +18,7 @@ Read these in order to understand the whole project.
 ## Rules for writing
 
 - [voice.md](voice.md) sets how every public sentence is written. It asks for the answer first, everyday words, short complete sentences, no teasers, no closing summaries and no em dashes.
+- [lessons-2026-11-20.md](lessons-2026-11-20.md) collects what to remember about the design, the identity host, invites, deploys and working alongside helpers.
 - [naming.md](naming.md) sets plain names that say what a thing is or does, and lists the renames of 18 and 19 November.
 
 ## Which document wins
