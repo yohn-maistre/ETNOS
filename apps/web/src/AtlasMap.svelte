@@ -2,20 +2,23 @@
   // The seven customary regions as a small map for choosing a place. The list beside it is the accessible route;
   // the map repeats it for pointer users, so it is hidden from assistive technology.
   import { onMount } from 'svelte'
+  import TerrainTiles from './TerrainTiles.svelte'
   type Shape = { d: string; x: number; y: number }
   type Atlas = { box: number[]; regions: Record<string, Shape>; contested: { slug: string; regions: string[]; d: string }[] }
   // within: the regions a chosen kabupaten or language sits in, tinted so a place that is not itself a region
   // still shows where it is. A kabupaten whose region is disputed (Nabire, Mimika, Puncak Jaya) is drawn too.
   let { regions, selected, within = [], labels = true, onpick }: { regions: { slug: string; title: string }[]; selected: string; within?: string[]; labels?: boolean; onpick: (r: { slug: string; title: string }) => void } = $props()
   let atlas = $state<Atlas | null>(null),
-    over = $state<string | null>(null)
+    over = $state<string | null>(null),
+    drawn = $state(0)
   const place = $derived(atlas?.contested.find((c) => c.slug === selected) ?? null)
   onMount(() => {
     import('./papua-atlas.json').then((m) => (atlas = m.default as unknown as Atlas)).catch(() => {})
   })
 </script>
 
-{#if atlas}<svg class="atlas-pick" viewBox={atlas.box.join(' ')} aria-hidden="true">
+{#if atlas}<svg class="atlas-pick" viewBox={atlas.box.join(' ')} aria-hidden="true" bind:clientWidth={drawn}>
+    {#if drawn}<TerrainTiles box={atlas.box as [number, number, number, number]} px={drawn} />{/if}
     {#each regions as r (r.slug)}{@const shape = atlas.regions[r.slug]}{#if shape}<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions --><g
           class="pick-region"
           class:on={selected === r.slug}
@@ -34,22 +37,24 @@
   .atlas-pick { display: block; width: 100%; height: auto; overflow: visible; touch-action: manipulation; }
   .pick-region { cursor: pointer; }
   .pick-region path {
-    fill: var(--muted);
+    fill: var(--background);
+    fill-opacity: 0.18;
     stroke: var(--foreground);
-    stroke-opacity: 0.4;
+    stroke-opacity: 0.45;
     stroke-width: 1;
     stroke-linejoin: round;
     vector-effect: non-scaling-stroke;
     transition: fill 160ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .pick-region.hover path { fill: color-mix(in oklab, var(--brand) 22%, var(--background)); }
-  .pick-region.on path { fill: color-mix(in oklab, var(--brand) 42%, var(--background)); stroke: var(--brand); stroke-opacity: 1; stroke-width: 1.6; }
-  .pick-region.within path { fill: color-mix(in oklab, var(--brand) 24%, var(--background)); stroke: var(--brand); stroke-opacity: 0.8; }
+  .pick-region.hover path { fill: var(--brand); fill-opacity: 0.3; }
+  .pick-region.on path { fill: var(--brand); fill-opacity: 0.5; stroke: var(--brand); stroke-opacity: 1; stroke-width: 1.6; }
+  .pick-region.within path { fill: var(--brand); fill-opacity: 0.3; stroke: var(--brand); stroke-opacity: 0.8; }
   .pick-place { pointer-events: none; fill: color-mix(in oklab, var(--brand) 60%, var(--background)); stroke: var(--brand); stroke-width: 1.6; vector-effect: non-scaling-stroke; }
   .pick-labels { pointer-events: none; }
   .pick-labels text {
-    font-family: var(--font-editorial);
-    font-size: 40px;
+    font-family: var(--font-sans, sans-serif);
+    font-weight: 600;
+    font-size: 36px;
     text-anchor: middle;
     fill: var(--foreground);
     paint-order: stroke;
@@ -57,7 +62,7 @@
     stroke-width: 7px;
     stroke-linejoin: round;
   }
-  .pick-labels text.on { font-weight: 600; }
+  .pick-labels text.on { font-weight: 800; }
   @media (prefers-reduced-motion: reduce) {
     .pick-region path { transition: none; }
   }

@@ -116,7 +116,7 @@ export default {
     headers.set('permissions-policy','camera=(), microphone=(), geolocation=()')
     if(headers.get('content-type')?.includes('text/html')){
       headers.set('cache-control','no-store')
-      headers.set('content-security-policy',"default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.maps.eox.at; font-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; media-src https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
+      headers.set('content-security-policy',"default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.maps.eox.at; font-src 'self' data:; connect-src 'self' https://cloudflareinsights.com https://tiles.maps.eox.at; worker-src 'self' blob:; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; media-src https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
       if(request.method==='GET'&&response.ok){
         // Deliberately construct new anonymous requests: even signed-in readers
         // receive the same public-only sharing projection as an external crawler.

@@ -8,6 +8,7 @@
   // the list beside or below the map is the accessible route, so the map itself is hidden from assistive tech.
   // With onpick the regions are buttons instead (the wiki home uses the map to choose a region).
   import type { Atlas } from './RegionArt.svelte'
+  import TerrainTiles from './TerrainTiles.svelte'
 
   let {
     atlas,
@@ -22,13 +23,15 @@
       onpick?.(slug)
     }
   }
+  let drawn = $state(0)
   const max = $derived(Math.max(1, ...regions.map((r) => r.count ?? 0)))
   // 12% for none, up to 78% of the ink for the most.
   const shade = (r: MapRegion) => (r.count === undefined ? 24 : r.count ? Math.round(30 + (48 * r.count) / max) : 12)
 </script>
 
-<div class="papua-map" aria-hidden={onpick ? undefined : 'true'}>
-  <svg viewBox={atlas.box.join(' ')} preserveAspectRatio="xMidYMid meet" role={onpick ? 'group' : undefined} aria-label={onpick ? 'Pilih wilayah adat' : undefined}>
+<div class="papua-map" aria-hidden={onpick ? undefined : 'true'} bind:clientWidth={drawn}>
+  <svg viewBox={atlas.box.join(' ')} preserveAspectRatio="xMidYMid slice" role={onpick ? 'group' : undefined} aria-label={onpick ? 'Pilih wilayah adat' : undefined}>
+    {#if drawn}<TerrainTiles box={atlas.box as [number, number, number, number]} px={drawn} />{/if}
     {#each regions as r (r.slug)}{@const shape = atlas.regions[r.slug]}{#if shape}{#if onpick}<g
           class="region"
           role="button"
@@ -45,21 +48,23 @@
 </div>
 
 <style>
-  .papua-map { position: relative; border-radius: 16px; overflow: hidden; background: color-mix(in oklab, var(--ink, var(--brand)) 7%, var(--card)); border: 1px solid var(--border); padding: 10px; }
-  svg { display: block; width: 100%; height: auto; max-height: 400px; }
+  .papua-map { position: relative; border-radius: 16px; overflow: hidden; background: color-mix(in oklab, var(--foreground) 6%, var(--card)); box-shadow: inset 0 0 0 1px var(--border); aspect-ratio: 963 / 782; max-height: 420px; }
+  svg { display: block; width: 100%; height: 100%; }
   path {
-    fill: color-mix(in oklab, var(--ink, var(--brand)) var(--shade, 24%), var(--card));
-    stroke: color-mix(in oklab, var(--ink, var(--brand)) 60%, transparent);
-    stroke-width: 1;
+    fill: var(--ink, var(--brand));
+    fill-opacity: var(--shade, 24%);
+    stroke: var(--ink, var(--brand));
+    stroke-opacity: 0.85;
+    stroke-width: 1.4;
     vector-effect: non-scaling-stroke;
     stroke-linejoin: round;
     transition: fill 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .region { cursor: pointer; outline: none; }
-  .region:hover path { fill: color-mix(in oklab, var(--ink, var(--brand)) 62%, var(--card)); }
+  .region:hover path { fill-opacity: 0.68; }
   .region.lit path { stroke: var(--foreground); stroke-width: 2.5; }
   .region:focus-visible path { stroke: var(--foreground); stroke-width: 3; stroke-dasharray: 6 4; }
-  text { font-family: var(--font-editorial, serif); font-size: 34px; text-anchor: middle; fill: var(--foreground); paint-order: stroke; stroke: var(--card); stroke-width: 6px; stroke-linejoin: round; pointer-events: none; }
+  text { font-family: var(--font-sans, sans-serif); font-weight: 650; font-size: 32px; text-anchor: middle; fill: var(--foreground); paint-order: stroke; stroke: var(--card); stroke-width: 7px; stroke-linejoin: round; pointer-events: none; }
   .count { font-family: var(--font-sans, sans-serif); font-size: 24px; fill: var(--muted-foreground); }
   /* On a phone the map is about a third of its drawn size; larger labels keep the names readable. */
   @media (max-width: 600px) { text { font-size: 46px; stroke-width: 8px; } .count { font-size: 32px; } }

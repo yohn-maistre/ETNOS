@@ -267,7 +267,7 @@
     {#if strata.length}<ul class="place-scroll" aria-label="Wilayah adat">
         {#each strata as s (s.slug)}<li>
             <a href={s.href}>
-              <span class="place-map" aria-hidden="true">{#if atlas}<RegionArt {atlas} lit={[s.slug]} />{/if}</span>
+              <span class="place-map" aria-hidden="true">{#if atlas}<RegionArt {atlas} lit={[s.slug]} terrain />{/if}</span>
               <strong>{s.title}</strong>
               <span class="place-meta">{s.places.length} kabupaten dan kota · {s.languages} bahasa</span>
             </a>

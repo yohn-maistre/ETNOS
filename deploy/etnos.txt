@@ -61,3 +61,4 @@
 2026-11-20f Jelajah redesign, Grafit default, no desktop sidebar toggle
 2026-11-20g 3D knowledge map, Kabar without upstream name
 2026-11-20h terrain maps on story pages
+2026-11-20i light terrain maps, CSP for map tiles
