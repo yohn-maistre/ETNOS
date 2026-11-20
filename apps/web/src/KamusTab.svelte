@@ -12,7 +12,7 @@
   type Entry = { id: string; lemma: string; gloss: string; pos: string; context: string; source: string; licence: string; page: number | null; state: string; uses: number; speakers: number; examples: Example[]; claimId: string | null }
   type Language = { id: string; name: string; sources: Record<string, { citation: string; licence: string; url: string | null }> }
   type View = { settings: { machineReading: boolean; language: string }; contexts: string[]; languages: Language[]; counts: Record<string, number>; entries: Entry[] }
-  let { communityId, steward = false, visibility = 'public', onChanged }: { communityId: string; steward?: boolean; visibility?: string; onChanged?: () => void } = $props()
+  let { communityId, steward = false, member = false, visibility = 'public', onChanged }: { communityId: string; steward?: boolean; member?: boolean; visibility?: string; onChanged?: () => void } = $props()
 
   let view = $state<View | null>(null),
     q = $state(''),
@@ -24,7 +24,10 @@
     failed = $state(false),
     openId = $state<string | null>(null),
     settingsOpen = $state(false),
-    limit = $state(80)
+    limit = $state(80),
+    writingId = $state<string | null>(null),
+    draft = $state({ gloss: '', context: 'Lainnya' }),
+    writeError = $state('')
   let timer: ReturnType<typeof setTimeout> | undefined
 
   const FILTERS: [string, string][] = [['', 'Semua'], ['candidate', 'Kata baru'], ['proposed', 'Menunggu pemeriksaan'], ['checked', 'Sudah diperiksa'], ['seed', 'Dari sumber tertulis']]
@@ -68,6 +71,15 @@
     } catch (e) { error = e instanceof Error ? e.message : 'Langkah ini belum berhasil. Coba lagi.' } finally { busy = '' }
   }
 
+  async function sendMeaning(e: Entry) {
+    if (busy || !draft.gloss.trim()) return
+    busy = 'meaning'; writeError = ''
+    try {
+      await request(`/v1/communities/${encodeURIComponent(communityId)}/kamus/${encodeURIComponent(e.id)}/meaning`, { gloss: draft.gloss, context: draft.context })
+      writingId = null; draft = { gloss: '', context: 'Lainnya' }
+      await load(); onChanged?.()
+    } catch (err) { writeError = err instanceof Error ? err.message : 'Arti belum terkirim. Coba lagi.' } finally { busy = '' }
+  }
   const total = $derived(Object.values(view?.counts ?? {}).reduce((a, b) => a + b, 0))
 </script>
 
@@ -147,6 +159,17 @@
                 </div>
                 <p class="kamus-gloss" class:clamp={openId !== e.id}>{#if e.gloss}{e.gloss}{:else}<span class="muted">Arti belum diusulkan</span>{/if}</p>
                 <p class="kamus-meta">{meta(e)}</p>
+                {#if member && e.state === 'candidate' && writingId !== e.id}<button class="kamus-link" type="button" onclick={() => { writingId = e.id; draft = { gloss: '', context: 'Lainnya' }; writeError = '' }}>Tulis arti</button>{/if}
+                {#if writingId === e.id}
+                  <form class="kamus-write" onsubmit={(ev) => { ev.preventDefault(); sendMeaning(e) }}>
+                    <Input bind:value={draft.gloss} maxlength={160} placeholder="Arti dalam bahasa Indonesia" aria-label={'Arti kata ' + e.lemma} />
+                    <select class="kamus-select" bind:value={draft.context} aria-label="Konteks pemakaian">{#each view.contexts as c (c)}<option value={c}>{c}</option>{/each}</select>
+                    <Button size="sm" type="submit" disabled={!!busy || !draft.gloss.trim()}>{busy === 'meaning' ? 'Mengirim…' : 'Kirim untuk diperiksa'}</Button>
+                    <Button size="sm" variant="ghost" type="button" onclick={() => (writingId = null)}>Batal</Button>
+                    <p class="kamus-hint">Arti ini menjadi kartu Periksa. Masuk kamus setelah anggota lain menjawab.</p>
+                    {#if writeError}<p class="kamus-error" role="alert">{writeError}</p>{/if}
+                  </form>
+                {/if}
                 {#if e.examples.length || e.gloss.length > 160}
                   <button class="kamus-link" type="button" aria-expanded={openId === e.id} onclick={() => (openId = openId === e.id ? null : e.id)}>{openId === e.id ? 'Tutup' : e.examples.length ? `Lihat ${e.examples.length} contoh kalimat` : 'Baca selengkapnya'}</button>
                   {#if openId === e.id && e.examples.length}<ul class="kamus-examples">{#each e.examples as x (x.postId)}<li>{x.text}</li>{/each}</ul>{/if}
@@ -193,6 +216,9 @@
   .kamus-hint { margin: 0; color: var(--muted-foreground); font-size: 0.82rem; max-width: 64ch; }
   .kamus-note { margin: 0; font-size: 0.88rem; }
   .kamus-error { margin: 0; font-size: 0.88rem; color: var(--destructive); }
+  .kamus-write { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
+  .kamus-write :global(input) { flex: 1 1 16rem; max-width: 24rem; }
+  .kamus-write .kamus-hint, .kamus-write .kamus-error { flex-basis: 100%; }
   .kamus-tools { display: grid; gap: 10px; }
   .kamus-search { position: relative; display: block; max-width: 28rem; }
   .kamus-search :global(svg) { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted-foreground); pointer-events: none; }

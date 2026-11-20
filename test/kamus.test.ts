@@ -151,3 +151,16 @@ test('the Ekari seed loads with its sources and licences',()=>{
  assert.ok(set.entries.length>2000);assert.equal(set.sources.steltenpool1969.licence,'CC BY-NC 3.0');assert.equal(set.sources.tng.licence,'CC BY 4.0')
  assert.ok(lex.contact.has('dan')&&lex.contact.has('pergi'))
 })
+
+test('a member writes a meaning by hand in a private community; no model, members decide',()=>{
+ const f=fixture('hidden-private');try{
+  turnOn(f);f.s.createPost(f.b,f.room,'Tugi enaa.');f.s.createPost(f.c,f.room,'Tugi lagi.');f.k.scan(f.a,f.room)
+  const c=f.k.candidatesForGloss(f.room)[0]
+  assert.throws(()=>f.k.proposeMeaning(f.o,f.room,c.id,{gloss:'jagung'}),'outsiders cannot')
+  assert.throws(()=>f.k.proposeMeaning(f.agent,f.room,c.id,{gloss:'jagung'}),'agents use their own path')
+  const e=f.k.proposeMeaning(f.b,f.room,c.id,{gloss:'jagung',context:'Kebun'});assert.equal(e.state,'proposed')
+  assert.throws(()=>f.k.proposeMeaning(f.c,f.room,c.id,{gloss:'lain'}),/already/)
+  const card=f.p.list(f.b,f.room)[0];f.p.withdraw(f.b,card.id)
+  assert.equal(f.k.proposeMeaning(f.c,f.room,c.id,{gloss:'jagung muda',context:'Kebun'}).gloss,'jagung muda','a withdrawn card frees the word')
+ }finally{f.s.close()}
+})

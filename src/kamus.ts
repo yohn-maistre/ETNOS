@@ -135,7 +135,7 @@ export class Kamus{
 
  /** The strongest candidates for the model to describe, with their evidence. */
  candidatesForGloss(communityId:string,max=5){
-  return this.store.all<Row>("SELECT * FROM kamus_entries WHERE community_id=? AND state='candidate' AND claim_id IS NULL ORDER BY speakers DESC,uses DESC,created LIMIT ?",communityId,max).map(r=>this.view(r))
+  return this.store.all<Row>("SELECT * FROM kamus_entries WHERE community_id=? AND state='candidate' AND (claim_id IS NULL OR claim_id IN (SELECT id FROM claims WHERE state='withdrawn')) ORDER BY speakers DESC,uses DESC,created LIMIT ?",communityId,max).map(r=>this.view(r))
  }
  /** The agent that may act for this community: one with an active switch or mandate here. */
  aksara(communityId:string){
@@ -156,7 +156,7 @@ export class Kamus{
    const agent=this.aksara(communityId);if(!agent)throw new Fault(409,'Aksara is not active in this community')
    const out:Claim[]=[]
    for(const g of glosses){
-    const r=s.get<Row>("SELECT * FROM kamus_entries WHERE id=? AND community_id=? AND state='candidate' AND claim_id IS NULL",g.id,communityId);if(!r)continue
+    const r=s.get<Row>("SELECT * FROM kamus_entries WHERE id=? AND community_id=? AND state='candidate' AND (claim_id IS NULL OR claim_id IN (SELECT id FROM claims WHERE state='withdrawn'))",g.id,communityId);if(!r)continue
     const gloss=g.gloss.replace(/\s+/g,' ').trim().slice(0,160),pos=g.pos.replace(/\s+/g,' ').trim().slice(0,40)
     const context=(KAMUS_CONTEXTS as readonly string[]).includes(g.context)?g.context:'Lainnya'
     if(!gloss)continue
@@ -170,6 +170,23 @@ export class Kamus{
   })
  }
 
+ /** A member writes a meaning for a word found in conversation. It becomes a Periksa card like Aksara's, so other
+  * members decide. No model is involved, so this works in private communities too. */
+ proposeMeaning(actor:string,communityId:string,entryId:string,b:{gloss?:unknown;pos?:unknown;context?:unknown}){
+  const s=this.store;return s.tx(()=>{
+   s.requireMember(actor,communityId)
+   const r=s.get<Row>(`SELECT * FROM kamus_entries WHERE id=? AND community_id=? AND state IN ('candidate','proposed')`,entryId,communityId)
+   if(!r)throw new Fault(404,'Not found')
+   if(r.claim_id&&s.get<{state:string}>('SELECT state FROM claims WHERE id=?',r.claim_id)?.state!=='withdrawn')throw new Fault(409,'This word already has a meaning being checked')
+   const gloss=String(b.gloss??'').replace(/\s+/g,' ').trim().slice(0,160),pos=String(b.pos??'').replace(/\s+/g,' ').trim().slice(0,40)
+   const context=(KAMUS_CONTEXTS as readonly string[]).includes(String(b.context))?String(b.context):'Lainnya'
+   if(!gloss)throw new Fault(400,'Meaning required')
+   const evidence=(JSON.parse(r.examples) as Example[]).slice(0,3).map(e=>({text:e.text}))
+   const claim=this.periksa.propose(actor,communityId,{kind:'word',subject:r.lemma,statement:`"${r.lemma}" artinya "${gloss}"${pos?' ('+pos+')':''}, dipakai dalam konteks ${context.toLowerCase()}.`,evidence})
+   s.run("UPDATE kamus_entries SET gloss=?,pos=?,context=?,state='proposed',claim_id=?,updated=? WHERE id=?",gloss,pos,context,claim.id,s.clock(),r.id)
+   return this.view(s.get<Row>('SELECT * FROM kamus_entries WHERE id=?',r.id)!)
+  })
+ }
  private visibleExamples(raw:string){
   const list=JSON.parse(raw) as Example[]
   return list.filter(e=>!!this.store.get("SELECT 1 FROM posts WHERE id=? AND deleted=0 AND hidden=0",e.postId))

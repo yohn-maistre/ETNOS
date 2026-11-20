@@ -330,6 +330,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='rsvp')result=forum.rsvp(caller,parts[2],b.response)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='confirm')result=forum.confirm(caller,parts[2],b.value)
       else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='settings')result=kamus.setSettings(caller,parts[2],b)
+      else if(parts.length===6&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[5]==='meaning')result=kamus.proposeMeaning(caller,parts[2],parts[4],b)
       else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='seed')result=kamus.importSeed(caller,parts[2])
       else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='scan')result=kamus.scan(caller,parts[2])
       else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='describe'){

@@ -1333,7 +1333,7 @@
           </Tabs.List>
         </div>
         <Tabs.Content value={tab}>
-          {#if tab==='kamus'}{#await import('./KamusTab.svelte') then module}<module.default communityId={community.id} steward={isSteward(community.id)} visibility={community.visibility} onChanged={() => { kamusStarted[community.id] = true; periksaTick++ }}/>{/await}{:else if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
+          {#if tab==='kamus'}{#await import('./KamusTab.svelte') then module}<module.default communityId={community.id} steward={isSteward(community.id)} member={isMember(community.id)} visibility={community.visibility} onChanged={() => { kamusStarted[community.id] = true; periksaTick++ }}/>{/await}{:else if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
                 {auth}
                 communityId={community.id}
                 onAsk={() => {
