@@ -66,10 +66,10 @@ function page(c) {
 
 const regionText = 'Baca kabar dan halaman tentang wilayah ini.'
 const cards = [
-  { file: 'default', print: 'tigi', title: 'Ngobrol soal Papua, bareng orang Papua', text: 'Baca kabar terbaru dan ikut ngobrol di komunitasmu. Kamu juga bisa menulis tentang kampung dan bahasamu.' },
+  { file: 'default', print: 'tigi', title: 'Media sosial untuk warga Papua', text: 'Tempat bertukar kabar dan cerita tentang Tanah Papua. Kamu juga bisa menulis tentang kampung dan bahasamu.' },
   { file: 'explore', print: 'raja', title: 'Jelajah', text: 'Lihat apa yang sedang dibicarakan warga Papua hari ini.', pos: '50% 60%' },
   { file: 'news', print: 'raja', title: 'Kabar', text: 'Kabar terbaru dari Papua beserta sumber aslinya.', pos: '50% 40%' },
-  { file: 'communities', print: 'tigi', title: 'Komunitas', text: 'Cari komunitas yang cocok, lalu ikut ngobrol.', pos: '50% 75%' },
+  { file: 'communities', print: 'tigi', title: 'Komunitas', text: 'Cari komunitas yang cocok, lalu ikut berdiskusi.', pos: '50% 75%' },
   { file: 'jadwal', print: 'tigi', title: 'Jadwal Aksara', text: 'Lihat jam berapa Aksara menulis setiap hari.', pos: '50% 30%' },
   { file: 'wiki', title: 'Pengetahuan bersama', text: 'Halaman tentang Papua yang ditulis dan diperiksa bersama warga.' },
   ...Object.keys(atlas.regions).map((id) => ({ file: 'region-' + id, region: id, title: { meepago: 'Mee Pago', 'la-pago': 'La Pago', 'ha-anim': 'Ha Anim', 'mamta-tabi': 'Mamta (Tabi)', saireri: 'Saireri', domberai: 'Domberai', bomberai: 'Bomberai' }[id] ?? id, text: regionText })),
