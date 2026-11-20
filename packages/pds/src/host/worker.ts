@@ -14,7 +14,7 @@ import { equal, randomToken, sha256Hex } from "./crypto.ts";
 import type { AccountRow } from "./directory.ts";
 import { hostConfigProblem, signupsClosed, type HostEnv } from "./env.ts";
 import { labelForHost } from "./handles.ts";
-import { handleOAuth, provider } from "./oauth.ts";
+import { continueAfterSignup, handleOAuth, provider, signupFlow } from "./oauth.ts";
 import { homePage, messagePage, signupDonePage, signupPage } from "./pages.ts";
 import { readLast, submitUpdate } from "./plc.ts";
 import { READ_ROUTES, SYNC_ROUTES, WRITE_ROUTES, runScoped, scopedStub, type ScopedEnv } from "./repo-routes.ts";
@@ -173,12 +173,15 @@ async function signupForm(host: Host, request: Request): Promise<Response> {
 		return typeof v === "string" ? v : "";
 	};
 	const values = { code: get("code"), label: get("label").toLowerCase() };
-	if (get("password") !== get("password2")) return signupPage(name, domain, { ...values, error: "Kedua kata sandi tidak sama." }, 400);
-	if (get("age") !== "16") return signupPage(name, domain, { ...values, error: "Akun hanya untuk orang berusia 16 tahun atau lebih." }, 400);
+	// A sign-up started from an app's sign-in carries that sign-in, so the new account continues to consent.
+	const flow = await signupFlow(host, get("client_id"), get("request_uri"));
+	if (get("password") !== get("password2")) return signupPage(name, domain, { ...values, error: "Kedua kata sandi tidak sama." }, 400, flow);
+	if (get("age") !== "16") return signupPage(name, domain, { ...values, error: "Akun hanya untuk orang berusia 16 tahun atau lebih." }, 400, flow);
 	if (!(await host.spend(request, "signup", 10)))
-		return signupPage(name, domain, { ...values, error: "Terlalu banyak percobaan dari jaringan ini. Coba lagi dalam 10 menit." }, 429);
+		return signupPage(name, domain, { ...values, error: "Terlalu banyak percobaan dari jaringan ini. Coba lagi dalam 10 menit." }, 429, flow);
 	const result = await host.createAccount({ code: values.code, handle: values.label, password: get("password") });
-	if (!result.ok) return signupPage(name, domain, { ...values, error: result.message }, result.status);
+	if (!result.ok) return signupPage(name, domain, { ...values, error: result.message }, result.status, flow);
+	if (flow) return continueAfterSignup(flow, host, result.did);
 	const signin = host.env.SIGNIN_URL ? `${host.env.SIGNIN_URL}${host.env.SIGNIN_URL.includes("?") ? "&" : "?"}handle=${encodeURIComponent(result.handle)}` : null;
 	return signupDonePage(name, result.handle, signin);
 }

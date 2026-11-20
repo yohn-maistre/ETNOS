@@ -117,14 +117,19 @@ export interface SignupValues {
 	error?: string;
 }
 
-export function signupPage(name: string, domain: string, values: SignupValues, status = 200): Response {
+/** The authorize page of a pending sign-in, optionally with one extra query flag. */
+export const flowLink = (ctx: OAuthPageContext, flag = "") =>
+	`/oauth/authorize?client_id=${encodeURIComponent(ctx.clientId)}&request_uri=${encodeURIComponent(ctx.requestUri)}${flag ? "&" + flag : ""}`;
+
+/** The sign-up form. Inside a sign-in flow it carries the flow, so a new account continues straight to consent. */
+export function signupPage(name: string, domain: string, values: SignupValues, status = 200, flow?: OAuthPageContext): Response {
 	return page(
 		`Buat akun ${name}`,
 		card(
 			`Buat akun ${name}`,
 			`Akun ini adalah identitas AT Protocol yang disimpan oleh ${esc(name)}. ${esc(name)} menyimpan kunci akunmu dan bisa diminta memindahkannya ke penyedia lain.`,
 			`${errorBox(values.error)}
-<form class="stack form" method="post" action="/akun/baru">
+<form class="stack form" method="post" action="/akun/baru">${flow ? hidden(flow) : ""}
 <div class="field"><label class="label" for="code">Kode undangan</label>
 <input class="input" id="code" name="code" type="text" autocomplete="off" required maxlength="100" value="${esc(values.code)}"></div>
 <div class="field"><label class="label" for="label">Nama akun</label>
@@ -138,6 +143,7 @@ export function signupPage(name: string, domain: string, values: SignupValues, s
 <div class="field row"><input class="check" id="age" type="checkbox" name="age" value="16" required><label class="label" for="age">Saya berusia 16 tahun atau lebih.</label></div>
 <button type="submit">Buat akun</button>
 </form>`,
+			flow ? `<p>Sudah punya akun? <a href="${esc(flowLink(flow, "masuk=1"))}">Masuk</a></p>` : "",
 		),
 		status,
 	);
@@ -204,7 +210,7 @@ ${list}
 <input class="input" id="handle" name="handle" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="253" placeholder="nama.${esc(domain)}"></div>
 <button type="submit">Lanjut</button>
 </form>`,
-			`<p>Belum punya akun? Akun dibuat dengan kode undangan dari pengurus di <a href="/akun/baru">halaman pembuatan akun</a>.</p>`,
+			`<p>Belum punya akun? <a href="${esc(flowLink(ctx, "buat=1"))}">Buat akun</a> dengan kode undangan dari pengurus.</p>`,
 		),
 		status,
 	);

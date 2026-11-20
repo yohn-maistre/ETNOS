@@ -252,7 +252,8 @@ export class BrowserAuth {
         }
         const flow=token(),scope=body.mode!=='signup' && body.publishing===true && this.config.publishingEnabled?this.client.clientMetadata.scope:'atproto'
         context.browser=hash(flow)
-        const url=await this.client.authorize(target,{state:JSON.stringify(context),scope})
+        // On the node's own host, a sign-up opens the host's sign-up page instead of its sign-in page.
+        const url=await this.client.authorize(target,{state:JSON.stringify(context),scope,...(body.mode==='signup'&&body.provider==='host'&&!body.handle?{prompt:'create' as const}:{})})
         const response=json(200,{authorizationUrl:url.href});response.headers.append('set-cookie',setCookie(FLOW_COOKIE,flow,600));return response
       }
       if(path==='/auth/callback' && request.method==='GET'){

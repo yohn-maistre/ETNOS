@@ -9,7 +9,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { BrowserAuth } from "../../../src/oauth.ts";
 import { Strata } from "../../../src/store.ts";
-import { FakePlc, call, domain, hostRuntime, migrate, origin, signup } from "./host-harness.mjs";
+import { FakePlc, call, domain, hostRuntime, invite, migrate, origin, signup } from "./host-harness.mjs";
 
 const clientOrigin = "https://client.test";
 const cookieOf = (response, name) => response.headers.getSetCookie().find((c) => c.startsWith(name + "="))?.split(";")[0];
@@ -155,7 +155,6 @@ test("ETNOS signs in two hosted accounts through OAuth with an account step; nei
 		assert.ok(third.data.cid);
 		// A new person: an ETNOS invitation plus an account on the host, in one sign-up flow with no handle typed into ETNOS.
 		assert.deepEqual(await (await auth.route(new Request(clientOrigin + "/auth/options"))).json(), { provider: "bluesky", enrollment: "invite", accountHost: origin });
-		const citra = await signup(mf, "citra");
 		// The steward's account was deleted above, so the invitation row is written as the steward's Studio would write it.
 		const enrollment = s.get("SELECT id FROM actors WHERE did = ?", alice.did);
 		const invitation = randomBytes(32).toString("base64url");
@@ -164,13 +163,26 @@ test("ETNOS signs in two hosted accounts through OAuth with an account step; nei
 		assert.equal(started.status, 200, await started.clone().text());
 		const c = { flow: cookieOf(started, "__Host-strata_flow"), url: new URL((await started.json()).authorizationUrl) };
 		assert.equal(c.url.origin, origin);
-		assert.match(await (await mf.dispatchFetch(c.url.href)).text(), /Pilih akun/, "no hint: the host asks which account");
-		const chose = await mf.dispatchFetch(origin + "/oauth/select", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin }, body: form(c.url, { handle: "citra" }), redirect: "manual" });
-		const citraApproved = await mf.dispatchFetch(origin + "/oauth/authorize", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, cookie: cookieOf(chose, "__Host-strata_oauth_account") }, body: form(c.url, { action: "approve", password: citra.password }), redirect: "manual" });
+		// A sign-up asks the host for its sign-up page (prompt=create), carrying the pending sign-in.
+		const landing = await (await mf.dispatchFetch(c.url.href)).text();
+		assert.match(landing, /Buat akun/, "sign-up lands on the host's sign-up form");
+		assert.ok(landing.includes(`name="request_uri" value="${c.url.searchParams.get("request_uri")}"`), "the form carries the pending sign-in");
+		assert.match(await (await mf.dispatchFetch(c.url.href + "&masuk=1")).text(), /Pilih akun/, "an existing account can still sign in");
+		const citra = { password: "synthetic-password-citra" };
+		const madeAccount = await mf.dispatchFetch(origin + "/akun/baru", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, "cf-connecting-ip": "198.51.100.7" }, body: form(c.url, { code: await invite(mf), label: "citra", password: citra.password, password2: citra.password, age: "16" }), redirect: "manual" });
+		assert.equal(madeAccount.status, 303, await madeAccount.clone().text());
+		assert.ok(madeAccount.headers.get("location").startsWith("/oauth/authorize?"), "a new account continues to consent");
+		const chosen = cookieOf(madeAccount, "__Host-strata_oauth_account");
+		assert.ok(chosen, "the new account is chosen for this sign-in");
+		assert.match(await (await mf.dispatchFetch(origin + madeAccount.headers.get("location"), { headers: { cookie: chosen } })).text(), /citra\./, "consent names the new account");
+		const wrongPassword = await mf.dispatchFetch(origin + "/oauth/authorize", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, cookie: chosen }, body: form(c.url, { action: "approve", password: "not-the-password" }), redirect: "manual" });
+		assert.notEqual(wrongPassword.status, 302, "consent still asks for the new account's password");
+		const citraApproved = await mf.dispatchFetch(origin + "/oauth/authorize", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, cookie: chosen }, body: form(c.url, { action: "approve", password: citra.password }), redirect: "manual" });
 		assert.equal(citraApproved.status, 302, await citraApproved.clone().text());
 		const signedCitra = await auth.route(new Request(citraApproved.headers.get("location"), { headers: { cookie: c.flow, origin: clientOrigin } }));
 		assert.equal(signedCitra.status, 303, await signedCitra.clone().text());
-		assert.ok(s.get("SELECT 1 FROM enrollment_allowlist WHERE did = ?", citra.did), "the ETNOS invitation enrolled the new account");
+		citra.did = s.get("SELECT did FROM actors WHERE name = ?", "citra." + domain)?.did;
+		assert.ok(citra.did && s.get("SELECT 1 FROM enrollment_allowlist WHERE did = ?", citra.did), "the ETNOS invitation enrolled the new account");
 		console.log(JSON.stringify({ syntheticOnly: true, accounts: 2, officialOAuthClient: true, accountStep: true, crossAccountDenied: true, deletionRevokesGrants: true, liveNetworkWrites: 0 }));
 	} finally {
 		await mf.dispose();

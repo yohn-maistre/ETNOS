@@ -12,7 +12,8 @@
 import { ATProtoOAuthProvider, ClientResolver } from "@getcirrus/oauth-provider";
 import { b64url, equal, fromB64url, hmac, sha256 } from "./crypto.ts";
 import type { AccountRow } from "./directory.ts";
-import { consentPage, messagePage, selectorPage, type OAuthPageContext } from "./pages.ts";
+import { consentPage, flowLink, messagePage, selectorPage, signupPage, type OAuthPageContext } from "./pages.ts";
+import { signupsClosed } from "./env.ts";
 import type { Host } from "./service.ts";
 
 const SELECT_COOKIE = "__Host-strata_oauth_account";
@@ -98,6 +99,7 @@ async function activeAccount(host: Host, actor: string | undefined | null): Prom
 interface Pending {
 	ctx: OAuthPageContext;
 	loginHint?: string;
+	prompt?: string;
 }
 
 async function pendingRequest(host: Host, clientId: string | null, requestUri: string | null): Promise<Pending | null> {
@@ -116,6 +118,7 @@ async function pendingRequest(host: Host, clientId: string | null, requestUri: s
 	return {
 		ctx: { clientName, clientId, requestUri, scope: params.scope ?? "atproto" },
 		loginHint: params.login_hint,
+		prompt: params.prompt,
 	};
 }
 
@@ -133,6 +136,17 @@ async function selector(host: Host, request: Request, ctx: OAuthPageContext, err
 		if (row) handles.push(row.handle);
 	}
 	return selectorPage(host.displayName, host.env.HANDLE_DOMAIN, ctx, handles, error, status);
+}
+
+/** The pending sign-in a sign-up form carried, if it is still valid. */
+export async function signupFlow(host: Host, clientId: string, requestUri: string): Promise<OAuthPageContext | undefined> {
+	if (!clientId && !requestUri) return undefined;
+	return (await pendingRequest(host, clientId, requestUri))?.ctx;
+}
+
+/** After sign-up inside a sign-in flow: choose the new account and go on to consent, where the password is asked again. */
+export async function continueAfterSignup(ctx: OAuthPageContext, host: Host, did: string): Promise<Response> {
+	return new Response(null, { status: 303, headers: { location: flowLink(ctx), "set-cookie": await selectionCookie(host, ctx.requestUri, did) } });
 }
 
 const expired = () => messagePage("Permintaan masuk sudah tidak berlaku", "Kembali ke aplikasi dan mulai lagi.", 400);
@@ -161,7 +175,11 @@ export async function handleOAuth(host: Host, request: Request): Promise<Respons
 		const pending = await pendingRequest(host, url.searchParams.get("client_id"), url.searchParams.get("request_uri"));
 		if (!pending) return expired();
 		const account = await chosenAccount(host, request, pending);
-		return account ? consentPage(pending.ctx, account.handle) : selector(host, request, pending.ctx);
+		if (account) return consentPage(pending.ctx, account.handle);
+		// An app that asked for a new account (prompt=create) lands on sign-up; "masuk=1" switches to sign-in.
+		const create = url.searchParams.get("buat") === "1" || (pending.prompt === "create" && url.searchParams.get("masuk") !== "1");
+		if (create && !signupsClosed(host.env)) return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code: "", label: "" }, 200, pending.ctx);
+		return selector(host, request, pending.ctx);
 	}
 
 	if ((path === "/oauth/select" || path === "/oauth/authorize") && method === "POST") {
