@@ -53,3 +53,4 @@
 2026-11-19r identity host: spaces follow proposal 0016 of 19 November (official @atproto/space alpha 2026-11-17), notifyCredentialsRevoked on removal
 2026-11-19s sign-up defaults to an ETNOS account
 2026-11-19t studio knowledge seed button
+2026-11-20a identity host: forms keep Origin, pages in ETNOS style
