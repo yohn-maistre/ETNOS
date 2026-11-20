@@ -139,3 +139,10 @@
 .page-missing p { margin: 0; color: var(--muted-foreground); line-height: 1.6; }
 .page-missing-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 @media (max-width: 640px) { .page-missing { padding: 32px 16px 40px; } }
+
+/* Wiki home: the lead page beside the newest reviewed pages, like a front page. */
+.wiki-lead { display: grid; gap: 0; }
+@media (min-width: 1000px) {
+  .wiki-lead { grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr); gap: 32px; align-items: start; }
+  .wiki-lead > .wiki-recent { border-top: 0; padding-top: 4px; }
+}

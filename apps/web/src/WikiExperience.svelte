@@ -30,7 +30,7 @@
   } from './api'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
-  import KnowledgeMap from './KnowledgeMap.svelte'
+  import WikiFront from './WikiFront.svelte'
   import WikiDiscussion from './WikiDiscussion.svelte'
   import WikiContents from './WikiContents.svelte'
   import WikiPlaces from './WikiPlaces.svelte'
@@ -452,7 +452,7 @@
     </div>
     {#if discovering}<div class="wiki-discovery-loading" role="status">Menyiapkan bacaan…</div>{:else if discoveryError}<div class="wiki-draft-state"><p>{discoveryError}</p><Button variant="outline" onclick={()=>discover()}>Coba lagi</Button></div>{:else}
       {#if continued&&!query&&!context&&!communityFilter}<a class="wiki-continue" href={'/wiki/'+continued.id}><Clock3 size={17}/><div><small>Lanjutkan membaca · di perangkat ini</small><strong>{continued.title}</strong></div><ArrowRight size={18}/></a>{/if}
-      {#if featured}{@const art=communityArtwork(featured.community_id)}<section class="wiki-featured wiki-front" aria-label="Untuk dibaca">
+      {#if featured}{@const art=communityArtwork(featured.community_id)}<div class="wiki-lead"><section class="wiki-featured wiki-front" aria-label="Untuk dibaca">
         <div class="wiki-front-cover">{#if art}<LandscapePrint artwork={art} decorative/>{/if}
           <div class="wiki-front-track" bind:this={track} onscroll={onTrackScroll}>
             {#each featuredList as item}<a class="wiki-front-card" href={'/wiki/'+item.id}><h2>{item.title}</h2>{#if item.excerpt}<p>{clip(item.excerpt,180)}</p>{/if}<span class="wiki-featured-meta">{languageName(item.language)} · {item.citationCount?item.citationCount+' sumber':'Sumber belum ditautkan'}{item.reviewer?' · ditinjau '+item.reviewer.name:item.review==='unreviewed'?' · belum ditinjau':''}</span></a>{/each}
@@ -461,9 +461,10 @@
         {#if featuredList.length>1}<div class="wiki-front-dots" role="tablist" aria-label="Pilih bacaan">{#each featuredList as item,i}<button role="tab" aria-selected={slide===i} aria-label={item.title} onclick={()=>goTo(i)}></button>{/each}</div>{/if}
         {#if accepted.length}<div class="wiki-front-tools">{#if accepted.length>1}<button onclick={surprise}><Shuffle size={15}/>Halaman acak</button>{/if}<a class="commons-quiet-link" href="/lini-masa">Lini masa</a></div>{/if}
       </section>
-      {#if !query&&!communityFilter}<WikiPlaces />{/if}
-      {#if !query&&!communityFilter}<div class="wiki-map-slot"><KnowledgeMap region={mapRegion} /></div>{/if}
       {#if recent.length}<section class="wiki-recent wiki-module"><div class="wiki-module-heading"><h2>Baru diperbarui</h2></div>{#each recent as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><FileText size={18}/><div><h3>{p.title}</h3><small>{p.reviewer?'Ditinjau '+p.reviewer.name+' · ':p.review==='unreviewed'?(p.authorKind==='agent'?'AI · belum ditinjau · ':'Belum ditinjau · '):''}{relativeLong(p.updated)}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
+      </div>
+      {#if !query&&!communityFilter}<WikiFront region={mapRegion} />{/if}
+      {#if !query&&!communityFilter}<WikiPlaces />{/if}
       {#if fromNews.length&&!query&&!context&&!communityFilter}<section class="wiki-module" aria-label="Dari kabar"><div class="wiki-module-heading"><h2>Dari kabar</h2></div><p class="wiki-module-sub">Halaman yang mengutip kabar.</p>{#each fromNews as p}<a class="wiki-rank-row" href={'/wiki/'+p.id}><Newspaper size={18}/><div><h3>{p.title}</h3><small>Mengutip {p.newsCitations} kabar{p.citationCount>(p.newsCitations??0)?' dan '+(p.citationCount-(p.newsCitations??0))+' sumber lain':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{/if}
       {:else if !growingMatches.length}<div class="wiki-draft-state"><BookOpen size={27}/><h2>{query||context||communityFilter?'Belum ada halaman yang cocok':'Belum ada halaman wiki'}</h2><p>{query||context||communityFilter?'Coba kata atau pilihan lain.':'Halaman yang sudah ditinjau akan muncul di sini.'}</p></div>{/if}
       {#if growingMatches.length}<section class="wiki-growing wiki-module" aria-label="Draf"><div class="wiki-module-heading"><h2>Draf</h2><span>Belum ditinjau</span></div>{#each growingMatches as p}<a class="wiki-recent-row" href={'/wiki/notes/'+p.id}><FileText size={19}/><div><h3>{p.title}</h3><p>{opening(p.excerpt)}</p><small>{p.author.name}{p.author.kind==='agent'?' · AI':''} · {p.citationCount?p.citationCount+' sumber':'Belum ada sumber'}{p.evidenceStatus!=='current'?' · sumber perlu ditinjau':''}</small></div><ArrowUpRight size={17}/></a>{/each}</section>{:else if growingError}<p class="commons-alert" role="status">{growingError}</p>{/if}
