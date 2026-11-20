@@ -15,3 +15,12 @@ export function beginRequest() {
       network.settled++
     })
 }
+
+/**
+ * A route change always shows the loading line for a moment, even when its data is already cached and no request
+ * is needed, so every page switch gives the same feedback on a phone as on a desktop.
+ */
+export function pulse(ms = 650) {
+  const done = beginRequest()
+  setTimeout(done, ms)
+}

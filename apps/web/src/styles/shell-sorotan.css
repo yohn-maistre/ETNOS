@@ -1,5 +1,5 @@
 /* One viewport-level activity line, outside every clipped reading surface. */
-#app > .app-load-line { inset: 0 0 auto; width: auto; height: 3px; }
+#app > .app-load-line { inset: env(safe-area-inset-top, 0px) 0 auto; width: auto; height: 3px; }
 /* The rail keeps the backdrop treatment; its inner viewport sticks and scrolls. */
 @media (min-width: 1360px) {
   .cx-context { top: 0; bottom: 0; }

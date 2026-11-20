@@ -27,6 +27,7 @@
   } from '@lucide/svelte'
   import DiscoveryPage from './DiscoveryPage.svelte'
   import CommunityDirectory from './CommunityDirectory.svelte'
+  import { pulse } from './network.svelte'
   import RouteProgress from './RouteProgress.svelte'
   import ContentSkeleton from './ContentSkeleton.svelte'
   import FeedRefresh from './FeedRefresh.svelte'
@@ -408,8 +409,10 @@
     // A link to the page already open refreshes it in place; it never adds a
     // history entry, so Back still leaves the page in one step.
     if (u.pathname + u.search === location.pathname + location.search) {
-      if (u.hash) document.getElementById(u.hash.slice(1))?.scrollIntoView()
-      else void load()
+      if (u.hash) {
+        document.getElementById(decodeURIComponent(u.hash.slice(1)))?.scrollIntoView()
+        window.history.replaceState(window.history.state, '', u.pathname + u.search + u.hash)
+      } else void load()
       return
     }
     // A link back to the page just left (an "up" link such as "Kembali ke Mee Pago") steps back
@@ -432,6 +435,7 @@
     search = u.search
     tab = 'discussion'
     profileTab = 'posts'
+    pulse()
     void load()
     document.getElementById('commons-main')?.focus({ preventScroll: true })
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -451,6 +455,7 @@
     }
   }
   async function restoreEntry() {
+    pulse()
     const entry = location.href,
       top = window.history.state?.etnosScroll ?? 0
     if (location.pathname === '/board')
@@ -497,8 +502,17 @@
       u.pathname === location.pathname &&
       u.search === location.search &&
       u.hash
-    )
+    ) {
+      // A link to a place on this page scrolls there and keeps the hash in the address. Left to the browser,
+      // it fires popstate, which reloads the page and lands at the top.
+      const target = document.getElementById(decodeURIComponent(u.hash.slice(1)))
+      if (target && !e.defaultPrevented) {
+        e.preventDefault()
+        target.scrollIntoView()
+        window.history.replaceState(window.history.state, '', u.pathname + u.search + u.hash)
+      }
       return
+    }
     e.preventDefault()
     navigate(u.pathname + u.search + u.hash)
   }
