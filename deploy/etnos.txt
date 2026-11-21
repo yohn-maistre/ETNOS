@@ -72,3 +72,4 @@
 2026-11-20q observatorium phase 1: wiki front, data catalogue, Data tab, place locator
 2026-11-21a
 2026-11-21b
+2026-11-21c
