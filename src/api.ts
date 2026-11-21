@@ -41,6 +41,7 @@ import {Datasets,type DatasetSeed} from './datasets.ts'
 import datasetSeed from './catalogues/tanah-papua-datasets.json' with { type: 'json' }
 import {entryIndex,readEntry,viewerRecords,catalogue as entryCatalogue,resolve} from './entri.ts'
 import {storeSource} from './entri-store.ts'
+import {Tentang,entryNames} from './tentang.ts'
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -84,6 +85,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   if(options.residentBudget)resident.budget=options.residentBudget
   const requests=new AksaraRequests(store,groups)
   const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups)
+  const tentang=new Tentang(store),entryCat=()=>entryCatalogue(entrySource())
   const entrySource=()=>storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id),lembaga,kios})
   const programSkill=(id:string|null)=>{if(id===null)return undefined;const slot=resident.slots.jadwal.slots.find(x=>x.id===id);if(!slot)throw new Fault(400,'Unknown program');return slot.skill}
   return async (req: Request): Promise<Response> => {
@@ -163,6 +165,10 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/contexts')result=groups.contexts()
         // One public shape for every entry page (docs/plan/one-page-system-2026-11-21.md §3); always read as an anonymous reader.
         else if(path==='/v1/entri')result=await entryIndex(entrySource())
+        // Percakapan (docs/plan/one-page-system-2026-11-21.md §4, src/tentang.ts): names for the composer, an entry's tab, the prompt after posting.
+        else if(path==='/v1/tentang/names')result={entries:entryNames(await entryCat())}
+        else if(parts.length===4&&parts[1]==='entri'&&parts[3]==='percakapan')result=tentang.percakapan(actor?.id,await entryCat(),decodeURIComponent(parts[2]),{inside:url.searchParams.get('inside')==='1',cursor:url.searchParams.get('cursor')??undefined,limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined})
+        else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='tandai')result=tentang.suggest(authenticated(),parts[2],await entryCat())
         else if(parts.length===3&&parts[1]==='entri'){result=await readEntry(entrySource(),decodeURIComponent(parts[2]));if(!result)throw new Fault(404,'Not found')}
         else if(path==='/v1/knowledge-model')result=model.summary(actor?.id)
         else if(path==='/v1/knowledge-model/entities')result=model.entities(actor?.id,{class:url.searchParams.get('class')??undefined,q:url.searchParams.get('q')??undefined})
@@ -249,6 +255,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       // A founding link is read before signing in: the token travels in the body, never in a URL.
       if (path === '/v1/founding/preview') return json(200, founding.preview((await body(req)).token, principal()?.id))
       const caller = authenticated(), b = await body(req)
+      const send=(x:Record<string,unknown>):{id:string}=>x.requestOf!==undefined?(()=>{throw new Fault(400,'Tag this post after sending it')})():x.agentMention===undefined&&typeof x.artinya==='string'&&x.artinya.trim()?store.tx(()=>{const {artinya,...rest}=x;const post=forum.create(caller,rest,groups);ask.setArtinya(caller,post.id,artinya);return post}):x.agentMention===undefined?forum.create(caller,x,groups):resident.createMentionPost(caller,x,groups)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
       if(path==='/v1/discovery/sources')result=discovery.add(caller,b)
@@ -379,6 +386,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       }
       else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='decide')result=requests.decide(caller,parts[2],b.decision)
       else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='withdraw')result=requests.withdraw(caller,parts[2])
+      // A post may carry the entries it is about (Percakapan); they are checked first and saved with the post, in one unit.
+      else if (path === '/v1/posts'&&b.tentang!==undefined){const {tentang:asked,...rest}=b;const tags=tentang.resolve(await entryCat(),asked);result=store.tx(()=>{const post=send(rest);if(tags.length)tentang.set(caller,post.id,tags);return store.getPost(caller,post.id)})}
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='tentang'){const tags=tentang.resolve(await entryCat(),b.entries);result=tentang.set(caller,parts[2],tags)}
       else if (path === '/v1/posts'&&b.requestOf!==undefined) result=requests.createPost(caller,b,forum)
       // In a Kamus community the composer may send the post's Indonesian translation (Artinya) with it, in one unit.
       else if (path === '/v1/posts'&&b.agentMention===undefined&&typeof b.artinya==='string'&&b.artinya.trim()) result=store.tx(()=>{const {artinya,...rest}=b;const post=forum.create(caller,rest,groups);ask.setArtinya(caller,post.id,artinya);return post})

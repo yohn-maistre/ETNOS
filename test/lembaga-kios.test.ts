@@ -45,7 +45,7 @@ test('existing language labels migrate to "bahasa yang dipakai" and keep their K
   const db = new LocalDatabase()
   try {
     db.exec('CREATE TABLE strata_migrations(version INTEGER PRIMARY KEY)')
-    for (let i = 0; i < migrations.length - 1; i++) { db.exec(migrations[i]); db.run('INSERT INTO strata_migrations VALUES(?)', i + 1) }
+    for (let i = 0; i < migrations.findIndex((m) => m.includes('ADD COLUMN role')); i++) { db.exec(migrations[i]); db.run('INSERT INTO strata_migrations VALUES(?)', i + 1) }
     db.run("INSERT INTO actors(id,did,name,kind) VALUES('a','did:web:a.example','Fixture','human')")
     db.run("INSERT INTO communities(id,title,description,visibility) VALUES('c','Fixture','Fixture','public')")
     db.run(`INSERT INTO contexts(id,slug,title,kind,description,language,aliases,created,active) VALUES('lang','bahasa-ekari','Ekari','language','x','id','["glottocode:ekar1243"]',0,1),('topic','kopi','Kopi','topic','x','id','[]',0,1)`)

@@ -28,7 +28,7 @@ export const KIND_LABEL: Record<EntryKind, string> = {
 const CLASS_KIND: Record<string, EntryKind> = { tempat: 'tempat', makhluk: 'makhluk', kelompok: 'suku', lembaga: 'lembaga', orang: 'orang', benda: 'benda', bahasa: 'bahasa', gagasan: 'gagasan', praktik: 'praktik', peristiwa: 'peristiwa', musim: 'musim', cerita: 'cerita' }
 const FACET_LABEL: Record<string, string> = { 'customary-region': 'Wilayah adat', province: 'Provinsi', regency: 'Kabupaten', city: 'Kota', 'institution-kind': 'Jenis lembaga', 'cultural-domain': 'Ranah budaya', 'community-kind': 'Jenis komunitas', 'topic-group': 'Kelompok topik' }
 /** The word a page title puts before a context's name. */
-const FACET_PREFIX: Record<string, string> = { 'customary-region': 'Wilayah adat', province: 'Provinsi', regency: 'Kabupaten', city: 'Kota' }
+export const FACET_PREFIX: Record<string, string> = { 'customary-region': 'Wilayah adat', province: 'Provinsi', regency: 'Kabupaten', city: 'Kota' }
 export const RESERVED = new Set(['notes', 'data', 'peta', 'lihat', 'jenis'])
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 /** A landform by the first word of its name: the rule is written down here so the kind can be checked. */
@@ -224,7 +224,7 @@ export async function catalogue(source: EntrySource) {
   }
   return { nodes, alias, contexts, ctxBySlug, ctxById, commons, thingEntry, placeOf, ancestors, within, labels, pages }
 }
-type Catalogue = Awaited<ReturnType<typeof catalogue>>
+export type Catalogue = Awaited<ReturnType<typeof catalogue>>
 
 /** The address an entry answers to, or null. `redirect` is set when the asked slug is an older or other address. */
 export function resolve(cat: Catalogue, asked: string): { slug: string; redirect: boolean } | null {

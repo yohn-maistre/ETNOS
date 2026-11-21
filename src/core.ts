@@ -313,6 +313,8 @@ export class StrataCore {
     this.audit(actorId, 'post.create', pid)
     return this.get<Post>('SELECT * FROM posts WHERE id=?', pid)!
   }
+  /** Reader views of posts that the caller has already chosen and checked (Percakapan reads only public ones). */
+  postViews(posts: Post[], viewer?: string) {return this.views(posts,viewer)}
   private view(p: Post, viewer?: string) {return this.views([p],viewer)[0]}
   private views(posts:Post[],viewer?:string){
     if(!posts.length)return[]
@@ -327,6 +329,8 @@ export class StrataCore {
     const counts=this.all<{id:string;kind:string;n:number}>("SELECT root_id id,'root' kind,COUNT(*) n FROM posts WHERE root_id IN(SELECT value FROM json_each(?)) AND id!=root_id AND hidden=0 GROUP BY root_id UNION ALL SELECT parent_id id,'direct' kind,COUNT(*) n FROM posts WHERE parent_id IN(SELECT value FROM json_each(?)) AND hidden=0 GROUP BY parent_id",roots,ids)
     const rootCounts=new Map(counts.filter(c=>c.kind==='root').map(c=>[c.id,c.n])),directCounts=new Map(counts.filter(c=>c.kind==='direct').map(c=>[c.id,c.n]))
     const contexts=this.all<{post_id:string;id:string;slug:string;title:string;kind:string}>("SELECT * FROM(SELECT l.record_id post_id,c.id,c.slug,c.title,c.kind,ROW_NUMBER() OVER(PARTITION BY l.record_id ORDER BY c.title) rank FROM record_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.record_kind='post' AND l.record_id IN(SELECT value FROM json_each(?)) AND c.active=1) WHERE rank<=10",ids)
+    // Entries a post is about that are not contexts (a lake, a species): Percakapan, src/tentang.ts.
+    const entries=this.all<{post_id:string;slug:string;title:string;label:string}>('SELECT post_id,slug,title,label FROM post_entries WHERE post_id IN(SELECT value FROM json_each(?)) ORDER BY created,slug',ids)
     const media=this.all<MediaView&{post_id:string}>('SELECT id,post_id,alt,width,height FROM media WHERE post_id IN(SELECT value FROM json_each(?)) ORDER BY position',ids)
     const jobs=new Map(this.all<{post_id:string;state:string}>("SELECT post_id,state FROM outbox WHERE operation='put' AND post_id IN(SELECT value FROM json_each(?))",ids).map(j=>[j.post_id,j.state]))
     const pollVotes=this.all<{post_id:string;choice:number;n:number;mine:number}>('SELECT post_id,choice,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM poll_votes WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,choice',viewer??null,ids)
@@ -347,6 +351,7 @@ export class StrataCore {
         offering:offeringView,content,season:(()=>{const r=content.season?seasons.get(content.season):undefined;return r&&r.community_id===p.community_id?{id:r.id,name:r.name}:null})(),revision:p.revision,updated:p.updated,deleted:!!p.deleted,locked:!!p.locked,pinned:!!p.pinned,
         permissions:{edit:human&&(viewer===p.author_id||(author.kind==='agent'&&['owner','moderator'].includes(roles.get(p.community_id)??'')))&&roles.has(p.community_id)&&!p.uri&&!p.deleted&&!p.release_id,moderate:human&&['owner','moderator'].includes(roles.get(p.community_id)??'')},
         contexts:p.deleted?[]:contexts.filter(c=>c.post_id===p.id).map(({id,slug,title,kind})=>({id,slug,title,kind})),
+        entries:p.deleted?[]:entries.filter(e=>e.post_id===p.id).map(({slug,title,label})=>({slug,title,label})),
         replies:rootCounts.get(p.root_id)??0,directReplies:directCounts.get(p.id)??0,
         media:p.deleted?[]:media.filter(m=>m.post_id===p.id).map(({id,alt,width,height})=>({id,alt,width,height,url:'/v1/media/'+id})),
         publicationState:p.uri?jobs.get(p.id)??'unknown':policy.get(p.community_id)?.visibility==='public'?'local':'private',

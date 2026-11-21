@@ -505,6 +505,9 @@ CREATE UNIQUE INDEX entry_claims_one_per_group ON entry_claims(group_id) WHERE s
 CREATE UNIQUE INDEX entry_claims_one_pending ON entry_claims(group_id) WHERE state='pending';
 CREATE TABLE kios(owner_kind TEXT NOT NULL CHECK(owner_kind IN ('actor','group')),owner_id TEXT NOT NULL,open INTEGER NOT NULL,whatsapp TEXT NOT NULL DEFAULT '',rules TEXT NOT NULL,updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id),PRIMARY KEY(owner_kind,owner_id));
 CREATE INDEX offerings_place ON offerings(place_context_id,status);
+`,`
+CREATE TABLE post_entries(post_id TEXT NOT NULL REFERENCES posts(id),slug TEXT NOT NULL,title TEXT NOT NULL,label TEXT NOT NULL,issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(post_id,slug));
+CREATE INDEX post_entries_slug ON post_entries(slug,post_id);
 `]
 
 export const schemaVersion=migrations.length

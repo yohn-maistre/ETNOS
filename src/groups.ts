@@ -756,7 +756,7 @@ export class Groups implements GroupAuthority {
       AND COALESCE(json_extract(p.content,'$.warning'),'')='' AND COALESCE(json_extract(r.content,'$.warning'),'')=''`;
     const tagged = `WITH v AS (${visible}),
       t AS (SELECT v.*,l.context_id FROM v JOIN record_contexts l ON l.record_kind='post' AND l.record_id=v.root
-        UNION SELECT v.*,cc.context_id FROM v JOIN community_contexts cc ON cc.community_id=v.community_id)`;
+        UNION SELECT v.*,cc.context_id FROM v JOIN community_contexts cc ON cc.community_id=v.community_id AND cc.role='about')`;
     const rows = this.store.all<ContextRow & { posts: number; threads: number; people: number }>(
       `${tagged} SELECT x.*,count(DISTINCT t.id) posts,count(DISTINCT t.root) threads,count(DISTINCT CASE WHEN a.kind='human' THEN t.author_id END) people
        FROM t JOIN contexts x ON x.id=t.context_id AND x.active=1 JOIN actors a ON a.id=t.author_id

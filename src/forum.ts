@@ -74,6 +74,7 @@ export class Forum {
    s.run("UPDATE posts SET text='',content='{}',deleted=1,pinned=0,revision=revision+1,updated=? WHERE id=?",s.clock(),id)
    for(const table of ['media','poll_votes','event_responses','votes','bookmarks','post_confirmations'])s.run(`DELETE FROM ${table} WHERE post_id=?`,id)
    s.run("DELETE FROM record_contexts WHERE record_kind='post' AND record_id=?",id)
+   s.run('DELETE FROM post_entries WHERE post_id=?',id)
    s.invalidatePublicContext(p.community_id)
    s.audit(actor,'post.delete',id);return s.getPost(actor,id)
   })
