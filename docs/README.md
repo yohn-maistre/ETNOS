@@ -281,6 +281,7 @@ Each answer points to the document and the section that holds it.
 | How can a community keep its own Aksara? | [aksara-node §7](research/aksara-node-for-communities-2026-11-17.md#7-recommendation) |
 | Which models does Aksara use, and what does it cost? | [showcase-plan §23.2](plan/showcase-plan-2026-11-17.md#232-models-decided-17-november) and [free-tier-llm §6](research/free-tier-llm-coverage-2026-11-16.md#6-recommended-routing) |
 | What runs on the free tier? | [free-tier-measurement](research/free-tier-measurement-2026-11-17.md#capacity-plainly) and [showcase-plan §3](plan/showcase-plan-2026-11-17.md#3-thirty-people-on-the-free-tier) |
+| How do communities build a language from nothing, and what does the Kamus take from that? | [language-from-nothing](research/language-from-nothing-2026-11-21.md) and [one-page-system §10](plan/one-page-system-2026-11-21.md#10-kamus-how-any-language-community-starts-even-with-no-data) |
 | How is knowledge modelled (entities, assertions, witnesses)? | [epistemic-multiplex §4](research/epistemic-multiplex-2026-11-19.md#4-the-model) |
 | What are the knowledge map coordinates and lenses? | [knowledge-map §1](knowledge/knowledge-map-design-2026-11-16.md#1-six-coordinates-for-every-item) and [§3](knowledge/knowledge-map-design-2026-11-16.md#3-lenses) |
 | How do we seed a new place? | [showcase-plan §23](plan/showcase-plan-2026-11-17.md#23-deploying-strata-and-the-operators-first-run) and [public data, part 3](research/peoples-places-and-public-data-2026-11-17.md#part-3-public-data-to-seed-a-papua-deployment) |
