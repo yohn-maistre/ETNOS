@@ -18,13 +18,13 @@ import {randomUUID} from 'node:crypto'
 import {StrataCore,Fault} from './core.ts'
 import {Periksa,type Evidence} from './periksa.ts'
 import {Kamus,norm as kamusNorm,type KamusLexicon} from './kamus.ts'
-import {tokenize,matchWord,stripSuffix,chooseUnderlines,align,indonesianWords,guessClass,normWord,DEFAULT_SUFFIXES,WORD_CLASSES,CLASS_LABEL,type Token,type Candidate,type WordClass,type Pair} from './kamus-text.ts'
+import {tokenize,matchWord,stripSuffix,chooseUnderlines,align,indonesianWords,guessClass,normWord,DEFAULT_SUFFIXES,WORD_CLASSES,CLASS_LABEL,type Token,type Candidate,type WordClass,type Pair} from '../apps/web/src/kamus-text.ts'
 import type {ViewerRecord} from './entri.ts'
 
 export type Concept={n:number;concepticon:number;gloss:string;english:string;id:string;class:WordClass}
 export type ConceptList={list:string;title:string;source:string;url:string;licence:string;concepts:Concept[]}
 type EntryRow={id:string;community_id:string;lemma:string;norm:string;gloss:string;pos:string;context:string;source:string;licence:string;page:number|null;state:string;claim_id:string|null;variants:string;definition:string;dialect:string;sensitive:number;created:number;updated:number}
-type Ref={id:string;lemma:string;gloss:string;pos:string;context:string;source:string;licence:string;page:number|null;row:string;claimId:string|null;variants:{form:string;dialect:string}[];dialect:string;sensitive:boolean}
+type Ref={id:string;lemma:string;gloss:string;indonesian:boolean;pos:string;context:string;source:string;licence:string;page:number|null;row:string;claimId:string|null;variants:{form:string;dialect:string}[];dialect:string;sensitive:boolean}
 type Use={uses:number;authors:Set<string>;last:number;examples:{postId:string;text:string}[]}
 type Heavy={version:string;at:number;forms:Map<string,Ref[]>;freq:Map<string,Use>|null;aligned:Map<string,{indonesian:string;dice:number;together:number;pairs:{postId:string;local:string;indonesian:string}[]}>}
 type QRow={key:string;kind:'stem'|'align'|'concept'|'picture';form:string;entry_id:string|null;stem:string;suffix:string;gloss:string;word_class:string;subject:string;claim_id:string}
@@ -89,8 +89,11 @@ export class KamusAsk{
   const hit=this.cache.get(communityId)
   if(hit&&hit.version===version&&s.clock()-hit.at<TTL)return hit
   const forms=new Map<string,Ref[]>()
+  // Which seed meanings are in Indonesian: the seed says so per entry (gloss_id); TNG glosses are English.
+  const seed=this.lexicon.seeds[this.kamus.settings(communityId).language]
+  const idGloss=new Set((seed?.entries??[]).filter(e=>e.gloss_id).map(e=>kamusNorm((e.modern||e.lemma).trim())+'|'+e.gloss_id!.trim()))
   for(const r of s.all<EntryRow>("SELECT * FROM kamus_entries WHERE community_id=? AND state<>'candidate'",communityId)){
-   const ref:Ref={id:r.id,lemma:r.lemma,gloss:r.gloss,pos:r.pos,context:r.context,source:r.source,licence:r.licence,page:r.page,row:r.state,claimId:r.claim_id,variants:JSON.parse(r.variants||'[]'),dialect:r.dialect,sensitive:!!r.sensitive}
+   const ref:Ref={id:r.id,lemma:r.lemma,gloss:r.gloss,indonesian:!r.source.startsWith('seed:')||idGloss.has(r.norm+'|'+r.gloss),pos:r.pos,context:r.context,source:r.source,licence:r.licence,page:r.page,row:r.state,claimId:r.claim_id,variants:JSON.parse(r.variants||'[]'),dialect:r.dialect,sensitive:!!r.sensitive}
    for(const f of new Set([r.norm,...ref.variants.map(x=>kamusNorm(x.form))]))if(f)forms.set(f,[...(forms.get(f)??[]),ref])
   }
   let freq:Heavy['freq']=null
@@ -154,12 +157,12 @@ export class KamusAsk{
   if(stemEntry){const ref=[...h.forms.values()].flat().find(r=>r.id===stemEntry);if(ref&&(showSensitive||!ref.sensitive))return {state:'checked' as const,ref,cls:l.classes.get(norm)??l.classes.get(kamusNorm(ref.lemma))??''}}
   const open=refs.filter(r=>{const st=this.refState(r,l);return ['seed','proposed','open','split'].includes(st)||(st==='withdrawn'&&r.row==='seed')})
   // An entry with a meaning comes first; among those, one already being checked.
-  const best=open.sort((a,b)=>Number(!!b.gloss)-Number(!!a.gloss)||Number(!!b.claimId)-Number(!!a.claimId))[0]
+  const best=bestRef(open)
   if(best&&best.gloss)return {state:'entry' as const,ref:best}
   if(refs.length)return {state:'rejected' as const,ref:refs[0]}
   if(norm.length<3||this.contact(norm))return {state:'none' as const}
   const m=matchWord(norm,known,suffixes)
-  if(m?.kind==='stem'){const ref=(h.forms.get(m.stem!)??[]).find(r=>!!r.gloss&&(showSensitive||!r.sensitive));if(ref)return {state:'stem' as const,ref,stem:m.stem!,suffix:m.suffix!}}
+  if(m?.kind==='stem'){const ref=bestRef((h.forms.get(m.stem!)??[]).filter(r=>!!r.gloss&&(showSensitive||!r.sensitive)));if(ref)return {state:'stem' as const,ref,stem:m.stem!,suffix:m.suffix!}}
   const al=h.aligned.get(norm)
   if(al)return {state:'align' as const,align:al}
   const u=h.freq?.get(norm)
@@ -193,30 +196,32 @@ export class KamusAsk{
 
  /** Underlines and checked words for the posts a reader sees, from the server's own copy of each post. */
  annotate(actor:string|undefined,postIds:string[]){
-  const out:Record<string,{u:[number,number,string,QuestionKind][];c:[number,number,string][];a:number}>={}
+  // Underlines and checked words are named by the word itself, not by offsets, because markdown posts are shown
+  // as rendered HTML. The reader marks the first match of each underlined word and every checked word.
+  const out:Record<string,{u:[string,string,QuestionKind][];c:[string,string][];a:number}>={}
   const byCommunity=new Map<string,{id:string;text:string;tokens:Token[]}[]>()
   for(const id of [...new Set(postIds)].slice(0,60)){
    const p=this.s.get<{id:string;community_id:string;text:string;deleted:number;content:string;kind:string}>("SELECT p.id,p.community_id,p.text,p.deleted,p.content,a.kind FROM posts p JOIN actors a ON a.id=p.author_id WHERE p.id=? AND p.hidden=0",id)
    if(!p||p.deleted||p.kind!=='human')continue
    if(!this.s.canRead(actor,this.s.community(p.community_id))||!this.on(p.community_id))continue
-   if((JSON.parse(p.content||'{}') as {format?:string}).format==='markdown')continue
-   byCommunity.set(p.community_id,[...(byCommunity.get(p.community_id)??[]),{id:p.id,text:p.text,tokens:tokenize(p.text)}])
+   const markdown=(JSON.parse(p.content||'{}') as {format?:string}).format==='markdown'
+   byCommunity.set(p.community_id,[...(byCommunity.get(p.community_id)??[]),{id:p.id,text:p.text,tokens:tokenize(markdown?plainOfMarkdown(p.text):p.text)}])
   }
   for(const [communityId,posts] of byCommunity){
    const h=this.heavy(communityId),l=this.light(actor,communityId),suffixes=this.suffixes(communityId).list,member=this.isMember(actor,communityId)
    const counts=new Map(this.s.all<{post_id:string;n:number}>(`SELECT post_id,COUNT(*) n FROM kamus_artinya WHERE post_id IN (${posts.map(()=>'?').join(',')}) GROUP BY post_id`,...posts.map(p=>p.id)).map(r=>[r.post_id,r.n]))
    for(const p of posts){
-    const cands:Candidate[]=[],kinds=new Map<string,QuestionKind>(),checked:[number,number,string][]=[]
+    const cands:Candidate[]=[],kinds=new Map<string,QuestionKind>(),checked=new Map<string,string>()
     for(const t of p.tokens){
      if(t.skip||t.norm.length<3)continue
      const c=this.classify(t.norm,h,l,suffixes,member)
-     if(c.state==='checked'){checked.push([t.start,t.end,c.cls]);continue}
+     if(c.state==='checked'){checked.set(t.norm,c.cls);continue}
      // Visitors of a public community see checked words only; questions are for members.
      if(!member)continue
      const q=this.question(t.norm,t.text,h,l,suffixes,member)
      if(this.openFor(q,l)){cands.push({token:t,key:q!.key,weight:q!.weight});kinds.set(q!.key,q!.kind)}
     }
-    out[p.id]={u:chooseUnderlines(cands).map(c=>[c.token.start,c.token.end,c.key,kinds.get(c.key)!]),c:checked,a:counts.get(p.id)??0}
+    out[p.id]={u:chooseUnderlines(cands).map(c=>[c.token.norm,c.key,kinds.get(c.key)!]),c:[...checked],a:counts.get(p.id)??0}
    }
   }
   return out
@@ -341,7 +346,7 @@ export class KamusAsk{
    const known=(n:string)=>(h.forms.get(n)??[]).some(r=>!!r.gloss)
    const m=stripSuffix(a,suffixes,known)
    if(!m||m.stem!==b2||this.contact(a))throw new Fault(409,'This question is no longer open')
-   const ref=(h.forms.get(m.stem)??[]).find(r=>!!r.gloss)!
+   const ref=bestRef((h.forms.get(m.stem)??[]).filter(r=>!!r.gloss))!
    claimId=this.periksa.propose(actor,communityId,{kind:'word',subject:a,statement:`"${a}" adalah bentuk dari "${ref.lemma}" ("${ref.gloss}"), dengan akhiran -${m.suffix}.`,evidence:[...this.sourceEvidence(ref),...this.evidence(communityId,a,postId)].slice(0,5)},null,'source').id
    row={kind:'stem',form:a,entry_id:ref.id,stem:ref.lemma,suffix:m.suffix,gloss:ref.gloss,word_class:'',subject:''}
   }else if(kind==='align'){
@@ -528,12 +533,16 @@ export class KamusAsk{
  }
 }
 
+/** Markdown without link targets, image addresses and markup, so only the words a reader sees are matched. */
+export const plainOfMarkdown=(t:string)=>t.replace(/!\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/\]\([^)]*\)/g,']').replace(/[*_`~#>|[\]]/g,' ')
 /** The sentence of a post that holds a token, for an example. */
 export function sentenceAround(text:string,t:Token){
  let start=0
  for(const sentence of sentencesOf(text)){const at=text.indexOf(sentence,start);if(at<0)continue;if(t.start>=at&&t.start<at+sentence.length)return sentence;start=at+sentence.length}
  return text.slice(Math.max(0,t.start-80),t.end+80).trim()
 }
+/** A meaning in Indonesian comes before one in another language (TNG glosses are English), then one already asked. */
+function bestRef(refs:Ref[]){const score=(r:Ref)=>(r.gloss?4:0)+(r.indonesian?2:0)+(r.claimId?1:0);return [...refs].sort((a,b)=>score(b)-score(a))[0]}
 function taxonWord(r:ViewerRecord){
  const t=r.taxonomy??[]
  if(t.some(x=>x.name==='Aves'))return 'burung'

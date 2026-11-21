@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {tokenize,matchWord,stripSuffix,chooseUnderlines,align,guessClass,indonesianWords,DEFAULT_SUFFIXES,type Candidate} from '../src/kamus-text.ts'
+import {tokenize,matchWord,stripSuffix,chooseUnderlines,align,guessClass,indonesianWords,DEFAULT_SUFFIXES,type Candidate} from '../apps/web/src/kamus-text.ts'
 
 // Test strings written for these tests. They are shaped like mixed Mee and Indonesian posts, not quoted from anywhere.
 const MEE=DEFAULT_SUFFIXES.ekar1243

@@ -34,16 +34,18 @@ function fixture(visibility:'public'|'hidden-private'='public'){
 }
 type F=ReturnType<typeof fixture>
 const read=(f:F)=>f.k.setSettings(f.a,f.room,{machineReading:true})
-const words=(f:F,text:string,id:string,who?:string)=>f.ask.annotate(who,[id])[id]?.u.map(([s,e,key,kind])=>[text.slice(s,e),kind,key.split(':')[0]]) ?? null
+const words=(f:F,_text:string,id:string,who?:string)=>f.ask.annotate(who,[id])[id]?.u.map(([word,key,kind])=>[word,kind,key.split(':')[0]]) ?? null
 
 test('underlines ask only open questions: seed matches, stems, never names or Indonesian words',()=>{
  const f=fixture();try{
   const text='Owaya ibo. Kami pergi ke Owa tadi. Mereka bilang jame enaa.'
   const post=f.s.createPost(f.b,f.room,text)
-  assert.deepEqual(words(f,text,post.id,f.c),[['Owaya','stem','stem'],['jame','entry','entry']],'"Owa" mid-sentence is a name; "mereka" is not a form of "mere"')
+  assert.deepEqual(words(f,text,post.id,f.c),[['owaya','stem','stem'],['jame','entry','entry']],'"Owa" mid-sentence is a name; "mereka" is not a form of "mere"')
   assert.deepEqual(words(f,text,post.id,undefined),[],'visitors of a public community see no questions')
   const other=f.s.createPost(f.a,f.plain,text)
   assert.equal(f.ask.annotate(f.a,[other.id])[other.id],undefined,'a community without a Kamus is left alone')
+  const md=f.s.createPost(f.b,f.room,'**Ibo** [owa](https://contoh.id/jame) lihat.',undefined,undefined,{content:{format:'markdown'}})
+  assert.deepEqual(words(f,'',md.id,f.c),[['ibo','entry','entry']],'markdown posts are read without link targets')
   const long='Ibo owa. Ugee yame. Owa ibo. Ugee ibo.'
   const p2=f.s.createPost(f.b,f.room,long)
   assert.equal(f.ask.annotate(f.c,[p2.id])[p2.id].u.length,3,'at most three per post, one per sentence')
@@ -55,7 +57,7 @@ test('frequent unknown words become questions only with counting allowed, at thr
   const t1=f.s.createPost(f.b,f.room,'Agiyo tai.'),t2=f.s.createPost(f.b,f.room,'Agiyo lagi.');f.s.createPost(f.c,f.room,'Mogo agiyo.')
   assert.deepEqual(words(f,'Agiyo tai.',t1.id,f.d),[],'counting across posts is off by default')
   read(f)
-  assert.deepEqual(words(f,'Agiyo tai.',t1.id,f.d),[['Agiyo','frequent','frequent']])
+  assert.deepEqual(words(f,'Agiyo tai.',t1.id,f.d),[['agiyo','frequent','frequent']])
   f.forum.delete(f.b,t2.id,1)
   assert.deepEqual(words(f,'Agiyo tai.',t1.id,f.d),[],'a deleted post stops counting at once')
   const q=f.ask.word(f.d,f.room,'agiyo');assert.equal(q.state,'new');assert.equal(q.question,null)
@@ -86,8 +88,8 @@ test('after the check the word is known: no underline, a class letter for Mode b
   assert.deepEqual(f.ask.annotate(f.c,[post.id])[post.id].c,[],'not checked yet')
   f.ask.answer(f.c,f.room,{key,answer:'yes',form:'ibo',wordClass:'sifat'})
   const a=f.ask.annotate(f.c,[post.id])[post.id]
-  assert.deepEqual(a.u,[]);assert.deepEqual(a.c,[[0,3,'sifat']])
-  assert.deepEqual(f.ask.annotate(undefined,[post.id])[post.id].c,[[0,3,'sifat']],'checked words of a public community show to visitors')
+  assert.deepEqual(a.u,[]);assert.deepEqual(a.c,[['ibo','sifat']])
+  assert.deepEqual(f.ask.annotate(undefined,[post.id])[post.id].c,[['ibo','sifat']],'checked words of a public community show to visitors')
  }finally{f.s.close()}
 })
 

@@ -212,7 +212,8 @@
     <div class="ep-panel" id={uid + '-panel'} role="tabpanel" aria-labelledby={uid + '-tab-' + tab}>
       {#if tab === 'tentang'}
         {#if showBlurb}<p class="ep-blurb">{entry.description}</p>{/if}
-        {#if entry.facts.length}<dl class="ep-facts">
+        {#if entry.facts.length || entry.localNames?.length}<dl class="ep-facts">
+            {#each entry.localNames ?? [] as n (n.community.id + n.name)}<div><dt>Nama lokal</dt><dd><strong>{n.name}</strong> dalam bahasa {n.language}, menurut anggota <a href={'/communities/' + n.community.id}>{n.community.title}</a></dd></div>{/each}
             {#each entry.facts as f (f.label)}<div><dt>{f.label}</dt><dd>{#if f.href}<a href={f.href} target={f.href.startsWith('http') ? '_blank' : undefined} rel={f.href.startsWith('http') ? 'noreferrer' : undefined}>{f.value}{#if f.href.startsWith('http')}<ArrowUpRight size={13} aria-hidden="true" />{/if}</a>{:else}{f.value}{/if}</dd></div>{/each}
           </dl>{/if}
 

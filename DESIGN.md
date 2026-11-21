@@ -227,6 +227,13 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 - **Catalogue strip:** a 64px bar under the body with round step buttons, a tabular counter (*3 / 14*), 44px thumbnails with 10px radius (the current one outlined in the foreground colour, a kind icon when there is no image) and a *Semua* pill. Pulled up, or with *Semua*, it opens a grid of cards above itself (up to 72% of the screen, kind filter pills at the top) that rises in 240ms, or appears at once with reduced motion. On phones the bar gets a grab handle and the thumbnails take their own line.
 - **Controls over a body:** round 36px buttons on a translucent surface (44px on touch screens) top right, pill groups for views. Every image shows its maker, licence and source under it; the panel ends with every source and licence of the record.
 
+### Kamus in posts (`KamusBody.svelte`, `KamusCard.svelte`, `KamusTop.svelte`)
+- **Question underline:** a dotted 2px underline in the accent colour, offset 0.22em, on at most three words per post. It is a button, so the keyboard reaches it. Every other word opens the card on tap.
+- **Word card:** a solid card in the accent colour with the accent's foreground text, 16px radius, 360px wide next to the word on desktop and a bottom card with 12px margins on phones. Answers and chips are 44px tall; *Ya* is filled with the foreground colour. The source and licence sit under a hairline in 12.5px.
+- **Notice card:** the same solid accent fill as a strip above the posts, shown only from ten open questions.
+- **Mode belajar:** checked words get a 15% tint and a 1.5px bottom line in their class colour, plus a small class letter, so colour is never the only cue. Word class colours reuse the level bands: benda #067132 (dark #1d7d3e), kerja #305eb7 (#4777d2), sifat #b54d98 (#c664a8), lainnya #857d0b (#918112). The legend names each class.
+- **Cetak kamus:** a white page with two columns of entries by first letter, sources and licences in the footer; the print stylesheet hides everything else.
+
 ## Do's and Don'ts
 
 ### Do:

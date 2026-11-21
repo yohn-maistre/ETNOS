@@ -82,6 +82,7 @@
   import JoinFounding from './JoinFounding.svelte'
   import { rememberLink } from './founding-links'
   import Choice from './Choice.svelte'
+  import { kamus as kamusWords, setKamusViewer } from './kamus-posts.svelte.ts'
   import CommunityKindPicker from './CommunityKindPicker.svelte'
   import * as Card from '$lib/components/ui/card/index.js'
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js'
@@ -297,6 +298,8 @@
       .then((k) => { kamusStarted[id] = !!k.settings.language })
       .catch(() => {})
   })
+  // Kamus in posts: the reader's own settings (Mode belajar) follow who is signed in.
+  $effect(() => setKamusViewer(auth.actor?.id ?? ''))
   const currentMembership = $derived(
     community
       ? memberships.find((m) => m.community_id === community.id)
@@ -1339,6 +1342,7 @@
         </div>
       </div>
       {#if auth.actor && isMember(community.id)}{#key periksaTick}{#await import('./PeriksaDeck.svelte') then module}<module.default communityId={community.id}/>{/await}{/key}{/if}
+      {#if auth.actor && isMember(community.id) && kamusStarted[community.id] && tab === 'discussion'}{#key community.id}{#await import('./KamusTop.svelte') then module}<module.default communityId={community.id}/>{/await}{/key}{/if}
       <Tabs.Root bind:value={tab}>
         <div class="section-tab-scroll" use:tabScroll>
           <Tabs.List
@@ -1358,7 +1362,7 @@
           </Tabs.List>
         </div>
         <Tabs.Content value={tab}>
-          {#if tab==='kamus'}{#await import('./KamusTab.svelte') then module}<module.default communityId={community.id} steward={isSteward(community.id)} operator={auth.steward} member={isMember(community.id)} visibility={community.visibility} onChanged={() => { kamusStarted[community.id] = true; periksaTick++ }}/>{/await}{:else if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
+          {#if tab==='kamus'}{#await import('./KamusTab.svelte') then module}<module.default communityId={community.id} title={community.title} steward={isSteward(community.id)} operator={auth.steward} member={isMember(community.id)} visibility={community.visibility} onChanged={() => { kamusStarted[community.id] = true; periksaTick++ }}/>{/await}{:else if tab==='offers'}{#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} communityId={community.id} compact onCreate={()=>startOffering(community.id)}/>{/await}{:else if tab === 'voices'}{#await import('./EngagementPage.svelte') then module}<module.default
                 {auth}
                 communityId={community.id}
                 onAsk={() => {
@@ -1828,6 +1832,7 @@
   {/snippet}
 </PlatformShell>
 <NotificationHost />
+{#if kamusWords.card}{#await import('./KamusCard.svelte') then module}<module.default />{/await}{/if}
 {#if authDialogOpen}
   <WelcomeDialog exiting={authDialogLeaving} ready={(authDialogMode !== 'welcome' || !loading) && !authDialogLeaving} mode={authDialogMode} intro={welcomeIntro} bind:handle bind:publishing={publishingConsent} livePublishing={!!cap?.publication.liveAT} {busy} failed={new URLSearchParams(authSearch).has('error')} submitError={authDialogError} onsubmit={login} onclose={closeAuth}/>
 {/if}

@@ -16,6 +16,9 @@
   import LinkPreview from './LinkPreview.svelte'
   import { markdown, videoEmbed, directVideo } from './markdown'
   import { request, type Post } from './api'
+  import KamusBody from './KamusBody.svelte'
+  import KamusArtinya from './KamusArtinya.svelte'
+  import { kamus, want } from './kamus-posts.svelte.ts'
   let {
     post,
     detail = false,
@@ -52,6 +55,9 @@
     videoEmbed(post.content?.url ?? '') || directVideo(post.content?.url ?? ''),
   )
   const truncated = $derived(!detail && !expanded && body.length > 900)
+  // In a community with a Kamus, people's posts get question underlines, the word card and Artinya.
+  $effect(() => { void kamus.tick; if (post.author.kind === 'human' && !post.deleted) want(post.id) })
+  const words = $derived(post.author.kind === 'human' && !post.deleted ? kamus.annotations[post.id] ?? null : null)
   async function act(route: string, b: unknown) {
     if (busy) return
     busy = true
@@ -92,7 +98,7 @@
         </h2>{/if}
       {#if post.content?.answer}<small class="post-answer-label">{answerLabel[post.content.answer]}</small>{/if}
       <div class="cx-post-body strata-body" class:post-clamped={truncated}>
-        {#if post.content?.format === 'markdown'}<div class="post-markdown">
+        {#if words}<KamusBody postId={post.id} communityId={post.community_id} markdown={post.content?.format === 'markdown'} html={post.content?.format === 'markdown' ? markdown(body, inlineImages) : undefined} text={body} />{:else if post.content?.format === 'markdown'}<div class="post-markdown">
             {@html markdown(body, inlineImages)}
           </div>{:else}<PostText
             text={body}
@@ -105,6 +111,7 @@
         >
           Baca selengkapnya
         </button>{/if}
+      {#if words}<KamusArtinya postId={post.id} count={words.a} member={canVote} viewer={kamus.viewer} />{/if}
       {#if card}{#await import('./cards/OpenCard.svelte') then m}<m.default source={card} />{/await}{/if}
       {#if post.content?.sources?.length || folded || post.answers}<SourcesPanel {post} tail={folded?.tail ?? ''} open={detail} {loggedIn} canAnswer={canVote} {onError} {onAnswered} />{/if}
       {#if post.media?.length}<PostMedia

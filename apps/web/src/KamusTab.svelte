@@ -7,12 +7,30 @@
   import { Input } from '$lib/components/ui/input/index.js'
   import { Switch } from '$lib/components/ui/switch/index.js'
   import { request } from './api'
+  import KamusMine from './KamusMine.svelte'
+  import KamusPrint from './KamusPrint.svelte'
 
   type Example = { postId: string; text: string }
-  type Entry = { id: string; lemma: string; gloss: string; pos: string; context: string; source: string; licence: string; page: number | null; state: string; uses: number; speakers: number; examples: Example[]; claimId: string | null }
+  type Entry = { id: string; lemma: string; gloss: string; pos: string; context: string; source: string; licence: string; page: number | null; state: string; uses: number; speakers: number; examples: Example[]; claimId: string | null; variants?: { form: string; dialect: string }[]; dialect?: string; sensitive?: boolean }
   type Language = { id: string; name: string; sources: Record<string, { citation: string; licence: string; url: string | null }> }
   type View = { settings: { machineReading: boolean; language: string; languageName: string; languageSource: '' | 'label' | 'operator'; seeded: boolean }; contexts: string[]; languages: Language[]; counts: Record<string, number>; entries: Entry[] }
-  let { communityId, steward = false, operator = false, member = false, visibility = 'public', onChanged }: { communityId: string; steward?: boolean; operator?: boolean; member?: boolean; visibility?: string; onChanged?: () => void } = $props()
+  let { communityId, title = '', steward = false, operator = false, member = false, visibility = 'public', onChanged }: { communityId: string; title?: string; steward?: boolean; operator?: boolean; member?: boolean; visibility?: string; onChanged?: () => void } = $props()
+  // Kata saya (a member's own words), Cetak kamus and, for stewards, the suffix list and the export.
+  let mode = $state<'kamus' | 'mine'>('kamus'),
+    printing = $state(false),
+    suffixes = $state<{ list: string[]; custom: boolean; learned: { suffix: string; checked: number }[] } | null>(null),
+    suffixDraft = $state(''),
+    suffixNote = $state('')
+  const kamusBase = $derived('/v1/communities/' + encodeURIComponent(communityId) + '/kamus')
+  async function loadSuffixes() { try { suffixes = await request(kamusBase + '/suffixes', undefined, undefined, true); suffixDraft = suffixes!.list.map((x) => '-' + x).join(' ') } catch { suffixes = null } }
+  $effect(() => { if (steward && (settingsOpen || !total) && view?.settings.language && !suffixes) void loadSuffixes() })
+  async function saveSuffixes(list: string[]) {
+    suffixNote = ''
+    try { suffixes = await request(kamusBase + '/suffixes', { suffixes: list }); suffixDraft = suffixes!.list.map((x) => '-' + x).join(' '); suffixNote = 'Daftar akhiran tersimpan.' } catch (e) { suffixNote = e instanceof Error ? e.message : 'Daftar akhiran belum tersimpan.' }
+  }
+  async function setSensitive(e: Entry, sensitive: boolean) {
+    try { await request(kamusBase + '/' + encodeURIComponent(e.id) + '/sensitive', { sensitive }); e.sensitive = sensitive } catch (err) { error = err instanceof Error ? err.message : 'Belum tersimpan.' }
+  }
 
   let view = $state<View | null>(null),
     q = $state(''),
@@ -105,6 +123,19 @@
       {/if}
     </header>
 
+    {#if member}
+      <div class="kamus-modes" role="tablist" aria-label="Isi kamus">
+        <button type="button" role="tab" aria-selected={mode === 'kamus'} onclick={() => (mode = 'kamus')}>Kamus komunitas</button>
+        <button type="button" role="tab" aria-selected={mode === 'mine'} onclick={() => (mode = 'mine')}>Kata saya</button>
+      </div>
+    {/if}
+    {#if mode === 'mine' && member}<KamusMine {communityId} />{:else}
+    {#if total}
+      <div class="kamus-actions">
+        <Button variant="outline" size="sm" type="button" onclick={() => (printing = true)}>Cetak kamus</Button>
+        {#if steward}<Button variant="outline" size="sm" href={kamusBase + '/export'} download>Unduh CSV</Button><Button variant="outline" size="sm" href={kamusBase + '/export?format=cldf'} download>Unduh CLDF</Button>{/if}
+      </div>
+    {/if}
     {#if (steward || operator) && (settingsOpen || !total)}
       <div class="kamus-panel">
         <label class="kamus-row">
@@ -132,6 +163,14 @@
         </div>
         {#if visibility !== 'public'}<p class="kamus-hint">Komunitas ini tertutup. Model di server tidak membaca percakapannya, jadi Aksara tidak mengusulkan arti di sini.</p>
         {:else}<p class="kamus-hint">Aksara mengusulkan arti untuk lima kata sekali jalan. Setiap usulan menjadi kartu Periksa dan baru masuk kamus setelah anggota menjawab.</p>{/if}
+        {#if steward && suffixes}
+          <form class="kamus-suffixes" onsubmit={(e) => { e.preventDefault(); void saveSuffixes(suffixDraft.split(/[\s,]+/).filter(Boolean)) }}>
+            <label for="kamus-suffixes"><strong>Akhiran yang dilepas saat mencocokkan kata</strong><small>Kata seperti owaya dicocokkan dengan owa setelah akhiran -ya dilepas, lalu ditanyakan kepada anggota sebagai "Bentuk dari owa?". Pisahkan dengan spasi.</small></label>
+            <div><Input id="kamus-suffixes" bind:value={suffixDraft} autocomplete="off" /><Button size="sm" type="submit">Simpan</Button></div>
+            {#if suffixes.learned.length}<p class="kamus-hint">Dari jawaban anggota: {#each suffixes.learned as l (l.suffix)}<button type="button" class="kamus-link" onclick={() => saveSuffixes([...suffixes!.list, l.suffix])}>Tambahkan -{l.suffix}</button> {/each}</p>{/if}
+            {#if suffixNote}<p class="kamus-note" role="status">{suffixNote}</p>{/if}
+          </form>
+        {/if}
         {#if note}<p class="kamus-note" role="status">{note}</p>{/if}
         {#if error}<p class="kamus-error" role="alert">{error}</p>{/if}
       </div>
@@ -160,9 +199,11 @@
                 <div class="kamus-word">
                   <span class="kamus-lemma">{e.lemma}</span>
                   {#if BADGE[e.state]}<span class="kamus-state" data-state={e.state}>{BADGE[e.state]}</span>{/if}
+                  {#if e.sensitive}<span class="kamus-state" data-state="sensitive">Jangan disebarkan</span>{/if}
                 </div>
                 <p class="kamus-gloss" class:clamp={openId !== e.id}>{#if e.gloss}{e.gloss}{:else}<span class="muted">Arti belum diusulkan</span>{/if}</p>
-                <p class="kamus-meta">{meta(e)}</p>
+                <p class="kamus-meta">{meta(e)}{#if e.variants?.length} · Tulisan lain: {e.variants.map((v) => v.form + (v.dialect ? ' (' + v.dialect + ')' : '')).join(', ')}{/if}</p>
+                {#if steward}<button class="kamus-link" type="button" onclick={() => setSensitive(e, !e.sensitive)}>{e.sensitive ? 'Boleh dibaca publik' : 'Tandai jangan disebarkan'}</button>{/if}
                 {#if member && e.state === 'candidate' && writingId !== e.id}<button class="kamus-link" type="button" onclick={() => { writingId = e.id; draft = { gloss: '', context: 'Lainnya' }; writeError = '' }}>Tulis arti</button>{/if}
                 {#if writingId === e.id}
                   <form class="kamus-write" onsubmit={(ev) => { ev.preventDefault(); sendMeaning(e) }}>
@@ -200,10 +241,22 @@
     {:else if !steward}
       <p class="kamus-empty">Kamus komunitas ini belum dimulai.</p>
     {/if}
+    {/if}
+    {#if visibility !== 'public'}<p class="kamus-hint">Komunitas ini tertutup. Kamusnya hanya terlihat oleh anggota, dan secara teknis oleh pengelola server ETNOS. Tidak ada kata yang tampil di halaman publik.</p>{/if}
   {/if}
 </section>
+{#if printing}<KamusPrint {communityId} {title} onClose={() => (printing = false)} />{/if}
 
 <style>
+  .kamus-modes { display: flex; gap: 6px; }
+  .kamus-modes button { min-height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .kamus-modes button[aria-selected='true'] { border-color: transparent; background: var(--foreground); color: var(--background); }
+  .kamus-modes button:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
+  .kamus-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .kamus-suffixes { display: grid; gap: 8px; }
+  .kamus-suffixes label { display: grid; gap: 3px; }
+  .kamus-suffixes label small { color: var(--muted-foreground); font-size: 0.85rem; line-height: 1.45; }
+  .kamus-suffixes div { display: flex; gap: 8px; }
   .kamus { display: grid; gap: 18px; padding: 12px 20px 28px; }
   @media (max-width: 560px) { .kamus { padding-inline: 16px; } }
   .kamus-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
@@ -242,6 +295,7 @@
   .kamus-state[data-state='checked'] { background: color-mix(in oklab, #2f7d4f 16%, transparent); color: color-mix(in oklab, #2f7d4f 80%, var(--foreground)); }
   .kamus-state[data-state='proposed'] { background: color-mix(in oklab, #1f4e8c 14%, transparent); color: color-mix(in oklab, #1f4e8c 80%, var(--foreground)); }
   .kamus-state[data-state='rejected'] { text-decoration: line-through; }
+  .kamus-state[data-state='sensitive'] { background: color-mix(in oklab, #b32228 13%, transparent); color: color-mix(in oklab, #b32228 80%, var(--foreground)); }
   .kamus-gloss { margin: 0; font-size: 0.98rem; max-width: 68ch; }
   .kamus-gloss.clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
   :global(.kamus-more) { justify-self: start; }

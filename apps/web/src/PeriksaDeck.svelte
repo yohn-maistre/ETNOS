@@ -6,9 +6,15 @@
   import { Check, X, ChevronDown, PencilLine, ListChecks } from '@lucide/svelte'
   import { request } from './api'
 
-  type Claim = { id: string; kind: string; subject: string; statement: string; evidence: { text: string; source?: string }[]; proposer: { name: string; kind: string }; state: string }
+  type Claim = { id: string; kind: string; subject: string; statement: string; evidence: { text: string; source?: string }[]; proposer: { name: string; kind: string }; state: string; origin?: string; ask?: Ask }
   type Queue = { quorum: number; waiting: number; claims: Claim[] }
-  let { communityId, onChanged }: { communityId: string; onChanged?: () => void } = $props()
+  // With source "kamus" the deck shows the Kamus questions of a community (src/kamus-ask.ts): seed meanings, forms,
+  // meanings from translations, frequent new words and others' answers. Each card also takes a word class and a
+  // written correction, and answers go to the Kamus, which keeps them in Periksa claims.
+  type Ask = { key: string; kind: string; form: string; text: string; gloss: string; wordClass: string; source: string; licence: string; examples: { postId: string; text: string }[] }
+  let { communityId, onChanged, source = 'periksa', strip = true }: { communityId: string; onChanged?: () => void; source?: 'periksa' | 'kamus'; strip?: boolean } = $props()
+  const KAMUS_CLASSES: [string, string][] = [['benda', 'Benda'], ['kerja', 'Kerja'], ['sifat', 'Sifat'], ['lainnya', 'Lainnya']]
+  let chosenClass = $state('')
 
   const KIND: Record<string, string> = { word: 'Kata', sense: 'Arti kata', grammar: 'Tata bahasa', name: 'Nama', place: 'Tempat', date: 'Tanggal', wiki: 'Ensiklopedia', other: 'Lainnya' }
   const MEANING: Record<string, string> = {
@@ -41,18 +47,29 @@
   const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
   async function load() {
-    try { queue = await request<Queue>('/v1/communities/' + encodeURIComponent(communityId) + '/periksa', undefined, undefined, true) } catch { queue = null }
+    try {
+      if (source === 'kamus') {
+        const r = await request<{ quorum: number; open: number; cards: Ask[] }>('/v1/communities/' + encodeURIComponent(communityId) + '/kamus/questions', undefined, undefined, true)
+        queue = { quorum: r.quorum, waiting: r.cards.length, claims: r.cards.map((a) => ({ id: a.key, kind: 'word', subject: a.form, statement: a.kind === 'frequent' ? 'Kata ini belum ada di kamus. Tulis artinya jika kamu tahu.' : a.text, evidence: a.examples.map((e) => ({ text: e.text })), proposer: { name: a.source, kind: 'source' }, state: 'open', ask: a })) }
+      } else queue = await request<Queue>('/v1/communities/' + encodeURIComponent(communityId) + '/periksa', undefined, undefined, true)
+    } catch { queue = null }
   }
-  function begin() { index = 0; answered = 0; error = ''; writing = false; own = ''; open = true }
+  export async function begin() { if (source === 'kamus') await load(); index = 0; answered = 0; error = ''; writing = false; own = ''; chosenClass = ''; open = true }
+  async function post(claim: Claim, answer: 'yes' | 'no' | 'other' | 'skip', text?: string) {
+    if (claim.ask) return request('/v1/communities/' + encodeURIComponent(communityId) + '/kamus/answer', { key: claim.ask.key, form: claim.ask.form, answer, ...(text ? { text } : {}), ...(chosenClass ? { wordClass: chosenClass } : {}) })
+    if (answer === 'skip') return
+    return request('/v1/claims/' + claim.id + '/answer', { answer, ...(text ? { text } : {}) })
+  }
   async function finish() { open = false; await load(); if (answered) onChanged?.() }
 
   async function send(answer: 'yes' | 'no' | 'other' | 'skip') {
     if (!current || busy) return
+    if (current.ask?.kind === 'frequent' && (answer === 'yes' || answer === 'no')) return
     if (answer === 'other') { writing = true; await tick(); ownField?.focus(); return }
     busy = true; error = ''
     leaving = answer === 'yes' ? 'right' : answer === 'no' ? 'left' : 'down'
     try {
-      if (answer !== 'skip') { await request('/v1/claims/' + current.id + '/answer', { answer }); answered++ }
+      await post(current, answer); if (answer !== 'skip') answered++
       await new Promise((r) => setTimeout(r, reduce ? 0 : 180))
       next()
     } catch (e) { error = e instanceof Error ? e.message : 'Jawaban belum terkirim. Coba lagi.'; leaving = '' } finally { busy = false }
@@ -61,13 +78,13 @@
     if (!current || busy || !own.trim()) return
     busy = true; error = ''; leaving = 'up'
     try {
-      await request('/v1/claims/' + current.id + '/answer', { answer: 'other', text: own.trim() })
+      await post(current, 'other', own.trim())
       answered++
       await new Promise((r) => setTimeout(r, reduce ? 0 : 180))
       next()
     } catch (e) { error = e instanceof Error ? e.message : 'Jawaban belum terkirim. Coba lagi.'; leaving = '' } finally { busy = false }
   }
-  function next() { index++; dx = 0; dy = 0; leaving = ''; writing = false; own = '' }
+  function next() { index++; dx = 0; dy = 0; leaving = ''; writing = false; own = ''; chosenClass = '' }
 
   function down(e: PointerEvent) {
     if (busy || writing || (e.target as HTMLElement).closest('button,textarea,a')) return
@@ -89,10 +106,12 @@
     if (a) { e.preventDefault(); void send(a) }
   }
   const lean = $derived(dx > 40 ? 'yes' : dx < -40 ? 'no' : '')
-  onMount(load)
+  const kamusCard = $derived(!!current?.ask)
+  const writeOnly = $derived(current?.ask?.kind === 'frequent')
+  onMount(() => { if (source === 'periksa') void load() })
 </script>
 
-{#if queue && queue.waiting > 0}<div class="periksa-strip">
+{#if strip && queue && queue.waiting > 0}<div class="periksa-strip">
     <ListChecks size={18} aria-hidden="true" />
     <p><strong>{queue.waiting}</strong> hal menunggu diperiksa oleh anggota.</p>
     <button type="button" onclick={begin}>Periksa</button>
@@ -123,26 +142,30 @@
           onpointerup={up}
           onpointercancel={up}
         >
-          <span class="pk-kind">{KIND[current.kind] ?? 'Lainnya'}</span>
+          <span class="pk-kind">{kamusCard ? 'Kamus' : KIND[current.kind] ?? 'Lainnya'}</span>
           <h3 class="pk-subject">{current.subject}</h3>
           <p class="pk-statement">{current.statement}</p>
           {#if current.evidence.length}<ul class="pk-evidence">
               {#each current.evidence as e}<li><span>{e.text}</span>{#if e.source}<small>{e.source}</small>{/if}</li>{/each}
             </ul>{/if}
-          <p class="pk-by">Diusulkan oleh {current.proposer.name}{current.proposer.kind === 'agent' ? ' (AI)' : ''}.</p>
+          {#if kamusCard}{#if current.proposer.name}<p class="pk-by">{current.proposer.name}{current.ask?.licence ? ', ' + current.ask.licence : ''}</p>{/if}
+            <div class="pk-classes" role="group" aria-label="Jenis kata">
+              {#each KAMUS_CLASSES as [v, label] (v)}<button type="button" aria-pressed={chosenClass === v} onclick={() => (chosenClass = chosenClass === v ? '' : v)}>{label}</button>{/each}
+            </div>
+          {:else}<p class="pk-by">Diusulkan oleh {current.proposer.name}{current.proposer.kind === 'agent' ? ' (AI)' : ''}.</p>{/if}
           {#if writing}<form class="pk-own" onsubmit={(e) => { e.preventDefault(); void sendOwn() }}>
-              <label for="pk-own">Tulis versi yang menurut kamu benar.</label>
+              <label for="pk-own">{kamusCard ? 'Tulis arti yang menurut kamu benar, dalam bahasa Indonesia.' : 'Tulis versi yang menurut kamu benar.'}</label>
               <textarea id="pk-own" bind:this={ownField} bind:value={own} rows="3" maxlength="500"></textarea>
               <div class="pk-own-actions"><button type="button" onclick={() => { writing = false; own = '' }}>Batal</button><button type="submit" class="pk-primary" disabled={busy || !own.trim()}>Kirim</button></div>
             </form>{/if}
         </article>
-        <p id="periksa-help" class="pk-help">{MEANING[current.kind] ?? MEANING.other} Geser ke kanan untuk Benar dan ke kiri untuk Salah.</p>
+        <p id="periksa-help" class="pk-help">{kamusCard ? (writeOnly ? 'Kata ini sering dipakai di sini. Tulis artinya, atau pilih Lewati.' : 'Pilih Ya jika arti ini sesuai dengan cara kata itu dipakai di sini. Satu jawaban belum memutuskan apa pun.') : MEANING[current.kind] ?? MEANING.other}{writeOnly ? '' : ' Geser ke kanan untuk ' + (kamusCard ? 'Ya' : 'Benar') + ' dan ke kiri untuk ' + (kamusCard ? 'Bukan' : 'Salah') + '.'}</p>
         {#if error}<p class="pk-error" role="alert">{error}</p>{/if}
         {#if !writing}<div class="pk-actions">
-            <button type="button" class="pk-no" onclick={() => send('no')} disabled={busy} aria-keyshortcuts="ArrowLeft"><X size={20} /><span>Salah</span></button>
-            <button type="button" onclick={() => send('skip')} disabled={busy} aria-keyshortcuts="ArrowDown"><ChevronDown size={20} /><span>Lewati</span></button>
-            <button type="button" onclick={() => send('other')} disabled={busy} aria-keyshortcuts="ArrowUp"><PencilLine size={20} /><span>Jawaban lain</span></button>
-            <button type="button" class="pk-yes" onclick={() => send('yes')} disabled={busy} aria-keyshortcuts="ArrowRight"><Check size={20} /><span>Benar</span></button>
+            <button type="button" class="pk-no" onclick={() => send('no')} disabled={busy || writeOnly} aria-keyshortcuts="ArrowLeft"><X size={20} /><span>{kamusCard ? 'Bukan' : 'Salah'}</span></button>
+            <button type="button" onclick={() => send('skip')} disabled={busy} aria-keyshortcuts="ArrowDown"><ChevronDown size={20} /><span>{kamusCard ? 'Tidak tahu' : 'Lewati'}</span></button>
+            <button type="button" onclick={() => send('other')} disabled={busy} aria-keyshortcuts="ArrowUp"><PencilLine size={20} /><span>{kamusCard ? 'Tulis arti' : 'Jawaban lain'}</span></button>
+            <button type="button" class="pk-yes" onclick={() => send('yes')} disabled={busy || writeOnly} aria-keyshortcuts="ArrowRight"><Check size={20} /><span>{kamusCard ? 'Ya' : 'Benar'}</span></button>
           </div>{/if}
       {:else}
         <div class="pk-done">
@@ -195,6 +218,11 @@
   .pk-actions button:disabled { opacity: 0.55; cursor: default; }
   .pk-actions .pk-yes { border-color: color-mix(in oklab, var(--success, #2f7d4f) 55%, var(--border)); color: var(--success, #2f7d4f); }
   .pk-actions .pk-no { border-color: color-mix(in oklab, var(--destructive, #b3261e) 55%, var(--border)); color: var(--destructive, #b3261e); }
+  .pk-classes { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pk-classes button { min-height: 40px; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--background); color: var(--foreground); font: inherit; font-size: 13.5px; font-weight: 550; cursor: pointer; }
+  .pk-classes button[aria-pressed='true'] { border-color: transparent; background: var(--foreground); color: var(--background); }
+  .pk-classes button:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
+  @media (pointer: coarse) { .pk-classes button { min-height: 44px; } }
   .pk-own { display: grid; gap: 8px; }
   .pk-own label { font-size: 14px; font-weight: 600; }
   .pk-own textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--foreground); font: inherit; font-size: 16px; resize: vertical; }

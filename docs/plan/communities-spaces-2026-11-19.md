@@ -83,7 +83,9 @@ From the Spaces alpha announcement ([atproto.com/blog/atproto-spaces-alpha](http
 
 *Build note, 19 November:* host-managed and own-PDS modes are built on our PDS (`packages/pds/src/host/spaces.ts`) to the proposal text of 19 November, on the official `@atproto/space` alpha of 17 November. Removal is checked at read time, and `notifyCredentialsRevoked` is sent to every writer's repo host. Tests and the remaining differences are in `research/pds-multi-identity-build-2026-11-19.md` §9.
 
-## 5. The private dictionary and grammar *(proposal)*
+## 5. The private dictionary and grammar *(proposal; the Kamus in posts is built, see below)*
+
+*Build note, 21 November:* the Kamus now grows from posts without any model, in private communities too: underlined questions, the word card, *Kata saya*, *Artinya*, the notice card and deck, *Mode belajar*, *Kata hari ini*, picture questions, *Cetak kamus* and CSV/CLDF export (`src/kamus-ask.ts`; details in [one-page-system-2026-11-21.md](one-page-system-2026-11-21.md) §10). A private community's Kamus has no public route, page, search entry or species name; its members see it, and the interface says that the server operator can technically read it. The model steps below remain a proposal.
 
 A lembaga adat runs a private language community. People talk as usual. Two pages grow beside Diskusi: **Kamus** and **Tata bahasa**.
 

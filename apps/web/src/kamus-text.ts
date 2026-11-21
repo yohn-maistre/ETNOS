@@ -9,7 +9,8 @@
  * 4. Align Artinya pairs (a post and its Indonesian translation) by a Dice count, and guess an Indonesian word's class
  *    from a small rule set. Both only produce questions for people to answer.
  *
- * The web app imports this file directly, so it keeps relative imports with the .ts extension and no Node APIs. */
+ * It lives in the web app so the dev server can serve it; the server imports it from here. It has no imports and no
+ * Node APIs. */
 
 export type Skip = 'number' | 'url' | 'mention' | 'name'
 export type Token = { text: string; norm: string; start: number; end: number; sentence: number; initial: boolean; skip?: Skip }

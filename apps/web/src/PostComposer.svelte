@@ -137,6 +137,21 @@
       })
       .catch(() => {})
   })
+  // In a community with a Kamus, a post may carry its Indonesian translation (Artinya). It helps readers who do not
+  // speak the language, and it is the Kamus's best evidence for meanings.
+  let kamusOn = $state(false),
+    artinya = $state(''),
+    artinyaOpen = $state(false)
+  const kamusCache = new Map<string, boolean>()
+  $effect(() => {
+    const id = communityId
+    kamusOn = false
+    if (!id) return
+    if (kamusCache.has(id)) return void (kamusOn = kamusCache.get(id)!)
+    request<{ settings: { language: string } }>(`/v1/communities/${encodeURIComponent(id)}/kamus?limit=0`, undefined, undefined, true)
+      .then((k) => { kamusCache.set(id, !!k.settings.language); if (communityId === id) kamusOn = !!k.settings.language })
+      .catch(() => {})
+  })
   let mentionChoices=$state<ResidentChoice[]>([]),mentionLoading=$state(false),mentionError=$state(''),selectedMention=$state<(ResidentChoice&{communityId:string})|null>(null)
   const mentionEligible=$derived(destination?.visibility==='public'&&destination?.publication==='local'&&actor.kind==='human'&&kind!=='offering'&&!warning.trim())
   const strayAksara=$derived(mentionEligible&&!selectedMention&&/@aksara/i.test(text))
@@ -253,6 +268,7 @@
             mediaIds,
             content,
             ...(selectedMention?{agentMention:{actorId:selectedMention.actor.id,choiceKey:selectedMention.choiceKey}}:{}),
+            ...(kamusOn&&kind!=='offering'&&!selectedMention&&artinya.trim()?{artinya:artinya.trim()}:{}),
             ...(kind==='offering'?{kind:offerKind,price:String(offerPrice??'').trim()?Number(offerPrice):null,unit:offerUnit,durationDays:Number(offerDays)}:{}),
           },
         }
@@ -273,6 +289,8 @@
       preview = false
       text = ''
       selectedMention=null
+      artinya = ''
+      artinyaOpen = false
       images.forEach((image) => URL.revokeObjectURL(image.preview))
       images = []
       resize()
@@ -354,6 +372,11 @@
       {:else}<Textarea bind:ref={field} bind:value={text} class="composer-text" aria-label={compact?'Tulis balasan':'Posting'} placeholder={compact?'Tulis balasan…':'Apa yang terjadi?'} rows={compact?1:4} maxlength={textLimit} disabled={busy||!!pending} oninput={resize} onkeydown={e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&!e.isComposing){e.preventDefault();send()}}}/>{/if}
       </div>
       {#if preview}<div class="composer-preview post-markdown">{#if format}{@html markdown(text)}{:else}<PostText {text}/>{/if}</div>{/if}
+      {#if kamusOn && kind !== 'offering' && !preview}<div class="composer-artinya">
+          {#if artinyaOpen || artinya}<label for="composer-artinya">Artinya dalam bahasa Indonesia <small>Tidak wajib</small></label>
+            <Textarea id="composer-artinya" bind:value={artinya} rows={compact ? 1 : 2} maxlength={4000} disabled={busy || !!pending} placeholder="Tulis terjemahan posting ini" />
+          {:else}<button type="button" class="composer-artinya-open" onclick={() => (artinyaOpen = true)}>Tambahkan artinya dalam bahasa Indonesia</button>{/if}
+        </div>{/if}
       {#if text.length>textLimit}<p role="alert" class="document-editor-error">Tulisan melewati batas {textLimit.toLocaleString('id')} karakter.</p>{/if}
       {#if strayAksara}<p class="composer-aksara-hint" role="status">Ini akan jadi posting biasa. Pilih Aksara dari daftar untuk meminta jawaban.</p>{/if}
       {#if selectedMention}<div class="composer-aksara-request" role="group" aria-label="Permintaan balasan Aksara"><Bot size={16}/><span><strong>{selectedMention.actor.name}</strong><small>{selectedMention.scope==='sitewide'?'Aksara ETNOS':'Aksara komunitas'} akan diminta membalas di sini · publik</small></span><button type="button" disabled={busy||!!pending} aria-label="Kirim tanpa meminta balasan Aksara" title="Kirim tanpa meminta balasan Aksara" onclick={()=>selectedMention=null}><X size={16}/></button></div>{/if}
@@ -649,3 +672,12 @@
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>
+
+<style>
+  .composer-artinya { display: grid; gap: 6px; margin-top: 8px; }
+  .composer-artinya label { font-size: 13.5px; font-weight: 600; }
+  .composer-artinya label small { margin-left: 4px; font-weight: 400; color: var(--muted-foreground); }
+  .composer-artinya-open { justify-self: start; min-height: 36px; padding: 0; border: 0; background: none; color: var(--muted-foreground); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+  .composer-artinya-open:hover { color: var(--foreground); }
+  .composer-artinya-open:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
+</style>
