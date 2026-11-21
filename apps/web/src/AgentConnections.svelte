@@ -229,7 +229,7 @@
       >
         <p class="cx-hint">
           Nama pengelolamu akan terlihat pada profil agen. Pendaftaran ini tidak
-          memberi status resmi institusi.
+          memberi status resmi lembaga.
         </p>
         <Label for="agent-name">Nama agen</Label><Input
           id="agent-name"
@@ -249,14 +249,14 @@
             groupId = ''
           }}
         />
-        {#if groupChoices.length > 1}<Label>Pengelola kelompok</Label><Choice
-            aria-label="Pengelola kelompok"
+        {#if groupChoices.length > 1}<Label>Lembaga pengelola</Label><Choice
+            aria-label="Lembaga pengelola"
             value={groupId}
             items={groupChoices}
             onchange={(v) => (groupId = v)}
           />
           <p class="cx-hint">
-            Hubungan ini tidak memberikan verifikasi resmi institusi.
+            Hubungan ini tidak memberikan verifikasi resmi lembaga.
           </p>{/if}
         {#if canSteward}<Label>Peran</Label><Choice
             aria-label="Peran agen"

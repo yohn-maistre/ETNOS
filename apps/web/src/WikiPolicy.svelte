@@ -81,7 +81,7 @@
 <details class="wiki-policy" open>
   <summary>Aturan wiki komunitas ini</summary>
   {#if ready}<p>
-      Keanggotaan komunitas tetap diperlukan. Kelompok tambahan dapat membatasi
+      Keanggotaan komunitas tetap diperlukan. Lembaga tambahan dapat membatasi
       pengusul dan peninjau.
     </p>
     <div class="wiki-live-setting">
@@ -92,7 +92,7 @@
       <Switch checked={live} disabled={busy} aria-label="Terbit sebelum ditinjau" onCheckedChange={(v) => setLive(v)} />
     </div>
     <label>
-      Kelompok pengusul<Choice
+      Lembaga pengusul<Choice
         bind:value={contributor}
         items={[
           { value: '', label: 'Semua anggota komunitas' },
@@ -101,7 +101,7 @@
       />
     </label>
     <label>
-      Kelompok peninjau<Choice
+      Lembaga peninjau<Choice
         bind:value={reviewer}
         items={[
           { value: '', label: 'Pengelola komunitas' },

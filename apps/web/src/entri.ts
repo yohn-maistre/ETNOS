@@ -1,6 +1,6 @@
 // Entries of the Ensiklopedia, read from /v1/entri (src/entri.ts on the server): one shape for a place, a language,
 // a topic, a species, a landform, an object or a page. The index is fetched once per page load.
-import { request } from './api'
+import { request, type Post } from './api'
 
 export type EntryKind = 'tempat' | 'bentang-alam' | 'bahasa' | 'suku' | 'makhluk' | 'benda' | 'lembaga' | 'topik' | 'peristiwa' | 'gagasan' | 'praktik' | 'orang' | 'musim' | 'cerita' | 'halaman'
 export type Ref = { slug: string; title: string; kind: EntryKind; href: string; sub?: string | null }
@@ -30,12 +30,17 @@ export type Entry = {
   related: Ref[]
   communities: { id: string; title: string; description: string; visibility: string; admission: string; via: { id: string; slug: string; title: string } | null }[]
   groups: { id: string; title: string }[]
+  /** The public lembaga that claimed this entry (P3, src/lembaga.ts), shown as "Dikelola oleh" in the rail. */
+  managedBy?: { id: string; title: string } | null
+  /** Open Kios offers in this place and below it (P3, src/kios.ts). */
+  kios?: KiosPlaceItem[]
   kamus: { communityId: string; title: string; language: string; languageName: string; entries: number; words: { lemma: string; gloss: string }[] }[]
   research: { literature: string | null; datasets: { id: string; title: string; kind: string; publisher: string; licence: string }[] }
   history: { pageId: string; revisions: number } | null
   basis: { title: string; basis: string; sources: { title: string; url: string }[] } | null
   newsPlaces: string[]
 }
+export type KiosPlaceItem = { post: Post; seller: { kind: 'actor' | 'group'; id: string; title: string; href: string } }
 export type IndexEntry = Ref & { subKey: string | null; article: boolean; within: string[]; thumb: string | null; reviewed: { at: number; by: string } | null; updated: number | null }
 export type EntryIndex = {
   entries: IndexEntry[]

@@ -259,6 +259,9 @@ export function apiErrorMessage(status: number) {
     return 'Data sudah berubah. Muat versi terbaru dan periksa kembali sebelum mengirim lagi.'
   if (status === 413)
     return 'Berkas atau tulisan terlalu besar. Kurangi ukurannya lalu coba lagi.'
+  // Offers and requests that break a Kios house rule (src/kios-rules.ts on the server).
+  if (status === 422)
+    return 'Isi ini melanggar aturan kios, jadi belum dapat dibagikan. Ubah isinya lalu kirim lagi.'
   if (status === 429)
     return 'Terlalu banyak permintaan. Tunggu sebentar sebelum mencoba lagi.'
   if (status >= 500)

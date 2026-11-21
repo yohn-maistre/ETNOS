@@ -15,6 +15,7 @@
     ArrowLeft,
   } from '@lucide/svelte'
   import { contextTree, facetNames, type ContextNode, type ContextBranch } from './context-tree'
+  import { jenisSections, jenisOf, jenisTitle } from './lembaga-jenis.ts'
   import {
     request,
     initials,
@@ -126,6 +127,7 @@
   const organizationsList = $derived(
     groups.filter((g) => match(g.title, g.description)),
   )
+  const jenisList = $derived(jenisSections(organizationsList))
   const placesList = $derived(
     places.filter(
       (p) =>
@@ -169,7 +171,7 @@
   <div class="directory-controls">
     <!-- Places, languages and topics are labels you look at: they live under Jelajah, not beside rooms you join. -->
     {#if view === 'places' || view === 'topics'}<a class="directory-up" href="/explore"><ArrowLeft size={16} />Jelajah</a>{:else}<nav class="directory-tabs" aria-label="Direktori komunitas" use:tabScroll>
-      {#each [['rooms', 'Komunitas', '/communities'], ['organizations', 'Organisasi', '/groups']] as [id, label, url]}
+      {#each [['rooms', 'Komunitas', '/communities'], ['organizations', 'Lembaga', '/groups']] as [id, label, url]}
         <button
           aria-current={view === id || (view === 'joined' && id === 'rooms')
             ? 'page'
@@ -183,7 +185,7 @@
     {#if !['places', 'topics'].includes(view) || auth.steward}<Button
         variant="outline"
         aria-label={view === 'organizations'
-          ? 'Buat organisasi'
+          ? 'Buat lembaga'
           : view === 'topics'
             ? 'Buat topik'
             : view === 'places'
@@ -200,7 +202,7 @@
         <Search size={18} /><Input
           aria-label="Cari di direktori"
           placeholder={view === 'organizations'
-            ? 'Cari organisasi…'
+            ? 'Cari lembaga…'
             : view === 'topics'
               ? 'Cari topik…'
               : view === 'places'
@@ -221,10 +223,10 @@
         </Button>{/if}
     </div>
     {#if (view === 'rooms' || view === 'joined') && groups.length}<Choice
-        aria-label="Organisasi komunitas"
+        aria-label="Lembaga pengelola komunitas"
         bind:value={organization}
         items={[
-          { value: '', label: 'Semua organisasi' },
+          { value: '', label: 'Semua lembaga' },
           ...groups.map((g) => ({ value: g.id, label: g.title })),
         ]}
       />{/if}
@@ -246,24 +248,22 @@
     />{/if}
   {#if error}<p role="alert" class="search-state">{error}</p>{/if}
   {#if view === 'organizations'}
-    {#each organizationsList as group}<a
-        href={'/groups/' + group.id}
-        class="directory-row"
-      >
-        <span class="directory-avatar avatar-tinted" style={avatarTone(group.id)}><Building2 size={22} /></span>
-        <div>
-          <strong>{group.title}</strong>
-          <p>{group.description}</p>
-          <small>
-            {group.kind === 'institution' ? 'Institusi' : 'Kelompok'}
-          </small>
-        </div>
-        <ArrowUpRight size={17} />
-      </a>{/each}
+    <!-- Lembaga by jenis: one section per jenis that has a lembaga, in a fixed order. A search lists them flat. -->
+    {#if query.trim()}
+      {#each organizationsList as group (group.id)}{@render lembagaRow(group)}{/each}
+    {:else}
+      {#if jenisList.length > 1}<nav class="context-map-jump lembaga-jump" aria-label="Jenis lembaga">
+          {#each jenisList as j (j.slug)}<a href={'#jenis-' + j.slug}>{j.title || 'Semua'}</a>{/each}
+        </nav>{/if}
+      {#each jenisList as section (section.slug)}<section id={'jenis-' + section.slug} class="directory-section lembaga-section" aria-label={section.title || 'Lembaga'}>
+          {#if section.title}<h2>{section.title} <span>{section.items.length}</span></h2>{/if}
+          {#each section.items as group (group.id)}{@render lembagaRow(group)}{/each}
+        </section>{/each}
+    {/if}
     {#if !organizationsList.length && !pending && !error}<p
         class="search-state"
       >
-        Belum ada organisasi yang cocok.
+        Belum ada lembaga yang cocok.
       </p>{/if}
   {:else if (view === 'places' || view === 'topics') && browsing && places.length}
     <div class="context-map">
@@ -389,6 +389,19 @@
       </div>{/if}
   {/if}
 </section>
+{#snippet lembagaRow(group: Group)}
+  <a href={'/groups/' + group.id} class="directory-row">
+    <span class="directory-avatar avatar-tinted" style={avatarTone(group.id)}><Building2 size={22} /></span>
+    <div>
+      <strong>{group.title}</strong>
+      <p>{group.description}</p>
+      <small>
+        {jenisTitle(jenisOf(group), 'Lembaga')}{#if group.spaces?.length}{' · '}{group.spaces.length} komunitas{/if}
+      </small>
+    </div>
+    <ArrowUpRight size={17} />
+  </a>
+{/snippet}
 {#snippet roomRow(room: Community)}
   <a href={'/communities/' + room.id} class="directory-row">
     <span class="directory-avatar avatar-tinted" style={avatarTone(room.id)}>{initials(room.title)}</span>
@@ -437,3 +450,11 @@
     </div>
   </details>
 {/snippet}
+
+<style>
+  .lembaga-section > h2 { padding-top: 24px; font-size: 16px; font-weight: 750; letter-spacing: -0.012em; color: var(--foreground); }
+  .lembaga-section > h2 span { font-weight: 450; font-size: 13.5px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .lembaga-section { scroll-margin-top: 72px; }
+  .lembaga-jump { padding-inline: 24px; scroll-padding-inline: 24px; }
+  @media (max-width: 767px) { .lembaga-jump { padding-inline: 16px; scroll-padding-inline: 16px; } }
+</style>

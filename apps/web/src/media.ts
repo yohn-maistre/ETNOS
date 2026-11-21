@@ -10,7 +10,9 @@ export type ImageDraft = {
   uploaded?: MediaAttachment
 }
 // Re-encode a bounded bitmap. Original metadata and filename never leave the device.
-export async function prepareImage(file: File): Promise<ImageDraft> {
+/** `limits` shrink the result, for a logo: a shorter side and fewer bytes. */
+export async function prepareImage(file: File, limits: { side?: number; bytes?: number } = {}): Promise<ImageDraft> {
+  const side = limits.side ?? 2048, cap = limits.bytes ?? 512 * 1024
   if (
     !/^image\/(jpeg|png|webp)$/.test(file.type) ||
     file.size > 12 * 1024 * 1024
@@ -20,7 +22,7 @@ export async function prepareImage(file: File): Promise<ImageDraft> {
   try {
     if (bitmap.width * bitmap.height > 40_000_000)
       throw Error('Ukuran gambar terlalu besar.')
-    const scale = Math.min(1, 2048 / Math.max(bitmap.width, bitmap.height))
+    const scale = Math.min(1, side / Math.max(bitmap.width, bitmap.height))
     const canvas = document.createElement('canvas')
     canvas.width = Math.max(1, Math.round(bitmap.width * scale))
     canvas.height = Math.max(1, Math.round(bitmap.height * scale))
@@ -32,9 +34,9 @@ export async function prepareImage(file: File): Promise<ImageDraft> {
       blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob(resolve, 'image/webp', quality),
       )
-      if (blob && blob.type === 'image/webp' && blob.size <= 512 * 1024) break
+      if (blob && blob.type === 'image/webp' && blob.size <= cap) break
     }
-    if (!blob || blob.type !== 'image/webp' || blob.size > 512 * 1024)
+    if (!blob || blob.type !== 'image/webp' || blob.size > cap)
       throw Error('Gambar masih terlalu besar. Coba potong atau perkecil.')
     const raw = new Uint8Array(await blob.arrayBuffer())
     // Chromium may add its standard ICC profile. Keep only the image chunks;

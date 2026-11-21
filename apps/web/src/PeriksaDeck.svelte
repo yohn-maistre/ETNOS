@@ -12,7 +12,9 @@
   // meanings from translations, frequent new words and others' answers. Each card also takes a word class and a
   // written correction, and answers go to the Kamus, which keeps them in Periksa claims.
   type Ask = { key: string; kind: string; form: string; text: string; gloss: string; wordClass: string; source: string; licence: string; examples: { postId: string; text: string }[] }
-  let { communityId, onChanged, source = 'periksa', strip = true }: { communityId: string; onChanged?: () => void; source?: 'periksa' | 'kamus'; strip?: boolean } = $props()
+  // `then` offers a next deck on the finished screen, so one notice can lead through both queues (KamusTop).
+  // `onQueue` reports how many cards wait after each load.
+  let { communityId, onChanged, source = 'periksa', strip = true, then = null, onQueue }: { communityId: string; onChanged?: () => void; source?: 'periksa' | 'kamus'; strip?: boolean; then?: { label: string; run: () => void } | null; onQueue?: (waiting: number) => void } = $props()
   const KAMUS_CLASSES: [string, string][] = [['benda', 'Benda'], ['kerja', 'Kerja'], ['sifat', 'Sifat'], ['lainnya', 'Lainnya']]
   let chosenClass = $state('')
 
@@ -52,7 +54,8 @@
         const r = await request<{ quorum: number; open: number; cards: Ask[] }>('/v1/communities/' + encodeURIComponent(communityId) + '/kamus/questions', undefined, undefined, true)
         queue = { quorum: r.quorum, waiting: r.cards.length, claims: r.cards.map((a) => ({ id: a.key, kind: 'word', subject: a.form, statement: a.kind === 'frequent' ? 'Kata ini belum ada di kamus. Tulis artinya jika kamu tahu.' : a.text, evidence: a.examples.map((e) => ({ text: e.text })), proposer: { name: a.source, kind: 'source' }, state: 'open', ask: a })) }
       } else queue = await request<Queue>('/v1/communities/' + encodeURIComponent(communityId) + '/periksa', undefined, undefined, true)
-    } catch { queue = null }
+      onQueue?.(queue?.waiting ?? 0)
+    } catch { queue = null; onQueue?.(0) }
   }
   export async function begin() { if (source === 'kamus') await load(); index = 0; answered = 0; error = ''; writing = false; own = ''; chosenClass = ''; open = true }
   async function post(claim: Claim, answer: 'yes' | 'no' | 'other' | 'skip', text?: string) {
@@ -109,6 +112,7 @@
   const kamusCard = $derived(!!current?.ask)
   const writeOnly = $derived(current?.ask?.kind === 'frequent')
   onMount(() => { if (source === 'periksa') void load() })
+  export const reload = load
 </script>
 
 {#if strip && queue && queue.waiting > 0}<div class="periksa-strip">
@@ -171,7 +175,7 @@
         <div class="pk-done">
           <h3>{answered ? 'Terima kasih, semua kartu sudah kamu periksa.' : 'Tidak ada kartu untuk kamu saat ini.'}</h3>
           <p id="periksa-help">Sebuah pernyataan dianggap benar setelah {queue?.quorum ?? 2} anggota setuju. Kartu baru akan muncul di sini.</p>
-          <Dialog.Close class="pk-primary">Selesai</Dialog.Close>
+          {#if then}<button type="button" class="pk-primary" onclick={async () => { open = false; await finish(); then?.run() }}>{then.label}</button>{:else}<Dialog.Close class="pk-primary">Selesai</Dialog.Close>{/if}
         </div>
       {/if}
     </Dialog.Content>

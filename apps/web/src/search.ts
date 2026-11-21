@@ -21,7 +21,7 @@ export const categories = [
   ['communities', 'Komunitas'],
   ['topics', 'Topik'],
   ['contexts', 'Tempat & bahasa'],
-  ['groups', 'Organisasi'],
+  ['groups', 'Lembaga'],
   ['wiki', 'Ensiklopedia'],
 ] as const
 export type SearchCategory = (typeof categories)[number][0]

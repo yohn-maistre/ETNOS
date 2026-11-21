@@ -1,5 +1,6 @@
 <script lang="ts">
   import RequestsPanel from './RequestsPanel.svelte'
+  import LembagaPage, { type LembagaGroup } from './LembagaPage.svelte'
   import {avatarTone} from './avatar-tone'
   import { markdown } from './markdown'
   import { tabScroll } from './tab-scroll'
@@ -65,17 +66,7 @@
     kind: string
     description: string
   }
-  type Group = {
-    id: string
-    title: string
-    description: string
-    kind: 'collective' | 'institution'
-    visibility: 'public' | 'hidden-private'
-    sponsorship: string
-    spaces: Community[]
-    hiddenSpaces?: number
-    contexts: Context[]
-  }
+  type Group = LembagaGroup
   type Work = {
     id: string
     group_id: string
@@ -153,7 +144,7 @@
       null | 'group' | 'space' | 'work' | 'context' | 'result' | 'members'
     >(null),
     modalError = $state(''),
-    tab = $state('spaces')
+    tab = $state('work')
   let title = $state(''),
     description = $state(''),
     kind = $state('institution'),
@@ -458,27 +449,11 @@
     <Button variant="outline" onclick={() => load()}>Coba lagi</Button>
   </div>
 {:else if segments[0] === 'groups' && group}
-  <div class="cx-detail-head">
-    <div class="cx-between">
-      <Avatar.Root class="size-14">
-        <Avatar.Fallback class="avatar-tinted" style={avatarTone(group.id)}>{initials(group.title)}</Avatar.Fallback>
-      </Avatar.Root><Badge variant="outline">
-        {group.visibility === 'public' ? 'Publik' : 'Privat'}
-      </Badge>
-    </div>
-    <h1>{group.title}</h1>
-    <p>{group.description}</p>
-    <div class="context-links">
-      {#each group.contexts as c}<Badge
-          href={'/contexts/' + c.slug}
-          variant="secondary"
-        >
-          <MapPin size={12} />{c.title}
-        </Badge>{/each}
-    </div>
-    {#if canManage(group.id)}<div class="cx-actions">
+  {#snippet groupActions()}
+  {#if group}
+    {#if canManage(group.id)}
         <Button variant="outline" onclick={() => open('space')}>
-          <Plus size={16} />Ruang
+          <Plus size={16} />Komunitas
         </Button><Button variant="outline" onclick={() => open('members')}>
           Kelola anggota
         </Button>{#if group.sponsorship === 'enabled'}<Button
@@ -501,7 +476,7 @@
               ? 'Sponsor menunggu tinjauan'
               : 'Ajukan sebagai sponsor'}
           </Button>{/if}
-      </div>{/if}
+      {/if}
     {#if auth.steward && group.sponsorship === 'pending'}<div
         class="review-banner"
       >
@@ -532,44 +507,15 @@
       >
         Tangguhkan sponsor
       </Button>{/if}
-  </div>
+  {/if}
+  {/snippet}
+  <LembagaPage {group} {auth} onChanged={() => load()} actions={groupActions} />
   <Tabs.Root bind:value={tab}>
     <div class="section-tab-scroll" use:tabScroll>
-      <Tabs.List variant="line" class="page-tabs" aria-label="Profil kelompok">
-        <Tabs.Trigger value="spaces">Ruang</Tabs.Trigger><Tabs.Trigger
-          value="work"
-        >
-          Kerja publik
-        </Tabs.Trigger>{#if canManage(group.id)}<Tabs.Trigger value="requests">Permintaan</Tabs.Trigger>{/if}<Tabs.Trigger value="about">Tentang</Tabs.Trigger>
+      <Tabs.List variant="line" class="page-tabs" aria-label="Kegiatan lembaga">
+        <Tabs.Trigger value="work">Kerja publik</Tabs.Trigger>{#if canManage(group.id)}<Tabs.Trigger value="requests">Permintaan</Tabs.Trigger>{/if}
       </Tabs.List>
     </div>
-    <Tabs.Content value="spaces">
-      <div class="object-grid">
-        {#each group.spaces as space}<Card.Root class="object-card">
-            <Card.Content>
-              <div class="cx-between">
-                <Users
-                  size={20}
-                />{#if space.visibility !== 'public'}<LockKeyhole
-                    size={15}
-                  />{:else}<Globe size={15} />{/if}
-              </div>
-              <a class="object-title" href={'/communities/' + space.id}>
-                {space.title}
-              </a>
-              <p class="cx-hint line-clamp-2">{space.description}</p>
-              <Badge variant="outline">
-                {space.visibility === 'public' ? 'Publik' : 'Khusus anggota'}
-              </Badge>
-            </Card.Content>
-          </Card.Root>{/each}
-      </div>
-      {#if group.hiddenSpaces}<p class="cx-hint hidden-spaces"><LockKeyhole size={14} aria-hidden="true" />{group.spaces.length ? 'Lembaga ini juga punya' : 'Lembaga ini punya'} {group.hiddenSpaces} ruang tertutup. Isinya hanya untuk anggota, dan nama ruangnya tidak ditampilkan.</p>{/if}
-      {#if !group.spaces.length && !group.hiddenSpaces}<div class="strata-nodata">
-          <Users size={26} />
-          <h2>Belum ada ruang yang tersedia</h2>
-        </div>{/if}
-    </Tabs.Content>
     <Tabs.Content value="work">
       {@render workList(
         works.filter((w) => w.group_id === group!.id),
@@ -581,55 +527,6 @@
         </div>{/if}
     </Tabs.Content>
     {#if canManage(group.id)}<Tabs.Content value="requests"><RequestsPanel groupId={group.id} onError={onError} /></Tabs.Content>{/if}
-    <Tabs.Content value="about">
-      <Card.Root class="strata-card">
-        <h2>
-          Profil {group.kind === 'institution' ? 'institusi' : 'kelompok'}
-        </h2>
-        <p class="strata-body">{group.description}</p>
-        <p class="cx-hint">
-          Keanggotaan kelompok dan akses tiap ruang diatur terpisah.
-        </p>
-        {#if canManage(group.id) && group.visibility === 'public' && contexts.length}<form
-            class="cx-form"
-            onsubmit={(e) => {
-              e.preventDefault()
-              action(async () => {
-                await request('/v1/groups/' + group!.id + '/contexts', {
-                  contextId,
-                })
-                await load()
-              })
-            }}
-          >
-            <Label for="group-context">Tambahkan konteks publik</Label><Choice
-              id="group-context"
-              bind:value={contextId}
-              required
-              items={[
-                { value: '', label: 'Pilih konteks' },
-                ...contexts.map((c) => ({ value: c.id, label: c.title })),
-              ]}
-            /><Button type="submit" variant="outline" disabled={busy}>
-              Tambahkan
-            </Button>
-          </form>
-          {#each group.contexts as c}<Button
-              variant="ghost"
-              disabled={busy}
-              onclick={() =>
-                action(async () => {
-                  await request('/v1/groups/' + group!.id + '/contexts', {
-                    contextId: c.id,
-                    remove: true,
-                  })
-                  await load()
-                })}
-            >
-              Lepaskan {c.title}
-            </Button>{/each}{/if}
-      </Card.Root>
-    </Tabs.Content>
   </Tabs.Root>
 {:else if segments[0] === 'work' && work}
   <div class="cx-detail-head">
@@ -702,7 +599,7 @@
     </Card.Root>{/if}
   {#if results.length}<Card.Root class="strata-card">
       <h2>Tinjauan hasil</h2>
-      <p class="cx-hint">Antrean ini hanya terlihat oleh pengelola kelompok.</p>
+      <p class="cx-hint">Antrean ini hanya terlihat oleh pengelola lembaga.</p>
       {#each results as result}<article class="strata-review">
           <Badge variant="secondary">
             {result.state === 'pending'
@@ -767,7 +664,7 @@
   />
 {:else if segments[0] === 'groups'}
   <div class="cx-page-head">
-    <h1>Organisasi</h1>
+    <h1>Lembaga</h1>
     {#if auth.actor}<Button variant="outline" onclick={() => open('group')}>
         <Plus size={15} />Buat
       </Button>{/if}
@@ -785,16 +682,16 @@
           <a href={'/groups/' + g.id} class="object-title">{g.title}</a>
           <p class="cx-hint line-clamp-2">{g.description}</p>
           <Badge variant="outline">
-            {g.kind === 'institution' ? 'Institusi' : 'Kelompok'}
+            {g.kind === 'institution' ? 'Lembaga' : 'Kelompok'}
           </Badge>
         </Card.Content>
       </Card.Root>{/each}
   </div>
   {#if !groups.length}<div class="strata-nodata">
       <Building2 size={26} />
-      <h2>Ruang bersama untuk organisasimu</h2>
+      <h2>Ruang bersama untuk lembagamu</h2>
       <p>Profil, ruang diskusi, wiki dan kerja publik dalam satu tempat.</p>
-      <Button onclick={() => open('group')}>Buat kelompok</Button>
+      <Button onclick={() => open('group')}>Buat lembaga</Button>
     </div>{/if}
 {:else}
   <div class="cx-page-head">
@@ -814,7 +711,7 @@
     <Button href="/communities" variant="outline">
       <Users size={17} />Komunitas
     </Button><Button href="/groups" variant="outline">
-      <Building2 size={17} />Organisasi
+      <Building2 size={17} />Lembaga
     </Button><Button href="/work" variant="outline">
       <ListTodo size={17} />Kerja publik
     </Button>
@@ -857,9 +754,9 @@
     <Dialog.Header>
       <Dialog.Title>
         {modal === 'group'
-          ? 'Organisasi baru'
+          ? 'Lembaga baru'
           : modal === 'space'
-            ? 'Ruang kelompok'
+            ? 'Komunitas lembaga'
             : modal === 'context'
               ? kind === 'topic'
                 ? 'Topik publik'
@@ -880,21 +777,21 @@
         submit()
       }}
     >
-      {#if modal === 'group'}<Label for="group-kind">Jenis</Label><Choice
+      {#if modal === 'group'}<Label for="group-kind">Bentuk</Label><Choice
           id="group-kind"
           bind:value={kind}
           items={[
-            { value: 'institution', label: 'Institusi' },
-            { value: 'collective', label: 'Kelompok / perkumpulan' },
+            { value: 'institution', label: 'Lembaga' },
+            { value: 'collective', label: 'Kelompok atau perkumpulan' },
           ]}
         />{/if}
       {#if modal === 'space'}<Label for="existing-space">
-          Ruang yang kamu miliki
+          Komunitas yang kamu miliki
         </Label><Choice
           id="existing-space"
           bind:value={bindId}
           items={[
-            { value: '', label: 'Buat ruang baru' },
+            { value: '', label: 'Buat komunitas baru' },
             ...communities
               .filter((c) =>
                 memberships.some(

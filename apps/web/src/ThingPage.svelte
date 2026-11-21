@@ -249,7 +249,7 @@
     {:else if tab === 'komunitas'}
       <PlaceCommunities communities={thing.communities ?? []} title={thing.title} onStart={onStartCommunity} />
       {#if thing.groups.length}<section class="thing-related" aria-labelledby={uid + '-groups'}>
-          <h2 id={uid + '-groups'}>Organisasi</h2>
+          <h2 id={uid + '-groups'}>Lembaga</h2>
           {#each thing.groups as g (g.id)}<a href={'/groups/' + g.id}><Building2 size={16} /><span>{g.title}</span><ArrowUpRight size={15} /></a>{/each}
         </section>{/if}
     {:else if tab === 'data'}

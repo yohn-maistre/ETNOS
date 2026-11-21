@@ -1,13 +1,14 @@
 <script lang="ts">
   // The Letak rail of an entry page (docs/plan/one-page-system-2026-11-21.md §3): where the entry sits in its chain
   // (a place in the administrative spine with its wilayah adat beside it, a language in its family, a topic in its
-  // group, a species in its taxonomy), with the current entry open, then the communities that label it, the lembaga
-  // that point here and the entries most often named with it. Each part shows only when something points here.
+  // group, a species in its taxonomy), with the current entry open, then the lembaga that manages it, the communities that label it, the lembaga
+  // that point here, the Kios that sell here and the entries most often named with it. Each part shows only when something points here.
   // In the shell's side rail it stays put while the page scrolls; on narrow screens the page shows it inline.
   import { ChevronDown, CornerDownRight } from '@lucide/svelte'
   import { initials } from './api'
   import { avatarTone } from './avatar-tone'
   import type { Entry } from './entri'
+  import KiosPlace from './KiosPlace.svelte'
 
   let { entry, inline = false }: { entry: Entry; inline?: boolean } = $props()
   const uid = $props.id()
@@ -37,6 +38,14 @@
     {#if entry.overlay.length && isPlace}<p class="er-overlay"><CornerDownRight size={14} aria-hidden="true" /><span>Wilayah adat {#each entry.overlay as o, i (o.slug)}{#if i}<span aria-hidden="true">, </span>{/if}<a href={o.href}>{o.title}</a>{/each}</span></p>{/if}
   </nav>
 
+  {#if entry.managedBy}<section class="er-block" aria-labelledby={uid + '-managed'}>
+      <h2 id={uid + '-managed'}>Dikelola oleh</h2>
+      <a class="er-room" href={'/groups/' + entry.managedBy.id}>
+        <span class="cx-avatar sage small avatar-tinted" style={avatarTone(entry.managedBy.id)} aria-hidden="true">{initials(entry.managedBy.title)}</span>
+        <span><strong>{entry.managedBy.title}</strong><small>Halaman lembaga</small></span>
+      </a>
+    </section>{/if}
+
   {#if entry.communities.length}<section class="er-block" aria-labelledby={uid + '-rooms'}>
       <h2 id={uid + '-rooms'}>Komunitas di sini</h2>
       <div class="er-rooms">
@@ -52,6 +61,8 @@
       <h2 id={uid + '-groups'}>Lembaga terkait</h2>
       <ul class="er-links">{#each entry.groups as g (g.id)}<li><a href={'/groups/' + g.id}>{g.title}</a></li>{/each}</ul>
     </section>{/if}
+
+  {#if entry.kios?.length}<div class="er-block"><KiosPlace items={entry.kios} place={entry.title} rail /></div>{/if}
 
   {#if entry.related.length}<section class="er-block" aria-labelledby={uid + '-related'}>
       <h2 id={uid + '-related'}>Terkait</h2>

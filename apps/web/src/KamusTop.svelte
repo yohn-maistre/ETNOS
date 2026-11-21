@@ -1,7 +1,7 @@
 <script lang="ts">
   // The top of a community page with a Kamus, for its members: the notice card once ten or more questions are open,
   // Kata hari ini (a concept of the Leipzig-Jakarta list asked in Indonesian), a picture question from the Penampil,
-  // and the Mode belajar switch. Every answer becomes a Periksa claim; nothing is published from one answer.
+  // and the Mode belajar switch. It also carries the community's other Periksa claims, so the page has one notice. Every answer becomes a Periksa claim; nothing is published from one answer.
   import { onMount } from 'svelte'
   import { ListChecks, Send } from '@lucide/svelte'
   import { Switch } from '$lib/components/ui/switch/index.js'
@@ -19,6 +19,8 @@
   let notice = $state<{ open: number; week: number; quorum: number } | null>(null),
     today = $state<Today | null>(null),
     deck = $state<PeriksaDeck | null>(null),
+    checks = $state<PeriksaDeck | null>(null),
+    waiting = $state(0),
     word = $state(''),
     name = $state(''),
     busy = $state(''),
@@ -41,6 +43,7 @@
     } catch (e) { status = e instanceof Error ? e.message : 'Jawaban belum terkirim. Coba lagi.' } finally { busy = '' }
   }
   const agreed = (a: Answer) => a.mine === 'yes' || a.proposedByMe
+  const words = $derived(!!notice && notice.open >= 10)
 </script>
 
 {#snippet answers(list: Answer[], send: (form: string) => void)}
@@ -54,11 +57,16 @@
 {/snippet}
 
 <section class="kamus-top" aria-label="Kamus komunitas">
-  {#if notice && notice.open >= 10}
+  <!-- One notice for both queues: the Kamus questions (from ten) and the other Periksa claims. One button opens the
+       Kamus deck first, and its last card offers the other claims. -->
+  {#if words || waiting}
     <div class="kt-notice">
       <ListChecks size={20} aria-hidden="true" />
-      <p>{#if notice.week}<strong>{notice.week} kata baru</strong> minggu ini.{:else}<strong>{notice.open} kata</strong> menunggu jawaban.{/if} Bantu periksa.</p>
-      <button type="button" onclick={() => deck?.begin()}>Periksa</button>
+      <p>
+        {#if words}{#if notice?.week}<strong>{notice.week} kata baru</strong> minggu ini{:else}<strong>{notice?.open} kata</strong> menunggu jawaban{/if}{#if waiting}, dan <strong>{waiting} hal lain</strong> menunggu diperiksa{/if}. Bantu periksa.
+        {:else}<strong>{waiting} hal</strong> menunggu diperiksa oleh anggota.{/if}
+      </p>
+      <button type="button" onclick={() => (words ? deck?.begin() : checks?.begin())}>Periksa</button>
     </div>
   {/if}
 
@@ -105,7 +113,8 @@
   </div>
 </section>
 
-<PeriksaDeck bind:this={deck} {communityId} source="kamus" strip={false} onChanged={() => { refreshAnnotations(); void load() }} />
+<PeriksaDeck bind:this={deck} {communityId} source="kamus" strip={false} then={waiting ? { label: 'Lanjut periksa ' + waiting + ' hal lain', run: () => checks?.begin() } : null} onChanged={() => { refreshAnnotations(); void load() }} />
+<PeriksaDeck bind:this={checks} {communityId} strip={false} onQueue={(n) => (waiting = n)} />
 
 <style>
   .kamus-top { display: grid; gap: 12px; margin: 0 0 14px; padding: 0 var(--gutter, 24px); --kc-benda: #067132; --kc-kerja: #305eb7; --kc-sifat: #b54d98; --kc-lainnya: #857d0b; }

@@ -252,7 +252,7 @@
       </ul>
     {:else if !failed}<p class="jelajah-note" role="status">Memuat…</p>{/if}
     <ul class="pill-set quiet" aria-label="Lainnya">
-      <li><a class="pill ghost" href="/groups">Organisasi</a></li>
+      <li><a class="pill ghost" href="/groups">Lembaga</a></li>
       <li><a class="pill ghost" href="/offers">Penawaran</a></li>
       <li><a class="pill ghost" href="/work">Kerja publik</a></li>
     </ul>

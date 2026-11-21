@@ -18,6 +18,7 @@
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiViewerLinks from './WikiViewerLinks.svelte'
   import EntryRail from './EntryRail.svelte'
+  import KiosPlace from './KiosPlace.svelte'
   import EntryStewardTools from './EntryStewardTools.svelte'
   import { communityArtwork } from './site-branding'
   import { markdown } from './markdown'
@@ -201,6 +202,7 @@
       <button type="button" class="ep-chip ep-chip-main" aria-expanded={railOpen} aria-controls={uid + '-rail'} onclick={() => (railOpen = !railOpen)}>
         <MapPin size={15} aria-hidden="true" />Letak{#if entry.communities.length}<span>· {entry.communities.length} komunitas</span>{/if}<ChevronDown size={15} aria-hidden="true" />
       </button>
+      {#if entry.managedBy}<a class="ep-chip ep-chip-managed" href={'/groups/' + entry.managedBy.id}><span>Dikelola oleh {entry.managedBy.title}</span></a>{/if}
       {#each chips as c (c.slug)}<a class="ep-chip" href={c.href}>{c.label}</a>{/each}
     </div>
     {#if railOpen}<div id={uid + '-rail'} class="ep-inline-rail"><EntryRail {entry} inline /></div>{/if}
@@ -245,6 +247,8 @@
             <div class="ep-section-head"><h2 id={uid + '-news'}>Kabar</h2><a class="ep-more" href={'/news?place=' + encodeURIComponent(entry.newsPlaces[0])}>Semua kabar</a></div>
             <div class="ep-rows">{#each news as n (n.id)}<a class="ep-row" href={'/news/' + n.id}><span class="ep-row-title">{n.title}</span><span class="ep-row-meta">{[newsDate(n.publishedAt), n.sourceCount ? n.sourceCount + ' sumber' : ''].filter(Boolean).join(' · ')}</span></a>{/each}</div>
           </section>{/if}
+
+        {#if entry.kios?.length}<div class="ep-section ep-kios"><KiosPlace items={entry.kios} place={entry.title} /></div>{/if}
 
         {#if group && group.languages.length > 1}<section class="ep-section ep-specimen" aria-labelledby={uid + '-langs'}>
             <h2 id={uid + '-langs'}>Bahasa lain dengan titik acuan di {group.title}</h2>
@@ -316,6 +320,8 @@
   .ep-cover :global(.landscape-print) { width: 100%; height: 220%; object-fit: cover; object-position: 50% 62%; display: block; }
   .ep-chips { display: flex; gap: 8px; overflow-x: auto; padding: 14px var(--gutter) 2px; scrollbar-width: none; mask-image: linear-gradient(to right, #000 85%, transparent); }
   .ep-chips::-webkit-scrollbar { display: none; }
+  .ep-chip-managed { max-width: min(78vw, 360px); }
+  .ep-chip-managed span { overflow: hidden; text-overflow: ellipsis; }
   .ep-chip { all: unset; box-sizing: border-box; flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 14px; color: var(--foreground); white-space: nowrap; cursor: pointer; }
   .ep-chip:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
   .ep-chip-main { font-weight: 650; }
@@ -326,7 +332,7 @@
   /* The shell hides its rail below 1360px; an entry's Letak rail is the page's navigator, so it stays from 1200px in a
      slightly narrower column (the main column is 640px and the sidebar about 256px). Below that the chips row takes over. */
   /* From 1200px the Letak rail beside the page lists the children too. */
-  @media (min-width: 1200px) { .ep-chips, .ep-inline-rail, .ep-children { display: none; } }
+  @media (min-width: 1200px) { .ep-chips, .ep-inline-rail, .ep-children, .ep-kios { display: none; } }
   @media (min-width: 1200px) and (max-width: 1359px) {
     :global(.cx-content-grid:has(.ep) > .cx-context) { display: block; top: 0; bottom: 0; width: 220px; }
     :global(.cx-content-grid:has(.ep) .context-scroll) { position: sticky; top: 88px; max-height: calc(100dvh - 104px); overflow-y: auto; overflow-x: hidden; padding: 4px 4px 20px; margin-inline: -4px; }

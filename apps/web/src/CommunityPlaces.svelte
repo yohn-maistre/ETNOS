@@ -1,115 +1,55 @@
 <script lang="ts">
-  // Where a community says it belongs: places, languages and kinds from the
-  // deployment's catalogue. A steward of the community edits them here; the
-  // labels are public and grant nothing.
-  import { MapPin } from '@lucide/svelte'
+  // What a community says about itself on its page: what it is about or where it is, the languages people write in,
+  // and the lembaga that runs it. The labels are public and grant nothing. They are edited in one place, the
+  // community settings (CommunityLabels.svelte); a steward gets a link there.
+  import { MapPin, Languages, Building2 } from '@lucide/svelte'
   import { request } from './api'
-  type Ctx = { id: string; slug: string; title: string; kind: string; facet?: string }
-  let { communityId, steward, hidden }: { communityId: string; steward: boolean; hidden: boolean } = $props()
-  const uid = $props.id()
+  type Ctx = { id: string; slug: string; title: string; kind: string; facet?: string; role?: 'about' | 'language' }
+  let { communityId, steward, hidden, onEdit, tick = 0 }: { communityId: string; steward: boolean; hidden: boolean; onEdit?: () => void; tick?: number } = $props()
   let labels = $state<Ctx[]>([]),
-    all = $state<Ctx[]>([]),
-    filter = $state(''),
-    busy = $state(false),
-    problem = $state('')
+    group = $state<{ id: string; title: string } | null>(null)
   $effect(() => {
     const id = communityId,
+      _t = tick,
       abort = new AbortController()
-    labels = []
-    all = []
-    filter = ''
-    problem = ''
-    request<{ contexts?: Ctx[] }>('/v1/communities/' + id, undefined, abort.signal, true)
+    request<{ contexts?: Ctx[]; group?: { id: string; title: string } | null }>('/v1/communities/' + id, undefined, abort.signal, true)
       .then((c) => {
-        if (!abort.signal.aborted) labels = c.contexts ?? []
+        if (abort.signal.aborted) return
+        labels = c.contexts ?? []
+        group = c.group ?? null
       })
       .catch(() => {})
     return () => abort.abort()
   })
-  const kindName = (c: Ctx) =>
-    c.facet === 'institution-kind' ? 'Jenis lembaga' : c.kind === 'place' ? 'Kabupaten/kota' : c.kind === 'region' ? 'Wilayah' : c.kind === 'language' ? 'Bahasa' : 'Topik'
-  const matches = $derived.by(() => {
-    const q = filter.trim().toLowerCase()
-    if (q.length < 2) return []
-    const held = new Set(labels.map((l) => l.id))
-    return all.filter((c) => !held.has(c.id) && c.title.toLowerCase().includes(q)).slice(0, 8)
-  })
-  async function loadAll() {
-    if (all.length) return
-    try {
-      all = await request<Ctx[]>('/v1/contexts', undefined, undefined, true)
-    } catch {
-      problem = 'Daftar tempat belum dapat dimuat.'
-    }
-  }
-  async function change(contextId: string, remove: boolean) {
-    busy = true
-    problem = ''
-    try {
-      labels = await request<Ctx[]>('/v1/communities/' + communityId + '/contexts', { contextId, remove })
-      if (!remove) filter = ''
-    } catch (error) {
-      problem = error instanceof Error ? error.message : 'Belum tersimpan.'
-    } finally {
-      busy = false
-    }
-  }
+  const about = $derived(labels.filter((l) => l.role !== 'language'))
+  const languages = $derived(labels.filter((l) => l.role === 'language'))
 </script>
 
-{#if labels.length || (steward && !hidden)}
+{#if labels.length || group || (steward && !hidden && onEdit)}
   <div class="community-places">
-    {#if labels.length}
-      <div class="cp-chips" aria-label="Komunitas ini ada di">
-        {#each labels as c (c.id)}<a href={'/contexts/' + c.slug}>{#if c.kind === 'place' || c.kind === 'region'}<MapPin size={13} />{/if}{c.title}</a>{/each}
+    {#if about.length}
+      <div class="cp-chips" aria-label="Tentang apa atau di mana">
+        {#each about as c (c.id)}<a href={'/wiki/' + c.slug}>{#if c.kind === 'place' || c.kind === 'region'}<MapPin size={13} aria-hidden="true" />{/if}{c.title}</a>{/each}
       </div>
     {/if}
-    {#if steward && !hidden}
-      <details ontoggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) void loadAll() }}>
-        <summary>{labels.length ? 'Atur tempat dan jenis' : 'Tandai tempat dan jenis komunitas ini'}</summary>
-        <div class="cp-edit">
-          <label for={'cp-' + uid}>Cari tempat, bahasa atau jenis</label>
-          <input id={'cp-' + uid} type="search" bind:value={filter} placeholder="Nabire, Mee, Sekolah…" autocomplete="off" />
-          {#if matches.length}
-            <ul>
-              {#each matches as c (c.id)}
-                <li><button type="button" disabled={busy} onclick={() => change(c.id, false)}><span>{c.title}</span><small>{kindName(c)}</small></button></li>
-              {/each}
-            </ul>
-          {:else if filter.trim().length >= 2 && all.length}
-            <p>Tidak ada yang cocok di katalog.</p>
-          {/if}
-          {#if labels.length}
-            <ul class="cp-held" aria-label="Sudah ditandai">
-              {#each labels as c (c.id)}
-                <li><span>{c.title}</span><button type="button" disabled={busy} aria-label={'Lepas ' + c.title} onclick={() => change(c.id, true)}>Lepas</button></li>
-              {/each}
-            </ul>
-          {/if}
-          <p>Komunitas ini akan tampil di halaman tempat itu dan wilayah di atasnya. Paling banyak 10.</p>
-          {#if problem}<p role="alert">{problem}</p>{/if}
-        </div>
-      </details>
-    {/if}
+    {#if languages.length || group}<p class="cp-line">
+        {#if languages.length}<span><Languages size={14} aria-hidden="true" />Ditulis dalam bahasa {#each languages as l, i (l.id)}{#if i}{i === languages.length - 1 ? ' dan ' : ', '}{/if}<a href={'/wiki/' + l.slug}>{l.title}</a>{/each}</span>{/if}
+        {#if group}<span><Building2 size={14} aria-hidden="true" />Dikelola oleh <a href={'/groups/' + group.id}>{group.title}</a></span>{/if}
+      </p>{/if}
+    {#if steward && onEdit && !hidden}<button type="button" class="cp-edit" onclick={onEdit}>{labels.length ? 'Atur label' : 'Tandai tempat, topik dan bahasa komunitas ini'}</button>{/if}
   </div>
 {/if}
 
 <style>
-  .community-places { margin-top: 12px; display: grid; gap: 6px; }
+  .community-places { margin-top: 12px; display: grid; gap: 8px; justify-items: start; }
   .cp-chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .cp-chips a { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; font-size: 13px; color: var(--foreground); text-decoration: none; }
-  .cp-chips a:hover { border-color: var(--brand); color: var(--brand); }
-  details { font-size: 13px; }
-  summary { cursor: pointer; color: var(--muted-foreground); min-height: 32px; display: inline-flex; align-items: center; }
-  .cp-edit { display: grid; gap: 8px; max-width: 460px; padding: 8px 0 4px; }
-  label { font-weight: 600; }
-  input { min-height: 44px; padding: 0 12px; border: 1px solid var(--input); border-radius: 12px; background: var(--card); color: inherit; font: inherit; font-size: 16px; }
-  input:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
-  ul { list-style: none; margin: 0; padding: 0; border: 1px solid var(--reading-line); border-radius: 12px; overflow: hidden; }
-  li + li { border-top: 1px solid var(--reading-line); }
-  li button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 12px; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
-  li button:hover { background: var(--secondary); }
-  li small { color: var(--muted-foreground); }
-  .cp-held li { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding-left: 12px; }
-  .cp-held li button { width: auto; color: var(--muted-foreground); }
-  p { margin: 0; color: var(--muted-foreground); }
+  .cp-chips a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+  .cp-line { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; font-size: 13.5px; color: var(--muted-foreground); }
+  .cp-line span { display: inline; }
+  .cp-line :global(svg) { display: inline-block; vertical-align: -2px; margin-right: 5px; }
+  .cp-line a { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, currentColor 35%, transparent); }
+  .cp-edit { min-height: 32px; padding: 0; border: 0; background: none; color: var(--muted-foreground); font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .cp-edit:hover { color: var(--foreground); }
+  .cp-edit:focus-visible, .community-places a:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; border-radius: 4px; }
 </style>

@@ -49,6 +49,8 @@
   import AppearancePanel from './AppearancePanel.svelte'
   import WelcomeDialog from './WelcomeDialog.svelte'
   import CommunityPlaces from './CommunityPlaces.svelte'
+  import KiosBlock from './KiosBlock.svelte'
+  import CommunityLabels, { type LabelCtx } from './CommunityLabels.svelte'
   import LandscapePrint from './LandscapePrint.svelte'
   import ThreadEnd from './ThreadEnd.svelte'
   import ProfileCover from './ProfileCover.svelte'
@@ -164,9 +166,13 @@
   let wikiRequestKey = $state('')
   // A story started from a place lands in that place once published.
   let composePlace = $state<{ id: string; title: string } | null>(null)
-  let communityPlace = $state<{ id: string; title: string } | null>(null)
   let communityAdmission = $state<'open' | 'approval'>('approval')
   let communityKind = $state('')
+  // The three optional creation fields (CommunityLabels.svelte): Tentang apa atau di mana, Bahasa yang dipakai, Dikelola oleh.
+  let communityAbout = $state<LabelCtx[]>([]),
+    communityLanguages = $state<LabelCtx[]>([]),
+    communityGroup = $state(''),
+    labelsTick = $state(0)
   let composeState = $state({ dirty: false, busy: false, canSubmit: false }),
     discardDraft = $state(false)
   function closeModal() {
@@ -358,7 +364,7 @@
                                 : parts[0] === 'notifications'
                                   ? 'Aktivitas'
                                   : parts[0] === 'groups'
-                                    ? 'Organisasi'
+                                    ? 'Lembaga'
                                     : parts[0] === 'work'
                                       ? 'Kerja publik'
                                       : path === '/topics' || path === '/contexts'
@@ -718,9 +724,11 @@
     composeUrl = ''
     composeKind = ''
     composePlace = null
-    communityPlace = null
     communityAdmission = 'approval'
     communityKind = ''
+    communityAbout = []
+    communityLanguages = []
+    communityGroup = ''
     modal = kind
     wikiRequestKey = crypto.randomUUID()
     const contextual=kind==='compose'?(parts[0]==='communities'?community?.id:parts[0]==='square'?selectedPost?.community_id:undefined):undefined
@@ -799,26 +807,22 @@
         navigate('/square/' + p.id)
       } else if (modal === 'community') {
         if (!visibility) return
-        // A new community waits for a second person before anyone else can see it (founding.ts).
+        // A new community waits for a second person before anyone else can see it (founding.ts). Its labels, its
+        // languages and its lembaga go in the same request; a hidden community takes no labels.
+        const kind = communityKind && visibility !== 'hidden-private' ? await request<{ id: string }>('/v1/contexts/' + communityKind).catch(() => null) : null
+        const listed = visibility !== 'hidden-private'
         const c = await request<Community & { token: string }>('/v1/communities', {
           title,
           description,
           visibility,
           admission: visibility === 'public' ? communityAdmission : 'invite',
           forming: true,
+          about: listed ? [...new Set([...communityAbout.map((x) => x.id), ...(kind ? [kind.id] : [])])].slice(0, 10) : [],
+          languages: listed ? communityLanguages.map((x) => x.id) : [],
+          groupId: communityGroup || null,
         })
         rememberLink(c.id, c.token)
-        const place = communityPlace
-        communityPlace = null
         modal = null
-        if (place && visibility !== 'hidden-private')
-          await request('/v1/communities/' + c.id + '/contexts', { contextId: place.id }).catch(() =>
-            notify('Komunitas dibuat. Tempatnya belum ditandai. Tambahkan dari halaman komunitas.'),
-          )
-        if (communityKind && visibility !== 'hidden-private')
-          await request<{ id: string }>('/v1/contexts/' + communityKind)
-            .then((k) => request('/v1/communities/' + c.id + '/contexts', { contextId: k.id }))
-            .catch(() => notify('Komunitas dibuat. Jenisnya belum ditandai. Tambahkan dari halaman komunitas.'))
         navigate('/communities/' + c.id)
       } else if (modal === 'join') {
         await request(`/v1/communities/${communityId}/requests`, {
@@ -1234,7 +1238,7 @@
       }}
       onStartCommunity={(place) => {
         open('community')
-        if (auth.actor) communityPlace = place
+        if (auth.actor) communityAbout = [{ ...place, slug: '', kind: 'place' }]
       }}
     />
   {:else if parts[0] === 'wiki' && parts[1] === 'jenis'}
@@ -1313,7 +1317,7 @@
         <h1>{community.title}</h1>
         <p>{community.description}</p>
         {#if community.forming_until != null && currentMembership}<FoundingRoom {community} onChanged={() => load(true)} />{/if}
-        <CommunityPlaces communityId={community.id} steward={isSteward(community.id)} hidden={community.visibility === 'hidden-private'} />
+        <CommunityPlaces communityId={community.id} steward={isSteward(community.id)} hidden={community.visibility === 'hidden-private'} tick={labelsTick} onEdit={() => open('manage', community!.id)} />
         <div class="strata-caption">
           {#if community.forming_until != null}<LockKeyhole size={13} />Belum terbuka{:else if community.visibility === 'public'}<Globe
               size={13}
@@ -1341,8 +1345,9 @@
             </Button>{/if}
         </div>
       </div>
-      {#if auth.actor && isMember(community.id)}{#key periksaTick}{#await import('./PeriksaDeck.svelte') then module}<module.default communityId={community.id}/>{/await}{/key}{/if}
-      {#if auth.actor && isMember(community.id) && kamusStarted[community.id] && tab === 'discussion'}{#key community.id}{#await import('./KamusTop.svelte') then module}<module.default communityId={community.id}/>{/await}{/key}{/if}
+      <!-- With a Kamus, KamusTop carries the Periksa claims too, so the page shows one notice (P2 review). -->
+      {#if auth.actor && isMember(community.id) && kamusStarted[community.id] && tab === 'discussion'}{#key community.id + ':' + periksaTick}{#await import('./KamusTop.svelte') then module}<module.default communityId={community.id}/>{/await}{/key}
+      {:else if auth.actor && isMember(community.id)}{#key periksaTick}{#await import('./PeriksaDeck.svelte') then module}<module.default communityId={community.id}/>{/await}{/key}{/if}
       <Tabs.Root bind:value={tab}>
         <div class="section-tab-scroll" use:tabScroll>
           <Tabs.List
@@ -1622,6 +1627,7 @@
             </p>{/if}
         </div>
       </section>
+      <KiosBlock owner={{ kind: 'actor', id: actor.id }} inline onCreate={auth.actor?.id === actor.id ? () => startOffering() : undefined} />
       <div class="section-tab-scroll" use:tabScroll>
         <div class="profile-tabs" role="group" aria-label="Isi profil">
           {#each [['posts', 'Posting'], ['replies', 'Balasan'], ['media', 'Media'], ['offerings','Penawaran']] as [value, label]}<button
@@ -1728,7 +1734,7 @@
               : feedTab === 'following'
                 ? 'Cari peserta dan pilih Ikuti di profil mereka.'
                 : homeFilter.kind === 'kerja'
-                  ? 'Pekerjaan organisasi dan permintaan antar Aksara muncul di sini.'
+                  ? 'Pekerjaan lembaga dan permintaan antar Aksara muncul di sini.'
                   : homeFilter.kind === 'aksara'
                     ? 'Pilih program lain atau kembali ke semua posting.'
                     : 'Jelajahi komunitas atau mulai percakapan.'}
@@ -1759,6 +1765,8 @@
       <Button href="/" class="cx-button" variant="outline">Beranda</Button>
     </div>{/if}
   {#snippet rail()}
+    {#if parts[0] === 'people' && profile}<div class="cx-context-block"><KiosBlock owner={{ kind: 'actor', id: profile.id }} onCreate={auth.actor?.id === profile.id ? () => startOffering() : undefined} /></div>
+    {:else if parts[0] === 'groups' && parts[1]}<div class="cx-context-block"><KiosBlock owner={{ kind: 'group', id: parts[1] }} /></div>{/if}
     {#if parts[0] === 'wiki' && isEntrySegment(parts[1]) && entryRail.entry}<EntryRail entry={entryRail.entry} />
     {:else if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
     {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts', 'gabung', 'jadwal'].includes(parts[0])}<NewsSection
@@ -1897,7 +1905,7 @@
         {#if communities.find((c) => c.id === communityId)}<CommunitySettings
             community={communities.find((c) => c.id === communityId)!}
             onSaved={(next) => (communities = communities.map((c) => (c.id === next.id ? { ...c, ...next } : c)))}
-          /><CommunitySeasons {communityId} />{/if}
+          /><section class="community-labels-settings" aria-label="Label komunitas"><h3 style="font-size:15px;margin:0 0 10px">Label komunitas</h3><CommunityLabels {communityId} hidden={communities.find((c) => c.id === communityId)?.visibility === 'hidden-private'} onSaved={() => { labelsTick++; delete kamusStarted[communityId] }} /></section><CommunitySeasons {communityId} />{/if}
         <h3 style="font-size:15px">Permintaan bergabung</h3>
         {#each joinRequests.filter((r) => r.state === 'pending') as r}<article
             class="strata-review"
@@ -2068,10 +2076,6 @@
               if (k.admission !== 'invite') communityAdmission = k.admission
             }}
           />{/if}
-        {#if modal === 'community' && communityPlace && visibility !== 'hidden-private'}<div class="compose-place" style="margin-inline:0">
-            <MapPin size={15} /><span>Di <strong>{communityPlace.title}</strong></span>
-            <button type="button" aria-label={'Lepas tempat ' + communityPlace.title} onclick={() => (communityPlace = null)}>×</button>
-          </div>{/if}
         {#if modal === 'community' || modal === 'wiki'}<Label>
             Nama
             <Input bind:value={title} maxlength={160} required />
@@ -2131,7 +2135,8 @@
                     : 'Bergabung perlu persetujuan pengelola. Persetujuan ini tidak membatasi pembaca.'
                   : 'Anggota baru hanya masuk melalui undangan.'}
               </p>
-            </div>{/if}{/if}
+            </div>{/if}
+          <CommunityLabels hidden={visibility === 'hidden-private'} bind:about={communityAbout} bind:languages={communityLanguages} bind:groupId={communityGroup} />{/if}
         {#if modal === 'join'}<Label>
             Pesan untuk pengelola<Textarea
               bind:value={text}

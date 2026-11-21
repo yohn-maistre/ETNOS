@@ -17,7 +17,7 @@
     <span>Meminta bantuan <a href={'/groups/' + work.requestedOf.id}>{work.requestedOf.title}</a> · {asked[work.requestState]}</span>
   {:else if work.requestState}
     <span class="work-sep" aria-hidden="true">·</span>
-    <span>Meminta bantuan organisasi lain · {asked[work.requestState]}</span>
+    <span>Meminta bantuan lembaga lain · {asked[work.requestState]}</span>
   {/if}
 </p>
 
