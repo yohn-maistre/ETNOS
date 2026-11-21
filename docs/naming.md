@@ -66,3 +66,19 @@ Read on 19 November in `apps/web/src`. Most labels are already plain. These are 
 | `WikiTrail.svelte` (comment and title) | Jejak | Riwayat sumber |
 
 *Ranah* stays: it is the domain term used in UU 5/2017 and by UNESCO.
+
+## Lembaga, komunitas and Kios (21 November, P3)
+
+| Was | Now (interface) | In English |
+| --- | --- | --- |
+| Organisasi, Institusi, Kelompok (for a group) | Lembaga | An organisation or institution with an account |
+| Komunitas organisasi | Komunitas lembaga | A lembaga's communities |
+| Dewan adat, Gereja, Sekolah & universitas, LSM, Usaha (jenis) | Adat, Agama, Pendidikan, Masyarakat sipil, Usaha dan koperasi | Kinds of lembaga |
+| (new jenis) | Kesehatan, slug `layanan-kesehatan` | Health services |
+| Tempat (one creation field) | Tentang apa atau di mana | What the community is about, or where |
+| Bahasa as a topic label | Bahasa yang dipakai | Languages people write in, a field of its own |
+| (new) | Dikelola oleh | The lembaga that runs a community or claimed an entry |
+| (new) | Dari lembaga ini, Di ensiklopedia | The two parts of a lembaga page |
+| (new) | Kios, Buka kios, Kios di … | An account's open offers, the switch, the list on a place entry |
+
+The jenis lembaga, in this order, are Adat, Pemerintah, Agama, Pendidikan, Kesehatan, Masyarakat sipil, Usaha dan koperasi and Media. *Kelompok* still appears in the form that creates a lembaga (*Kelompok atau perkumpulan*), where the data kind `collective` needs it. *Kios* is the everyday Papuan word for a small shop.

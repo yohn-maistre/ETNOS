@@ -161,6 +161,13 @@ From cheapest and most accurate to most automatic. Steps 1 to 3 need no model an
 
 An unclaimed listing (strata-model step 4: "institutions listed by kind and place, unclaimed until they claim them") is an entry without the first part. Claiming adds it. Recognition by a customary body stays a sourced claim, never a badge we grant.
 
+**What is built (P3, 21 November).**
+
+- **One word** (**built**). The interface says *Lembaga* everywhere. The data kinds stay `institution` and `collective`, and the form offers *Lembaga* or *Kelompok atau perkumpulan*.
+- **Jenis lembaga** (**built**). Komunitas, then the Lembaga tab, shows one section per jenis that has a lembaga, in the order above, with a jump row. Lembaga without a jenis go under *Lainnya*, and a search lists them flat (`apps/web/src/lembaga-jenis.ts`). The catalogue titles are now Adat, Agama, Pendidikan, Masyarakat sipil and Usaha dan koperasi, and *Kesehatan* is the new jenis `layanan-kesehatan`, because the slug `kesehatan` is already a topic. Old titles stay in `previousTitles`. Stewards set the jenis on the lembaga page (`POST /v1/groups/:id/jenis`).
+- **Two voices** (**built**, `LembagaPage.svelte`, `src/lembaga.ts`). *Dari lembaga ini* holds the lembaga's own text, a logo (WebP up to 128 KB), up to six contacts, a website, its public communities, its Kios and a note that the Situs is not available yet. Stewards edit it in one dialog (`lembaga_profiles`). Communities are listed only when public, or when the reader is a member. Hidden ones show as a count, and the lembaga can turn the count off (`hide_count`). A forming community is never counted. Recognition is written as "Lembaga ini menyatakan diakui oleh …" with an https source each, plus a line saying ETNOS does not check or grant recognition. *Di ensiklopedia* shows the claimed entry's card, the reviewed article excerpt and its facts, which change only through normal review.
+- **Claiming** (**built**, `entry_claims`). A steward of a public lembaga asks either to link an existing *lembaga* entry or to create an unclaimed listing (`entry_listings`: title, description, jenis, place). The operator approves or declines on the lembaga page (`/v1/entry-claims`), and the request is checked again when it is decided. An approved claim shows *Dikelola oleh …* in the entry's Letak rail and chips. One entry has at most one lembaga, and one lembaga claims at most one entry. Both rules and the one-pending-request rule are unique indexes. Listings never write `km_entities`, so the seed stays intact. Tests are in `test/lembaga-kios.test.ts`.
+
 ## 6. Communities: creation, purpose, language
 
 - **Founding already needs two people.** This is the quorum the owner remembered. The founder gets a waiting room and a link; the room opens when one more person accepts, and lapses after 14 days (`src/founding.ts`). **Built.** Keep it. A separate quorum (1 to 9) sets how many checks a Kamus answer needs (`claim_settings`). **Built.**
@@ -172,6 +179,13 @@ An unclaimed listing (strata-model step 4: "institutions listed by kind and plac
 - *Dikelola oleh:* if the founder is a steward of a lembaga, they choose whether the community sits under it.
 - **No marketplace community type.** Selling belongs to accounts (section 7).
 
+**What is built (P3, 21 November).** The three fields appear at creation and in the community settings, from one component (`CommunityLabels.svelte`). The community page only displays them (`CommunityPlaces.svelte`), with an *Atur label* link for stewards.
+
+- **Roles in the data.** `community_contexts.role` is `about` or `language`. The migration marks every existing label whose context has kind `language` as `language`, so communities that already had a language label keep their Kamus. A label sent without a role keeps the old behaviour.
+- **Kamus.** The Kamus reads only `language` labels and skips the contact languages (Indonesian, Papuan Malay and their relatives). Choosing a Papuan language turns it on (`KamusAsk.on` through `kamus.settings`).
+- **Hidden communities.** A hidden-private community still takes no public labels, including languages, and its Kamus language stays the operator's choice. The rule and its tests are unchanged.
+- **Dikelola oleh.** It shows only to a steward of a lembaga and binds the community through `spaces`, in the same transaction as founding. In settings, the community owner or a steward of the lembaga can remove it.
+
 ## 7. Kios
 
 The owner's second idea, and the right one: a person or a lembaga switches on *Kios*, and their open offers show as a small shop in their profile rail and on the place entries they sell in ("Kios di Wamena"). *Kios* is the everyday Papuan word for a small shop.
@@ -182,6 +196,15 @@ The owner's second idea, and the right one: a person or a lembaga switches on *K
   - No protected wildlife or its parts. Cenderawasih feathers are the obvious case.
   - No alcohol.
   - **No land sales.** Tanah ulayat is the most contested thing in Papua, and a social platform listing land plots invites harm. The owner should confirm this rule.
+
+**What is built (P3, 21 November).**
+
+- **The switch** (**built**, `src/kios.ts`, `KiosBlock.svelte`). *Buka kios* is on a person's own profile and on a lembaga page, for its stewards. Opening it shows the house rules and an optional WhatsApp number, and nothing opens until the rules are accepted.
+- **What a Kios shows.** A person's Kios lists their open offers. A lembaga's Kios lists its members' open offers in the lembaga's public communities. Only offers from public communities appear, read as an anonymous visitor would read them, so an offer from a private community never reaches a public Kios or its API.
+- **Where it shows.** It sits in the profile or lembaga rail from 1360px and inline above the tabs below that.
+- **Place entries** (**built**, `KiosPlace.svelte`). *Kios di …* lists open offers placed at the place or anywhere below it, from open Kios only. It sits in the Letak rail from 1200px and in *Tentang* below that, so the list never shows twice.
+- **Listing only.** Contact is by *Kirim pesan* or a `wa.me` link, with "Pembayaran tidak lewat ETNOS".
+- **House rules** live in one list in `src/kios-rules.ts` (`satwa`, `alkohol`, `tanah`). New offers, and edits to an offer or its post, are checked by keyword and refused with 422. Reporting uses the existing post reports. **The land rule waits for the owner:** delete the `tanah` line to remove it.
 
 ## 8. Situs: a lembaga's own website at nama.etnos.space
 
@@ -274,13 +297,13 @@ The Kamus must work for every Papuan language, not only Mee. Mee is the pilot.
 
 The Kamus in posts is **built**: server in `src/kamus-ask.ts` (with `src/kamus-export.ts`), the shared tokenizer and matcher in `apps/web/src/kamus-text.ts`, tests in `test/kamus-ask.test.ts` and `test/kamus-text.test.ts`. No model reads anything; every step makes a question.
 
-- **On or off.** The Kamus is on wherever a community has a language: today its language label with a glottocode, or the operator's choice (`KamusAsk.on`, the one place P3 changes to read *Bahasa yang dipakai*). Counting words across posts (frequent new words, *Artinya* alignment, the notice card) also needs the steward switch *Baca percakapan untuk mencari kata* in the Kamus tab, which is off by default. Matching the words of the post on screen does not.
+- **On or off.** The Kamus is on wherever a community has a language: today its language label with a glottocode, or the operator's choice (`KamusAsk.on`; since P3 it reads only *Bahasa yang dipakai* labels). Counting words across posts (frequent new words, *Artinya* alignment, the notice card) also needs the steward switch *Baca percakapan untuk mencari kata* in the Kamus tab, which is off by default. Matching the words of the post on screen does not.
 - **Tokenizer and matcher** (**built**): numbers, links, mentions and capitalised words that do not start a sentence are skipped; headword, *tulisan lain* (Steltenpool variants are now kept), then one suffix off. Mee's suffixes (-kodo, -make, -ida, -iga, -ko, -ka, -ya) are the default; stewards edit the list, and checked *Bentuk dari* answers offer new suffixes. Contact-language words are never underlined. Markdown posts are read without link targets.
 - **Underlines** (**built**): dotted, in the accent colour, only on open questions (a seed meaning, *Bentuk dari*, a meaning from translations, a frequent new word), at most one per sentence and three per post, most frequent first. Visitors see none. Every other word opens the card on tap.
 - **The card** (**built**, `KamusCard.svelte`): a solid accent card with *Ya / Bukan / Tidak tahu*, word class chips, *Tulis arti*, *Simpan ke Kata saya* and the source with its licence. A source question becomes a Periksa claim (`claims.origin='source'`) the first time anyone answers it, and the member who opened it may answer it too; a written meaning becomes a member's proposal. Word classes follow the same quorum, counted per member (`kamus_classes`).
 - **Kata saya and Kamus komunitas** (**built**): `kamus_mine` is private to the member and readable only while they can read the community. Entries carry headword, *tulisan lain*, gloss, definition, word class, domain (context), dialect, examples linked to posts, source and licence, status, and the *Jangan disebarkan* flag (`kamus_entries.sensitive`, stewards), which keeps an entry from visitors and from species pages.
 - ***Artinya*** (**built**): the composer's optional second field, *Lihat artinya* under the post, *Tambahkan arti* for any member, edited by its writer and removed by its writer, the post's author or a steward (`kamus_artinya`). Dice alignment and the Indonesian class rules ask "Artinya *kebun*? (kata benda)".
-- **Notice card and deck** (**built**, `KamusTop.svelte`, `PeriksaDeck` with `source="kamus"`): the card shows from ten open questions; the deck adds the correction field and word class chips.
+- **Notice card and deck** (**built**, `KamusTop.svelte`, `PeriksaDeck` with `source="kamus"`): the card shows from ten open questions; the deck adds the correction field and word class chips. Since P3 the Periksa bar and this card are one notice with one *Periksa* button. The Kamus deck comes first, and its last screen offers the other claims waiting in Periksa.
 - ***Mode belajar*** (**built**): a per-reader switch that tints checked words by class with a class letter (b, k, s, l) and a legend.
 - ***Kata hari ini* and picture questions** (**built**): the Leipzig-Jakarta list (Concepticon `Tadmor-2009-100`, CC BY 4.0, `seed/kamus/leipzig-jakarta-100.json`) asked in Indonesian, and Penampil species with photos. A checked picture answer appears as *Nama lokal* on `/wiki/<slug>` only from a public community. The same word from two members counts as agreement.
 - **Cetak kamus and export** (**built**): a print view of the checked Kamus for members, and CSV and a CLDF Dictionary zip for stewards, with source and licence per sense.
@@ -309,7 +332,7 @@ One Opus worker at a time, each on a coherent set (owner, 21 Nov). The lead sess
 | --- | --- | --- | --- |
 | P1 | **Halaman dan Ensiklopedia** (**built** 21 Nov, see §3 and §3a) | One entry page for every kind at `/wiki/<slug>` with `/contexts/<slug>` redirecting; four tabs (Tentang, Percakapan, Riset dan data, Riwayat); the Letak rail, generalised from PlaceStrata; kind modules inside Tentang; the Ensiklopedia front in the superapp shape (3a); the Penampil catalogue strip; the name moves to Ensiklopedia in `observatory-name.ts`. One API shape (`/v1/entri/:slug`) that reads today's tables through an adapter. **No destructive storage migration before the showcase.** | none |
 | P2 | **Kamus in posts** (**built** 21 Nov, see §10, except voice) | The tokenizer and matcher (proper names skipped, suffix rules per language); question underlines; tap any word for the card; *Artinya* on posts; the notice card and the deck with correction, word class and Ucapkan; *Mode belajar*; questions from word frequency; *Kata hari ini* from a concept list; picture questions from Penampil species. Shaped by `docs/research/language-from-nothing-2026-11-21.md`. | P1 for species links (soft) |
-| P3 | **Lembaga, komunitas dan Kios** | Lembaga as the one word; jenis lembaga sections on the Komunitas page; the lembaga page (two voices if the owner agrees) with claiming an entry; community creation with *Tentang apa / di mana*, *Bahasa yang dipakai* (switches the Kamus on) and *Dikelola oleh*; Kios as a view of `offerings` with a toggle, place listing and house rules | P1 |
+| P3 | **Lembaga, komunitas dan Kios** (**built** 21 Nov, see §5, §6, §7) | Lembaga as the one word; jenis lembaga sections on the Komunitas page; the lembaga page (two voices if the owner agrees) with claiming an entry; community creation with *Tentang apa / di mana*, *Bahasa yang dipakai* (switches the Kamus on) and *Dikelola oleh*; Kios as a view of `offerings` with a toggle, place listing and house rules | P1 |
 | P4 | **Percakapan** | Entry tagging in the composer; inherited tags; "Tandai …?" suggestions by name match on public posts; the Percakapan tab on entries | P1 |
 | P5 | **Situs** | The `situs.yaml` and `lembaga.yaml` schemas; the block renderer with two templates; a preview at `etnos.space/situs/<lembaga>`; the `*.etnos.space` dispatcher written and tested, switched on only after the owner confirms DNS | P3 |
 | P6 | **strata.yaml** | The deployment file and its schema; Studio reads and writes it | P5 schemas |

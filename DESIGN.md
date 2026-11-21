@@ -227,10 +227,23 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 - **Catalogue strip:** a 64px bar under the body with round step buttons, a tabular counter (*3 / 14*), 44px thumbnails with 10px radius (the current one outlined in the foreground colour, a kind icon when there is no image) and a *Semua* pill. Pulled up, or with *Semua*, it opens a grid of cards above itself (up to 72% of the screen, kind filter pills at the top) that rises in 240ms, or appears at once with reduced motion. On phones the bar gets a grab handle and the thumbnails take their own line.
 - **Controls over a body:** round 36px buttons on a translucent surface (44px on touch screens) top right, pill groups for views. Every image shows its maker, licence and source under it; the panel ends with every source and licence of the record.
 
+### Lembaga page (`LembagaPage.svelte`, `/groups/:id`)
+- **Character:** the header holds a 64px logo tile (initials on a tint when there is no logo), a heavy title, a muted kind line (jenis · Publik), the lede, place pills and the actions. Then two sections with 22px titles: *Dari lembaga ini* (the lembaga's own text, a hairline fact list for contacts and website, recognition as sourced sentences with a muted disclaimer, community rows) and *Di ensiklopedia* (the claimed entry as a 3% tinted card with the reviewed excerpt and facts). A pending claim is a tinted note with *Setujui* and *Tolak* for the operator.
+- **Jenis sections (`CommunityDirectory.svelte`):** the Lembaga tab lists one section per jenis with a 16px title and a muted count, under a row of 44px jump pills that scrolls sideways with the page gutter.
+
+### Community labels (`CommunityLabels.svelte`, `CommunityPlaces.svelte`)
+- **Fields:** three stacked fields with a 14px label and a muted hint. Search inputs are 44px. Chosen labels are 34px pills with a 28px round remove button. Matches are a bordered list of 44px rows with the kind on the right. Choosing a Papuan language shows a note on a 9% brand tint. The same component serves creation and the settings modal.
+- **On the community page:** about labels as 32px outline pills (a pin icon for places), then one muted line with *Ditulis dalam bahasa …* and *Dikelola oleh …* as underlined links, and *Atur label* for stewards.
+
+### Kios (`KiosBlock.svelte`, `KiosPlace.svelte`)
+- **Block:** a 14px title with a bag icon and the switch on the right for whoever manages it; hairline rows of title (14.5px, 650), price and unit in tabular figures, and place; outline buttons *Kirim pesan* and *WhatsApp*; a 12.5px foot line that payment does not go through ETNOS. In the rail from 1360px, and inline above the tabs below that.
+- **Opening:** a dialog with the house rules as a bulleted list on a 3% tint, an optional WhatsApp field and *Setuju dan buka*.
+- **Kios di …:** an 18px section title in *Tentang* with hairline rows and the seller on the right, or a compact list in the Letak rail from 1200px. It is never shown in both places at once.
+
 ### Kamus in posts (`KamusBody.svelte`, `KamusCard.svelte`, `KamusTop.svelte`)
 - **Question underline:** a dotted 2px underline in the accent colour, offset 0.22em, on at most three words per post. It is a button, so the keyboard reaches it. Every other word opens the card on tap.
 - **Word card:** a solid card in the accent colour with the accent's foreground text, 16px radius, 360px wide next to the word on desktop and a bottom card with 12px margins on phones. Answers and chips are 44px tall; *Ya* is filled with the foreground colour. The source and licence sit under a hairline in 12.5px.
-- **Notice card:** the same solid accent fill as a strip above the posts, shown only from ten open questions.
+- **Notice card:** the same solid accent fill as a strip above the posts, shown from ten open questions or when claims wait in Periksa. One sentence counts both and one *Periksa* button opens the Kamus deck first, whose last screen continues to the other claims. The separate Periksa bar shows only when there is no Kamus.
 - **Mode belajar:** checked words get a 15% tint and a 1.5px bottom line in their class colour, plus a small class letter, so colour is never the only cue. Word class colours reuse the level bands: benda #067132 (dark #1d7d3e), kerja #305eb7 (#4777d2), sifat #b54d98 (#c664a8), lainnya #857d0b (#918112). The legend names each class.
 - **Cetak kamus:** a white page with two columns of entries by first letter, sources and licences in the footer; the print stylesheet hides everything else.
 
