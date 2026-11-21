@@ -1,5 +1,6 @@
 import {randomBytes,createHash} from 'node:crypto'
 import {Fault,type StrataCore,type Community} from './core.ts'
+import type {Groups} from './groups.ts'
 
 /** Starting a community takes two people. The founder gets a waiting room only they can see and a link
  * to send (on WhatsApp, say). The room opens when one more person accepts, and lapses after 14 days.
@@ -26,7 +27,10 @@ export class Founding{
   if(c.forming_until==null||!c.founding_visibility)return null
   return {until:c.forming_until,lapsed:c.forming_until<=now,visibility:c.founding_visibility,admission:c.founding_admission??'invite'}
  }
- found(actorId:string,b:{title:string;description:string;visibility:Community['visibility'];admission?:Community['admission']}){
+ /** The three optional fields of creation (docs/plan/one-page-system-2026-11-21.md §6) are applied in the same
+  * transaction: `about` (Tentang apa atau di mana), `languages` (Bahasa yang dipakai, which switches the Kamus on)
+  * and `groupId` (Dikelola oleh, only for a steward of that lembaga). A hidden community takes no public labels. */
+ found(actorId:string,b:{title:string;description:string;visibility:Community['visibility'];admission?:Community['admission'];about?:string[];languages?:string[];groupId?:string},groups?:Groups){
   const s=this.store
   const visibility=b.visibility,admission=b.admission??(visibility==='public'?'open':'invite')
   if(!['public','listed-private','hidden-private'].includes(visibility))throw new Fault(400,'Invalid visibility')
@@ -38,6 +42,13 @@ export class Founding{
    const c=s.createCommunity(actorId,b.title,b.description,'hidden-private',false,'invite')
    s.run('UPDATE communities SET forming_until=?,founding_visibility=?,founding_admission=? WHERE id=?',now+FORMING_MS,visibility,admission,c.id)
    s.audit(actorId,'community.found',c.id)
+   const about=b.about??[],languages=b.languages??[]
+   if(about.length>10||languages.length>10)throw new Fault(400,'At most 10 public contexts')
+   if((about.length||languages.length)&&visibility==='hidden-private')throw new Fault(400,'Hidden communities cannot carry public contexts')
+   if((about.length||languages.length||b.groupId)&&!groups)throw new Fault(500,'Groups are required')
+   for(const id of about)groups!.labelCommunity(actorId,c.id,id,false,'about')
+   for(const id of languages)groups!.labelCommunity(actorId,c.id,id,false,'language')
+   if(b.groupId)groups!.bind(actorId,b.groupId,c.id)
    return {...this.view(c.id),...this.issue(actorId,c.id)}
   })
  }

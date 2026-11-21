@@ -173,7 +173,7 @@ test('the language comes from the community label; stewards cannot change it, th
   const steward=f.s.provision('did:web:steward.example','Steward');f.s.setMember(f.a,f.room,steward.actor.id,true);f.s.run("UPDATE memberships SET role='moderator' WHERE actor_id=?",steward.actor.id)
   assert.throws(()=>f.k.setSettings(steward.actor.id,f.room,{machineReading:true}),/no language/)
   f.s.run(`INSERT INTO contexts(id,slug,title,kind,description,language,aliases,created,active) VALUES('ctx-test','bahasa-uji','Uji','language','x','id','["glottocode:test"]',0,1)`)
-  f.s.run('INSERT INTO community_contexts VALUES(?,?,?,?)',f.room,'ctx-test',f.a,0)
+  f.s.run("INSERT INTO community_contexts(community_id,context_id,issuer_id,created,role) VALUES(?,?,?,?,'language')",f.room,'ctx-test',f.a,0)
   const st=f.k.settings(f.room);assert.equal(st.language,'test');assert.equal(st.languageSource,'label');assert.equal(st.seeded,true)
   assert.equal(f.k.setSettings(steward.actor.id,f.room,{machineReading:true}).machineReading,true,'a steward switches reading on')
   assert.throws(()=>f.k.setSettings(steward.actor.id,f.room,{language:''}),/operator/,'a steward cannot change the language')

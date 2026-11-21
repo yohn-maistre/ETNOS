@@ -1,4 +1,5 @@
 import {createHash,randomUUID} from 'node:crypto'
+import {brokenRule} from './kios-rules.ts'
 import {StrataCore,Fault,type Post} from './core.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
 import {checkSeason} from './seasons.ts'
@@ -59,6 +60,8 @@ export class Forum {
    const c={...contentInput(patch,s.clock()),...(old.answer?{answer:old.answer}:{}),...(old.poll?{poll:old.poll}:{}),...(old.event?{event:old.event}:{}),...(season?{season}:{})}
    checkInlineMedia(c,s.all<{id:string}>('SELECT id FROM media WHERE post_id=?',id).map(m=>m.id))
    if(!b.text.trim()&&!c.title&&!c.url&&!c.poll&&!c.event&&!s.get('SELECT 1 FROM media WHERE post_id=?',id))throw new Fault(400,'Add text, a link or media')
+   // An offer or request keeps to the Kios house rules after an edit too (src/kios-rules.ts).
+   if(s.get('SELECT 1 FROM offerings WHERE post_id=?',id)&&brokenRule(b.text,c.title))throw new Fault(422,'This listing breaks a Kios house rule')
    s.run('UPDATE posts SET text=?,content=?,revision=revision+1,updated=? WHERE id=?',b.text.trim(),JSON.stringify(c),s.clock(),id)
    s.invalidatePublicContext(p.community_id)
    s.audit(actor,'post.edit',id);return s.getPost(actor,id)

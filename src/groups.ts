@@ -13,6 +13,7 @@ export type Group = {
 };
 export type SeedLabels = { pages: { title: string; contexts: string[] }[] };
 export type GroupRole ="owner" | "steward" | "member";
+export type LabelRole = "about" | "language";
 export type GroupAction = "manage" | "work" | "read";
 export interface GroupAuthority {
   allows(actorId: string, groupId: string, action: GroupAction): boolean;
@@ -123,12 +124,14 @@ export class Groups implements GroupAuthority {
     };
   }
   /** Owner decision (19 November): a public lembaga page says how many hidden private communities it has, never
-   * their names. Only public lembaga show the count, and communities the reader already belongs to are listed, not counted. */
+   * their names. Only public lembaga show the count, and communities the reader already belongs to are listed, not counted.
+   * A lembaga may choose to show nothing (lembaga_profiles.hide_count), and a community still forming is not counted. */
   hiddenSpaceCount(actorId: string | undefined, groupId: string) {
     if (this.group(groupId).visibility !== "public") return 0;
+    if (this.store.get<{ hide_count: number }>("SELECT hide_count FROM lembaga_profiles WHERE group_id=?", groupId)?.hide_count) return 0;
     return (
       this.store.get<{ n: number }>(
-        `SELECT COUNT(*) n FROM spaces s JOIN communities c ON c.id=s.community_id WHERE s.group_id=? AND c.visibility='hidden-private' AND NOT EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1)`,
+        `SELECT COUNT(*) n FROM spaces s JOIN communities c ON c.id=s.community_id WHERE s.group_id=? AND c.visibility='hidden-private' AND c.forming_until IS NULL AND NOT EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1)`,
         groupId,
         actorId ?? null,
       )?.n ?? 0
@@ -776,21 +779,24 @@ export class Groups implements GroupAuthority {
       items: rows.map(({ posts, threads, people, ...c }) => ({ context: this.contextView(c), posts, threads, people, lead: leads.get(c.id) ?? null })),
     };
   }
-  /** Public labels a community carries. A hidden community has none to show, whatever is stored. */
+  /** Public labels a community carries, each with its role: what it is about or where it is (`about`), or a
+   * language its people write in (`language`, shown as "Bahasa yang dipakai"). A hidden community has none to
+   * show, whatever is stored. */
   communityContexts(communityId: string) {
     if (this.store.community(communityId).visibility === "hidden-private") return [];
     return this.store
-      .all<ContextRow>(
-        "SELECT c.* FROM community_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.community_id=? AND c.active=1 ORDER BY c.kind,c.title LIMIT 10",
+      .all<ContextRow & { role: LabelRole }>(
+        "SELECT c.*,l.role FROM community_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.community_id=? AND c.active=1 ORDER BY l.role,c.kind,c.title LIMIT 20",
         communityId,
       )
-      .map((c) => this.contextView(c));
+      .map(({ role, ...c }) => ({ ...this.contextView(c), role }));
   }
   /**
-   * A human steward of a listed community says where it belongs. The label is
-   * public, so a hidden community can never carry one; it grants no membership.
+   * A human steward of a listed community says where it belongs, what it is about, or which languages its
+   * people write in. The label is public, so a hidden community can never carry one; it grants no membership.
+   * Without a role, a language is taken as "Bahasa yang dipakai" and anything else as "tentang", as before.
    */
-  labelCommunity(actorId: string, communityId: string, contextId: string, remove = false) {
+  labelCommunity(actorId: string, communityId: string, contextId: string, remove = false, role?: LabelRole) {
     return this.store.tx(() => {
       if (this.store.actor(actorId).kind !== "human")
         throw new Fault(403, "Context disclosure needs a human steward");
@@ -800,6 +806,9 @@ export class Groups implements GroupAuthority {
       if (target.visibility === "hidden-private" && (target.founding_visibility ?? "hidden-private") === "hidden-private")
         throw new Fault(400, "Hidden communities cannot carry public contexts");
       const c = this.context(contextId);
+      if (role !== undefined && !["about", "language"].includes(role)) throw new Fault(400, "Invalid label role");
+      const as: LabelRole = role ?? (c.kind === "language" ? "language" : "about");
+      if (as === "language" && c.kind !== "language") throw new Fault(400, "Only a language can be a language in use");
       if (remove)
         this.store.run(
           "DELETE FROM community_contexts WHERE community_id=? AND context_id=?",
@@ -807,23 +816,49 @@ export class Groups implements GroupAuthority {
           c.id,
         );
       else {
-        const held = this.store.all<{ context_id: string }>(
-          "SELECT context_id FROM community_contexts WHERE community_id=?",
+        const held = this.store.all<{ context_id: string; role: LabelRole }>(
+          "SELECT context_id,role FROM community_contexts WHERE community_id=?",
           communityId,
         );
-        if (held.length >= 10 && !held.some((h) => h.context_id === c.id))
+        // Ten of each role: places and topics, and languages in use.
+        if (held.filter((h) => h.role === as).length >= 10 && !held.some((h) => h.context_id === c.id))
           throw new Fault(400, "At most 10 public contexts");
         this.store.run(
-          "INSERT OR IGNORE INTO community_contexts VALUES(?,?,?,?)",
+          "INSERT INTO community_contexts(community_id,context_id,issuer_id,created,role) VALUES(?,?,?,?,?) ON CONFLICT(community_id,context_id) DO UPDATE SET role=excluded.role",
           communityId,
           c.id,
           actorId,
           this.store.clock(),
+          as,
         );
       }
       this.store.audit(actorId, remove ? "community.unlabel" : "community.label", communityId);
       return this.communityContexts(communityId);
     });
+  }
+  /** The lembaga a community sits under, if it is public or the reader belongs to it. */
+  communityGroup(actorId: string | undefined, communityId: string) {
+    const g = this.store.get<Group>("SELECT g.* FROM spaces s JOIN groups g ON g.id=s.group_id WHERE s.community_id=?", communityId);
+    if (!g || (g.visibility !== "public" && !this.role(actorId, g.id))) return null;
+    return { id: g.id, title: g.title, kind: g.kind };
+  }
+  /** A community leaves its lembaga. Its owner or a steward of the lembaga may do this. */
+  unbind(actorId: string, communityId: string) {
+    return this.store.tx(() => {
+      const prior = this.store.get<{ group_id: string }>("SELECT group_id FROM spaces WHERE community_id=?", communityId) ?? missing();
+      const owner = this.store.membership(actorId, communityId)?.role === "owner" && this.store.actor(actorId).kind === "human";
+      if (!owner && !this.allows(actorId, prior.group_id, "manage")) throw new Fault(403, "Community owner or group steward required");
+      this.store.run("DELETE FROM spaces WHERE community_id=?", communityId);
+      this.store.audit(actorId, "space.unbind", communityId);
+      return { ok: true };
+    });
+  }
+  /** Lembaga the person stewards, for "Dikelola oleh". */
+  stewarded(actorId: string) {
+    return this.store.all<Pick<Group, "id" | "title" | "kind" | "visibility">>(
+      "SELECT g.id,g.title,g.kind,g.visibility FROM group_members m JOIN groups g ON g.id=m.group_id WHERE m.actor_id=? AND m.active=1 AND m.role IN ('owner','steward') ORDER BY g.title LIMIT 50",
+      actorId,
+    );
   }
   /**
    * Listed communities labelled with this context or anything beneath it, so a

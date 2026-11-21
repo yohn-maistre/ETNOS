@@ -53,7 +53,8 @@ export type CtxDetail = {
 }
 export type PageRef = { id: string; title: string; community_id: string; updated: number; excerpt: string; reviewer: { name: string; kind?: string } | null; review: string }
 export type PageFull = { id: string; title: string; community_id: string; revision: { id: string; text: string; citations: string[]; created: number; review: string; language: string; perspective: string; author: { id: string; name: string; kind: string } | null; reviewer: { id: string; name: string; kind: string } | null } | null }
-export type CommonsEntity = { slug: string; class: string; title: string; description: string; aliases: string[]; context: string | null }
+/** `place` and `sub` are set only by lembaga listings (src/lembaga.ts): the context slug it sits in, and its jenis. */
+export type CommonsEntity = { slug: string; class: string; title: string; description: string; aliases: string[]; context: string | null; place?: string | null; sub?: { key: string; label: string } | null }
 export type Commons = { entities: CommonsEntity[]; statements: { subject: string; predicate: string; object: string }[]; comentions: { a: string; b: string; weight: number }[] }
 export type DatasetRef = { id: string; title: string; kind: string; publisher: string; licence: string }
 export type KamusRef = { communityId: string; title: string; language: string; languageName: string; entries: number; words: { lemma: string; gloss: string; updated: number }[] }
@@ -76,7 +77,12 @@ export interface EntrySource {
   records: ViewerRecord[]
   /** Checked local names of a species from public communities' Kamus (P2, src/kamus-ask.ts). */
   localNames?(recordId: string): Promise<LocalName[]>
+  /** The public lembaga that claimed one of these addresses (P3, src/lembaga.ts). */
+  managedBy?(slugs: string[]): Promise<{ id: string; title: string } | null>
+  /** Open Kios offers in a place and below it (P3, src/kios.ts). */
+  kios?(contextId: string): Promise<KiosItem[]>
 }
+export type KiosItem = { post: { id: string; text: string; content?: unknown; offering: unknown; community_id: string; author_id: string }; seller: { kind: 'actor' | 'group'; id: string; title: string; href: string } }
 export type LocalName = { name: string; language: string; community: { id: string; title: string } }
 
 export type Ref = { slug: string; title: string; kind: EntryKind; href: string; sub?: string | null }
@@ -139,7 +145,7 @@ export async function catalogue(source: EntrySource) {
     const home = e.context && ctxBySlug.has(e.context) ? e.context : null
     if (home) { nodes.get(home)!.things.push(e.slug); thingEntry.set(e.slug, home); if (e.slug !== home) alias.set(e.slug, home); continue }
     const slug = taken(e.slug) ? e.slug + '--' + e.class : e.slug
-    let kind = CLASS_KIND[e.class] ?? 'gagasan', sub: Node['sub'] = null
+    let kind = CLASS_KIND[e.class] ?? 'gagasan', sub: Node['sub'] = e.sub ?? null
     const word = e.title.match(LANDFORM)?.[1]
     if (kind === 'tempat' && (word || landformRecord.has(e.slug))) { kind = 'bentang-alam'; const s = word ? LANDFORM_SUB[word] : null; sub = s ? { key: s[0], label: s[1] } : null }
     nodes.set(slug, { slug, kind, sub, title: e.title, description: e.description, aliases: e.aliases ?? [], ctx: null, entity: e, record: null, page: null, things: [e.slug], media: [] })
@@ -198,6 +204,7 @@ export async function catalogue(source: EntrySource) {
     if (n.ctx) continue
     const cands: Ctx[] = []
     for (const id of n.page ? labels.get(n.page.id) ?? [] : []) { const c = ctxById.get(id); if (c && c.kind !== 'topic' && c.kind !== 'language') cands.push(c) }
+    if (n.entity?.place) { const c = ctxBySlug.get(n.entity.place); if (c) cands.push(c) }
     for (const t of n.things) for (const s of statementsOf(t)) if (['bagian-dari', 'berada-di', 'mendiami', 'dituturkan-di', 'hidup-di'].includes(s.predicate)) { const at = nodes.get(thingEntry.get(s.object) ?? ''); if (at?.ctx && at.ctx.kind !== 'topic') cands.push(at.ctx) }
     cands.sort((a, b) => placeRank(a) - placeRank(b) || a.slug.localeCompare(b.slug))
     placeOf.set(n.slug, cands[0] ?? null)
@@ -283,6 +290,9 @@ export async function readEntry(source: EntrySource, asked: string) {
     c?.kind === 'language' ? source.kamus() : Promise.resolve([]),
   ])
   const localNames = n.record?.kind === 'species' && source.localNames ? await source.localNames(n.record.id) : []
+  const managedBy = source.managedBy ? await source.managedBy([n.slug, ...n.things]) : null
+  // "Kios di …" shows on places and regions only, never on languages or topics.
+  const kios = c && (c.kind === 'place' || c.kind === 'region') && source.kios ? await source.kios(c.id) : []
   const entryOfCtx = (x: { slug: string }) => cat.nodes.get(x.slug)
   const root: ChainItem = { title: 'Tanah Papua', href: '/wiki/jenis/tempat' }
 
@@ -369,6 +379,8 @@ export async function readEntry(source: EntrySource, asked: string) {
     communities: c || place ? communities.map((x) => ({ ...x, via: x.via ?? (c ? null : { id: place!.id, slug: place!.slug, title: place!.title }) })) : [],
     groups: detail?.groups ?? [],
     localNames,
+    managedBy,
+    kios,
     kamus: glotto ? kamus.filter((k) => k.language === glotto).map((k) => ({ ...k, words: k.words.slice(0, 8) })) : [],
     research: { literature: c && c.facet !== 'topic-group' ? c.slug : null, datasets },
     history: n.page ? { pageId: n.page.id, revisions } : null,

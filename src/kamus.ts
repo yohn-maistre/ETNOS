@@ -20,6 +20,8 @@ export const KAMUS_CONTEXTS=['Kebun','Hutan','Rumah','Adat','Tubuh','Alam','Kelu
 export type KamusContext=typeof KAMUS_CONTEXTS[number]
 export type SeedEntry={lemma:string;modern?:string;gloss_id?:string;gloss_en?:string;gloss_nl?:string;gloss_raw?:string;pos?:string;dialect?:string|string[];variants?:{form?:string;dialect?:string[]}[];source:string;page?:number;concept?:string;confidence?:'high'|'low'}
 export type SeedSet={language:{name:string;glottocode:string;iso?:string};sources:Record<string,{licence:string;citation?:string;url?:string;note?:string}>;entries:SeedEntry[]}
+/** Glottocodes of the contact languages: Indonesian, Standard Malay, Malay and Papuan Malay. */
+export const CONTACT_LANGUAGES=new Set(['indo1316','stan1306','mala1479','papu1250'])
 /** Words the finder treats as the contact languages (Indonesian, Papuan Malay), plus the seeds it can load. */
 export type KamusLexicon={contact:Set<string>;seeds:Record<string,SeedSet>}
 export type Example={postId:string;text:string}
@@ -48,8 +50,8 @@ export class Kamus{
  private operator:(actorId:string)=>boolean
  constructor(store:StrataCore,lexicon:KamusLexicon,o:{operator?:(actorId:string)=>boolean}={}){this.store=store;this.periksa=new Periksa(store);this.lexicon=lexicon;this.operator=o.operator??(()=>false)}
 
- /** The dictionary belongs to a language community. Its language comes from the community's language label (a
-  * language context with a glottocode); the node operator can set it instead, which is the only way for a hidden
+ /** The dictionary belongs to a language community. Its language comes from the community's "Bahasa yang dipakai"
+  * (a label with role 'language' on a language context with a glottocode, other than a contact language); the node operator can set it instead, which is the only way for a hidden
   * community, since hidden communities carry no public labels. Community stewards never pick the language. */
  settings(communityId:string){
   const r=this.store.get<{machine_reading:number;language:string}>('SELECT machine_reading,language FROM kamus_settings WHERE community_id=?',communityId)
@@ -59,8 +61,10 @@ export class Kamus{
   return {machineReading:!!r?.machine_reading,language:code,languageName:code?name:'',languageSource:(override?'operator':label?'label':'') as ''|'label'|'operator',seeded:!!this.lexicon.seeds[code]}
  }
  private labelledLanguage(communityId:string){
-  const rows=this.store.all<{title:string;aliases:string}>("SELECT c.title,c.aliases FROM community_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.community_id=? AND c.kind='language' AND c.active=1 ORDER BY l.created",communityId)
-  for(const r of rows){const code=(JSON.parse(r.aliases) as string[]).find(a=>a.startsWith('glottocode:'))?.slice(11);if(code)return {code,name:r.title}}
+  // Only "Bahasa yang dipakai" counts (role 'language'), not a community about a language; Indonesian and
+  // Papuan Malay are the languages everyone writes in, so they never switch a Kamus on.
+  const rows=this.store.all<{title:string;aliases:string}>("SELECT c.title,c.aliases FROM community_contexts l JOIN contexts c ON c.id=l.context_id WHERE l.community_id=? AND l.role='language' AND c.kind='language' AND c.active=1 ORDER BY l.created",communityId)
+  for(const r of rows){const code=(JSON.parse(r.aliases) as string[]).find(a=>a.startsWith('glottocode:'))?.slice(11);if(code&&!CONTACT_LANGUAGES.has(code))return {code,name:r.title}}
   return null
  }
  private languageName(code:string){

@@ -9,6 +9,8 @@ import type { Wiki } from './wiki.ts'
 import type { KnowledgeModel, KnowledgeSeed } from './knowledge-model.ts'
 import type { Datasets } from './datasets.ts'
 import type { Kamus } from './kamus.ts'
+import type { Lembaga } from './lembaga.ts'
+import type { Kios } from './kios.ts'
 import { contextFamily } from './catalogue.ts'
 import { viewerRecords, type Commons, type EntrySource, type ViewerRecord, type LocalName } from './entri.ts'
 
@@ -28,7 +30,7 @@ export function seedCommons(seed: KnowledgeSeed): Commons {
   }
 }
 
-export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; model: KnowledgeModel; datasets: Datasets; kamus: Kamus; seed: KnowledgeSeed; catalogue?: string; records?: ViewerRecord[]; localNames?: (recordId: string) => LocalName[] }): EntrySource {
+export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; model: KnowledgeModel; datasets: Datasets; kamus: Kamus; seed: KnowledgeSeed; catalogue?: string; records?: ViewerRecord[]; localNames?: (recordId: string) => LocalName[]; lembaga?: Lembaga; kios?: Kios }): EntrySource {
   const s = o.store
   const publicPage = `SELECT w.id FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND w.draft=0 AND w.revision_id IS NOT NULL`
   return {
@@ -56,11 +58,13 @@ export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; 
     revisions: async (id) => (s.get(publicPage + ' AND w.id=?', id) ? o.wiki.history(id).length : 0),
     commons: async () => {
       const stored = s.get<{ n: number }>('SELECT count(*) n FROM km_entities')!.n
-      if (!stored) return seedCommons(o.seed)
+      // Lembaga listings (src/lembaga.ts) are entries of kind lembaga beside the model, never rows of it.
+      const listings = (o.lembaga?.listings() ?? []).map((l) => ({ slug: l.slug, class: 'lembaga', title: l.title, description: l.description, aliases: [], context: null, place: l.place_slug, sub: l.jenis_slug ? { key: l.jenis_slug, label: l.jenis_title! } : null }))
+      if (!stored) { const seed = seedCommons(o.seed); return { ...seed, entities: [...seed.entities, ...listings] } }
       const g = o.model.graph(undefined, { publicOnly: true })
       const about = new Map(o.model.entities(undefined).map((e) => [e.slug, e]))
       return {
-        entities: g.nodes.map((n) => ({ slug: n.id, class: n.class, title: n.title, description: about.get(n.id)?.description ?? '', aliases: [], context: n.context })),
+        entities: [...g.nodes.map((n) => ({ slug: n.id, class: n.class, title: n.title, description: about.get(n.id)?.description ?? '', aliases: [], context: n.context })), ...listings],
         statements: g.statements.filter((x) => x.target).map((x) => ({ subject: x.source, predicate: x.predicate, object: x.target! })),
         comentions: g.comentions,
       }
@@ -80,6 +84,9 @@ export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; 
       return out
     },
     localNames: async (id) => o.localNames?.(id) ?? [],
-    groups: async () => o.groups.list(undefined).filter((g) => g.visibility === 'public').map((g) => ({ id: g.id, title: g.title, kind: g.kind, description: g.description })),
+    managedBy: async (slugs) => o.lembaga?.managedBy(slugs) ?? null,
+    kios: async (id) => o.kios?.place(id) ?? [],
+    // A lembaga that claimed an entry is listed through that entry, not twice.
+    groups: async () => o.groups.list(undefined).filter((g) => g.visibility === 'public' && !o.lembaga?.claimedEntry(g.id)).map((g) => ({ id: g.id, title: g.title, kind: g.kind, description: g.description })),
   }
 }

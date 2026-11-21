@@ -69,7 +69,7 @@ test("only a human steward of the community may label it, and hidden communities
     assert.deepEqual(w.groups.contextDetail("nabire").communities.map((c) => [c.title, c.visibility]), [["Terdaftar", "listed-private"]]);
 
     // A label stored before a community went hidden is never served.
-    w.s.run("INSERT INTO community_contexts VALUES(?,?,?,?)", hidden.id, w.nabire.id, w.owner.actor.id, 1);
+    w.s.run("INSERT INTO community_contexts(community_id,context_id,issuer_id,created) VALUES(?,?,?,?)", hidden.id, w.nabire.id, w.owner.actor.id, 1);
     assert.deepEqual(w.groups.contextDetail("mee-pago").communities.map((c) => c.title), ["Terdaftar"]);
     assert.deepEqual(w.groups.communityContexts(hidden.id), []);
   } finally {

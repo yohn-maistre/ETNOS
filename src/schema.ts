@@ -494,6 +494,17 @@ CREATE TABLE kamus_mine(actor_id TEXT NOT NULL REFERENCES actors(id),community_i
 CREATE TABLE kamus_classes(community_id TEXT NOT NULL REFERENCES communities(id),norm TEXT NOT NULL,actor_id TEXT NOT NULL REFERENCES actors(id),word_class TEXT NOT NULL CHECK(word_class IN ('benda','kerja','sifat','lainnya')),created INTEGER NOT NULL,PRIMARY KEY(community_id,norm,actor_id));
 CREATE TABLE kamus_artinya(id TEXT PRIMARY KEY,post_id TEXT NOT NULL REFERENCES posts(id),community_id TEXT NOT NULL REFERENCES communities(id),author_id TEXT NOT NULL REFERENCES actors(id),text TEXT NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL,UNIQUE(post_id,author_id));
 CREATE INDEX kamus_artinya_community ON kamus_artinya(community_id,created);
+`,`
+ALTER TABLE community_contexts ADD COLUMN role TEXT NOT NULL DEFAULT 'about' CHECK(role IN ('about','language'));
+UPDATE community_contexts SET role='language' WHERE context_id IN (SELECT id FROM contexts WHERE kind='language');
+CREATE TABLE lembaga_profiles(group_id TEXT PRIMARY KEY REFERENCES groups(id),about TEXT NOT NULL DEFAULT '',contacts TEXT NOT NULL DEFAULT '[]',website TEXT NOT NULL DEFAULT '',recognition TEXT NOT NULL DEFAULT '[]',hide_count INTEGER NOT NULL DEFAULT 0,logo BLOB,updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id));
+CREATE TABLE entry_listings(slug TEXT PRIMARY KEY,title TEXT NOT NULL,description TEXT NOT NULL,jenis_context_id TEXT REFERENCES contexts(id),place_context_id TEXT REFERENCES contexts(id),created_by TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL);
+CREATE TABLE entry_claims(id TEXT PRIMARY KEY,group_id TEXT NOT NULL REFERENCES groups(id),entry_slug TEXT,proposal TEXT,state TEXT NOT NULL CHECK(state IN ('pending','approved','declined','withdrawn','released')),requested_by TEXT NOT NULL REFERENCES actors(id),decided_by TEXT REFERENCES actors(id),created INTEGER NOT NULL,decided INTEGER,CHECK(entry_slug IS NOT NULL OR proposal IS NOT NULL));
+CREATE UNIQUE INDEX entry_claims_one_per_entry ON entry_claims(entry_slug) WHERE state='approved';
+CREATE UNIQUE INDEX entry_claims_one_per_group ON entry_claims(group_id) WHERE state='approved';
+CREATE UNIQUE INDEX entry_claims_one_pending ON entry_claims(group_id) WHERE state='pending';
+CREATE TABLE kios(owner_kind TEXT NOT NULL CHECK(owner_kind IN ('actor','group')),owner_id TEXT NOT NULL,open INTEGER NOT NULL,whatsapp TEXT NOT NULL DEFAULT '',rules TEXT NOT NULL,updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id),PRIMARY KEY(owner_kind,owner_id));
+CREATE INDEX offerings_place ON offerings(place_context_id,status);
 `]
 
 export const schemaVersion=migrations.length

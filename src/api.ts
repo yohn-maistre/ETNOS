@@ -5,6 +5,9 @@ import { Search } from './search.ts'
 import { Wiki } from './wiki.ts'
 import {Seasons} from './seasons.ts'
 import {Founding} from './founding.ts'
+import {Lembaga} from './lembaga.ts'
+import {Kios,type KiosOwner} from './kios.ts'
+import {kiosRules} from './kios-rules.ts'
 import {updateProfile} from './profile.ts'
 import {Groups,strings,type Group,type Context,type SeedLabels} from './groups.ts'
 import {DirectMessages} from './dm.ts'
@@ -36,7 +39,7 @@ import knowledgeSeed from './catalogues/tanah-papua-knowledge-seed.json' with { 
 import {KnowledgeModel,type KnowledgeSeed} from './knowledge-model.ts'
 import {Datasets,type DatasetSeed} from './datasets.ts'
 import datasetSeed from './catalogues/tanah-papua-datasets.json' with { type: 'json' }
-import {entryIndex,readEntry,viewerRecords} from './entri.ts'
+import {entryIndex,readEntry,viewerRecords,catalogue as entryCatalogue,resolve} from './entri.ts'
 import {storeSource} from './entri-store.ts'
 
 const MAX_BODY = 1500000
@@ -80,6 +83,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   if(options.residentBudget)resident.budget=options.residentBudget
   const requests=new AksaraRequests(store,groups)
+  const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups)
+  const entrySource=()=>storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id),lembaga,kios})
   const programSkill=(id:string|null)=>{if(id===null)return undefined;const slot=resident.slots.jadwal.slots.find(x=>x.id===id);if(!slot)throw new Fault(400,'Unknown program');return slot.skill}
   return async (req: Request): Promise<Response> => {
     try {
@@ -142,7 +147,14 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(path==='/v1/notifications')result=activity.list(authenticated())
         else if(path==='/v1/groups')result=groups.list(actor?.id)
         else if(path==='/v1/group-memberships')result=groups.memberships(authenticated())
-        else if(parts.length===3&&parts[1]==='groups')result=groups.read(actor?.id,parts[2])
+        else if(parts.length===3&&parts[1]==='groups')result=lembaga.page(actor?.id,parts[2])
+        // Lembaga, claims and Kios (docs/plan/one-page-system-2026-11-21.md §5 and §7).
+        else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='logo')return lembaga.logo(actor?.id,parts[2])
+        else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='claims')result=lembaga.claims(authenticated(),parts[2])
+        else if(path==='/v1/entry-claims')result=lembaga.queue(authenticated())
+        else if(path==='/v1/my-lembaga')result=groups.stewarded(authenticated())
+        else if(path==='/v1/kios/rules')result=kiosRules()
+        else if(parts.length===4&&parts[1]==='kios'&&['actor','group'].includes(parts[2]))result={kios:kios.view({kind:parts[2] as KiosOwner['kind'],id:parts[3]},actor?.id)}
         // Requests between organisations
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='requests')result=url.searchParams.get('direction')==='out'?requests.outgoing(authenticated(),parts[2]):requests.incoming(authenticated(),parts[2])
         else if(parts.length===3&&parts[1]==='aksara-requests')result=requests.open(authenticated(),parts[2])
@@ -150,8 +162,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
         // One public shape for every entry page (docs/plan/one-page-system-2026-11-21.md §3); always read as an anonymous reader.
-        else if(path==='/v1/entri')result=await entryIndex(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id)}))
-        else if(parts.length===3&&parts[1]==='entri'){result=await readEntry(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id)}),decodeURIComponent(parts[2]));if(!result)throw new Fault(404,'Not found')}
+        else if(path==='/v1/entri')result=await entryIndex(entrySource())
+        else if(parts.length===3&&parts[1]==='entri'){result=await readEntry(entrySource(),decodeURIComponent(parts[2]));if(!result)throw new Fault(404,'Not found')}
         else if(path==='/v1/knowledge-model')result=model.summary(actor?.id)
         else if(path==='/v1/knowledge-model/entities')result=model.entities(actor?.id,{class:url.searchParams.get('class')??undefined,q:url.searchParams.get('q')??undefined})
         else if(parts.length===4&&parts[1]==='knowledge-model'&&parts[2]==='entities')result=model.entity(actor?.id,parts[3])
@@ -209,7 +221,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (parts.length === 3 && parts[1] === 'communities') {
           const c = store.community(parts[2])
           if (c.visibility === 'hidden-private' && !store.canRead(actor?.id,c)) throw new Fault(404,'Not found')
-          result = {...c,forming:Founding.state(c,store.clock()),contexts:groups.communityContexts(c.id)} // Listed-private metadata is intentionally public; no membership or counts.
+          result = {...c,forming:Founding.state(c,store.clock()),contexts:groups.communityContexts(c.id),group:groups.communityGroup(actor?.id,c.id)} // Listed-private metadata is intentionally public; no membership or counts.
         }
         else if (path === '/v1/feed') result = store.feed(actor?.id, url.searchParams.get('q') ?? '')
         else if (path === '/v1/feed/page') {const page=store.feedPage(actor?.id,{aksara:url.searchParams.get('aksara')==='true',work:url.searchParams.get('work')==='true',programSkill:programSkill(url.searchParams.get('program')),sort:url.searchParams.get('sort')==='discussed'?'discussed':undefined,
@@ -270,7 +282,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='suggestions') result=await decisions.suggest(caller,parts[2],string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(path==='/v1/profile')result=updateProfile(store,caller,b)
       else if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
-      else if (path === '/v1/communities' && b.forming === true) result = founding.found(caller,{title:string(b.title),description:string(b.description),visibility:string(b.visibility) as Community['visibility'],admission:b.admission === undefined ? undefined : string(b.admission) as Community['admission']})
+      else if (path === '/v1/communities' && b.forming === true) result = founding.found(caller,{title:string(b.title),description:string(b.description),visibility:string(b.visibility) as Community['visibility'],admission:b.admission === undefined ? undefined : string(b.admission) as Community['admission'],about:strings(b.about??[]),languages:strings(b.languages??[]),groupId:b.groupId===undefined||b.groupId===null?undefined:string(b.groupId)},groups)
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){
         if(!Array.isArray(b.packages)||b.packages.some(p=>!p||typeof p!=='object'||typeof p.id!=='string'||typeof p.data!=='string'))throw new Fault(400,'Key packages required')
@@ -287,6 +299,23 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else throw new Fault(404,'Not found')
       }
       else if(path==='/v1/notifications/read')result=activity.markRead(caller,b.ids)
+      else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='profile')result=lembaga.setProfile(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='logo')result=lembaga.setLogo(caller,parts[2],b.bytes)
+      else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='jenis')result=lembaga.setJenis(caller,parts[2],b.contextId===null||b.contextId===undefined?null:string(b.contextId))
+      else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='claims'){
+        // An existing entry is resolved by the entry adapter, so an old address claims the entry it now opens.
+        let entry:{slug:string;kind:string}|undefined
+        if(b.entry!==undefined){const cat=await entryCatalogue(entrySource()),found=resolve(cat,string(b.entry));if(!found)throw new Fault(404,'Not found');entry={slug:found.slug,kind:cat.nodes.get(found.slug)!.kind}}
+        result=lembaga.request(caller,parts[2],{entry,listing:b.listing===undefined?undefined:b.listing as Record<string,unknown>})
+      }
+      else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='claims'&&parts[4]==='release')result=lembaga.release(caller,parts[2])
+      else if(parts.length===4&&parts[1]==='entry-claims'&&parts[3]==='decide'){
+        if(typeof b.approve!=='boolean')throw new Fault(400,'Boolean required')
+        const cat=b.approve?await entryCatalogue(entrySource()):null
+        result=lembaga.decide(caller,parts[2],b.approve,slug=>!!cat&&(cat.nodes.has(slug)||cat.alias.has(slug)))
+      }
+      else if(path==='/v1/kios')result={kios:kios.set(caller,{kind:string(b.ownerKind) as KiosOwner['kind'],id:string(b.ownerId)},b)}
+      else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='group')result=b.groupId===null?groups.unbind(caller,parts[2]):(groups.bind(caller,string(b.groupId),parts[2]),groups.communityGroup(caller,parts[2]))
       else if(path==='/v1/groups')result=groups.create(caller,string(b.title),string(b.description),string(b.kind) as Group['kind'],string(b.visibility) as Group['visibility'])
       else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members'){
         if(typeof b.active!=='boolean')throw new Fault(400,'Boolean required')
@@ -333,7 +362,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='work-grants'&&parts[3]==='revoke')result=work.revoke(caller,parts[2])
       else if(path==='/v1/editorial-mandates')result=wiki.grant(caller,string(b.agentId),string(b.communityId),string(b.purpose),Number(b.expires),b.hourlyLimit===undefined?3:Number(b.hourlyLimit))
       else if(parts.length===4&&parts[1]==='editorial-mandates'&&parts[3]==='revoke')result=wiki.revoke(caller,parts[2])
-      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'contexts') result=groups.labelCommunity(caller,parts[2],string(b.contextId),b.remove===true)
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'contexts') result=groups.labelCommunity(caller,parts[2],string(b.contextId),b.remove===true,b.role===undefined?undefined:string(b.role) as 'about'|'language')
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'settings') result = store.updateCommunity(caller,parts[2],{title:b.title===undefined?undefined:string(b.title),description:b.description===undefined?undefined:string(b.description),admission:b.admission===undefined?undefined:string(b.admission) as Community['admission']})
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'join') result = store.join(caller,parts[2])
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'requests') result = store.requestJoin(caller,parts[2],string(b.message))

@@ -49,8 +49,9 @@ export class KamusAsk{
  private cache=new Map<string,Heavy>()
  constructor(store:StrataCore,kamus:Kamus,lexicon:KamusLexicon,concepts:ConceptList,species:ViewerRecord[]){this.s=store;this.kamus=kamus;this.periksa=new Periksa(store);this.lexicon=lexicon;this.concepts=concepts;this.species=species.filter(r=>r.kind==='species'&&!!r.thumb)}
 
- /** The Kamus is on where the community has a language (today: its language label, or the operator's choice).
-  * TODO(P3): switch this to the "Bahasa yang dipakai" field when it exists; this is the only place to change. */
+ /** The Kamus is on where the community writes in a language other than Indonesian or Papuan Malay: its
+  * "Bahasa yang dipakai" (community_contexts with role 'language', set at creation or in the settings), or the
+  * operator's choice, which is the only way for a hidden community. See Kamus.settings. */
  on(communityId:string){return !!this.kamus.settings(communityId).language}
  private readable(actor:string|undefined,communityId:string){if(!this.s.canRead(actor,this.s.community(communityId)))throw new Fault(404,'Not found')}
  private member(actor:string,communityId:string){this.s.requireMember(actor,communityId);if(this.s.actor(actor).kind!=='human')throw new Fault(403,'Human participant required');if(!this.on(communityId))throw new Fault(409,'This community has no Kamus')}

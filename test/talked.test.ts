@@ -29,7 +29,7 @@ test('Sedang dibicarakan counts only public, visible posts, by thread label or c
   // Never counted: a private community's post (even with a stored label), a hidden thread, a reply under it.
   const hiddenPost=s.createPost(steward.actor.id,secret.id,'SECRET Nabire plan')
   s.run("INSERT INTO record_contexts VALUES('post',?,?,?,?)",hiddenPost.id,nabire.id,steward.actor.id,now)
-  s.run("INSERT INTO community_contexts VALUES(?,?,?,?)",secret.id,quiet.id,steward.actor.id,now)
+  s.run("INSERT INTO community_contexts(community_id,context_id,issuer_id,created) VALUES(?,?,?,?)",secret.id,quiet.id,steward.actor.id,now)
   const removed=s.createPost(steward.actor.id,open.id,'REMOVED Nabire thread');g.attach(steward.actor.id,'post',removed.id,nabire.id)
   s.createPost(friend.actor.id,open.id,'REMOVED reply',removed.id)
   s.hidePost(steward.actor.id,removed.id)

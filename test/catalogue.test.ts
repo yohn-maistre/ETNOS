@@ -34,7 +34,7 @@ test("the Tanah Papua catalogue is consistent and keeps the live slugs", () => {
     assert.match(l.aliases[0], /^glottocode:[a-z]{4}\d{4}$/);
     assert.match(l.description, /Glottolog 5\.3/);
   }
-  assert.ok(of("topic").filter((t) => t.parents.includes("lembaga")).length === 7);
+  assert.ok(of("topic").filter((t) => t.parents.includes("lembaga")).length === 8, "eight jenis lembaga");
   assert.ok(shipped.sources.some((s) => /Glottolog/.test(s.title) && s.license === "CC BY 4.0"));
   assert.ok(shipped.notes.length > 0);
   assert.throws(() => catalogue("elsewhere"), /Catalogue not found/);
@@ -85,7 +85,7 @@ test("catalogue import is steward-only, idempotent, and keeps existing ids, edit
     assert.deepEqual(nabire.parents.map((p) => p.slug).sort(), ["meepago", "papua-tengah"]);
     assert.deepEqual(nabire.newsPlaces, ["nabire", "kabupaten-nabire"]);
     assert.equal(groups.contextDetail("papua-tengah").childCount, 8);
-    assert.equal(groups.contextDetail("lembaga").children.length, 7);
+    assert.equal(groups.contextDetail("lembaga").children.length, 8);
     assert.equal(groups.contexts().length, shipped.entries.length + 1);
 
     // A steward's own edits survive a second load; nothing else changes.
