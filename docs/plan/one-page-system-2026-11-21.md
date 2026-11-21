@@ -1,6 +1,8 @@
 # One page system, lembaga, Kios, Situs and a Kamus that starts from nothing
 
-*21 November 2026. A proposal written with the owner's brain dump of the same day. Status marks: **built** (in the code), **proposal** (not built). Nothing here is built yet. Owner decisions are marked **decided**; everything else is a recommendation waiting for a pick.*
+*21 November 2026. Written with the owner's brain dump of the same day. Status marks: **built** (in the code), **proposal** (not built).*
+
+**Decided by the owner (21 Nov, evening):** the one page system, Lembaga as the name, communities by topic and language, Kios, Situs, Percakapan as in section 4, the Kamus as in section 10 including Mode belajar, and the Ensiklopedia front in the superapp shape (section 3a). **Goal: all of it before the 26–27 Nov proposal upload**, built by one Opus worker at a time in the packages of section 13. **Still open:** two voices on the lembaga page, Situs pricing, the land-listing ban (section 12).
 
 Related: [communities-spaces-2026-11-19.md](communities-spaces-2026-11-19.md) (site hierarchy, Periksa), [strata-model-2026-11-17.md](strata-model-2026-11-17.md) (layers and columns), [../research/mee-text-sources-2026-11-21.md](../research/mee-text-sources-2026-11-21.md) (coverage test, false friends), [../observatory/README.md](../observatory/README.md) (map and Penampil).
 
@@ -65,8 +67,47 @@ One template for every kind. The URL stays under `/wiki/<slug>`, because Indones
 - **Tabs, four at most:** Tentang · Percakapan · Riset dan data · Riwayat. *Riset dan data* merges today's Sumber (OpenAlex research) with Data (datasets), because both answer "where can I read or download more". *Komunitas* moves to the rail, since it is a list of places to go, not something to read.
 - **Kind modules sit inside Tentang, never as new tabs:** a map and Kabar for places; public Kamus entries and the communities that write in it for languages; sebaran, photos, sound and *nama lokal* for species; relief and facts for landforms; the lembaga module for lembaga (section 5).
 - **The rail is the *Letak* navigator,** a general version of today's region stack (PlaceStrata, "Letak di antara wilayah adat"). It shows the entry's place in its chain with the current one open, then the communities, lembaga and Kios that point here, then graph neighbours. On phones it becomes one row of chips under the title. This answers "underutilising the rail".
-- **The Ensiklopedia front is a superapp grid** (owner's Gojek idea, screenshots pending): one icon per kind (Tempat, Bahasa, Suku, Makhluk hidup, Bentang alam, Benda, Peristiwa, Lembaga) plus Peta, Data and Kamus, then a few cards such as *Belum diketahui*, *Baru diperiksa* and the compact map. The grid is the catalogue; the map and the Penampil are two ways of looking at it.
-- **Penampil gets the catalogue too** (owner, after phase 2): a strip or drawer of the list you came from, with next and previous, so people browse without closing the viewer. Logged in #98.
+- **The Ensiklopedia front is a superapp grid,** and the Penampil gets its catalogue inside. Both are in section 3a.
+
+### 3a. The Ensiklopedia front, shaped like a superapp
+
+The owner shared three Gojek screens on 21 Nov. They are not a visual reference. They show an information hierarchy:
+
+- **Everything is visible at the top,** and you go deeper by tapping.
+- **Each entry point carries a small live fact:** "~7K", "50%", "30 mins".
+- **A personal state card comes with three quick actions** (balance; Pay, History, More).
+- **Below that are themed rows,** each with "See all".
+- **One persistent bar** keeps an unfinished task within reach (the cart).
+
+Today's /wiki does the opposite. It opens straight into the knowledge map and a search bar, which is deep and hard to act on.
+
+The front, top to bottom:
+
+1. **Search and the place scope** ("Tanah Papua" by default), as now.
+2. **A state card for you:**
+   - It says what is waiting nearby: "14 pertanyaan menunggu di Meepago".
+   - It has three quick actions: *Jawab* (opens the Periksa deck), *Tambah* (an entry, a word, a photo) and *Riwayat* (what you added).
+   - A visitor who is not logged in sees the same counts with "Masuk untuk membantu".
+3. **The kind grid.**
+   - It has eight tiles plus *Lainnya*: Tempat, Bahasa, Suku, Makhluk hidup, Bentang alam, Benda, Lembaga, Kamus, then Peristiwa, Data and Peta under Lainnya.
+   - Each tile carries one live badge from real counts. Examples: "1.2K" entries, "+12" new words this week, "3" waiting for a check.
+   - Tiles are plain icons from the site's set on tinted squares. There is no 3D clip art and no promotional colour.
+4. **One feature card,** the compact knowledge map: a small live preview with the lens pills. Tap it to open `/wiki/peta` full screen. The map stays a strong first-screen moment without being the whole page.
+5. **Themed rows, each with *Lihat semua*:**
+   - *Benda, spesies dan bentang alam* (Penampil cards);
+   - *Belum diketahui* (gaps people can fill);
+   - *Baru diperiksa*;
+   - *Di sekitar [scope]*;
+   - *Kata minggu ini* (from the Kamus).
+6. **Sub-kind circles inside a kind page,** for example burung, kupu-kupu, pohon under Makhluk hidup, or gunung, danau, sungai under Bentang alam. They work like Gojek's food category circles.
+
+**Penampil with its catalogue inside.** The owner liked the viewer and asked for "a small preview and an expandable thing".
+
+- **A strip of thumbnails at the bottom of the viewer** comes from the list you arrived from (a row, a kind, a search, a map selection). It is collapsed to one line by default.
+- **Swipe or use the arrow keys** to step through the list, with the counter "3 / 14".
+- **Drag the strip up** to expand it into a full grid with filters, then tap to switch.
+- **The viewer shell stays mounted while you step.** Only the body changes, and the lazy bodies already exist, so stepping costs no reload.
+- **The address updates** (`/wiki/lihat/<id>?daftar=<list>`), so back and sharing keep working.
 
 ### Migration path
 
@@ -219,16 +260,26 @@ The Kamus must work for every Papuan language, not only Mee. Mee is the pilot.
 
 ## 11. Order
 
-| When | What |
-| --- | --- |
-| Before the 26–27 Nov upload (video, deck) | Kamus in posts (tap any word, question underlines, the card, the notice card, *Artinya*) with real posts from Mee kids; the Lembaga rename and jenis sections; the Letak rail on entry pages; deck slides for Kios and Situs as the road ahead (mock-ups, not builds) |
-| Before the 18–19 Dec showcase | The one-entry migration (section 3); the Ensiklopedia front grid; Kios on `offerings`; *Ucapkan*; *Kata hari ini* from a concept list and Penampil pictures; the Penampil catalogue drawer; Sketchfab models checked for licence |
-| After | The Situs renderer and dispatcher; decision-model suggestions for public posts; `strata.yaml` onboarding by interview |
+The owner wants everything before the 26–27 Nov upload. The order and the packages are in section 13. If time runs short, cut from the bottom of that list. The Kamus and the page system are what the video and the deck need most.
 
 ## 12. Questions for the owner
 
-1. Lembaga as the one word (instead of Institusi or Organisasi)?
-2. One lembaga page with two voices: their own part, and the reviewed encyclopedia part?
-3. Situs pricing: Rp300rb once plus a yearly fee only for an own domain, or a subscription?
-4. Kios: forbid land listings?
-5. The Gojek screenshots, for the Ensiklopedia front.
+Answered on 21 Nov: Lembaga as the one word (yes), and the Gojek screenshots (section 3a). Still open:
+
+1. One lembaga page with two voices: their own part, and the reviewed encyclopedia part?
+2. Situs pricing: Rp300rb once plus a yearly fee only for an own domain, or a subscription?
+3. Kios: forbid land listings?
+4. DNS: a wildcard `*.etnos.space` record and Worker route for Situs. Under the standing rule, anything new with DNS needs the owner's confirmation before it is made.
+
+## 13. Work packages
+
+One Opus worker at a time, each on a coherent set (owner, 21 Nov). The lead session reviews screenshots, deploys, and keeps the docs and tasks current. Each package ends with checks, screenshots at 390 and 1280 in light and dark, a doc update, and a report. Deploys go through the lead.
+
+| # | Package | Contents | Depends on |
+| --- | --- | --- | --- |
+| P1 | **Halaman dan Ensiklopedia** | One entry page for every kind at `/wiki/<slug>` with `/contexts/<slug>` redirecting; four tabs (Tentang, Percakapan, Riset dan data, Riwayat); the Letak rail, generalised from PlaceStrata; kind modules inside Tentang; the Ensiklopedia front in the superapp shape (3a); the Penampil catalogue strip; the name moves to Ensiklopedia in `observatory-name.ts`. One API shape (`/v1/entri/:slug`) that reads today's tables through an adapter. **No destructive storage migration before the showcase.** | none |
+| P2 | **Kamus in posts** | The tokenizer and matcher (proper names skipped, suffix rules per language); question underlines; tap any word for the card; *Artinya* on posts; the notice card and the deck with correction, word class and Ucapkan; *Mode belajar*; questions from word frequency; *Kata hari ini* from a concept list; picture questions from Penampil species. Shaped by `docs/research/language-from-nothing-2026-11-21.md`. | P1 for species links (soft) |
+| P3 | **Lembaga, komunitas dan Kios** | Lembaga as the one word; jenis lembaga sections on the Komunitas page; the lembaga page (two voices if the owner agrees) with claiming an entry; community creation with *Tentang apa / di mana*, *Bahasa yang dipakai* (switches the Kamus on) and *Dikelola oleh*; Kios as a view of `offerings` with a toggle, place listing and house rules | P1 |
+| P4 | **Percakapan** | Entry tagging in the composer; inherited tags; "Tandai …?" suggestions by name match on public posts; the Percakapan tab on entries | P1 |
+| P5 | **Situs** | The `situs.yaml` and `lembaga.yaml` schemas; the block renderer with two templates; a preview at `etnos.space/situs/<lembaga>`; the `*.etnos.space` dispatcher written and tested, switched on only after the owner confirms DNS | P3 |
+| P6 | **strata.yaml** | The deployment file and its schema; Studio reads and writes it | P5 schemas |
