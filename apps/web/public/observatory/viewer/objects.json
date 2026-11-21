@@ -1,0 +1,1127 @@
+{
+ "version": 1,
+ "checked": "2026-11-21",
+ "about": "Catatan contoh untuk penampil ETNOS, dibuat oleh scripts/observatory/build-viewer-seed.mjs dari sumber terbuka. Setiap catatan menyebut sumber dan lisensinya.",
+ "objects": [
+  {
+   "id": "spesimen-nokdiak-tubingen",
+   "kind": "model",
+   "title": "Spesimen nokdiak naroten di Tübingen",
+   "subtitle": "Koleksi Zoologi Universitas Tübingen",
+   "summary": "Model 3D dari spesimen awetan nokdiak naroten (dulu disebut Proechidna bruijnii) di Koleksi Zoologi Universitas Tübingen, Jerman. Menurut keterangan koleksi, satwa ini hanya hidup di Pulau Papua, terutama di hutan, dan bisa ditemukan sampai ketinggian 4.000 meter. Ia aktif pada senja dan malam hari dan memakan cacing tanah dengan lidahnya yang panjang dan lengket.",
+   "related": [
+    "nokdiak-naroten"
+   ],
+   "thumb": "/observatory/viewer/nokdiak-tubingen-thumb.jpg",
+   "facts": [
+    {
+     "label": "Model",
+     "value": "232.577 segitiga, dengan warna dari foto spesimen"
+    },
+    {
+     "label": "Ukuran sebenarnya",
+     "value": "Belum tercatat dalam sumber"
+    }
+   ],
+   "model": {
+    "src": "/observatory/viewer/nokdiak-tubingen.glb",
+    "bytes": 3675412
+   },
+   "sources": [
+    {
+     "title": "Präparat eines Langschnabeligels",
+     "url": "https://zenodo.org/records/10341250",
+     "publisher": "Zenodo, komunitas 3D Big Data Space (salinan Objaverse 1.0 dari Sketchfab)",
+     "attribution": "Model oleh escience-tuebingen, Universitas Tübingen",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     },
+     "note": "ETNOS memperkecil berkasnya (bentuk dan warna tidak diubah). DOI 10.5281/zenodo.10341250"
+    },
+    {
+     "title": "Halaman model di Sketchfab",
+     "url": "https://sketchfab.com/3d-models/praparat-eines-langschnabeligels-089def5fa750415cb6826b21612699ee",
+     "publisher": "Sketchfab",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "kapak-batu-manchester",
+   "kind": "model",
+   "title": "Kapak batu yang diasah",
+   "subtitle": "Koleksi ajar Arkeologi, Universitas Manchester",
+   "summary": "Model 3D kapak batu dari dolerit atau basal di koleksi ajar Jurusan Arkeologi Universitas Manchester. Kapak ini diserahkan oleh British Museum tanpa keterangan asal. Menurut pembuat model, bentuknya mirip kapak di museum lain yang berasal dari Nugini dan Kepulauan Admiralty, jadi asalnya dari Tanah Papua belum pasti.",
+   "thumb": "/observatory/viewer/kapak-batu-manchester-thumb.jpg",
+   "facts": [
+    {
+     "label": "Asal",
+     "value": "Tidak tercatat. Mirip kapak dari Nugini dan Kepulauan Admiralty menurut pembuat model"
+    },
+    {
+     "label": "Model",
+     "value": "23.906 segitiga"
+    }
+   ],
+   "model": {
+    "src": "/observatory/viewer/kapak-batu-manchester.glb",
+    "bytes": 415980
+   },
+   "sources": [
+    {
+     "title": "Stone Axe",
+     "url": "https://zenodo.org/records/10273384",
+     "publisher": "Zenodo, komunitas 3D Big Data Space (salinan Objaverse 1.0 dari Sketchfab)",
+     "attribution": "Model oleh ursulackah",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     },
+     "note": "ETNOS memperkecil berkasnya (bentuk dan warna tidak diubah). DOI 10.5281/zenodo.10273384"
+    },
+    {
+     "title": "Catatan pembuatan model",
+     "url": "https://uackahmsc.wordpress.com/2021/02/26/processing-the-stone-axe/",
+     "publisher": "ursulackah"
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "cenderawasih-kuning-besar",
+   "kind": "species",
+   "title": "Cenderawasih kuning besar",
+   "subtitle": "Paradisaea apoda",
+   "summary": "Burung cenderawasih dari suku Paradisaeidae. Peta sebaran menunjukkan tempat-tempat di Tanah Papua tempat burung ini pernah dicatat menurut GBIF.",
+   "thumb": "/observatory/viewer/cenderawasih-kuning-besar-thumb.jpg",
+   "photos": [
+    {
+     "src": "/observatory/viewer/cenderawasih-kuning-besar-1.jpg",
+     "width": 1600,
+     "height": 1064,
+     "alt": "Kulit awetan cenderawasih kuning besar di Naturalis",
+     "credit": "Naturalis Biodiversity Center",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     },
+     "url": "https://commons.wikimedia.org/wiki/File:Naturalis_Biodiversity_Center_-_RMNH.AVES.43200_2_-_Paradisaea_apoda_apoda_Linnaeus,_1758_-_Paradisaeidae_-_bird_skin_specimen.jpeg",
+     "note": "Spesimen museum di Naturalis Biodiversity Center, Leiden."
+    },
+    {
+     "src": "/observatory/viewer/cenderawasih-kuning-besar-2.jpg",
+     "width": 1024,
+     "height": 683,
+     "alt": "Cenderawasih kuning besar jantan di taman burung",
+     "credit": "Andrea Lawardi",
+     "licence": {
+      "name": "CC BY 2.0",
+      "url": "https://creativecommons.org/licenses/by/2.0/"
+     },
+     "url": "https://commons.wikimedia.org/wiki/File:Paradisaea_apoda_-Bali_Bird_Park-5.jpg",
+     "note": "Difoto di Bali Bird Park, bukan di alam."
+    }
+   ],
+   "species": {
+    "gbif": 2494862,
+    "scientificName": "Paradisaea apoda",
+    "authorship": "Linnaeus, 1758",
+    "taxonomy": [
+     {
+      "rank": "kingdom",
+      "name": "Animalia"
+     },
+     {
+      "rank": "phylum",
+      "name": "Chordata"
+     },
+     {
+      "rank": "class",
+      "name": "Aves"
+     },
+     {
+      "rank": "order",
+      "name": "Passeriformes"
+     },
+     {
+      "rank": "family",
+      "name": "Paradisaeidae"
+     },
+     {
+      "rank": "genus",
+      "name": "Paradisaea"
+     },
+     {
+      "rank": "species",
+      "name": "Paradisaea apoda"
+     }
+    ],
+    "names": [
+     {
+      "value": "Cenderawasih kuning besar",
+      "source": "Wikidata Q325356"
+     },
+     {
+      "value": "Cendrawasih besar",
+      "source": "GBIF, dari Catalogue of Life"
+     }
+    ],
+    "localNames": "Nama dalam bahasa-bahasa di Tanah Papua belum tercatat di ETNOS. Penutur bisa menambahkannya lewat kamus komunitas.",
+    "occurrences": {
+     "src": "/observatory/viewer/occ-cenderawasih-kuning-besar.json",
+     "shown": 79,
+     "total": 106,
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=2494862&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "rounding": "Letak setiap catatan dibulatkan ke kotak 0,1 derajat (sekitar 11 km), supaya tempat sarang atau tempat tinggal satwa tidak bisa dibaca dari peta."
+    }
+   },
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Risiko rendah (menurut Wikidata)",
+     "source": {
+      "title": "Wikidata Q325356",
+      "url": "https://www.wikidata.org/wiki/Q325356"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "GBIF Backbone Taxonomy, takson 2494862",
+     "url": "https://www.gbif.org/species/2494862",
+     "publisher": "GBIF Secretariat",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    },
+    {
+     "title": "Catatan keberadaan di Tanah Papua",
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=2494862&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "publisher": "GBIF.org",
+     "attribution": "GBIF.org (21 November 2026), pencarian occurrence",
+     "note": "Hanya catatan berlisensi CC0 1.0 atau CC BY 4.0 yang ditampilkan."
+    },
+    {
+     "title": "Wikidata Q325356, nama dan status konservasi",
+     "url": "https://www.wikidata.org/wiki/Q325356",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Foto: Naturalis Biodiversity Center - RMNH.AVES.43200 2 - Paradisaea apoda apoda Linnaeus, 1758 - Paradisaeidae - bird skin specimen.jpeg",
+     "url": "https://commons.wikimedia.org/wiki/File:Naturalis_Biodiversity_Center_-_RMNH.AVES.43200_2_-_Paradisaea_apoda_apoda_Linnaeus,_1758_-_Paradisaeidae_-_bird_skin_specimen.jpeg",
+     "publisher": "Wikimedia Commons",
+     "attribution": "Naturalis Biodiversity Center",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Foto: Paradisaea apoda -Bali Bird Park-5.jpg",
+     "url": "https://commons.wikimedia.org/wiki/File:Paradisaea_apoda_-Bali_Bird_Park-5.jpg",
+     "publisher": "Wikimedia Commons",
+     "attribution": "Andrea Lawardi",
+     "licence": {
+      "name": "CC BY 2.0",
+      "url": "https://creativecommons.org/licenses/by/2.0/"
+     }
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "kanguru-pohon-nemena",
+   "kind": "species",
+   "title": "Kanguru pohon nemena",
+   "subtitle": "Dendrolagus ursinus",
+   "summary": "Kanguru pohon dari suku Macropodidae. Menurut Wikidata, satwa ini endemik di Papua.",
+   "thumb": "/observatory/viewer/kanguru-pohon-nemena-thumb.jpg",
+   "photos": [
+    {
+     "src": "/observatory/viewer/kanguru-pohon-nemena-1.jpg",
+     "width": 1600,
+     "height": 1065,
+     "alt": "Kanguru pohon nemena di pohon",
+     "credit": "kalyanvarma",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     },
+     "url": "https://commons.wikimedia.org/wiki/File:Dendrolagus_ursinus_349114871.jpg"
+    },
+    {
+     "src": "/observatory/viewer/kanguru-pohon-nemena-2.jpg",
+     "width": 1066,
+     "height": 1600,
+     "alt": "Kanguru pohon nemena",
+     "credit": "Daniel Boyland",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     },
+     "url": "https://commons.wikimedia.org/wiki/File:Ursine_tree-kangaroo.jpg"
+    }
+   ],
+   "species": {
+    "gbif": 2440221,
+    "scientificName": "Dendrolagus ursinus",
+    "authorship": "(Temminck, 1836)",
+    "taxonomy": [
+     {
+      "rank": "kingdom",
+      "name": "Animalia"
+     },
+     {
+      "rank": "phylum",
+      "name": "Chordata"
+     },
+     {
+      "rank": "class",
+      "name": "Mammalia"
+     },
+     {
+      "rank": "order",
+      "name": "Diprotodontia"
+     },
+     {
+      "rank": "family",
+      "name": "Macropodidae"
+     },
+     {
+      "rank": "genus",
+      "name": "Dendrolagus"
+     },
+     {
+      "rank": "species",
+      "name": "Dendrolagus ursinus"
+     }
+    ],
+    "names": [
+     {
+      "value": "Kanguru pohon nemena",
+      "source": "Wikidata Q209139"
+     },
+     {
+      "value": "Kangguru-Pohon Nemena",
+      "source": "GBIF, dari Catalogue of Life"
+     }
+    ],
+    "localNames": "Nama dalam bahasa-bahasa di Tanah Papua belum tercatat di ETNOS. Penutur bisa menambahkannya lewat kamus komunitas.",
+    "occurrences": {
+     "src": "/observatory/viewer/occ-kanguru-pohon-nemena.json",
+     "shown": 6,
+     "total": 12,
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=2440221&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "rounding": "Letak setiap catatan dibulatkan ke kotak 0,1 derajat (sekitar 11 km), supaya tempat sarang atau tempat tinggal satwa tidak bisa dibaca dari peta."
+    }
+   },
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Rentan (menurut Wikidata)",
+     "source": {
+      "title": "Wikidata Q209139",
+      "url": "https://www.wikidata.org/wiki/Q209139"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "GBIF Backbone Taxonomy, takson 2440221",
+     "url": "https://www.gbif.org/species/2440221",
+     "publisher": "GBIF Secretariat",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    },
+    {
+     "title": "Catatan keberadaan di Tanah Papua",
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=2440221&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "publisher": "GBIF.org",
+     "attribution": "GBIF.org (21 November 2026), pencarian occurrence",
+     "note": "Hanya catatan berlisensi CC0 1.0 atau CC BY 4.0 yang ditampilkan."
+    },
+    {
+     "title": "Wikidata Q209139, nama dan status konservasi",
+     "url": "https://www.wikidata.org/wiki/Q209139",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Foto: Dendrolagus ursinus 349114871.jpg",
+     "url": "https://commons.wikimedia.org/wiki/File:Dendrolagus_ursinus_349114871.jpg",
+     "publisher": "Wikimedia Commons",
+     "attribution": "kalyanvarma",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    },
+    {
+     "title": "Foto: Ursine tree-kangaroo.jpg",
+     "url": "https://commons.wikimedia.org/wiki/File:Ursine_tree-kangaroo.jpg",
+     "publisher": "Wikimedia Commons",
+     "attribution": "Daniel Boyland",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "kupu-kupu-sayap-burung-rothschild",
+   "kind": "species",
+   "title": "Kupu-kupu sayap burung Rothschild",
+   "subtitle": "Ornithoptera rothschildi",
+   "summary": "Kupu-kupu sayap burung dari suku Papilionidae. Spesimen di foto berasal dari Pegunungan Arfak dan Danau Anggi menurut keterangan Ulster Museum.",
+   "thumb": "/observatory/viewer/kupu-kupu-sayap-burung-rothschild-thumb.jpg",
+   "photos": [
+    {
+     "src": "/observatory/viewer/kupu-kupu-sayap-burung-rothschild-1.jpg",
+     "width": 1286,
+     "height": 968,
+     "alt": "Kupu-kupu sayap burung Rothschild jantan, sisi atas",
+     "credit": "Robert Nash Curator of Entomology, Ulster Museum",
+     "licence": {
+      "name": "CC BY 2.5",
+      "url": "https://creativecommons.org/licenses/by/2.5/"
+     },
+     "url": "https://commons.wikimedia.org/wiki/File:Rothschildi_P3010061.jpg",
+     "note": "Spesimen Ulster Museum dari Arfak, 1979."
+    },
+    {
+     "src": "/observatory/viewer/kupu-kupu-sayap-burung-rothschild-2.jpg",
+     "width": 1600,
+     "height": 1202,
+     "alt": "Kupu-kupu sayap burung Rothschild betina, sisi atas",
+     "credit": "Robert Nash Curator of Entomology, ulster Museum",
+     "licence": {
+      "name": "CC BY 2.5",
+      "url": "https://creativecommons.org/licenses/by/2.5/"
+     },
+     "url": "https://commons.wikimedia.org/wiki/File:Rothschildi_fups_P3010001.jpg",
+     "note": "Spesimen Ulster Museum dari Danau Anggi, 1976."
+    }
+   ],
+   "species": {
+    "gbif": 1937479,
+    "scientificName": "Ornithoptera rothschildi",
+    "authorship": "Kenrick, 1911",
+    "taxonomy": [
+     {
+      "rank": "kingdom",
+      "name": "Animalia"
+     },
+     {
+      "rank": "phylum",
+      "name": "Arthropoda"
+     },
+     {
+      "rank": "class",
+      "name": "Insecta"
+     },
+     {
+      "rank": "order",
+      "name": "Lepidoptera"
+     },
+     {
+      "rank": "family",
+      "name": "Papilionidae"
+     },
+     {
+      "rank": "genus",
+      "name": "Ornithoptera"
+     },
+     {
+      "rank": "species",
+      "name": "Ornithoptera rothschildi"
+     }
+    ],
+    "names": [
+     {
+      "value": "Kupu-kupu sayap burung Rothschild",
+      "source": "Wikidata Q142839"
+     }
+    ],
+    "localNames": "Nama dalam bahasa-bahasa di Tanah Papua belum tercatat di ETNOS. Penutur bisa menambahkannya lewat kamus komunitas.",
+    "occurrences": {
+     "src": "/observatory/viewer/occ-kupu-kupu-sayap-burung-rothschild.json",
+     "shown": 29,
+     "total": 43,
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=1937479&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "rounding": "Letak setiap catatan dibulatkan ke kotak 0,1 derajat (sekitar 11 km), supaya tempat sarang atau tempat tinggal satwa tidak bisa dibaca dari peta."
+    }
+   },
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Hampir terancam (menurut Wikidata)",
+     "source": {
+      "title": "Wikidata Q142839",
+      "url": "https://www.wikidata.org/wiki/Q142839"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "GBIF Backbone Taxonomy, takson 1937479",
+     "url": "https://www.gbif.org/species/1937479",
+     "publisher": "GBIF Secretariat",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    },
+    {
+     "title": "Catatan keberadaan di Tanah Papua",
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=1937479&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "publisher": "GBIF.org",
+     "attribution": "GBIF.org (21 November 2026), pencarian occurrence",
+     "note": "Hanya catatan berlisensi CC0 1.0 atau CC BY 4.0 yang ditampilkan."
+    },
+    {
+     "title": "Wikidata Q142839, nama dan status konservasi",
+     "url": "https://www.wikidata.org/wiki/Q142839",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Foto: Rothschildi P3010061.jpg",
+     "url": "https://commons.wikimedia.org/wiki/File:Rothschildi_P3010061.jpg",
+     "publisher": "Wikimedia Commons",
+     "attribution": "Robert Nash Curator of Entomology, Ulster Museum",
+     "licence": {
+      "name": "CC BY 2.5",
+      "url": "https://creativecommons.org/licenses/by/2.5/"
+     }
+    },
+    {
+     "title": "Foto: Rothschildi fups P3010001.jpg",
+     "url": "https://commons.wikimedia.org/wiki/File:Rothschildi_fups_P3010001.jpg",
+     "publisher": "Wikimedia Commons",
+     "attribution": "Robert Nash Curator of Entomology, ulster Museum",
+     "licence": {
+      "name": "CC BY 2.5",
+      "url": "https://creativecommons.org/licenses/by/2.5/"
+     }
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "nokdiak-naroten",
+   "kind": "species",
+   "title": "Nokdiak naroten",
+   "subtitle": "Zaglossus bruijni",
+   "summary": "Mamalia dari ordo Monotremata, kelompok mamalia yang bertelur. Model 3D spesimennya dari Universitas Tübingen bisa dibuka di penampil.",
+   "related": [
+    "spesimen-nokdiak-tubingen"
+   ],
+   "thumb": "/observatory/viewer/nokdiak-naroten-thumb.jpg",
+   "photos": [
+    {
+     "src": "/observatory/viewer/nokdiak-naroten-1.jpg",
+     "width": 1600,
+     "height": 1068,
+     "alt": "Nokdiak naroten di lantai hutan",
+     "credit": "Кирилл",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     },
+     "url": "https://commons.wikimedia.org/wiki/File:Zaglossus_bruijnii_581779220.jpg"
+    }
+   ],
+   "species": {
+    "gbif": 2433391,
+    "scientificName": "Zaglossus bruijni",
+    "authorship": "(Peters & Doria, 1876)",
+    "taxonomy": [
+     {
+      "rank": "kingdom",
+      "name": "Animalia"
+     },
+     {
+      "rank": "phylum",
+      "name": "Chordata"
+     },
+     {
+      "rank": "class",
+      "name": "Mammalia"
+     },
+     {
+      "rank": "order",
+      "name": "Monotremata"
+     },
+     {
+      "rank": "family",
+      "name": "Tachyglossidae"
+     },
+     {
+      "rank": "genus",
+      "name": "Zaglossus"
+     },
+     {
+      "rank": "species",
+      "name": "Zaglossus bruijni"
+     }
+    ],
+    "names": [
+     {
+      "value": "Nokdiak naroten",
+      "source": "Wikidata Q635949"
+     }
+    ],
+    "localNames": "Nama dalam bahasa-bahasa di Tanah Papua belum tercatat di ETNOS. Penutur bisa menambahkannya lewat kamus komunitas.",
+    "occurrences": {
+     "src": "/observatory/viewer/occ-nokdiak-naroten.json",
+     "shown": 5,
+     "total": 37,
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=2433391&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "rounding": "Letak setiap catatan dibulatkan ke kotak 0,1 derajat (sekitar 11 km), supaya tempat sarang atau tempat tinggal satwa tidak bisa dibaca dari peta."
+    }
+   },
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Terancam kritis (menurut Wikidata)",
+     "source": {
+      "title": "Wikidata Q635949",
+      "url": "https://www.wikidata.org/wiki/Q635949"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "GBIF Backbone Taxonomy, takson 2433391",
+     "url": "https://www.gbif.org/species/2433391",
+     "publisher": "GBIF Secretariat",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    },
+    {
+     "title": "Catatan keberadaan di Tanah Papua",
+     "url": "https://www.gbif.org/occurrence/map?taxon_key=2433391&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1",
+     "publisher": "GBIF.org",
+     "attribution": "GBIF.org (21 November 2026), pencarian occurrence",
+     "note": "Hanya catatan berlisensi CC0 1.0 atau CC BY 4.0 yang ditampilkan."
+    },
+    {
+     "title": "Wikidata Q635949, nama dan status konservasi",
+     "url": "https://www.wikidata.org/wiki/Q635949",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Foto: Zaglossus bruijnii 581779220.jpg",
+     "url": "https://commons.wikimedia.org/wiki/File:Zaglossus_bruijnii_581779220.jpg",
+     "publisher": "Wikimedia Commons",
+     "attribution": "Кирилл",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     }
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "bentang-puncak-jaya",
+   "kind": "landform",
+   "title": "Puncak Jaya",
+   "subtitle": "Gunung, Barisan Sudirman",
+   "summary": "Gunung tertinggi di Oseania dan puncak pulau tertinggi di dunia, menurut Wikidata. Letaknya di Barisan Sudirman, Kabupaten Mimika.",
+   "about": [
+    "puncak-jaya"
+   ],
+   "landform": {
+    "center": [
+     137.1833,
+     -4.0833
+    ],
+    "zoom": 11.6,
+    "pitch": 62,
+    "bearing": 20
+   },
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "4,083° LS, 137,183° BT (Wikidata)"
+    },
+    {
+     "label": "Ketinggian",
+     "value": "4.884 meter (Wikidata, dari Wikipedia bahasa Jerman)",
+     "source": {
+      "title": "Wikidata Q1045888",
+      "url": "https://www.wikidata.org/wiki/Q1045888"
+     }
+    },
+    {
+     "label": "Prominensi",
+     "value": "4.884 meter (Wikidata)",
+     "source": {
+      "title": "Wikidata Q1045888",
+      "url": "https://www.wikidata.org/wiki/Q1045888"
+     }
+    },
+    {
+     "label": "Wilayah",
+     "value": "Kabupaten Mimika (Wikidata)",
+     "source": {
+      "title": "Wikidata Q1045888",
+      "url": "https://www.wikidata.org/wiki/Q1045888"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "Wikidata Q1045888, Puncak Jaya",
+     "url": "https://www.wikidata.org/wiki/Q1045888",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Terrain Tiles",
+     "url": "https://registry.opendata.aws/terrain-tiles/",
+     "publisher": "Mapzen dan AWS Open Data",
+     "attribution": "SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA)",
+     "note": "Relief di penampil dibuat dari ubin ketinggian ini."
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "bentang-danau-paniai",
+   "kind": "landform",
+   "title": "Danau Paniai",
+   "subtitle": "Danau",
+   "summary": "Danau di Tanah Papua. Menurut Wikidata, permukaannya ada di ketinggian sekitar 1.750 meter dan luasnya sekitar 150 km².",
+   "about": [
+    "danau-paniai"
+   ],
+   "landform": {
+    "center": [
+     136.3178,
+     -3.9022
+    ],
+    "zoom": 10.6,
+    "pitch": 55,
+    "bearing": 0
+   },
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "3,902° LS, 136,318° BT (Wikidata)"
+    },
+    {
+     "label": "Ketinggian",
+     "value": "1.752 meter (Wikidata, dari Wikipedia bahasa Italia). Nilai lain di Wikidata 1.750 dan 1.766 meter",
+     "source": {
+      "title": "Wikidata Q2329795",
+      "url": "https://www.wikidata.org/wiki/Q2329795"
+     }
+    },
+    {
+     "label": "Luas",
+     "value": "150 km² (Wikidata, dari Wikipedia bahasa Prancis)",
+     "source": {
+      "title": "Wikidata Q2329795",
+      "url": "https://www.wikidata.org/wiki/Q2329795"
+     }
+    },
+    {
+     "label": "Kedalaman",
+     "value": "44 meter (Wikidata, dari Wikipedia bahasa Italia)",
+     "source": {
+      "title": "Wikidata Q2329795",
+      "url": "https://www.wikidata.org/wiki/Q2329795"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "Wikidata Q2329795, Danau Paniai",
+     "url": "https://www.wikidata.org/wiki/Q2329795",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Terrain Tiles",
+     "url": "https://registry.opendata.aws/terrain-tiles/",
+     "publisher": "Mapzen dan AWS Open Data",
+     "attribution": "SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA)",
+     "note": "Relief di penampil dibuat dari ubin ketinggian ini."
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "bentang-lembah-baliem",
+   "kind": "landform",
+   "title": "Lembah Baliem",
+   "subtitle": "Lembah, Pegunungan Maoke",
+   "summary": "Lembah di Pegunungan Maoke, Provinsi Papua Pegunungan, menurut Wikidata.",
+   "about": [
+    "lembah-baliem"
+   ],
+   "landform": {
+    "center": [
+     138.896,
+     -4.0218
+    ],
+    "zoom": 9.8,
+    "pitch": 58,
+    "bearing": -15
+   },
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "4,022° LS, 138,896° BT (Wikidata)"
+    },
+    {
+     "label": "Wilayah",
+     "value": "Provinsi Papua Pegunungan (Wikidata)",
+     "source": {
+      "title": "Wikidata Q804967",
+      "url": "https://www.wikidata.org/wiki/Q804967"
+     }
+    },
+    {
+     "label": "Pegunungan",
+     "value": "Pegunungan Maoke (Wikidata)",
+     "source": {
+      "title": "Wikidata Q804967",
+      "url": "https://www.wikidata.org/wiki/Q804967"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "Wikidata Q804967, Lembah Baliem",
+     "url": "https://www.wikidata.org/wiki/Q804967",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Terrain Tiles",
+     "url": "https://registry.opendata.aws/terrain-tiles/",
+     "publisher": "Mapzen dan AWS Open Data",
+     "attribution": "SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA)",
+     "note": "Relief di penampil dibuat dari ubin ketinggian ini."
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "bentang-danau-habema",
+   "kind": "landform",
+   "title": "Danau Habema",
+   "subtitle": "Danau",
+   "summary": "Danau di Tanah Papua. Menurut Wikidata, letaknya di ketinggian 3.319 meter.",
+   "about": [
+    "danau-habema"
+   ],
+   "landform": {
+    "center": [
+     138.6678,
+     -4.1378
+    ],
+    "zoom": 11.4,
+    "pitch": 58,
+    "bearing": 10
+   },
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "4,138° LS, 138,668° BT (Wikidata)"
+    },
+    {
+     "label": "Ketinggian",
+     "value": "3.319 meter (Wikidata, tanpa rujukan)",
+     "source": {
+      "title": "Wikidata Q24940441",
+      "url": "https://www.wikidata.org/wiki/Q24940441"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "Wikidata Q24940441, Danau Habema",
+     "url": "https://www.wikidata.org/wiki/Q24940441",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Terrain Tiles",
+     "url": "https://registry.opendata.aws/terrain-tiles/",
+     "publisher": "Mapzen dan AWS Open Data",
+     "attribution": "SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA)",
+     "note": "Relief di penampil dibuat dari ubin ketinggian ini."
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "bentang-teluk-cenderawasih",
+   "kind": "landform",
+   "title": "Teluk Cenderawasih",
+   "subtitle": "Teluk",
+   "summary": "Teluk di utara Tanah Papua. Menurut Wikidata, titik terdalamnya sekitar 1.627 meter.",
+   "about": [
+    "teluk-cenderawasih"
+   ],
+   "landform": {
+    "center": [
+     135.3333,
+     -2.5
+    ],
+    "zoom": 6.6,
+    "pitch": 35,
+    "bearing": 0
+   },
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "2,5° LS, 135,333° BT (Wikidata)"
+    },
+    {
+     "label": "Kedalaman",
+     "value": "1.627 meter (Wikidata, dari Wikipedia bahasa Italia)",
+     "source": {
+      "title": "Wikidata Q1053381",
+      "url": "https://www.wikidata.org/wiki/Q1053381"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "Wikidata Q1053381, Teluk Cenderawasih",
+     "url": "https://www.wikidata.org/wiki/Q1053381",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    },
+    {
+     "title": "Terrain Tiles",
+     "url": "https://registry.opendata.aws/terrain-tiles/",
+     "publisher": "Mapzen dan AWS Open Data",
+     "attribution": "SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA)",
+     "note": "Relief di penampil dibuat dari ubin ketinggian ini."
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "patung-tiang-rumah-sentani",
+   "kind": "images",
+   "title": "Patung tiang rumah dari Sentani",
+   "subtitle": "The Metropolitan Museum of Art, New York",
+   "summary": "Patung kayu yang dulu menjadi bagian tiang rumah, dibuat seniman Sentani pada abad ke-19. Menurut catatan museum, patung ini berasal dari Kabiterau dan kini ada di Michael C. Rockefeller Wing.",
+   "thumb": "/observatory/viewer/sentani-tiang-thumb.jpg",
+   "photos": [
+    {
+     "src": "/observatory/viewer/sentani-tiang-1.jpg",
+     "width": 944,
+     "height": 1800,
+     "alt": "Patung tiang rumah dari kayu, tampak depan",
+     "credit": "The Metropolitan Museum of Art",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     },
+     "url": "https://www.metmuseum.org/art/collection/search/313629"
+    },
+    {
+     "src": "/observatory/viewer/sentani-tiang-2.jpg",
+     "width": 1345,
+     "height": 1800,
+     "alt": "Patung tiang rumah, tampak dari sudut lain",
+     "credit": "The Metropolitan Museum of Art",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     },
+     "url": "https://www.metmuseum.org/art/collection/search/313629"
+    },
+    {
+     "src": "/observatory/viewer/sentani-tiang-3.jpg",
+     "width": 944,
+     "height": 1800,
+     "alt": "Patung tiang rumah, tampak dari sudut lain",
+     "credit": "The Metropolitan Museum of Art",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     },
+     "url": "https://www.metmuseum.org/art/collection/search/313629"
+    },
+    {
+     "src": "/observatory/viewer/sentani-tiang-4.jpg",
+     "width": 944,
+     "height": 1800,
+     "alt": "Patung tiang rumah, tampak dari sudut lain",
+     "credit": "The Metropolitan Museum of Art",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     },
+     "url": "https://www.metmuseum.org/art/collection/search/313629"
+    }
+   ],
+   "facts": [
+    {
+     "label": "Bahan",
+     "value": "Kayu"
+    },
+    {
+     "label": "Ukuran",
+     "value": "Tinggi 91,8 cm, lebar 21,6 cm, tebal 21,6 cm"
+    },
+    {
+     "label": "Masa",
+     "value": "Abad ke-19"
+    },
+    {
+     "label": "Nomor koleksi",
+     "value": "1979.206.1440"
+    },
+    {
+     "label": "Asal menurut museum",
+     "value": "Kabiterau, Papua, Indonesia"
+    }
+   ],
+   "sources": [
+    {
+     "title": "House post figure (1979.206.1440)",
+     "url": "https://www.metmuseum.org/art/collection/search/313629",
+     "publisher": "The Metropolitan Museum of Art",
+     "attribution": "The Michael C. Rockefeller Memorial Collection, Bequest of Nelson A. Rockefeller, 1979",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     },
+     "note": "Foto dan data dari Open Access The Met."
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "suara-cikukua-tanduk",
+   "kind": "audio",
+   "title": "Suara cikukua tanduk",
+   "subtitle": "Philemon buceroides",
+   "summary": "Rekaman suara cikukua tanduk dari iNaturalist. Direkam oleh Ben Costamagna pada 21 November 2025 di Provinsi Papua Barat menurut catatan GBIF.",
+   "audio": {
+    "src": "/observatory/viewer/cikukua-tanduk.mp3",
+    "type": "audio/mpeg",
+    "seconds": 9.1,
+    "transcript": null,
+    "recorded": "21 November 2025",
+    "place": "Provinsi Papua Barat"
+   },
+   "facts": [
+    {
+     "label": "Durasi",
+     "value": "9,1 detik"
+    },
+    {
+     "label": "Nama",
+     "value": "Cikukua tanduk menurut Wikidata Q795511 dan Catalogue of Life"
+    }
+   ],
+   "sources": [
+    {
+     "title": "Rekaman iNaturalist 1717096",
+     "url": "https://www.inaturalist.org/sounds/1717096",
+     "publisher": "iNaturalist",
+     "attribution": "Rekaman oleh Ben Costamagna",
+     "licence": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+     },
+     "note": "ETNOS mengubah berkas WAV menjadi MP3 mono."
+    },
+    {
+     "title": "Catatan GBIF 5935303582",
+     "url": "https://www.gbif.org/occurrence/5935303582",
+     "publisher": "GBIF.org, dataset iNaturalist research-grade observations"
+    },
+    {
+     "title": "Wikidata Q795511, nama",
+     "url": "https://www.wikidata.org/wiki/Q795511",
+     "publisher": "Wikidata",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    }
+   ],
+   "checked": "2026-11-21"
+  },
+  {
+   "id": "data-ds-1db332c2ac9546726058",
+   "kind": "dataset",
+   "title": "Koleksi kupu-kupu Papua di Universitas Cenderawasih",
+   "subtitle": "Universitas Cenderawasih",
+   "summary": "2.082 catatan spesimen kupu-kupu dari koleksi Jurusan Biologi FMIPA Universitas Cenderawasih di Jayapura, dikumpulkan antara 1905 dan 2009. Sebagian besar catatan berasal dari Provinsi Papua dan Papua Barat.",
+   "dataset": {
+    "id": "ds-1db332c2ac9546726058",
+    "preview": "/observatory/viewer/uncen-kupu-kupu-pratinjau.json"
+   },
+   "datasets": [
+    "ds-1db332c2ac9546726058"
+   ],
+   "sources": [
+    {
+     "title": "UNCEN, Cenderawasih University Papuan Butterflies",
+     "url": "https://doi.org/10.15468/4tp4nw",
+     "publisher": "Universitas Cenderawasih, lewat GBIF",
+     "attribution": "Ramandey E. R., Warikar E. L., Overduin-de Vries A. M. 2024",
+     "licence": {
+      "name": "CC0 1.0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+     }
+    }
+   ],
+   "checked": "2026-11-21"
+  }
+ ]
+}

@@ -1,30 +1,18 @@
-<script lang="ts" module>
-  export type Lens = 'skala' | 'hubungan' | 'peta'
-  /**
-   * The lens the front opens with. My call (20 November 2026): size and pace, as the design of record proposes
-   * (world model doc §9), because it explains itself and shows at a glance which kinds of things are not recorded
-   * yet. To open on the network map instead, set this to 'hubungan'. A link can still pick a lens with ?lens=.
-   */
-  export const DEFAULT_LENS: Lens = 'skala'
-</script>
-
 <script lang="ts">
-  // The observatory front of the wiki (docs/observatory/data-observatory-2026-11-20.md §11): the knowledge map in
-  // three lenses over the same things (size and pace, the network of statements, and the map of places), the
+  // The observatory front of the wiki (docs/observatory/data-observatory-2026-11-20.md §11): the knowledge map with
+  // its six lenses over the same points (KnowledgeExplorer.svelte), records to open in the full-screen viewer, the
   // catalogue of public datasets, what is still unknown, and the large groups in the network. Everything comes from
   // public files and public endpoints: the knowledge graph holds only checked commons sources, place points are
   // generalised BIG reference points, and dataset records are open-tier metadata.
   import { onMount, type Snippet } from 'svelte'
   import { ArrowUpRight } from '@lucide/svelte'
   import EntityPanel, { type KNode } from './EntityPanel.svelte'
-  import KnowledgeGraph3D from './KnowledgeGraph3D.svelte'
-  import ScaleConstellation from './ScaleConstellation.svelte'
+  import KnowledgeExplorer from './KnowledgeExplorer.svelte'
   import DatasetRow from './DatasetRow.svelte'
   import { appearance } from './appearance.svelte'
   import { BANDS, bandOf, type World } from './world-scale.ts'
   import { listDatasets, type Dataset } from './datasets.ts'
-  import { loadAtlasLangs } from './explore-data'
-  import { unproject } from './terrain.ts'
+  import { KIND_LABEL, loadViewerObjects, viewerHref, type ViewerObject } from './viewer-data.ts'
 
   type Node = KNode & { x: number; y: number; cluster: number; world?: World }
   type Edge = { source: string; target: string; predicate: string; logical: string }
@@ -32,81 +20,26 @@
   type Cluster = { cluster: number; size: number; role: string; label: string; top: string[] }
   type Coverage = { region: string; title: string; entities: number; contexts: number; contextsWithoutPage: { slug: string; title: string }[] }
   type Graph = { counts: { entities: number; statements: number; excerpts: number; clusters: number }; nodes: Node[]; statements: Edge[]; comentions: Comention[]; clusters: Cluster[]; questions: { a: string; b: string; question: string }[]; gaps: { coverage: Coverage[]; languagesWithoutEntity: number; languagesTotal: number } }
-  type PlacePoint = { slug: string; title: string; facet: string; latitude: number; longitude: number }
   let { region = '', reading, more }: { region?: string; reading?: Snippet; more?: Snippet } = $props()
 
-  const LENSES: [Lens, string][] = [['skala', 'Ukuran dan waktu'], ['hubungan', 'Hubungan'], ['peta', 'Peta']]
   let graph = $state<Graph | null>(null),
     failed = $state(false),
-    lens = $state<Lens>(DEFAULT_LENS),
-    fit = $state<'full' | 'data'>('full'),
-    gaps = $state(false),
-    hidden = $state(new Set<string>()),
     selected = $state(''),
     datasets = $state<Dataset[] | null>(null),
     datasetsFailed = $state(false),
-    places = $state<Record<string, PlacePoint> | null>(null),
-    langs = $state<Map<string, [number, number]> | null>(null)
+    objects = $state<ViewerObject[]>([])
 
   const byId = $derived(new Map((graph?.nodes ?? []).map((n) => [n.id, n])))
   const dark = $derived(appearance.theme === 'dark')
   const colorOf = $derived((n: { id: string }) => { const b = bandOf(byId.get(n.id)?.world?.level?.code); return b ? (dark ? b.dark : b.light) : '#8a8a8a' })
   const counts = $derived(new Map(BANDS.map((b) => [b.key, (graph?.nodes ?? []).filter((n) => n.world?.level?.band === b.key).length])))
-  const empty = $derived(BANDS.filter((b) => !counts.get(b.key)))
   const sections = $derived((graph?.clusters ?? []).filter((c) => c.size >= 5).sort((a, b) => b.size - a.size))
   const coverage = $derived((graph?.gaps.coverage ?? []).filter((c) => c.contextsWithoutPage.length).sort((a, b) => b.contextsWithoutPage.length - a.contextsWithoutPage.length))
   const regionTitles = $derived(new Map((graph?.gaps.coverage ?? []).map((c) => [c.region, c.title])))
   const href = (n: Node | undefined) => (n?.context ? '/contexts/' + n.context : '/wiki?q=' + encodeURIComponent(n?.title ?? ''))
   const ROLE: Record<string, string> = { inti: 'Banyak terhubung', 'dasar-tipis': 'Sumber masih sedikit', khusus: 'Kelompok khusus', 'baru-atau-memudar': 'Baru muncul' }
   const pick = (n: Node) => (e: MouseEvent) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); selected = n.id }
-  // Things hidden by the legend drop out of every lens.
-  const shown = $derived((graph?.nodes ?? []).filter((n) => !hidden.has(n.world?.level?.band ?? '')))
-
-  // Points for the map lens: kabupaten and kota at their BIG reference point, languages at their Glottolog point.
-  // Provinces and customary regions are areas; the map draws them as outlines, not as points.
-  const mapPlaces = $derived.by(() => {
-    if (!places || !langs) return []
-    const out: { name: string; latitude: number; longitude: number; href: string; color: string }[] = []
-    for (const n of shown) {
-      if (!n.context) continue
-      const p = places[n.context]
-      if (n.class === 'tempat' && p && (p.facet === 'regency' || p.facet === 'city')) out.push({ name: n.title, latitude: p.latitude, longitude: p.longitude, href: '/contexts/' + n.context, color: colorOf(n) })
-      const at = n.class === 'bahasa' ? langs.get(n.context) : undefined
-      if (at) { const [lat, lon] = unproject(at[0], at[1]); out.push({ name: n.title, latitude: lat, longitude: lon, href: '/contexts/' + n.context, color: colorOf(n) }) }
-    }
-    return out
-  })
-  const PAPUA: [[number, number], [number, number]] = [[129.5, -9.3], [141.2, 0.2]]
-
-  function choose(next: Lens) {
-    lens = next
-    try {
-      const url = new URL(location.href)
-      if (next === DEFAULT_LENS) url.searchParams.delete('lens')
-      else url.searchParams.set('lens', next)
-      history.replaceState(history.state, '', url)
-    } catch { /* The address is a convenience. */ }
-  }
-  function toggle(key: string) {
-    const next = new Set(hidden)
-    if (next.has(key)) next.delete(key)
-    else next.add(key)
-    hidden = next
-  }
-  function lensKeys(e: KeyboardEvent) {
-    const i = LENSES.findIndex(([l]) => l === lens), step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
-    if (!step) return
-    e.preventDefault()
-    const next = LENSES[(i + step + LENSES.length) % LENSES.length][0]
-    choose(next)
-    ;(e.currentTarget as HTMLElement).querySelector<HTMLButtonElement>(`[data-lens="${next}"]`)?.focus()
-  }
-
   onMount(() => {
-    const asked = new URLSearchParams(location.search).get('lens')
-    if (asked === 'skala' || asked === 'hubungan' || asked === 'peta') lens = asked
-    // On a phone the whole scale squeezes every point into one corner, so the chart opens on the part that holds things.
-    if (matchMedia('(max-width: 559px)').matches) fit = 'data'
     const abort = new AbortController()
     fetch('/observatory/knowledge/graph.json', { signal: abort.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
@@ -115,13 +48,8 @@
     listDatasets({}, abort.signal)
       .then((rows) => (datasets = rows))
       .catch(() => { if (!abort.signal.aborted) datasetsFailed = true })
+    void loadViewerObjects().then((o) => (objects = o))
     return () => abort.abort()
-  })
-  // The map lens needs the place points and the language points; both load only when it is first opened.
-  $effect(() => {
-    if (lens !== 'peta' || places) return
-    void fetch('/observatory/places.json').then((r) => (r.ok ? r.json() : null)).then((d) => (places = d?.places ?? {})).catch(() => (places = {}))
-    void loadAtlasLangs().then((l) => (langs = new Map(l.map((x) => [x[0], [x[1], x[2]] as [number, number]])))).catch(() => (langs = new Map()))
   })
 
   // Datasets for the front: one of each kind first, so the list shows the range of what the catalogue holds.
@@ -131,42 +59,13 @@
     for (const d of datasets) (seen.has(d.kind) ? rest : (seen.add(d.kind), first)).push(d)
     return [...first, ...rest].slice(0, 4)
   })
-  const LEDE: Record<Lens, string> = {
-    skala: 'Setiap titik adalah satu hal yang tercatat. Makin ke kanan makin besar ukurannya, makin ke atas makin lama hal itu berubah, dan warnanya menunjukkan tingkatnya.',
-    hubungan: 'Hal yang sering disebut bersama dalam sumber berada berdekatan. Garis tebal adalah pernyataan yang sudah diperiksa, dan garis tipis adalah sebutan bersama.',
-    peta: 'Titik kabupaten dan kota diambil dari garis batas BIG, dan titik bahasa dari titik acuan Glottolog. Titik itu hanya penanda wilayah dan tidak menunjuk lokasi tertentu.',
-  }
+  const SHOWCASE = ['model', 'species', 'landform', 'images', 'audio', 'dataset']
+  const showcase = $derived([...objects].sort((x, y) => SHOWCASE.indexOf(x.kind) - SHOWCASE.indexOf(y.kind)))
 </script>
 
 <section class="obs-section obs-map" aria-labelledby="obs-map-title">
-  <div class="obs-head">
-    <h2 id="obs-map-title">Peta pengetahuan</h2>
-    <div class="obs-pills" role="radiogroup" aria-label="Cara melihat peta" tabindex="-1" onkeydown={lensKeys}>
-      {#each LENSES as [value, label] (value)}<button type="button" role="radio" data-lens={value} aria-checked={lens === value} tabindex={lens === value ? 0 : -1} onclick={() => choose(value)}>{label}</button>{/each}
-    </div>
-  </div>
-  <p class="obs-lede">{LEDE[lens]}{#if graph && lens !== 'peta'}{' '}Ketuk titik untuk membuka penjelasannya.{/if}</p>
   {#if graph}
-    {#if lens !== 'peta'}<div class="obs-tools">
-        {#if lens === 'skala'}<div class="obs-pills" role="radiogroup" aria-label="Rentang sumbu">
-            <button type="button" role="radio" aria-checked={fit === 'full'} onclick={() => (fit = 'full')}>Seluruh skala</button>
-            <button type="button" role="radio" aria-checked={fit === 'data'} onclick={() => (fit = 'data')}>Bagian yang terisi</button>
-          </div>{/if}
-        <button type="button" class="obs-toggle" aria-pressed={gaps} onclick={() => (gaps = !gaps)}><span class="ring" aria-hidden="true"></span>Tandai yang belum punya halaman</button>
-      </div>{/if}
-    <div class="obs-stage">
-      {#if lens === 'skala'}<ScaleConstellation nodes={graph.nodes} statements={graph.statements} bind:selected {hidden} {gaps} {region} {fit} regionOf={(id) => byId.get(id)?.regions ?? []} label={'Grafik ukuran dan lama berubah untuk ' + graph.counts.entities + ' hal. Daftar semua hal ada di bawah grafik.'} />
-      {:else if lens === 'hubungan'}<KnowledgeGraph3D nodes={shown} statements={graph.statements} comentions={graph.comentions ?? []} lens={gaps ? 'celah' : 'jaringan'} {region} {colorOf} bind:selected label={'Peta hubungan ' + graph.counts.entities + ' hal. Daftar semua hal ada di bawah peta.'} />
-      {:else}{#await import('./TerrainMap.svelte')}<div class="obs-skeleton map" aria-hidden="true"></div>{:then m}<m.default places={mapPlaces} focus={PAPUA} compact height={460} label="Peta tempat dan bahasa di Tanah Papua" />{/await}{/if}
-    </div>
-    <ul class="obs-legend" aria-label="Tingkat, menurut warna">
-      {#each BANDS as b (b.key)}{@const n = counts.get(b.key) ?? 0}<li><button type="button" aria-pressed={!hidden.has(b.key)} disabled={!n} onclick={() => toggle(b.key)} title={n ? (hidden.has(b.key) ? 'Tampilkan ' : 'Sembunyikan ') + b.label : 'Belum ada yang tercatat'}><span class="dot" style:background={dark ? b.dark : b.light}></span>{b.label} <small>{n}</small></button></li>{/each}
-    </ul>
-    <p class="obs-foot">
-      {graph.counts.entities} hal tercatat dari {graph.counts.excerpts} kutipan sumber publik.
-      {#if empty.length}Belum ada catatan di {empty.length} dari {BANDS.length} tingkat, yang ditandai dengan garis putus-putus.{/if}
-      Ukuran dan lama berubah masih perkiraan dari aturan umum, sehingga setiap titik diletakkan di dalam rentang perkiraannya.
-    </p>
+    <KnowledgeExplorer {graph} {region} bind:selected />
     <details class="obs-all">
       <summary>Daftar semua {graph.nodes.length} hal</summary>
       {#each BANDS.filter((b) => counts.get(b.key)) as b (b.key)}<div class="obs-all-group">
@@ -174,9 +73,20 @@
           <ul>{#each graph.nodes.filter((n) => n.world?.level?.band === b.key).sort((x, y) => x.title.localeCompare(y.title, 'id')) as n (n.id)}<li><a href={href(n)} onclick={pick(n)}>{n.title}</a></li>{/each}</ul>
         </div>{/each}
     </details>
-  {:else if failed}<p class="obs-note">Peta pengetahuan belum dapat dimuat. Coba muat ulang halaman ini.</p>
-  {:else}<div class="obs-skeleton map" aria-hidden="true"></div><p class="sr-only" role="status">Memuat peta pengetahuan</p>{/if}
+  {:else if failed}<h2 id="obs-map-title">Peta pengetahuan</h2><p class="obs-note">Peta pengetahuan belum dapat dimuat. Coba muat ulang halaman ini.</p>
+  {:else}<h2 id="obs-map-title">Peta pengetahuan</h2><div class="obs-skeleton map" aria-hidden="true"></div><p class="sr-only" role="status">Memuat peta pengetahuan</p>{/if}
 </section>
+
+{#if showcase.length}<section class="obs-section" aria-labelledby="obs-view-title">
+    <h2 id="obs-view-title">Benda, spesies dan bentang alam</h2>
+    <p class="obs-lede">Buka satu catatan di layar penuh untuk memutar benda 3D, melihat foto dan sebaran spesies, atau menjelajahi relief gunung dan danau. Setiap catatan menyebut sumber dan lisensinya.</p>
+    <div class="obs-rows">
+      {#each showcase as o (o.id)}<a class="obs-row obs-view-row" href={viewerHref(o.id)}>
+          <span class="obs-row-main"><span class="obs-row-title">{o.title}</span>{#if o.subtitle}<span class="obs-row-text">{o.subtitle}</span>{/if}<span class="obs-row-meta">{KIND_LABEL[o.kind]} · {o.sources[0]?.licence?.name ?? 'lisensi tercatat di sumber'}</span></span>
+          {#if o.thumb}<img src={o.thumb} alt="" loading="lazy" width="76" height="76" />{/if}
+        </a>{/each}
+    </div>
+  </section>{/if}
 
 {@render reading?.()}
 
@@ -231,12 +141,11 @@
           </article>{/each}
       </div>
     </section>{/if}
-  <EntityPanel bind:id={selected} nodes={byId} statements={graph.statements} comentions={graph.comentions ?? []} regionTitle={(r) => regionTitles.get(r) ?? r} />
+  <EntityPanel bind:id={selected} nodes={byId} statements={graph.statements} comentions={graph.comentions ?? []} regionTitle={(r) => regionTitles.get(r) ?? r} {objects} />
 {/if}
 
 <style>
-  .obs-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .obs-stage { min-width: 0; }
+  .obs-view-row img { flex: none; width: 76px; height: 76px; border-radius: 14px; object-fit: cover; background: var(--secondary); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent); }
   .obs-skeleton.map { height: 440px; }
   .obs-all { border-top: 1px solid var(--border); padding-top: 4px; }
   .obs-all summary { display: flex; align-items: center; min-height: 44px; font-size: 14.5px; font-weight: 600; cursor: pointer; }

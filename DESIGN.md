@@ -205,11 +205,16 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 - **Character:** a shadcn Sheet, right side on desktop (up to 460px), bottom on phones (up to 86% of the screen, 18px top radius). Sections divided by hairlines with 13px muted headings.
 
 ### Observatory front (`Observatorium.svelte`, `styles/observatorium.css`)
-- **Character:** the wiki front rebuilt on the Jelajah rhythm: one gutter for every block (24px, 16px on phones), 28px above and 24px below each section, heavy section titles, rows that run to the card edges. The knowledge map comes first with three lenses as a pill group (*Ukuran dan waktu*, *Hubungan*, *Peta*), then wiki pages, the data catalogue, what is unknown and the large groups.
-- **Size and pace chart (`ScaleConstellation.svelte`):** a canvas on the same 3% tinted ground as the network map, log axes in everyday units, level as colour, a dashed box for the selected thing's range. Flat on phones and with reduced motion; a slight 3D turn on wide screens with a mouse.
+- **Character:** the wiki front rebuilt on the Jelajah rhythm: one gutter for every block (24px, 16px on phones), 28px above and 24px below each section, heavy section titles, rows that run to the card edges. The knowledge map comes first, then the records that open full screen (*Benda, spesies dan bentang alam*), wiki pages, the data catalogue, what is unknown and the large groups.
 
-### Knowledge map (`KnowledgeGraph3D.svelte`)
-- **Character:** a canvas in 3D on a 3% tinted ground, entries as dots sized by sources, labels with a surface-coloured halo, round 36px controls top right. Drag turns it with the finger.
+### Knowledge map (`KnowledgeExplorer.svelte`, `MapStage.svelte`, `stage-layouts.ts`)
+- **Character:** one canvas on a 3% tinted ground with one set of points; the lens pill group (*Ukuran dan waktu*, *Tingkat*, *Bidang ilmu*, *Kebutuhan*, *Hubungan*, *Peta*) only changes where the points go, and they move there in 650ms with an ease-in-out curve (a cut with reduced motion). Level is the colour in every lens. Groups are dashed rings with a label above and a count below; an empty group stays visible as a ring marked *belum ada*. Labels carry a surface-coloured halo and hide while points move. Round 36px controls top right (44px on touch screens).
+- **Ukuran dan waktu:** a box with three log axes (size, pace, level) that the reader can turn all the way round; axis labels sit on the edges that face the reader. Phones start flat with a *Putar 3D* toggle.
+- **Full screen (`KnowledgeMapPage.svelte`, `/wiki/peta`):** the same explorer filling the screen under a 60px bar with *Tutup*; the address keeps the lens and the selected thing.
+
+### Viewer (`Viewer.svelte`, `viewer/*`, `styles/viewer.css`, `/wiki/lihat/:id`)
+- **Character:** a full-screen shell with a 60px bar (*Tutup* and the path), the body on the left and a 400px reading panel on the right; on phones the body takes the top 62% and the panel follows. The body is chosen by kind and loaded only when opened: 3D object (WebGL, orbit, two light positions), species (photos, occurrence map, sound), landform (MapLibre relief), images (zoom and pan), sound (waveform and transcript), dataset (table preview).
+- **Controls over a body:** round 36px buttons on a translucent surface (44px on touch screens) top right, pill groups for views. Every image shows its maker, licence and source under it; the panel ends with every source and licence of the record.
 
 ## Do's and Don'ts
 

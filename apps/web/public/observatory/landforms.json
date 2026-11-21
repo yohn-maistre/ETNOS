@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "about": "Titik acuan bentang alam di peta pengetahuan, dari koordinat Wikidata (CC0). Titik ini menandai letak umum sebuah gunung, danau, lembah atau teluk, bukan batasnya.",
+  "checked": "2026-11-21",
+  "points": {
+    "puncak-jaya": { "title": "Puncak Jaya", "wikidata": "Q1045888", "latitude": -4.0833, "longitude": 137.1833 },
+    "gunung-trikora": { "title": "Gunung Trikora", "wikidata": "Q1349622", "latitude": -4.35, "longitude": 138.65 },
+    "danau-paniai": { "title": "Danau Paniai", "wikidata": "Q2329795", "latitude": -3.9022, "longitude": 136.3178 },
+    "danau-tigi": { "title": "Danau Tigi", "wikidata": "Q12480834", "latitude": -4.0661, "longitude": 136.2436 },
+    "danau-habema": { "title": "Danau Habema", "wikidata": "Q24940441", "latitude": -4.1378, "longitude": 138.6678 },
+    "lembah-baliem": { "title": "Lembah Baliem", "wikidata": "Q804967", "latitude": -4.0218, "longitude": 138.8960 },
+    "teluk-cenderawasih": { "title": "Teluk Cenderawasih", "wikidata": "Q1053381", "latitude": -2.5, "longitude": 135.3333 }
+  },
+  "missing": { "danau-tage": "Wikidata belum memiliki koordinat untuk Danau Tage pada 21 November 2026." }
+}

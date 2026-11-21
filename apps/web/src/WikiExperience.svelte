@@ -31,6 +31,8 @@
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
   import Observatorium from './Observatorium.svelte'
+  import { OBSERVATORY_NAME } from './observatory-name.ts'
+  import WikiViewerLinks from './WikiViewerLinks.svelte'
   import './styles/observatorium.css'
   import WikiDiscussion from './WikiDiscussion.svelte'
   import WikiContents from './WikiContents.svelte'
@@ -300,6 +302,7 @@
           {@html markdown(page.revision.text, [], 'wiki-' + page.id)}
         </div>
         <WikiSourceNotes citations={page.revision.citations} />
+        <WikiViewerLinks text={page.revision.text} />
         <WikiPeriod pageId={page.id} time={page.time ?? null} {steward} />
         <WikiTrail pageId={page.id} canPropose={member} {onPropose} />
         <WikiDiscussion pageId={page.id} citations={page.revision.citations} {auth} {communities} {memberships} {onShare} />
@@ -500,10 +503,10 @@
   <div class="obs obs-front">
     <header class="obs-section obs-top">
       <div class="obs-head">
-        <h1>Observatorium</h1>
+        <h1>{OBSERVATORY_NAME}</h1>
         <div class="obs-actions">{#if memberships.length}<a class="obs-more" href="/wiki/notes/new">Tambah catatan <Plus size={14} /></a>{/if}{#if memberships.some((m) => m.role !== 'member')}<Button variant="outline" onclick={onCreate}><Plus size={15} />Tulis halaman</Button>{/if}</div>
       </div>
-      <p class="obs-lede">Observatorium memuat apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan juga menunjukkan apa yang belum diketahui.</p>
+      <p class="obs-lede">{OBSERVATORY_NAME} memuat apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan juga menunjukkan apa yang belum diketahui.</p>
       <label class="obs-search"><Search size={18} aria-hidden="true" /><input bind:value={query} type="search" aria-label="Cari halaman wiki" placeholder="Cari halaman wiki" /></label>
     </header>
     {#if !query && !communityFilter}<Observatorium region={mapRegion} {reading} {more} />{:else}{@render reading()}{@render more()}{/if}

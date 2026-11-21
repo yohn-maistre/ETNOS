@@ -13,6 +13,7 @@
   import { appearance } from './appearance.svelte'
   import { bandOf, sizeWords, paceWords, rangeWords, BASIS } from './world-scale.ts'
   import { listDatasets, KIND, type Dataset } from './datasets.ts'
+  import { KIND_LABEL, objectsAbout, viewerHref, type ViewerObject } from './viewer-data.ts'
 
   type Witness = { key: string; kind: string; title: string; url?: string; publisher?: string; voice?: string }
   type Excerpt = { digest: string; witness: string; section: string; text: string; mentions: string[] }
@@ -22,7 +23,9 @@
     statements,
     comentions,
     regionTitle,
-  }: { id: string; nodes: Map<string, KNode>; statements: KEdge[]; comentions: KComention[]; regionTitle: (region: string) => string } = $props()
+    objects = [],
+  }: { id: string; nodes: Map<string, KNode>; statements: KEdge[]; comentions: KComention[]; regionTitle: (region: string) => string; objects?: ViewerObject[] } = $props()
+  const views = $derived(id ? objectsAbout(objects, id) : [])
 
   let excerpts = $state<Excerpt[] | null>(null),
     witnesses = $state<Map<string, Witness>>(new Map()),
@@ -115,6 +118,12 @@
             <p class="ep-note">{bases.length === 1 && bases[0] === 'rule' ? 'Semua angka ini perkiraan dari aturan umum dan belum diukur. Peninjau bisa mengoreksinya.' : 'Dasar angka ini adalah ' + bases.map((b) => BASIS[b] ?? b).join(' dan ') + '.'}</p>
             {#if notes.length}<details class="ep-basis"><summary>Aturan yang dipakai</summary><ul>{#each notes as n (n)}<li>{n}</li>{/each}</ul></details>{/if}
           </section>{/if}
+        {#if views.length}<section>
+            <h3>Lihat di layar penuh</h3>
+            <ul class="ep-data">
+              {#each views as v (v.id)}<li><a href={viewerHref(v.id)} class="ep-view">{#if v.thumb}<img src={v.thumb} alt="" width="44" height="44" loading="lazy" />{/if}<span class="ep-view-text"><span>{v.title}</span><small>{KIND_LABEL[v.kind]}{v.subtitle ? ' · ' + v.subtitle : ''}</small></span></a></li>{/each}
+            </ul>
+          </section>{/if}
         {#if data?.length}<section>
             <h3>Data tentang {node.title}</h3>
             <ul class="ep-data">
@@ -195,6 +204,9 @@
   .ep-data a span { font-size: 15px; font-weight: 600; line-height: 1.35; }
   .ep-data a:hover span { text-decoration: underline; text-underline-offset: 3px; }
   .ep-data small { font-size: 13px; color: var(--muted-foreground); }
+  .ep-data a.ep-view { display: flex; align-items: center; gap: 12px; }
+  .ep-view img { flex: none; width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: var(--secondary); }
+  .ep-view-text { display: grid; gap: 2px; min-width: 0; }
   .ep-more { font-size: 13.5px; color: var(--brand, var(--foreground)); }
   :global(.ep-foot) { padding: 14px 22px calc(14px + env(safe-area-inset-bottom)) !important; border-top: 1px solid var(--border); }
   .ep-open { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px; padding: 0 16px; border-radius: 10px; background: var(--foreground); color: var(--background); font-size: 14.5px; font-weight: 600; text-decoration: none; }

@@ -2,8 +2,10 @@
   // One dataset record (docs/observatory/data-observatory-2026-11-20.md §11): what it holds, who publishes it under
   // which licence, its files with size and checksum, the things it is about, how to cite it, and its metadata as
   // schema.org Dataset with the Croissant core. The files stay with the publisher; this page links to them.
-  import { ArrowUpRight, Copy, Download } from '@lucide/svelte'
+  import { ArrowUpRight, Copy, Download, Maximize2 } from '@lucide/svelte'
   import { KIND, bytes, day, languageName, period, readDataset, thingHref, type Dataset } from './datasets.ts'
+  import { datasetViewerHref } from './viewer-data.ts'
+  import { VIEWER_NAME } from './observatory-name.ts'
   import './styles/observatorium.css'
 
   let { id }: { id: string } = $props()
@@ -55,6 +57,7 @@
       <p class="obs-foot">{d.checkedBySteward ? 'Catatan ini sudah ditinjau pengelola.' : 'Catatan ini masih usulan dan belum ditinjau pengelola.'}{d.checked ? ' Alamat, lisensi dan ukuran berkasnya diperiksa pada ' + day(d.checked) + '.' : ''}</p>
       <div class="ds-actions">
         <a class="ds-primary" href={d.landingPage} target="_blank" rel="noopener noreferrer">Buka di situs penerbit<ArrowUpRight size={15} aria-hidden="true" /></a>
+        <a class="obs-toggle" href={datasetViewerHref(d.id)}><Maximize2 size={15} aria-hidden="true" />Buka di {VIEWER_NAME}</a>
         {#if metadataUrl}<a class="obs-toggle" href={metadataUrl} download={d.id + '.jsonld'}><Download size={15} aria-hidden="true" />Unduh metadata</a>{/if}
       </div>
     </header>

@@ -33,3 +33,13 @@ node scripts/observatory/build-knowledge-portal.ts --vectors /tmp/obs/vectors.js
 ```
 
 The same input gives byte-identical files (fixed seed 20261119; `test/knowledge-portal.test.ts`).
+
+## Viewer seed (Penampil)
+
+`build-viewer-seed.mjs` builds `apps/web/public/observatory/viewer/`: the records of the full-screen viewer (`/wiki/lihat/:id`) and their media, from Zenodo (3D scans, CC BY 4.0), The Met (CC0), GBIF (taxonomy, occurrences, the UNCEN table preview), Wikidata and Catalogue of Life (names and facts), Wikimedia Commons (photos) and iNaturalist (a recording, CC BY 4.0). It checks each licence against the source when it runs and stops on anything that is not CC0, public domain or CC BY. It needs ImageMagick and ffmpeg.
+
+```bash
+node scripts/observatory/build-viewer-seed.mjs --work /tmp/etnos-viewer-seed
+```
+
+Occurrences are rounded to 0.1 degree and counted per cell. 3D files are re-encoded with quantised geometry and a JPEG texture; no triangle is removed. Add every new source to `apps/web/licenses/observatory-data.txt`.

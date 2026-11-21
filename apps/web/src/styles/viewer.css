@@ -1,0 +1,61 @@
+/* The full-screen viewer (Viewer.svelte and the bodies in viewer/). A plain bar on top, the body filling the space,
+   and a reading panel beside it on wide screens or below it on phones. Controls over a body are the round 36px
+   buttons of the knowledge map (44px on touch screens) and pill groups, on a translucent ground. */
+.vw { position: fixed; inset: 0; z-index: 45; display: flex; flex-direction: column; background: var(--background); color: var(--foreground); --gutter: 24px; }
+@media (max-width: 640px) { .vw { --gutter: 16px; } }
+.vw-bar { display: flex; align-items: center; gap: 14px; min-height: 60px; padding: max(8px, env(safe-area-inset-top)) var(--gutter) 8px; border-bottom: 1px solid var(--border); }
+.vw-close { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px 0 10px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.vw-close:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+.vw-crumb { margin: 0; font-size: 13.5px; color: var(--muted-foreground); }
+.vw-crumb a { color: inherit; text-decoration: none; }
+.vw-sep { margin: 0 6px; }
+.vw-crumb a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
+.vw-main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 400px; }
+.vw-stage { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+.vw-stage > * { height: 100%; }
+.vw-hold, .vw-empty { display: grid; place-content: center; gap: 10px; height: 100%; padding: 24px; text-align: center; font-size: 14.5px; color: var(--muted-foreground); }
+.vw-empty h1 { margin: 0; font-size: 22px; font-weight: 800; color: var(--foreground); }
+.vw-empty p { margin: 0; }
+.vw-empty a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.vw-info { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 22px var(--gutter) max(24px, env(safe-area-inset-bottom)); border-left: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+.vw-kind { margin: 0; font-size: 13.5px; color: var(--muted-foreground); }
+.vw-info h1 { margin: 0; font-size: 26px; font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; text-wrap: balance; }
+.vw-sci { margin: -2px 0 0; font-size: 15px; color: color-mix(in oklab, var(--foreground) 78%, transparent); }
+.vw-summary { margin: 4px 0 0; font-size: 15px; line-height: 1.55; }
+.vw-info section { display: grid; gap: 8px; margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--border); }
+.vw-info h2 { margin: 0; font-size: 13px; font-weight: 650; color: var(--muted-foreground); }
+.vw-tax { margin: 0; font-size: 14.5px; line-height: 1.5; }
+.vw-small { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--muted-foreground); }
+.vw-small a, .vw-src, .vw-sources a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, currentColor 35%, transparent); }
+.vw-src { font-size: 13px; color: var(--muted-foreground); }
+.vw-facts { display: grid; margin: 0; }
+.vw-facts > div { display: grid; gap: 2px; padding: 8px 0; border-top: 1px solid var(--border); }
+.vw-facts > div:first-child { border-top: 0; padding-top: 0; }
+.vw-facts dt { font-size: 13px; color: var(--muted-foreground); }
+.vw-facts dd { margin: 0; font-size: 15px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.vw-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.vw-links a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); font-size: 14px; font-weight: 550; text-decoration: none; }
+.vw-links a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+.vw-sources { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.vw-sources li { display: grid; gap: 2px; font-size: 13.5px; line-height: 1.45; color: var(--muted-foreground); }
+.vw-sources li > a:first-child { display: inline-flex; align-items: center; gap: 3px; width: fit-content; font-size: 14.5px; font-weight: 600; color: var(--foreground); }
+.vw a:focus-visible, .vw button:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
+
+/* Controls over a body. */
+.vw-tools { position: absolute; right: 12px; top: 12px; z-index: 2; display: grid; gap: 6px; }
+.vw-tools button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in oklab, var(--background) 86%, transparent); backdrop-filter: blur(8px); color: var(--foreground); cursor: pointer; }
+.vw-tools button:hover:not(:disabled) { background: var(--secondary); }
+.vw-tools button:disabled { opacity: 0.45; cursor: default; }
+.vw-tools button[aria-pressed='true'] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.vw-floating { position: absolute; z-index: 2; display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in oklab, var(--background) 86%, transparent); backdrop-filter: blur(8px); }
+.vw-floating button { min-height: 34px; padding: 0 13px; border: 0; border-radius: 999px; background: transparent; color: var(--muted-foreground); font: inherit; font-size: 13.5px; font-weight: 550; cursor: pointer; white-space: nowrap; }
+.vw-floating button:hover { color: var(--foreground); }
+.vw-floating button[aria-checked='true'], .vw-floating button[aria-selected='true'] { background: var(--foreground); color: var(--background); }
+@media (pointer: coarse) { .vw-tools button { width: 44px; height: 44px; } .vw-floating button { min-height: 40px; } }
+
+/* Phones and narrow windows: the body on top, the panel below it, the whole page scrolls. */
+@media (max-width: 860px) {
+  .vw-main { display: block; overflow-y: auto; overscroll-behavior: contain; }
+  .vw-stage { height: min(62dvh, 560px); }
+  .vw-info { overflow: visible; border-left: 0; border-top: 1px solid var(--border); }
+}

@@ -1,0 +1,1 @@
+{"checked":"2026-11-21","query":"https://api.gbif.org/v1/occurrence/search?taxonKey=2433391&hasCoordinate=true&hasGeospatialIssue=false&gadmGid=IDN.22_1&gadmGid=IDN.23_1&license=CC0_1_0&license=CC_BY_4_0","licences":["CC0 1.0","CC BY 4.0"],"rounding":"0.1","points":[[131.6,-0.9,1],[131.8,-0.9,1],[137,-4.2,1],[141,-5,2]]}
