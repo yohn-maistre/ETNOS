@@ -10,7 +10,7 @@ import type { KnowledgeModel, KnowledgeSeed } from './knowledge-model.ts'
 import type { Datasets } from './datasets.ts'
 import type { Kamus } from './kamus.ts'
 import { contextFamily } from './catalogue.ts'
-import { viewerRecords, type Commons, type EntrySource, type ViewerRecord } from './entri.ts'
+import { viewerRecords, type Commons, type EntrySource, type ViewerRecord, type LocalName } from './entri.ts'
 
 /** The knowledge seed as the public commons, for a node that has not imported it: the same file builds the public map. */
 export function seedCommons(seed: KnowledgeSeed): Commons {
@@ -28,7 +28,7 @@ export function seedCommons(seed: KnowledgeSeed): Commons {
   }
 }
 
-export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; model: KnowledgeModel; datasets: Datasets; kamus: Kamus; seed: KnowledgeSeed; catalogue?: string; records?: ViewerRecord[] }): EntrySource {
+export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; model: KnowledgeModel; datasets: Datasets; kamus: Kamus; seed: KnowledgeSeed; catalogue?: string; records?: ViewerRecord[]; localNames?: (recordId: string) => LocalName[] }): EntrySource {
   const s = o.store
   const publicPage = `SELECT w.id FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND w.draft=0 AND w.revision_id IS NOT NULL`
   return {
@@ -79,6 +79,7 @@ export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; 
       }
       return out
     },
+    localNames: async (id) => o.localNames?.(id) ?? [],
     groups: async () => o.groups.list(undefined).filter((g) => g.visibility === 'public').map((g) => ({ id: g.id, title: g.title, kind: g.kind, description: g.description })),
   }
 }

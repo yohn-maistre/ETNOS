@@ -18,13 +18,13 @@ import {Periksa,type Claim} from './periksa.ts'
 
 export const KAMUS_CONTEXTS=['Kebun','Hutan','Rumah','Adat','Tubuh','Alam','Keluarga','Gereja','Jual beli','Lainnya'] as const
 export type KamusContext=typeof KAMUS_CONTEXTS[number]
-export type SeedEntry={lemma:string;modern?:string;gloss_id?:string;gloss_en?:string;gloss_nl?:string;gloss_raw?:string;pos?:string;dialect?:string;source:string;page?:number;concept?:string;confidence?:'high'|'low'}
+export type SeedEntry={lemma:string;modern?:string;gloss_id?:string;gloss_en?:string;gloss_nl?:string;gloss_raw?:string;pos?:string;dialect?:string|string[];variants?:{form?:string;dialect?:string[]}[];source:string;page?:number;concept?:string;confidence?:'high'|'low'}
 export type SeedSet={language:{name:string;glottocode:string;iso?:string};sources:Record<string,{licence:string;citation?:string;url?:string;note?:string}>;entries:SeedEntry[]}
 /** Words the finder treats as the contact languages (Indonesian, Papuan Malay), plus the seeds it can load. */
 export type KamusLexicon={contact:Set<string>;seeds:Record<string,SeedSet>}
 export type Example={postId:string;text:string}
-export type KamusEntry={id:string;lemma:string;gloss:string;pos:string;context:string;source:string;licence:string;page:number|null;state:'seed'|'candidate'|'proposed'|'checked'|'rejected'|'split';uses:number;speakers:number;examples:Example[];claimId:string|null;updated:number}
-type Row={id:string;community_id:string;lemma:string;norm:string;gloss:string;pos:string;context:string;source:string;licence:string;page:number|null;state:string;claim_id:string|null;uses:number;speakers:number;examples:string;created:number;updated:number}
+export type KamusEntry={id:string;lemma:string;gloss:string;pos:string;context:string;source:string;licence:string;page:number|null;state:'seed'|'candidate'|'proposed'|'checked'|'rejected'|'split';uses:number;speakers:number;examples:Example[];claimId:string|null;updated:number;variants:{form:string;dialect:string}[];dialect:string;sensitive:boolean}
+type Row={id:string;community_id:string;lemma:string;norm:string;gloss:string;pos:string;context:string;source:string;licence:string;page:number|null;state:string;claim_id:string|null;uses:number;speakers:number;examples:string;created:number;updated:number;variants?:string;dialect?:string;sensitive?:number}
 
 /** Lowercase, apostrophes and hyphens kept inside words, j spelled y as in today's Ekari orthography. */
 export const norm=(w:string)=>w.toLowerCase().normalize('NFC').replace(/^[-']+|[-']+$/g,'')
@@ -99,9 +99,15 @@ export class Kamus{
     // Scanned sources carry stray dots and empty senses; an entry needs a clean headword and some meaning.
     const lemma=(e.modern||e.lemma).trim().replace(/^[.·,;:]+/,''),gloss=(e.gloss_id||e.gloss_en||e.gloss_nl||e.gloss_raw||'').trim()
     if(!lemma||!gloss||!/^-?[\p{L}][\p{L}'-]*$/u.test(lemma))continue
-    const n=norm(lemma),src=e.source,exists=s.get('SELECT 1 FROM kamus_entries WHERE community_id=? AND norm=? AND source=? AND gloss=?',communityId,n,'seed:'+src,gloss)
-    if(exists)continue
-    s.run('INSERT INTO kamus_entries VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',randomUUID(),communityId,lemma,n,gloss,e.pos??'','', 'seed:'+src,set.sources[src]?.licence??'',e.page??null,'seed',null,0,0,'[]',s.clock(),s.clock())
+    const n=norm(lemma),src=e.source,exists=s.get<{id:string}>('SELECT id FROM kamus_entries WHERE community_id=? AND norm=? AND source=? AND gloss=?',communityId,n,'seed:'+src,gloss)
+    // Other spellings and dialect marks travel with the entry (tulisan lain), so the matcher finds them too.
+    const variants=(e.variants??[]).map(v=>({form:String(v.form??'').trim(),dialect:(v.dialect??[]).join(', ')})).filter(v=>/^[\p{L}][\p{L}'-]*$/u.test(v.form))
+    const dialect=Array.isArray(e.dialect)?e.dialect.join(', '):String(e.dialect??'')
+    // An entry loaded before spellings were kept gets them now; nothing else about it changes.
+    if(exists){if(variants.length||dialect)s.run("UPDATE kamus_entries SET variants=?,dialect=? WHERE id=? AND variants='[]' AND dialect=''",JSON.stringify(variants),dialect,exists.id);continue}
+    const id=randomUUID()
+    s.run('INSERT INTO kamus_entries(id,community_id,lemma,norm,gloss,pos,context,source,licence,page,state,claim_id,uses,speakers,examples,created,updated) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',id,communityId,lemma,n,gloss,e.pos??'','', 'seed:'+src,set.sources[src]?.licence??'',e.page??null,'seed',null,0,0,'[]',s.clock(),s.clock())
+    if(variants.length||dialect)s.run('UPDATE kamus_entries SET variants=?,dialect=? WHERE id=?',JSON.stringify(variants),dialect,id)
     added++
    }
    s.audit(actor,'kamus.seed',communityId)
@@ -145,7 +151,7 @@ export class Kamus{
     const judged=(seed?.entries.length??0)>=200,score=judged?trigramScore(w,seedGrams,contactGrams):0
     if(e.uses<2&&score<0.6)continue
     if(judged&&score<-0.2)continue
-    s.run('INSERT INTO kamus_entries VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',randomUUID(),communityId,w,w,'','','','room','',null,'candidate',null,e.uses,e.authors.size,JSON.stringify(e.examples),s.clock(),s.clock())
+    s.run('INSERT INTO kamus_entries(id,community_id,lemma,norm,gloss,pos,context,source,licence,page,state,claim_id,uses,speakers,examples,created,updated) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',randomUUID(),communityId,w,w,'','','','room','',null,'candidate',null,e.uses,e.authors.size,JSON.stringify(e.examples),s.clock(),s.clock())
     candidates++
    }
    // Candidates nobody uses any more, and that never became a card, are removed.
@@ -216,14 +222,18 @@ export class Kamus{
  private view(r:Row):KamusEntry{
   let state=r.state as KamusEntry['state']
   if(r.claim_id){const c=this.store.get<{state:string}>('SELECT state FROM claims WHERE id=?',r.claim_id);state=c?.state==='checked'?'checked':c?.state==='rejected'?'rejected':c?.state==='split'?'split':c?.state==='withdrawn'?'candidate':'proposed'}
-  const examples=this.visibleExamples(r.examples)
-  return {id:r.id,lemma:r.lemma,gloss:r.gloss,pos:r.pos,context:r.context,source:r.source,licence:r.licence,page:r.page,state,uses:examples.length?r.uses:0,speakers:examples.length?r.speakers:0,examples,claimId:r.claim_id,updated:r.updated}
+  let examples=this.visibleExamples(r.examples)
+  // Entries made from an answer keep their sentences on the claim; they show while their posts are visible.
+  if(!examples.length&&r.claim_id){const ev=this.store.get<{evidence:string}>('SELECT evidence FROM claims WHERE id=?',r.claim_id);if(ev)examples=this.visibleExamples(JSON.stringify((JSON.parse(ev.evidence) as {text:string;postId?:string}[]).filter(e=>e.postId).map(e=>({postId:e.postId,text:e.text}))))}
+  return {id:r.id,lemma:r.lemma,gloss:r.gloss,pos:r.pos,context:r.context,source:r.source,licence:r.licence,page:r.page,state,uses:examples.length?r.uses:0,speakers:examples.length?r.speakers:0,examples,claimId:r.claim_id,updated:r.updated,variants:JSON.parse(r.variants||'[]'),dialect:r.dialect??'',sensitive:!!r.sensitive}
  }
  /** The dictionary, read with its community's read rule. */
  list(actor:string|undefined,communityId:string,o:{q?:string;state?:string;context?:string;limit?:number}={}){
   this.readable(actor,communityId)
   const q=o.q?norm(o.q).slice(0,40):''
   const where=['community_id=?'],args:(string|number)[]=[communityId]
+  // An entry marked "Jangan disebarkan" stays with members, even in a public community.
+  if(!actor||!this.store.membership(actor,communityId))where.push('sensitive=0')
   if(q){where.push('(norm LIKE ? OR lower(gloss) LIKE ?)');args.push(q+'%','%'+q+'%')}
   if(o.state==='seed'||o.state==='candidate'){where.push('state=? AND claim_id IS NULL');args.push(o.state)}
   else if(o.state){where.push('claim_id IS NOT NULL')}
@@ -233,7 +243,7 @@ export class Kamus{
   let entries=rows.map(r=>this.view(r))
   if(o.state&&o.state!=='seed'&&o.state!=='candidate')entries=entries.filter(e=>e.state===o.state)
   const counts:Record<string,number>={}
-  for(const r of this.store.all<{state:string;n:number}>('SELECT state,COUNT(*) n FROM kamus_entries WHERE community_id=? GROUP BY state',communityId))counts[r.state]=r.n
+  for(const r of this.store.all<{state:string;n:number}>(`SELECT state,COUNT(*) n FROM kamus_entries WHERE community_id=?${!actor||!this.store.membership(actor,communityId)?' AND sensitive=0':''} GROUP BY state`,communityId))counts[r.state]=r.n
   const languages=Object.entries(this.lexicon.seeds).map(([id,v])=>({id,name:v.language.name,sources:Object.fromEntries(Object.entries(v.sources).map(([k,x])=>[k,{citation:x.citation??k,licence:x.licence,url:x.url??null}]))}))
   return {settings:this.settings(communityId),contexts:KAMUS_CONTEXTS,languages,counts,entries}
  }

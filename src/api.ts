@@ -15,6 +15,9 @@ import {Forum} from './forum.ts'
 import {Periksa} from './periksa.ts'
 import {Kamus,glossPrompt,parseGlosses} from './kamus.ts'
 import {kamusLexicon} from './kamus-data.ts'
+import {KamusAsk,type ConceptList} from './kamus-ask.ts'
+import {kamusCsv,kamusCldf} from './kamus-export.ts'
+import leipzigJakarta from '../seed/kamus/leipzig-jakarta-100.json' with { type: 'json' }
 import type {Models} from './models.ts'
 import { Media } from './media.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
@@ -33,7 +36,7 @@ import knowledgeSeed from './catalogues/tanah-papua-knowledge-seed.json' with { 
 import {KnowledgeModel,type KnowledgeSeed} from './knowledge-model.ts'
 import {Datasets,type DatasetSeed} from './datasets.ts'
 import datasetSeed from './catalogues/tanah-papua-datasets.json' with { type: 'json' }
-import {entryIndex,readEntry} from './entri.ts'
+import {entryIndex,readEntry,viewerRecords} from './entri.ts'
 import {storeSource} from './entri-store.ts'
 
 const MAX_BODY = 1500000
@@ -66,6 +69,7 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
   const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon(),{operator:id=>!!options.stewardDid&&store.actor(id).did===options.stewardDid})
+  const ask=new KamusAsk(store,kamus,kamusLexicon(),leipzigJakarta as ConceptList,viewerRecords)
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store)
   const dm=new DirectMessages(store)
@@ -146,8 +150,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
         // One public shape for every entry page (docs/plan/one-page-system-2026-11-21.md §3); always read as an anonymous reader.
-        else if(path==='/v1/entri')result=await entryIndex(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue}))
-        else if(parts.length===3&&parts[1]==='entri'){result=await readEntry(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue}),decodeURIComponent(parts[2]));if(!result)throw new Fault(404,'Not found')}
+        else if(path==='/v1/entri')result=await entryIndex(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id)}))
+        else if(parts.length===3&&parts[1]==='entri'){result=await readEntry(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id)}),decodeURIComponent(parts[2]));if(!result)throw new Fault(404,'Not found')}
         else if(path==='/v1/knowledge-model')result=model.summary(actor?.id)
         else if(path==='/v1/knowledge-model/entities')result=model.entities(actor?.id,{class:url.searchParams.get('class')??undefined,q:url.searchParams.get('q')??undefined})
         else if(parts.length===4&&parts[1]==='knowledge-model'&&parts[2]==='entities')result=model.entity(actor?.id,parts[3])
@@ -178,6 +182,19 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki') result=wiki.list(parts[2],actor?.id)
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='periksa')result=periksa.queue(authenticated(),parts[2])
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kamus')result=kamus.list(actor?.id,parts[2],{q:url.searchParams.get('q')??undefined,state:url.searchParams.get('state')??undefined,context:url.searchParams.get('context')??undefined,limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined})
+        // Kamus in posts (src/kamus-ask.ts): underlines, the word card, the deck, Kata saya, Kata hari ini, export.
+        else if(path==='/v1/kamus/annotate')result=ask.annotate(actor?.id,(url.searchParams.get('posts')??'').split(',').filter(Boolean))
+        else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='word')result=ask.word(actor?.id,parts[2],url.searchParams.get('w')??'',url.searchParams.get('post')??undefined)
+        else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='questions')result=ask.questions(authenticated(),parts[2])
+        else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='mine')result=ask.mine(authenticated(),parts[2])
+        else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='today')result=ask.today(authenticated(),parts[2])
+        else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='suffixes'){store.requireSteward(authenticated(),parts[2]);result=ask.suffixes(parts[2])}
+        else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='export'){
+          const x=ask.exportRows(authenticated(),parts[2]),day=new Date(store.clock()).toISOString().slice(0,10),name='kamus-'+(x.languageName||'komunitas').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+day
+          const cldf=url.searchParams.get('format')==='cldf'
+          return new Response(cldf?kamusCldf(x,store.base,day):kamusCsv(x,store.base),{status:200,headers:{'content-type':cldf?'application/zip':'text/csv; charset=utf-8','content-disposition':`attachment; filename="${name}${cldf?'-cldf.zip':'.csv'}"`,'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
+        }
+        else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='artinya')result=ask.artinya(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='claims')result=periksa.list(actor?.id,parts[2],url.searchParams.get('state')??undefined)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.list(parts[2],actor?.id)
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'wiki-policy') result=wiki.policy(authenticated(),parts[2])
@@ -334,6 +351,8 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='decide')result=requests.decide(caller,parts[2],b.decision)
       else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='withdraw')result=requests.withdraw(caller,parts[2])
       else if (path === '/v1/posts'&&b.requestOf!==undefined) result=requests.createPost(caller,b,forum)
+      // In a Kamus community the composer may send the post's Indonesian translation (Artinya) with it, in one unit.
+      else if (path === '/v1/posts'&&b.agentMention===undefined&&typeof b.artinya==='string'&&b.artinya.trim()) result=store.tx(()=>{const {artinya,...rest}=b;const post=forum.create(caller,rest,groups);ask.setArtinya(caller,post.id,artinya);return post})
       else if (path === '/v1/posts') result=b.agentMention===undefined?forum.create(caller,b,groups):resident.createMentionPost(caller,b,groups)
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='edit')result=forum.edit(caller,parts[2],b)
       else if(parts.length===5&&parts[1]==='desk'&&parts[2]==='drafts'&&parts[4]==='review'){if(b.state!=='released'&&b.state!=='rejected')throw new Fault(400,'Release or reject');result=desk.review(caller,parts[3],{state:b.state,draft:b.draft as string|undefined})}
@@ -361,6 +380,13 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
           result=kamus.applyGlosses(caller,parts[2],parseGlosses(reply.text,new Set(items.map(i=>i.id))))
         }
       }
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='answer')result=ask.answer(caller,parts[2],b)
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='mine')result=ask.saveMine(caller,parts[2],b)
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='today')result=ask.answerToday(caller,parts[2],b)
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='suffixes')result=ask.setSuffixes(caller,parts[2],b)
+      else if(parts.length===6&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[5]==='sensitive')result=ask.setSensitive(caller,parts[2],parts[4],b)
+      else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='artinya')result=ask.setArtinya(caller,parts[2],b.text)
+      else if(parts.length===5&&parts[1]==='posts'&&parts[3]==='artinya'&&parts[4]==='remove')result=ask.removeArtinya(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='claims')result=periksa.propose(caller,parts[2],b)
       else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='periksa')result=periksa.setQuorum(caller,parts[2],b.quorum)
       else if(parts.length===4&&parts[1]==='claims'&&parts[3]==='answer')result=periksa.answer(caller,parts[2],b)

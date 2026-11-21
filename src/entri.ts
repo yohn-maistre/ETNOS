@@ -74,7 +74,10 @@ export interface EntrySource {
   kamus(): Promise<KamusRef[]>
   groups(): Promise<{ id: string; title: string; kind: string; description: string }[]>
   records: ViewerRecord[]
+  /** Checked local names of a species from public communities' Kamus (P2, src/kamus-ask.ts). */
+  localNames?(recordId: string): Promise<LocalName[]>
 }
+export type LocalName = { name: string; language: string; community: { id: string; title: string } }
 
 export type Ref = { slug: string; title: string; kind: EntryKind; href: string; sub?: string | null }
 export type ChainItem = { title: string; href?: string }
@@ -279,6 +282,7 @@ export async function readEntry(source: EntrySource, asked: string) {
     c ? source.datasets({ context: c.slug }) : n.things.length ? source.datasets({ thing: n.things[0] }) : Promise.resolve([]),
     c?.kind === 'language' ? source.kamus() : Promise.resolve([]),
   ])
+  const localNames = n.record?.kind === 'species' && source.localNames ? await source.localNames(n.record.id) : []
   const entryOfCtx = (x: { slug: string }) => cat.nodes.get(x.slug)
   const root: ChainItem = { title: 'Tanah Papua', href: '/wiki/jenis/tempat' }
 
@@ -364,6 +368,7 @@ export async function readEntry(source: EntrySource, asked: string) {
     related,
     communities: c || place ? communities.map((x) => ({ ...x, via: x.via ?? (c ? null : { id: place!.id, slug: place!.slug, title: place!.title }) })) : [],
     groups: detail?.groups ?? [],
+    localNames,
     kamus: glotto ? kamus.filter((k) => k.language === glotto).map((k) => ({ ...k, words: k.words.slice(0, 8) })) : [],
     research: { literature: c && c.facet !== 'topic-group' ? c.slug : null, datasets },
     history: n.page ? { pageId: n.page.id, revisions } : null,

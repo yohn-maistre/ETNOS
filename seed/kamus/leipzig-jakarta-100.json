@@ -1,0 +1,810 @@
+{
+ "list": "Tadmor-2009-100",
+ "title": "Leipzig-Jakarta list of basic vocabulary (100 concepts)",
+ "source": "Concepticon, concept list Tadmor-2009-100 (Tadmor, Haspelmath and Taylor 2010; Tadmor 2009). List, J.-M. et al., Concepticon, https://concepticon.clld.org/contributions/Tadmor-2009-100",
+ "url": "https://github.com/concepticon/concepticon-data/blob/master/concepticondata/conceptlists/Tadmor-2009-100.tsv",
+ "licence": "CC BY 4.0",
+ "note": "Concepticon IDs and glosses are copied from the list. The Indonesian prompts (id) and the word classes (class) were written for ETNOS on 21 November 2026 and are not part of Concepticon.",
+ "concepts": [
+  {
+   "n": 1,
+   "concepticon": 221,
+   "gloss": "FIRE",
+   "english": "fire",
+   "id": "api",
+   "class": "benda"
+  },
+  {
+   "n": 2,
+   "concepticon": 1221,
+   "gloss": "NOSE",
+   "english": "nose",
+   "id": "hidung",
+   "class": "benda"
+  },
+  {
+   "n": 3,
+   "concepticon": 695,
+   "gloss": "GO",
+   "english": "to go",
+   "id": "pergi",
+   "class": "kerja"
+  },
+  {
+   "n": 4,
+   "concepticon": 948,
+   "gloss": "WATER",
+   "english": "water",
+   "id": "air",
+   "class": "benda"
+  },
+  {
+   "n": 5,
+   "concepticon": 674,
+   "gloss": "MOUTH",
+   "english": "mouth",
+   "id": "mulut",
+   "class": "benda"
+  },
+  {
+   "n": 6,
+   "concepticon": 1205,
+   "gloss": "TONGUE",
+   "english": "tongue",
+   "id": "lidah",
+   "class": "benda"
+  },
+  {
+   "n": 7,
+   "concepticon": 946,
+   "gloss": "BLOOD",
+   "english": "blood",
+   "id": "darah",
+   "class": "benda"
+  },
+  {
+   "n": 8,
+   "concepticon": 1394,
+   "gloss": "BONE",
+   "english": "bone",
+   "id": "tulang",
+   "class": "benda"
+  },
+  {
+   "n": 9,
+   "concepticon": 1215,
+   "gloss": "THOU",
+   "english": "2sg pronoun",
+   "id": "kamu",
+   "class": "lainnya"
+  },
+  {
+   "n": 10,
+   "concepticon": 670,
+   "gloss": "ROOT",
+   "english": "root",
+   "id": "akar",
+   "class": "benda"
+  },
+  {
+   "n": 11,
+   "concepticon": 1446,
+   "gloss": "COME",
+   "english": "to come",
+   "id": "datang",
+   "class": "kerja"
+  },
+  {
+   "n": 12,
+   "concepticon": 1402,
+   "gloss": "BREAST",
+   "english": "breast",
+   "id": "dada (susu)",
+   "class": "benda"
+  },
+  {
+   "n": 13,
+   "concepticon": 658,
+   "gloss": "RAIN (PRECIPITATION)",
+   "english": "rain",
+   "id": "hujan",
+   "class": "benda"
+  },
+  {
+   "n": 14,
+   "concepticon": 1209,
+   "gloss": "I",
+   "english": "1sg pronoun",
+   "id": "saya",
+   "class": "lainnya"
+  },
+  {
+   "n": 15,
+   "concepticon": 1405,
+   "gloss": "NAME",
+   "english": "name",
+   "id": "nama",
+   "class": "benda"
+  },
+  {
+   "n": 16,
+   "concepticon": 1392,
+   "gloss": "LOUSE",
+   "english": "louse",
+   "id": "kutu rambut",
+   "class": "benda"
+  },
+  {
+   "n": 17,
+   "concepticon": 1257,
+   "gloss": "WING",
+   "english": "wing",
+   "id": "sayap",
+   "class": "benda"
+  },
+  {
+   "n": 18,
+   "concepticon": 2615,
+   "gloss": "FLESH OR MEAT",
+   "english": "flesh/meat",
+   "id": "daging",
+   "class": "benda"
+  },
+  {
+   "n": 19,
+   "concepticon": 2121,
+   "gloss": "ARM OR HAND",
+   "english": "arm/hand",
+   "id": "tangan",
+   "class": "benda"
+  },
+  {
+   "n": 20,
+   "concepticon": 1504,
+   "gloss": "FLY (INSECT)",
+   "english": "fly",
+   "id": "lalat",
+   "class": "benda"
+  },
+  {
+   "n": 21,
+   "concepticon": 1233,
+   "gloss": "NIGHT",
+   "english": "night",
+   "id": "malam",
+   "class": "benda"
+  },
+  {
+   "n": 22,
+   "concepticon": 1247,
+   "gloss": "EAR",
+   "english": "ear",
+   "id": "telinga",
+   "class": "benda"
+  },
+  {
+   "n": 23,
+   "concepticon": 1333,
+   "gloss": "NECK",
+   "english": "neck",
+   "id": "leher",
+   "class": "benda"
+  },
+  {
+   "n": 24,
+   "concepticon": 1406,
+   "gloss": "FAR",
+   "english": "far",
+   "id": "jauh",
+   "class": "sifat"
+  },
+  {
+   "n": 25,
+   "concepticon": 2575,
+   "gloss": "DO OR MAKE",
+   "english": "to do/make",
+   "id": "membuat",
+   "class": "kerja"
+  },
+  {
+   "n": 26,
+   "concepticon": 1252,
+   "gloss": "HOUSE",
+   "english": "house",
+   "id": "rumah",
+   "class": "benda"
+  },
+  {
+   "n": 27,
+   "concepticon": 2125,
+   "gloss": "STONE OR ROCK",
+   "english": "stone/rock",
+   "id": "batu",
+   "class": "benda"
+  },
+  {
+   "n": 28,
+   "concepticon": 887,
+   "gloss": "BITTER",
+   "english": "bitter",
+   "id": "pahit",
+   "class": "sifat"
+  },
+  {
+   "n": 29,
+   "concepticon": 1458,
+   "gloss": "SAY",
+   "english": "to say",
+   "id": "berkata",
+   "class": "kerja"
+  },
+  {
+   "n": 30,
+   "concepticon": 1380,
+   "gloss": "TOOTH",
+   "english": "tooth",
+   "id": "gigi",
+   "class": "benda"
+  },
+  {
+   "n": 31,
+   "concepticon": 1040,
+   "gloss": "HAIR",
+   "english": "hair",
+   "id": "rambut",
+   "class": "benda"
+  },
+  {
+   "n": 32,
+   "concepticon": 1202,
+   "gloss": "BIG",
+   "english": "big",
+   "id": "besar",
+   "class": "sifat"
+  },
+  {
+   "n": 33,
+   "concepticon": 1493,
+   "gloss": "ONE",
+   "english": "one",
+   "id": "satu",
+   "class": "lainnya"
+  },
+  {
+   "n": 34,
+   "concepticon": 1235,
+   "gloss": "WHO",
+   "english": "who?",
+   "id": "siapa",
+   "class": "lainnya"
+  },
+  {
+   "n": 35,
+   "concepticon": 262,
+   "gloss": "HE OR SHE OR IT",
+   "english": "3sg pronoun",
+   "id": "dia",
+   "class": "lainnya"
+  },
+  {
+   "n": 36,
+   "concepticon": 2133,
+   "gloss": "STRIKE OR BEAT",
+   "english": "to hit/beat",
+   "id": "memukul",
+   "class": "kerja"
+  },
+  {
+   "n": 37,
+   "concepticon": 2098,
+   "gloss": "FOOT OR LEG",
+   "english": "leg/foot",
+   "id": "kaki",
+   "class": "benda"
+  },
+  {
+   "n": 38,
+   "concepticon": 1393,
+   "gloss": "HORN (ANATOMY)",
+   "english": "horn",
+   "id": "tanduk",
+   "class": "benda"
+  },
+  {
+   "n": 39,
+   "concepticon": 1214,
+   "gloss": "THIS",
+   "english": "this",
+   "id": "ini",
+   "class": "lainnya"
+  },
+  {
+   "n": 40,
+   "concepticon": 227,
+   "gloss": "FISH",
+   "english": "fish",
+   "id": "ikan",
+   "class": "benda"
+  },
+  {
+   "n": 41,
+   "concepticon": 1174,
+   "gloss": "YESTERDAY",
+   "english": "yesterday",
+   "id": "kemarin",
+   "class": "benda"
+  },
+  {
+   "n": 42,
+   "concepticon": 1401,
+   "gloss": "DRINK",
+   "english": "to drink",
+   "id": "minum",
+   "class": "kerja"
+  },
+  {
+   "n": 43,
+   "concepticon": 163,
+   "gloss": "BLACK",
+   "english": "black",
+   "id": "hitam",
+   "class": "sifat"
+  },
+  {
+   "n": 44,
+   "concepticon": 1838,
+   "gloss": "NAVEL",
+   "english": "navel",
+   "id": "pusar",
+   "class": "benda"
+  },
+  {
+   "n": 45,
+   "concepticon": 1442,
+   "gloss": "STAND",
+   "english": "to stand",
+   "id": "berdiri",
+   "class": "kerja"
+  },
+  {
+   "n": 46,
+   "concepticon": 1403,
+   "gloss": "BITE",
+   "english": "to bite",
+   "id": "menggigit",
+   "class": "kerja"
+  },
+  {
+   "n": 47,
+   "concepticon": 1291,
+   "gloss": "BACK",
+   "english": "back",
+   "id": "punggung",
+   "class": "benda"
+  },
+  {
+   "n": 48,
+   "concepticon": 960,
+   "gloss": "WIND",
+   "english": "wind",
+   "id": "angin",
+   "class": "benda"
+  },
+  {
+   "n": 49,
+   "concepticon": 778,
+   "gloss": "SMOKE (EXHAUST)",
+   "english": "smoke",
+   "id": "asap",
+   "class": "benda"
+  },
+  {
+   "n": 50,
+   "concepticon": 1236,
+   "gloss": "WHAT",
+   "english": "what?",
+   "id": "apa",
+   "class": "lainnya"
+  },
+  {
+   "n": 51,
+   "concepticon": 1801,
+   "gloss": "CHILD (DESCENDANT)",
+   "english": "child (kin term)",
+   "id": "anak",
+   "class": "benda"
+  },
+  {
+   "n": 52,
+   "concepticon": 744,
+   "gloss": "EGG",
+   "english": "egg",
+   "id": "telur",
+   "class": "benda"
+  },
+  {
+   "n": 53,
+   "concepticon": 1447,
+   "gloss": "GIVE",
+   "english": "to give",
+   "id": "memberi",
+   "class": "kerja"
+  },
+  {
+   "n": 54,
+   "concepticon": 1231,
+   "gloss": "NEW",
+   "english": "new",
+   "id": "baru",
+   "class": "sifat"
+  },
+  {
+   "n": 55,
+   "concepticon": 1428,
+   "gloss": "BURNING",
+   "english": "to burn (intr.)",
+   "id": "terbakar",
+   "class": "kerja"
+  },
+  {
+   "n": 56,
+   "concepticon": 1240,
+   "gloss": "NOT",
+   "english": "not",
+   "id": "tidak",
+   "class": "lainnya"
+  },
+  {
+   "n": 57,
+   "concepticon": 1035,
+   "gloss": "GOOD",
+   "english": "good",
+   "id": "baik",
+   "class": "sifat"
+  },
+  {
+   "n": 58,
+   "concepticon": 3626,
+   "gloss": "KNOW",
+   "english": "to know",
+   "id": "tahu",
+   "class": "kerja"
+  },
+  {
+   "n": 59,
+   "concepticon": 1371,
+   "gloss": "KNEE",
+   "english": "knee",
+   "id": "lutut",
+   "class": "benda"
+  },
+  {
+   "n": 60,
+   "concepticon": 671,
+   "gloss": "SAND",
+   "english": "sand",
+   "id": "pasir",
+   "class": "benda"
+  },
+  {
+   "n": 61,
+   "concepticon": 1355,
+   "gloss": "LAUGH",
+   "english": "to laugh",
+   "id": "tertawa",
+   "class": "kerja"
+  },
+  {
+   "n": 62,
+   "concepticon": 1408,
+   "gloss": "HEAR",
+   "english": "to hear",
+   "id": "mendengar",
+   "class": "kerja"
+  },
+  {
+   "n": 63,
+   "concepticon": 1228,
+   "gloss": "EARTH (SOIL)",
+   "english": "soil",
+   "id": "tanah",
+   "class": "benda"
+  },
+  {
+   "n": 64,
+   "concepticon": 628,
+   "gloss": "LEAF",
+   "english": "leaf",
+   "id": "daun",
+   "class": "benda"
+  },
+  {
+   "n": 65,
+   "concepticon": 156,
+   "gloss": "RED",
+   "english": "red",
+   "id": "merah",
+   "class": "sifat"
+  },
+  {
+   "n": 66,
+   "concepticon": 1224,
+   "gloss": "LIVER",
+   "english": "liver",
+   "id": "hati (organ)",
+   "class": "benda"
+  },
+  {
+   "n": 67,
+   "concepticon": 2486,
+   "gloss": "HIDE",
+   "english": "to hide",
+   "id": "menyembunyikan",
+   "class": "kerja"
+  },
+  {
+   "n": 68,
+   "concepticon": 763,
+   "gloss": "SKIN",
+   "english": "skin/hide",
+   "id": "kulit",
+   "class": "benda"
+  },
+  {
+   "n": 69,
+   "concepticon": 1421,
+   "gloss": "SUCK",
+   "english": "to suck",
+   "id": "mengisap",
+   "class": "kerja"
+  },
+  {
+   "n": 70,
+   "concepticon": 700,
+   "gloss": "CARRY",
+   "english": "to carry",
+   "id": "memikul",
+   "class": "kerja"
+  },
+  {
+   "n": 71,
+   "concepticon": 587,
+   "gloss": "ANT",
+   "english": "ant",
+   "id": "semut",
+   "class": "benda"
+  },
+  {
+   "n": 72,
+   "concepticon": 1210,
+   "gloss": "HEAVY",
+   "english": "heavy",
+   "id": "berat",
+   "class": "sifat"
+  },
+  {
+   "n": 73,
+   "concepticon": 1749,
+   "gloss": "TAKE",
+   "english": "to take",
+   "id": "mengambil",
+   "class": "kerja"
+  },
+  {
+   "n": 74,
+   "concepticon": 1229,
+   "gloss": "OLD",
+   "english": "old",
+   "id": "tua",
+   "class": "sifat"
+  },
+  {
+   "n": 75,
+   "concepticon": 1336,
+   "gloss": "EAT",
+   "english": "to eat",
+   "id": "makan",
+   "class": "kerja"
+  },
+  {
+   "n": 76,
+   "concepticon": 471,
+   "gloss": "UPPER LEG (THIGH)",
+   "english": "thigh",
+   "id": "paha",
+   "class": "benda"
+  },
+  {
+   "n": 77,
+   "concepticon": 1244,
+   "gloss": "THICK",
+   "english": "thick",
+   "id": "tebal",
+   "class": "sifat"
+  },
+  {
+   "n": 78,
+   "concepticon": 1203,
+   "gloss": "LONG",
+   "english": "long",
+   "id": "panjang",
+   "class": "sifat"
+  },
+  {
+   "n": 79,
+   "concepticon": 175,
+   "gloss": "BLOW (OF WIND)",
+   "english": "to blow",
+   "id": "meniup (angin)",
+   "class": "kerja"
+  },
+  {
+   "n": 80,
+   "concepticon": 1803,
+   "gloss": "WOOD",
+   "english": "wood",
+   "id": "kayu",
+   "class": "benda"
+  },
+  {
+   "n": 81,
+   "concepticon": 1519,
+   "gloss": "RUN",
+   "english": "to run",
+   "id": "lari",
+   "class": "kerja"
+  },
+  {
+   "n": 82,
+   "concepticon": 1280,
+   "gloss": "FALL",
+   "english": "to fall",
+   "id": "jatuh",
+   "class": "kerja"
+  },
+  {
+   "n": 83,
+   "concepticon": 1248,
+   "gloss": "EYE",
+   "english": "eye",
+   "id": "mata",
+   "class": "benda"
+  },
+  {
+   "n": 84,
+   "concepticon": 646,
+   "gloss": "ASH",
+   "english": "ash",
+   "id": "abu",
+   "class": "benda"
+  },
+  {
+   "n": 85,
+   "concepticon": 1220,
+   "gloss": "TAIL",
+   "english": "tail",
+   "id": "ekor",
+   "class": "benda"
+  },
+  {
+   "n": 86,
+   "concepticon": 2009,
+   "gloss": "DOG",
+   "english": "dog",
+   "id": "anjing",
+   "class": "benda"
+  },
+  {
+   "n": 87,
+   "concepticon": 1839,
+   "gloss": "CRY",
+   "english": "to cry/weep",
+   "id": "menangis",
+   "class": "kerja"
+  },
+  {
+   "n": 88,
+   "concepticon": 1917,
+   "gloss": "TIE",
+   "english": "to tie",
+   "id": "mengikat",
+   "class": "kerja"
+  },
+  {
+   "n": 89,
+   "concepticon": 1409,
+   "gloss": "SEE",
+   "english": "to see",
+   "id": "melihat",
+   "class": "kerja"
+  },
+  {
+   "n": 90,
+   "concepticon": 717,
+   "gloss": "SWEET",
+   "english": "sweet",
+   "id": "manis",
+   "class": "sifat"
+  },
+  {
+   "n": 91,
+   "concepticon": 1218,
+   "gloss": "ROPE",
+   "english": "rope",
+   "id": "tali",
+   "class": "benda"
+  },
+  {
+   "n": 92,
+   "concepticon": 1388,
+   "gloss": "SHADE",
+   "english": "shade/shadow",
+   "id": "bayangan",
+   "class": "benda"
+  },
+  {
+   "n": 93,
+   "concepticon": 937,
+   "gloss": "BIRD",
+   "english": "bird",
+   "id": "burung",
+   "class": "benda"
+  },
+  {
+   "n": 94,
+   "concepticon": 1274,
+   "gloss": "SALT",
+   "english": "salt",
+   "id": "garam",
+   "class": "benda"
+  },
+  {
+   "n": 95,
+   "concepticon": 1246,
+   "gloss": "SMALL",
+   "english": "small",
+   "id": "kecil",
+   "class": "sifat"
+  },
+  {
+   "n": 96,
+   "concepticon": 1243,
+   "gloss": "WIDE",
+   "english": "wide",
+   "id": "lebar",
+   "class": "sifat"
+  },
+  {
+   "n": 97,
+   "concepticon": 1430,
+   "gloss": "STAR",
+   "english": "star",
+   "id": "bintang",
+   "class": "benda"
+  },
+  {
+   "n": 98,
+   "concepticon": 1460,
+   "gloss": "IN",
+   "english": "in",
+   "id": "di dalam",
+   "class": "lainnya"
+  },
+  {
+   "n": 99,
+   "concepticon": 1884,
+   "gloss": "HARD",
+   "english": "hard",
+   "id": "keras",
+   "class": "sifat"
+  },
+  {
+   "n": 100,
+   "concepticon": 1033,
+   "gloss": "GRIND",
+   "english": "to crush/grind",
+   "id": "menumbuk",
+   "class": "kerja"
+  }
+ ]
+}

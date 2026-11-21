@@ -7,6 +7,7 @@ Seed data for the community dictionary (Kamus komunitas). Data only; no app code
 | File | What it holds |
 | --- | --- |
 | `ekari.json` | Published Ekari (Mee language, Glottocode `ekar1243`, ISO 639-3 `ekg`) entries from two sources. 2,905 entries. |
+| `leipzig-jakarta-100.json` | The 100 concepts of the Leipzig-Jakarta list (Concepticon list `Tadmor-2009-100`), with an Indonesian prompt and a word class for each. *Kata hari ini* asks for the local word for one concept a day. |
 | `id-words.json` | Indonesian word forms (2,794) and Papuan Malay function words (30), so a word finder can tell Indonesian words from local-language words. |
 
 ## Sources and licences
@@ -15,6 +16,8 @@ Seed data for the community dictionary (Kamus komunitas). Data only; no app code
 | --- | --- | --- |
 | TransNewGuinea.org, Lexibank CLDF release (`lexibank/transnewguineaorg`, `cldf/`). Greenhill, S. J. (2015), PLoS ONE 10.10: e0141563. | CC BY 4.0 | 117 |
 | Steltenpool, J. (1969), *Ekagi-Dutch-English-Indonesian Dictionary*, KITLV Verhandelingen 56. | CC BY-NC 3.0 | 2,788 (2,563 distinct headwords) |
+
+| Concepticon, concept list `Tadmor-2009-100` (Tadmor, Haspelmath and Taylor 2010). List, J.-M. et al., *Concepticon*, https://concepticon.clld.org | CC BY 4.0 | 100 concepts (IDs and glosses as given; the Indonesian prompts and word classes were written for ETNOS on 21 November 2026) |
 
 **Steltenpool entries are non-commercial. Keep them out of anything paid** (paid tiers, paid exports, commercial products). Every Steltenpool entry has `"source": "steltenpool1969"`, so filtering them out is one line. Credit the author and the source wherever they are shown.
 

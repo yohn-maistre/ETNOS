@@ -480,6 +480,20 @@ CREATE TABLE datasets(id TEXT PRIMARY KEY,key TEXT NOT NULL UNIQUE,title TEXT NO
 CREATE INDEX datasets_state ON datasets(state,updated);
 CREATE TABLE dataset_about(dataset_id TEXT NOT NULL REFERENCES datasets(id),entity TEXT NOT NULL REFERENCES km_entities(slug),PRIMARY KEY(dataset_id,entity));
 CREATE INDEX dataset_about_entity ON dataset_about(entity);
+`,`
+ALTER TABLE kamus_settings ADD COLUMN suffixes TEXT;
+ALTER TABLE kamus_entries ADD COLUMN variants TEXT NOT NULL DEFAULT '[]';
+ALTER TABLE kamus_entries ADD COLUMN definition TEXT NOT NULL DEFAULT '';
+ALTER TABLE kamus_entries ADD COLUMN dialect TEXT NOT NULL DEFAULT '';
+ALTER TABLE kamus_entries ADD COLUMN sensitive INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE claims ADD COLUMN origin TEXT NOT NULL DEFAULT 'member';
+CREATE TABLE kamus_questions(id TEXT PRIMARY KEY,community_id TEXT NOT NULL REFERENCES communities(id),key TEXT NOT NULL,kind TEXT NOT NULL CHECK(kind IN ('stem','align','concept','picture')),form TEXT NOT NULL,entry_id TEXT REFERENCES kamus_entries(id),stem TEXT NOT NULL DEFAULT '',suffix TEXT NOT NULL DEFAULT '',gloss TEXT NOT NULL DEFAULT '',word_class TEXT NOT NULL DEFAULT '',subject TEXT NOT NULL DEFAULT '',claim_id TEXT NOT NULL UNIQUE REFERENCES claims(id),created INTEGER NOT NULL,UNIQUE(community_id,key));
+CREATE INDEX kamus_questions_kind ON kamus_questions(community_id,kind,subject);
+CREATE TABLE kamus_answers_skipped(actor_id TEXT NOT NULL REFERENCES actors(id),community_id TEXT NOT NULL REFERENCES communities(id),key TEXT NOT NULL,created INTEGER NOT NULL,PRIMARY KEY(actor_id,community_id,key));
+CREATE TABLE kamus_mine(actor_id TEXT NOT NULL REFERENCES actors(id),community_id TEXT NOT NULL REFERENCES communities(id),norm TEXT NOT NULL,form TEXT NOT NULL,gloss TEXT NOT NULL DEFAULT '',word_class TEXT NOT NULL DEFAULT '',post_id TEXT REFERENCES posts(id),saved INTEGER NOT NULL DEFAULT 0,created INTEGER NOT NULL,updated INTEGER NOT NULL,PRIMARY KEY(actor_id,community_id,norm));
+CREATE TABLE kamus_classes(community_id TEXT NOT NULL REFERENCES communities(id),norm TEXT NOT NULL,actor_id TEXT NOT NULL REFERENCES actors(id),word_class TEXT NOT NULL CHECK(word_class IN ('benda','kerja','sifat','lainnya')),created INTEGER NOT NULL,PRIMARY KEY(community_id,norm,actor_id));
+CREATE TABLE kamus_artinya(id TEXT PRIMARY KEY,post_id TEXT NOT NULL REFERENCES posts(id),community_id TEXT NOT NULL REFERENCES communities(id),author_id TEXT NOT NULL REFERENCES actors(id),text TEXT NOT NULL,created INTEGER NOT NULL,updated INTEGER NOT NULL,UNIQUE(post_id,author_id));
+CREATE INDEX kamus_artinya_community ON kamus_artinya(community_id,created);
 `]
 
 export const schemaVersion=migrations.length

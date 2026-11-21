@@ -7,9 +7,13 @@ import {StrataCore,Fault} from './core.ts'
 export const CLAIM_KINDS=['word','sense','grammar','name','place','date','wiki','other'] as const
 export type ClaimKind=typeof CLAIM_KINDS[number]
 export type ClaimState='open'|'checked'|'rejected'|'split'|'withdrawn'
-export type Evidence={text:string;source?:string}
-export type Claim={id:string;communityId:string;kind:ClaimKind;subject:string;statement:string;evidence:Evidence[];proposer:{id:string;name:string;kind:string};parentId:string|null;state:ClaimState;yes:number;no:number;mine:'yes'|'no'|null;created:number}
-type Row={id:string;community_id:string;kind:ClaimKind;subject:string;statement:string;evidence:string;proposer_id:string;parent_id:string|null;state:ClaimState;created:number}
+/** Evidence may name the post it came from; it is shown only while that post is still visible. */
+export type Evidence={text:string;source?:string;postId?:string}
+/** Who a claim's statement comes from: a member, an agent, or a written source or a count over posts, in which
+ * case the member who opened it may answer it too. */
+export type ClaimOrigin='member'|'agent'|'source'
+export type Claim={id:string;communityId:string;kind:ClaimKind;subject:string;statement:string;evidence:Evidence[];proposer:{id:string;name:string;kind:string};origin:ClaimOrigin;parentId:string|null;state:ClaimState;yes:number;no:number;mine:'yes'|'no'|null;created:number}
+type Row={id:string;community_id:string;kind:ClaimKind;subject:string;statement:string;evidence:string;proposer_id:string;parent_id:string|null;state:ClaimState;created:number;origin:ClaimOrigin}
 
 export const DEFAULT_QUORUM=2
 export const QUEUE_SIZE=10
@@ -32,18 +36,19 @@ export class Periksa{
  private view(r:Row,actor?:string):Claim{
   const s=this.store,count=(a:string)=>s.get<{n:number}>('SELECT COUNT(*) n FROM claim_answers WHERE claim_id=? AND answer=?',r.id,a)!.n
   const p=s.actor(r.proposer_id),mine=actor?s.get<{answer:'yes'|'no'}>('SELECT answer FROM claim_answers WHERE claim_id=? AND actor_id=?',r.id,actor)?.answer??null:null
-  return {id:r.id,communityId:r.community_id,kind:r.kind,subject:r.subject,statement:r.statement,evidence:JSON.parse(r.evidence),proposer:{id:p.id,name:p.name,kind:p.kind},parentId:r.parent_id,state:r.state,yes:count('yes'),no:count('no'),mine,created:r.created}
+  const evidence=(JSON.parse(r.evidence) as Evidence[]).filter(e=>!e.postId||!!s.get('SELECT 1 FROM posts WHERE id=? AND deleted=0 AND hidden=0',e.postId))
+  return {id:r.id,communityId:r.community_id,kind:r.kind,subject:r.subject,statement:r.statement,evidence,proposer:{id:p.id,name:p.name,kind:p.kind},origin:r.origin??'member',parentId:r.parent_id,state:r.state,yes:count('yes'),no:count('no'),mine,created:r.created}
  }
  /** A claim is read with its community: members of a private one, anyone for a public one. */
  private readable(actor:string|undefined,communityId:string){if(!this.store.canRead(actor,this.store.community(communityId)))throw new Fault(404,'Not found')}
 
- propose(actor:string,communityId:string,b:{kind?:unknown;subject?:unknown;statement?:unknown;evidence?:unknown},parentId:string|null=null):Claim{
+ propose(actor:string,communityId:string,b:{kind?:unknown;subject?:unknown;statement?:unknown;evidence?:unknown},parentId:string|null=null,origin:'member'|'source'='member'):Claim{
   const s=this.store;return s.tx(()=>{
    s.requireMember(actor,communityId);this.human(actor)
    if(!CLAIM_KINDS.includes(b.kind as ClaimKind))throw new Fault(400,'Invalid claim kind')
-   const evidence=(Array.isArray(b.evidence)?b.evidence:[]).slice(0,5).map(e=>({text:text((e as Evidence)?.text,500,'Evidence'),...(typeof (e as Evidence)?.source==='string'&&(e as Evidence).source!.trim()?{source:text((e as Evidence).source,300,'Source')}:{})}))
+   const evidence=(Array.isArray(b.evidence)?b.evidence:[]).slice(0,5).map(e=>({text:text((e as Evidence)?.text,500,'Evidence'),...(typeof (e as Evidence)?.source==='string'&&(e as Evidence).source!.trim()?{source:text((e as Evidence).source,300,'Source')}:{}),...(typeof (e as Evidence)?.postId==='string'?{postId:(e as Evidence).postId}:{})}))
    const id=randomUUID()
-   s.run('INSERT INTO claims VALUES(?,?,?,?,?,?,?,?,?,?,NULL)',id,communityId,b.kind as ClaimKind,text(b.subject,120,'Subject'),text(b.statement,500,'Statement'),JSON.stringify(evidence),actor,parentId,'open',s.clock())
+   s.run('INSERT INTO claims(id,community_id,kind,subject,statement,evidence,proposer_id,parent_id,state,created,settled,origin) VALUES(?,?,?,?,?,?,?,?,?,?,NULL,?)',id,communityId,b.kind as ClaimKind,text(b.subject,120,'Subject'),text(b.statement,500,'Statement'),JSON.stringify(evidence),actor,parentId,'open',s.clock(),origin)
    return this.view(this.row(id),actor)
   })
  }
@@ -58,15 +63,15 @@ export class Periksa{
    if(!CLAIM_KINDS.includes(b.kind as ClaimKind))throw new Fault(400,'Invalid claim kind')
    const evidence=(Array.isArray(b.evidence)?b.evidence:[]).slice(0,5).map(e=>({text:text((e as Evidence)?.text,500,'Evidence')}))
    const id=randomUUID()
-   s.run('INSERT INTO claims VALUES(?,?,?,?,?,?,?,?,?,?,NULL)',id,communityId,b.kind as ClaimKind,text(b.subject,120,'Subject'),text(b.statement,500,'Statement'),JSON.stringify(evidence),agent,null,'open',s.clock())
+   s.run('INSERT INTO claims(id,community_id,kind,subject,statement,evidence,proposer_id,parent_id,state,created,settled,origin) VALUES(?,?,?,?,?,?,?,?,?,?,NULL,?)',id,communityId,b.kind as ClaimKind,text(b.subject,120,'Subject'),text(b.statement,500,'Statement'),JSON.stringify(evidence),agent,null,'open',s.clock(),'agent')
    return this.view(this.row(id),agent)
   })
  }
  /** The next cards for this member: open, not theirs, not yet answered. Oldest first, so nothing waits forever. */
  queue(actor:string,communityId:string){
   const s=this.store;s.requireMember(actor,communityId);this.human(actor)
-  const rows=s.all<Row>(`SELECT c.* FROM claims c WHERE c.community_id=? AND c.state='open' AND c.proposer_id<>? AND NOT EXISTS(SELECT 1 FROM claim_answers a WHERE a.claim_id=c.id AND a.actor_id=?) ORDER BY c.created LIMIT ?`,communityId,actor,actor,QUEUE_SIZE)
-  const waiting=s.get<{n:number}>(`SELECT COUNT(*) n FROM claims c WHERE c.community_id=? AND c.state='open' AND c.proposer_id<>? AND NOT EXISTS(SELECT 1 FROM claim_answers a WHERE a.claim_id=c.id AND a.actor_id=?)`,communityId,actor,actor)!.n
+  const rows=s.all<Row>(`SELECT c.* FROM claims c WHERE c.community_id=? AND c.state='open' AND (c.proposer_id<>? OR c.origin='source') AND NOT EXISTS(SELECT 1 FROM claim_answers a WHERE a.claim_id=c.id AND a.actor_id=?) ORDER BY c.created LIMIT ?`,communityId,actor,actor,QUEUE_SIZE)
+  const waiting=s.get<{n:number}>(`SELECT COUNT(*) n FROM claims c WHERE c.community_id=? AND c.state='open' AND (c.proposer_id<>? OR c.origin='source') AND NOT EXISTS(SELECT 1 FROM claim_answers a WHERE a.claim_id=c.id AND a.actor_id=?)`,communityId,actor,actor)!.n
   return {quorum:this.quorum(communityId),waiting,claims:rows.map(r=>this.view(r,actor))}
  }
  list(actor:string|undefined,communityId:string,state?:string){
@@ -80,7 +85,7 @@ export class Periksa{
   const s=this.store;return s.tx(()=>{
    const r=this.row(id);s.requireMember(actor,r.community_id);this.human(actor)
    if(r.state==='withdrawn')throw new Fault(409,'This claim was withdrawn')
-   if(r.proposer_id===actor)throw new Fault(409,'You proposed this claim')
+   if(r.proposer_id===actor&&r.origin!=='source')throw new Fault(409,'You proposed this claim')
    let created:Claim|null=null
    if(b.answer===null)s.run('DELETE FROM claim_answers WHERE claim_id=? AND actor_id=?',id,actor)
    else{
@@ -99,7 +104,8 @@ export class Periksa{
  withdraw(actor:string,id:string){
   const s=this.store;return s.tx(()=>{
    const r=this.row(id);s.requireMember(actor,r.community_id)
-   if(r.proposer_id!==actor)s.requireSteward(actor,r.community_id)
+   // A claim from a written source or a count belongs to no member, so only a steward withdraws it.
+   if(r.proposer_id!==actor||r.origin==='source')s.requireSteward(actor,r.community_id)
    s.run("UPDATE claims SET state='withdrawn',settled=? WHERE id=?",s.clock(),id)
    s.run('DELETE FROM claim_answers WHERE claim_id=?',id)
    return this.view(this.row(id),actor)
