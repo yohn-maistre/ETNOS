@@ -303,7 +303,7 @@
     {#if post.contexts?.length || post.season}<div class="context-links mt-3">
         {#if post.season}<span class="post-season" title="Musim yang dipilih penulis"><Sprout size={13} aria-hidden="true" />{post.season.name}</span>{/if}
         {#each post.contexts ?? [] as context}<Badge
-            href={'/contexts/' + context.slug}
+            href={'/wiki/' + context.slug}
             variant="secondary"
           >
             {context.title}

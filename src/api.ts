@@ -33,6 +33,8 @@ import knowledgeSeed from './catalogues/tanah-papua-knowledge-seed.json' with { 
 import {KnowledgeModel,type KnowledgeSeed} from './knowledge-model.ts'
 import {Datasets,type DatasetSeed} from './datasets.ts'
 import datasetSeed from './catalogues/tanah-papua-datasets.json' with { type: 'json' }
+import {entryIndex,readEntry} from './entri.ts'
+import {storeSource} from './entri-store.ts'
 
 const MAX_BODY = 1500000
 export async function body(req: Request,maximum=MAX_BODY): Promise<Record<string, unknown>> {
@@ -143,6 +145,9 @@ export function api(store: StrataCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='spaces')result=groups.spaces(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members')result=groups.members(authenticated(),parts[2])
         else if(path==='/v1/contexts')result=groups.contexts()
+        // One public shape for every entry page (docs/plan/one-page-system-2026-11-21.md §3); always read as an anonymous reader.
+        else if(path==='/v1/entri')result=await entryIndex(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue}))
+        else if(parts.length===3&&parts[1]==='entri'){result=await readEntry(storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue}),decodeURIComponent(parts[2]));if(!result)throw new Fault(404,'Not found')}
         else if(path==='/v1/knowledge-model')result=model.summary(actor?.id)
         else if(path==='/v1/knowledge-model/entities')result=model.entities(actor?.id,{class:url.searchParams.get('class')??undefined,q:url.searchParams.get('q')??undefined})
         else if(parts.length===4&&parts[1]==='knowledge-model'&&parts[2]==='entities')result=model.entity(actor?.id,parts[3])

@@ -79,4 +79,4 @@ export const listDatasets = (filter: { thing?: string; context?: string; kind?: 
 export const readDataset = (id: string, signal?: AbortSignal) => request<Dataset>('/v1/datasets/' + encodeURIComponent(id), undefined, signal, true)
 
 /** Where a thing a dataset is about has its own page: a catalogue context, or a search in the wiki. */
-export const thingHref = (t: DatasetThing) => (t.context ? '/contexts/' + t.context : '/wiki?q=' + encodeURIComponent(t.title))
+export const thingHref = (t: DatasetThing) => '/wiki/' + encodeURIComponent(t.context ?? t.slug)

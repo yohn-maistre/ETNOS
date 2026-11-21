@@ -32,7 +32,7 @@
       const [lat, lon] = unproject(at[1], at[2])
       return { points: [{ name: thing.title, latitude: lat, longitude: lon }], area: '', note: 'Titik acuan bahasa ini diambil dari Glottolog dan tidak menandai batas wilayah tuturnya.' }
     }
-    const children = (thing.children ?? []).map((c) => places?.[c.slug]).filter((p): p is PlacePoint => !!p && (p.facet === 'regency' || p.facet === 'city')).map((p) => ({ name: p.title, latitude: p.latitude, longitude: p.longitude, href: '/contexts/' + p.slug }))
+    const children = (thing.children ?? []).map((c) => places?.[c.slug]).filter((p): p is PlacePoint => !!p && (p.facet === 'regency' || p.facet === 'city')).map((p) => ({ name: p.title, latitude: p.latitude, longitude: p.longitude, href: '/wiki/' + p.slug }))
     if (thing.facet === 'customary-region') {
       const shape = atlas?.regions[thing.slug]
       return { points: shape ? [] : children, area: shape?.d ?? '', note: shape ? 'Garis ini adalah wilayah acuan dari RPJMN 2020–2024 yang disederhanakan, dan tidak sama dengan batas tanah adat.' : 'Titik ini adalah kabupaten dan kota di wilayah acuan ini.' }

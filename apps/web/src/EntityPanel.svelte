@@ -33,7 +33,7 @@
   const node = $derived(id ? nodes.get(id) : undefined)
   const CLASS: Record<string, string> = { tempat: 'Tempat', bahasa: 'Bahasa', kelompok: 'Masyarakat' }
   const VOICE: Record<string, string> = { ensiklopedia: 'ensiklopedia', pemerintah: 'pemerintah', penutur: 'penutur', peneliti: 'peneliti', warga: 'warga' }
-  const href = (n: KNode) => (n.context ? '/contexts/' + n.context : '/wiki?q=' + encodeURIComponent(n.title))
+  const href = (n: KNode) => (n.context ? '/wiki/' + n.context : '/wiki?q=' + encodeURIComponent(n.title))
 
   const partOf = $derived(node ? statements.filter((s) => s.source === node.id && s.predicate === 'bagian-dari').map((s) => nodes.get(s.target)).filter((n): n is KNode => !!n) : [])
   const contains = $derived(node ? statements.filter((s) => s.target === node.id && s.predicate === 'bagian-dari').map((s) => nodes.get(s.source)).filter((n): n is KNode => !!n) : [])

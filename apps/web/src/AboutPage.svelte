@@ -7,7 +7,7 @@
     'Kiriman, balasan, jajak pendapat, media, pencarian, dan penanda.',
     'Moderasi dan laporan.',
     'Masuk dengan Bluesky.',
-    'Wiki dengan tinjauan dan riwayat perubahan.',
+    'Ensiklopedia dengan tinjauan dan riwayat perubahan.',
     'Kabar dari banyak penerbit, dengan ringkasan otomatis.',
     'Sumber berita dengan hak per sumber.',
     'Catatan kerja.',

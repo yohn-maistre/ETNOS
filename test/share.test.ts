@@ -56,7 +56,11 @@ test('a dataset record shares only when an anonymous reader can see it',async()=
   for(const path of ['/wiki/data/'+proposal.id,'/wiki/data/ds-'+'0'.repeat(20),'/wiki/data/not-an-id']){
    const c=await resolveShare(path,read,news);assert.equal(c.title,'ETNOS',path);assert.equal(c.index,false,path);assert.doesNotMatch(JSON.stringify(c),/SECRET/)
   }
-  assert.equal((await resolveShare('/wiki',read,news)).title,'Observatorium · ETNOS')
+  assert.equal((await resolveShare('/wiki',read,news)).title,'Ensiklopedia · ETNOS')
+  // An entry shares under its own /wiki address, and an old /contexts link points there too.
+  const entry=await resolveShare('/wiki/danau-paniai',read,news);assert.equal(entry.path,'/wiki/danau-paniai');assert.match(entry.title,/· Ensiklopedia$/);assert.equal(entry.index,true)
+  assert.equal((await resolveShare('/contexts/danau-paniai',read,news)).path,'/wiki/danau-paniai')
+  for(const path of ['/wiki/tidak-ada-entri','/wiki/peta']){const c=await resolveShare(path,read,news);assert.equal(c.title,'ETNOS',path);assert.equal(c.index,false,path)}
   assert.equal((await resolveShare('/wiki/data',read,news)).title,'Katalog data · ETNOS')
  }finally{s.close()}
 })

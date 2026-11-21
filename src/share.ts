@@ -8,7 +8,7 @@ type Read=(path:string)=>Promise<any>
 const pages:Record<string,[string,string]>={
  '/':['ETNOS · Ruang Digital Tanah Papua',description],'/explore':['Jelajah ETNOS','Lihat apa yang sedang dibicarakan warga Papua hari ini.'],
  '/news':['Kabar · ETNOS','Kabar terbaru dari Papua beserta sumber aslinya.'],'/communities':['Komunitas · ETNOS','Cari komunitas yang cocok, lalu ikut berdiskusi.'],
- '/groups':['Organisasi · ETNOS','Ruang dan karya bersama dari organisasi.'],'/wiki':['Observatorium · ETNOS','Apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan apa yang belum diketahui.'],'/wiki/data':['Katalog data · ETNOS','Dataset publik tentang Tanah Papua beserta penerbit, lisensi dan cara mengutipnya.'],
+ '/groups':['Organisasi · ETNOS','Ruang dan karya bersama dari organisasi.'],'/wiki':['Ensiklopedia · ETNOS','Apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan apa yang belum diketahui.'],'/wiki/data':['Katalog data · ETNOS','Dataset publik tentang Tanah Papua beserta penerbit, lisensi dan cara mengutipnya.'],
  '/voices':['Suara komunitas · ETNOS','Pertanyaan, jajak pendapat dan tindak lanjut komunitas.'],'/work':['Kerja publik · ETNOS','Karya, laporan dan tindak lanjut yang disponsori.'],'/board':['Lajur · ETNOS','Jelajahi percakapan dalam beberapa linimasa.'],
  '/jadwal':['Jadwal Aksara · ETNOS','Lihat jam berapa Aksara menulis setiap hari.'],
 }
@@ -47,8 +47,16 @@ export async function resolveShare(path:string,read:Read,news:(id:string)=>Promi
    const c=await read('/v1/communities/'+id);if(c.visibility!=='public')return fallback;title=c.title;body=c.description;image=card('communities')
   }else if(kind==='groups'&&uuid.test(id)){
    const g=await read('/v1/groups/'+id);if(g.visibility!=='public')return fallback;title=g.title;body=g.description;image=card('communities')
-  }else if(kind==='contexts'&&/^[-a-z0-9]{1,100}$/.test(id)){
-   const c=await read('/v1/contexts/'+id);title=c.title;body=c.description;image=card(regionCards.has(id)?'region-'+id:'wiki')
+  }else if((kind==='contexts'||kind==='wiki')&&!uuid.test(id)&&/^[-a-z0-9]{1,120}$/.test(id)&&!['notes','data','peta','lihat','jenis'].includes(id)){
+   // An entry of the Ensiklopedia (src/entri.ts). Old /contexts links share under the entry's own address.
+   const e=await read('/v1/entri/'+id),slug=String(e.slug)
+   title=e.title+' · Ensiklopedia';body=e.description||e.article?.text||'';image=card(regionCards.has(slug)?'region-'+slug:'wiki')
+   const path='/wiki/'+slug
+   if(e.article?.text){
+    const article={title:String(e.title),text:String(e.article.text),citations:Array.isArray(e.article.citations)?e.article.citations.map(String).slice(0,20):[],updated:Number(e.article.created)||0,reviewed:e.article.review!=='unreviewed'}
+    return {title:previewText(title,200),description:previewText(body)||description,path,image,imageAlt:previewText(e.title,300),type:'article',index:true,article}
+   }
+   return {title:previewText(title,200),description:previewText(body)||description,path,image,imageAlt:previewText(e.title,300),type,index:true}
   }else if(kind==='work'&&uuid.test(id)){
    const w=await read('/v1/work/'+id);title=w.title;body=w.description
   }else if(kind==='wiki'&&uuid.test(id)){

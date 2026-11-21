@@ -5,12 +5,13 @@
   import { KIND_LABEL, loadViewerObjects, viewerHref, type ViewerObject } from './viewer-data.ts'
   import { VIEWER_NAME } from './observatory-name.ts'
 
-  let { text }: { text: string } = $props()
+  // `exclude` drops records the page already shows, such as an entry's own media.
+  let { text, exclude = [] }: { text: string; exclude?: string[] } = $props()
   let objects = $state<ViewerObject[]>([])
   onMount(() => { void loadViewerObjects().then((all) => (objects = all)) })
   const named = $derived.by(() => {
     const t = text.toLowerCase()
-    return objects.filter((o) => o.kind !== 'dataset' && t.includes(o.title.toLowerCase()))
+    return objects.filter((o) => o.kind !== 'dataset' && !exclude.includes(o.id) && t.includes(o.title.toLowerCase()))
   })
 </script>
 

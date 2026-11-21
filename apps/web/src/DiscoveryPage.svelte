@@ -225,7 +225,7 @@
     {#if topics.length}
       <p class="jelajah-lede">Label pada posting dan halaman wiki.</p>
       <ul class="pill-set">
-        {#each allTopics ? topics : topics.slice(0, TOPICS_FIRST) as t (t.slug)}<li><a class="pill" href={'/contexts/' + t.slug} title={(t.children.length ? t.children.slice(0, 6).map((c) => c.title) : describe(t.slug)).join(', ')}>{t.title}</a></li>{/each}
+        {#each allTopics ? topics : topics.slice(0, TOPICS_FIRST) as t (t.slug)}<li><a class="pill" href={'/wiki/' + t.slug} title={(t.children.length ? t.children.slice(0, 6).map((c) => c.title) : describe(t.slug)).join(', ')}>{t.title}</a></li>{/each}
         {#if topics.length > TOPICS_FIRST}<li><button type="button" class="pill ghost" aria-expanded={allTopics} onclick={() => (allTopics = !allTopics)}>{allTopics ? 'Lebih sedikit' : 'Semua ' + topics.length + ' topik'}</button></li>{/if}
       </ul>
     {:else if !failed}<p class="jelajah-note" role="status">Memuat…</p>{/if}
@@ -285,7 +285,7 @@
         {#each languageGroups as g (g.slug)}<button type="button" aria-pressed={languageGroup.slug === g.slug} onclick={() => { openLanguages = g.slug; allLanguages = false }}>{g.title}<span>{g.languages.length}</span></button>{/each}
       </div>
       <ul class="lang-list" aria-label={'Bahasa dengan titik acuan di ' + languageGroup.title}>
-        {#each allLanguages ? languageGroup.languages : languageGroup.languages.slice(0, LANGS_FIRST) as l (l.slug)}<li><a href={'/contexts/' + l.slug}>{l.title}</a></li>{/each}
+        {#each allLanguages ? languageGroup.languages : languageGroup.languages.slice(0, LANGS_FIRST) as l (l.slug)}<li><a href={'/wiki/' + l.slug}>{l.title}</a></li>{/each}
       </ul>
       {#if languageGroup.languages.length > LANGS_FIRST}<button type="button" class="pill ghost more" aria-expanded={allLanguages} onclick={() => (allLanguages = !allLanguages)}>
           {allLanguages ? 'Lebih sedikit' : 'Semua ' + languageGroup.languages.length + ' bahasa di ' + languageGroup.title}

@@ -76,7 +76,7 @@
     for (const n of graph.nodes) {
       if (hidden.has(n.world?.level?.band ?? '')) continue
       const b = bandOf(n.world?.level?.code), color = b ? (dark ? b.dark : b.light) : '#8a8a8a'
-      const href = n.context ? '/contexts/' + n.context : '/wiki/peta?focus=' + n.id
+      const href = n.context ? '/wiki/' + n.context : '/wiki/peta?focus=' + n.id
       const p = n.context ? places[n.context] : undefined
       if (p && (p.facet === 'regency' || p.facet === 'city')) out.push({ name: n.title, latitude: p.latitude, longitude: p.longitude, href, color })
       const lf = landforms[n.id]

@@ -394,3 +394,4 @@ writeFileSync(join(OUT, 'objects.json'), JSON.stringify({ version: 1, checked: C
 let total = 0
 for (const f of run('ls', [OUT]).trim().split('\n')) total += statSync(join(OUT, f)).size
 console.log(`${objects.length} records, ${(total / 1e6).toFixed(2)} MB in ${OUT}`)
+await import('./build-viewer-index.mjs')

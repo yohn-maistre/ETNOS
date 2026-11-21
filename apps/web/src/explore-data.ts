@@ -39,7 +39,7 @@ export function buildStrata(contexts: Ctx[], langs: AtlasLang[], map: MapData | 
     .map((r) => ({
       slug: r.slug,
       title: regionTitle(r),
-      href: '/contexts/' + r.slug,
+      href: '/wiki/' + r.slug,
       places: contexts
         .filter((c) => c.kind === 'place' && c.parents?.includes(r.id))
         .sort((a, b) => a.title.localeCompare(b.title, 'id'))

@@ -14,9 +14,9 @@
 
 <div class="specimen">
   {#each groups as g (g.slug)}{@const shown = showAll ? g.languages : g.languages.slice(0, FIRST)}<section class="specimen-group" aria-labelledby={'lang-' + g.slug}>
-      <h3 id={'lang-' + g.slug}><a href={'/contexts/' + g.slug}>{g.title}</a> <span>{g.languages.length}</span></h3>
+      <h3 id={'lang-' + g.slug}><a href={'/wiki/' + g.slug}>{g.title}</a> <span>{g.languages.length}</span></h3>
       <ul class="specimen-names">
-        {#each shown as l (l.slug)}<li><a href={'/contexts/' + l.slug} class:here={l.slug === current} aria-current={l.slug === current ? 'page' : undefined}>{l.title}</a></li>{/each}
+        {#each shown as l (l.slug)}<li><a href={'/wiki/' + l.slug} class:here={l.slug === current} aria-current={l.slug === current ? 'page' : undefined}>{l.title}</a></li>{/each}
         {#if !showAll && g.languages.length > FIRST}<li class="specimen-more">dan {g.languages.length - FIRST} lagi</li>{/if}
       </ul>
     </section>{/each}

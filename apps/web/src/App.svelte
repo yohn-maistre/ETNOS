@@ -55,6 +55,11 @@
   import { communityArtwork } from './site-branding'
   import { hasSeenWelcome, rememberWelcome, safeBrowsePath, hasBootedThisSession, rememberBoot } from './welcome'
   import FeaturePages from './FeaturePages.svelte'
+  import EntryPage from './EntryPage.svelte'
+  import EntryRail from './EntryRail.svelte'
+  import { entryRail } from './entry-rail.svelte'
+  import { contextRedirect, entryTab, isEntrySegment, isPageId } from './entry-routes.ts'
+  import { OBSERVATORY_NAME } from './observatory-name.ts'
   import { videoEmbed, directVideo } from './markdown'
   import {
     applyAppearance,
@@ -105,19 +110,6 @@
     composeUrl = $state(''),
     composeKind = $state(''),
     profile = $state<Actor | null>(null)
-  // A wiki article titled for a region, kabupaten or kota, or language ("Wilayah adat Mee Pago", "Kabupaten
-  // Nabire", "Bahasa Ekari") is the home article of that place or language. Returns its slug, or ''.
-  async function homeOf(title: string) {
-    const m = title.match(/^(Wilayah adat|Kabupaten|Kota|Bahasa)\s+(.+)$/i)
-    if (!m) return ''
-    const norm = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, '')
-    const kind = m[1].toLowerCase()
-    const all = await request<{ slug: string; title: string; kind: string; facet?: string }[]>('/v1/contexts', undefined, undefined, true).catch(() => [])
-    const hit = all.find((c) =>
-      (kind === 'wilayah adat' ? c.facet === 'customary-region' : kind === 'bahasa' ? c.kind === 'language' : c.kind === 'place') &&
-      (norm(c.title) === norm(title) || norm(c.title) === norm(m[2])))
-    return hit?.slug ?? ''
-  }
   // The old place and topic directories now live as sections of Jelajah.
   function directoryTarget(p:string,q:string){return p==='/topics'?'topik':p==='/contexts'&&!q.includes('create=true')?'tempat':''}
   function commonsPath(value:string){return value==='/knowledge'?'/wiki':value.startsWith('/knowledge/')?'/wiki/notes/'+value.slice('/knowledge/'.length):value}
@@ -130,6 +122,11 @@
     authDialogError = $state(''),
     welcomeIntro = $state(initialBoot),
     authDialogLeaving = $state(false)
+  // An old place, language or topic address opens the same entry under /wiki (docs/plan/one-page-system-2026-11-21.md §3).
+  {
+    const moved = contextRedirect(location.pathname, location.search)
+    if (moved) window.history.replaceState(window.history.state, '', moved + location.hash)
+  }
   let path = $state(['/board', '/login', '/work'].includes(location.pathname) ? '/' : directoryTarget(location.pathname, location.search) ? '/explore' : commonsPath(location.pathname)),
     search = $state(location.pathname === '/login' ? '' : location.search),
     loading = $state(true),
@@ -340,7 +337,7 @@
               : parts[0] === 'communities'
                 ? (community?.title ?? 'Komunitas')
                 : parts[0] === 'wiki'
-                  ? parts[1] === 'data' ? 'Katalog data' : 'Wiki'
+                  ? parts[1] === 'data' ? 'Katalog data' : OBSERVATORY_NAME
                   : parts[0] === 'saved'
                     ? 'Tersimpan'
                     : parts[0] === 'preferences'
@@ -401,6 +398,12 @@
       u.hash = section
     }
     if (u.pathname === '/board') u.pathname = '/'
+    const moved = contextRedirect(u.pathname, u.search)
+    if (moved) {
+      const m = new URL(moved, location.origin)
+      u.pathname = m.pathname
+      u.search = m.search
+    }
     // Work between organisations is a filter on Beranda, not a page of its own.
     if (u.pathname === '/work') {
       setHomeFilter({ kind: 'kerja' })
@@ -484,6 +487,8 @@
         '',
         '/' + location.search,
       )
+    const moved = contextRedirect(location.pathname, location.search)
+    if (moved) window.history.replaceState(window.history.state, '', moved + location.hash)
     const canonicalPath=commonsPath(location.pathname)
     if(canonicalPath!==location.pathname)window.history.replaceState(window.history.state,'',canonicalPath+location.search)
     path = canonicalPath
@@ -641,19 +646,9 @@
         replies = thread.items
         repliesCursor = thread.nextCursor
       }
-      if (parts[0] === 'wiki' && parts[1] && !['notes', 'data', 'peta', 'lihat'].includes(parts[1])) {
+      // Entry pages load their own data (EntryPage.svelte); a page's history and review open in the article reader.
+      if (parts[0] === 'wiki' && isPageId(parts[1]) && !parts[2] && search.includes('view=riwayat')) {
         const p = await request<WikiPage>('/v1/wiki/' + parts[1])
-        // A region, kabupaten or language article is that thing's Tentang tab; open the thing page instead,
-        // unless the reader asked for the article's history and review (?view=riwayat).
-        if (p.revision && !search.includes('view=riwayat')) {
-          const home = await homeOf(p.title)
-          if (mine !== generation) return
-          if (home) {
-            window.history.replaceState(window.history.state, '', '/contexts/' + home)
-            window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }))
-            return
-          }
-        }
         const h = await request<typeof history>('/v1/wiki/' + p.id + '/history')
         if (mine !== generation) return
         selectedPage = p
@@ -1058,10 +1053,10 @@
     />
   {:else if path === '/recover-messages'}<VaultTransfer recovery />
   {:else if error && errorStatus === 404}<div class="page-missing" role="alert">
-      <h1>{parts[0] === 'wiki' ? 'Halaman wiki ini tidak ditemukan' : 'Halaman ini tidak ditemukan'}</h1>
+      <h1>{parts[0] === 'wiki' ? 'Halaman ini tidak ditemukan di ' + OBSERVATORY_NAME : 'Halaman ini tidak ditemukan'}</h1>
       <p>Tautannya mungkin keliru atau sudah lama, halamannya mungkin sudah dipindah atau ditarik, atau halaman ini hanya bisa dibuka oleh anggota komunitasnya.</p>
       <div class="page-missing-actions">
-        <Button href={parts[0] === 'wiki' ? '/wiki' : '/'} variant="outline">{parts[0] === 'wiki' ? 'Kembali ke Wiki' : 'Ke Beranda'}</Button>
+        <Button href={parts[0] === 'wiki' ? '/wiki' : '/'} variant="outline">{parts[0] === 'wiki' ? 'Kembali ke ' + OBSERVATORY_NAME : 'Ke Beranda'}</Button>
         <Button variant="ghost" onclick={() => (searchDialogOpen = true)}>Cari di ETNOS</Button>
       </div>
     </div>
@@ -1107,7 +1102,7 @@
   {:else if parts[0] === 'wiki' && parts[1] === 'peta' && !parts[2]}
     {#await import('./KnowledgeMapPage.svelte')}<ContentSkeleton />{:then module}<module.default />{/await}
   {:else if parts[0] === 'wiki' && parts[1] === 'lihat' && parts[2] && !parts[3]}
-    {#key parts[2]}{#await import('./Viewer.svelte')}<ContentSkeleton />{:then module}<module.default id={decodeURIComponent(parts[2])} />{/await}{/key}
+    {#await import('./Viewer.svelte')}<ContentSkeleton />{:then module}<module.default id={decodeURIComponent(parts[2])} list={new SvelteURLSearchParams(search).get('daftar') ?? ''} grid={new SvelteURLSearchParams(search).get('semua') === '1'} />{/await}
   {:else if parts[0] === 'wiki' && parts[1] === 'data' && !parts[3]}
     {#if parts[2]}{#await import('./DatasetPage.svelte')}<ContentSkeleton />{:then module}<module.default id={parts[2]} />{/await}
     {:else}{#await import('./DatasetCatalogue.svelte')}<ContentSkeleton />{:then module}<module.default />{/await}{/if}
@@ -1239,6 +1234,23 @@
         if (auth.actor) communityPlace = place
       }}
     />
+  {:else if parts[0] === 'wiki' && parts[1] === 'jenis'}
+    {#await import('./KindPage.svelte')}<ContentSkeleton />{:then module}<module.default kind={parts[2] ?? 'semua'} {search} />{/await}
+  {:else if parts[0] === 'wiki' && isEntrySegment(parts[1]) && !parts[2] && !(isPageId(parts[1]) && search.includes('view=riwayat'))}
+    <EntryPage
+      slug={decodeURIComponent(parts[1])}
+      initialTab={entryTab(search)}
+      {auth}
+      {communities}
+      canVote={isMember}
+      onError={fail}
+      onCompose={(place) => {
+        open('compose')
+        composePlace = place ?? null
+      }}
+    />
+  {:else if parts[0] === 'wiki' && !parts[1]}
+    {#await import('./EnsiklopediaFront.svelte')}<ContentSkeleton />{:then module}<module.default {auth} {memberships} {communities} />{/await}
   {:else if parts[0] === 'wiki'}
     {#if loading}<ContentSkeleton
       />{:else}{#await import('./WikiExperience.svelte')}<ContentSkeleton/>{:then module}<module.default
@@ -1743,7 +1755,8 @@
       <Button href="/" class="cx-button" variant="outline">Beranda</Button>
     </div>{/if}
   {#snippet rail()}
-    {#if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
+    {#if parts[0] === 'wiki' && isEntrySegment(parts[1]) && entryRail.entry}<EntryRail entry={entryRail.entry} />
+    {:else if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
     {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts', 'gabung', 'jadwal'].includes(parts[0])}<NewsSection
         compact
       />
@@ -1763,7 +1776,7 @@
         <h2>Tentang {community.title}</h2>
         <p class="cx-hint">{community.description}</p>
       </div>{/if}
-    <div class="cx-context-block">
+    {#if !(parts[0] === 'wiki' && isEntrySegment(parts[1]) && entryRail.entry)}<div class="cx-context-block">
       <div class="cx-section-head">
         <h2>Komunitas</h2>
         <a href="/communities" aria-label="Semua komunitas">
@@ -1786,10 +1799,10 @@
         </a>{/each}{#if !communities.length}<p class="cx-hint">
           Ruang komunitas akan muncul di sini.
         </p>{/if}
-    </div>
+    </div>{/if}
     <a href="/wiki" class="rail-knowledge-link">
       <BookOpen size={18} />
-      <span>Wiki bersama</span>
+      <span>{OBSERVATORY_NAME}</span>
       <ArrowUpRight size={14} />
     </a>
     <div class="cx-rail-footer">

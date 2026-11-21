@@ -59,3 +59,43 @@
   .vw-stage { height: min(62dvh, 560px); }
   .vw-info { overflow: visible; border-left: 0; border-top: 1px solid var(--border); }
 }
+
+/* The catalogue strip: one line of the list the reader came from, with a counter and steps. Pulled up, it opens a
+   grid with kind filters above itself; the body behind stays mounted. */
+.vw-strip { position: relative; z-index: 3; flex: none; border-top: 1px solid var(--border); background: var(--background); }
+.vw-strip-bar { display: flex; align-items: center; gap: 6px; min-height: 64px; padding: 8px var(--gutter) max(8px, env(safe-area-inset-bottom)); touch-action: pan-y; user-select: none; }
+.vw-grab { display: none; }
+.vw-step { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); cursor: pointer; }
+.vw-step:hover, .vw-expand:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+.vw-count { flex: none; min-width: 52px; text-align: center; font-size: 13.5px; font-weight: 650; font-variant-numeric: tabular-nums; color: var(--muted-foreground); }
+.vw-thumbs { flex: 1; min-width: 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px; scroll-snap-type: x proximity; }
+.vw-thumbs::-webkit-scrollbar { display: none; }
+.vw-thumb { flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--secondary); color: var(--muted-foreground); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; scroll-snap-align: center; opacity: 0.72; }
+.vw-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.vw-thumb:hover { opacity: 1; }
+.vw-thumb[aria-current='true'] { opacity: 1; outline: 2px solid var(--foreground); outline-offset: 1px; }
+.vw-expand { display: inline-flex; align-items: center; gap: 6px; flex: none; min-height: 40px; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.vw-grid { position: absolute; left: 0; right: 0; bottom: 100%; height: min(72dvh, 680px); overflow-y: auto; overscroll-behavior: contain; padding: 16px var(--gutter) 20px; border-top: 1px solid var(--border); background: var(--background); box-shadow: 0 -12px 32px -24px color-mix(in oklab, var(--foreground) 40%, transparent); }
+.vw-grid .vw-filter { position: sticky; top: 0; margin-bottom: 14px; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.vw-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.vw-card { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 72px; padding: 8px; border: 1px solid var(--border); border-radius: 14px; background: transparent; color: var(--foreground); font: inherit; text-align: left; cursor: pointer; }
+.vw-card:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+.vw-card[aria-current='true'] { border-color: var(--foreground); }
+.vw-card img, .vw-card-blank { flex: none; width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: var(--secondary); }
+.vw-card-blank { display: grid; place-items: center; font-size: 11.5px; font-weight: 600; color: var(--muted-foreground); text-align: center; }
+.vw-card > span:last-child { display: grid; gap: 2px; min-width: 0; }
+.vw-card strong { font-size: 14.5px; font-weight: 650; line-height: 1.3; overflow-wrap: anywhere; }
+.vw-card small { font-size: 13px; color: var(--muted-foreground); }
+@media (prefers-reduced-motion: no-preference) { .vw-grid { animation: vw-rise 0.24s cubic-bezier(0.16, 1, 0.3, 1); } }
+@keyframes vw-rise { from { transform: translateY(16px); opacity: 0; } }
+@media (max-width: 640px) {
+  .vw-strip-bar { flex-wrap: wrap; row-gap: 4px; padding-top: 14px; }
+  .vw-grab { display: block; position: absolute; top: 5px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 4px; background: var(--border); }
+  .vw-thumbs { order: 5; flex-basis: 100%; }
+  .vw-count { margin-right: auto; text-align: left; }
+  .vw-step { order: -1; }
+  .vw-count { order: 0; }
+  .vw-cards { grid-template-columns: 1fr; }
+  .vw-expand span { display: none; }
+  .vw-expand { width: 40px; padding: 0; justify-content: center; }
+}

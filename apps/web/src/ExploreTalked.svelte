@@ -48,7 +48,7 @@
         key: 'c' + t.context.id,
         title: t.lead?.title || t.context.title,
         meta: [(kindName[t.context.kind] ?? 'Topik') + ' ' + t.context.title, t.threads + ' percakapan', t.posts + ' posting', t.people ? t.people + ' orang' : ''].filter(Boolean).join(' · '),
-        href: t.lead ? '/square/' + t.lead.id : '/contexts/' + t.context.slug,
+        href: t.lead ? '/square/' + t.lead.id : '/wiki/' + t.context.slug,
         image: t.lead?.image ?? null,
       })),
   )
@@ -58,7 +58,7 @@
     const rows: Row[] = recorded
       .filter((c) => c.indexed > 0 && !used.has(c.id) && (!within || within.has(c.id)))
       .sort((a, b) => b.indexed - a.indexed)
-      .map((c) => ({ key: 'x' + c.id, title: c.title, meta: (kindName[c.kind] ?? 'Topik') + ' · ' + c.indexed + ' catatan', href: '/contexts/' + c.slug }))
+      .map((c) => ({ key: 'x' + c.id, title: c.title, meta: (kindName[c.kind] ?? 'Topik') + ' · ' + c.indexed + ' catatan', href: '/wiki/' + c.slug }))
     const rooms: Row[] = communities.map((c) => ({ key: 'k' + c.id, title: c.title, text: c.description, meta: 'Komunitas · ' + (admission[c.admission] ?? ''), href: '/communities/' + c.id }))
     // Alternate, so one kind does not take the whole list.
     const mixed: Row[] = []

@@ -29,7 +29,7 @@
     <!-- Four empty bands say nothing a single line cannot. -->
     <p class="tl-state">
       Belum ada halaman yang diberi masa. Peninjau komunitas menetapkan masa di bagian bawah setiap halaman wiki.
-      <a href="/wiki">Buka Wiki</a>
+      <a href="/wiki">Buka Ensiklopedia</a>
     </p>
   {:else}
     {#each grouped as band (band.id)}
@@ -53,7 +53,7 @@
     {/each}
     <p class="tl-foot">
       Masa sebuah halaman ditetapkan oleh peninjau komunitasnya. Halaman tanpa masa tidak tampil di sini.
-      <a href="/wiki">Buka Wiki</a>
+      <a href="/wiki">Buka Ensiklopedia</a>
     </p>
   {/if}
 </article>

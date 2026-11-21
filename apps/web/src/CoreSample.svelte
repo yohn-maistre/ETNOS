@@ -76,7 +76,7 @@
     <h1 id={'core-title-' + uid}><span class="sr-only">Ringkasan tempat </span>{context.title}</h1>
   </header>
   <nav class="core-back" aria-label="Navigasi ringkasan">
-    <a href={'/contexts/' + encodeURIComponent(context.slug)}><ArrowLeft size={16} />Kembali ke {context.title}</a>
+    <a href={'/wiki/' + encodeURIComponent(context.slug)}><ArrowLeft size={16} />Kembali ke {context.title}</a>
     <span>Ringkasan tempat</span>
   </nav>{/if}
 
@@ -135,7 +135,7 @@
           <small>Halaman{meta?.reviewer ? ' · ditinjau ' + meta.reviewer.name + ', ' + relativeDate(meta.updated) : ''}</small>
         </a>
       {:else}
-        <p class="core-note">Belum ada halaman{embedded ? ' lain' : ''} yang ditinjau untuk {context.title}. <a href="/wiki">Buka Wiki</a></p>
+        <p class="core-note">Belum ada halaman{embedded ? ' lain' : ''} yang ditinjau untuk {context.title}. <a href="/wiki">Buka Ensiklopedia</a></p>
       {/each}
       {#if embedded && context.pages.length > FIRST && !more.pages}<button type="button" class="core-more" onclick={() => (more.pages = true)}>{context.pages.length - FIRST} halaman lagi</button>{/if}
     </div>

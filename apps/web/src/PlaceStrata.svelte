@@ -36,7 +36,7 @@
             {s.places.length} kabupaten dan kota · {s.languages} bahasa{#if s.pages} · {s.pages} halaman wiki{/if}
           </p>
           {#if s.places.length}<ul class="stratum-places" aria-label={'Kabupaten dan kota di ' + s.title}>
-              {#each s.places as p (p.slug)}<li><a href={'/contexts/' + p.slug} class:here={current.includes(p.slug)} aria-current={current.length === 1 && current[0] === p.slug ? 'page' : undefined}>{p.title}</a></li>{/each}
+              {#each s.places as p (p.slug)}<li><a href={'/wiki/' + p.slug} class:here={current.includes(p.slug)} aria-current={current.length === 1 && current[0] === p.slug ? 'page' : undefined}>{p.title}</a></li>{/each}
             </ul>{/if}{/if}
       </div>
     </li>{/each}

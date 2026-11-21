@@ -77,3 +77,28 @@ export function sizeLabel(bytes: number): string {
   if (bytes >= 1e6) return (bytes / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' MB'
   return Math.max(1, Math.round(bytes / 1e3)).toLocaleString('id-ID') + ' kB'
 }
+
+/** The order records are shown in when no list is given: objects first, then species, landforms and the rest. */
+export const SHOWCASE: Kind[] = ['model', 'species', 'landform', 'images', 'audio', 'dataset']
+/** Record kinds for each kind of entry, for lists that come from a kind page. */
+export const ENTRY_KIND_RECORDS: Record<string, Kind[]> = { makhluk: ['species', 'audio'], 'bentang-alam': ['landform'], benda: ['model', 'images'], data: ['dataset'] }
+
+/**
+ * The records of a list the viewer was opened from (`?daftar=`): `semua` (or none) for every record, `jenis-<kind>` for
+ * a kind page, `cari-<words>` for a search, `pilih-<id>.<id>` for a chosen set such as a map selection. An entry's own
+ * list (`entri-<slug>`) needs the entry's media ids, which the caller passes as `ids`.
+ */
+export function viewerList(key: string, all: ViewerObject[], ids: string[] = []): ViewerObject[] {
+  const ordered = [...all].sort((a, b) => SHOWCASE.indexOf(a.kind) - SHOWCASE.indexOf(b.kind))
+  const [head, ...rest] = key.split('-'), arg = rest.join('-')
+  if (head === 'jenis' && ENTRY_KIND_RECORDS[arg]) return ordered.filter((o) => ENTRY_KIND_RECORDS[arg].includes(o.kind))
+  if (head === 'cari' && arg.trim()) {
+    const q = arg.toLowerCase()
+    return ordered.filter((o) => [o.title, o.subtitle ?? '', o.summary].some((t) => t.toLowerCase().includes(q)))
+  }
+  if (head === 'pilih') return arg.split('.').map((id) => all.find((o) => o.id === id)).filter((o): o is ViewerObject => !!o)
+  if (head === 'entri') return ids.map((id) => all.find((o) => o.id === id)).filter((o): o is ViewerObject => !!o)
+  return ordered
+}
+/** The viewer address of a record inside a list, so Back and sharing keep the list. */
+export const viewerListHref = (id: string, list: string) => viewerHref(id) + (list && list !== 'semua' ? '?daftar=' + encodeURIComponent(list) : '')

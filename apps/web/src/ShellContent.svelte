@@ -26,6 +26,7 @@
     RefreshCw,
   } from '@lucide/svelte'
   import { appearance } from './appearance.svelte'
+  import { OBSERVATORY_NAME } from './observatory-name.ts'
   import { initials, type Auth } from './api'
   let {
     children,
@@ -62,7 +63,7 @@
     { href: '/', label: 'Beranda', icon: Home },
     { href: '/explore', label: 'Jelajah', icon: Compass },
     { href: '/communities', label: 'Komunitas', icon: Users },
-    { href: '/wiki', label: 'Wiki', icon: BookOpen },
+    { href: '/wiki', label: OBSERVATORY_NAME, icon: BookOpen },
     { href: '/jadwal', label: 'Jadwal Aksara', icon: CalendarClock },
     { href: '/messages', label: 'Pesan', icon: MessagesSquare },
     { href: '/notifications', label: 'Aktivitas', icon: Bell },

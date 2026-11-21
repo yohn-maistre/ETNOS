@@ -204,8 +204,18 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 ### Entry panel (`EntityPanel.svelte`)
 - **Character:** a shadcn Sheet, right side on desktop (up to 460px), bottom on phones (up to 86% of the screen, 18px top radius). Sections divided by hairlines with 13px muted headings.
 
-### Observatory front (`Observatorium.svelte`, `styles/observatorium.css`)
-- **Character:** the wiki front rebuilt on the Jelajah rhythm: one gutter for every block (24px, 16px on phones), 28px above and 24px below each section, heavy section titles, rows that run to the card edges. The knowledge map comes first, then the records that open full screen (*Benda, spesies dan bentang alam*), wiki pages, the data catalogue, what is unknown and the large groups.
+### Ensiklopedia front (`EnsiklopediaFront.svelte`, `styles/observatorium.css`, `/wiki`)
+- **Character:** the information hierarchy of a superapp on the Jelajah rhythm (one gutter, 24px and 16px on phones; heavy section titles; rows that run to the card edges). Top to bottom: title and search; a state card (a 2.5% tinted panel with 18px radius) holding up to three large numbers and either three round quick actions (*Jawab*, *Tambah*, *Riwayat*) or the *Masuk untuk membantu* pill; the kind grid; the map card; rows with *Lihat semua*.
+- **Kind tiles:** a lucide icon on a 56px square with 16px radius (50px and 14px in the single row from 600px), tinted 13% with the level band colour that the kind's entries carry on the knowledge map, so the colour means the same thing in both places. *Lainnya* stays neutral and opens a list of pills under the grid. The badge is a small dark pill on the corner with a real count, and it is left out when there is no number. Three rows of three on phones, one row of nine from 600px.
+- **Map card:** every point of the public graph in its default layout on a 3% ground, at a fixed 10 by 3 aspect, with the title, a count line and the lens pills that open `/wiki/peta?lens=`.
+- **Card row:** 148px square images with 16px radius that scroll sideways, title and kind under each.
+
+### Kind page (`KindPage.svelte`, `/wiki/jenis/:kind`)
+- **Character:** a crumb, heavy title and count, then sub-kind circles (60px, 6% tint, the count inside, the label under, the current one filled in the foreground colour) that scroll sideways, a row of viewer thumbnails for kinds with records, status pills and a place pill, then rows. Filters are links, so the address carries them.
+
+### Entry page (`EntryPage.svelte`, `EntryRail.svelte`, `/wiki/:slug`)
+- **Character:** crumb chain, heavy title, a muted kind line, then the picture (a photo that opens the viewer, or the landscape print for places). Four tabs at most in the sticky section tab bar; kind modules sit inside *Tentang* after the article and the fact list, and *Dasar label* is a small block at the foot.
+- **Letak rail:** in the shell's side rail from 1200px (220px wide between 1200 and 1359px, sticky): an indented tree of the chain with hairline elbows and the current entry in bold with its children, the wilayah adat as an overlay line, then *Komunitas di sini* (avatar rows), *Lembaga terkait* and *Terkait* (hairline rows with the sub-kind on the right). Below 1200px it is a row of chips under the picture, and the *Letak* chip opens the same rail inline.
 
 ### Knowledge map (`KnowledgeExplorer.svelte`, `MapStage.svelte`, `stage-layouts.ts`)
 - **Character:** one canvas on a 3% tinted ground with one set of points; the lens pill group (*Ukuran dan waktu*, *Tingkat*, *Bidang ilmu*, *Kebutuhan*, *Hubungan*, *Peta*) only changes where the points go, and they move there in 650ms with an ease-in-out curve (a cut with reduced motion). Level is the colour in every lens. Groups are dashed rings with a label above and a count below; an empty group stays visible as a ring marked *belum ada*. Labels carry a surface-coloured halo and hide while points move. Round 36px controls top right (44px on touch screens).
@@ -214,6 +224,7 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 
 ### Viewer (`Viewer.svelte`, `viewer/*`, `styles/viewer.css`, `/wiki/lihat/:id`)
 - **Character:** a full-screen shell with a 60px bar (*Tutup* and the path), the body on the left and a 400px reading panel on the right; on phones the body takes the top 62% and the panel follows. The body is chosen by kind and loaded only when opened: 3D object (WebGL, orbit, two light positions), species (photos, occurrence map, sound), landform (MapLibre relief), images (zoom and pan), sound (waveform and transcript), dataset (table preview).
+- **Catalogue strip:** a 64px bar under the body with round step buttons, a tabular counter (*3 / 14*), 44px thumbnails with 10px radius (the current one outlined in the foreground colour, a kind icon when there is no image) and a *Semua* pill. Pulled up, or with *Semua*, it opens a grid of cards above itself (up to 72% of the screen, kind filter pills at the top) that rises in 240ms, or appears at once with reduced motion. On phones the bar gets a grab handle and the thumbnails take their own line.
 - **Controls over a body:** round 36px buttons on a translucent surface (44px on touch screens) top right, pill groups for views. Every image shows its maker, licence and source under it; the panel ends with every source and licence of the record.
 
 ## Do's and Don'ts

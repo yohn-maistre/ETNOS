@@ -1,18 +1,18 @@
 <script lang="ts">
-  // The Data tab of a thing page: public datasets about this place, language or topic, grouped by kind
+  // Datasets under Riset dan data on an entry page: public datasets about this place, language, topic or thing, grouped by kind
   // (docs/observatory/data-observatory-2026-11-20.md §5.2 and §11). The list is read live, so a record that is
   // withdrawn, or that no longer points to a public thing, drops out at once.
   import DatasetRow from './DatasetRow.svelte'
   import { KIND, listDatasets, type Dataset } from './datasets.ts'
 
-  let { slug, title }: { slug: string; title: string } = $props()
+  let { slug, title, thing = '' }: { slug: string; title: string; thing?: string } = $props()
   let rows = $state<Dataset[] | null>(null),
     failed = $state(false)
   $effect(() => {
     const abort = new AbortController()
     rows = null
     failed = false
-    listDatasets({ context: slug }, abort.signal)
+    listDatasets(thing ? { thing } : { context: slug }, abort.signal)
       .then((r) => { if (!abort.signal.aborted) rows = r })
       .catch(() => { if (!abort.signal.aborted) failed = true })
     return () => abort.abort()

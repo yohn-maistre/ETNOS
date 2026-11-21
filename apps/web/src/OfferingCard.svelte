@@ -13,7 +13,7 @@
 {#if o}<aside class="offering-card" aria-label={o.kind==='offer'?'Penawaran':'Kebutuhan'}>
  <div class="offering-caption"><span><ShoppingBag size={14}/>{o.kind==='offer'?'Menawarkan':'Mencari'}</span><span class:offering-closed={o.status!=='open'}>{labels[o.status]}</span></div>
  <div class="offering-terms"><strong>{o.price===null?(o.kind==='request'?'Anggaran terbuka':'Harga dibicarakan'):o.price===0?'Gratis':new Intl.NumberFormat('id-ID',{style:'currency',currency:o.currency,maximumFractionDigits:0}).format(o.price)}</strong>{#if o.unit}<span>· {o.unit}</span>{/if}</div>
- {#if o.place}<a class="offering-place" href={'/contexts/'+o.place.id}><MapPin size={13}/>{o.place.title}</a>{/if}
+ {#if o.place}<a class="offering-place" href={'/wiki/'+o.place.id}><MapPin size={13}/>{o.place.title}</a>{/if}
  {#if o.expiresAt}<small>Berlaku hingga {new Date(o.expiresAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})}</small>{/if}
  <div class="offering-actions">{#if o.canContact}<Button variant="outline" href={community?.visibility==='public'?'/messages?to='+post.author_id:'/square/'+post.id+'#reply'}><MessageCircle size={15}/>{community?.visibility==='public'?'Hubungi':'Diskusikan'}</Button>{:else if !loggedIn&&o.status==='open'}<Button variant="outline" href={'/login?returnTo='+encodeURIComponent(community?.visibility==='public'?'/messages?to='+post.author_id:'/square/'+post.id)}>Masuk untuk menghubungi</Button>{/if}{#if o.canManage}<Button variant="ghost" onclick={open}><Settings2 size={15}/>Kelola penawaran</Button>{/if}</div>
  {#if editing}<form class="offering-editor" onsubmit={e=>{e.preventDefault();void save()}}>

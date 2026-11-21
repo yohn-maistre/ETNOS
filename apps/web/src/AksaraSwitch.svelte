@@ -138,7 +138,7 @@
       </ul>{:else}<p class="as-note">Belum ada komunitas publik yang kamu kelola.</p>{/if}
     {#if skipped.length}<p class="as-note">Komunitas yang dilewati adalah {skipped.map((s) => s.title + (s.reason ? ' (' + s.reason + ')' : '')).join(', ')}.</p>{/if}
     {#if error}<p class="commons-alert" role="status">{error}</p>{/if}
-    <p class="as-note">Semua yang ditulis Aksara diberi label AI dan sumber, dan dapat dihapus atau dikoreksi. Usulan Wiki tetap ditinjau manusia.</p>
+    <p class="as-note">Semua yang ditulis Aksara diberi label AI dan sumber, dan dapat dihapus atau dikoreksi. Usulan untuk Ensiklopedia tetap ditinjau manusia.</p>
   </section>
 {/if}
 

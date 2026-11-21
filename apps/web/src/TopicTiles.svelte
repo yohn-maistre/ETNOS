@@ -11,9 +11,9 @@
 
 <ul class="topic-tiles" class:dense>
   {#each tiles as t (t.slug)}<li class="topic-tile">
-      <a class="topic-name" href={'/contexts/' + t.slug} aria-current={t.slug === current ? 'page' : undefined}>{t.title}</a>
+      <a class="topic-name" href={'/wiki/' + t.slug} aria-current={t.slug === current ? 'page' : undefined}>{t.title}</a>
       {#if t.children.length}<ul class="topic-branches" aria-label={'Bagian dari ' + t.title}>
-          {#each t.children.slice(0, limit) as c (c.slug)}<li><a href={'/contexts/' + c.slug} class:here={c.slug === current} aria-current={c.slug === current ? 'page' : undefined}>{c.title}</a></li>{/each}
+          {#each t.children.slice(0, limit) as c (c.slug)}<li><a href={'/wiki/' + c.slug} class:here={c.slug === current} aria-current={c.slug === current ? 'page' : undefined}>{c.title}</a></li>{/each}
           {#if t.children.length > limit}<li class="topic-rest">dan {t.children.length - limit} lagi</li>{/if}
         </ul>{/if}
     </li>{/each}

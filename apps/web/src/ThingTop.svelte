@@ -77,7 +77,7 @@
     {:else if thing.kind === 'language'}
       <dl class="lang-facts">
         {#if family}<div><dt>Rumpun</dt><dd>{family}</dd></div>{/if}
-        {#if region}<div><dt>Titik acuan</dt><dd><a href={'/contexts/' + region.slug}>{regionTitle(region)}</a></dd></div>{/if}
+        {#if region}<div><dt>Titik acuan</dt><dd><a href={'/wiki/' + region.slug}>{regionTitle(region)}</a></dd></div>{/if}
         {#if glottocode}<div><dt>Glottolog</dt><dd><a href={'https://glottolog.org/resource/languoid/id/' + glottocode} target="_blank" rel="noreferrer">{glottocode} <ArrowUpRight size={13} /></a></dd></div>{/if}
       </dl>
       {#if group && group.languages.length > 1}

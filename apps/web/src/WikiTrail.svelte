@@ -94,7 +94,7 @@
               <strong class="trail-title">{step.label}</strong>
               <p>Ditinjau {who(step.actor)}.</p>
               {#if step.contexts?.length}
-                <p class="trail-contexts">{#each step.contexts as c, j}{j ? ', ' : ''}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}</p>
+                <p class="trail-contexts">{#each step.contexts as c, j}{j ? ', ' : ''}<a href={'/wiki/' + c.slug}>{c.title}</a>{/each}</p>
               {/if}
             {:else if step.kind === 'work'}
               <a href={step.href}>{step.label}</a>

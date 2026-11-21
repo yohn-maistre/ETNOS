@@ -10,7 +10,7 @@
   type Queue = { quorum: number; waiting: number; claims: Claim[] }
   let { communityId, onChanged }: { communityId: string; onChanged?: () => void } = $props()
 
-  const KIND: Record<string, string> = { word: 'Kata', sense: 'Arti kata', grammar: 'Tata bahasa', name: 'Nama', place: 'Tempat', date: 'Tanggal', wiki: 'Wiki', other: 'Lainnya' }
+  const KIND: Record<string, string> = { word: 'Kata', sense: 'Arti kata', grammar: 'Tata bahasa', name: 'Nama', place: 'Tempat', date: 'Tanggal', wiki: 'Ensiklopedia', other: 'Lainnya' }
   const MEANING: Record<string, string> = {
     word: 'Pilih Benar jika kata ini memang dipakai di komunitas kamu.',
     sense: 'Pilih Benar jika arti ini sesuai dengan cara kata itu dipakai.',

@@ -22,7 +22,7 @@ export const categories = [
   ['topics', 'Topik'],
   ['contexts', 'Tempat & bahasa'],
   ['groups', 'Organisasi'],
-  ['wiki', 'Wiki'],
+  ['wiki', 'Ensiklopedia'],
 ] as const
 export type SearchCategory = (typeof categories)[number][0]
 export function resultGroups(
@@ -81,7 +81,7 @@ export function resultGroups(
                       id: c.id,
                       title: c.title,
                       detail: compact(c.description),
-                      href: '/contexts/' + c.slug,
+                      href: '/wiki/' + c.slug,
                     }))
                 : key === 'groups'
                   ? data.groups.map((g) => ({
@@ -93,7 +93,7 @@ export function resultGroups(
                   : data.wiki.map((w) => ({
                       id: w.id,
                       title: w.title,
-                      detail: 'Wiki bersama',
+                      detail: 'Ensiklopedia',
                       href: '/wiki/' + w.id,
                     })),
     }))

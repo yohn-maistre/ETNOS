@@ -47,6 +47,18 @@ What this settles:
 
 ## 3. One entry page
 
+**Built 21 November 2026 (P1)**, as an adapter over today's tables with no storage change: `GET /v1/entri/:slug` and `GET /v1/entri` (`src/entri.ts`, `src/entri-store.ts`), the page (`apps/web/src/EntryPage.svelte`), the Letak rail (`EntryRail.svelte`) and the client redirects (`entry-routes.ts`). The Kios block of the rail waits for P3.
+
+**Which address wins (built).** The rule lives at the top of `src/entri.ts` and is tested in `test/entri.test.ts`:
+
+1. `notes`, `data`, `peta`, `lihat` and `jenis` are routes, never entries.
+2. A wiki page id opens the entry whose article that page is, or the page on its own when it describes nothing else yet. The id stays an alias.
+3. A context (place, region, language, topic) owns its slug.
+4. A thing of the knowledge model that names a context is that context's entry, and its own slug becomes an alias. One whose slug a different context already holds gets `<slug>--<class>` (Puncak Jaya the mountain is `puncak-jaya--tempat`, beside the regency `puncak-jaya`).
+5. A viewer record that is about no thing of the model is an entry of its own, with the same rule. Its id is an alias.
+
+An entry's article is the labelled page with exactly its name (or its kind word in front, such as *Kabupaten Paniai*), else the only labelled page that starts with that kind word; for a thing or a record, a public page with exactly its title. Contexts choose first, so one page has one entry. Today `km_entities` is empty on etnos.space, so the adapter reads the public seed (`src/catalogues/tanah-papua-knowledge-seed.json`, the file behind `graph.json`) until rows are imported; stored rows then win.
+
 One template for every kind. The URL stays under `/wiki/<slug>`, because Indonesians already read `/wiki/` as an encyclopedia address (id.wikipedia.org/wiki/…). `/contexts/<slug>` redirects there. The label on the page can say *Ensiklopedia* while the URL says wiki. The owner leans towards Ensiklopedia; the URL works for either name.
 
 ```
@@ -70,6 +82,8 @@ One template for every kind. The URL stays under `/wiki/<slug>`, because Indones
 - **The Ensiklopedia front is a superapp grid,** and the Penampil gets its catalogue inside. Both are in section 3a.
 
 ### 3a. The Ensiklopedia front, shaped like a superapp
+
+**Built 21 November 2026 (P1):** the front (`apps/web/src/EnsiklopediaFront.svelte`), kind pages with sub-kind circles (`KindPage.svelte`, `/wiki/jenis/<kind>`) and the Penampil strip (`Viewer.svelte`, `?daftar=`, `?semua=1`). The persistent bar for an unfinished task is not built. *Peristiwa* sits under *Lainnya* only once an entry of that kind exists, and *Kata minggu ini* shows only when a public Kamus has words checked in the last seven days (none today).
 
 The owner shared three Gojek screens on 21 Nov. They are not a visual reference. They show an information hierarchy:
 
@@ -277,7 +291,7 @@ One Opus worker at a time, each on a coherent set (owner, 21 Nov). The lead sess
 
 | # | Package | Contents | Depends on |
 | --- | --- | --- | --- |
-| P1 | **Halaman dan Ensiklopedia** | One entry page for every kind at `/wiki/<slug>` with `/contexts/<slug>` redirecting; four tabs (Tentang, Percakapan, Riset dan data, Riwayat); the Letak rail, generalised from PlaceStrata; kind modules inside Tentang; the Ensiklopedia front in the superapp shape (3a); the Penampil catalogue strip; the name moves to Ensiklopedia in `observatory-name.ts`. One API shape (`/v1/entri/:slug`) that reads today's tables through an adapter. **No destructive storage migration before the showcase.** | none |
+| P1 | **Halaman dan Ensiklopedia** (**built** 21 Nov, see §3 and §3a) | One entry page for every kind at `/wiki/<slug>` with `/contexts/<slug>` redirecting; four tabs (Tentang, Percakapan, Riset dan data, Riwayat); the Letak rail, generalised from PlaceStrata; kind modules inside Tentang; the Ensiklopedia front in the superapp shape (3a); the Penampil catalogue strip; the name moves to Ensiklopedia in `observatory-name.ts`. One API shape (`/v1/entri/:slug`) that reads today's tables through an adapter. **No destructive storage migration before the showcase.** | none |
 | P2 | **Kamus in posts** | The tokenizer and matcher (proper names skipped, suffix rules per language); question underlines; tap any word for the card; *Artinya* on posts; the notice card and the deck with correction, word class and Ucapkan; *Mode belajar*; questions from word frequency; *Kata hari ini* from a concept list; picture questions from Penampil species. Shaped by `docs/research/language-from-nothing-2026-11-21.md`. | P1 for species links (soft) |
 | P3 | **Lembaga, komunitas dan Kios** | Lembaga as the one word; jenis lembaga sections on the Komunitas page; the lembaga page (two voices if the owner agrees) with claiming an entry; community creation with *Tentang apa / di mana*, *Bahasa yang dipakai* (switches the Kamus on) and *Dikelola oleh*; Kios as a view of `offerings` with a toggle, place listing and house rules | P1 |
 | P4 | **Percakapan** | Entry tagging in the composer; inherited tags; "Tandai …?" suggestions by name match on public posts; the Percakapan tab on entries | P1 |

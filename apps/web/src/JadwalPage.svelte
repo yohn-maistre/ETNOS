@@ -12,7 +12,7 @@
   const does: Record<string, string> = {
     'source-digest': 'Aksara merangkum kabar terbaru dari sumber yang sudah dipantau dan menautkan setiap sumbernya.',
     'research-question': 'Aksara mengajukan satu pertanyaan yang bisa dijawab dengan sumber, lalu mengundang warga menjawabnya.',
-    'knowledge-draft': 'Aksara menulis draf Wiki dari sumber yang baru masuk, dan draf itu menunggu tinjauan orang.',
+    'knowledge-draft': 'Aksara menulis draf Ensiklopedia dari sumber yang baru masuk, dan draf itu menunggu tinjauan orang.',
   }
   const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
   const when = (p: Program) => (p.days ? p.days.map((d) => dayNames[d - 1]).join(', ') : 'Setiap hari')

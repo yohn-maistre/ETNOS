@@ -1,0 +1,464 @@
+{
+ "version": 1,
+ "about": "Built by scripts/observatory/build-viewer-index.mjs from the viewer records. Which entry each record of the Penampil belongs to.",
+ "records": [
+  {
+   "id": "spesimen-nokdiak-tubingen",
+   "kind": "model",
+   "title": "Spesimen nokdiak naroten di Tübingen",
+   "subtitle": "Koleksi Zoologi Universitas Tübingen",
+   "summary": "Model 3D dari spesimen awetan nokdiak naroten (dulu disebut Proechidna bruijnii) di Koleksi Zoologi Universitas Tübingen, Jerman. Menurut keterangan koleksi, satwa ini hanya hidup di Pulau Papua, terutama di hutan, dan bisa ditemukan sampai ketinggian 4.000 meter. Ia aktif pada senja dan malam hari dan memakan cacing tanah dengan lidahnya yang panjang dan lengket.",
+   "thumb": "/observatory/viewer/nokdiak-tubingen-thumb.jpg",
+   "entry": {
+    "slug": "nokdiak-naroten"
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Model",
+     "value": "232.577 segitiga, dengan warna dari foto spesimen"
+    },
+    {
+     "label": "Ukuran sebenarnya",
+     "value": "Belum tercatat dalam sumber"
+    }
+   ]
+  },
+  {
+   "id": "kapak-batu-manchester",
+   "kind": "model",
+   "title": "Kapak batu yang diasah",
+   "subtitle": "Koleksi ajar Arkeologi, Universitas Manchester",
+   "summary": "Model 3D kapak batu dari dolerit atau basal di koleksi ajar Jurusan Arkeologi Universitas Manchester. Kapak ini diserahkan oleh British Museum tanpa keterangan asal. Menurut pembuat model, bentuknya mirip kapak di museum lain yang berasal dari Nugini dan Kepulauan Admiralty, jadi asalnya dari Tanah Papua belum pasti.",
+   "thumb": "/observatory/viewer/kapak-batu-manchester-thumb.jpg",
+   "entry": {
+    "slug": "kapak-batu-manchester",
+    "class": "benda",
+    "title": "Kapak batu yang diasah"
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Asal",
+     "value": "Tidak tercatat. Mirip kapak dari Nugini dan Kepulauan Admiralty menurut pembuat model"
+    },
+    {
+     "label": "Model",
+     "value": "23.906 segitiga"
+    }
+   ]
+  },
+  {
+   "id": "cenderawasih-kuning-besar",
+   "kind": "species",
+   "title": "Cenderawasih kuning besar",
+   "subtitle": "Paradisaea apoda",
+   "summary": "Burung cenderawasih dari suku Paradisaeidae. Peta sebaran menunjukkan tempat-tempat di Tanah Papua tempat burung ini pernah dicatat menurut GBIF.",
+   "thumb": "/observatory/viewer/cenderawasih-kuning-besar-thumb.jpg",
+   "entry": {
+    "slug": "cenderawasih-kuning-besar",
+    "class": "makhluk",
+    "title": "Cenderawasih kuning besar",
+    "scientificName": "Paradisaea apoda"
+   },
+   "taxonomy": [
+    {
+     "rank": "kingdom",
+     "name": "Animalia"
+    },
+    {
+     "rank": "phylum",
+     "name": "Chordata"
+    },
+    {
+     "rank": "class",
+     "name": "Aves"
+    },
+    {
+     "rank": "order",
+     "name": "Passeriformes"
+    },
+    {
+     "rank": "family",
+     "name": "Paradisaeidae"
+    },
+    {
+     "rank": "genus",
+     "name": "Paradisaea"
+    },
+    {
+     "rank": "species",
+     "name": "Paradisaea apoda"
+    }
+   ],
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Risiko rendah (menurut Wikidata)"
+    }
+   ]
+  },
+  {
+   "id": "kanguru-pohon-nemena",
+   "kind": "species",
+   "title": "Kanguru pohon nemena",
+   "subtitle": "Dendrolagus ursinus",
+   "summary": "Kanguru pohon dari suku Macropodidae. Menurut Wikidata, satwa ini endemik di Papua.",
+   "thumb": "/observatory/viewer/kanguru-pohon-nemena-thumb.jpg",
+   "entry": {
+    "slug": "kanguru-pohon-nemena",
+    "class": "makhluk",
+    "title": "Kanguru pohon nemena",
+    "scientificName": "Dendrolagus ursinus"
+   },
+   "taxonomy": [
+    {
+     "rank": "kingdom",
+     "name": "Animalia"
+    },
+    {
+     "rank": "phylum",
+     "name": "Chordata"
+    },
+    {
+     "rank": "class",
+     "name": "Mammalia"
+    },
+    {
+     "rank": "order",
+     "name": "Diprotodontia"
+    },
+    {
+     "rank": "family",
+     "name": "Macropodidae"
+    },
+    {
+     "rank": "genus",
+     "name": "Dendrolagus"
+    },
+    {
+     "rank": "species",
+     "name": "Dendrolagus ursinus"
+    }
+   ],
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Rentan (menurut Wikidata)"
+    }
+   ]
+  },
+  {
+   "id": "kupu-kupu-sayap-burung-rothschild",
+   "kind": "species",
+   "title": "Kupu-kupu sayap burung Rothschild",
+   "subtitle": "Ornithoptera rothschildi",
+   "summary": "Kupu-kupu sayap burung dari suku Papilionidae. Spesimen di foto berasal dari Pegunungan Arfak dan Danau Anggi menurut keterangan Ulster Museum.",
+   "thumb": "/observatory/viewer/kupu-kupu-sayap-burung-rothschild-thumb.jpg",
+   "entry": {
+    "slug": "kupu-kupu-sayap-burung-rothschild",
+    "class": "makhluk",
+    "title": "Kupu-kupu sayap burung Rothschild",
+    "scientificName": "Ornithoptera rothschildi"
+   },
+   "taxonomy": [
+    {
+     "rank": "kingdom",
+     "name": "Animalia"
+    },
+    {
+     "rank": "phylum",
+     "name": "Arthropoda"
+    },
+    {
+     "rank": "class",
+     "name": "Insecta"
+    },
+    {
+     "rank": "order",
+     "name": "Lepidoptera"
+    },
+    {
+     "rank": "family",
+     "name": "Papilionidae"
+    },
+    {
+     "rank": "genus",
+     "name": "Ornithoptera"
+    },
+    {
+     "rank": "species",
+     "name": "Ornithoptera rothschildi"
+    }
+   ],
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Hampir terancam (menurut Wikidata)"
+    }
+   ]
+  },
+  {
+   "id": "nokdiak-naroten",
+   "kind": "species",
+   "title": "Nokdiak naroten",
+   "subtitle": "Zaglossus bruijni",
+   "summary": "Mamalia dari ordo Monotremata, kelompok mamalia yang bertelur. Model 3D spesimennya dari Universitas Tübingen bisa dibuka di penampil.",
+   "thumb": "/observatory/viewer/nokdiak-naroten-thumb.jpg",
+   "entry": {
+    "slug": "nokdiak-naroten",
+    "class": "makhluk",
+    "title": "Nokdiak naroten",
+    "scientificName": "Zaglossus bruijni"
+   },
+   "taxonomy": [
+    {
+     "rank": "kingdom",
+     "name": "Animalia"
+    },
+    {
+     "rank": "phylum",
+     "name": "Chordata"
+    },
+    {
+     "rank": "class",
+     "name": "Mammalia"
+    },
+    {
+     "rank": "order",
+     "name": "Monotremata"
+    },
+    {
+     "rank": "family",
+     "name": "Tachyglossidae"
+    },
+    {
+     "rank": "genus",
+     "name": "Zaglossus"
+    },
+    {
+     "rank": "species",
+     "name": "Zaglossus bruijni"
+    }
+   ],
+   "facts": [
+    {
+     "label": "Status konservasi IUCN",
+     "value": "Terancam kritis (menurut Wikidata)"
+    }
+   ]
+  },
+  {
+   "id": "bentang-puncak-jaya",
+   "kind": "landform",
+   "title": "Puncak Jaya",
+   "subtitle": "Gunung, Barisan Sudirman",
+   "summary": "Gunung tertinggi di Oseania dan puncak pulau tertinggi di dunia, menurut Wikidata. Letaknya di Barisan Sudirman, Kabupaten Mimika.",
+   "thumb": null,
+   "entry": {
+    "slug": "puncak-jaya",
+    "class": "tempat",
+    "landform": true
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "4,083° LS, 137,183° BT (Wikidata)"
+    },
+    {
+     "label": "Ketinggian",
+     "value": "4.884 meter (Wikidata, dari Wikipedia bahasa Jerman)"
+    },
+    {
+     "label": "Prominensi",
+     "value": "4.884 meter (Wikidata)"
+    },
+    {
+     "label": "Wilayah",
+     "value": "Kabupaten Mimika (Wikidata)"
+    }
+   ]
+  },
+  {
+   "id": "bentang-danau-paniai",
+   "kind": "landform",
+   "title": "Danau Paniai",
+   "subtitle": "Danau",
+   "summary": "Danau di Tanah Papua. Menurut Wikidata, permukaannya ada di ketinggian sekitar 1.750 meter dan luasnya sekitar 150 km².",
+   "thumb": null,
+   "entry": {
+    "slug": "danau-paniai",
+    "class": "tempat",
+    "landform": true
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "3,902° LS, 136,318° BT (Wikidata)"
+    },
+    {
+     "label": "Ketinggian",
+     "value": "1.752 meter (Wikidata, dari Wikipedia bahasa Italia). Nilai lain di Wikidata 1.750 dan 1.766 meter"
+    },
+    {
+     "label": "Luas",
+     "value": "150 km² (Wikidata, dari Wikipedia bahasa Prancis)"
+    },
+    {
+     "label": "Kedalaman",
+     "value": "44 meter (Wikidata, dari Wikipedia bahasa Italia)"
+    }
+   ]
+  },
+  {
+   "id": "bentang-lembah-baliem",
+   "kind": "landform",
+   "title": "Lembah Baliem",
+   "subtitle": "Lembah, Pegunungan Maoke",
+   "summary": "Lembah di Pegunungan Maoke, Provinsi Papua Pegunungan, menurut Wikidata.",
+   "thumb": null,
+   "entry": {
+    "slug": "lembah-baliem",
+    "class": "tempat",
+    "landform": true
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "4,022° LS, 138,896° BT (Wikidata)"
+    },
+    {
+     "label": "Wilayah",
+     "value": "Provinsi Papua Pegunungan (Wikidata)"
+    },
+    {
+     "label": "Pegunungan",
+     "value": "Pegunungan Maoke (Wikidata)"
+    }
+   ]
+  },
+  {
+   "id": "bentang-danau-habema",
+   "kind": "landform",
+   "title": "Danau Habema",
+   "subtitle": "Danau",
+   "summary": "Danau di Tanah Papua. Menurut Wikidata, letaknya di ketinggian 3.319 meter.",
+   "thumb": null,
+   "entry": {
+    "slug": "danau-habema",
+    "class": "tempat",
+    "landform": true
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "4,138° LS, 138,668° BT (Wikidata)"
+    },
+    {
+     "label": "Ketinggian",
+     "value": "3.319 meter (Wikidata, tanpa rujukan)"
+    }
+   ]
+  },
+  {
+   "id": "bentang-teluk-cenderawasih",
+   "kind": "landform",
+   "title": "Teluk Cenderawasih",
+   "subtitle": "Teluk",
+   "summary": "Teluk di utara Tanah Papua. Menurut Wikidata, titik terdalamnya sekitar 1.627 meter.",
+   "thumb": null,
+   "entry": {
+    "slug": "teluk-cenderawasih",
+    "class": "tempat",
+    "landform": true
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Koordinat",
+     "value": "2,5° LS, 135,333° BT (Wikidata)"
+    },
+    {
+     "label": "Kedalaman",
+     "value": "1.627 meter (Wikidata, dari Wikipedia bahasa Italia)"
+    }
+   ]
+  },
+  {
+   "id": "patung-tiang-rumah-sentani",
+   "kind": "images",
+   "title": "Patung tiang rumah dari Sentani",
+   "subtitle": "The Metropolitan Museum of Art, New York",
+   "summary": "Patung kayu yang dulu menjadi bagian tiang rumah, dibuat seniman Sentani pada abad ke-19. Menurut catatan museum, patung ini berasal dari Kabiterau dan kini ada di Michael C. Rockefeller Wing.",
+   "thumb": "/observatory/viewer/sentani-tiang-thumb.jpg",
+   "entry": {
+    "slug": "patung-tiang-rumah-sentani",
+    "class": "benda",
+    "title": "Patung tiang rumah dari Sentani"
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Bahan",
+     "value": "Kayu"
+    },
+    {
+     "label": "Ukuran",
+     "value": "Tinggi 91,8 cm, lebar 21,6 cm, tebal 21,6 cm"
+    },
+    {
+     "label": "Masa",
+     "value": "Abad ke-19"
+    },
+    {
+     "label": "Nomor koleksi",
+     "value": "1979.206.1440"
+    },
+    {
+     "label": "Asal menurut museum",
+     "value": "Kabiterau, Papua, Indonesia"
+    }
+   ]
+  },
+  {
+   "id": "suara-cikukua-tanduk",
+   "kind": "audio",
+   "title": "Suara cikukua tanduk",
+   "subtitle": "Philemon buceroides",
+   "summary": "Rekaman suara cikukua tanduk dari iNaturalist. Direkam oleh Ben Costamagna pada 21 November 2025 di Provinsi Papua Barat menurut catatan GBIF.",
+   "thumb": null,
+   "entry": {
+    "slug": "cikukua-tanduk",
+    "class": "makhluk",
+    "title": "Cikukua tanduk",
+    "scientificName": "Philemon buceroides"
+   },
+   "taxonomy": null,
+   "facts": [
+    {
+     "label": "Durasi",
+     "value": "9,1 detik"
+    },
+    {
+     "label": "Nama",
+     "value": "Cikukua tanduk menurut Wikidata Q795511 dan Catalogue of Life"
+    }
+   ]
+  },
+  {
+   "id": "data-ds-1db332c2ac9546726058",
+   "kind": "dataset",
+   "title": "Koleksi kupu-kupu Papua di Universitas Cenderawasih",
+   "subtitle": "Universitas Cenderawasih",
+   "summary": "2.082 catatan spesimen kupu-kupu dari koleksi Jurusan Biologi FMIPA Universitas Cenderawasih di Jayapura, dikumpulkan antara 1905 dan 2009. Sebagian besar catatan berasal dari Provinsi Papua dan Papua Barat.",
+   "thumb": null,
+   "entry": null,
+   "taxonomy": null,
+   "facts": []
+  }
+ ]
+}
