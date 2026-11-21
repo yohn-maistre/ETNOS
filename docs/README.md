@@ -11,7 +11,8 @@ These documents give the whole project in reading order.
 | Order | Document | What you get |
 | --- | --- | --- |
 | 1 | [what-strata-is.md](plan/what-strata-is.md) | The whole picture in plain words: a social platform organised around places and peoples, with a sourced wiki, Aksara and a community dictionary. It ends with a plain Indonesian paragraph for the proposal. |
-| 2 | [communities-spaces-2026-11-19.md](plan/communities-spaces-2026-11-19.md) | The flagship. Talk in a community becomes structured knowledge that the community owns. It also covers the site hierarchy, where private things live, AT Protocol spaces and Periksa. |
+| 2 | [one-page-system-2026-11-21.md](plan/one-page-system-2026-11-21.md) | Proposal: one entry page for every kind of thing, Lembaga with two voices, communities by topic and language, Kios, Situs at nama.etnos.space, YAML files, and a Kamus that starts from nothing. | proposal |
+| [communities-spaces-2026-11-19.md](plan/communities-spaces-2026-11-19.md) | The flagship. Talk in a community becomes structured knowledge that the community owns. It also covers the site hierarchy, where private things live, AT Protocol spaces and Periksa. |
 | 3 | [platform-2026-11-19.md](plan/platform-2026-11-19.md) | The building blocks that exist in code and those that are planned, and how peoples, languages and private spaces relate. |
 | 4 | [strata-model-2026-11-17.md](plan/strata-model-2026-11-17.md) | The layers, columns and places that organise a deployment, and how one grows from nothing. |
 | 5 | [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, the evidence and numbers, the laws, and what the BUDAYA GO! guide asks for. |
