@@ -1334,7 +1334,7 @@
               value="wiki"
             >
               Wiki
-            </Tabs.Trigger>{#if kamusStarted[community.id] || auth.steward}<Tabs.Trigger value="kamus">Kamus</Tabs.Trigger>{/if}<Tabs.Trigger value="media">
+            </Tabs.Trigger>{#if kamusStarted[community.id] || (auth.steward && community.visibility === 'hidden-private')}<Tabs.Trigger value="kamus">Kamus</Tabs.Trigger>{/if}<Tabs.Trigger value="media">
               Media
             </Tabs.Trigger><Tabs.Trigger value="voices">
               Suara
