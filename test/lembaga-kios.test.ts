@@ -10,7 +10,7 @@ import { kamusLexicon } from '../src/kamus-data.ts'
 import { Offerings } from '../src/offerings.ts'
 import { Lembaga } from '../src/lembaga.ts'
 import { Kios } from '../src/kios.ts'
-import { brokenRule, KIOS_RULES } from '../src/kios-rules.ts'
+import { activeRules, brokenRule, phrasePattern } from '../src/kios-rules.ts'
 import { migrations, migrate, schemaVersion } from '../src/schema.ts'
 import { api } from '../src/api.ts'
 
@@ -275,12 +275,19 @@ test('a lembaga Kios lists its members\' offers in its public communities', asyn
 })
 
 test('house rules: one list, a keyword check on offers and edits', () => {
-  assert.deepEqual(KIOS_RULES.map((r) => r.key), ['satwa', 'alkohol', 'tanah'])
-  assert.equal(brokenRule('Noken hias bulu Cenderawasih')?.key, 'satwa')
-  assert.equal(brokenRule('Sopi asli kampung')?.key, 'alkohol')
-  assert.equal(brokenRule('Dijual tanah 20x30 dekat jalan')?.key, 'tanah')
-  assert.equal(brokenRule('Kopi Moanemani', 'Noken anggrek', 'per ikat'), null)
-  assert.equal(brokenRule('Pinang muda, sayur gedi, ubi'), null)
+  const R = activeRules()
+  assert.deepEqual(R.map((r) => r.key), ['satwa', 'alkohol', 'tanah'])
+  assert.equal(brokenRule(R, 'Noken hias bulu Cenderawasih')?.key, 'satwa')
+  assert.equal(brokenRule(R, 'Sopi asli kampung')?.key, 'alkohol')
+  assert.equal(brokenRule(R, 'Dijual tanah 20x30 dekat jalan')?.key, 'tanah')
+  assert.equal(brokenRule(R, 'Kopi Moanemani', 'Noken anggrek', 'per ikat'), null)
+  assert.equal(brokenRule(R, 'Pinang muda, sayur gedi, ubi'), null)
+  // The phrase form keeps what the old patterns matched, on whole words only.
+  for (const t of ['Whiskey impor', 'kavpling murah', 'sewa   lahan', 'lahan siap bangun', 'ada SHM'])
+    assert.ok(brokenRule(R, t), t)
+  for (const t of ['birokrasi kampung', 'nurani', 'tanah liat untuk gerabah']) assert.equal(brokenRule(R, t), null, t)
+  assert.equal(phrasePattern('(jual'), null)
+  assert.equal(phrasePattern('a.*'), null)
   const w = world()
   try {
     const room = w.s.createCommunity(w.steward.actor.id, 'Pasar fixture', 'x', 'public', false, 'open'),

@@ -1,0 +1,66 @@
+# etnos.example.yaml, contoh pengaturan ETNOS untuk Tanah Papua.
+# Bentuknya: schemas/etnos.schema.json. Panduan: docs/operator-guide.md.
+# Berkas ini tidak pernah memuat kunci, token atau kata sandi.
+version: 1
+
+# Nama dan keterangan yang dilihat orang. Berlaku langsung dari Studio.
+name: ETNOS
+description: Ruang bersama untuk komunitas, lembaga dan pengetahuan di Tanah Papua.
+
+# Diatur saat deploy (STRATA_ORIGIN di wrangler.web.jsonc).
+origin: https://etnos.space
+
+# Butir Wikidata untuk wilayah utama. Q3845 adalah Papua bagian barat (Western New Guinea).
+rootPlace: Q3845
+
+# Bahasa antarmuka. Saat ini hanya bahasa Indonesia.
+uiLanguage: id
+
+# Kode Glottolog bahasa daerah yang ditampilkan lebih dulu. Kosong berarti semua bahasa di katalog.
+# Contoh: [ekar1243, biak1248, nucl1632, moni1261, kamo1255]
+regionLanguages: []
+
+# Diatur saat deploy (STRATA_CATALOGUE dan STRATA_ENROLLMENT_MODE).
+catalogue: tanah-papua
+enrollment: open
+
+# Diatur saat deploy (STRATA_SOURCE_ORIGINS). Hanya alamat asal sumber berita.
+news:
+  sources:
+    - https://papua.antaranews.com
+    - https://www.antaranews.com
+
+# Hanya nama penyedia dan nama model. Kuncinya ditambahkan di Studio, Agen & koneksi.
+model:
+  provider: workers-ai
+  fast: null
+  synthesis: null
+
+# Kontak pengelola. Nama, surel dan alamat web berlaku dari Studio.
+# DID pengelola diatur saat deploy (STRATA_STEWARD_DID).
+operator:
+  name: ""
+  email: ""
+  url: ""
+  did: ""
+
+# Aturan Kios. Setiap frasa berisi kata huruf kecil. (a|b) berarti salah satu.
+# Frasa hanya cocok dengan kata utuh.
+kios:
+  rules:
+    - key: satwa
+      label: Satwa yang dilindungi atau bagian tubuhnya, misalnya bulu cenderawasih, tidak boleh dijual.
+      words: [cenderawasih, cendrawasih, paradisaea, kasuari, kakatua, mambruk, kanguru pohon, kuskus, penyu, telur penyu, sisik penyu, nuri, burung hidup, opsetan, awetan]
+    - key: alkohol
+      label: Minuman beralkohol tidak boleh dijual.
+      words: [miras, minuman keras, beralkohol, alkohol, bir, sopi, saguer, (whisky|whiskey), vodka, ciu]
+    - key: tanah
+      label: Tanah dan lahan tidak boleh dijual atau disewakan di sini.
+      words:
+        - (jual|dijual|menjual|sewa|disewakan|over) (tanah|lahan|kavling|kapling)
+        - (tanah|lahan|kavling|kapling) (dijual|murah|disewakan)
+        - (tanah|lahan|kavling|kapling) siap bangun
+        - (kapling|kavpling)
+        - tanah ulayat
+        - sertifikat tanah
+        - shm

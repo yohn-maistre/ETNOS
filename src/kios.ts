@@ -11,13 +11,14 @@
 import { Fault, type EtnosCore } from './core.ts'
 import { Offerings } from './offerings.ts'
 import type { Groups } from './groups.ts'
-import { KIOS_RULES, kiosRules } from './kios-rules.ts'
+import { activeRules, kiosRules } from './kios-rules.ts'
 
 export type KiosOwner = { kind: 'actor' | 'group'; id: string }
 type Row = { owner_kind: 'actor' | 'group'; owner_id: string; open: number; whatsapp: string; rules: string; updated: number }
 const LIMIT = 12
 /** The rule set a seller agreed to; a changed list asks again. */
-export const rulesVersion = () => KIOS_RULES.map((r) => r.key).join(',')
+/** What a seller agreed to: the keys of the rules in force, so a new rule asks again. */
+export const rulesVersion = (db?: Parameters<typeof activeRules>[0]) => activeRules(db).map((r) => r.key).join(',')
 const visible = `c.visibility='public' AND p.hidden=0 AND p.deleted=0 AND o.kind='offer' AND o.status='open' AND (o.expires IS NULL OR o.expires>?) AND COALESCE(json_extract(p.content,'$.warning'),'')=''`
 
 /** A WhatsApp number as wa.me wants it: digits with the country code, from 08…, +62… or 62…. */
@@ -73,8 +74,8 @@ export class Kios {
       if (b.open !== undefined && typeof b.open !== 'boolean') throw new Fault(400, 'Boolean required')
       const open = b.open === undefined ? !!prior?.open : b.open
       const whatsapp = b.whatsapp === undefined ? prior?.whatsapp ?? '' : whatsappNumber(b.whatsapp)
-      const agreed = b.acceptRules === true ? rulesVersion() : prior?.rules ?? ''
-      if (open && agreed !== rulesVersion()) throw new Fault(409, 'Accept the Kios house rules first')
+      const agreed = b.acceptRules === true ? rulesVersion(this.s) : prior?.rules ?? ''
+      if (open && agreed !== rulesVersion(this.s)) throw new Fault(409, 'Accept the Kios house rules first')
       this.s.run(
         'INSERT INTO kios(owner_kind,owner_id,open,whatsapp,rules,updated,updated_by) VALUES(?,?,?,?,?,?,?) ON CONFLICT(owner_kind,owner_id) DO UPDATE SET open=excluded.open,whatsapp=excluded.whatsapp,rules=excluded.rules,updated=excluded.updated,updated_by=excluded.updated_by',
         o.kind, o.id, Number(open), whatsapp, agreed, this.s.clock(), actorId,
@@ -116,9 +117,9 @@ export class Kios {
       owner: { kind: o.kind, id: o.id, title: this.title(o) },
       open,
       whatsapp: open || mine ? r?.whatsapp ?? '' : '',
-      rulesAccepted: (r?.rules ?? '') === rulesVersion(),
+      rulesAccepted: (r?.rules ?? '') === rulesVersion(this.s),
       canManage: mine,
-      rules: kiosRules(),
+      rules: kiosRules(activeRules(this.s)),
       items: open ? this.ids(o).map((x) => offerings.read(x.post_id)) : [],
     }
   }

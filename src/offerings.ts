@@ -3,7 +3,7 @@ import {Forum} from './forum.ts'
 import {Groups} from './groups.ts'
 import {transition,text,expected,readScope,emit} from './commons.ts'
 import type {OfferingRow} from './offering-contract.ts'
-import {brokenRule} from './kios-rules.ts'
+import {activeRules,brokenRule} from './kios-rules.ts'
 
 /** One canonical post plus commercial terms; no payment custody or agent commerce. */
 export class Offerings {
@@ -36,7 +36,7 @@ export class Offerings {
    if(b.status!==undefined&&b.status!=='open')throw new Fault(400,'A new offering starts open')
    const content=(b.content??{}) as Record<string,unknown>;if(content.poll||content.event)throw new Fault(400,'An offering cannot also be a poll or event')
    // Kios house rules: a plain keyword check on every offer and request; people report what it misses.
-   if(brokenRule(typeof b.text==='string'?b.text:'',typeof content.title==='string'?content.title:'',typeof b.unit==='string'?b.unit:''))throw new Fault(422,'This listing breaks a Kios house rule')
+   if(brokenRule(activeRules(this.store),typeof b.text==='string'?b.text:'',typeof content.title==='string'?content.title:'',typeof b.unit==='string'?b.unit:''))throw new Fault(422,'This listing breaks a Kios house rule')
    if(b.durationDays!==undefined&&(!Number.isSafeInteger(b.durationDays)||Number(b.durationDays)<1||Number(b.durationDays)>90||b.expiresAt!==undefined))throw new Fault(400,'Choose 1–90 days or an explicit expiry')
    const expires=b.durationDays===undefined?b.expiresAt??null:this.store.clock()+Number(b.durationDays)*86400000
    const terms=this.terms(b.price??null,b.unit??'',expires,b.placeContextId??null),s=this.store
@@ -56,7 +56,7 @@ export class Offerings {
    const s=this.store,p=this.author(actorId,id),o=s.get<OfferingRow>('SELECT * FROM offerings WHERE post_id=?',id)!;expected(b.revision,o.revision)
    if(s.get<{n:number}>('SELECT count(*) n FROM offering_history WHERE post_id=? AND created>?',id,s.clock()-3600000)!.n>=60)throw new Fault(429,'Wait before changing this offering again')
    const status=b.status??o.status;if(!['open','paused','fulfilled','withdrawn'].includes(String(status)))throw new Fault(400,'Invalid offering status')
-   if(typeof b.unit==='string'&&brokenRule(b.unit))throw new Fault(422,'This listing breaks a Kios house rule')
+   if(typeof b.unit==='string'&&brokenRule(activeRules(this.store),b.unit))throw new Fault(422,'This listing breaks a Kios house rule')
    // Status-only transitions may close an already expired item without extending it.
    const terms=this.terms(b.price===undefined?o.price:b.price,b.unit??o.unit,b.expiresAt===undefined?(o.expires!==null&&o.expires<=s.clock()?null:o.expires):b.expiresAt,b.placeContextId===undefined?o.place_context_id:b.placeContextId)
    const expires=b.expiresAt===undefined?o.expires:terms.expires

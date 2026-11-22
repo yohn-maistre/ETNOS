@@ -7,8 +7,9 @@ import {Seasons} from './seasons.ts'
 import {Founding} from './founding.ts'
 import {Lembaga} from './lembaga.ts'
 import {Kios,type KiosOwner} from './kios.ts'
-import {kiosRules} from './kios-rules.ts'
+import {activeRules,kiosRules} from './kios-rules.ts'
 import {Situs} from './situs.ts'
+import {Deployment} from './deployment.ts'
 import {renderSitus} from './situs-render.ts'
 import {SITUS_STYLE_VERSION} from './situs-style.ts'
 import {updateProfile} from './profile.ts'
@@ -71,7 +72,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={models?:()=>Promise<Models|undefined>;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={models?:()=>Promise<Models|undefined>;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -90,7 +91,8 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups),situs=new Situs(store,groups,lembaga,kios)
   const tentang=new Tentang(store),entryCat=()=>entryCatalogue(entrySource())
   const entrySource=()=>storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id),lembaga,kios})
-  const siteName=()=>'ETNOS'
+  const deployment=new Deployment(store,groups,()=>({origin:store.base,catalogue:options.catalogue,enrollment:options.enrollmentMode,sources:options.sources,stewardDid:options.stewardDid,model:options.modelRoute?.keyed??null}))
+  const siteName=()=>deployment.name()
   const programSkill=(id:string|null)=>{if(id===null)return undefined;const slot=resident.slots.jadwal.slots.find(x=>x.id===id);if(!slot)throw new Fault(400,'Unknown program');return slot.skill}
   return async (req: Request): Promise<Response> => {
     try {
@@ -159,8 +161,10 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='claims')result=lembaga.claims(authenticated(),parts[2])
         else if(path==='/v1/entry-claims')result=lembaga.queue(authenticated())
         else if(path==='/v1/my-lembaga')result=groups.stewarded(authenticated())
-        else if(path==='/v1/kios/rules')result=kiosRules()
+        else if(path==='/v1/kios/rules')result=kiosRules(activeRules(store))
         else if(parts.length===4&&parts[1]==='kios'&&['actor','group'].includes(parts[2]))result={kios:kios.view({kind:parts[2] as KiosOwner['kind'],id:parts[3]},actor?.id)}
+        // etnos.yaml (src/deployment.ts), for the node operator in Studio.
+        else if(path==='/v1/deployment/etnos-yaml')result=deployment.view(authenticated())
         // Situs (docs/plan/one-page-system-2026-11-21.md §8). The page itself is HTML; the web Worker serves it at /situs/<name>.
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='situs')result=situs.info(actor?.id,parts[2])
         else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='state')result=situs.state(authenticated(),parts[2])
@@ -339,6 +343,8 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         result=lembaga.decide(caller,parts[2],b.approve,slug=>!!cat&&(cat.nodes.has(slug)||cat.alias.has(slug)))
       }
       else if(path==='/v1/kios')result={kios:kios.set(caller,{kind:string(b.ownerKind) as KiosOwner['kind'],id:string(b.ownerId)},b)}
+      else if(path==='/v1/deployment/etnos-yaml/check')result=deployment.check(caller,b.text)
+      else if(path==='/v1/deployment/etnos-yaml/apply')result=deployment.apply(caller,b.text)
       else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='situs')result=situs.save(caller,parts[2],b)
       else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='publish'){const cat=await entryCat();result=situs.publish(caller,parts[2],slug=>cat.nodes.get(slug)?.title??null)}
       else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='unpublish')result=situs.unpublish(caller,parts[2])
