@@ -1,6 +1,7 @@
 <script lang="ts">
   import {avatarTone} from './avatar-tone'
   import NotificationHost from './NotificationHost.svelte'
+  import TandaiPrompt from './TandaiPrompt.svelte'
   import { notify, notifyError, dismissNotifications } from './notifications.svelte'
   import { tabScroll } from './tab-scroll'
   import { onMount, tick, untrack } from 'svelte'
@@ -165,6 +166,7 @@
   let composerApi = $state<PostComposer | null>(null)
   let wikiRequestKey = $state('')
   // A story started from a place lands in that place once published.
+  // The entry a new post starts out about (Percakapan): an entry's address, or a context id, which is an alias of one.
   let composePlace = $state<{ id: string; title: string } | null>(null)
   let communityAdmission = $state<'open' | 'approval'>('approval')
   let communityKind = $state('')
@@ -1840,6 +1842,7 @@
   {/snippet}
 </PlatformShell>
 <NotificationHost />
+<TandaiPrompt />
 {#if kamusWords.card}{#await import('./KamusCard.svelte') then module}<module.default />{/await}{/if}
 {#if authDialogOpen}
   <WelcomeDialog exiting={authDialogLeaving} ready={(authDialogMode !== 'welcome' || !loading) && !authDialogLeaving} mode={authDialogMode} intro={welcomeIntro} bind:handle bind:publishing={publishingConsent} livePublishing={!!cap?.publication.liveAT} {busy} failed={new URLSearchParams(authSearch).has('error')} submitError={authDialogError} onsubmit={login} onclose={closeAuth}/>
@@ -2021,10 +2024,7 @@
             Belum ada tindakan moderator.
           </p>{/if}
       </details>
-    {:else if modal === 'compose' && auth.actor}{#if composePlace}<div class="compose-place">
-          <MapPin size={15} /><span>Tentang <strong>{composePlace.title}</strong></span>
-          <button type="button" aria-label={'Lepas tempat ' + composePlace.title} onclick={() => (composePlace = null)}>×</button>
-        </div>{/if}<PostComposer
+    {:else if modal === 'compose' && auth.actor}<PostComposer
         bind:this={composerApi}
         onStateChange={(state) => (composeState = state)}
         actor={auth.actor}
@@ -2032,9 +2032,9 @@
         initialCommunity={communityId}
         initialUrl={composeUrl}
         initialKind={composeKind}
+        initialTentang={composePlace ? [{ slug: composePlace.id, title: composePlace.title, label: '' }] : []}
         onPosted={async (post) => {
           composeState = { dirty: false, busy: false, canSubmit: false }
-          const place = composePlace
           try {
             sessionStorage.setItem('etnos.asked.' + post.id, '1')
           } catch {
@@ -2042,12 +2042,6 @@
           }
           modal = null
           composePlace = null
-          if (place)
-            try {
-              await request('/v1/posts/' + post.id + '/contexts', { contextId: place.id })
-            } catch {
-              notify('Posting terkirim. Tempat hanya bisa ditautkan ke posting di komunitas publik.')
-            }
           navigate('/square/' + post.id)
         }}
       />{:else}<form

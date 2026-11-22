@@ -125,6 +125,7 @@ export class Tentang {
     const room = MAX_TENTANG - this.tags(postId).length
     if (room <= 0) return { suggestions: [] }
     return {
+      tags: this.tags(postId).map((t) => t.slug),
       suggestions: suggestions(title + '\n' + p.text, nameIndex(entryNames(cat)), taken, Math.min(3, room)).map((m) => ({
         text: m.text,
         entries: m.entries.map((e) => ({ slug: e.slug, title: e.title, label: e.label, kind: e.kind })),

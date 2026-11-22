@@ -121,6 +121,10 @@ export type Post = {
   myVote: number
   bookmarked: boolean
   contexts?: { id: string; slug: string; title: string; kind: string }[]
+  /** Entries the author tagged that are not contexts, such as a lake or a species (Percakapan). */
+  entries?: { slug: string; title: string; label: string }[]
+  /** On an entry's Percakapan tab: how the post reached that entry. */
+  via?: { source: 'author' | 'community' | 'link'; entry: { slug: string; title: string } | null; community?: { id: string; title: string } }[]
   /** A season the community named, when the post carries one. */
   season?: { id: string; name: string } | null
   replies: number

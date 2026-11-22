@@ -18,6 +18,8 @@
   import OfferingCard from './OfferingCard.svelte'
   import WorkLine from './WorkLine.svelte'
   import RichPost from './RichPost.svelte'
+  import TentangPicker from './TentangPicker.svelte'
+  import { saveTags, type Tag } from './tentang.svelte.ts'
   import * as Card from '$lib/components/ui/card/index.js'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import * as Dropdown from '$lib/components/ui/dropdown-menu/index.js'
@@ -62,6 +64,30 @@
     onAnswered?: () => void
     authorBadge?: boolean
   } = $props()
+  // Percakapan: the author changes what an opening public post is about; the card refreshes after any change.
+  const canTag = $derived(!!post.permissions?.edit && post.author.kind === 'human' && !post.parent_id && !post.deleted && community?.visibility === 'public')
+  const tagsOf = (p: Post): Tag[] => [...(p.contexts ?? []).map((c) => ({ slug: c.slug, title: c.title, label: '' })), ...(p.entries ?? [])]
+  let tagging = $state(false), draftTags = $state<Tag[]>([])
+  async function refresh() {
+    try { Object.assign(post, await request<Post>('/v1/posts/' + post.id)) } catch { /* The card keeps what it shows. */ }
+  }
+  $effect(() => {
+    const on = (e: Event) => { if ((e as CustomEvent<{ postId: string }>).detail?.postId === post.id) void refresh() }
+    window.addEventListener('etnos:tentang', on)
+    return () => window.removeEventListener('etnos:tentang', on)
+  })
+  async function saveTagging() {
+    if (busy) return
+    busy = true
+    try {
+      await saveTags(post.id, draftTags.map((t) => t.slug))
+      tagging = false
+    } catch (e) {
+      onError(e instanceof Error ? e.message : 'Belum tersimpan.')
+    } finally {
+      busy = false
+    }
+  }
   let menuOpen = $state(false),
     discardEdit = $state(false),
     extraEdit = $state(false)
@@ -236,7 +262,9 @@
         </Dropdown.Trigger><Dropdown.Content align="end">
           {#if post.permissions?.edit}<Dropdown.Item onSelect={edit}>
               Edit posting
-            </Dropdown.Item><Dropdown.Item onSelect={() => (removing = true)}>
+            </Dropdown.Item>{#if canTag}<Dropdown.Item onSelect={() => { draftTags = tagsOf(post); tagging = true }}>
+                Ubah tentang
+              </Dropdown.Item>{/if}<Dropdown.Item onSelect={() => (removing = true)}>
               Hapus posting
             </Dropdown.Item><Dropdown.Separator />{/if}
           {#if post.permissions?.moderate && !post.deleted}<Dropdown.Item
@@ -300,14 +328,14 @@
     />
     {#if post.work}<WorkLine work={post.work} />{/if}
     {#if post.offering}<OfferingCard {post} {community} {loggedIn} onUpdated={value=>post=value} {onError}/>{/if}
-    {#if post.contexts?.length || post.season}<div class="context-links mt-3">
+    {#if post.contexts?.length || post.entries?.length || post.season}<div class="context-links mt-3">
         {#if post.season}<span class="post-season" title="Musim yang dipilih penulis"><Sprout size={13} aria-hidden="true" />{post.season.name}</span>{/if}
         {#each post.contexts ?? [] as context}<Badge
             href={'/wiki/' + context.slug}
             variant="secondary"
           >
             {context.title}
-          </Badge>{/each}
+          </Badge>{/each}{#each post.entries ?? [] as entry (entry.slug)}<Badge href={'/wiki/' + encodeURIComponent(entry.slug)} variant="secondary">{entry.title}</Badge>{/each}
       </div>{/if}
     {#if post.uri}<div class="strata-publication mt-3">
         <Globe size={12} />{#if post.publicationState === 'delivered'}<a
@@ -534,6 +562,20 @@
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>
+<Dialog.Root bind:open={tagging}>
+  <Dialog.Content class="platform-dialog">
+    <Dialog.Header>
+      <Dialog.Title>Tentang apa posting ini?</Dialog.Title><Dialog.Description>
+        Posting ini tampil di halaman entri yang kamu pilih di Ensiklopedia. Kamu dapat memilih sampai lima.
+      </Dialog.Description>
+    </Dialog.Header>
+    <TentangPicker bind:value={draftTags} text={(post.content?.title ?? '') + '\n' + post.text} disabled={busy} />
+    <Dialog.Footer>
+      <Button variant="ghost" disabled={busy} onclick={() => (tagging = false)}>Batal</Button>
+      <Button disabled={busy} onclick={saveTagging}>{#if busy}<LoaderCircle size={16} class="animate-spin" />{/if}Simpan</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
 <Dialog.Root bind:open={removing}>
   <Dialog.Content class="platform-dialog">
     <Dialog.Header>

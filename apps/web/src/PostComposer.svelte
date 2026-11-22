@@ -37,8 +37,11 @@
     type Season,
   } from './api'
   import PostText from './PostText.svelte'
+  import TentangPicker from './TentangPicker.svelte'
+  import { askTandai, type Tag } from './tentang.svelte.ts'
   import { markdown, videoEmbed, directVideo } from './markdown'
   import VideoPreview from './VideoPreview.svelte'
+  import { OBSERVATORY_NAME } from './observatory-name.ts'
   import LinkPreview from './LinkPreview.svelte'
   import * as Dropdown from '$lib/components/ui/dropdown-menu/index.js'
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js'
@@ -68,6 +71,7 @@
     compact = false,
     initialUrl = '',
     initialKind = '',
+    initialTentang = [],
   }: {
     actor: Actor
     communities: Community[]
@@ -83,6 +87,8 @@
     }) => void
     initialUrl?: string
     initialKind?: string
+    /** Entries the post starts out about, such as the entry page it was written from. */
+    initialTentang?: Tag[]
     compact?: boolean
   } = $props()
   let communityId = $state(untrack(() => initialCommunity)),
@@ -118,6 +124,9 @@
       firstPostUrl(text,format),
   )
   const destination = $derived(communities.find((c) => c.id === communityId))
+  // Percakapan: what the post is about. Only an opening post in a public community carries tags.
+  let tentangTags = $state<Tag[]>(untrack(() => initialTentang))
+  const tentangOn = $derived(!parentId && !compact && kind !== 'offering' && destination?.visibility === 'public')
   // Seasons the destination community named; the picker shows only when it has some.
   let seasons = $state<Season[]>([]),
     season = $state('')
@@ -268,6 +277,7 @@
             mediaIds,
             content,
             ...(selectedMention?{agentMention:{actorId:selectedMention.actor.id,choiceKey:selectedMention.choiceKey}}:{}),
+            ...(tentangOn&&tentangTags.length?{tentang:tentangTags.map(t=>t.slug)}:{}),
             ...(kamusOn&&kind!=='offering'&&!selectedMention&&artinya.trim()?{artinya:artinya.trim()}:{}),
             ...(kind==='offering'?{kind:offerKind,price:String(offerPrice??'').trim()?Number(offerPrice):null,unit:offerUnit,durationDays:Number(offerDays)}:{}),
           },
@@ -277,7 +287,9 @@
         ...pending.payload,
         requestKey: pending.key,
       })
+      const ask = !!pending && !parentId && kind !== 'offering' && destination?.visibility === 'public'
       pending = null
+      tentangTags = []
       title = ''
       url = ''
       warning = ''
@@ -295,6 +307,7 @@
       images = []
       resize()
       await onPosted(post)
+      if (ask) void askTandai(post.id)
     } catch (e) {
       if (e instanceof ApiError && e.status >= 400 && e.status < 500)
         pending = null
@@ -377,6 +390,8 @@
             <Textarea id="composer-artinya" bind:value={artinya} rows={compact ? 1 : 2} maxlength={4000} disabled={busy || !!pending} placeholder="Tulis terjemahan posting ini" />
           {:else}<button type="button" class="composer-artinya-open" onclick={() => (artinyaOpen = true)}>Tambahkan artinya dalam bahasa Indonesia</button>{/if}
         </div>{/if}
+      {#if tentangOn && !preview}<TentangPicker bind:value={tentangTags} text={title + '\n' + text} disabled={busy || !!pending} />
+      {:else if tentangTags.length && !parentId && kind !== 'offering' && destination && destination.visibility !== 'public'}<p class="composer-tentang-note">Posting di komunitas privat tidak ditandai dan tidak tampil di {OBSERVATORY_NAME}.</p>{/if}
       {#if text.length>textLimit}<p role="alert" class="document-editor-error">Tulisan melewati batas {textLimit.toLocaleString('id')} karakter.</p>{/if}
       {#if strayAksara}<p class="composer-aksara-hint" role="status">Ini akan jadi posting biasa. Pilih Aksara dari daftar untuk meminta jawaban.</p>{/if}
       {#if selectedMention}<div class="composer-aksara-request" role="group" aria-label="Permintaan balasan Aksara"><Bot size={16}/><span><strong>{selectedMention.actor.name}</strong><small>{selectedMention.scope==='sitewide'?'Aksara ETNOS':'Aksara komunitas'} akan diminta membalas di sini · publik</small></span><button type="button" disabled={busy||!!pending} aria-label="Kirim tanpa meminta balasan Aksara" title="Kirim tanpa meminta balasan Aksara" onclick={()=>selectedMention=null}><X size={16}/></button></div>{/if}
@@ -674,6 +689,7 @@
 </AlertDialog.Root>
 
 <style>
+  .composer-tentang-note { margin: 10px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--muted-foreground); }
   .composer-artinya { display: grid; gap: 6px; margin-top: 8px; }
   .composer-artinya label { font-size: 13.5px; font-weight: 600; }
   .composer-artinya label small { margin-left: 4px; font-weight: 400; color: var(--muted-foreground); }

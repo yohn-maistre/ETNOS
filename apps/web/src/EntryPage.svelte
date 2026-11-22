@@ -7,7 +7,8 @@
   // A section shows only when there is something in it.
   import { onDestroy, untrack } from 'svelte'
   import { SvelteURLSearchParams } from 'svelte/reactivity'
-  import { ArrowUpRight, BookOpen, ChevronDown, Expand, MapPin, PenLine } from '@lucide/svelte'
+  import { ArrowUpRight, BookOpen, ChevronDown, Expand, Link2, MapPin, PenLine, Tag, Users } from '@lucide/svelte'
+  import { Switch } from '$lib/components/ui/switch/index.js'
   import LandscapePrint from './LandscapePrint.svelte'
   import PlaceLocator from './PlaceLocator.svelte'
   import LanguageSpecimen, { type SpecimenGroup } from './LanguageSpecimen.svelte'
@@ -114,19 +115,46 @@
   const hero = $derived(records.flatMap((r) => (r.photos ?? []).slice(0, 1).map((p) => ({ record: r, photo: p })))[0] ?? null)
   const art = $derived(!hero && isPlaceCtx && ctx ? communityArtwork(ctx.id) : null)
 
-  // Conversation: posts labelled with the context, and posts that link to the entry's article.
-  let posts = $state<Post[]>([]), linked = $state<Post[]>([])
+  // Percakapan (docs/plan/one-page-system-2026-11-21.md §4): public opening posts that the author tagged with this
+  // entry, that come from a community labelled with it, or that link to it, read from the server as an anonymous
+  // reader would see them. A place's posts can include what sits inside it.
+  let items = $state<Post[]>([]), total = $state(0), insideCount = $state(0), cursor = $state<string | null>(null),
+    inside = $state(false), convoReload = $state(0), convoPhase = $state<'loading' | 'ready' | 'failed'>('loading'), more = $state(false)
+  const convoUrl = (slug: string, next?: string) => '/v1/entri/' + encodeURIComponent(slug) + '/percakapan?' + new SvelteURLSearchParams({ ...(inside ? { inside: '1' } : {}), ...(next ? { cursor: next } : {}) })
   $effect(() => {
-    const id = ctx?.id, page = entry?.article?.pageId, abort = new AbortController()
-    posts = []; linked = []
-    if (id) request<{ items: Post[] }>('/v1/feed/page?roots=true&context=' + encodeURIComponent(id), undefined, abort.signal, true).then((r) => { if (!abort.signal.aborted) posts = r.items }).catch(() => {})
-    if (page) request<{ items: Post[] }>('/v1/feed/page?' + new SvelteURLSearchParams({ roots: 'true', links: JSON.stringify([location.origin + '/wiki/' + page, location.origin + '/wiki/' + entry!.slug]) }), undefined, abort.signal, true).then((r) => { if (!abort.signal.aborted) linked = r.items }).catch(() => {})
+    const slug = entry?.slug, abort = new AbortController()
+    void inside
+    void convoReload
+    if (!slug) return
+    convoPhase = 'loading'
+    request<{ items: Post[]; total: number; inside: number; nextCursor: string | null }>(convoUrl(slug), undefined, abort.signal, true)
+      .then((r) => { if (abort.signal.aborted) return; items = r.items; total = r.total; insideCount = r.inside; cursor = r.nextCursor; convoPhase = 'ready' })
+      .catch(() => { if (!abort.signal.aborted) { items = []; convoPhase = 'failed' } })
     return () => abort.abort()
   })
-  const conversation = $derived.by(() => {
-    const seen = new Set<string>()
-    return [...posts.filter((p) => !p.parent_id), ...linked].filter((p) => (seen.has(p.id) ? false : (seen.add(p.id), true))).sort((a, b) => b.created - a.created)
-  })
+  async function loadMore() {
+    if (!entry || !cursor || more) return
+    more = true
+    try {
+      const r = await request<{ items: Post[]; nextCursor: string | null }>(convoUrl(entry.slug, cursor), undefined, undefined, true)
+      items = [...items, ...r.items.filter((p) => !items.some((q) => q.id === p.id))]
+      cursor = r.nextCursor
+    } catch {
+      onError('Posting berikutnya belum dapat dimuat.')
+    } finally {
+      more = false
+    }
+  }
+  /** How a post reached this entry, in one short line. */
+  function viaLine(p: Post) {
+    const v = p.via?.[0]
+    if (!v) return null
+    if (v.source === 'community' && v.community) return { icon: Users, text: 'Dari komunitas ' + v.community.title + (v.entry ? ' di ' + v.entry.title : ''), href: '/communities/' + v.community.id }
+    if (v.entry) return { icon: MapPin, text: 'Tentang ' + v.entry.title, href: '/wiki/' + encodeURIComponent(v.entry.slug) }
+    if (v.source === 'link') return { icon: Link2, text: 'Menautkan halaman ini', href: '' }
+    return { icon: Tag, text: 'Ditandai oleh penulis', href: '' }
+  }
+  const compose = () => entry && onCompose?.({ id: entry.slug, title: entry.title })
 
   // Kabar for a place, three newest.
   let news = $state<NewsItem[]>([])
@@ -167,7 +195,7 @@
   const showBlurb = $derived(!!entry?.description && !(entry.kind === 'bahasa' && /^Rumpun .+ menurut Glottolog/.test(entry.description)) && entry.kind !== 'halaman')
   const kindLine = $derived(entry ? [entry.kindLabel, entry.sub && entry.sub.label !== entry.kindLabel ? entry.sub.label : ''].filter(Boolean).join(' · ') : '')
   const childHeading = $derived(entry?.kind === 'topik' ? 'Cabang' : entry?.children.every((c) => c.kind === 'tempat') ? 'Kabupaten dan kota' : 'Di dalamnya')
-  const counts = $derived<Record<EntryTab, number>>({ tentang: 0, percakapan: conversation.length, riset: entry?.research.datasets.length ?? 0, riwayat: entry?.history?.revisions ?? 0 })
+  const counts = $derived<Record<EntryTab, number>>({ tentang: 0, percakapan: total, riset: entry?.research.datasets.length ?? 0, riwayat: entry?.history?.revisions ?? 0 })
   const chips = $derived(entry ? [...entry.overlay.map((o) => ({ ...o, label: 'Wilayah adat ' + o.title })), ...entry.related.slice(0, 6).map((r) => ({ ...r, label: r.title }))] : [])
 </script>
 
@@ -276,12 +304,25 @@
             </ul>
           </section>{/if}
       {:else if tab === 'percakapan'}
-        <div class="ep-compose">
-          {#if ctx && auth.actor && onCompose}<button type="button" class="ep-action" onclick={() => onCompose?.({ id: ctx.id, title: entry!.title })}><PenLine size={15} aria-hidden="true" />Tulis tentang {entry.title}</button>
-          {:else if !auth.actor}<a class="ep-action" href="/login"><PenLine size={15} aria-hidden="true" />Masuk untuk menulis</a>{/if}
-        </div>
-        {#each conversation as post (post.id)}<PostCard {post} community={communities.find((c) => c.id === post.community_id)} loggedIn={!!auth.actor} canVote={canVote(post.community_id)} {onError} />{/each}
-        {#if !conversation.length}<p class="ep-note ep-pad">Belum ada percakapan tentang {entry.title}.</p>{/if}
+        {#if total || insideCount}<div class="ep-convo-bar">
+            {#if items.length && auth.actor && onCompose}<button type="button" class="ep-action" onclick={compose}><PenLine size={15} aria-hidden="true" />Tulis tentang {entry.title}</button>
+            {:else if items.length && !auth.actor}<a class="ep-action" href="/login"><PenLine size={15} aria-hidden="true" />Masuk untuk menulis</a>{:else}<span></span>{/if}
+            {#if insideCount}<label class="ep-inside"><Switch bind:checked={inside} aria-describedby={uid + '-inside-note'} />{entry.kind === 'topik' ? 'Termasuk cabangnya' : 'Termasuk tempat di dalamnya'}</label>{/if}
+          </div>
+          <p class="ep-convo-note" id={uid + '-inside-note'}>{total.toLocaleString('id-ID')} posting publik tentang {entry.title}{inside ? ' dan ' + insideCount.toLocaleString('id-ID') + (entry.kind === 'topik' ? ' cabangnya' : ' tempat di dalamnya') : ''}. Posting dari komunitas privat tidak pernah tampil di sini.</p>{/if}
+        {#each items as post (post.id)}{@const via = viaLine(post)}<div class="ep-post">
+            {#if via}<p class="ep-via"><via.icon size={13} aria-hidden="true" />{#if via.href}<a href={via.href}>{via.text}</a>{:else}<span>{via.text}</span>{/if}</p>{/if}
+            <PostCard {post} community={communities.find((c) => c.id === post.community_id)} loggedIn={!!auth.actor} canVote={canVote(post.community_id)} {onError} />
+          </div>{/each}
+        {#if cursor && items.length}<div class="ep-more-row"><button type="button" class="ep-more-button" disabled={more} onclick={loadMore}>{more ? 'Memuat…' : 'Tampilkan posting lain'}</button></div>{/if}
+        {#if convoPhase === 'loading' && !items.length}<p class="ep-note ep-pad" role="status">Memuat percakapan…</p>
+        {:else if convoPhase === 'failed'}<p class="ep-note ep-pad">Percakapan belum dapat dimuat. <button type="button" class="ep-inline" onclick={() => convoReload++}>Coba lagi</button></p>
+        {:else if !items.length}<div class="ep-empty ep-convo-empty">
+            <p class="ep-empty-title">Belum ada yang menulis tentang {entry.title}{inside ? ' atau tempat di dalamnya' : ''}.</p>
+            <p>{ctx ? 'Posting publik yang ditandai dengan ' + entry.title + ', atau yang datang dari komunitas tentang ' + entry.title + ', akan tampil di sini.' : 'Posting publik yang ditandai dengan ' + entry.title + ' akan tampil di sini.'}</p>
+            {#if auth.actor && onCompose}<button type="button" class="ep-action" onclick={compose}><PenLine size={15} aria-hidden="true" />Tulis tentang {entry.title}</button>
+            {:else if !auth.actor}<a class="ep-action" href="/login"><PenLine size={15} aria-hidden="true" />Masuk untuk menulis</a>{/if}
+          </div>{/if}
       {:else if tab === 'riset'}
         {#if entry.research.literature}<Literature slug={entry.research.literature} title={entry.title} />{/if}
         {#if ctx || entry.source.things.length}<ThingData slug={ctx?.slug ?? ''} thing={ctx ? '' : entry.source.things[0]} title={entry.title} />
@@ -294,7 +335,7 @@
                 {#each revisions.slice(0, 12) as r (r.id)}<li><strong>{r.perspective}</strong><span>{[relativeDate(r.created), languageName(r.language), (r.author?.name ?? 'Kontributor') + (r.author?.kind === 'agent' ? ' (AI)' : ''), r.review === 'unreviewed' ? 'belum ditinjau' : r.review === 'reverted' ? 'dikembalikan' : r.reviewer ? 'ditinjau ' + r.reviewer.name : ''].filter(Boolean).join(' · ')}</span></li>{/each}
               </ol>{:else}<p class="ep-note">Riwayat belum dapat dimuat.</p>{/if}
           </section>{/if}
-        {#if ctx}<CoreSample context={{ id: ctx.id, slug: ctx.slug, title: entry.title, pages: [], newsPlaces: entry.newsPlaces }} posts={posts} {works} {auth} {onCompose} embedded />
+        {#if ctx}<CoreSample context={{ id: ctx.id, slug: ctx.slug, title: entry.title, pages: [], newsPlaces: entry.newsPlaces }} posts={items} {works} {auth} {onCompose} embedded />
           {#if auth.steward}<EntryStewardTools context={{ id: ctx.id, aliases: ctx.aliases }} title={entry.title} newsPlaces={entry.newsPlaces} {onError} onChanged={() => reload++} />{/if}
         {:else if !entry.history}<p class="ep-note ep-pad">Belum ada riwayat untuk {entry.title}. Riwayat mulai tercatat saat tulisan pertama diperiksa.</p>{/if}
       {/if}
@@ -397,8 +438,20 @@
   .ep-basis p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--muted-foreground); max-width: 68ch; }
   .ep-basis ul { margin: 0; padding: 0; list-style: none; display: grid; }
   .ep-basis a { display: inline-flex; align-items: center; min-height: 32px; font-size: 13.5px; color: var(--muted-foreground); }
-  .ep-compose { padding: 16px var(--gutter); border-bottom: 1px solid var(--border); }
-  .ep-compose:empty { display: none; }
+  .ep-convo-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 16px var(--gutter) 6px; }
+  .ep-inside { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; font-weight: 550; cursor: pointer; }
+  .ep-convo-note { margin: 0; padding: 0 var(--gutter) 14px; font-size: 13px; line-height: 1.45; color: var(--muted-foreground); border-bottom: 1px solid var(--border); }
+  .ep-post { border-bottom: 1px solid var(--border); }
+  .ep-post :global(.cx-post) { border-bottom: 0; }
+  .ep-via { display: flex; align-items: center; gap: 6px; margin: 0; padding: 12px var(--gutter) 0; font-size: 13px; color: var(--muted-foreground); }
+  .ep-via a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, currentColor 35%, transparent); }
+  .ep-via a:hover { color: var(--foreground); }
+  .ep-more-row { padding: 16px var(--gutter); }
+  .ep-more-button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 999px; font-size: 13.5px; font-weight: 550; cursor: pointer; }
+  .ep-more-button:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+  .ep-convo-empty { margin-top: 0; border-top: 0; padding-top: 28px; }
+  .ep-convo-empty p { max-width: 56ch; line-height: 1.5; }
+  .ep-convo-empty .ep-empty-title { font-size: 17px; font-weight: 700; color: var(--foreground); letter-spacing: -0.01em; }
   .ep-note { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--muted-foreground); }
   .ep-pad { padding: 28px var(--gutter); }
   .ep-revs { margin: 0; padding: 0; list-style: none; display: grid; }
