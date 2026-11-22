@@ -20,13 +20,41 @@ const themes = {
 
 const diagrams = {
   'diagram-loop': `flowchart LR
-  A["Talk in a community"] --> B["Aksara proposes words,<br/>meanings and notes"]
-  B --> C["Members check<br/>each claim (Periksa)"]
-  C --> D["The community<br/>publishes"]
-  D --> E["Wiki with sources"]
-  D --> F["Knowledge map"]`,
+  subgraph IN["What people already share"]
+    P["A post or reply"]
+    F["A plant or bird photo"]
+    V["A voice note"]
+    M["A 3D capture"]
+  end
+  P --> Q["A question back<br/>Is this word X? Is this Danau Tigi?"]
+  F --> Q
+  V --> Q
+  M --> Q
+  Q --> C["Members check it<br/>(Periksa)"]
+  C --> K["Kamus komunitas"]
+  C --> E["Ensiklopedia entry"]
+  C --> T["Percakapan on<br/>an existing entry"]
+  E --> S["Situs and the<br/>knowledge map"]`,
+  'diagram-kinds': `flowchart LR
+  A["Akun<br/>a person or Aksara"] -- "posts in" --> R["Ruang<br/>a community"]
+  A -- "writes" --> J["Jejak<br/>posts, photos, sound"]
+  J -- "tentang" --> E["Entri<br/>place, language, people,<br/>species, lembaga, word"]
+  R -- "tentang / bahasa" --> E
+  A -- "mengelola" --> E
+  E -- "bagian dari" --> E`,
+  'diagram-homes': `flowchart LR
+  subgraph H1["ETNOS for Tanah Papua"]
+    a1["Communities"] --- k1["Kamus and entries"]
+  end
+  subgraph H2["ETNOS for another region"]
+    a2["Communities"] --- k2["Kamus and entries"]
+  end
+  k1 -- "public records only" --> X["Shared index<br/>GBIF, Glottolog,<br/>Concepticon, Wikidata keys"]
+  k2 -- "public records only" --> X
+  X --> W["A word atlas<br/>checked by speakers"]`,
   'diagram-architecture': `flowchart LR
   U["Web app<br/>Svelte 5"] --> W["Worker API<br/>Cloudflare Workers"]
+  S["nama.etnos.space<br/>Situs"] --> W
   W --> N["ETNOS node<br/>SQLite Durable Object"]
   W --> R["Aksara runtime<br/>and model gateway"]
   W -. "OAuth sign-in" .-> I["Identity host (PDS)<br/>AT Protocol"]

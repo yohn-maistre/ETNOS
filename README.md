@@ -2,7 +2,9 @@
 
 # ETNOS
 
-**Open-source software that turns everyday community conversation into a record that the community owns, checks and corrects.**
+### Percakapan menjadi pengetahuan
+
+**Open-source software where everyday community conversation becomes knowledge that the community owns, checks and corrects.**
 
 [![Licence AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-blue?style=flat-square)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -16,18 +18,19 @@
 [![BUDAYA GO! 2026](https://img.shields.io/badge/BUDAYA_GO!-2026-b22222?style=flat-square)](#why-etnos-exists)
 [![Live site etnos.space](https://img.shields.io/badge/live-etnos.space-2da44e?style=flat-square)](https://etnos.space)
 
-[Live site](https://etnos.space) · [Docs](docs/README.md) · [Architecture](#how-it-works) · [Run locally](#run-locally) · [Licence](#licence-and-credits)
+[Live site](https://etnos.space) · [Docs](docs/README.md) · [How it works](#how-it-works) · [Tour](#a-short-tour) · [Architecture](#under-the-hood) · [Run locally](#run-locally) · [Licence](#licence-and-credits)
 
 <br>
 
-<img src="docs/assets/etnos-community-desktop.jpg" alt="A community page on ETNOS, with an ink-print landscape of the Papuan highlands as its cover and tabs for discussion, wiki, media, polls and offers." width="70%">
-&nbsp;
-<img src="docs/assets/etnos-thread-mobile.jpg" alt="A long post written in Papuan Malay, open on a phone." width="23%">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/home-desktop-dark.jpg">
+  <img src="docs/assets/readme/home-desktop-light.jpg" alt="The ETNOS home on a desktop screen: the left menu with Beranda, Jelajah, Komunitas, Ensiklopedia and Jadwal Aksara, the community feed in the middle with a post from Aksara asking whether a wiki claim about Bahasa Ekari is still true, and news from Papuan publishers with community links on the right." width="100%">
+</picture>
 
 </div>
 
-> [!IMPORTANT]
-> **Observatory redesign, phase 1 built (20 November 2026).** The wiki front at `/wiki` is now the observatory front (*Observatorium*): a knowledge map in three lenses (size and pace, the network of statements, and a map of places), a catalogue of public datasets at `/wiki/data`, a *Data* tab on thing pages and a locator map on place pages, all built on the world model fields and dataset records. Phase 2 adds the starter-data build, crosswalks, embeddings and access tiers beyond the open tier. Start with [docs/observatory/](docs/observatory/README.md), which lists what is built and what remains, then the [world model and starter data](docs/observatory/world-model-and-starter-data-2026-11-20.md) and the [data observatory](docs/observatory/data-observatory-2026-11-20.md). Remove this notice when phase 2 is built.
+> [!NOTE]
+> **Alpha, open to a few people (22 November 2026).** Reading is open to everyone at [etnos.space](https://etnos.space). Accounts on `etnos.space` need an invite from the stewards, and anyone with a Bluesky account can sign in. Screens marked *(fixture)* below come from local test runs with made-up names, never from real people.
 
 **ETNOS** is open-source software, and [etnos.space](https://etnos.space) is its first deployment, built for Tanah Papua. Anyone can read it, and people join with an ETNOS account or an existing Bluesky account.
 
@@ -36,7 +39,7 @@
 
 <br>
 
-ETNOS adalah tempat orang Papua mengobrol seperti biasa di komunitas, dan obrolan itu diolah menjadi pengetahuan yang dimiliki komunitasnya sendiri. Sebuah lembaga adat bisa membuka komunitas bahasa. Asisten AI bernama Aksara mengusulkan kata, arti dan catatan tata bahasa dari obrolan itu, dan anggota memeriksanya satu per satu. Setiap halaman wiki menyebut sumbernya. Akun memakai AT Protocol, jadi orang bisa membawa akun dan datanya ke tempat lain. Kodenya terbuka (AGPL-3.0), sehingga wilayah lain bisa menjalankannya sendiri.
+ETNOS adalah tempat orang Papua menulis dan berbagi di komunitas seperti biasa. Percakapan itu kemudian menjadi pengetahuan yang dimiliki dan diperiksa oleh komunitasnya sendiri. Kalau seseorang menulis kata dalam bahasa daerah, ETNOS bertanya apa artinya, dan jawaban yang sudah diperiksa masuk ke Kamus komunitas. Kalau seseorang menulis tentang Danau Tigi, posting itu tampil di halaman Danau Tigi di Ensiklopedia. Aksara, asisten AI yang bekerja secara terbuka, membantu mengusulkan, tetapi anggota yang memutuskan. Lembaga bisa membuat situs sendiri dari data publiknya. Akun memakai AT Protocol, jadi orang bisa membawa akun dan datanya ke tempat lain. Kodenya terbuka (AGPL-3.0), sehingga wilayah lain bisa menjalankan ETNOS sendiri.
 
 </details>
 
@@ -65,41 +68,68 @@ ETNOS is entered in BUDAYA GO! 2026, in the Inovasi Digital category, under the 
 
 ## How it works
 
-A lembaga adat opens a private language community, and its members talk as they always do. Aksara, an AI steward, proposes words, meanings, example sentences and grammar notes from that talk. Members check each proposal with one swipe, and the community decides what to publish. The same method applies to plants, places, events and customs.
+People write in their communities as they already do. ETNOS turns what they share into small questions: *is this word "tongue"?*, *is this post about Danau Tigi?* Members answer and check each other, and only what the community has checked becomes part of the Kamus or the Ensiklopedia. Everything else stays what it was, a conversation, shown on the right page.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/diagram-loop-dark.svg">
-    <img src="docs/assets/diagram-loop-light.svg" alt="Flow from talk in a community, to Aksara proposing words, meanings and notes, to members checking each claim in Periksa, to the community publishing, which feeds the wiki with sources and the knowledge map." width="100%">
+    <img src="docs/assets/diagram-loop-light.svg" alt="What people already share (a post, a plant or bird photo, a voice note, a 3D capture) becomes a question back to them. Members check it in Periksa, and the result lands in the Kamus komunitas, as a new Ensiklopedia entry, or as Percakapan on an entry that already exists. Entries feed the Situs and the knowledge map." width="100%">
   </picture>
 </p>
 
-Everything is written in TypeScript. The same engine runs on Cloudflare Workers and, for development, on Node with SQLite.
+Posts and replies work this way today. Photos, voice notes and 3D captures are designed to enter through the same door ([pipelines](docs/plan/saluran-2026-11-22.md)).
+
+Under the screens there are only four kinds of thing. An **Akun** writes **Jejak** (posts, photos, sound) inside a **Ruang** (a community), and both can be *tentang* an **Entri**: a place, a language, a people, a species, a lembaga or a word. Every entry has one page at `/wiki/<slug>`.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/diagram-architecture-dark.svg">
-    <img src="docs/assets/diagram-architecture-light.svg" alt="Architecture: the Svelte 5 web app calls the Worker API on Cloudflare Workers. The Worker uses the ETNOS node in a SQLite Durable Object and the Aksara runtime with its model gateway. It signs people in through OAuth with the identity host, a PDS that speaks the AT Protocol and keeps one Durable Object per account plus R2 blobs." width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/diagram-kinds-dark.svg">
+    <img src="docs/assets/diagram-kinds-light.svg" alt="Four kinds: an Akun (a person or Aksara) posts in a Ruang and writes Jejak. Jejak and Ruang are tentang an Entri, an Akun can manage an Entri, and an Entri can be part of another Entri." width="100%">
   </picture>
 </p>
 
-People hold their accounts on a server that speaks the AT Protocol, the open protocol behind Bluesky. A person who leaves ETNOS keeps their identity. Downloading a repository works today, and moving an account to another host is planned. The full account of hosting, privacy levels and their guarantees is in [communities and spaces](docs/plan/communities-spaces-2026-11-19.md).
+## A short tour
+
+**Ensiklopedia.** Every place, language, people, species, landform, object and lembaga in Tanah Papua has one page, with its sources, its history and the conversations about it. The Penampil shows photos, specimens and sound full screen, and the knowledge map lays all entries out by size and age.
+
+<p align="center"><img src="docs/assets/readme/strip-ensiklopedia.jpg" alt="Four phone screens: the Ensiklopedia front with counts and a grid of kinds, the page of the Cenderawasih kuning besar with its taxonomy and a museum specimen photo, the same specimen in the Penampil, and the knowledge map plotting entries by size and age." width="100%"></p>
+
+**Kamus in posts.** In a language community, words that the Kamus knows or wants to know are underlined. Tapping one asks a single question, *Artinya lidah?*, with Ya, Bukan and Tidak tahu. Answers from several members become a checked entry. Mode belajar colours checked words by their word class, and Kata hari ini asks for one word from a core concept list each day.
+
+<p align="center"><img src="docs/assets/readme/strip-kamus.jpg" alt="Four phone screens of a Mee language community with test data: posts with underlined Ekari words, a word card asking whether duwaa means kebun, Mode belajar with coloured word classes and a Kata hari ini card, and the Periksa deck for the word duwaa." width="100%"></p>
+
+**Percakapan.** A post can be marked as being about up to five entries. ETNOS suggests the names it finds in the text and asks when a name has two meanings, such as Puncak Jaya the regency or the mountain. Public posts then appear under Percakapan on each entry page, and a place page can include its smaller places.
+
+<p align="center"><img src="docs/assets/readme/strip-percakapan.jpg" alt="Four phone screens with test data: a post asking whether Puncak Jaya means the regency or the mountain, the composer suggesting entries named in the text, the Percakapan tab of Mee Pago listing posts from places inside it, and an empty Percakapan tab inviting the first post about Danau Tigi." width="100%"></p>
+
+**Lembaga and Kios.** A lembaga adat, a sanggar, a school or a district office gets a profile that speaks in its own voice, next to what the Ensiklopedia says about it. Communities say what they are about and which languages they use. Members can open a Kios to offer what they sell, with payment agreed directly between people.
+
+<p align="center"><img src="docs/assets/readme/strip-lembaga.jpg" alt="Four phone screens with test data: a lembaga profile for a Dewan Adat with its own text and an office address, a member profile with a Kios offering pinang, sayur gedi and a noken, community settings with labels for place, topic and language, and the Ensiklopedia entry managed by the lembaga." width="100%"></p>
+
+**Situs.** A lembaga can publish its own small website from the public data it already keeps on ETNOS, in an editorial or an office template, with versions it can roll back. The address will be `nama.etnos.space`.
+
+<p align="center"><img src="docs/assets/readme/strip-situs.jpg" alt="Four phone screens with test data: an editorial Situs for a sanggar with a large carving photo, an office-style Situs for a district office with WhatsApp and phone buttons, and the Situs editor showing the preview and the template and colour choices." width="100%"></p>
 
 ## Features
 
-Each feature carries one of three marks. **Live** means it is deployed on etnos.space. **Being tested** means it runs for a small group of testers. **Planned** means that it is designed and not yet built.
+**Live** means deployed on etnos.space. **Being tested** means it runs for a small group of testers. **Planned** means designed and not yet built.
 
 | Feature | What it does | Status |
 | --- | --- | --- |
+| Ensiklopedia | One page per entry with sources, history and Percakapan, the Penampil viewer, and the knowledge map. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
+| Kamus in posts | Underlined words, one-question word cards, Artinya translations, Mode belajar, Kata hari ini, picture questions, a printable Kamus and CSV or CLDF export. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
+| Percakapan | Posts marked with the entries they are about, shown on each entry page. Private communities never appear there. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
 | Periksa | Members check one claim at a time with a swipe or a button. Two members agreeing settles a claim, and stewards can raise that number. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
 | Aksara | An AI steward that works in the open, with a public log and limits set by people. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
-| Communities and lembaga | Public and private communities, joined openly, by request with a written reason, or by invitation. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
-| Wiki with sources | Pages are written from cited sources and show their history, their author and whether a person has reviewed them. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
+| Communities, lembaga and Kios | Public and private communities with labels for place, topic and language, lembaga profiles, and member offers. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
 | News by place | Stories from many publishers are grouped by story and sorted by place, with every publisher credited. | ![Live](https://img.shields.io/badge/Live-2da44e?style=flat-square) |
-| Knowledge model | Every statement is stored with its supporting source and the voice that speaks. A seed of 110 entities is built from checked quotes and the place catalogue. | ![Built and tested](https://img.shields.io/badge/Built_and_tested-2da44e?style=flat-square) with a map prototype |
+| Situs | A website for a lembaga built from its public data, with two templates and versions. | ![Being tested](https://img.shields.io/badge/Being_tested-d29922?style=flat-square) |
+| `etnos.yaml` | One file that describes a deployment, so another region can run its own ETNOS. | ![Being tested](https://img.shields.io/badge/Being_tested-d29922?style=flat-square) |
 | Accounts on ETNOS | A handle such as `name.etnos.space`. Sign-up needs an invite code from the stewards. | ![Being tested](https://img.shields.io/badge/Being_tested-d29922?style=flat-square) |
-| Kamus and Tata bahasa | A community dictionary and grammar sketch, seeded from published wordlists. | ![Planned](https://img.shields.io/badge/Planned-6e7781?style=flat-square) |
-| Voice notes and uploaded video | People record a word, a song line or an answer. | ![Planned](https://img.shields.io/badge/Planned-6e7781?style=flat-square) |
+| Voice notes | People record a word, a song line or an answer, and the clip becomes evidence for the Kamus. | ![Planned](https://img.shields.io/badge/Planned-6e7781?style=flat-square) |
+| Photos and sound to entries | A plant photo or a bird call shared in a community gets a suggested species (Pl@ntNet, BirdNET) that members confirm. | ![Planned](https://img.shields.io/badge/Planned-6e7781?style=flat-square) |
+| 3D captures | Objects scanned with a phone app shown in the Penampil, and later trained on a community's own machine. | ![Planned](https://img.shields.io/badge/Planned-6e7781?style=flat-square) |
+| Waktu | A timeline lens over entries and reviewed events. | ![Planned](https://img.shields.io/badge/Planned-6e7781?style=flat-square) |
 
 <details>
 <summary><b>More about Periksa, Aksara and the sources</b></summary>
@@ -112,6 +142,28 @@ Each feature carries one of three marks. **Live** means it is deployed on etnos.
 - **Private spaces.** Spaces are an alpha feature of the AT Protocol, and the upstream authors say they are not ready for production. The test results are in [communities and spaces](docs/plan/communities-spaces-2026-11-19.md).
 
 </details>
+
+## Under the hood
+
+Everything is written in TypeScript. The same engine runs on Cloudflare Workers and, for development, on Node with SQLite.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/diagram-architecture-dark.svg">
+    <img src="docs/assets/diagram-architecture-light.svg" alt="Architecture: the Svelte 5 web app and Situs addresses at nama.etnos.space call the Worker API on Cloudflare Workers. The Worker uses the ETNOS node in a SQLite Durable Object and the Aksara runtime with its model gateway. It signs people in through OAuth with the identity host, a PDS that speaks the AT Protocol and keeps one Durable Object per account plus R2 blobs." width="100%">
+  </picture>
+</p>
+
+People hold their accounts on a server that speaks the AT Protocol, the open protocol behind Bluesky. A person who leaves ETNOS keeps their identity. Downloading a repository works today, and moving an account to another host is planned. The full account of hosting, privacy levels and their guarantees is in [communities and spaces](docs/plan/communities-spaces-2026-11-19.md).
+
+ETNOS is meant to run as many homes, not one. Each region or people runs its own, under its own governance, and homes share only what they choose to publish, keyed to global identifiers. A word checked by Mee speakers and a word checked by Māori speakers for the same concept can then sit side by side in a word atlas, each owned by its own community ([many ETNOS](docs/plan/many-etnos-2026-11-21.md)).
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/diagram-homes-dark.svg">
+    <img src="docs/assets/diagram-homes-light.svg" alt="Two ETNOS homes, one for Tanah Papua and one for another region, each with its communities, Kamus and entries. Each sends public records only to a shared index keyed by GBIF, Glottolog, Concepticon and Wikidata, which feeds a word atlas checked by speakers." width="100%">
+  </picture>
+</p>
 
 ## Principles
 
@@ -165,6 +217,10 @@ test/           Tests for the node and the Worker
 | Document | What it holds |
 | --- | --- |
 | [docs/plan/what-etnos-is.md](docs/plan/what-etnos-is.md) | The whole picture in plain words |
+| [docs/plan/one-page-system-2026-11-21.md](docs/plan/one-page-system-2026-11-21.md) | The four kinds, entry pages, Kamus in posts, lembaga, Percakapan and Situs |
+| [docs/plan/saluran-2026-11-22.md](docs/plan/saluran-2026-11-22.md) | How photos, sound, 3D and time feed the Ensiklopedia |
+| [docs/plan/many-etnos-2026-11-21.md](docs/plan/many-etnos-2026-11-21.md) | Many homes and one shared language |
+| [docs/research/language-from-nothing-2026-11-21.md](docs/research/language-from-nothing-2026-11-21.md) | How others collected endangered languages, and what the Kamus takes |
 | [docs/plan/communities-spaces-2026-11-19.md](docs/plan/communities-spaces-2026-11-19.md) | Talk becomes knowledge, private spaces, AT Protocol spaces and Periksa |
 | [docs/plan/platform-2026-11-19.md](docs/plan/platform-2026-11-19.md) | Building blocks in the code and planned |
 | [docs/plan/etnos-model-2026-11-17.md](docs/plan/etnos-model-2026-11-17.md) | The layers, columns and places of a deployment |
