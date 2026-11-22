@@ -508,6 +508,12 @@ CREATE INDEX offerings_place ON offerings(place_context_id,status);
 `,`
 CREATE TABLE post_entries(post_id TEXT NOT NULL REFERENCES posts(id),slug TEXT NOT NULL,title TEXT NOT NULL,label TEXT NOT NULL,issuer_id TEXT NOT NULL REFERENCES actors(id),created INTEGER NOT NULL,PRIMARY KEY(post_id,slug));
 CREATE INDEX post_entries_slug ON post_entries(slug,post_id);
+`,`
+ALTER TABLE lembaga_profiles ADD COLUMN cover TEXT;
+ALTER TABLE lembaga_profiles ADD COLUMN communities TEXT;
+CREATE TABLE situs(group_id TEXT PRIMARY KEY REFERENCES groups(id),name TEXT NOT NULL UNIQUE,draft TEXT NOT NULL,active INTEGER NOT NULL DEFAULT 0,activated_by TEXT REFERENCES actors(id),activated INTEGER,published INTEGER,updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id));
+CREATE TABLE situs_versions(group_id TEXT NOT NULL REFERENCES groups(id),version INTEGER NOT NULL,name TEXT NOT NULL,situs TEXT NOT NULL,lembaga TEXT NOT NULL,snapshot TEXT NOT NULL,created INTEGER NOT NULL,created_by TEXT NOT NULL REFERENCES actors(id),PRIMARY KEY(group_id,version));
+CREATE TABLE deployment_settings(key TEXT PRIMARY KEY,value TEXT NOT NULL,updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id));
 `]
 
 export const schemaVersion=migrations.length

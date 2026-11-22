@@ -8,8 +8,11 @@ import {etnosEnv} from './env.ts'
 import {publicVideo} from './video.ts'
 import {publicLinkPreview,previewURL} from './link-preview.ts'
 import {resolveShare,shareTags,articleHTML,articleLD,escapeMeta} from './share.ts'
+import {dispatchSubdomain} from './situs-dispatch.ts'
+import {SITUS_CSS,SITUS_STYLE_VERSION} from './situs-style.ts'
+import {SITUS_STYLE_PATH} from './situs-render.ts'
 export {StrataNode,ResidentAuthority,ModelGateway}
-type WebEnv=Cloudflare.Env & {ASSETS:Fetcher;WATCH_NEWS?:Fetcher}
+type WebEnv=Cloudflare.Env & {ASSETS:Fetcher;WATCH_NEWS?:Fetcher;IDENTITY_HOST?:Fetcher;ETNOS_SITUS_SUBDOMAINS?:string;STRATA_SITUS_SUBDOMAINS?:string}
 const legacyOrigin='https://strata-preview.giyaibo.workers.dev'
 const edgeCache=()=> (caches as unknown as {default:Cache}).default
 async function boundedJSON(response:Response){
@@ -18,9 +21,33 @@ async function boundedJSON(response:Response){
   try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>2097152)throw Error('Preview too large');parts.push(part.value)}}finally{await reader.cancel().catch(()=>{});reader.releaseLock()}
   const bytes=new Uint8Array(size);let offset=0;for(const part of parts){bytes.set(part,offset);offset+=part.length}return JSON.parse(new TextDecoder().decode(bytes))
 }
+/** A Situs page has no script at all; images, fonts and its one stylesheet come from the same host. The editor
+ * on the lembaga page shows the preview in a frame, so the page may be framed by its own origin only. */
+const SITUS_CSP="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'"
+function situsHeaders(response:Response){
+  const headers=new Headers(response.headers)
+  headers.set('content-security-policy',SITUS_CSP);headers.set('x-content-type-options','nosniff');headers.set('permissions-policy','camera=(), microphone=(), geolocation=()')
+  return new Response(response.body,{status:response.status,headers})
+}
+const situsMissing=()=>situsHeaders(new Response('<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Situs tidak ditemukan</title><link rel="stylesheet" href="'+SITUS_STYLE_PATH+'?v='+SITUS_STYLE_VERSION+'"><main class="wrap plain-title"><h1>Situs tidak ditemukan</h1><p class="meta">Alamat ini belum dipakai, atau situsnya belum diterbitkan.</p></main></html>',{status:404,headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store'}}))
+const situsStyle=()=>situsHeaders(new Response(SITUS_CSS,{headers:{'content-type':'text/css; charset=utf-8','cache-control':'public, max-age=86400'}}))
 export default {
   async fetch(request:Request,env:WebEnv):Promise<Response>{
     const url=new URL(request.url),config=etnosEnv(env)
+    // <name>.etnos.space for Situs and handles: off unless the owner sets ETNOS_SITUS_SUBDOMAINS=on and adds the route.
+    if(url.origin!==config.ETNOS_ORIGIN){
+      const anonymous=(path:string)=>backend.fetch(new Request(config.ETNOS_ORIGIN+path),env)
+      const sub=await dispatchSubdomain(request,{
+        enabled:config.ETNOS_SITUS_SUBDOMAINS==='on',zone:new URL(config.ETNOS_ORIGIN).hostname,origin:config.ETNOS_ORIGIN,
+        identity:env.IDENTITY_HOST?r=>env.IDENTITY_HOST!.fetch(r):undefined,
+        page:async name=>{const r=await anonymous('/v1/situs/'+name+'/page?alamat=sub');return r.ok?situsHeaders(r):null},
+        lembaga:async name=>{try{return (await boundedJSON(await anonymous('/v1/situs/'+name))).groupId as string}catch{return null}},
+        css:situsStyle,
+        asset:path=>env.ASSETS.fetch(new Request(config.ETNOS_ORIGIN+path)),
+        image:path=>anonymous(path),
+      })
+      if(sub)return sub
+    }
     if(url.origin!==config.ETNOS_ORIGIN){
       // The old origin remains a browser-local vault recovery surface only.
       // Never redirect writes or OAuth callbacks with transient credentials.
@@ -110,6 +137,17 @@ export default {
       await edgeCache().put(key,response.clone())
       return response
     }
+    // Situs: a lembaga's own website, server-rendered from its published snapshot (src/situs.ts).
+    if(url.pathname===SITUS_STYLE_PATH)return situsStyle()
+    const situsRoute=url.pathname.match(/^\/situs\/([a-z0-9-]{3,20})\/?$/)
+    if(situsRoute){
+      if(request.method!=='GET'&&request.method!=='HEAD')return json(405,{error:'Method not allowed'})
+      const draft=url.searchParams.get('versi')==='draf',headers=new Headers()
+      // Only the draft is read as the signed-in reader (stewards); the published page is always an anonymous read.
+      if(draft)for(const h of ['cookie','authorization'])if(request.headers.has(h))headers.set(h,request.headers.get(h)!)
+      const r=await backend.fetch(new Request(config.ETNOS_ORIGIN+'/v1/situs/'+situsRoute[1]+'/page'+(draft?'?versi=draf':''),{headers}),env)
+      return r.ok?situsHeaders(r):situsMissing()
+    }
     if(url.pathname==='/health'||/^\/(v1|auth|oauth)(\/|$)/.test(url.pathname))return backend.fetch(request,env)
     if(request.method!=='GET'&&request.method!=='HEAD')return json(405,{error:'Method not allowed'})
     const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers)
@@ -117,7 +155,7 @@ export default {
     headers.set('permissions-policy','camera=(), microphone=(), geolocation=()')
     if(headers.get('content-type')?.includes('text/html')){
       headers.set('cache-control','no-store')
-      headers.set('content-security-policy',"default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; font-src 'self' data:; connect-src 'self' https://cloudflareinsights.com https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; worker-src 'self' blob:; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; media-src https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
+      headers.set('content-security-policy',"default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; font-src 'self' data:; connect-src 'self' https://cloudflareinsights.com https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; worker-src 'self' blob:; frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com; media-src https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
       if(request.method==='GET'&&response.ok){
         // Deliberately construct new anonymous requests: even signed-in readers
         // receive the same public-only sharing projection as an external crawler.

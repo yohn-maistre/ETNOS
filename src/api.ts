@@ -8,6 +8,9 @@ import {Founding} from './founding.ts'
 import {Lembaga} from './lembaga.ts'
 import {Kios,type KiosOwner} from './kios.ts'
 import {kiosRules} from './kios-rules.ts'
+import {Situs} from './situs.ts'
+import {renderSitus} from './situs-render.ts'
+import {SITUS_STYLE_VERSION} from './situs-style.ts'
 import {updateProfile} from './profile.ts'
 import {Groups,strings,type Group,type Context,type SeedLabels} from './groups.ts'
 import {DirectMessages} from './dm.ts'
@@ -84,9 +87,10 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
   if(options.residentBudget)resident.budget=options.residentBudget
   const requests=new AksaraRequests(store,groups)
-  const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups)
+  const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups),situs=new Situs(store,groups,lembaga,kios)
   const tentang=new Tentang(store),entryCat=()=>entryCatalogue(entrySource())
   const entrySource=()=>storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id),lembaga,kios})
+  const siteName=()=>'ETNOS'
   const programSkill=(id:string|null)=>{if(id===null)return undefined;const slot=resident.slots.jadwal.slots.find(x=>x.id===id);if(!slot)throw new Fault(400,'Unknown program');return slot.skill}
   return async (req: Request): Promise<Response> => {
     try {
@@ -157,6 +161,19 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(path==='/v1/my-lembaga')result=groups.stewarded(authenticated())
         else if(path==='/v1/kios/rules')result=kiosRules()
         else if(parts.length===4&&parts[1]==='kios'&&['actor','group'].includes(parts[2]))result={kios:kios.view({kind:parts[2] as KiosOwner['kind'],id:parts[3]},actor?.id)}
+        // Situs (docs/plan/one-page-system-2026-11-21.md §8). The page itself is HTML; the web Worker serves it at /situs/<name>.
+        else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='situs')result=situs.info(actor?.id,parts[2])
+        else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='state')result=situs.state(authenticated(),parts[2])
+        else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='export')result=situs.exportFiles(authenticated(),parts[2])
+        else if(parts.length===3&&parts[1]==='situs'){const found=situs.byName(parts[2]);if(!found||groups.group(found.group_id).visibility!=='public')throw new Fault(404,'Not found');result={groupId:found.group_id,published:!!found.published}}
+        else if(parts.length===4&&parts[1]==='situs'&&parts[3]==='page'){
+          const draft=url.searchParams.get('versi')==='draf',cat=draft?await entryCat():null
+          const page=situs.page(parts[2],{draft,actorId:actor?.id,entryTitle:slug=>cat?.nodes.get(slug)?.title??null})
+          // On <name>.etnos.space (src/situs-dispatch.ts) the page names its own host as the canonical address.
+          const base=new URL(store.base),canonical=url.searchParams.get('alamat')==='sub'?base.protocol+'//'+page.name+'.'+base.host+'/':store.base+'/situs/'+page.name
+          const html=renderSitus(page,{origin:store.base,canonical,siteName:siteName(),styleVersion:SITUS_STYLE_VERSION})
+          return new Response(html,{headers:{'content-type':'text/html; charset=utf-8','cache-control':draft?'private, no-store':'public, max-age=60','x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin',...(draft?{'x-robots-tag':'noindex, nofollow'}:{})}})
+        }
         // Requests between organisations
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='requests')result=url.searchParams.get('direction')==='out'?requests.outgoing(authenticated(),parts[2]):requests.incoming(authenticated(),parts[2])
         else if(parts.length===3&&parts[1]==='aksara-requests')result=requests.open(authenticated(),parts[2])
@@ -322,6 +339,11 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         result=lembaga.decide(caller,parts[2],b.approve,slug=>!!cat&&(cat.nodes.has(slug)||cat.alias.has(slug)))
       }
       else if(path==='/v1/kios')result={kios:kios.set(caller,{kind:string(b.ownerKind) as KiosOwner['kind'],id:string(b.ownerId)},b)}
+      else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='situs')result=situs.save(caller,parts[2],b)
+      else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='publish'){const cat=await entryCat();result=situs.publish(caller,parts[2],slug=>cat.nodes.get(slug)?.title??null)}
+      else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='unpublish')result=situs.unpublish(caller,parts[2])
+      else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='active'){if(typeof b.active!=='boolean')throw new Fault(400,'Boolean required');result=situs.setActive(caller,parts[2],b.active)}
+      else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='restore')result=situs.restore(caller,parts[2],Number(b.version))
       else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='group')result=b.groupId===null?groups.unbind(caller,parts[2]):(groups.bind(caller,string(b.groupId),parts[2]),groups.communityGroup(caller,parts[2]))
       else if(path==='/v1/groups')result=groups.create(caller,string(b.title),string(b.description),string(b.kind) as Group['kind'],string(b.visibility) as Group['visibility'])
       else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='members'){
