@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://etnos.space/schemas/lembaga.schema.json",
+  "title": "lembaga.yaml",
+  "description": "What a lembaga says about itself on ETNOS: its name, jenis, descriptions, logo and cover, places and languages, contacts and the communities it shows. Exported with situs.yaml so a lembaga can take its site elsewhere.",
+  "type": "object",
+  "required": ["version", "name", "kind"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "id": { "type": "string", "maxLength": 64 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "kind": { "enum": ["institution", "collective"] },
+    "jenis": { "type": ["string", "null"], "pattern": "^[a-z0-9-]{1,80}$" },
+    "description": { "type": "string", "maxLength": 2000 },
+    "about": { "type": "string", "maxLength": 4000 },
+    "logo": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/image" }] },
+    "cover": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/image" }] },
+    "places": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "$ref": "#/$defs/slug" } },
+    "languages": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "$ref": "#/$defs/slug" } },
+    "contacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "email": { "type": "array", "maxItems": 6, "items": { "type": "string", "pattern": "^[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}$", "description": "an email address" } },
+        "whatsapp": { "type": "string", "pattern": "^[1-9][0-9]{8,14}$", "description": "digits with the country code, for example 6281234567890" },
+        "phone": { "type": "array", "maxItems": 6, "items": { "type": "string", "maxLength": 40 } },
+        "links": { "type": "array", "maxItems": 7, "items": { "type": "object", "required": ["label", "url"], "additionalProperties": false, "properties": { "label": { "type": "string", "maxLength": 40 }, "url": { "type": "string", "pattern": "^https://", "maxLength": 2048, "description": "a complete https address" } } } },
+        "other": { "type": "array", "maxItems": 6, "items": { "type": "object", "required": ["label", "value"], "additionalProperties": false, "properties": { "label": { "type": "string", "maxLength": 40 }, "value": { "type": "string", "maxLength": 200 } } } }
+      }
+    },
+    "recognition": { "type": "array", "maxItems": 5, "items": { "type": "object", "required": ["by", "source"], "additionalProperties": false, "properties": { "by": { "type": "string", "maxLength": 120 }, "source": { "type": "string", "pattern": "^https://", "maxLength": 2048 } } } },
+    "communities": { "type": ["array", "null"], "maxItems": 100, "uniqueItems": true, "items": { "type": "string", "maxLength": 64 }, "description": "ids of public communities to show; null shows every public one" }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,99}$", "description": "an entry address on ETNOS, for example lembah-baliem" },
+    "image": {
+      "type": "object",
+      "required": ["ref"],
+      "additionalProperties": false,
+      "properties": {
+        "ref": { "type": "string", "pattern": "^(media:[0-9a-f-]{36}|logo)$", "description": "media:<id> for a photo, or logo" },
+        "url": { "type": "string", "pattern": "^https://", "maxLength": 2048 },
+        "alt": { "type": "string", "maxLength": 1000 }
+      }
+    }
+  }
+}

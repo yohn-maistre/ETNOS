@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://etnos.space/schemas/situs.schema.json",
+  "title": "situs.yaml",
+  "description": "A lembaga's own website on ETNOS: a template, a theme from fixed lists, navigation and an ordered list of typed blocks that point at the lembaga's public data. No HTML, CSS or JavaScript of its own.",
+  "type": "object",
+  "required": ["version", "template", "theme", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "name": { "$ref": "#/$defs/name" },
+    "template": { "enum": ["editorial", "lembaga"] },
+    "theme": {
+      "type": "object",
+      "required": ["primary", "accent", "fonts"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "$ref": "#/$defs/colour" },
+        "accent": { "$ref": "#/$defs/colour" },
+        "fonts": { "enum": ["geist", "newsreader", "source", "jakarta"] }
+      }
+    },
+    "navigation": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["block", "label"],
+        "additionalProperties": false,
+        "properties": {
+          "block": { "$ref": "#/$defs/blockId" },
+          "label": { "type": "string", "minLength": 1, "maxLength": 30 }
+        }
+      }
+    },
+    "blocks": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "$ref": "#/$defs/block" } }
+  },
+  "$defs": {
+    "name": { "type": "string", "pattern": "^[a-z0-9](?:[a-z0-9-]{1,18})[a-z0-9]$", "description": "3 to 20 lowercase letters, digits or hyphens, the name in etnos.space/situs/<name>" },
+    "colour": { "enum": ["grafit", "biru", "hutan", "tanah", "merah", "laut", "ungu", "kunyit"] },
+    "blockId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,30}$", "description": "lowercase letters, digits and hyphens, starting with a letter" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "mediaRef": { "type": "string", "pattern": "^media:[0-9a-f-]{36}$", "description": "media:<id> of a photo in a public post of the lembaga" },
+    "block": {
+      "oneOf": [
+        { "type": "object", "required": ["id", "type"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "hero" }, "title": { "$ref": "#/$defs/title" }, "text": { "type": "string", "maxLength": 300 }, "image": { "enum": ["cover", "logo", "none"] } } },
+        { "type": "object", "required": ["id", "type"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "tentang" }, "title": { "$ref": "#/$defs/title" } } },
+        { "type": "object", "required": ["id", "type"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "kegiatan" }, "title": { "$ref": "#/$defs/title" }, "limit": { "type": "integer", "minimum": 1, "maximum": 12 } } },
+        { "type": "object", "required": ["id", "type", "images"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "galeri" }, "title": { "$ref": "#/$defs/title" }, "images": { "type": "array", "maxItems": 24, "uniqueItems": true, "items": { "$ref": "#/$defs/mediaRef" } } } },
+        { "type": "object", "required": ["id", "type"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "publikasi" }, "title": { "$ref": "#/$defs/title" } } },
+        { "type": "object", "required": ["id", "type"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "komunitas" }, "title": { "$ref": "#/$defs/title" } } },
+        { "type": "object", "required": ["id", "type"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "kios" }, "title": { "$ref": "#/$defs/title" } } },
+        { "type": "object", "required": ["id", "type"], "additionalProperties": false, "properties": { "id": { "$ref": "#/$defs/blockId" }, "type": { "const": "kontak" }, "title": { "$ref": "#/$defs/title" } } }
+      ]
+    }
+  }
+}

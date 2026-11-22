@@ -2,6 +2,10 @@
  * Handle rules for the identity host (plan §2.2 rule 6). One DNS label under
  * the host's handle domain, lowercase ASCII letters, digits and hyphens, 3 to
  * 20 characters, no hyphen at either end, never a reserved name.
+ *
+ * One list for the whole name space: <name>.etnos.space is both an AT handle and, once the owner switches it on,
+ * the address of a lembaga's Situs (src/situs-dispatch.ts in the ETNOS app imports this file). A name reserved
+ * here can be neither.
  */
 
 export const RESERVED_LABELS = new Set([
@@ -10,6 +14,10 @@ export const RESERVED_LABELS = new Set([
 	"support", "root", "system", "steward", "operator", "official", "resmi", "test",
 	"dev", "staging", "static", "cdn", "assets", "media", "blob", "blobs", "relay",
 	"plc", "did", "handle", "ns", "ns1", "ns2", "smtp", "imap", "ftp", "localhost",
+	// Situs and the app's own sections (docs/plan/one-page-system-2026-11-21.md §8).
+	"situs", "wiki", "kios", "lembaga", "komunitas", "kabar", "news", "studio", "mcp", "agents", "agen",
+	"docs", "blog", "preview", "beta", "demo", "identity", "host", "email", "webmail", "autoconfig",
+	"autodiscover", "pesan", "jelajah", "beranda",
 ]);
 
 const LABEL = /^[a-z0-9](?:[a-z0-9-]{1,18})[a-z0-9]$/;
