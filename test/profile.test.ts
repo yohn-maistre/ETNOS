@@ -1,11 +1,11 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Search} from '../src/search.ts'
 import {api} from '../src/api.ts'
 import {updateProfile} from '../src/profile.ts'
 test('optional profile fields preserve discovery boundaries and cannot edit another actor or grant membership',async()=>{
- const s=new Strata(':memory:'),a=s.provision('did:web:profile.example','Profile'),o=s.provision('did:web:outsider.example','Outside'),q=new Search(s)
+ const s=new Etnos(':memory:'),a=s.provision('did:web:profile.example','Profile'),o=s.provision('did:web:outsider.example','Outside'),q=new Search(s)
  try{
   updateProfile(s,a.actor.id,{bio:'A voluntary biography',location:'Mee',website:'https://example.org/'})
   assert.equal(q.profile(a.actor.id,a.actor.id).bio,'A voluntary biography');assert.throws(()=>q.profile(o.actor.id,a.actor.id),/Not found/)

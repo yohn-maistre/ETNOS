@@ -1,12 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {AgentAccess} from '../src/agent-access.ts'
 import {Resident} from '../src/resident.ts'
 import {ResidentRouting,unavailableReason} from '../src/resident-routing.ts'
 import {Fault} from '../src/core.ts'
-function fixture(){let now=Date.now();const s=new Strata(':memory:','https://commons.example.org',()=>now),owner=s.provision('did:web:routing-owner.example','Synthetic operator'),other=s.provision('did:web:routing-member.example','Synthetic neighbor'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),r=new Resident(s,access),routes=new ResidentRouting(s,access),home=s.createCommunity(owner.actor.id,'Public home','Synthetic','public',true,'open'),target=s.createCommunity(owner.actor.id,'Public destination','Synthetic','public',true,'open'),hidden=s.createCommunity(owner.actor.id,'Protected room','Synthetic','hidden-private',true);s.join(other.actor.id,target.id)
+function fixture(){let now=Date.now();const s=new Etnos(':memory:','https://commons.example.org',()=>now),owner=s.provision('did:web:routing-owner.example','Synthetic operator'),other=s.provision('did:web:routing-member.example','Synthetic neighbor'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),r=new Resident(s,access),routes=new ResidentRouting(s,access),home=s.createCommunity(owner.actor.id,'Public home','Synthetic','public',true,'open'),target=s.createCommunity(owner.actor.id,'Public destination','Synthetic','public',true,'open'),hidden=s.createCommunity(owner.actor.id,'Protected room','Synthetic','hidden-private',true);s.join(other.actor.id,target.id)
  const configure=(communityId:string,name:string)=>{const a=access.enroll(owner.actor.id,{communityId,name,role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);const mandate=s.mandate(owner.actor.id,a.agent_id,communityId,'Public conversation',now+86400000);r.configure(owner.actor.id,{communityId,agentId:a.agent_id,postingMandateId:mandate,enabled:true,mentionsEnabled:true,dailyLimit:5,requestKey:randomUUID()});return a.agent_id}
  const site=configure(home.id,'Aksara ETNOS'),local=configure(target.id,'Aksara community')
  const globalBody={agentId:site,homeCommunityId:home.id,coverage:[home.id],enabled:true,revision:0,requestKey:randomUUID()}

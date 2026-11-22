@@ -31,7 +31,7 @@ import {
 } from "./spaces";
 import type { PDSEnv } from "./types";
 
-const version = "0.19.0-strata.1";
+const version = "0.19.0-etnos.1";
 
 // Cast env to PDSEnv for type safety
 const env = _env as PDSEnv;
@@ -573,7 +573,7 @@ if (env.SPACES && env.SPACES_INDEX) {
 	app.route("/", createSpacesAdminApp({ env, didResolver, getKeypair }));
 }
 
-// Strata: explicit service boundaries. This PDS is not an arbitrary
+// ETNOS: explicit service boundaries. This PDS is not an arbitrary
 // authenticated proxy or a hidden dependency on Bluesky's AppView.
 app.all("/xrpc/*", (c) => c.json({error:"MethodNotImplemented",message:"No service proxy is configured"},501));
 

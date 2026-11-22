@@ -1,7 +1,7 @@
 // Real local engine and browser; synthetic people/content, no deployed writes.
 import assert from 'node:assert/strict'
-import {Strata,api,chromium,origin,artifactDir} from './environment.mjs'
-const s=new Strata(':memory:',origin),owner=s.provision('did:web:writing-fixture.example','Synthetic writer'),room=s.createCommunity(owner.actor.id,'Synthetic writing commons','Local writing contract.','public',false,'open')
+import {Etnos,api,chromium,origin,artifactDir} from './environment.mjs'
+const s=new Etnos(':memory:',origin),owner=s.provision('did:web:writing-fixture.example','Synthetic writer'),room=s.createCommunity(owner.actor.id,'Synthetic writing commons','Local writing contract.','public',false,'open')
 const handler=api(s),browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']})
 try{
  const ctx=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),p=await ctx.newPage(),errors=[];p.setDefaultTimeout(20000);p.on('pageerror',e=>errors.push(e.message))

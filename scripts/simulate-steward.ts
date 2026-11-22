@@ -3,14 +3,14 @@ import {readFileSync,mkdirSync,writeFileSync,chmodSync} from 'node:fs'
 import {dirname,resolve} from 'node:path'
 import {pathToFileURL} from 'node:url'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Discovery} from '../src/discovery.ts'
 import {Resident,type ResidentProvider} from '../src/resident.ts'
 import {Knowledge} from '../src/knowledge.ts'
 
 export async function simulateSteward(database=':memory:',base='http://127.0.0.1:7351'){
  if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Simulation is loopback-only')
- let clock=Date.now();const s=new Strata(database,base,()=>clock++)
+ let clock=Date.now();const s=new Etnos(database,base,()=>clock++)
  if(s.get<{n:number}>('SELECT count(*) n FROM actors')!.n){s.close();throw Error('Simulation requires an empty dedicated database; existing data was not changed')}
  try{
   const owner=s.provision('did:web:steward-demo.example','Operator · simulasi'),community=s.createCommunity(owner.actor.id,'Simulasi pengetahuan bersama','Contoh terisolasi; bukan komunitas atau persetujuan institusi nyata.','public',true,'open')
@@ -35,7 +35,7 @@ export async function simulateSteward(database=':memory:',base='http://127.0.0.1
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
  process.umask(0o077)
- const path=resolve(process.argv[2]??'.strata/steward-demo.sqlite');mkdirSync(dirname(path),{recursive:true,mode:0o700})
+ const path=resolve(process.argv[2]??'.etnos/steward-demo.sqlite');mkdirSync(dirname(path),{recursive:true,mode:0o700})
  const demo=await simulateSteward(path);chmodSync(path,0o600)
  try{
   const receipt={disclosure:demo.disclosure,communityId:demo.community.id,noteId:demo.note.id,review:'provisional',postId:demo.announcement.id,provider:demo.job.model,sources:demo.note.citations,duplicateState:demo.duplicate.state}

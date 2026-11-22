@@ -7,7 +7,7 @@
  *
  * Leiden follows Traag, Waltman and van Eck (2019), "From Louvain to Leiden:
  * guaranteeing well-connected communities", with the modularity quality function.
- * Written for Strata; no code copied.
+ * Written for ETNOS; no code copied.
  */
 
 export type WeightedEdge = [string, string, number]

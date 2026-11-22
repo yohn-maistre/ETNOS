@@ -2,7 +2,7 @@
 // positions, normals, texture coordinates and indices (as floats, or as normalised integers under
 // KHR_mesh_quantization), a node tree with matrices or translation, rotation and scale, and one base colour (factor
 // and texture) per material, from the core material or the older specular-glossiness extension that Sketchfab exports
-// use. Compressed meshes (Draco, meshopt) are not read; the seed script stores quantised but uncompressed files. Written for Strata (AGPL-3.0); it follows the glTF 2.0 specification by the Khronos Group.
+// use. Compressed meshes (Draco, meshopt) are not read; the seed script stores quantised but uncompressed files. Written for ETNOS (AGPL-3.0); it follows the glTF 2.0 specification by the Khronos Group.
 
 export type Mesh = {
   positions: Float32Array

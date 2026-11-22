@@ -1,13 +1,13 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Search} from '../src/search.ts'
 import {Groups} from '../src/groups.ts'
 import {Wiki} from '../src/wiki.ts'
 import {Forum} from '../src/forum.ts'
 import {api} from '../src/api.ts'
 function fixture() {
- const s=new Strata(':memory:','https://search.example'),a=s.provision('did:web:giyaibo.example','giyaibo.bsky.social'),b=s.provision('did:web:protected.example','Protected participant'),o=s.provision('did:web:outside.example','Outside'),q=new Search(s),g=new Groups(s,{stewardDid:a.actor.did}),w=new Wiki(s)
+ const s=new Etnos(':memory:','https://search.example'),a=s.provision('did:web:giyaibo.example','giyaibo.bsky.social'),b=s.provision('did:web:protected.example','Protected participant'),o=s.provision('did:web:outside.example','Outside'),q=new Search(s),g=new Groups(s,{stewardDid:a.actor.did}),w=new Wiki(s)
  const c=s.createCommunity(a.actor.id,'Mee public','Mee conversation','public'),h=s.createCommunity(b.actor.id,'Secret Mee','Private Mee','hidden-private'),l=s.createCommunity(b.actor.id,'Listed Mee','Admission required','listed-private')
  s.setMember(b.actor.id,h.id,a.actor.id,true)
  const p=s.createPost(a.actor.id,c.id,'Mee public story'),secret=s.createPost(b.actor.id,h.id,'Mee secret narrative')

@@ -112,7 +112,7 @@
       </Button>{/if}
   </div>
 </div>
-{#if !auth.actor}<div class="strata-nodata">
+{#if !auth.actor}<div class="etnos-nodata">
     <Bell size={26} />
     <h2>Aktivitasmu di satu tempat</h2>
     <p>Masuk untuk melihat balasan, tinjauan dan keputusan keanggotaan.</p>
@@ -136,12 +136,12 @@
         </span>{/if}
     </Button>
   </div>
-  {#if loading}<div class="strata-card strata-inline" role="status">
+  {#if loading}<div class="etnos-card etnos-inline" role="status">
       <LoaderCircle class="animate-spin" size={18} />Memuat aktivitas…
-    </div>{:else if error}<div class="strata-card">
+    </div>{:else if error}<div class="etnos-card">
       <p role="alert">{error}</p>
       <Button variant="outline" onclick={load}>Coba lagi</Button>
-    </div>{:else if !display.length}<div class="strata-nodata">
+    </div>{:else if !display.length}<div class="etnos-nodata">
       <CheckCheck size={26} />
       <h2>
         {tab === 'unread' ? 'Sudah terbaca semua' : 'Belum ada aktivitas'}
@@ -185,7 +185,7 @@
             <Check size={17} />
           </Button>{/if}
       </Card.Root>{/each}
-    {#if inbox.items.length === inbox.window}<p class="strata-card cx-hint">
+    {#if inbox.items.length === inbox.window}<p class="etnos-card cx-hint">
         Menampilkan {inbox.window} aktivitas terbaru yang dapat kamu akses.
       </p>{/if}
   {/if}{/if}

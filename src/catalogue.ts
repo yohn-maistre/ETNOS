@@ -35,7 +35,7 @@ export type Catalogue = {
 }
 
 /** Deployment catalogues bundled at build time. The engine knows none of their
- * places; a deployment picks one by name (STRATA_CATALOGUE) and a node steward loads it. */
+ * places; a deployment picks one by name (ETNOS_CATALOGUE) and a node steward loads it. */
 const shipped: Record<string, Catalogue> = { 'tanah-papua': tanahPapua as Catalogue }
 export const defaultCatalogue = 'tanah-papua'
 

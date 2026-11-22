@@ -13,7 +13,7 @@ const cfg = parseConfig(
 function runtime(persist) {
   return new Miniflare(
     convertV4MiniflareOptions({
-      name: "strata-pds-local-only",
+      name: "etnos-pds-local-only",
       modules: [
         { type: "ESModule", path: "dist/worker.js" },
         ...readdirSync("dist")
@@ -41,7 +41,7 @@ const request = (mf, path, body, token) =>
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
 test("real workerd PDS: signed repository/CAR, R2, isolation, restart, bounds and no implicit service proxy", async () => {
-  const dir = mkdtempSync(join(tmpdir(), "strata-pds-local-"));
+  const dir = mkdtempSync(join(tmpdir(), "etnos-pds-local-"));
   let mf = runtime(dir);
   try {
     assert.equal((await request(mf, "/health")).status, 200);

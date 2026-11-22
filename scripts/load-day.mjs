@@ -9,10 +9,10 @@ import {tmpdir} from 'node:os'
 import {join} from 'node:path'
 
 const args=process.argv.slice(2),oldClient=args.includes('--old-client'),[people=30,pages=200,posts=2000]=args.filter(a=>!a.startsWith('--')).map(Number)
-const origin='https://strata.example'
-const dir=await mkdtemp(join(tmpdir(),'strata-load-'))
-const mf=new Miniflare(convertV4MiniflareOptions({name:'strata-load-only',modules:true,scriptPath:'.wrangler/test/worker-harness.js',
-  compatibilityDate:'2026-10-23',compatibilityFlags:['nodejs_compat'],bindings:{STRATA_ORIGIN:origin,STRATA_NODE:'load'},
+const origin='https://etnos.example'
+const dir=await mkdtemp(join(tmpdir(),'etnos-load-'))
+const mf=new Miniflare(convertV4MiniflareOptions({name:'etnos-load-only',modules:true,scriptPath:'.wrangler/test/worker-harness.js',
+  compatibilityDate:'2026-10-23',compatibilityFlags:['nodejs_compat'],bindings:{ETNOS_ORIGIN:origin,ETNOS_NODE:'load'},
   durableObjects:{STRATA:{className:'TestNode',useSQLite:true}},resourcePersistencePath:dir}))
 let requests=0
 const call=async(path,token,body)=>{requests++;const r=await mf.dispatchFetch(origin+path,{method:body===undefined?'GET':'POST',

@@ -1,4 +1,4 @@
-import { Fault, StrataCore } from "./core.ts";
+import { Fault, EtnosCore } from "./core.ts";
 
 type ActivityRow = {
   id: string;
@@ -20,8 +20,8 @@ type ActivityRow = {
  * This bounded inbox covers the latest 100 eligible events, not push/DM delivery.
  */
 export class Activity {
-  private store: StrataCore;
-  constructor(store: StrataCore) {
+  private store: EtnosCore;
+  constructor(store: EtnosCore) {
     this.store = store;
   }
   list(actorId: string) {

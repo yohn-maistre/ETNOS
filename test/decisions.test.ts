@@ -1,12 +1,12 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Decisions,type DecisionInput,type DecisionProvider} from '../src/decisions.ts'
 import {api} from '../src/api.ts'
 const stories=[{id:'42',title:'Public reporting',publishedAt:null}]
 const output=(p=.95,confidence=.95)=>({answers:{story:{choice:'s0',confidence,probabilities:{s0:p,none:1-p}},wiki:{noul:.9}}})
-function fixture(){const s=new Strata(':memory:','https://strata.example'),owner=s.provision('did:web:decisions-owner.example','Owner'),member=s.provision('did:web:decisions-member.example','Member'),pub=s.createCommunity(owner.actor.id,'Public','Discussion','public',false,'open'),secret=s.createCommunity(owner.actor.id,'Hidden','Never','hidden-private'),post=s.createPost(owner.actor.id,pub.id,'Public evidence'),privatePost=s.createPost(owner.actor.id,secret.id,'PRIVATE ORIGINAL');s.join(member.actor.id,pub.id);return{s,owner,member,pub,secret,post,privatePost}}
+function fixture(){const s=new Etnos(':memory:','https://etnos.example'),owner=s.provision('did:web:decisions-owner.example','Owner'),member=s.provision('did:web:decisions-member.example','Member'),pub=s.createCommunity(owner.actor.id,'Public','Discussion','public',false,'open'),secret=s.createCommunity(owner.actor.id,'Hidden','Never','hidden-private'),post=s.createPost(owner.actor.id,pub.id,'Public evidence'),privatePost=s.createPost(owner.actor.id,secret.id,'PRIVATE ORIGINAL');s.join(member.actor.id,pub.id);return{s,owner,member,pub,secret,post,privatePost}}
 test('decision API requires a human steward and public content before any provider call',async()=>{
  const f=fixture();let calls=0;const provider:DecisionProvider={news:async()=>{calls++;return stories},run:async()=>{calls++;return output()}},handler=api(f.s,{decisions:provider})
  const invoke=(id:string,token?:string)=>handler(new Request(f.s.base+'/v1/posts/'+id+'/suggestions',{method:'POST',headers:{...(token?{authorization:'Bearer '+token}:{}),'content-type':'application/json'},body:JSON.stringify({requestKey:randomUUID()})}))

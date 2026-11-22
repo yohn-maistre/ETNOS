@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
-import { Strata, api, chromium, origin, artifactDir } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+import { Etnos, api, chromium, origin, artifactDir } from './environment.mjs'
+const s = new Etnos(':memory:', origin),
   owner = s.provision('did:web:next-fixture.example', 'Synthetic steward'),
   community = s.createCommunity(
     owner.actor.id,

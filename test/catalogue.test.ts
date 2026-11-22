@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { Groups } from "../src/groups.ts";
 import { api } from "../src/api.ts";
 import { catalogue, catalogueSummary } from "../src/catalogue.ts";
@@ -42,7 +42,7 @@ test("the Tanah Papua catalogue is consistent and keeps the live slugs", () => {
 });
 
 test("catalogue import is steward-only, idempotent, and keeps existing ids, edits and attached records", async () => {
-  const s = new Strata(":memory:", "https://strata.example", () => Date.parse("2026-11-15T00:00:00Z")),
+  const s = new Etnos(":memory:", "https://etnos.example", () => Date.parse("2026-11-15T00:00:00Z")),
     admin = s.provision("did:web:admin.example", "Node steward"),
     owner = s.provision("did:web:owner.example", "Group owner");
   const groups = new Groups(s, { stewardDid: admin.actor.did }),
@@ -123,7 +123,7 @@ test("catalogue import is steward-only, idempotent, and keeps existing ids, edit
 });
 
 test("a loop a steward made by hand is refused by the import, not repaired", () => {
-  const s = new Strata(":memory:", "https://strata.example"),
+  const s = new Etnos(":memory:", "https://etnos.example"),
     admin = s.provision("did:web:admin.example", "Node steward"),
     groups = new Groups(s, { stewardDid: admin.actor.did });
   try {
@@ -140,7 +140,7 @@ test("a loop a steward made by hand is refused by the import, not repaired", () 
 });
 
 test("an import replaces only a description it wrote earlier, never a steward's wording", () => {
-  const s = new Strata(":memory:", "https://strata.example", () => Date.parse("2026-11-15T00:00:00Z")),
+  const s = new Etnos(":memory:", "https://etnos.example", () => Date.parse("2026-11-15T00:00:00Z")),
     admin = s.provision("did:web:admin.example", "Node steward"),
     groups = new Groups(s, { stewardDid: admin.actor.did });
   try {

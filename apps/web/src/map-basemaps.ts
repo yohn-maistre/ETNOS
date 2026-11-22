@@ -1,6 +1,6 @@
 // Basemap choices for TerrainMap. Map setup adapted from the owner's West Papua Watch project.
 //
-// LICENCE NOTE for operators of other Strata instances: the EOX terrain and
+// LICENCE NOTE for operators of other ETNOS instances: the EOX terrain and
 // Sentinel-2 cloudless 2025 layers below are free for NON-COMMERCIAL use only
 // (https://maps.eox.at/ terms). Replace the `tiles` and `attribution` values
 // with a basemap whose licence fits your use. Nothing else needs to change.

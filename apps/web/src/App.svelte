@@ -1062,8 +1062,8 @@
         <Button variant="ghost" onclick={() => (searchDialogOpen = true)}>Cari di ETNOS</Button>
       </div>
     </div>
-  {:else if error}<div class="strata-card">
-      <p class="strata-alert" role="alert">{error}</p>
+  {:else if error}<div class="etnos-card">
+      <p class="etnos-alert" role="alert">{error}</p>
       <Button
         class="cx-button small"
         style="margin-top:14px"
@@ -1120,7 +1120,7 @@
       />{/await}
   {:else if path === '/preferences'}
     <div class="cx-page-head"><h1>Pengaturan</h1></div>
-    <Card.Root class="strata-card strata-preferences">
+    <Card.Root class="etnos-card etnos-preferences">
       <AppearancePanel />
       <a class="cx-list-row" href="/studio">Studio: komunitas, agen & koneksi <ChevronRight size={16}/></a>
       <VaultTransfer actorId={auth.actor?.id} />
@@ -1162,7 +1162,7 @@
             }}
           >
             <Label>
-              Undang akun ke Strata
+              Undang akun ke ETNOS
               <Input
                 bind:value={inviteHandle}
                 placeholder="nama.domain"
@@ -1301,14 +1301,14 @@
         <p>{community.description}</p>
         {#if community.forming_until != null && currentMembership}<FoundingRoom {community} onChanged={() => load(true)} />{/if}
         <CommunityPlaces communityId={community.id} steward={isSteward(community.id)} hidden={community.visibility === 'hidden-private'} tick={labelsTick} onEdit={() => open('manage', community!.id)} />
-        <div class="strata-caption">
+        <div class="etnos-caption">
           {#if community.forming_until != null}<LockKeyhole size={13} />Belum terbuka{:else if community.visibility === 'public'}<Globe
               size={13}
             />Publik{:else}<LockKeyhole size={13} />Khusus anggota{/if}
           <span>·</span>
           {community.publication === 'atproto'
             ? 'Penerbitan AT tersedia'
-            : 'Percakapan di Strata'}
+            : 'Percakapan di ETNOS'}
         </div>
         <div class="cx-actions" style="margin-top:18px">
           {#if currentMembership}<Button
@@ -1358,9 +1358,9 @@
                   composeKind = 'poll'
                 }}
               />{/await}{:else if tab === 'about'}<Card.Root
-              class="strata-card"
+              class="etnos-card"
             >
-              <p class="strata-body">{community.description}</p>
+              <p class="etnos-body">{community.description}</p>
               <p class="cx-hint">
                 {community.visibility === 'public'
                   ? 'Isi dapat dibaca publik.'
@@ -1371,7 +1371,7 @@
                     ? 'Keanggotaan melalui undangan.'
                     : 'Keanggotaan terbuka.'}
               </p>
-            </Card.Root>{:else if tab === 'wiki'}<Card.Root class="strata-card">
+            </Card.Root>{:else if tab === 'wiki'}<Card.Root class="etnos-card">
               {#each wiki.filter((p) => p.community_id === community.id) as p}<a
                   href={'/wiki/' + p.id}
                   class="cx-list-row"
@@ -1396,7 +1396,7 @@
                   Muat posting lain
                 </Button>
               </div>{/if}{#if !posts.filter((p) => tab !== 'media' || p.media?.length || videoEmbed(p.content?.url ?? '') || directVideo(p.content?.url ?? '')).length && !loading}<div
-                class="strata-nodata"
+                class="etnos-nodata"
               >
                 <MessageCircle size={26} />
                 <h2>
@@ -1414,7 +1414,7 @@
               </div>{/if}{/if}
         </Tabs.Content>
       </Tabs.Root>
-    {:else if !loading}<div class="strata-nodata">
+    {:else if !loading}<div class="etnos-nodata">
         <LockKeyhole size={26} />
         <h2>Komunitas tidak tersedia</h2>
         <p>Komunitas mungkin tidak ada atau memerlukan akses.</p>
@@ -1474,7 +1474,7 @@
               citations = location.origin + '/square/' + selectedPost!.id
             }
           : undefined}
-      />{:else if !loading}<div class="strata-nodata">
+      />{:else if !loading}<div class="etnos-nodata">
         <h2>Posting tidak tersedia</h2>
       </div>{/if}
   {:else if parts[0] === 'gabung'}
@@ -1638,7 +1638,7 @@
           Belum ada posting yang dapat kamu lihat.
         </p>{/if}
       {/if}<ThreadEnd/>
-    {:else if !loading}<div class="strata-nodata">
+    {:else if !loading}<div class="etnos-nodata">
         <h2>Profil tidak tersedia</h2>
         <p>
           Identitas anggota privat tidak ditampilkan dalam direktori publik.
@@ -1692,8 +1692,8 @@
             if (path === '/saved') saved = saved.filter((x) => x.bookmarked)
           }}
         />{/each}
-      {#if !displayPosts.length && !loading}<div class="strata-nodata">
-          <div class="strata-empty-graphic">
+      {#if !displayPosts.length && !loading}<div class="etnos-nodata">
+          <div class="etnos-empty-graphic">
             {#if path === '/saved'}<Bookmark size={27} />{:else}<MessageCircle
                 size={27}
               />{/if}
@@ -1730,7 +1730,7 @@
             {path === '/saved' && !auth.actor ? 'Masuk' : 'Lihat komunitas'}
           </Button>
         </div>{/if}
-      {#if nextCursor && path === '/'}<div class="strata-card">
+      {#if nextCursor && path === '/'}<div class="etnos-card">
           <Button
             class="cx-button"
             disabled={busy}
@@ -1743,7 +1743,7 @@
         </div>{/if}
       {#if !loading}<ThreadEnd/>{/if}
     </FeedRefresh>
-  {:else}<div class="strata-nodata">
+  {:else}<div class="etnos-nodata">
       <h2>Halaman tidak tersedia</h2>
       <Button href="/" class="cx-button" variant="outline">Beranda</Button>
     </div>{/if}
@@ -1813,12 +1813,12 @@
         target="_blank"
         rel="noreferrer"
       >
-        Strata
+        Kode sumber
       </a>
       <a href="/third-party-notices.txt" target="_blank" rel="noreferrer">
         Lisensi
       </a>
-      <span>ETNOS · dijalankan dengan Strata · pratinjau</span>
+      <span>Kode terbuka ETNOS · pratinjau</span>
     </div>
   {/snippet}
 </PlatformShell>
@@ -1885,14 +1885,14 @@
         Isi formulir dan tinjau sebelum mengirim.
       </Dialog.Description>
     </Dialog.Header>
-    {#if modal === 'manage'}<div class="strata-stack" style="margin-top:20px">
+    {#if modal === 'manage'}<div class="etnos-stack" style="margin-top:20px">
         {#if communities.find((c) => c.id === communityId)}<CommunitySettings
             community={communities.find((c) => c.id === communityId)!}
             onSaved={(next) => (communities = communities.map((c) => (c.id === next.id ? { ...c, ...next } : c)))}
           /><section class="community-labels-settings" aria-label="Label komunitas"><h3 style="font-size:15px;margin:0 0 10px">Label komunitas</h3><CommunityLabels {communityId} hidden={communities.find((c) => c.id === communityId)?.visibility === 'hidden-private'} onSaved={() => { labelsTick++; delete kamusStarted[communityId] }} /></section><CommunitySeasons {communityId} />{/if}
         <h3 style="font-size:15px">Permintaan bergabung</h3>
         {#each joinRequests.filter((r) => r.state === 'pending') as r}<article
-            class="strata-review"
+            class="etnos-review"
           >
             <p>{r.message}</p>
             <div class="cx-actions">
@@ -1936,7 +1936,7 @@
           </p>{/if}
         <h3 style="font-size:15px">Laporan</h3>
         {#each reports.filter((r) => r.state === 'open') as r}<article
-            class="strata-review"
+            class="etnos-review"
           >
             <a
               href={'/square/' + r.post_id}
@@ -1953,7 +1953,7 @@
                 mutate(async () => {
                   await request(`/v1/reports/${r.id}/decide`, {
                     state: 'resolved',
-                    decision: 'Ditinjau pengelola melalui Strata',
+                    decision: 'Ditinjau pengelola melalui ETNOS',
                   })
                   await manage(communityId)
                 })}
@@ -1970,7 +1970,7 @@
       </div>
       <details class="form-details">
         <summary>Posting dan catatan moderator</summary>
-        {#each moderation.posts as item}<div class="strata-review">
+        {#each moderation.posts as item}<div class="etnos-review">
             <a href={'/square/' + item.id}>
               {item.text.slice(0, 120) || 'Posting'}
             </a>

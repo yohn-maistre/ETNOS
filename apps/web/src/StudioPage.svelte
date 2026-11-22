@@ -63,7 +63,7 @@
 
 <div class="studio-page">
 <StudioTabs current="community"/>
-{#if !auth.actor}<section class="strata-nodata"><Radio size={28}/><h1>Studio komunitas</h1><Button href="/login">Masuk</Button></section>
+{#if !auth.actor}<section class="etnos-nodata"><Radio size={28}/><h1>Studio komunitas</h1><Button href="/login">Masuk</Button></section>
 {:else if loading}<ContentSkeleton/>{:else}
  <div class="commons-page-head"><div><h1>Studio</h1><p class="cx-hint">Sumber, pengetahuan & penghuni komunitas.</p></div><a class="commons-quiet-link" href="/wiki"><BookOpen size={16}/>Catatan bersama</a></div>
  {#if error}<p class="commons-alert" role="alert">{error}</p>{/if}
@@ -76,7 +76,7 @@
   {#if seedResult}<p class="studio-catalogue-result" role="status"><span><strong>{seedResult.added}</strong> dipasang</span><span><strong>{seedResult.present}</strong> sudah ada</span>{#if seedResult.missingPages.length}<span><strong>{seedResult.missingPages.length}</strong> halaman belum terbit</span>{/if}{#if seedResult.missingContexts.length}<span><strong>{seedResult.missingContexts.length}</strong> label belum ada di katalog</span>{/if}</p>{/if}
   {#if catalogueError}<p class="commons-inline-error" role="alert">{catalogueError}</p>{/if}
  </div></section>{/if}
- {#if !rooms.length}<div class="strata-nodata"><h2>Kamu belum mengelola komunitas</h2><p>Studio tersedia setelah kamu menjadi pengelola sebuah komunitas.</p><Button variant="outline" href="/communities">Lihat komunitas</Button></div>{:else}
+ {#if !rooms.length}<div class="etnos-nodata"><h2>Kamu belum mengelola komunitas</h2><p>Studio tersedia setelah kamu menjadi pengelola sebuah komunitas.</p><Button variant="outline" href="/communities">Lihat komunitas</Button></div>{:else}
  <div class="commons-scope"><label for="studio-scope">Komunitas</label><select id="studio-scope" disabled={busy} bind:value={scope} onchange={()=>void loadScope(scope)}><option value="">Pilih komunitas publik</option>{#each rooms.filter(r=>r.visibility==='public') as room}<option value={room.id}>{room.title}</option>{/each}</select></div>
  {#if scope}
  <nav class="commons-tabs" aria-label="Studio"><button class:active={section==='sources'} onclick={()=>section='sources'}><Rss size={16}/>Sumber</button><button class:active={section==='resident'} onclick={()=>section='resident'}><Bot size={16}/>Penghuni</button><button class:active={section==='activity'} onclick={()=>section='activity'}>Aktivitas</button><button class:active={section==='wiki'} onclick={()=>section='wiki'}><BookOpen size={16}/>Ensiklopedia</button></nav>

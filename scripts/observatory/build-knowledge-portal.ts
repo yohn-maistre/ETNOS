@@ -30,9 +30,9 @@ async function load():Promise<Export>{
  const from=arg('--from')
  if(from?.startsWith('https://'))return await (await fetch(from)).json() as Export
  if(from)return JSON.parse(readFileSync(from,'utf8')) as Export
- const {Strata}=await import('../../src/store.ts'),{Groups}=await import('../../src/groups.ts'),{KnowledgeModel}=await import('../../src/knowledge-model.ts')
+ const {Etnos}=await import('../../src/store.ts'),{Groups}=await import('../../src/groups.ts'),{KnowledgeModel}=await import('../../src/knowledge-model.ts')
  const seed=JSON.parse(readFileSync(root+'src/catalogues/tanah-papua-knowledge-seed.json','utf8'))
- const s=new Strata(':memory:','https://observatory.invalid'),steward=s.provision('did:web:observatory.invalid','Build')
+ const s=new Etnos(':memory:','https://observatory.invalid'),steward=s.provision('did:web:observatory.invalid','Build')
  const model=new KnowledgeModel(s,new Groups(s,{stewardDid:steward.actor.did}))
  model.importSeed(steward.actor.id,seed)
  const out=model.graph(undefined,{publicOnly:true,excerpts:true}) as unknown as Export

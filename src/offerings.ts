@@ -1,4 +1,4 @@
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {Forum} from './forum.ts'
 import {Groups} from './groups.ts'
 import {transition,text,expected,readScope,emit} from './commons.ts'
@@ -7,8 +7,8 @@ import {brokenRule} from './kios-rules.ts'
 
 /** One canonical post plus commercial terms; no payment custody or agent commerce. */
 export class Offerings {
- readonly store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ readonly store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  private terms(price:unknown,unit:unknown,expires:unknown,place:unknown){
   if(price!==null&&(!Number.isSafeInteger(price)||Number(price)<0||Number(price)>1_000_000_000_000))throw new Fault(400,'Use a whole IDR amount or leave price open')
   if(expires!==null&&(!Number.isSafeInteger(expires)||Number(expires)<=this.store.clock()||Number(expires)>this.store.clock()+90*86400000))throw new Fault(400,'Expiry must be in the next 90 days')

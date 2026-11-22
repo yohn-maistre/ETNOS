@@ -1,7 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {NodeOAuthClient,JoseKey,type NodeSavedState,type NodeSavedSession} from '@atproto/oauth-client-node'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 
 const did='did:plc:abcdefghijklmnopqrstuvwx' as const,handle='friend.etnos.example'
 function memory<T>() {const data=new Map<string,T>();return {get:(key:string)=>data.get(key),set:(key:string,value:T)=>{data.set(key,value)},del:(key:string)=>{data.delete(key)}}}
@@ -28,7 +28,7 @@ test('official identity resolver requires the account to confirm an ETNOS-domain
 })
 
 test('fresh DID resolution follows a changed PDS while the same handle and local private-room rights persist',async()=>{
- const f=await fixture(),s=new Strata(':memory:','https://node.example')
+ const f=await fixture(),s=new Etnos(':memory:','https://node.example')
  try {
   const first=await f.resolve(),owner=s.provision(first.did,'Synthetic portable account').actor
   const room=s.createCommunity(owner.id,'Protected fixture','Not public.','hidden-private')

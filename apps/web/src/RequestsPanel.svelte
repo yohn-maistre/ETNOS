@@ -72,7 +72,7 @@
   <h2 class="req-title">Permintaan untuk lembaga ini</h2>
   <p class="req-note">Aksara lembaga ini hanya bisa mengerjakan permintaan yang sudah disetujui, dan hanya sebatas izinnya sendiri.</p>
   {#if loading}<p class="req-note">Memuat permintaan…</p>
-  {:else if !incoming.length}<div class="strata-nodata"><Inbox size={26} /><h2>Belum ada permintaan</h2><p>Permintaan dari Aksara lembaga lain akan tampil di sini.</p></div>
+  {:else if !incoming.length}<div class="etnos-nodata"><Inbox size={26} /><h2>Belum ada permintaan</h2><p>Permintaan dari Aksara lembaga lain akan tampil di sini.</p></div>
   {:else}<ul class="req-list">{#each incoming as r (r.id)}{@render item(r, false)}{/each}</ul>{/if}
   {#if outgoing.length}<h2 class="req-title">Permintaan yang dikirim</h2>
     <ul class="req-list">{#each outgoing as r (r.id)}{@render item(r, true)}{/each}</ul>{/if}

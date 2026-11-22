@@ -7,13 +7,13 @@
  * claim only links the two, after the node operator approves it. An entry is claimed by at most one lembaga, and a
  * lembaga claims at most one entry; both are enforced by unique indexes on approved claims.
  *
- * A lembaga with no entry yet asks for an unclaimed listing (strata-model step 4): a minimal entry of kind lembaga
+ * A lembaga with no entry yet asks for an unclaimed listing (etnos-model step 4): a minimal entry of kind lembaga
  * with a title, a description, its jenis and its place, created by the operator's approval and then claimed by it.
  * Listings are read by the entry adapter beside the knowledge model; they never write `km_entities`.
  */
 import { randomUUID } from 'node:crypto'
 import { Buffer } from 'node:buffer'
-import { Fault, type StrataCore } from './core.ts'
+import { Fault, type EtnosCore } from './core.ts'
 import { text, type Groups } from './groups.ts'
 import { inspectWebP } from './media.ts'
 
@@ -41,9 +41,9 @@ export const listingSlug = (title: string) =>
   'lembaga-' + title.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50).replace(/-$/, '')
 
 export class Lembaga {
-  private s: StrataCore
+  private s: EtnosCore
   readonly groups: Groups
-  constructor(store: StrataCore, groups: Groups) {
+  constructor(store: EtnosCore, groups: Groups) {
     this.s = store
     this.groups = groups
   }

@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Groups} from '../src/groups.ts'
 import {KnowledgeModel,type KnowledgeSeed} from '../src/knowledge-model.ts'
 import {Datasets,datasetInput,datasetId,type DatasetSeed} from '../src/datasets.ts'
@@ -20,7 +20,7 @@ const shipped:DatasetSeed={version:1,datasets:[record('seed-a',['lembah-uji']),r
 let n=0
 const rk=()=>'request-'+(++n).toString().padStart(6,'0')
 function world(){
- const s=new Strata(':memory:','https://ds.example.org')
+ const s=new Etnos(':memory:','https://ds.example.org')
  const steward=s.provision('did:web:steward.example','Node steward'),host=s.provision('did:web:host.example','Host'),member=s.provision('did:web:member.example','Member'),outsider=s.provision('did:web:outsider.example','Outsider')
  const agent=s.provision('did:web:agent.example','Agent',host.actor.id)
  const g=new Groups(s,{stewardDid:steward.actor.did}),m=new KnowledgeModel(s,g)
@@ -133,7 +133,7 @@ test('the shipped dataset seed is well formed and points only to things in the s
 })
 
 test('the API lists the shipped catalogue without an import and keeps writes behind authentication',async()=>{
- const s=new Strata(':memory:','https://ds.example.org')
+ const s=new Etnos(':memory:','https://ds.example.org')
  try{
   const steward=s.provision('did:web:steward.example','Node steward')
   const handle=api(s,{stewardDid:steward.actor.did})

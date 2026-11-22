@@ -138,8 +138,8 @@
     pending = false
   }
   onMount(() => {
-    window.addEventListener('strata-dm-locked', locked)
-    return () => window.removeEventListener('strata-dm-locked', locked)
+    window.addEventListener('etnos-dm-locked', locked)
+    return () => window.removeEventListener('etnos-dm-locked', locked)
   })
   onDestroy(() => vault.lock())
   async function setup() {
@@ -465,20 +465,20 @@
     </Button>
   </div>
 </div>
-{#if !auth.actor}<div class="strata-nodata">
+{#if !auth.actor}<div class="etnos-nodata">
     <MessageSquare size={26} />
     <h2>Pesan antar pengguna</h2>
     <p>Masuk untuk membuka percakapan privat.</p>
     <Button href="/login">Masuk</Button>
   </div>
 {:else if loading && !device}<div
-    class="strata-card strata-inline"
+    class="etnos-card etnos-inline"
     role="status"
   >
     <LoaderCircle size={18} class="animate-spin" />Memuat pesan…
   </div>
 {:else if !unlocked}
-  <div class="strata-narrow">
+  <div class="etnos-narrow">
     <Card.Root>
       <Card.Header>
         <KeyRound size={24} class="text-primary mb-2" /><Card.Title>
@@ -521,7 +521,7 @@
                 Gunakan minimal 16 karakter. Frasa ini hanya membuka kunci di
                 browser ini dan tidak dikirim ke server.
               </p>
-              <div class="strata-inline items-start">
+              <div class="etnos-inline items-start">
                 <Checkbox id="dm-consent" bind:checked={consent} /><Label
                   for="dm-consent"
                   class="flex-1 text-sm leading-relaxed"
@@ -581,13 +581,13 @@
       </Dropdown.Content>
     </Dropdown.Root>
   </div>
-  {#if selected.state === 'preparing'}<div class="strata-card">
+  {#if selected.state === 'preparing'}<div class="etnos-card">
       <p>Permintaan belum selesai dikirim.</p>
       {#if !selected.incoming}<Button disabled={busy} onclick={resume}>
           Lanjutkan permintaan
         </Button>{/if}
     </div>
-  {:else if selected.state === 'pending'}<div class="strata-card">
+  {:else if selected.state === 'pending'}<div class="etnos-card">
       {#if selected.incoming}<h2>Permintaan pesan</h2>
         <p class="cx-hint">
           Terima untuk membuka percakapan dengan {peer?.name}.
@@ -621,7 +621,7 @@
         >
           <p>{message.text}</p>
           <small>{relativeDate(message.created)}</small>
-        </article>{/each}{#if !messages.length}<div class="strata-nodata">
+        </article>{/each}{#if !messages.length}<div class="etnos-nodata">
           <MessageSquare size={24} />
           <h2>Mulai percakapan</h2>
         </div>{/if}
@@ -660,7 +660,7 @@
       </form>{/if}
   {/if}
 {:else}
-  {#if recipient}<div class="strata-card">
+  {#if recipient}<div class="etnos-card">
       <p>Mulai percakapan dengan pengguna ini?</p>
       <Button disabled={busy} onclick={() => begin(recipient)}>
         Kirim permintaan pesan
@@ -702,7 +702,7 @@
         <small>{relativeDate(thread.updated)}</small>
       </a>
     </Card.Root>{/each}
-  {#if !threads.length && !loading}<div class="strata-nodata">
+  {#if !threads.length && !loading}<div class="etnos-nodata">
       <MessageSquare size={26} />
       <h2>Belum ada pesan</h2>
       <p>
@@ -714,7 +714,7 @@
       </Button>
     </div>{/if}
 {/if}
-{#if error && !showNew}<div class="strata-card">
+{#if error && !showNew}<div class="etnos-card">
     <p role="alert" class="cx-form-error">{error}</p>
   </div>{/if}
 <Dialog.Root bind:open={showNew}>

@@ -1,9 +1,9 @@
 /** Real loopback HTTP pipeline with synthetic identities. Never touches a deployed node. */
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {server} from '../src/http.ts'
-const origin='http://127.0.0.1:7347',s=new Strata(':memory:',origin)
+const origin='http://127.0.0.1:7347',s=new Etnos(':memory:',origin)
 const operator=s.provision('did:web:operator.invalid','Operator demo lokal'),agent=s.provision('did:web:aksara-demo.invalid','Aksara · demo lokal',operator.actor.id)
 const room=s.createCommunity(operator.actor.id,'Coba Aksara','Simulasi lokal; tidak diterbitkan ke ETNOS atau AT.','public',true,'open')
 const app=server(s)

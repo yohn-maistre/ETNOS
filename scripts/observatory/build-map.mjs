@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { pipeline } from '@huggingface/transformers';
 import { UMAP } from 'umap-js';
-const R = '/home/user/strata/seed';
+const R = new URL('../../seed', import.meta.url).pathname;
 const regions = { meepago: 'Mee Pago', saireri: 'Saireri', 'la-pago': 'La Pago' };
 const nodes = [], edges = [], byKey = new Map();
 const add = (key, n) => { if (byKey.has(key)) return byKey.get(key); n.i = nodes.length; nodes.push(n); byKey.set(key, n.i); return n.i; };

@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { request } from 'node:http'
-import { Strata } from '../src/store.ts'
+import { Etnos } from '../src/store.ts'
 import { COLLECTION, canonical, validateRecord, type Publisher, type PublicRecord } from '../src/transport.ts'
 import { server } from '../src/http.ts'
 
@@ -26,7 +26,7 @@ class Pds implements Publisher {
 }
 function fixture() {
   let now = Date.parse('2026-10-31T00:00:00Z')
-  const s = new Strata(':memory:','http://127.0.0.1:7342',()=>now)
+  const s = new Etnos(':memory:','http://127.0.0.1:7342',()=>now)
   const alice = s.provision('did:web:alice.example','Alice')
   const bob = s.provision('did:web:bob.example','Bob')
   const agent = s.provision('did:web:agent.example','Lab assistant',alice.actor.id)
@@ -228,15 +228,15 @@ test('canonical public schema rejects private metadata and malformed time',()=>{
   assert.equal(canonical({b:1,a:2}),canonical({a:2,b:1}))
 })
 test('source bytes and queued intent survive reopen; interrupted work is not auto-replayed',()=>{
-  const dir=mkdtempSync(join(tmpdir(),'strata-')),path=join(dir,'node.sqlite')
+  const dir=mkdtempSync(join(tmpdir(),'etnos-')),path=join(dir,'node.sqlite')
   try {
-    let s=new Strata(path)
+    let s=new Etnos(path)
     const owner=s.provision('did:web:owner.example','Owner')
     const c=s.createCommunity(owner.actor.id,'Community','Description','public',false,'approval','atproto')
     const sid=s.createSource(owner.actor.id,Buffer.from([0xff,0x12,0x00]))
     s.createPost(owner.actor.id,c.id,'Persistent post')
     s.run("UPDATE outbox SET state='sending'");s.close()
-    s=new Strata(path);s.recoverInterrupted()
+    s=new Etnos(path);s.recoverInterrupted()
     assert.equal(s.authenticate(owner.token).id,owner.actor.id)
     assert.deepEqual(Buffer.from(s.source(owner.actor.id,sid).bytes),Buffer.from([0xff,0x12,0x00]))
     assert.equal(s.jobs(owner.actor.id)[0].state,'uncertain')

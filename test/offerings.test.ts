@@ -1,7 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Offerings} from '../src/offerings.ts'
 import {Forum} from '../src/forum.ts'
 import {Groups} from '../src/groups.ts'
@@ -9,7 +9,7 @@ import {Media} from '../src/media.ts'
 import {image} from './media-fixture.ts'
 import {api} from '../src/api.ts'
 
-function fixture(){let now=Date.now();const s=new Strata(':memory:','https://offers.example.org',()=>now),a=s.provision('did:web:offer-owner.example','Synthetic seller'),b=s.provision('did:web:offer-reader.example','Neighbor'),pub=s.createCommunity(a.actor.id,'Public','Public','public',true,'open'),hidden=s.createCommunity(a.actor.id,'Protected','Private','hidden-private'),o=new Offerings(s);return {s,a,b,pub,hidden,o,advance:()=>{now+=2*86400000}}}
+function fixture(){let now=Date.now();const s=new Etnos(':memory:','https://offers.example.org',()=>now),a=s.provision('did:web:offer-owner.example','Synthetic seller'),b=s.provision('did:web:offer-reader.example','Neighbor'),pub=s.createCommunity(a.actor.id,'Public','Public','public',true,'open'),hidden=s.createCommunity(a.actor.id,'Protected','Private','hidden-private'),o=new Offerings(s);return {s,a,b,pub,hidden,o,advance:()=>{now+=2*86400000}}}
 const input=(communityId:string,patch:Record<string,unknown>={})=>({communityId,text:'Synthetic local offering.',content:{title:'Synthetic produce'},kind:'offer',price:15000,unit:'per ikat',requestKey:randomUUID(),...patch})
 
 test('one canonical offering preserves current terms across feed/profile/read and body-bound replay; stale updates fail',async()=>{

@@ -4,6 +4,7 @@ import {publicNews,publicStory,publicNewsImage,newsQuery} from './news.ts'
 import {publicQuakes} from './ambient.ts'
 import {publicLiterature,literatureQuery} from './literature.ts'
 import {catalogue} from './catalogue.ts'
+import {etnosEnv} from './env.ts'
 import {publicVideo} from './video.ts'
 import {publicLinkPreview,previewURL} from './link-preview.ts'
 import {resolveShare,shareTags,articleHTML,articleLD,escapeMeta} from './share.ts'
@@ -19,15 +20,15 @@ async function boundedJSON(response:Response){
 }
 export default {
   async fetch(request:Request,env:WebEnv):Promise<Response>{
-    const url=new URL(request.url)
-    if(url.origin!==env.STRATA_ORIGIN){
+    const url=new URL(request.url),config=etnosEnv(env)
+    if(url.origin!==config.ETNOS_ORIGIN){
       // The old origin remains a browser-local vault recovery surface only.
       // Never redirect writes or OAuth callbacks with transient credentials.
-      if(url.origin!==legacyOrigin || env.STRATA_ORIGIN!=='https://etnos.space')return json(400,{error:'Unexpected host'})
+      if(url.origin!==legacyOrigin || config.ETNOS_ORIGIN!=='https://etnos.space')return json(400,{error:'Unexpected host'})
       if(request.method!=='GET' && request.method!=='HEAD')return json(405,{error:'Use the canonical origin'})
       const recovery=url.pathname==='/recover-messages' || /^\/assets\/[A-Za-z0-9_.-]+$/.test(url.pathname)
       if(!recovery){
-        const location=/^\/(auth|oauth)(\/|$)/.test(url.pathname)?env.STRATA_ORIGIN+'/login':env.STRATA_ORIGIN+url.pathname+url.search
+        const location=/^\/(auth|oauth)(\/|$)/.test(url.pathname)?config.ETNOS_ORIGIN+'/login':config.ETNOS_ORIGIN+url.pathname+url.search
         return new Response(null,{status:302,headers:{location,'cache-control':'no-store','referrer-policy':'no-referrer'}})
       }
       const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers)
@@ -56,7 +57,7 @@ export default {
     }
     if(url.pathname==='/v1/ambient/quakes'){
       if(request.method!=='GET')return json(405,{error:'Method not allowed'})
-      const bounds=catalogue((env as {STRATA_CATALOGUE?:string}).STRATA_CATALOGUE).catalogue.bounds
+      const bounds=catalogue(config.ETNOS_CATALOGUE).catalogue.bounds
       if(!bounds)return json(404,{error:'Not found'})
       const key=new Request(url.origin+url.pathname),cached=await edgeCache().match(key)
       if(cached)return cached
@@ -71,10 +72,10 @@ export default {
       if(cached)return cached
       // An anonymous read: only a label the public can see gets a search.
       let label:{slug:string;title:string;kind:string;facet?:string}
-      try{label=await boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+'/v1/contexts/'+literatureRoute[1]),env))}catch{return json(404,{error:'Not found'})}
-      const query=literatureQuery(label,catalogue((env as {STRATA_CATALOGUE?:string}).STRATA_CATALOGUE).catalogue)
+      try{label=await boundedJSON(await backend.fetch(new Request(config.ETNOS_ORIGIN+'/v1/contexts/'+literatureRoute[1]),env))}catch{return json(404,{error:'Not found'})}
+      const query=literatureQuery(label,catalogue(config.ETNOS_CATALOGUE).catalogue)
       if(!query)return json(404,{error:'Not found'})
-      const apiKey=await env.STRATA.getByName(env.STRATA_NODE).serviceKey('openalex').catch(()=>(env as {OPENALEX_API_KEY?:string}).OPENALEX_API_KEY)
+      const apiKey=await env.STRATA.getByName(config.ETNOS_NODE).serviceKey('openalex').catch(()=>(env as {OPENALEX_API_KEY?:string}).OPENALEX_API_KEY)
       const response=await publicLiterature(query,apiKey)
       if(response.ok)await edgeCache().put(key,response.clone())
       return response
@@ -102,9 +103,9 @@ export default {
       const key=new Request(url.origin+'/sitemap.xml'),cached=await edgeCache().match(key)
       if(cached)return cached
       let wiki:{id:string;revision_id:string|null;draft?:number}[]=[]
-      try{wiki=await boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+'/v1/wiki'),env))}catch{wiki=[]}
+      try{wiki=await boundedJSON(await backend.fetch(new Request(config.ETNOS_ORIGIN+'/v1/wiki'),env))}catch{wiki=[]}
       const paths=['/','/explore','/wiki','/news','/communities','/lini-masa',...wiki.filter(w=>w.revision_id&&!w.draft).map(w=>'/wiki/'+w.id)]
-      const xml='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(p=>`<url><loc>${escapeMeta(new URL(p,env.STRATA_ORIGIN).href)}</loc></url>`).join('')+'</urlset>'
+      const xml='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(p=>`<url><loc>${escapeMeta(new URL(p,config.ETNOS_ORIGIN).href)}</loc></url>`).join('')+'</urlset>'
       const response=new Response(xml,{headers:{'content-type':'application/xml; charset=utf-8','cache-control':'public, max-age=3600'}})
       await edgeCache().put(key,response.clone())
       return response
@@ -122,13 +123,13 @@ export default {
         // receive the same public-only sharing projection as an external crawler.
         // Keep local DO RPC requests free of AbortSignal: this compatibility
         // date cannot serialize signals across RPC. These reads only query local SQL.
-        const read=async(path:string)=>boundedJSON(await backend.fetch(new Request(env.STRATA_ORIGIN+path),env))
+        const read=async(path:string)=>boundedJSON(await backend.fetch(new Request(config.ETNOS_ORIGIN+path),env))
         const newsRead:typeof fetch=async(input,options)=>{const target=new URL(String(input));if(env.WATCH_NEWS){try{const r=await env.WATCH_NEWS.fetch(new Request('https://watch.internal'+target.pathname.replace(/^\/api/,'')+target.search,{signal:options?.signal,headers:{accept:'application/json'}}));if(r.ok)return r}catch{ /* public fallback */ }}return fetch(input,options)}
         const meta=await resolveShare(url.pathname,read,async id=>boundedJSON(await publicStory(id,newsRead)))
         headers.delete('etag');headers.delete('last-modified');headers.delete('content-length')
         if(!meta.index)headers.set('x-robots-tag','noindex, nofollow')
         const article=meta.article
-        return new HTMLRewriter().on('#app',{element(e){if(article)e.append(articleHTML(article),{html:true})}}).on('title',{element(e){e.setInnerContent(meta.title==='ETNOS'||meta.title.endsWith(' · ETNOS')?meta.title:meta.title+' · ETNOS')}}).on('meta[name="description"],meta[property^="og:"],meta[name^="twitter:"],meta[name="robots"],link[rel="canonical"]',{element(e){e.remove()}}).on('head',{element(e){e.append(shareTags(meta,env.STRATA_ORIGIN)+(article?articleLD(article,new URL(meta.path,env.STRATA_ORIGIN).href):''),{html:true})}}).transform(new Response(response.body,{status:response.status,headers}))
+        return new HTMLRewriter().on('#app',{element(e){if(article)e.append(articleHTML(article),{html:true})}}).on('title',{element(e){e.setInnerContent(meta.title==='ETNOS'||meta.title.endsWith(' · ETNOS')?meta.title:meta.title+' · ETNOS')}}).on('meta[name="description"],meta[property^="og:"],meta[name^="twitter:"],meta[name="robots"],link[rel="canonical"]',{element(e){e.remove()}}).on('head',{element(e){e.append(shareTags(meta,config.ETNOS_ORIGIN)+(article?articleLD(article,new URL(meta.path,config.ETNOS_ORIGIN).href):''),{html:true})}}).transform(new Response(response.body,{status:response.status,headers}))
       }
     }
     return new Response(response.body,{status:response.status,headers})

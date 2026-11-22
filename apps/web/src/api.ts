@@ -226,7 +226,7 @@ export async function request<T>(
           ? {}
           : {
               'content-type': 'application/json',
-              ...(csrf ? { 'x-strata-csrf': csrf } : {}),
+              ...(csrf ? { 'x-etnos-csrf': csrf } : {}),
             }),
       },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),

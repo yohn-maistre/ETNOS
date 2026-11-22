@@ -126,7 +126,7 @@
     },
     {
       when: 'Oktober 2026',
-      text: 'Strata di atas AT Protocol. Akun kini milik penggunanya dan bisa dibawa ke mana saja.',
+      text: 'ETNOS dibangun ulang di atas AT Protocol. Akun kini milik penggunanya dan bisa dibawa ke mana saja.',
     },
   ]
 </script>
@@ -230,12 +230,11 @@
   <section aria-labelledby="about-origin">
     <h2 id="about-origin">Asal-usul</h2>
     <p>
-      ETNOS dijalankan dengan
-      <a href="https://github.com/yohn-maistre/strata" target="_blank" rel="noreferrer">Strata</a>,
-      perangkat lunak terbuka berlisensi AGPL-3.0. Komunitas lain bisa memakainya
-      untuk wilayahnya sendiri.
+      <a href="https://github.com/yohn-maistre/strata" target="_blank" rel="noreferrer">Kode ETNOS</a>
+      terbuka dengan lisensi AGPL-3.0. Komunitas lain bisa memakainya untuk
+      wilayahnya sendiri.
     </p>
-    <p>ETNOS sudah tumbuh beberapa tahun. Strata adalah babak terbarunya.</p>
+    <p>ETNOS sudah tumbuh beberapa tahun. Versi sekarang adalah babak terbarunya.</p>
     <ul class="about-lineage">
       {#each lineage as step}<li>
           <strong>{step.when}</strong>

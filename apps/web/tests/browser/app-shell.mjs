@@ -3,11 +3,11 @@ import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
 import {pathToFileURL} from 'node:url'
 import {resolve} from 'node:path'
-import {chromium,origin,Strata,api,artifactDir} from './environment.mjs'
-const {Media}=await import(pathToFileURL(resolve(process.env.STRATA_REPO,'src/media.ts')).href)
-let now=Date.now();const s=new Strata(':memory:',origin,()=>now),owner=s.provision('did:web:shell-fixture.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Synthetic public commons','A public description for the independent context rail.','public',false,'open'),hidden=s.createCommunity(owner.actor.id,'Protected community','Must stay out of public highlights.','hidden-private')
+import {chromium,origin,Etnos,api,artifactDir} from './environment.mjs'
+const {Media}=await import(pathToFileURL(resolve(process.env.ETNOS_REPO,'src/media.ts')).href)
+let now=Date.now();const s=new Etnos(':memory:',origin,()=>now),owner=s.provision('did:web:shell-fixture.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Synthetic public commons','A public description for the independent context rail.','public',false,'open'),hidden=s.createCommunity(owner.actor.id,'Protected community','Must stay out of public highlights.','hidden-private')
 for(let i=0;i<7;i++)s.createCommunity(owner.actor.id,'Synthetic community '+i,'A visible public community.','public',false,'open')
-const art=readFileSync(resolve(process.env.STRATA_REPO,'apps/web/public/branding/tigi-print.webp')).toString('base64')
+const art=readFileSync(resolve(process.env.ETNOS_REPO,'apps/web/public/branding/tigi-print.webp')).toString('base64')
 for(let i=0;i<12;i++){now+=60000;const media=[2,5,8].includes(i)?new Media(s).upload(owner.actor.id,room.id,art,'Synthetic image post using ETNOS artwork'):null;s.createPost(owner.actor.id,room.id,i%3===0?'A brief thought worth exploring.':'Synthetic conversation '+i+': what can we learn together about places, practices and shared knowledge?',undefined,undefined,{...(media?{mediaIds:[media.id]}:{})})}
 s.createPost(owner.actor.id,hidden.id,'Protected words must not become a public tile.')
 const handler=api(s),browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']})

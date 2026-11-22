@@ -46,7 +46,7 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
   this.ctx.storage.sql.exec('CREATE TABLE IF NOT EXISTS strata_pi_session_kind(id INTEGER PRIMARY KEY CHECK(id=1),kind TEXT NOT NULL)')
   if(this.web&&this.ctx.storage.sql.exec<{kind:string}>('SELECT kind FROM strata_pi_session_kind').toArray()[0]?.kind==='thread-reply')this.registry.install(this.web)
   for(const row of this.ctx.storage.sql.exec<StoredWork>('SELECT * FROM strata_pi_work ORDER BY rowid DESC LIMIT 100').toArray())this.install(JSON.parse(row.work) as ResidentWork)
-  return Harness.open(storage,{models:this.models,registry:this.registry,onWake,identity:{attribution:{name:'Strata / ETNOS resident',url:'https://etnos.space'}},settings:{documentRetentionMs:0,contextRetentionMs:0,retry:{enabled:false,maxRetries:0},stream:{maxRetries:0,timeoutMs:20000},restartLimit:2,afterFailedRun:'withdraw',toolExecution:'sequential',compaction:{enabled:true,reserveTokens:2048,keepRecentTokens:2048,backgroundTokens:0}},onReport:report=>{console.warn(JSON.stringify({event:'strata.resident.runtime',kind:report.kind}))}},context)
+  return Harness.open(storage,{models:this.models,registry:this.registry,onWake,identity:{attribution:{name:'ETNOS resident',url:'https://etnos.space'}},settings:{documentRetentionMs:0,contextRetentionMs:0,retry:{enabled:false,maxRetries:0},stream:{maxRetries:0,timeoutMs:20000},restartLimit:2,afterFailedRun:'withdraw',toolExecution:'sequential',compaction:{enabled:true,reserveTokens:2048,keepRecentTokens:2048,backgroundTokens:0}},onReport:report=>{console.warn(JSON.stringify({event:'etnos.resident.runtime',kind:report.kind}))}},context)
  },defaults:{thinkingLevel:'off',maxTurns:3}})
  lifecycle=Lifecycle.install(this).use(this.harness)
  private install(work:ResidentWork){
@@ -90,7 +90,7 @@ export class PiResidentSession extends DurableObject<RuntimeEnv>{
   const prompt=JSON.stringify(residentPromptContext(input))
   const result=await session.prompt(prompt,{operationId:input.work.jobId,whenBusy:'reject'})
   if(result.status!=='done'||!result.text?.trim()){
-   console.warn(JSON.stringify({event:'strata.resident.stop',status:result.status,reason:typeof result.reason==='string'&&/^[a-z_]{1,50}$/.test(result.reason)?result.reason:'unspecified'}))
+   console.warn(JSON.stringify({event:'etnos.resident.stop',status:result.status,reason:typeof result.reason==='string'&&/^[a-z_]{1,50}$/.test(result.reason)?result.reason:'unspecified'}))
    const code=residentFailureCode(this.ctx.storage.sql.exec<{code:string}>('SELECT code FROM strata_pi_failures WHERE job_id=?',input.work.jobId).toArray()[0]?.code)
    throw new ResidentFailure(code??'runtime-budget')
   }

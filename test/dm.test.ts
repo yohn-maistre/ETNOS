@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { DirectMessages } from "../src/dm.ts";
 import { Activity } from "../src/activity.ts";
 import { api } from "../src/api.ts";
@@ -9,7 +9,7 @@ const opaque = Buffer.from(
   "Synthetic opaque envelope, not actual encryption",
 ).toString("base64");
 function fixture() {
-  const s = new Strata(":memory:"),
+  const s = new Etnos(":memory:"),
     dm = new DirectMessages(s),
     a = s.provision("did:web:alice.example", "Alice"),
     b = s.provision("did:web:bob.example", "Bob"),

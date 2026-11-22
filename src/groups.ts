@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { StrataCore, Fault, type Community } from "./core.ts";
+import { EtnosCore, Fault, type Community } from "./core.ts";
 import type { Catalogue } from "./catalogue.ts";
 
 export type Group = {
@@ -67,9 +67,9 @@ export function strings(value: unknown, max = 10): string[] {
 
 /** Local group authority does not inherit institutional/source or forum rights. */
 export class Groups implements GroupAuthority {
-  readonly store: StrataCore;
+  readonly store: EtnosCore;
   readonly stewardDid?: string;
-  constructor(store: StrataCore, options: { stewardDid?: string } = {}) {
+  constructor(store: EtnosCore, options: { stewardDid?: string } = {}) {
     this.store = store;
     this.stewardDid = options.stewardDid;
   }

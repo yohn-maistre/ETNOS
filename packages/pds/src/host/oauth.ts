@@ -1,5 +1,5 @@
 /**
- * OAuth for many accounts on one host (plan §2.2 rule 4). Strata code
+ * OAuth for many accounts on one host (plan §2.2 rule 4). ETNOS code
  * (AGPL-3.0-only) wrapping the MIT @getcirrus/oauth-provider, not forking it.
  *
  * The provider has no account field, so this wrapper adds the account step:

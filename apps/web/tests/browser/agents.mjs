@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict'
 import { generateKeyPairSync } from 'node:crypto'
 import {
-  Strata,
+  Etnos,
   Groups,
   api,
   chromium,
   origin,
   artifactDir,
 } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+const s = new Etnos(':memory:', origin),
   owner = s.provision('did:web:agent-ui.example', 'Synthetic operator'),
   room = s.createCommunity(
     owner.actor.id,

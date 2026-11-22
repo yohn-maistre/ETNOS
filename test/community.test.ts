@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import {mkdtempSync,rmSync} from 'node:fs'
 import {tmpdir} from 'node:os'
 import {join} from 'node:path'
-import {Strata,LocalDatabase} from '../src/store.ts'
+import {Etnos,LocalDatabase} from '../src/store.ts'
 import {schema} from '../src/schema.ts'
 import {Social} from '../src/social.ts'
 import {Wiki} from '../src/wiki.ts'
@@ -12,7 +12,7 @@ import {api} from '../src/api.ts'
 
 function fixture() {
   let now=Date.parse('2026-11-01T00:00:00Z')
-  const s=new Strata(':memory:','https://strata.example',()=>now)
+  const s=new Etnos(':memory:','https://etnos.example',()=>now)
   const owner=s.provision('did:web:owner.example','Owner'),member=s.provision('did:web:member.example','Member'),outsider=s.provision('did:web:outsider.example','Outsider')
   const pub=s.createCommunity(owner.actor.id,'Square','Public','public',false,'approval')
   const hidden=s.createCommunity(owner.actor.id,'Hidden','Protected','hidden-private')
@@ -149,7 +149,7 @@ test('Wiki acceptance binds digest and exact base; pending drafts and private pr
 })
 
 test('legacy v1 database migrates without exposing old sources or replaying previous automatic publication',()=>{
-  const dir=mkdtempSync(join(tmpdir(),'strata-migration-')),file=join(dir,'legacy.sqlite')
+  const dir=mkdtempSync(join(tmpdir(),'etnos-migration-')),file=join(dir,'legacy.sqlite')
   try {
     const db=new LocalDatabase(file);db.exec(schema)
     db.run("INSERT INTO actors VALUES('old','did:web:old.example','Old','human',NULL)")
@@ -158,13 +158,13 @@ test('legacy v1 database migrates without exposing old sources or replaying prev
     db.run("INSERT INTO posts VALUES('post','old','public',NULL,'Prior intent',1,0,NULL,NULL,'at://did:web:old.example/org.example.strata.post/post')")
     db.run("INSERT INTO outbox(id,post_id,operation,state,repo,rkey,record) VALUES('job','post','put','pending','did:web:old.example','post','{}')")
     db.close()
-    const s=new Strata(file)
+    const s=new Etnos(file)
     assert.equal(s.community('public').admission,'approval')
     assert.equal(s.community('public').publication,'local')
     assert.equal(s.jobs('old')[0].state,'cancelled')
     assert.equal(s.getPost(undefined,'post').text,'Prior intent')
     s.close()
-    const again=new Strata(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,schemaVersion);again.close()
+    const again=new Etnos(file);assert.equal(again.get<{n:number}>('SELECT COUNT(*) n FROM strata_migrations')!.n,schemaVersion);again.close()
   } finally {rmSync(dir,{recursive:true,force:true})}
 })
 

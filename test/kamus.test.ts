@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Kamus,trigramScore,parseGlosses,glossPrompt,type KamusLexicon} from '../src/kamus.ts'
 import {Periksa} from '../src/periksa.ts'
 import {api} from '../src/api.ts'
@@ -12,7 +12,7 @@ const lexicon:KamusLexicon={
  seeds:{test:{language:{name:'Uji',glottocode:'test'},sources:{list:{licence:'CC BY 4.0'}},entries:[{lemma:'ugee',gloss_id:'ubi jalar',source:'list',page:3},{lemma:'jamoo',modern:'yamoo',gloss_id:'rumah',source:'list'}]}},
 }
 function fixture(visibility:'public'|'hidden-private'='public'){
- let opId='';const s=new Strata(':memory:','https://forum.example'),k=new Kamus(s,lexicon,{operator:id=>id===opId}),p=new Periksa(s)
+ let opId='';const s=new Etnos(':memory:','https://forum.example'),k=new Kamus(s,lexicon,{operator:id=>id===opId}),p=new Periksa(s)
  const a=s.provision('did:web:owner.example','Owner');opId=a.actor.id;const b=s.provision('did:web:b.example','Budi'),c=s.provision('did:web:c.example','Citra'),o=s.provision('did:web:o.example','Outside')
  const room=s.createCommunity(a.actor.id,'Mee','Ruang bahasa',visibility,true)
  for(const m of [b,c])s.setMember(a.actor.id,room.id,m.actor.id,true)
@@ -126,7 +126,7 @@ test('trigram score leans toward the seed language; model output is read strictl
 
 test('the describe route checks every gate before any text reaches a model',async()=>{
  for(const visibility of ['public','hidden-private'] as const){
-  const s=new Strata(':memory:','https://forum.example');try{
+  const s=new Etnos(':memory:','https://forum.example');try{
    let calls=0
    const handler=api(s,{stewardDid:'did:web:owner.example',models:async()=>({chat:async()=>{calls++;return {text:'{"items":[]}',model:'m',route:'keyless',inputTokens:0,outputTokens:0}}})})
    const a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:b.example','Budi'),c=s.provision('did:web:c.example','Citra')

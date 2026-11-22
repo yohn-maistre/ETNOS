@@ -1,5 +1,5 @@
-import {Fault,type StrataCore} from './core.ts'
-export function updateProfile(s:StrataCore,actorId:string,value:Record<string,unknown>){
+import {Fault,type EtnosCore} from './core.ts'
+export function updateProfile(s:EtnosCore,actorId:string,value:Record<string,unknown>){
  return s.tx(()=>{
   if(s.actor(actorId).kind!=='human')throw new Fault(403,'Human profile owner required')
   if(Object.keys(value).some(k=>!['bio','website','location'].includes(k)))throw new Fault(400,'Edit only bio, website or location')

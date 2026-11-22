@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { Groups } from "../src/groups.ts";
 import { PublicWork } from "../src/public-work.ts";
 import { Wiki, newsStoryId } from "../src/wiki.ts";
@@ -10,7 +10,7 @@ import { api } from "../src/api.ts";
 
 function fixture() {
   let now = Date.parse("2026-11-01T00:00:00Z");
-  const s = new Strata(":memory:", "https://commons.example.org", () => now),
+  const s = new Etnos(":memory:", "https://commons.example.org", () => now),
     admin = s.provision("did:web:admin.example", "Node steward"),
     owner = s.provision("did:web:owner.example", "Reviewer person");
   const groups = new Groups(s, { stewardDid: admin.actor.did }),

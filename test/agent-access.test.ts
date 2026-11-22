@@ -5,14 +5,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { generateKeyPair, exportJWK, SignJWT } from "jose";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { AgentAccess } from "../src/agent-access.ts";
 import { agentRoutes } from "../src/agent-mcp.ts";
 import { Wiki } from "../src/wiki.ts";
 import { api } from "../src/api.ts";
 async function fixture(file = ":memory:") {
   let now = Date.now();
-  const s = new Strata(file, "https://strata.example", () => now),
+  const s = new Etnos(file, "https://etnos.example", () => now),
     owner = s.provision("did:web:owner.example", "Owner"),
     other = s.provision("did:web:other.example", "Other"),
     room = s.createCommunity(
@@ -391,12 +391,12 @@ test("deployment identity, assertion replay and revocation survive database reop
   const dir = await mkdtemp(join(tmpdir(), "etnos-agent-reopen-")),
     file = join(dir, "node.sqlite"),
     f = await fixture(file);
-  let next: Strata | undefined;
+  let next: Etnos | undefined;
   try {
     const assertion = await f.assertion(),
       token = (await f.access.exchange(f.form(assertion))).access_token;
     f.s.close();
-    next = new Strata(file, "https://strata.example");
+    next = new Etnos(file, "https://etnos.example");
     const access = new AgentAccess(next);
     assert.equal(access.authenticate(token).actor.id, f.agent.actor.id);
     await assert.rejects(access.exchange(f.form(assertion)), /already used/);
@@ -404,7 +404,7 @@ test("deployment identity, assertion replay and revocation survive database reop
     access.resume(f.owner.actor.id, f.agent.actor.id);
     assert.throws(() => access.authenticate(token));
     next.close();
-    next = new Strata(file, "https://strata.example");
+    next = new Etnos(file, "https://etnos.example");
     assert.throws(() => new AgentAccess(next!).authenticate(token));
     await assert.rejects(
       new AgentAccess(next).exchange(f.form(await f.assertion())),

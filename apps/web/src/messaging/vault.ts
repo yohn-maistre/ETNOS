@@ -118,7 +118,7 @@ export function lock() {
   clearTimeout(timer)
   release?.()
   release = undefined
-  window.dispatchEvent(new Event('strata-dm-locked'))
+  window.dispatchEvent(new Event('etnos-dm-locked'))
 }
 function touch() {
   clearTimeout(timer)

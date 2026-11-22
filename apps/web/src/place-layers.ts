@@ -1,4 +1,4 @@
-// Shared data for a place's cross-section (PlaceStrata) and its full core
+// Shared data for a place's cross-section (the region layers on Jelajah) and its full core
 // sample (CoreSample). One bounded public request per declared news place,
 // merged newest first. Credentials never cross the news port.
 import type { NewsItem } from './news.svelte'

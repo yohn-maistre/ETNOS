@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import {pathToFileURL} from 'node:url'
 import {resolve} from 'node:path'
-import {Strata,api,Wiki,chromium,origin,artifactDir} from './environment.mjs'
-const {sourceFetcher}=await import(pathToFileURL(resolve(process.env.STRATA_REPO,'src/discovery.ts')).href)
-const s=new Strata(':memory:',origin),owner=s.provision('did:web:commons-browser.example','Synthetic commons operator'),room=s.createCommunity(owner.actor.id,'Synthetic public commons','Browser fixture','public',false,'open')
+import {Etnos,api,Wiki,chromium,origin,artifactDir} from './environment.mjs'
+const {sourceFetcher}=await import(pathToFileURL(resolve(process.env.ETNOS_REPO,'src/discovery.ts')).href)
+const s=new Etnos(':memory:',origin),owner=s.provision('did:web:commons-browser.example','Synthetic commons operator'),room=s.createCommunity(owner.actor.id,'Synthetic public commons','Browser fixture','public',false,'open')
 const rss='<?xml version="1.0"?><rss version="2.0"><channel><item><title>Source-backed browser discovery</title><link>https://news.example.org/real-link-fixture</link><description>A synthetic permitted excerpt for the browser contract.</description></item></channel></rss>'
 const handler=api(s,{residentProvider:{label:'Pi Durable · synthetic browser fixture',draft:async()=>({text:'A synthetic native resident finding through the real local pipeline.',model:'synthetic-browser-model'})},sourceFetcher:sourceFetcher(['https://news.example.org'],async()=>new Response(rss,{headers:{'content-type':'application/rss+xml'}}))})
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']})

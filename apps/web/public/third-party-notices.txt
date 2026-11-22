@@ -1,4 +1,4 @@
-ETNOS / Strata connected app — third-party notices
+ETNOS connected app — third-party notices
 
 Application: AGPL-3.0-only. This inventory includes client and build dependencies.
 
@@ -12584,7 +12584,7 @@ Basemap imagery (loaded from EOX at view time, not stored here):
     https://cloudless.eox.at/
   Night: Black Marble composite, NASA Earth Observatory / EOX.
 EOX terrain and Sentinel-2 cloudless 2018 layers are free for non-commercial
-use only. Operators of other Strata instances must replace them
+use only. Operators of other ETNOS instances must replace them
 (see src/map-basemaps.ts).
 
 Outlines: apps/web/public/geo/provinsi.geojson and kabupaten.geojson

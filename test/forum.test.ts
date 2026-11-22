@@ -1,13 +1,13 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {POLL_MIN_RESPONDENTS} from '../src/core.ts'
 import {Forum} from '../src/forum.ts'
 import {Media} from '../src/media.ts'
 import {Groups} from '../src/groups.ts'
 import {api} from '../src/api.ts'
 import {image} from './media-fixture.ts'
-function fixture(){let now=Date.now();const s=new Strata(':memory:','https://forum.example',()=>now),f=new Forum(s),g=new Groups(s),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:member.example','Member'),o=s.provision('did:web:outsider.example','Outside'),c=s.createCommunity(a.actor.id,'Private','Private','hidden-private');s.setMember(a.actor.id,c.id,b.actor.id,true);return{s,f,g,a,b,o,c,advance:(n:number)=>now+=n}}
+function fixture(){let now=Date.now();const s=new Etnos(':memory:','https://forum.example',()=>now),f=new Forum(s),g=new Groups(s),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:member.example','Member'),o=s.provision('did:web:outsider.example','Outside'),c=s.createCommunity(a.actor.id,'Private','Private','hidden-private');s.setMember(a.actor.id,c.id,b.actor.id,true);return{s,f,g,a,b,o,c,advance:(n:number)=>now+=n}}
 test('rich private posts stay local; creation and media/context/idempotency are atomic',()=>{
  const{s,f,g,a,b,o,c}=fixture();try{
  const m=new Media(s),draft=m.upload(a.actor.id,c.id,image,'Private image'),body={communityId:c.id,text:'',mediaIds:[draft.id],content:{title:'Mee conversation',url:'https://example.org',format:'markdown'},requestKey:'00000000-0000-4000-8000-000000000001'}

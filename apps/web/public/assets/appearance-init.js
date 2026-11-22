@@ -2,8 +2,9 @@
 (() => {
   let saved = null, legacy = null
   try {
-    saved = JSON.parse(localStorage.getItem('strata.ui.appearance') || 'null')
-    legacy = localStorage.getItem('strata.ui.theme')
+    // Saved under strata.* before the rename to ETNOS (src/device-storage.ts).
+    saved = JSON.parse(localStorage.getItem('etnos.ui.appearance') || localStorage.getItem('strata.ui.appearance') || 'null')
+    legacy = localStorage.getItem('etnos.ui.theme') || localStorage.getItem('strata.ui.theme')
   } catch { /* Optional device storage. */ }
   const mode = ['light', 'dark', 'clock'].includes(saved?.themeMode)
     ? saved.themeMode

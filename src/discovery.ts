@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto'
 import {SaxesParser} from 'saxes'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {text,publicURL,publicSteward,transition,expected,emit,hash,invalidateContext} from './commons.ts'
 
 export type SourceRow={id:string;community_id:string;owner_id:string;title:string;url:string;kind:'news'|'reference';language:string;mode:'index'|'review'|'news';rights:'link-only'|'excerpt-permitted'|'open';terms_url:string;state:'active'|'paused'|'withdrawn';revision:number;created:number;updated:number;last_attempt:number|null;last_success:number|null;last_error:string|null}
@@ -57,15 +57,15 @@ export function sourceFetcher(origins:string[],upstream:typeof fetch=fetch):Sour
  const allowed=new Set(origins.map(value=>new URL(publicURL(value)).origin))
  return async(url,signal)=>{
   const target=publicURL(url);if(!allowed.has(new URL(target).origin))throw new Fault(503,'This source host needs deployment approval')
-  const response=await upstream(target,{method:'GET',headers:{accept:'application/rss+xml, application/atom+xml, application/feed+json, application/xml, text/xml;q=0.9','user-agent':'Strata-Discovery/0.1 (+source-registry)'},redirect:'manual',credentials:'omit',signal})
+  const response=await upstream(target,{method:'GET',headers:{accept:'application/rss+xml, application/atom+xml, application/feed+json, application/xml, text/xml;q=0.9','user-agent':'ETNOS-Discovery/0.1 (+source-registry)'},redirect:'manual',credentials:'omit',signal})
   if(response.status>=300&&response.status<400){await response.body?.cancel();throw new Fault(502,'Source redirects require an updated approved URL')}
   return response
  }
 }
 export class Discovery{
- readonly store:StrataCore
+ readonly store:EtnosCore
  readonly fetcher?:SourceFetcher
- constructor(store:StrataCore,fetcher?:SourceFetcher){this.store=store;this.fetcher=fetcher}
+ constructor(store:EtnosCore,fetcher?:SourceFetcher){this.store=store;this.fetcher=fetcher}
  source(actorId:string,id:string){const r=this.store.get<SourceRow>('SELECT * FROM discovery_sources WHERE id=?',id);if(!r)throw new Fault(404,'Not found');publicSteward(this.store,actorId,r.community_id);return r}
  sources(actorId:string,communityId:string){publicSteward(this.store,actorId,communityId);return this.store.all<SourceRow>('SELECT * FROM discovery_sources WHERE community_id=? ORDER BY title LIMIT 100',communityId)}
  add(actorId:string,b:Record<string,unknown>){

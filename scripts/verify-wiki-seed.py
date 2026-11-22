@@ -9,7 +9,7 @@ With --prune, quotes that failed are removed and sources left with no quote are 
 """
 import html, json, re, sys, time, unicodedata, urllib.parse, urllib.request
 
-AGENT = 'strata-wiki-seed-verifier/0.1 (quote verification; low volume)'
+AGENT = 'etnos-wiki-seed-verifier/0.1 (quote verification; low volume)'
 
 # Hosts found serving injected spam during the survey.
 BLOCKED = ['kepyapenkab.go.id']

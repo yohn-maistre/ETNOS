@@ -3,16 +3,16 @@
 import assert from 'node:assert/strict'
 import { pathToFileURL } from 'node:url'
 import { resolve } from 'node:path'
-import { Strata, api, chromium, origin, artifactDir } from './environment.mjs'
+import { Etnos, api, chromium, origin, artifactDir } from './environment.mjs'
 const {
   fixture,
   did,
   origin: authOrigin,
   issuer,
 } = await import(
-  pathToFileURL(resolve(process.env.STRATA_REPO, 'test/oauth-fixture.ts'))
+  pathToFileURL(resolve(process.env.ETNOS_REPO, 'test/oauth-fixture.ts'))
 )
-const s = new Strata(':memory:', authOrigin),
+const s = new Etnos(':memory:', authOrigin),
   owner = s.provision(did, 'Synthetic steward'),
   newDid = 'did:plc:zzzzzzzzzzzzzzzzzzzzzzzz'
 const room = s.createCommunity(

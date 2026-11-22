@@ -3,7 +3,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
-import { Strata } from '../src/store.ts'
+import { Etnos } from '../src/store.ts'
 import { Groups } from '../src/groups.ts'
 import { Wiki } from '../src/wiki.ts'
 import { Forum } from '../src/forum.ts'
@@ -11,7 +11,7 @@ import { api } from '../src/api.ts'
 
 function world() {
   let now = Date.parse('2026-11-21T00:00:00Z')
-  const s = new Strata(':memory:', 'https://percakapan.example', () => (now += 1000))
+  const s = new Etnos(':memory:', 'https://percakapan.example', () => (now += 1000))
   const admin = s.provision('did:web:admin.example', 'Operator fixture'),
     author = s.provision('did:web:author.example', 'Penulis fixture'),
     other = s.provision('did:web:other.example', 'Pembaca fixture'),

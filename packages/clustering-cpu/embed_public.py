@@ -37,7 +37,7 @@ def prepare(snapshot):
         if not norm:
             raise ValueError('Source has no lexical features')
         vectors.append([v / norm for v in vector])
-    return {'snapshot': snapshot, 'embedding': {'model': 'strata-local-word-char-tfidf-hash', 'revision': 'v1-nfkc-blake2b512', 'dimensions': dimension, 'normalization': 'l2', 'processing': 'local-approved-public'}, 'vectors': vectors}
+    return {'snapshot': snapshot, 'embedding': {'model': 'etnos-local-word-char-tfidf-hash', 'revision': 'v1-nfkc-blake2b512', 'dimensions': dimension, 'normalization': 'l2', 'processing': 'local-approved-public'}, 'vectors': vectors}
 
 if __name__ == '__main__':
     try:

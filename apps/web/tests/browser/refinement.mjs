@@ -1,7 +1,7 @@
 // Disposable loopback fixture: never writes to a deployed ETNOS node.
 import assert from 'node:assert/strict'
 import {
-  Strata,
+  Etnos,
   Wiki,
   Groups,
   api,
@@ -9,7 +9,7 @@ import {
   origin,
   artifactDir,
 } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+const s = new Etnos(':memory:', origin),
   owner = s.provision(
     'did:web:refinement.example',
     'Marta · synthetic reviewer',

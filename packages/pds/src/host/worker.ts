@@ -1,6 +1,6 @@
 /**
- * Strata identity host: many AT accounts on one Workers deployment.
- * Strata code (AGPL-3.0-only); the repository engine, OAuth storage and
+ * ETNOS identity host: many AT accounts on one Workers deployment.
+ * ETNOS code (AGPL-3.0-only); the repository engine, OAuth storage and
  * repository handlers are the attributed Cirrus foundation (LICENSE.cirrus).
  *
  * Two kinds of host name (plan §2.2 rule 5):
@@ -236,7 +236,7 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 	if (path === "/" && method === "GET") return homePage(host.displayName, host.env.HANDLE_DOMAIN);
 	if (path === "/health")
 		return json(200, {
-			service: "strata-identity-host",
+			service: "etnos-identity-host",
 			stage: "experimental",
 			multiAccount: true,
 			signup: signupsClosed(host.env) ? "closed" : "invite",
@@ -267,7 +267,7 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 	if (!path.startsWith("/xrpc/")) return xerr(404, "NotFound", "Not found");
 	if (request.headers.has("atproto-proxy")) return xerr(400, "InvalidRequest", "Service proxy is not enabled");
 
-	if (path === "/xrpc/_health") return json(200, { version: "strata-identity-host" });
+	if (path === "/xrpc/_health") return json(200, { version: "etnos-identity-host" });
 	if (path === "/xrpc/com.atproto.server.describeServer")
 		return json(200, {
 			did: serviceDid(host.env),

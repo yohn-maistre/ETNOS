@@ -16,7 +16,7 @@
 
 <Card.Root class="appearance-card">
   <Card.Header><Card.Title>Tampilan</Card.Title></Card.Header>
-  <Card.Content class="strata-stack">
+  <Card.Content class="etnos-stack">
     <section class="font-settings">
       <Label for="font-pair">Pasangan huruf</Label>
       <Choice

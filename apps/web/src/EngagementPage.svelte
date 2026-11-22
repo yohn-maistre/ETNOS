@@ -176,7 +176,7 @@
       </a>{/each}{#if !displayed.length && compact}<p class="engagement-empty">
         Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'} yang
         dimuat.
-      </p>{:else if !displayed.length}<div class="strata-nodata">
+      </p>{:else if !displayed.length}<div class="etnos-nodata">
         <MessageCircle size={28} />
         <h2>
           Belum ada pertanyaan {mode === 'closed' ? 'yang ditutup' : 'terbuka'}

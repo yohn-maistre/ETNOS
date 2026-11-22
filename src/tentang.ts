@@ -15,7 +15,7 @@
  * to the entry's address. Everything here reads as an anonymous reader, whoever asks.
  */
 import { Buffer } from 'node:buffer'
-import { Fault, type Post, type StrataCore } from './core.ts'
+import { Fault, type Post, type EtnosCore } from './core.ts'
 import { FACET_PREFIX, KIND_LABEL, resolve, type Catalogue } from './entri.ts'
 import { MAX_TENTANG, nameIndex, normName, suggestions, type NameEntry } from '../apps/web/src/tentang-match.ts'
 
@@ -54,8 +54,8 @@ export function entryNames(cat: Catalogue): NameEntry[] {
 }
 
 export class Tentang {
-  private s: StrataCore
-  constructor(s: StrataCore) { this.s = s }
+  private s: EtnosCore
+  constructor(s: EtnosCore) { this.s = s }
 
   /** The entries behind a list of addresses (a slug, an older slug, a context id), each once, at most five. */
   resolve(cat: Catalogue, asked: unknown): Node[] {

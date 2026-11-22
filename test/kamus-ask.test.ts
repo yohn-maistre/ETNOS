@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Kamus,type KamusLexicon} from '../src/kamus.ts'
 import {KamusAsk,type ConceptList} from '../src/kamus-ask.ts'
 import {Periksa} from '../src/periksa.ts'
@@ -23,7 +23,7 @@ const species:ViewerRecord[]=[{id:'burung-uji',kind:'species',title:'Burung uji'
 
 function fixture(visibility:'public'|'hidden-private'='public'){
  let opId=''
- const s=new Strata(':memory:','https://forum.example'),k=new Kamus(s,lexicon,{operator:id=>id===opId}),ask=new KamusAsk(s,k,lexicon,concepts,species),p=new Periksa(s),forum=new Forum(s)
+ const s=new Etnos(':memory:','https://forum.example'),k=new Kamus(s,lexicon,{operator:id=>id===opId}),ask=new KamusAsk(s,k,lexicon,concepts,species),p=new Periksa(s),forum=new Forum(s)
  const a=s.provision('did:web:owner.example','Owner');opId=a.actor.id
  const b=s.provision('did:web:b.example','Budi'),c=s.provision('did:web:c.example','Citra'),d=s.provision('did:web:d.example','Dewi'),o=s.provision('did:web:o.example','Outside')
  const room=s.createCommunity(a.actor.id,'Mee uji','Ruang bahasa (fixture)',visibility,true)

@@ -15,7 +15,7 @@
  * sentences are re-checked against their posts when read, so a deleted or hidden post stops counting at once. Only
  * a public community's checked picture answers ever leave it, as a species' local name (`localNames`). */
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {Periksa,type Evidence} from './periksa.ts'
 import {Kamus,norm as kamusNorm,type KamusLexicon} from './kamus.ts'
 import {tokenize,matchWord,stripSuffix,chooseUnderlines,align,indonesianWords,guessClass,normWord,DEFAULT_SUFFIXES,WORD_CLASSES,CLASS_LABEL,type Token,type Candidate,type WordClass,type Pair} from '../apps/web/src/kamus-text.ts'
@@ -40,14 +40,14 @@ const sentencesOf=(t:string)=>t.replace(/\s+/g,' ').split(/(?<=[.!?…])\s+|\n+/
 export const sourceLabel=(source:string)=>{const k=source.replace(/^seed:/,'');return SOURCE_LABEL[k]??k}
 
 export class KamusAsk{
- private s:StrataCore
+ private s:EtnosCore
  private kamus:Kamus
  private periksa:Periksa
  private lexicon:KamusLexicon
  private concepts:ConceptList
  private species:ViewerRecord[]
  private cache=new Map<string,Heavy>()
- constructor(store:StrataCore,kamus:Kamus,lexicon:KamusLexicon,concepts:ConceptList,species:ViewerRecord[]){this.s=store;this.kamus=kamus;this.periksa=new Periksa(store);this.lexicon=lexicon;this.concepts=concepts;this.species=species.filter(r=>r.kind==='species'&&!!r.thumb)}
+ constructor(store:EtnosCore,kamus:Kamus,lexicon:KamusLexicon,concepts:ConceptList,species:ViewerRecord[]){this.s=store;this.kamus=kamus;this.periksa=new Periksa(store);this.lexicon=lexicon;this.concepts=concepts;this.species=species.filter(r=>r.kind==='species'&&!!r.thumb)}
 
  /** The Kamus is on where the community writes in a language other than Indonesian or Papuan Malay: its
   * "Bahasa yang dipakai" (community_contexts with role 'language', set at creation or in the settings), or the

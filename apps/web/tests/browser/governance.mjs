@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
-import { Strata, api, chromium, origin, artifactDir } from './environment.mjs'
+import { Etnos, api, chromium, origin, artifactDir } from './environment.mjs'
 import { Groups } from './environment.mjs'
 import { Activity } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+const s = new Etnos(':memory:', origin),
   owner = s.provision('did:web:synthetic-steward.example', 'Synthetic steward'),
   other = s.provision(
     'did:web:synthetic-participant.example',
@@ -128,7 +128,7 @@ try {
     .waitFor()
   assert.equal(s.get('SELECT state FROM public_work').state, 'completed')
   await p.screenshot({
-    path: artifactDir + '/strata-populated-work-desktop.png',
+    path: artifactDir + '/etnos-populated-work-desktop.png',
     fullPage: true,
   })
   const context = new Groups(s, { stewardDid: owner.actor.did }).createContext(
@@ -170,7 +170,7 @@ try {
   await p.getByRole('button', { name: 'Daun', exact: true }).click()
   assert.equal(
     await p.evaluate(
-      () => JSON.parse(localStorage.getItem('strata.ui.appearance')).accent,
+      () => JSON.parse(localStorage.getItem('etnos.ui.appearance')).accent,
     ),
     '#7b9287',
   )
@@ -191,14 +191,14 @@ try {
   await p.getByRole('alert').waitFor()
   await p.getByRole('button', { name: 'Abstraksi', exact: true }).click()
   await p.screenshot({
-    path: artifactDir + '/strata-preferences-light-desktop.png',
+    path: artifactDir + '/etnos-preferences-light-desktop.png',
     fullPage: true,
   })
   await p.setViewportSize({ width: 390, height: 844 })
   await p.goto(origin + '/groups/' + g.id, { waitUntil: 'networkidle' })
   await p.getByRole('button', { name: 'Kelola anggota', exact: true }).waitFor()
   await p.screenshot({
-    path: artifactDir + '/strata-populated-group-mobile.png',
+    path: artifactDir + '/etnos-populated-group-mobile.png',
     fullPage: true,
   })
   await p
@@ -214,7 +214,7 @@ try {
   await p.getByRole('dialog').waitFor({ state: 'hidden' })
   await p.goto(origin + '/square/' + root.id, { waitUntil: 'networkidle' })
   await p.screenshot({
-    path: artifactDir + '/strata-populated-thread-mobile.png',
+    path: artifactDir + '/etnos-populated-thread-mobile.png',
     fullPage: true,
   })
   assert.equal(

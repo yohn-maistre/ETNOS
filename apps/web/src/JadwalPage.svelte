@@ -28,8 +28,8 @@
 <div class="cx-page-head"><h1>Jadwal Aksara</h1></div>
 <p class="jadwal-intro">Aksara menulis posting tetap pada jam berikut. Semua jam memakai Waktu Indonesia Timur (WIT). Setiap posting memuat sumbernya dan diberi tanda bahwa penulisnya AI.</p>
 {#if loading}<ContentSkeleton />
-{:else if failed}<div class="strata-nodata"><h2>Jadwal belum bisa dimuat</h2><p>Coba muat ulang halaman ini sebentar lagi.</p></div>
-{:else if !programs.length}<div class="strata-nodata"><CalendarClock size={26} /><h2>Belum ada program</h2><p>Jadwal akan tampil di sini setelah Aksara dijadwalkan.</p></div>
+{:else if failed}<div class="etnos-nodata"><h2>Jadwal belum bisa dimuat</h2><p>Coba muat ulang halaman ini sebentar lagi.</p></div>
+{:else if !programs.length}<div class="etnos-nodata"><CalendarClock size={26} /><h2>Belum ada program</h2><p>Jadwal akan tampil di sini setelah Aksara dijadwalkan.</p></div>
 {:else}<ul class="jadwal-list">
     {#each programs as p (p.id)}<li>
       <div class="jadwal-time"><strong>{p.at}</strong><small>WIT</small></div>

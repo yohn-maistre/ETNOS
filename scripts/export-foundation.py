@@ -47,7 +47,7 @@ for f in features:
 doc.add_paragraph('CURRENT AMENDMENTS',style='ExecutionHeading')
 for a in json.loads((root/'decision-ledger.json').read_text())['amendments']:
  doc.add_paragraph(a['id']+' · '+a['decision'],style='ExecutionSubheading');doc.add_paragraph(a['source']+'. '+a['interpretation'],style='ExecutionBody')
-out=share/'ETNOS_Strata_Living_Commons_with_Implementation_Plan_2026-11-11.docx'
+out=share/'ETNOS_Living_Commons_with_Implementation_Plan_2026-11-11.docx'
 doc.save(out)
 # Compare the entire original body XML (excluding final section properties) as parsed trees.
 ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}

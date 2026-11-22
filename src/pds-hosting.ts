@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-/** Operator planning contract. Public PDS hosting never grants Strata membership. */
+/** Operator planning contract. Public PDS hosting never grants ETNOS membership. */
 export type Runtime = "cloudflare" | "server" | "external";
 export type HostingInput = {
   runtime: Runtime;
@@ -12,7 +12,7 @@ export type HostingInput = {
 };
 export const capabilities = {
   version: 1,
-  service: "strata-pds",
+  service: "etnos-pds",
   stage: "experimental",
   commands: ["capabilities", "plan", "init", "cost", "doctor"],
   runtimes: ["cloudflare", "server", "external"],
@@ -46,7 +46,7 @@ export function hostname(value: unknown): string {
 export function resourceName(host: string) {
   const value = hostname(host);
   return (
-    "strata-pds-" +
+    "etnos-pds-" +
     value.replaceAll(".", "-").slice(0, 28).replace(/-+$/, "") +
     "-" +
     createHash("sha256").update(value).digest("hex").slice(0, 16)
@@ -78,7 +78,7 @@ export function plan(input: HostingInput) {
       resources: [],
       actions: [
         "Qualify provider DNS/HTTPS and OAuth endpoints",
-        "Add provider to Strata OAuth allowlist after qualification",
+        "Add provider to ETNOS OAuth allowlist after qualification",
         "Keep forum enrollment invitation-controlled",
       ],
       warnings: ["No new hosting is created; public AT records remain public"],

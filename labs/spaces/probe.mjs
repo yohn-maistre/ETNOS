@@ -25,7 +25,7 @@ for(const p of[network.pds,...network.extraPdses])assert.equal(p.server.server.a
 try{
  const pds=network.pds,remote=network.extraPdses[0]
  async function account(pds,handle){const a=pds.getAgent();await a.createAccount({handle,email:handle+'@example.invalid',password:randomUUID()});return a}
- const owner=await account(pds,'strata-alice.test'),member=await account(remote,'strata-bob.test2'),outsider=await account(remote,'strata-carol.test2')
+ const owner=await account(pds,'etnos-alice.test'),member=await account(remote,'etnos-bob.test2'),outsider=await account(remote,'etnos-carol.test2')
  const created=await owner.com.atproto.space.createSpace({spaceType:'com.example.group',policy:{$type:'com.atproto.memberspace.policy',publicRead:false,publicWrite:false,publishPolicy:false,publishMembers:false}}),space=created.data.uri
  check('create-private-space','Official PDS alpha; two independent PDS services')
  for(const did of[owner.assertDid,member.assertDid])await owner.com.atproto.memberspace.putMember({space,did,read:true,write:true})

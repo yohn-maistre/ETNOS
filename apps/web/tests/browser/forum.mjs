@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 
-import { Strata, api, chromium, origin, artifactDir } from './environment.mjs'
+import { Etnos, api, chromium, origin, artifactDir } from './environment.mjs'
 
-const s = new Strata(':memory:', origin)
+const s = new Etnos(':memory:', origin)
 const owner = s.provision(
   'did:web:browser-fixture.example',
   'Synthetic steward',

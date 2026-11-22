@@ -5,7 +5,7 @@ import { request } from './api'
 import { contextTree } from './context-tree'
 import type { MapData } from './observatory'
 /** One customary region on Jelajah, with its kabupaten and counts. */
-export type Stratum = {
+export type RegionLayer = {
   slug: string
   title: string
   href: string
@@ -41,7 +41,7 @@ export const loadAtlasLangs = (): Promise<AtlasLang[]> =>
 export const loadAtlas = (): Promise<Atlas | null> =>
   import('./papua-atlas.json').then((m) => m.default as unknown as Atlas).catch(() => null)
 
-export function buildStrata(contexts: Ctx[], langs: AtlasLang[], map: MapData | null): Stratum[] {
+export function buildRegionLayers(contexts: Ctx[], langs: AtlasLang[], map: MapData | null): RegionLayer[] {
   const bySlug = new Map(contexts.map((c) => [c.slug, c]))
   return REGION_ORDER.map((slug) => bySlug.get(slug))
     .filter((r): r is Ctx => !!r)

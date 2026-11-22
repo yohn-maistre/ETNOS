@@ -24,7 +24,7 @@ test('the meter counts rows per request, logs no content and saves at most every
   assert.equal(today.rowsRead,137);assert.equal(today.rowsWritten,6)
   assert.equal(today.percent.rowsRead,Math.round(130/FREE_TIER.rowsRead*1000)/10)
   assert.equal(today.heaviest[0].route,'GET /v1/feed')
-  assert.deepEqual(JSON.parse(lines[0]),{event:'strata.request',method:'GET',route:'/v1/feed',status:200,ms:1000,rowsRead:40,rowsWritten:2,statements:5})
+  assert.deepEqual(JSON.parse(lines[0]),{event:'etnos.request',method:'GET',route:'/v1/feed',status:200,ms:1000,rowsRead:40,rowsWritten:2,statements:5})
   now=Date.UTC(2026,10,18,0,1);const n=meter.start();meter.finish(n,'GET','/v1/feed',503)
   const two=meter.report().days
   assert.deepEqual(two.map(d=>d.day),['2026-11-18','2026-11-17']);assert.equal(two[0].errors,1);assert.equal(two[1].requests,3)

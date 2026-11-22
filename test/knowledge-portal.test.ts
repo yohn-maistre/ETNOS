@@ -4,7 +4,7 @@ import {execFileSync} from 'node:child_process'
 import {mkdtempSync,readFileSync,writeFileSync,rmSync} from 'node:fs'
 import {tmpdir} from 'node:os'
 import {join} from 'node:path'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Groups} from '../src/groups.ts'
 import {KnowledgeModel,type KnowledgeSeed} from '../src/knowledge-model.ts'
 import shipped from '../src/catalogues/tanah-papua-knowledge-seed.json' with {type:'json'}
@@ -14,7 +14,7 @@ const build=(args:string[])=>execFileSync(process.execPath,['--disable-warning=E
 
 test('static observatory files hold only commons witnesses and are the same on every build',()=>{
  const dir=mkdtempSync(join(tmpdir(),'portal-'))
- const s=new Strata(':memory:','https://portal.example.org')
+ const s=new Etnos(':memory:','https://portal.example.org')
  try{
   const steward=s.provision('did:web:steward.example','Steward'),host=s.provision('did:web:host.example','Host'),member=s.provision('did:web:member.example','Member')
   const m=new KnowledgeModel(s,new Groups(s,{stewardDid:steward.actor.did}))

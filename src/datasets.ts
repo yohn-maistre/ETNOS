@@ -9,8 +9,8 @@
  *
  * Rules for this first slice:
  * - Only the open tier is accepted. Community and controlled tiers exist in the schema and are refused
- *   until the request flow exists, so no record can promise access that Strata cannot yet check.
- * - Records hold metadata and links only. Strata stores no dataset bytes here.
+ *   until the request flow exists, so no record can promise access that ETNOS cannot yet check.
+ * - Records hold metadata and links only. ETNOS stores no dataset bytes here.
  * - Records are node-level commons and link only to commons things. Links are checked again at every
  *   read: a thing that is no longer public drops out of the record's links.
  * - A member's proposal is seen by its proposer and the node stewards until a steward accepts it.
@@ -21,7 +21,7 @@
  *   shipped knowledge seed (the public catalogue that the static map is built from) answers instead.
  */
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {Groups} from './groups.ts'
 import {text,publicURL,transition,expected,hash} from './commons.ts'
 
@@ -72,11 +72,11 @@ export function datasetInput(b:Record<string,unknown>){
 }
 
 export class Datasets{
- readonly store:StrataCore
+ readonly store:EtnosCore
  readonly groups:Groups
  readonly shipped:Map<string,ReturnType<typeof datasetInput>>
  readonly things:Map<string,ShippedThing>
- constructor(store:StrataCore,groups:Groups,shipped:{datasets?:DatasetSeed;things?:ShippedThing[]}={}){
+ constructor(store:EtnosCore,groups:Groups,shipped:{datasets?:DatasetSeed;things?:ShippedThing[]}={}){
   this.store=store;this.groups=groups
   this.shipped=new Map((shipped.datasets?.datasets??[]).map(d=>{const x=datasetInput(d);return [datasetId(x.key),x]}))
   this.things=new Map((shipped.things??[]).map(t=>[t.slug,t]))

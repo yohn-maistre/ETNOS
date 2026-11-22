@@ -1,11 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { Groups } from "../src/groups.ts";
 import { api } from "../src/api.ts";
 
 function world() {
-  const s = new Strata(":memory:", "https://strata.example", () => Date.parse("2026-11-15T00:00:00Z")),
+  const s = new Etnos(":memory:", "https://etnos.example", () => Date.parse("2026-11-15T00:00:00Z")),
     admin = s.provision("did:web:admin.example", "Node steward"),
     owner = s.provision("did:web:owner.example", "Owner"),
     other = s.provision("did:web:other.example", "Other"),

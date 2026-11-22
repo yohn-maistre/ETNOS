@@ -1,4 +1,6 @@
 node_modules/
+.etnos/
+# Local data folders from before the rename to ETNOS.
 .strata/
 coverage/
 *.db
@@ -15,6 +17,7 @@ dist-host/
 /web/
 dist-web/
 
+.etnos-pds/
 .strata-pds/
 pds.env
 

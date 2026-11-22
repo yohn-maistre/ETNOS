@@ -1,4 +1,4 @@
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {spreadAgentPosts} from './feed-share.ts'
 export {spreadAgentPosts}
 export type ExploreSort='balanced'|'active'|'new'
@@ -12,8 +12,8 @@ export function discussionRank(p:RankCandidate,sort:ExploreSort,now:number){
  return sort==='balanced'?rank/Math.log2(2+Math.max(1,p.activeAuthors)):rank
 }
 export class Ranking {
- readonly store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ readonly store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  explore(options:{sort?:string;limit?:number;communityId?:string}={}){
   const sort=options.sort??'balanced',limit=options.limit??12,now=this.store.clock()
   if(!['balanced','active','new'].includes(sort)||!Number.isSafeInteger(limit)||limit<1||limit>24)throw new Fault(400,'Choose a supported discovery sort and 1–24 items')

@@ -640,7 +640,7 @@
   background: var(--brand-soft);
   color: var(--brand);
 }
-.strata-card {
+.etnos-card {
   padding: 24px;
   border: 0 !important;
   border-radius: 0 !important;
@@ -651,10 +651,10 @@
   flex-direction: column;
   gap: 14px;
 }
-.strata-card .strata-card {
+.etnos-card .etnos-card {
   padding: 0;
 }
-.strata-preferences {
+.etnos-preferences {
   max-width: 640px;
   gap: 24px;
 }
@@ -698,7 +698,7 @@
 .custom-accent input {
   font-family: monospace;
 }
-.strata-narrow {
+.etnos-narrow {
   padding: 42px 24px;
   max-width: 480px;
   margin: auto;
@@ -714,35 +714,35 @@
 .login-card [data-slot='field-description'] {
   font-size: 13px;
 }
-.strata-nodata {
+.etnos-nodata {
   padding: 42px 24px;
   text-align: center;
 }
-.strata-nodata > svg {
+.etnos-nodata > svg {
   margin: 0 auto 18px;
   color: var(--muted-foreground);
 }
-.strata-nodata h2 {
+.etnos-nodata h2 {
   font-size: 18px;
 }
-.strata-nodata p {
+.etnos-nodata p {
   font-size: 14px;
   max-width: 340px;
   line-height: 1.65;
   margin: 10px auto 20px;
   color: var(--muted-foreground);
 }
-.strata-empty-graphic {
+.etnos-empty-graphic {
   display: none;
 }
-.strata-mosaic,
+.etnos-mosaic,
 .object-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   padding: 24px;
 }
-.strata-tile {
+.etnos-tile {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -754,18 +754,18 @@
   background: var(--card);
   transition: border-color 0.15s;
 }
-.strata-tile:hover {
+.etnos-tile:hover {
   border-color: var(--brand);
 }
-.strata-tile h2 {
+.etnos-tile h2 {
   font-size: 18px;
 }
-.strata-tile p {
+.etnos-tile p {
   color: var(--muted-foreground);
   font-size: 13px;
   margin: 8px 0;
 }
-.strata-tile:nth-child(3n + 2) {
+.etnos-tile:nth-child(3n + 2) {
   background: color-mix(in srgb, var(--brand-soft) 40%, var(--card));
 }
 .object-card {
@@ -830,12 +830,12 @@
   gap: 12px;
   flex-wrap: wrap;
 }
-.strata-body {
+.etnos-body {
   white-space: pre-wrap;
   line-height: 1.7;
   overflow-wrap: anywhere;
 }
-.strata-source {
+.etnos-source {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -843,15 +843,15 @@
   font-size: 13px;
   overflow-wrap: anywhere;
 }
-.strata-caption,
-.strata-publication {
+.etnos-caption,
+.etnos-publication {
   display: flex;
   align-items: center;
   gap: 6px;
   color: var(--muted-foreground);
   font-size: 12px;
 }
-.strata-review {
+.etnos-review {
   padding: 18px;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -859,28 +859,28 @@
   gap: 12px;
   margin-top: 8px;
 }
-.strata-review > button {
+.etnos-review > button {
   justify-self: start;
 }
-.strata-inline {
+.etnos-inline {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
-.strata-stack {
+.etnos-stack {
   display: grid;
   gap: 16px;
 }
-.strata-reply {
+.etnos-reply {
   border-left: 1px solid var(--border);
   padding: 14px 0 14px 18px;
   margin: 0 0 8px 6px;
 }
-.strata-reply p {
+.etnos-reply p {
   margin-top: 8px;
 }
-.strata-pill {
+.etnos-pill {
   display: inline-block;
   padding: 3px 7px;
   border-radius: 6px;
@@ -888,7 +888,7 @@
   font-size: 12px;
   width: fit-content;
 }
-.strata-small {
+.etnos-small {
   color: var(--muted-foreground);
   font-size: 12px;
 }
@@ -1069,18 +1069,18 @@
   .cx-post-actions > [data-slot='button'] {
     width: 40px;
   }
-  .strata-card {
+  .etnos-card {
     padding: 22px 18px;
   }
-  .strata-narrow {
+  .etnos-narrow {
     padding: 28px 18px;
   }
-  .strata-mosaic,
+  .etnos-mosaic,
   .object-grid {
     padding: 18px;
     gap: 10px;
   }
-  .strata-tile {
+  .etnos-tile {
     padding: 16px;
   }
   .object-card [data-slot='card-content'] {
@@ -1132,7 +1132,7 @@
   .object-grid {
     grid-template-columns: 1fr;
   }
-  .strata-mosaic {
+  .etnos-mosaic {
     grid-template-columns: 1fr;
   }
   .cx-post-actions {
@@ -2240,7 +2240,7 @@
 .cx-post.detail .post-gallery,
 .cx-post.detail .cx-post-actions,
 .cx-post.detail .context-links,
-.cx-post.detail .strata-publication {
+.cx-post.detail .etnos-publication {
   grid-column: 1 / -1;
 }
 .cx-post.detail .cx-post-body {

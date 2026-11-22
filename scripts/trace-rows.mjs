@@ -1,8 +1,8 @@
 // Lists SQL statements reading or writing 50+ rows for common routes at showcase scale.
 // Usage: npm run test:worker (builds the harness), then node scripts/trace-rows.mjs
 import {Miniflare,convertV4MiniflareOptions} from 'miniflare'
-const origin='https://strata.example'
-const mf=new Miniflare(convertV4MiniflareOptions({name:'t',modules:true,scriptPath:'.wrangler/test/worker-harness.js',compatibilityDate:'2026-10-23',compatibilityFlags:['nodejs_compat'],bindings:{STRATA_ORIGIN:origin,STRATA_NODE:'load'},durableObjects:{STRATA:{className:'TestNode',useSQLite:true}}}))
+const origin='https://etnos.example'
+const mf=new Miniflare(convertV4MiniflareOptions({name:'t',modules:true,scriptPath:'.wrangler/test/worker-harness.js',compatibilityDate:'2026-10-23',compatibilityFlags:['nodejs_compat'],bindings:{ETNOS_ORIGIN:origin,ETNOS_NODE:'load'},durableObjects:{STRATA:{className:'TestNode',useSQLite:true}}}))
 const stub=(await mf.getDurableObjectNamespace('STRATA')).getByName('load')
 const seed=JSON.parse(await stub.seedScale(30,200,2000)),u=seed.users[0],root=seed.roots[5],room=seed.rootRooms[5]
 const wiki=await(await mf.dispatchFetch(origin+'/v1/wiki')).json()

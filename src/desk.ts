@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { StrataCore, Fault } from "./core.ts";
+import { EtnosCore, Fault } from "./core.ts";
 
 /** The desk turns one stored source into one reviewed-before-posting draft.
  * Code plans and checks. The model does two small jobs: copy, then retell.
@@ -266,9 +266,9 @@ type DraftRow = { id: string; shelf_id: string; community_id: string; agent_id: 
 /** Shelf and draft queue. An agent may propose a source and request a draft under a
  * current mandate. Only a steward accepts a source or releases a draft for posting. */
 export class Desk {
-  private store: StrataCore;
+  private store: EtnosCore;
   private model?: DeskModel;
-  constructor(store: StrataCore, model?: DeskModel) {
+  constructor(store: EtnosCore, model?: DeskModel) {
     this.store = store;
     this.model = model;
   }

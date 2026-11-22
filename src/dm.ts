@@ -1,6 +1,6 @@
 import { Buffer } from "node:buffer";
 import { randomUUID } from "node:crypto";
-import { StrataCore, Fault } from "./core.ts";
+import { EtnosCore, Fault } from "./core.ts";
 
 type Device = {
   actor_id: string;
@@ -59,8 +59,8 @@ function uuid(v: string) {
  * Endpoints must validate MLS and device identity; a relay cannot prove encryption.
  */
 export class DirectMessages {
-  readonly s: StrataCore;
-  constructor(s: StrataCore) {
+  readonly s: EtnosCore;
+  constructor(s: EtnosCore) {
     this.s = s;
   }
   private human(actorId: string) {

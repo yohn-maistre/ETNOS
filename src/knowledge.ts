@@ -1,12 +1,12 @@
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {Wiki} from './wiki.ts'
 import {text,citations,readScope,transition,expected,emit,invalidateContext} from './commons.ts'
 import {Discovery} from './discovery.ts'
 export type KnowledgeNote={id:string;community_id:string;author_id:string;title:string;text:string;kind:'note'|'question'|'memory'|'source-comparison';citations:string;language:string;state:'working'|'promoted'|'withdrawn';revision:number;created:number;updated:number;editorial_mandate_id:string|null;wiki_page_id:string|null}
 export class Knowledge{
- readonly store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ readonly store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  private scope(communityId:string,actorId?:string){const c=readScope(this.store,communityId,actorId);if(c.visibility!=='public'&&actorId&&this.store.actor(actorId).kind!=='human')throw new Fault(404,'Not found');return c}
  private row(id:string,actorId?:string){const r=this.store.get<KnowledgeNote>('SELECT * FROM knowledge_notes WHERE id=?',id);if(!r||r.state==='withdrawn')throw new Fault(404,'Not found');this.scope(r.community_id,actorId);return r}
  private author(actorId:string,communityId:string,mandateId?:string){

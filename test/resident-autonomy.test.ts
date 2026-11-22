@@ -1,25 +1,25 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Resident,residentBudget,keylessBudget} from '../src/resident.ts'
 import {AgentAccess} from '../src/agent-access.ts'
 
 const DAY=86400000
 function fixture(){
- const s=new Strata(':memory:','https://autonomy.example.org'),owner=s.provision('did:web:autonomy-owner.example','Synthetic operator'),other=s.provision('did:web:autonomy-other.example','Synthetic steward')
+ const s=new Etnos(':memory:','https://autonomy.example.org'),owner=s.provision('did:web:autonomy-owner.example','Synthetic operator'),other=s.provision('did:web:autonomy-other.example','Synthetic steward')
  const room=s.createCommunity(owner.actor.id,'Public room','Synthetic','public',true,'open')
  const access=new AgentAccess(s),r=new Resident(s,access,{label:'synthetic',draft:async()=>({text:'x',model:'synthetic'})})
  return {s,owner,other,room,access,r}
 }
-const mandateExpiry=(s:Strata,id:string)=>(s.get<{expires:number}>('SELECT expires FROM mandates WHERE id=?',id)??s.get<{expires:number}>('SELECT expires FROM editorial_mandates WHERE id=?',id))?.expires
+const mandateExpiry=(s:Etnos,id:string)=>(s.get<{expires:number}>('SELECT expires FROM mandates WHERE id=?',id)??s.get<{expires:number}>('SELECT expires FROM editorial_mandates WHERE id=?',id))?.expires
 
 test('the keyless route keeps the small daily budget; a keyed node may raise it within bounds',()=>{
  assert.deepEqual(residentBudget({},false),keylessBudget)
- assert.deepEqual(residentBudget({STRATA_RESIDENT_DAILY_CALLS:'500'},false),keylessBudget)
+ assert.deepEqual(residentBudget({ETNOS_RESIDENT_DAILY_CALLS:'500'},false),keylessBudget)
  assert.deepEqual(residentBudget({},true),{modelCalls:200,toolCalls:1200})
- assert.deepEqual(residentBudget({STRATA_RESIDENT_DAILY_CALLS:'50'},true),{modelCalls:50,toolCalls:300})
- for(const bad of ['5','2001','1.5','lots',''])assert.equal(residentBudget({STRATA_RESIDENT_DAILY_CALLS:bad},true).modelCalls,200,bad)
+ assert.deepEqual(residentBudget({ETNOS_RESIDENT_DAILY_CALLS:'50'},true),{modelCalls:50,toolCalls:300})
+ for(const bad of ['5','2001','1.5','lots',''])assert.equal(residentBudget({ETNOS_RESIDENT_DAILY_CALLS:bad},true).modelCalls,200,bad)
 })
 
 test('guided setup grants 30-day mandates by default and accepts 1 or 7 days, nothing else',()=>{
@@ -63,7 +63,7 @@ test('only the resident operator can renew, and only where a resident exists',()
 test('the model-call ceiling follows the budget set on the resident',()=>{
  const f=fixture();try{
   assert.deepEqual(f.r.budget,keylessBudget)
-  f.r.budget=residentBudget({STRATA_RESIDENT_DAILY_CALLS:'40'},true)
+  f.r.budget=residentBudget({ETNOS_RESIDENT_DAILY_CALLS:'40'},true)
   assert.equal(f.r.budget.modelCalls,40)
  }finally{f.s.close()}
 })

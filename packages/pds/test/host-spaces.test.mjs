@@ -23,7 +23,7 @@ import { FakePlc, call, hostRuntime, migrate, operator, origin, signup } from ".
 import { b64url } from "../src/host/crypto.ts";
 import { didForGenesis, genesisOperation, signOperation } from "../src/host/plc.ts";
 
-const persistDir = () => mkdtempSync(join(tmpdir(), "strata-spaces-"));
+const persistDir = () => mkdtempSync(join(tmpdir(), "etnos-spaces-"));
 const TYPE = "space.etnos.komunitas";
 const NOTE = "space.etnos.catatan";
 const MEMBERS = { $type: "com.atproto.memberspace.policy" };

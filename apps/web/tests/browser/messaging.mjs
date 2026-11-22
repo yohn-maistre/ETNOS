@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
-import { Strata, api, chromium, origin, artifactDir } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+import { Etnos, api, chromium, origin, artifactDir } from './environment.mjs'
+const s = new Etnos(':memory:', origin),
   alice = s.provision('did:web:alice-fixture.example', 'Alice fixture'),
   bob = s.provision('did:web:bob-fixture.example', 'Bob fixture'),
   forum = s.createCommunity(
@@ -153,7 +153,7 @@ try {
     .click()
   await b.getByRole('dialog').waitFor({ state: 'hidden' })
   await b.screenshot({
-    path: artifactDir + '/strata-dm-mobile.png',
+    path: artifactDir + '/etnos-dm-mobile.png',
     fullPage: true,
   })
   assert.equal(

@@ -126,7 +126,7 @@
 </script>
 
 {#if pending && !story}<ContentSkeleton />{:else if error}<div
-    class="strata-nodata"
+    class="etnos-nodata"
   >
     <h2>Kabar belum tersedia</h2>
     <p>{error}</p>

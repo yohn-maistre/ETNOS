@@ -809,21 +809,21 @@ body {
 [data-slot='button']:disabled {
   opacity: 0.4;
 }
-.strata-nodata {
+.etnos-nodata {
   padding: 64px 28px;
   font-size: 14px;
 }
-.strata-nodata h2 {
+.etnos-nodata h2 {
   font-size: 18px;
   font-weight: 600;
 }
-.strata-empty-graphic {
+.etnos-empty-graphic {
   background: transparent;
   border: 0;
   margin-bottom: 16px;
 }
 .object-card,
-.strata-card {
+.etnos-card {
   box-shadow: none;
   border-color: var(--reading-line);
   border-radius: 16px;

@@ -1,4 +1,4 @@
-import type {StrataCore} from './core.ts'
+import type {EtnosCore} from './core.ts'
 import {hash,key} from './commons.ts'
 import type {ResidentSkill} from './resident-contract.ts'
 import type {ResidentConfig,ResidentJob} from './resident.ts'
@@ -63,9 +63,9 @@ const runsOn=(slot:JadwalSlot,weekday:number)=>!slot.days||slot.days.includes(we
 export const slotRequestKey=(slotId:string,date:string,communityId:string)=>`jadwal:${slotId}:${date}:${hash(communityId).slice(0,16)}`
 
 export class JadwalRunner{
- readonly store:StrataCore;readonly jadwal:Jadwal;private readonly authorize:(c:ResidentConfig,skill:ResidentSkill)=>void
+ readonly store:EtnosCore;readonly jadwal:Jadwal;private readonly authorize:(c:ResidentConfig,skill:ResidentSkill)=>void
  /** `authorize` throws when the current mandates no longer allow the skill. */
- constructor(store:StrataCore,authorize:(c:ResidentConfig,skill:ResidentSkill)=>void,jadwal:Jadwal=defaultJadwal){this.store=store;this.authorize=authorize;this.jadwal=jadwal}
+ constructor(store:EtnosCore,authorize:(c:ResidentConfig,skill:ResidentSkill)=>void,jadwal:Jadwal=defaultJadwal){this.store=store;this.authorize=authorize;this.jadwal=jadwal}
  /** Slots whose local time has passed today. */
  due(now:number){const t=localTime(now,this.jadwal.timezone);return {date:t.date,slots:this.jadwal.slots.filter(s=>runsOn(s,t.weekday)&&minutesOf(s.at)<=t.minutes)}}
  /** The job a slot already made for this community today, in any state. */

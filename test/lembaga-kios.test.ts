@@ -2,7 +2,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
-import { Strata, LocalDatabase } from '../src/store.ts'
+import { Etnos, LocalDatabase } from '../src/store.ts'
 import { Groups } from '../src/groups.ts'
 import { Founding } from '../src/founding.ts'
 import { Kamus } from '../src/kamus.ts'
@@ -15,7 +15,7 @@ import { migrations, migrate, schemaVersion } from '../src/schema.ts'
 import { api } from '../src/api.ts'
 
 function world() {
-  const s = new Strata(':memory:', 'https://lembaga.example', () => Date.parse('2026-11-21T00:00:00Z'))
+  const s = new Etnos(':memory:', 'https://lembaga.example', () => Date.parse('2026-11-21T00:00:00Z'))
   const admin = s.provision('did:web:admin.example', 'Operator fixture'),
     steward = s.provision('did:web:steward.example', 'Steward fixture'),
     other = s.provision('did:web:other.example', 'Other steward fixture'),

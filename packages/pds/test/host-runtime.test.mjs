@@ -18,7 +18,7 @@ const base58btc = {
 		return "z" + out;
 	},
 };
-const persistDir = () => mkdtempSync(join(tmpdir(), "strata-host-"));
+const persistDir = () => mkdtempSync(join(tmpdir(), "etnos-host-"));
 const post = (label, text) => ({ repo: undefined, collection: "org.example.post", rkey: label, validate: false, record: { $type: "org.example.post", text } });
 
 test("accounts are created by invite, resolve by handle and carry the right PLC genesis", async () => {
@@ -128,7 +128,7 @@ test("one account can never act as another", async () => {
 		await assert.rejects(aliceObject.repoFor(bob.did));
 		await assert.rejects(aliceObject.checkPassword(bob.did, bob.password));
 		await assert.rejects(aliceObject.purge(bob.did));
-		assert.equal((await aliceObject.fetch("https://do/xrpc/com.atproto.sync.getRepo", { headers: { "x-strata-expected-did": bob.did } })).status, 404);
+		assert.equal((await aliceObject.fetch("https://do/xrpc/com.atproto.sync.getRepo", { headers: { "x-etnos-expected-did": bob.did } })).status, 404);
 
 		// Reads resolve to exactly the named account.
 		const aliceList = await (await call(mf, `/xrpc/com.atproto.repo.listRecords?repo=${alice.did}&collection=org.example.post`)).json();

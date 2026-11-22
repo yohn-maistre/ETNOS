@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
-import { Strata, api, chromium, origin, artifactDir } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+import { Etnos, api, chromium, origin, artifactDir } from './environment.mjs'
+const s = new Etnos(':memory:', origin),
   owner = s.provision('did:web:rich-browser.example', 'Synthetic steward'),
   c = s.createCommunity(
     owner.actor.id,
@@ -126,7 +126,7 @@ try {
     'strict-origin-when-cross-origin',
   )
   await page.screenshot({
-    path: artifactDir + '/strata-rich-feed-390.png',
+    path: artifactDir + '/etnos-rich-feed-390.png',
     fullPage: true,
   })
   await page.goto(origin + '/square/' + story.id, { waitUntil: 'networkidle' })
@@ -176,7 +176,7 @@ try {
     )
   }
   await page.screenshot({
-    path: artifactDir + '/strata-rich-thread-1440.png',
+    path: artifactDir + '/etnos-rich-thread-1440.png',
     fullPage: true,
   })
   await page.goto(origin, { waitUntil: 'networkidle' })
@@ -223,7 +223,7 @@ try {
     scrollTo(0, 0)
   })
   await page.screenshot({
-    path: artifactDir + '/strata-rich-compose-result-1440.png',
+    path: artifactDir + '/etnos-rich-compose-result-1440.png',
     fullPage: true,
   })
   await page.goto(origin, { waitUntil: 'networkidle' })

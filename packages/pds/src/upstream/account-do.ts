@@ -38,7 +38,7 @@ export class AccountDurableObject extends DurableObject<PDSEnv> {
 	}
 
 	/**
-	 * Strata: where this object's identity comes from. The single-identity
+	 * ETNOS: where this object's identity comes from. The single-identity
 	 * deployment reads it from the environment (upstream behaviour); the
 	 * multi-account host overrides this to load it from the object's own
 	 * storage, so one class serves many accounts.
@@ -53,7 +53,7 @@ export class AccountDurableObject extends DurableObject<PDSEnv> {
 		return { did: this.env.DID, signingKey: this.env.SIGNING_KEY };
 	}
 
-	/** Strata: initial activation state of a new repository. */
+	/** ETNOS: initial activation state of a new repository. */
 	protected initialActive(): boolean {
 		return (
 			this.env.INITIAL_ACTIVE === undefined ||
@@ -86,7 +86,7 @@ export class AccountDurableObject extends DurableObject<PDSEnv> {
 		this.ctx.storage.sql.exec("DELETE FROM strata_refresh_sessions WHERE jti=?",jti);
 	}
 
-	// Strata: durable, bounded login throttling; no raw IP storage.
+	// ETNOS: durable, bounded login throttling; no raw IP storage.
 	consumeAuthBudget(key: string, now: number): boolean {
 		if (!/^[a-f0-9]{64}$/.test(key)) return false;
 		return this.ctx.storage.transactionSync(() => {

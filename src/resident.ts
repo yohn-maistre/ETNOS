@@ -1,6 +1,6 @@
 import {randomUUID,randomBytes,timingSafeEqual} from 'node:crypto'
 import {Buffer} from 'node:buffer'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {AgentAccess} from './agent-access.ts'
 import {Wiki} from './wiki.ts'
 import {Discovery} from './discovery.ts'
@@ -34,12 +34,12 @@ const noEvidence='No current public source evidence; resident abstained'
 /** Per-job and daily tool ceilings, enforced here rather than in the runtime. */
 const toolLimits={job:6,search_reviewed_wiki:3,web_search:3,web_fetch:4} as const
 /** Sitewide daily ceilings for the built-in resident. The keyless route stays small (the free Workers AI
- * allowance); a node with its own model key may raise them with STRATA_RESIDENT_DAILY_CALLS. */
+ * allowance); a node with its own model key may raise them with ETNOS_RESIDENT_DAILY_CALLS. */
 export type ResidentBudget={modelCalls:number;toolCalls:number}
 export const keylessBudget:ResidentBudget={modelCalls:10,toolCalls:60}
-export function residentBudget(env:{STRATA_RESIDENT_DAILY_CALLS?:string},keyed:boolean):ResidentBudget{
+export function residentBudget(env:{ETNOS_RESIDENT_DAILY_CALLS?:string},keyed:boolean):ResidentBudget{
  if(!keyed)return keylessBudget
- const n=Number(env.STRATA_RESIDENT_DAILY_CALLS??200)
+ const n=Number(env.ETNOS_RESIDENT_DAILY_CALLS??200)
  const calls=Number.isInteger(n)&&n>=10&&n<=2000?n:200
  return {modelCalls:calls,toolCalls:calls*6}
 }
@@ -57,8 +57,8 @@ export function citationUrl(raw:unknown){
  try{const u=new URL(raw.replace(/[.,;:!?'"”’]+$/,''));if((u.protocol!=='https:'&&u.protocol!=='http:')||u.username||u.password)return null;u.hash='';return u.href}catch{return null}
 }
 export class Resident{
- readonly store:StrataCore;readonly access:AgentAccess;readonly provider?:ResidentProvider;readonly routing:ResidentRouting;readonly questions:ResidentQuestions;readonly slots:JadwalRunner;budget:ResidentBudget=keylessBudget
- constructor(store:StrataCore,access=new AgentAccess(store),provider?:ResidentProvider,jadwal:Jadwal=defaultJadwal){this.store=store;this.access=access;this.provider=provider;this.slots=new JadwalRunner(store,(c,skill)=>this.current(c,skill),jadwal);this.routing=new ResidentRouting(store,access);this.questions=new ResidentQuestions(store,this.routing)}
+ readonly store:EtnosCore;readonly access:AgentAccess;readonly provider?:ResidentProvider;readonly routing:ResidentRouting;readonly questions:ResidentQuestions;readonly slots:JadwalRunner;budget:ResidentBudget=keylessBudget
+ constructor(store:EtnosCore,access=new AgentAccess(store),provider?:ResidentProvider,jadwal:Jadwal=defaultJadwal){this.store=store;this.access=access;this.provider=provider;this.slots=new JadwalRunner(store,(c,skill)=>this.current(c,skill),jadwal);this.routing=new ResidentRouting(store,access);this.questions=new ResidentQuestions(store,this.routing)}
  /** The public question, scoped work and media/context receipt commit together. */
  createMentionPost(actorId:string,b:Record<string,unknown>,groups=new Groups(this.store)){
   return this.store.tx(()=>{
@@ -263,7 +263,7 @@ ${body}`:job.skill==='research-question'?`Dari kabar berikut, apa yang perlu kit
    if(draft.trim()==='ABSTAIN')throw new ResidentFailure('runtime-abstained')
    // Only URLs a tool returned to this job generation (or pinned evidence) may
    // stay as inline thread citations. Anything else, including invented links,
-   // is removed. Editorial artifacts keep Strata-attached links only.
+   // is removed. Editorial artifacts keep ETNOS-attached links only.
    const evidenceUrls=new Set(evidence.map(e=>citationUrl(e.url)).filter((u):u is string=>!!u)),returned=thread?new Map(s.all<{url:string;origin:'wiki'|'web'}>('SELECT url,origin FROM resident_job_citations WHERE job_id=? AND generation=?',id,job.generation).map(r=>[r.url,r.origin])):new Map<string,'wiki'|'web'>()
    const cited={wiki:new Set<string>(),web:new Set<string>()}
    const safe=draft.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/https?:\/\/[^\s<>\])]+/g,match=>{

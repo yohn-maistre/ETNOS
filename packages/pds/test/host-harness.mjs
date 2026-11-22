@@ -75,7 +75,7 @@ export class FakePlc {
 export function hostRuntime({ persist, plc, vars = {}, outbound } = {}) {
 	return new Miniflare(
 		convertV4MiniflareOptions({
-			name: "strata-identity-host-local-only",
+			name: "etnos-identity-host-local-only",
 			modules: [{ type: "ESModule", path: "dist-host/worker.js" }],
 			compatibilityDate: cfg.compatibility_date,
 			compatibilityFlags: cfg.compatibility_flags,

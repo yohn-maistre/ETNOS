@@ -3,7 +3,7 @@
  * contexts that are active, public groups, listed communities, accepted revisions of pages in public communities,
  * the public part of the knowledge model, open datasets, and the Kamus of public communities.
  */
-import type { StrataCore } from './core.ts'
+import type { EtnosCore } from './core.ts'
 import type { Groups } from './groups.ts'
 import type { Wiki } from './wiki.ts'
 import type { KnowledgeModel, KnowledgeSeed } from './knowledge-model.ts'
@@ -30,7 +30,7 @@ export function seedCommons(seed: KnowledgeSeed): Commons {
   }
 }
 
-export function storeSource(o: { store: StrataCore; groups: Groups; wiki: Wiki; model: KnowledgeModel; datasets: Datasets; kamus: Kamus; seed: KnowledgeSeed; catalogue?: string; records?: ViewerRecord[]; localNames?: (recordId: string) => LocalName[]; lembaga?: Lembaga; kios?: Kios }): EntrySource {
+export function storeSource(o: { store: EtnosCore; groups: Groups; wiki: Wiki; model: KnowledgeModel; datasets: Datasets; kamus: Kamus; seed: KnowledgeSeed; catalogue?: string; records?: ViewerRecord[]; localNames?: (recordId: string) => LocalName[]; lembaga?: Lembaga; kios?: Kios }): EntrySource {
   const s = o.store
   const publicPage = `SELECT w.id FROM wiki_pages w JOIN communities c ON c.id=w.community_id WHERE c.visibility='public' AND w.draft=0 AND w.revision_id IS NOT NULL`
   return {

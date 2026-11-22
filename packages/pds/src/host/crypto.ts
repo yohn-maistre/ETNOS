@@ -1,6 +1,6 @@
 /**
- * Strata identity host: small cryptographic helpers built on WebCrypto.
- * Runs unchanged in workerd and in Node (tests). AGPL-3.0-only, Strata code.
+ * ETNOS identity host: small cryptographic helpers built on WebCrypto.
+ * Runs unchanged in workerd and in Node (tests). AGPL-3.0-only, ETNOS code.
  *
  * Key custody (plan §2.3): one host secret, the KEK, never leaves the
  * Workers secret store. Every per-account secret is derived from it with

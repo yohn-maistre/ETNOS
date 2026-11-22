@@ -1,10 +1,10 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Groups} from '../src/groups.ts'
 
 test('a public lembaga page counts hidden private communities without naming them',()=>{
- const s=new Strata(':memory:','https://strata.example'),admin=s.provision('did:web:admin.example','Admin'),groups=new Groups(s,{stewardDid:admin.actor.did})
+ const s=new Etnos(':memory:','https://etnos.example'),admin=s.provision('did:web:admin.example','Admin'),groups=new Groups(s,{stewardDid:admin.actor.did})
  try{
   const owner=s.provision('did:web:o.example','Owner'),member=s.provision('did:web:m.example','Member'),visitor=s.provision('did:web:v.example','Visitor')
   const g=groups.create(owner.actor.id,'Lembaga','Synthetic','institution','public')

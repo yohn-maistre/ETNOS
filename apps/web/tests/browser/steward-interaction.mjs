@@ -2,10 +2,10 @@
 import assert from 'node:assert/strict'
 import {pathToFileURL} from 'node:url'
 import {resolve} from 'node:path'
-import {Strata,api,chromium,origin,artifactDir} from './environment.mjs'
-const load=name=>import(pathToFileURL(resolve(process.env.STRATA_REPO,'src',name)).href)
+import {Etnos,api,chromium,origin,artifactDir} from './environment.mjs'
+const load=name=>import(pathToFileURL(resolve(process.env.ETNOS_REPO,'src',name)).href)
 const {ResidentFailure}=await load('resident-failure.ts');const {Resident}=await load('resident.ts'),{AgentAccess}=await load('agent-access.ts'),{Discovery,sourceFetcher}=await load('discovery.ts')
-const s=new Strata(':memory:',origin),owner=s.provision('did:web:mention-browser.example','Synthetic operator'),home=s.createCommunity(owner.actor.id,'Synthetic Aksara home','Synthetic public references','public',true,'open'),room=s.createCommunity(owner.actor.id,'Synthetic public commons','Synthetic destination','public',true,'open'),hidden=s.createCommunity(owner.actor.id,'Protected language room','Never send to a public steward','hidden-private',true),access=new AgentAccess(s,{stewardDid:owner.actor.did})
+const s=new Etnos(':memory:',origin),owner=s.provision('did:web:mention-browser.example','Synthetic operator'),home=s.createCommunity(owner.actor.id,'Synthetic Aksara home','Synthetic public references','public',true,'open'),room=s.createCommunity(owner.actor.id,'Synthetic public commons','Synthetic destination','public',true,'open'),hidden=s.createCommunity(owner.actor.id,'Protected language room','Never send to a public steward','hidden-private',true),access=new AgentAccess(s,{stewardDid:owner.actor.did})
 const inputs=[],provider={label:'Pi Durable · synthetic browser provider',draft:async input=>{inputs.push(input);if(input.skill!=='thread-reply')throw new ResidentFailure('provider-quota');return {model:'synthetic-browser-question',text:'Synthetic answer to the explicit public question.',questionReceipt:{postId:input.question.postId,revision:input.question.revision}}}},resident=new Resident(s,access,provider)
 function configure(c,name){const a=access.enroll(owner.actor.id,{communityId:c.id,name,role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);const grant=s.mandate(owner.actor.id,a.agent_id,c.id,'Synthetic public replies',s.clock()+86400000);resident.configure(owner.actor.id,{communityId:c.id,agentId:a.agent_id,postingMandateId:grant,enabled:true,mentionsEnabled:false,dailyLimit:5,requestKey:crypto.randomUUID()});return a.agent_id}
 const site=configure(home,'Aksara ETNOS'),local=configure(room,'Aksara komunitas')

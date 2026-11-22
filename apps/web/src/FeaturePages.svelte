@@ -347,7 +347,7 @@
   </div>
 {/snippet}
 {#if loading}<ContentSkeleton />
-{:else if error}<div class="strata-card">
+{:else if error}<div class="etnos-card">
     <h1>Halaman belum tersedia</h1>
     <p role="alert" class="cx-hint">{error}</p>
     <Button variant="outline" onclick={() => load()}>Coba lagi</Button>
@@ -424,7 +424,7 @@
       {@render workList(
         works.filter((w) => w.group_id === group!.id),
       )}{#if !works.some((w) => w.group_id === group!.id)}<div
-          class="strata-nodata"
+          class="etnos-nodata"
         >
           <ListTodo size={26} />
           <h2>Belum ada kerja publik</h2>
@@ -442,7 +442,7 @@
     <a class="object-sponsor" href={'/groups/' + work.sponsor.id}>
       <Building2 size={16} />{work.sponsor.title}
     </a>
-    <p class="strata-body">{work.description}</p>
+    <p class="etnos-body">{work.description}</p>
     <div class="context-links">
       {#each work.contexts as c}<Badge
           href={'/wiki/' + c.slug}
@@ -489,22 +489,22 @@
         </Button>
       </div>{/if}
   </div>
-  {#if work.result}<Card.Root class="strata-card">
-      <h2 class="strata-inline"><Check size={18} />Hasil diterima</h2>
-      <p class="strata-body">{work.result.text}</p>
+  {#if work.result}<Card.Root class="etnos-card">
+      <h2 class="etnos-inline"><Check size={18} />Hasil diterima</h2>
+      <p class="etnos-body">{work.result.text}</p>
       {#each work.result.citations as url}<a
           href={url}
-          class="strata-source"
+          class="etnos-source"
           target="_blank"
           rel="noreferrer"
         >
           {url}<ArrowUpRight size={13} />
         </a>{/each}
     </Card.Root>{/if}
-  {#if results.length}<Card.Root class="strata-card">
+  {#if results.length}<Card.Root class="etnos-card">
       <h2>Tinjauan hasil</h2>
       <p class="cx-hint">Antrean ini hanya terlihat oleh pengelola lembaga.</p>
-      {#each results as result}<article class="strata-review">
+      {#each results as result}<article class="etnos-review">
           <Badge variant="secondary">
             {result.state === 'pending'
               ? 'Menunggu tinjauan'
@@ -512,12 +512,12 @@
                 ? 'Diterima'
                 : 'Ditolak'}
           </Badge>
-          <div class="strata-body post-markdown">
+          <div class="etnos-body post-markdown">
             {@html markdown(result.text)}
           </div>
           {#each result.citations as url}<a
               href={url}
-              class="strata-source"
+              class="etnos-source"
               target="_blank"
               rel="noreferrer"
             >
@@ -574,7 +574,7 @@
         </Card.Content>
       </Card.Root>{/each}
   </div>
-  {#if !groups.length}<div class="strata-nodata">
+  {#if !groups.length}<div class="etnos-nodata">
       <Building2 size={26} />
       <h2>Ruang bersama untuk lembagamu</h2>
       <p>Profil, ruang diskusi, wiki dan kerja publik dalam satu tempat.</p>
@@ -617,7 +617,7 @@
               </a>{/each}
           </section>{/if}
       {/each}
-    </div>{:else}<div class="strata-nodata">
+    </div>{:else}<div class="etnos-nodata">
       <MapPin size={26} />
       <h2>Tempat, wilayah & topik</h2>
       <Button href="/communities" variant="outline">Jelajahi komunitas</Button>

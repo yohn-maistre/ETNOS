@@ -1,12 +1,14 @@
 import { mkdirSync, chmodSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
-import { Strata } from './store.ts'
+import { Etnos } from './store.ts'
 import { server } from './http.ts'
+import { etnosEnv } from './env.ts'
 
 process.umask(0o077)
-const path = resolve(process.env.STRATA_DB ?? '.strata/node.sqlite')
+const env = etnosEnv(process.env)
+const path = resolve(env.ETNOS_DB ?? '.etnos/node.sqlite')
 mkdirSync(dirname(path),{recursive:true,mode:0o700})
-const store = new Strata(path,process.env.STRATA_ORIGIN ?? 'http://127.0.0.1:7342')
+const store = new Etnos(path,env.ETNOS_ORIGIN ?? 'http://127.0.0.1:7342')
 chmodSync(path,0o600)
 const [command,...args] = process.argv.slice(2)
 try {
@@ -20,9 +22,9 @@ try {
     const url = new URL(store.base)
     if (!['127.0.0.1','localhost','[::1]'].includes(url.hostname)) throw Error('Foundation host is loopback-only; production enrollment/TLS is not qualified')
     store.recoverInterrupted()
-    const app = server(store,{custodyFixture:process.env.STRATA_ENABLE_CUSTODY_FIXTURE === 'true',catalogue:process.env.STRATA_CATALOGUE})
+    const app = server(store,{custodyFixture:env.ETNOS_ENABLE_CUSTODY_FIXTURE === 'true',catalogue:env.ETNOS_CATALOGUE})
     app.requestTimeout = 15000; app.headersTimeout = 10000; app.keepAliveTimeout = 3000
-    app.listen(Number(url.port || 7342),'127.0.0.1',()=>console.log(`Strata foundation: ${store.base} (JSON API; local credentials; live AT writes disabled)`))
+    app.listen(Number(url.port || 7342),'127.0.0.1',()=>console.log(`ETNOS foundation: ${store.base} (JSON API; local credentials; live AT writes disabled)`))
     const stop = () => app.close(()=>{store.close();process.exit(0)})
     process.on('SIGINT',stop);process.on('SIGTERM',stop)
   } else if (command === 'demo') {

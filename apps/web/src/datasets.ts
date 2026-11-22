@@ -1,5 +1,5 @@
 // Dataset records as the API returns them (src/datasets.ts at the root: DCAT 3 and Croissant core fields, open tier
-// only). Strata keeps metadata and links here, never the dataset's own files.
+// only). ETNOS keeps metadata and links here, never the dataset's own files.
 import { request } from './api'
 
 export type DatasetThing = { slug: string; class: string; title: string; context: string | null }

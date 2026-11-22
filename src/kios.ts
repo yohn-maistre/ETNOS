@@ -8,7 +8,7 @@
  * open and not expired, read as an anonymous reader. An offer in a private community never appears in a Kios, and
  * neither does its count. A lembaga's Kios holds the offers its members post in its public communities.
  */
-import { Fault, type StrataCore } from './core.ts'
+import { Fault, type EtnosCore } from './core.ts'
 import { Offerings } from './offerings.ts'
 import type { Groups } from './groups.ts'
 import { KIOS_RULES, kiosRules } from './kios-rules.ts'
@@ -32,9 +32,9 @@ export function whatsappNumber(value: unknown) {
 }
 
 export class Kios {
-  private s: StrataCore
+  private s: EtnosCore
   private groups: Groups
-  constructor(store: StrataCore, groups: Groups) {
+  constructor(store: EtnosCore, groups: Groups) {
     this.s = store
     this.groups = groups
   }

@@ -1,12 +1,12 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Resident} from '../src/resident.ts'
 import {AgentAccess} from '../src/agent-access.ts'
 
 function fixture(){
- const s=new Strata(':memory:','https://limits.example.org'),owner=s.provision('did:web:limits-owner.example','Synthetic operator'),room=s.createCommunity(owner.actor.id,'Public room','Synthetic','public',true,'open'),access=new AgentAccess(s),r=new Resident(s,access,{label:'synthetic',draft:async()=>({text:'x',model:'synthetic'})}),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id)
+ const s=new Etnos(':memory:','https://limits.example.org'),owner=s.provision('did:web:limits-owner.example','Synthetic operator'),room=s.createCommunity(owner.actor.id,'Public room','Synthetic','public',true,'open'),access=new AgentAccess(s),r=new Resident(s,access,{label:'synthetic',draft:async()=>({text:'x',model:'synthetic'})}),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id)
  const grant=s.mandate(owner.actor.id,a.agent_id,room.id,'Public conversation',s.clock()+86400000)
  const configure=(extra:Record<string,unknown>)=>r.configure(owner.actor.id,{communityId:room.id,agentId:a.agent_id,postingMandateId:grant,enabled:true,requestKey:randomUUID(),...extra})
  return {s,owner,room,r,a,configure}
@@ -34,7 +34,7 @@ test('the daily budget still stops enqueueing at the configured limit and one jo
 })
 
 test('guided setup turns mentions on by default and keeps the explicit switch',()=>{
- const s=new Strata(':memory:','https://setup-mentions.example.org'),owner=s.provision('did:web:setup-owner.example','Synthetic operator'),r=new Resident(s,new AgentAccess(s),{label:'synthetic',draft:async()=>({text:'x',model:'synthetic'})})
+ const s=new Etnos(':memory:','https://setup-mentions.example.org'),owner=s.provision('did:web:setup-owner.example','Synthetic operator'),r=new Resident(s,new AgentAccess(s),{label:'synthetic',draft:async()=>({text:'x',model:'synthetic'})})
  try{
   const on=s.createCommunity(owner.actor.id,'Mentions on','Synthetic','public',true,'open'),off=s.createCommunity(owner.actor.id,'Mentions off','Synthetic','public',true,'open')
   const a=r.setup(owner.actor.id,{communityId:on.id,consent:true,requestKey:randomUUID()}),b=r.setup(owner.actor.id,{communityId:off.id,consent:true,mentionsEnabled:false,requestKey:randomUUID()})

@@ -1,14 +1,14 @@
 import {createHash,randomUUID} from 'node:crypto'
 import {brokenRule} from './kios-rules.ts'
-import {StrataCore,Fault,type Post} from './core.ts'
+import {EtnosCore,Fault,type Post} from './core.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
 import {checkSeason} from './seasons.ts'
 import {Groups,strings} from './groups.ts'
 
 /** Local forum lifecycle. Public PDS mutation requires its own qualified workflow. */
 export class Forum {
- private store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ private store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  create(actor:string,b:Record<string,unknown>,groups:Groups){
   const s=this.store
   if(typeof b.communityId!=='string'||typeof b.text!=='string')throw new Fault(400,'Community and text required')

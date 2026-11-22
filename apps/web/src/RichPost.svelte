@@ -97,7 +97,7 @@
           <a href={'/square/' + post.id}>{post.content.title}</a>
         </h2>{/if}
       {#if post.content?.answer}<small class="post-answer-label">{answerLabel[post.content.answer]}</small>{/if}
-      <div class="cx-post-body strata-body" class:post-clamped={truncated}>
+      <div class="cx-post-body etnos-body" class:post-clamped={truncated}>
         {#if words}<KamusBody postId={post.id} communityId={post.community_id} markdown={post.content?.format === 'markdown'} html={post.content?.format === 'markdown' ? markdown(body, inlineImages) : undefined} text={body} />{:else if post.content?.format === 'markdown'}<div class="post-markdown">
             {@html markdown(body, inlineImages)}
           </div>{:else}<PostText

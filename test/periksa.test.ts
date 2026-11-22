@@ -1,10 +1,10 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Periksa,settle,QUEUE_SIZE} from '../src/periksa.ts'
 
 function fixture(visibility:'public'|'hidden-private'='hidden-private'){
- const s=new Strata(':memory:','https://forum.example'),p=new Periksa(s)
+ const s=new Etnos(':memory:','https://forum.example'),p=new Periksa(s)
  const a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:b.example','Budi'),c=s.provision('did:web:c.example','Citra'),d=s.provision('did:web:d.example','Dani'),o=s.provision('did:web:outsider.example','Outside')
  const room=s.createCommunity(a.actor.id,'Mee','Ruang bahasa',visibility)
  for(const m of [b,c,d])s.setMember(a.actor.id,room.id,m.actor.id,true)

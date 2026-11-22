@@ -1,17 +1,17 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {createHash} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {api} from '../src/api.ts'
 import {fixture,did,origin,issuer,pds} from './oauth-fixture.ts'
 
 const newcomer='did:plc:zzzzzzzzzzzzzzzzzzzzzzzz'
 function req(path:string,body?:unknown,cookie='',csrf=''){
- return new Request(origin+path,{method:body===undefined?'GET':'POST',headers:{origin,...(cookie?{cookie}:{}),...(csrf?{'x-strata-csrf':csrf}:{}),...(body===undefined?{}:{'content-type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})})
+ return new Request(origin+path,{method:body===undefined?'GET':'POST',headers:{origin,...(cookie?{cookie}:{}),...(csrf?{'x-etnos-csrf':csrf}:{}),...(body===undefined?{}:{'content-type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})})
 }
 const cookiePart=(r:Response,name='__Host-strata_flow')=>r.headers.getSetCookie().find(x=>x.startsWith(name+'='))!.split(';')[0]
 async function setup(mode:'open'|'invite'|'closed'='open'){
- const s=new Strata(':memory:',origin),owner=s.provision(did,'Steward')
+ const s=new Etnos(':memory:',origin),owner=s.provision(did,'Steward')
  const f=await fixture(s,{enrollmentMode:mode},newcomer,'friend.bsky.social',newcomer)
  const sid='s'.repeat(43),csrf='fixture-csrf'
  s.run('INSERT INTO browser_sessions VALUES(?,?,?,?,?,0)',createHash('sha256').update(sid).digest('hex'),owner.actor.id,csrf,s.clock(),s.clock()+86400000)
@@ -144,7 +144,7 @@ test('open signup cannot restore a removed enrollment or widen the initial OAuth
 })
 
 test('signup can target an existing handle or the configured account host, never a host from the request',async()=>{
- const s=new Strata(':memory:',origin);s.provision(did,'Steward')
+ const s=new Etnos(':memory:',origin);s.provision(did,'Steward')
  const f=await fixture(s,{enrollmentMode:'open',accountHost:pds},newcomer,'friend.bsky.social',newcomer)
  try{
   const options=await(await f.auth.route(req('/auth/options')))!.json() as {accountHost:string|null}
@@ -165,7 +165,7 @@ test('signup can target an existing handle or the configured account host, never
 
 test('an account on the node identity host signs in and enrolls; other hosts and closed nodes still need an invitation',async()=>{
  for(const [config,allowed] of [[{enrollmentMode:'invite' as const,accountHost:pds},true],[{enrollmentMode:'invite' as const},false],[{enrollmentMode:'closed' as const,accountHost:pds},false]] as const){
-  const s=new Strata(':memory:',origin);s.provision(did,'Steward')
+  const s=new Etnos(':memory:',origin);s.provision(did,'Steward')
   const f=await fixture(s,config,newcomer,'friend.bsky.social',newcomer)
   try{
    const start=(await f.auth.route(req('/auth/start',{mode:'login',handle:'friend.bsky.social'})))!

@@ -1,13 +1,13 @@
 import { randomUUID } from 'node:crypto'
 import { Buffer } from 'node:buffer'
-import { Fault, type StrataCore } from './core.ts'
+import { Fault, type EtnosCore } from './core.ts'
 
 // Deliberately bounded preview store. Originals belong in a custodial store.
 export const MEDIA_MAX_BYTES=512*1024
 const DAY=86400000
 export type MediaView={id:string;url:string;alt:string;width:number;height:number}
 type ImageRow={id:string;owner_id:string;community_id:string;post_id:string|null;bytes:Uint8Array;size:number;width:number;height:number;alt:string;created:number}
-export function mediaViews(s:StrataCore,postId:string):MediaView[]{
+export function mediaViews(s:EtnosCore,postId:string):MediaView[]{
   return s.all<{id:string;alt:string;width:number;height:number}>('SELECT id,alt,width,height FROM media WHERE post_id=? ORDER BY position',postId).map(m=>({...m,url:'/v1/media/'+m.id}))
 }
 /** Accept only a static WebP image container, without metadata/animation chunks.
@@ -40,8 +40,8 @@ export function inspectWebP(bytes:Uint8Array){
   return{width,height}
 }
 export class Media{
-  private s:StrataCore
-  constructor(s:StrataCore){this.s=s}
+  private s:EtnosCore
+  constructor(s:EtnosCore){this.s=s}
   upload(actor:string,communityId:string,encoded:string,alt:string){
     return this.s.tx(()=>{
       this.s.requireMember(actor,communityId)

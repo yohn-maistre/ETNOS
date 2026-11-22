@@ -1,8 +1,9 @@
 /** Ephemeral feedback only. The activity inbox remains a durable, access-checked record. */
 import { toast } from '@yusufceng1z/ding-svelte'
+import { readStored, writeStored } from './device-storage.ts'
 
 export const notificationPreferences = $state({ sound: false, volume: 0.35 })
-const storageKey = 'strata.ui.notifications.v2'
+const storageKey = 'ui.notifications.v2'
 
 export function configureNotifications() {
   toast.configure({
@@ -10,13 +11,13 @@ export function configureNotifications() {
     volume: notificationPreferences.volume,
   })
   try {
-    localStorage.setItem(storageKey, JSON.stringify(notificationPreferences))
+    writeStored(storageKey, JSON.stringify(notificationPreferences))
   } catch { /* Optional device preference. */ }
 }
 
 export function restoreNotificationPreferences() {
   try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null')
+    const saved = JSON.parse(readStored(storageKey) ?? 'null')
     if (typeof saved?.sound === 'boolean') notificationPreferences.sound = saved.sound
     if (typeof saved?.volume === 'number' && Number.isFinite(saved.volume))
       notificationPreferences.volume = Math.max(0, Math.min(1, saved.volume))

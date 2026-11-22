@@ -1,5 +1,5 @@
 import {randomBytes,createHash} from 'node:crypto'
-import {Fault,type StrataCore,type Community} from './core.ts'
+import {Fault,type EtnosCore,type Community} from './core.ts'
 import type {Groups} from './groups.ts'
 
 /** Starting a community takes two people. The founder gets a waiting room only they can see and a link
@@ -19,8 +19,8 @@ type Forming=Community&{forming_until:number|null;founding_visibility:Community[
 type Link={hash:string;community_id:string;issuer_id:string;created:number;expires:number;revoked:number}
 
 export class Founding{
- private store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ private store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  private row(communityId:string){return this.store.get<Forming>('SELECT * FROM communities WHERE id=?',communityId)}
  /** Forming state as the founder sees it; null for a community that is open. */
  static state(c:Partial<Forming>,now:number){

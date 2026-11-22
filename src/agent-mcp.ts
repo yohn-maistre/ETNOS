@@ -2,7 +2,7 @@ import { McpServer, createMcpHandler } from "@modelcontextprotocol/server";
 import { CfWorkerJsonSchemaValidator } from "@modelcontextprotocol/server/validators/cf-worker";
 import * as z from "zod/v4";
 import { AgentAccess } from "./agent-access.ts";
-import { StrataCore, Fault } from "./core.ts";
+import { EtnosCore, Fault } from "./core.ts";
 import { body, json } from "./api.ts";
 import { Forum } from "./forum.ts";
 import { Search } from "./search.ts";
@@ -23,7 +23,7 @@ const output = (data: unknown) => ({
 });
 /** Public reading never borrows a browser session. Every protected tool reauthenticates at its effect. */
 export function agentRoutes(
-  s: StrataCore,
+  s: EtnosCore,
   agents: AgentAccess,
   options: { desk?: DeskModel } = {},
 ) {

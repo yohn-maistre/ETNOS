@@ -1,6 +1,6 @@
 import {Buffer} from 'node:buffer'
 import {createHash,randomUUID} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {contentOf} from './post-content.ts'
 export const decisionModel='@cf/cloudflare/clef-flash'
 export type DecisionStory={id:string;title:string;publishedAt:string|null}
@@ -12,8 +12,8 @@ const digest=(s:string)=>createHash('sha256').update(s).digest('hex')
 const probability=(v:unknown):number=>{if(typeof v!=='number'||!Number.isFinite(v)||v<0||v>1)throw new Fault(502,'Invalid decision result');return v}
 /** Moderator-requested public triage. Results grant no membership, mandate or publication right. */
 export class Decisions{
- private store:StrataCore;private provider?:DecisionProvider
- constructor(store:StrataCore,provider?:DecisionProvider){this.store=store;this.provider=provider}
+ private store:EtnosCore;private provider?:DecisionProvider
+ constructor(store:EtnosCore,provider?:DecisionProvider){this.store=store;this.provider=provider}
  private target(actor:string,id:string){
   const s=this.store,p=s.getPost(actor,id);s.requireSteward(actor,p.community_id)
   if(s.actor(actor).kind!=='human'||s.community(p.community_id).visibility!=='public'||p.deleted||p.content?.warning)throw new Fault(404,'Public posting required')

@@ -1,7 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Discovery,sourceFetcher} from '../src/discovery.ts'
 import {Resident} from '../src/resident.ts'
 import {AgentAccess} from '../src/agent-access.ts'
@@ -18,7 +18,7 @@ const file=(patch:Record<string,unknown>={},slots:unknown[]=[slot()])=>({version
 
 function fixture(options:{evidence?:boolean;jadwal?:Jadwal;dailyLimit?:number;start?:number;private?:boolean}={}){
  let now=options.start??jayapura('2026-11-19','05:00')
- const s=new Strata(':memory:','https://jadwal.example.org',()=>now),owner=s.provision('did:web:jadwal-owner.example','Synthetic operator')
+ const s=new Etnos(':memory:','https://jadwal.example.org',()=>now),owner=s.provision('did:web:jadwal-owner.example','Synthetic operator')
  const room=s.createCommunity(owner.actor.id,'Ruang jadwal','Synthetic','public',true,'open'),access=new AgentAccess(s),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id)
   const d=new Discovery(s,sourceFetcher(['https://news.example.org'],async()=>new Response(feed,{headers:{'content-type':'application/rss+xml'}}))),r=new Resident(s,access,undefined,options.jadwal??defaultJadwal)
  const source=d.add(owner.actor.id,{communityId:room.id,title:'Public reference',url:'https://news.example.org/rss',rights:'excerpt-permitted',mode:'review',requestKey:randomUUID()})

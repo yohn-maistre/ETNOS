@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { AgentAccess } from "../src/agent-access.ts";
 import { Forum } from "../src/forum.ts";
 import { Desk, verifyQuotes, checkDraft, checkPage, parseNumbered, runDesk, type DeskModel } from "../src/desk.ts";
@@ -67,7 +67,7 @@ test("the run drops unverified quotes and asks once more when the draft invents 
 
 function fixture(model?: DeskModel) {
   let now = Date.now();
-  const s = new Strata(":memory:", "https://strata.example", () => now),
+  const s = new Etnos(":memory:", "https://etnos.example", () => now),
     owner = s.provision("did:web:owner.example", "Owner"),
     member = s.provision("did:web:member.example", "Member"),
     room = s.createCommunity(owner.actor.id, "Public test", "Public local", "public", true, "open"),

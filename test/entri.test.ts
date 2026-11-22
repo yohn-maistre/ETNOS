@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { Strata } from '../src/store.ts'
+import { Etnos } from '../src/store.ts'
 import { Groups } from '../src/groups.ts'
 import { Wiki } from '../src/wiki.ts'
 import { KnowledgeModel, type KnowledgeSeed } from '../src/knowledge-model.ts'
@@ -30,7 +30,7 @@ const records: ViewerRecord[] = [
 ]
 
 function world(o: { importSeed?: boolean } = {}) {
-  const s = new Strata(':memory:', 'https://entri.example', () => Date.parse('2026-11-21T00:00:00Z'))
+  const s = new Etnos(':memory:', 'https://entri.example', () => Date.parse('2026-11-21T00:00:00Z'))
   const steward = s.provision('did:web:steward.example', 'Node steward'), owner = s.provision('did:web:owner.example', 'Owner'), member = s.provision('did:web:member.example', 'Member')
   const groups = new Groups(s, { stewardDid: steward.actor.did }), wiki = new Wiki(s), model = new KnowledgeModel(s, groups)
   const datasets = new Datasets(s, groups, { datasets: { version: 1, datasets: [] }, things: [] })

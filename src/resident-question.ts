@@ -1,4 +1,4 @@
-import {StrataCore,Fault,type Post} from './core.ts'
+import {EtnosCore,Fault,type Post} from './core.ts'
 import {contentOf} from './post-content.ts'
 import {hash} from './commons.ts'
 import {ResidentRouting,type ResidentRoute} from './resident-routing.ts'
@@ -8,9 +8,9 @@ import {residentFailureCode} from './resident-failure.ts'
 export type ResidentQuestionRecord={job_id:string;config_community_id:string;target_post_id:string;target_revision:number;target_digest:string;snapshot:string;posting_mandate_id:string;global_revision:number;route_revision:number;coverage:string;created:number}
 /** Public, explicitly addressed questions. Protected rooms and execution logs never enter this projection. */
 export class ResidentQuestions {
- readonly store:StrataCore
+ readonly store:EtnosCore
  readonly routing:ResidentRouting
- constructor(store:StrataCore,routing:ResidentRouting){this.store=store;this.routing=routing}
+ constructor(store:EtnosCore,routing:ResidentRouting){this.store=store;this.routing=routing}
  input(jobId:string){return this.store.get<ResidentQuestionRecord>('SELECT * FROM resident_job_inputs WHERE job_id=?',jobId)}
  private post(id:string){const p=this.store.get<Post>('SELECT * FROM posts WHERE id=? AND hidden=0 AND deleted=0',id);if(!p)throw new Fault(404,'Question is no longer available');return p}
  snapshot(requester:string,id:string):ResidentQuestion {

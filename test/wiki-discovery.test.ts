@@ -1,11 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Wiki} from '../src/wiki.ts'
 import {api} from '../src/api.ts'
 
 test('Wiki discovery projects only accepted public revisions, never drafts or protected page metadata',async()=>{
- const s=new Strata(':memory:','https://wiki-discovery.example.org'),owner=s.provision('did:web:wiki-reader.example','Human operator'),room=s.createCommunity(owner.actor.id,'Public knowledge','Public','public'),wiki=new Wiki(s)
+ const s=new Etnos(':memory:','https://wiki-discovery.example.org'),owner=s.provision('did:web:wiki-reader.example','Human operator'),room=s.createCommunity(owner.actor.id,'Public knowledge','Public','public'),wiki=new Wiki(s)
  try{
   const page=wiki.create(owner.actor.id,room.id,'A public landscape'),proposal=wiki.propose(owner.actor.id,page.id,null,'## A section\n\nA [source-backed landscape](https://example.org/source) with **ordinary knowledge**.',['https://example.org/source'],'id','Community')
   wiki.decide(owner.actor.id,proposal.id,proposal.digest,true)

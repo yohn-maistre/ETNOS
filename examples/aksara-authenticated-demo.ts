@@ -5,11 +5,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { generateKeyPair, exportJWK } from "jose";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { server } from "../src/http.ts";
 import { connectAgent } from "../src/agent-client.ts";
 const base = "http://127.0.0.1:7348",
-  s = new Strata(":memory:", base),
+  s = new Etnos(":memory:", base),
   app = server(s),
   dir = await mkdtemp(join(tmpdir(), "etnos-auth-demo-"));
 const owner = s.provision(

@@ -6,7 +6,7 @@
   let { kind, title, sources = [], children }: { kind: string; title?: string; sources?: CardSource[]; children: Snippet } = $props()
 </script>
 
-<Card.Root class="strata-card" size="sm">
+<Card.Root class="etnos-card" size="sm">
   <Card.Header>
     <span class="card-kind">{kind}</span>
     {#if title}<Card.Title class="card-title">{title}</Card.Title>{/if}
@@ -18,8 +18,8 @@
 </Card.Root>
 
 <style>
-  :global(.strata-card) { margin: 12px 0 4px; border-radius: 14px; border: 1px solid var(--border); box-shadow: none; --tw-ring-shadow: 0 0 #0000; }
+  :global(.etnos-card) { margin: 12px 0 4px; border-radius: 14px; border: 1px solid var(--border); box-shadow: none; --tw-ring-shadow: 0 0 #0000; }
   .card-kind { font-size: 12.5px; font-weight: 600; color: var(--brand); }
-  :global(.strata-card .card-title) { font-family: var(--font-editorial, serif); font-size: 19px; font-weight: 500; line-height: 1.3; }
-  :global(.strata-card .card-body) { display: grid; gap: 10px; font-size: 14.5px; line-height: 1.55; }
+  :global(.etnos-card .card-title) { font-family: var(--font-editorial, serif); font-size: 19px; font-weight: 500; line-height: 1.3; }
+  :global(.etnos-card .card-body) { display: grid; gap: 10px; font-size: 14.5px; line-height: 1.55; }
 </style>

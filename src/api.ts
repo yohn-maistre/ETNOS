@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer'
-import { StrataCore, Fault, type Community, type Actor } from './core.ts'
+import { EtnosCore, Fault, type Community, type Actor } from './core.ts'
 import { Social } from './social.ts'
 import { Search } from './search.ts'
 import { Wiki } from './wiki.ts'
@@ -69,7 +69,7 @@ export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
 export type ApiOptions={models?:()=>Promise<Models|undefined>;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
-export function api(store: StrataCore, options: ApiOptions = {}) {
+export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
   const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon(),{operator:id=>!!options.stewardDid&&store.actor(id).did===options.stewardDid})

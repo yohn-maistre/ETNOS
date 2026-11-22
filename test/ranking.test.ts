@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Ranking,discussionRank,type RankCandidate} from '../src/ranking.ts'
 import {AgentAccess} from '../src/agent-access.ts'
 import {api} from '../src/api.ts'
@@ -14,7 +14,7 @@ test('transparent ranking favors freshness, caps votes/replies, and bounds activ
  assert.ok(discussionRank(candidate({activeAuthors:1}),'balanced',now)>discussionRank(candidate({activeAuthors:100}),'balanced',now))
 })
 test('public discovery excludes hidden/private/deleted/warned roots, preserves newest order and softly diversifies',async()=>{
- let now=Date.now();const s=new Strata(':memory:','https://rank.example.org',()=>now),a=s.provision('did:web:rank-owner.example','One'),b=s.provision('did:web:rank-other.example','Two'),c=s.createCommunity(a.actor.id,'Public','Public','public'),d=s.createCommunity(b.actor.id,'Other public','Public','public'),hidden=s.createCommunity(a.actor.id,'Hidden','Secret','hidden-private'),rank=new Ranking(s)
+ let now=Date.now();const s=new Etnos(':memory:','https://rank.example.org',()=>now),a=s.provision('did:web:rank-owner.example','One'),b=s.provision('did:web:rank-other.example','Two'),c=s.createCommunity(a.actor.id,'Public','Public','public'),d=s.createCommunity(b.actor.id,'Other public','Public','public'),hidden=s.createCommunity(a.actor.id,'Hidden','Secret','hidden-private'),rank=new Ranking(s)
  try{
   const other=s.createPost(b.actor.id,d.id,'A different neighbor');now+=hour
   for(let i=0;i<5;i++){s.createPost(a.actor.id,c.id,'Public post '+i);now++}
@@ -30,7 +30,7 @@ test('public discovery excludes hidden/private/deleted/warned roots, preserves n
  }finally{s.close()}
 })
 test('reply features count distinct non-author humans and never agent chatter or hidden replies',()=>{
- const s=new Strata(':memory:'),a=s.provision('did:web:rank-root.example','Author'),b=s.provision('did:web:rank-replier.example','Reply'),c=s.createCommunity(a.actor.id,'Public','Public','public',true,'open')
+ const s=new Etnos(':memory:'),a=s.provision('did:web:rank-root.example','Author'),b=s.provision('did:web:rank-replier.example','Reply'),c=s.createCommunity(a.actor.id,'Public','Public','public',true,'open')
  try{
   s.join(b.actor.id,c.id);const root=s.createPost(a.actor.id,c.id,'Root')
   for(let i=0;i<5;i++)s.createPost(b.actor.id,c.id,'One human repeated '+i,root.id)

@@ -2,7 +2,7 @@ import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {providerModels,validModelChoice,withChoice,keyedProvider,type ModelEnv} from '../src/models.ts'
 
-const keyed:ModelEnv={STRATA_MODEL_KEY:'k',STRATA_MODEL_BASE_URL:'https://generativelanguage.googleapis.com/v1beta/openai',STRATA_MODEL_FAST:'from-env'}
+const keyed:ModelEnv={ETNOS_MODEL_KEY:'k',ETNOS_MODEL_BASE_URL:'https://generativelanguage.googleapis.com/v1beta/openai',ETNOS_MODEL_FAST:'from-env'}
 
 test('a model choice must be a plain model name',()=>{
  assert.deepEqual(validModelChoice({fast:'gemini-test-flash'}),{fast:'gemini-test-flash'})
@@ -41,12 +41,12 @@ test('a Studio key is trimmed, must look like a key, and defaults to Google AI S
 })
 
 test('the Studio key takes precedence over the deploy key, and the choice applies on top',()=>{
- const deployed={STRATA_MODEL_KEY:'from-github',STRATA_MODEL_BASE_URL:'https://deployed.example.org/v1',STRATA_MODEL_FAST:'deployed-model'}
+ const deployed={ETNOS_MODEL_KEY:'from-github',ETNOS_MODEL_BASE_URL:'https://deployed.example.org/v1',ETNOS_MODEL_FAST:'deployed-model'}
  const e=effectiveEnv(deployed,{key:'from-studio',baseUrl:GOOGLE_OPENAI_BASE,added:1},{fast:'picked'})
- assert.equal(e.STRATA_MODEL_KEY,'from-studio');assert.equal(e.STRATA_MODEL_BASE_URL,GOOGLE_OPENAI_BASE);assert.equal(e.STRATA_MODEL_FAST,'picked')
+ assert.equal(e.ETNOS_MODEL_KEY,'from-studio');assert.equal(e.ETNOS_MODEL_BASE_URL,GOOGLE_OPENAI_BASE);assert.equal(e.ETNOS_MODEL_FAST,'picked')
  assert.equal(effectiveEnv(deployed,null,null),deployed)
- assert.equal((effectiveEnv({},null,{fast:'picked'}) as {STRATA_MODEL_FAST?:string}).STRATA_MODEL_FAST,undefined,'a choice without any key does nothing')
- assert.equal((listingEnv({}) as {STRATA_MODEL_FAST?:string}).STRATA_MODEL_FAST,'listing')
+ assert.equal((effectiveEnv({},null,{fast:'picked'}) as {ETNOS_MODEL_FAST?:string}).ETNOS_MODEL_FAST,undefined,'a choice without any key does nothing')
+ assert.equal((listingEnv({}) as {ETNOS_MODEL_FAST?:string}).ETNOS_MODEL_FAST,'listing')
 })
 
 test('the first model is a general flash text model when the provider has one',()=>{

@@ -1,12 +1,12 @@
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {Discovery} from './discovery.ts'
 import {hash,publicSteward,text,transition} from './commons.ts'
 
 /** Optional public candidate index. Cluster labels never establish identity or authority. */
 export class Clustering {
- readonly store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ readonly store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  private publicItems(communityId:string){
   if(this.store.community(communityId).visibility!=='public')throw new Fault(404,'Not found')
   return new Discovery(this.store).items(undefined,communityId).map(i=>({...i,evidence:i.evidence.filter(e=>e.state==='active'&&e.sourceRevision===e.currentRevision&&e.rights!=='link-only')})).filter(i=>i.evidence.length).sort((a,b)=>a.id.localeCompare(b.id)).map(i=>({id:i.id,revision:i.revision,title:i.title,summary:i.summary,url:i.url,evidence:i.evidence.map(e=>({sourceId:e.sourceId,revision:e.sourceRevision,rights:e.rights})).sort((a,b)=>a.sourceId.localeCompare(b.sourceId))}))

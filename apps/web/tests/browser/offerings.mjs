@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import {pathToFileURL} from 'node:url'
 import {resolve} from 'node:path'
-import {chromium,origin,Strata,api,artifactDir} from './environment.mjs'
-const {Offerings}=await import(pathToFileURL(resolve(process.env.STRATA_REPO,'src/offerings.ts')).href)
-const s=new Strata(':memory:',origin),seller=s.provision('did:web:listing-seller.example','Synthetic local seller'),buyer=s.provision('did:web:listing-buyer.example','Synthetic neighbor'),room=s.createCommunity(seller.actor.id,'Synthetic public commons','A labelled local test community.','public',false,'open'),hidden=s.createCommunity(seller.actor.id,'Synthetic protected room','Private','hidden-private')
+import {chromium,origin,Etnos,api,artifactDir} from './environment.mjs'
+const {Offerings}=await import(pathToFileURL(resolve(process.env.ETNOS_REPO,'src/offerings.ts')).href)
+const s=new Etnos(':memory:',origin),seller=s.provision('did:web:listing-seller.example','Synthetic local seller'),buyer=s.provision('did:web:listing-buyer.example','Synthetic neighbor'),room=s.createCommunity(seller.actor.id,'Synthetic public commons','A labelled local test community.','public',false,'open'),hidden=s.createCommunity(seller.actor.id,'Synthetic protected room','Private','hidden-private')
 s.join(buyer.actor.id,room.id)
 new Offerings(s).create(seller.actor.id,{communityId:hidden.id,text:'Protected listing must not appear globally',kind:'offer',price:999900,requestKey:crypto.randomUUID()})
 const handler=api(s),browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});let actor=seller

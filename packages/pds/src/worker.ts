@@ -1,4 +1,4 @@
-/** Strata-owned hosting boundary around the attributed Cirrus/official-AT foundation. */
+/** ETNOS-owned hosting boundary around the attributed Cirrus/official-AT foundation. */
 import app, { getAccountDO } from "./upstream/index";
 import type { PDSEnv } from "./upstream/types";
 export {
@@ -28,7 +28,7 @@ export default {
       return json(400, "InvalidRequest", "Unexpected host");
     if (url.pathname === "/health")
       return Response.json({
-        service: "strata-pds",
+        service: "etnos-pds",
         stage: "experimental",
         accountsPerDeployment: 1,
         publicRepository: true,

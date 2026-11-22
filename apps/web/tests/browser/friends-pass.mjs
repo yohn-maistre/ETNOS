@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import {
-  Strata,
+  Etnos,
   Groups,
   api,
   chromium,
@@ -10,7 +10,7 @@ import {
   artifactDir,
 } from './environment.mjs'
 let decisionCalls = 0
-const capture = process.env.STRATA_PUBLIC_NEWS_FIXTURES
+const capture = process.env.ETNOS_PUBLIC_NEWS_FIXTURES
 const newsFixture = capture
   ? JSON.parse(await readFile(join(capture, 'news.json'), 'utf8'))
   : {
@@ -52,7 +52,7 @@ const storyFixture = capture
         },
       ],
     }
-const s = new Strata(':memory:', origin),
+const s = new Etnos(':memory:', origin),
   owner = s.provision(
     'did:web:mobile-fixture.example',
     'Synthetic mobile member',

@@ -1,8 +1,8 @@
 // Real local engine; delayed requests exercise overlapping network activity.
 import assert from 'node:assert/strict'
-import {chromium,origin,Strata,api,artifactDir} from './environment.mjs'
+import {chromium,origin,Etnos,api,artifactDir} from './environment.mjs'
 import {contrast} from '../../src/appearance-color.ts'
-const s=new Strata(':memory:',origin),owner=s.provision('did:web:refinement-fixture.example','Synthetic neighbor')
+const s=new Etnos(':memory:',origin),owner=s.provision('did:web:refinement-fixture.example','Synthetic neighbor')
 const room=s.createCommunity(owner.actor.id,'Synthetic public commons','A short community description.','public')
 const hidden=s.createCommunity(owner.actor.id,'Protected language fixture','Not for public discovery.','hidden-private')
 s.createPost(owner.actor.id,room.id,'A thoughtful text-only conversation deserves the same care as an image. What should we document together?')
@@ -11,7 +11,7 @@ const handler=api(s),browser=await chromium.launch({executablePath:'/usr/bin/chr
 const errors=[]
 try {
  const ctx=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'})
- await ctx.addInitScript(()=>localStorage.setItem('strata.ui.appearance',JSON.stringify({themeMode:'light',base:'paper',accent:'#1680fa',fontPair:'jakarta'})))
+ await ctx.addInitScript(()=>localStorage.setItem('etnos.ui.appearance',JSON.stringify({themeMode:'light',base:'paper',accent:'#1680fa',fontPair:'jakarta'})))
  const p=await ctx.newPage();p.setDefaultTimeout(20000);p.on('pageerror',e=>errors.push(e.message))
  await p.route('**/auth/me',r=>r.fulfill({json:{actor:owner.actor,csrf:'fixture',steward:false}}))
  await p.route('**/auth/options',r=>r.fulfill({json:{enrollment:'open'}}))
@@ -50,7 +50,7 @@ try {
  await p.setViewportSize({width:390,height:844});await p.goto(origin+'/explore',{waitUntil:'networkidle'});assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.screenshot({path:artifactDir+'/refined-explore-mobile.png',fullPage:true})
  await p.goto(origin+'/login',{waitUntil:'networkidle'});assert.equal(await p.locator('.welcome-wordmark svg .letter').count(),6)
  for(const theme of ['light','dark']){
-  await p.evaluate(theme=>{const a=JSON.parse(localStorage.getItem('strata.ui.appearance'));a.themeMode=theme;localStorage.setItem('strata.ui.appearance',JSON.stringify(a))},theme)
+  await p.evaluate(theme=>{const a=JSON.parse(localStorage.getItem('etnos.ui.appearance'));a.themeMode=theme;localStorage.setItem('etnos.ui.appearance',JSON.stringify(a))},theme)
   await p.reload({waitUntil:'networkidle'});const c=await p.locator('.welcome-art figcaption').evaluate(e=>{const x=getComputedStyle(e);const root=getComputedStyle(document.documentElement);return {ink:root.getPropertyValue('--foreground').trim(),surface:root.getPropertyValue('--reading-surface').trim(),bg:x.backgroundColor}})
   assert.ok(contrast(c.ink,c.surface)>7,theme+' caption contrast');assert.ok(c.bg)
  }

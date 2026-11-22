@@ -1,12 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Groups} from '../src/groups.ts'
 import {api} from '../src/api.ts'
 
 test('Sedang dibicarakan counts only public, visible posts, by thread label or community label, inside the window',async()=>{
  let now=Date.parse('2026-11-18T00:00:00Z')
- const s=new Strata(':memory:','https://talked.example.org',()=>now)
+ const s=new Etnos(':memory:','https://talked.example.org',()=>now)
  try{
   const steward=s.provision('did:web:steward.example','Steward'),friend=s.provision('did:web:friend.example','Friend')
   const g=new Groups(s,{stewardDid:steward.actor.did})

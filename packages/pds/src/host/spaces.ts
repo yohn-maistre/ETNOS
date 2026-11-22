@@ -1,7 +1,7 @@
 /**
  * AT Protocol spaces (alpha) on the multi-account host, following the text of proposal 0016
  * as of 19 November 2026 (https://github.com/bluesky-social/proposals/blob/main/0016-permissioned-data/README.md).
- * Strata code (AGPL-3.0-only). The protocol pieces come from the official MIT package
+ * ETNOS code (AGPL-3.0-only). The protocol pieces come from the official MIT package
  * @atproto/space 0.0.0-spaces-alpha-20261117141222: credentials and delegation tokens, the
  * RFC 9421 credential signature, the HPKE secret for MACs, LtHash commits and STAR archives.
  * The request handling here was written for Workers and Durable Objects, after the official

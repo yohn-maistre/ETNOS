@@ -1,14 +1,14 @@
 // Disposable loopback-only fixture; no deployed writes or agent identities.
 import assert from 'node:assert/strict'
 import {
-  Strata,
+  Etnos,
   Groups,
   api,
   chromium,
   origin,
   artifactDir,
 } from './environment.mjs'
-const s = new Strata(':memory:', origin)
+const s = new Etnos(':memory:', origin)
 const owner = s.provision(
   'did:web:navigation-fixture.example',
   'Synthetic member',
@@ -145,7 +145,7 @@ try {
     await p.evaluate(() => ({
       mode: document.documentElement.dataset.themeMode,
       theme: document.documentElement.dataset.commonsTheme,
-      accent: JSON.parse(localStorage.getItem('strata.ui.appearance')).accent,
+      accent: JSON.parse(localStorage.getItem('etnos.ui.appearance')).accent,
     })),
     { mode: 'clock', theme: 'dark', accent: '#1680fa' },
   )
@@ -353,7 +353,7 @@ try {
   await p.emulateMedia({ reducedMotion: 'reduce' })
   await p.evaluate(() =>
     localStorage.setItem(
-      'strata.ui.appearance',
+      'etnos.ui.appearance',
       JSON.stringify({ themeMode: 'clock', theme: 'dark', accent: '#b9848a' }),
     ),
   )
@@ -371,13 +371,13 @@ try {
   )
   assert.equal(
     await p.evaluate(
-      () => JSON.parse(localStorage.getItem('strata.ui.appearance')).accent,
+      () => JSON.parse(localStorage.getItem('etnos.ui.appearance')).accent,
     ),
     '#b9848a',
   )
   await p.evaluate(() =>
     localStorage.setItem(
-      'strata.ui.appearance',
+      'etnos.ui.appearance',
       JSON.stringify({ theme: 'dark', accent: '#6c9bab' }),
     ),
   )
@@ -388,7 +388,7 @@ try {
   )
   assert.equal(
     await p.evaluate(
-      () => JSON.parse(localStorage.getItem('strata.ui.appearance')).accent,
+      () => JSON.parse(localStorage.getItem('etnos.ui.appearance')).accent,
     ),
     '#6c9bab',
   )

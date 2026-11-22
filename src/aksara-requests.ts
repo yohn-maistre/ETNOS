@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { StrataCore, Fault } from "./core.ts";
+import { EtnosCore, Fault } from "./core.ts";
 import { Groups, text } from "./groups.ts";
 import { Forum } from "./forum.ts";
 
@@ -25,9 +25,9 @@ const missing = (): never => {
  * on a post. The request waits in the other organisation's queue until its human stewards decide.
  * Nothing here lets an agent act on another agent's say-so. */
 export class AksaraRequests {
-  readonly store: StrataCore;
+  readonly store: EtnosCore;
   readonly groups: Groups;
-  constructor(store: StrataCore, groups: Groups) {
+  constructor(store: EtnosCore, groups: Groups) {
     this.store = store;
     this.groups = groups;
   }

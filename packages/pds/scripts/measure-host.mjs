@@ -40,7 +40,7 @@ const secret = await derive(kek, "did:plc:m", "session-jwt/v1");
 const jwt = await new SignJWT({ scope: "com.atproto.access" }).setProtectedHeader({ alg: "HS256" }).setSubject("did:plc:m").setExpirationTime("1h").sign(secret);
 results["node: HKDF + HS256 verify"] = await time(50, async () => jwtVerify(jwt, await derive(kek, "did:plc:m", "session-jwt/v1")));
 
-const dir = mkdtempSync(join(tmpdir(), "strata-host-measure-"));
+const dir = mkdtempSync(join(tmpdir(), "etnos-host-measure-"));
 const mf = hostRuntime({ persist: dir, plc: new FakePlc() });
 try {
 	await migrate(mf);

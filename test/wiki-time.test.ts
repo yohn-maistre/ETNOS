@@ -1,11 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Wiki} from '../src/wiki.ts'
 import {api} from '../src/api.ts'
 
 function world(){
- const s=new Strata(':memory:','https://wiki-time.example.org',()=>Date.parse('2026-11-15T00:00:00Z')),owner=s.provision('did:web:time-owner.example','Owner'),other=s.provision('did:web:time-other.example','Other'),wiki=new Wiki(s)
+ const s=new Etnos(':memory:','https://wiki-time.example.org',()=>Date.parse('2026-11-15T00:00:00Z')),owner=s.provision('did:web:time-owner.example','Owner'),other=s.provision('did:web:time-other.example','Other'),wiki=new Wiki(s)
  const page=(communityId:string,title:string,body:string)=>{const w=wiki.create(owner.actor.id,communityId,title),p=wiki.propose(owner.actor.id,w.id,null,body,[],'id','Synthetic');wiki.decide(owner.actor.id,p.id,p.digest,true);return w}
  return {s,owner,other,wiki,page}
 }

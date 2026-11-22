@@ -17,7 +17,7 @@
   import { placeScope } from './place-scope.svelte'
   import { communityArtwork, siteBranding } from './site-branding'
   import type { NewsItem } from './news.svelte'
-  import { buildStrata, loadAtlas, loadAtlasLangs, loadContexts, regionsOf, topicTiles, type AtlasLang, type Ctx } from './explore-data'
+  import { buildRegionLayers, loadAtlas, loadAtlasLangs, loadContexts, regionsOf, topicTiles, type AtlasLang, type Ctx } from './explore-data'
 
   let { auth }: { auth: Auth } = $props()
   let contexts = $state<Ctx[]>([]),
@@ -76,11 +76,11 @@
   const focus = $derived(placeScope.slug ? (regionsOf(placeScope.slug, contexts, langs)[0] ?? '') : '')
   // The chosen region comes first, as the wide tile.
   const first = <T extends { slug: string }>(list: T[]) => (focus ? [...list.filter((x) => x.slug === focus), ...list.filter((x) => x.slug !== focus)] : list)
-  const strata = $derived(first(buildStrata(contexts, langs, map)))
+  const regionLayers = $derived(first(buildRegionLayers(contexts, langs, map)))
 
   const languageTotal = $derived(contexts.filter((c) => c.kind === 'language').length)
   const languageGroups = $derived(
-    strata
+    regionLayers
       .map((s) => ({
         slug: s.slug,
         title: s.title,
@@ -130,7 +130,7 @@
   // the places have loaded, since the page grows as its sections fill in.
   let arrived = false
   $effect(() => {
-    if (arrived || !strata.length || !location.hash) return
+    if (arrived || !regionLayers.length || !location.hash) return
     arrived = true
     requestAnimationFrame(() => document.getElementById(location.hash.slice(1))?.scrollIntoView())
   })
@@ -264,8 +264,8 @@
       <a href="/wiki#wp-places">Peta wilayah</a>
     </div>
     <p class="jelajah-lede">{TEMPAT_BLURB}</p>
-    {#if strata.length}<ul class="place-scroll" aria-label="Wilayah adat">
-        {#each strata as s (s.slug)}<li>
+    {#if regionLayers.length}<ul class="place-scroll" aria-label="Wilayah adat">
+        {#each regionLayers as s (s.slug)}<li>
             <a href={s.href}>
               <span class="place-map" aria-hidden="true">{#if atlas}<RegionArt {atlas} lit={[s.slug]} terrain />{/if}</span>
               <strong>{s.title}</strong>

@@ -49,7 +49,7 @@ for(const region of regions){
     }
   }
 }
-const catalogueWitness:Witness={key:'catalogue:tanah-papua',kind:'document',title:`Katalog konteks ${catalogue.name} ${catalogue.version}`,url:'https://github.com/yohn-maistre/strata/blob/main/src/catalogues/tanah-papua.json',publisher:'Strata, dari BIG Satu Peta dan RPJMN 2020–2024 (Bappenas)',licence:null,year:2026,language:'id',voice:'pemerintah',excerpts:[]}
+const catalogueWitness:Witness={key:'catalogue:tanah-papua',kind:'document',title:`Katalog konteks ${catalogue.name} ${catalogue.version}`,url:'https://github.com/yohn-maistre/strata/blob/main/src/catalogues/tanah-papua.json',publisher:'ETNOS, dari BIG Satu Peta dan RPJMN 2020–2024 (Bappenas)',licence:null,year:2026,language:'id',voice:'pemerintah',excerpts:[]}
 
 // ---------- entities ----------
 type Entity={slug:string;class:string;title:string;description:string;aliases:string[];context:string|null;origin:string;names:{text:string;cased:boolean}[]}

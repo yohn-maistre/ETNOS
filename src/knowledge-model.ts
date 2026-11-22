@@ -16,7 +16,7 @@
  *   kinship and membership predicates only connect groups (and, for kinship, living kinds).
  */
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault,type Community} from './core.ts'
+import {EtnosCore,Fault,type Community} from './core.ts'
 import {Groups} from './groups.ts'
 import {Wiki} from './wiki.ts'
 import {hash,text,expected,transition} from './commons.ts'
@@ -63,9 +63,9 @@ const oneOf=<T extends string>(v:unknown,list:readonly T[],what:string):T=>{if(!
 const assertionDigest=(subject:string,predicate:string,object:string|null,value:string|null,communityId:string|null)=>hash({subject,predicate,object,value,communityId})
 
 export class KnowledgeModel{
- readonly store:StrataCore
+ readonly store:EtnosCore
  readonly groups:Groups
- constructor(store:StrataCore,groups:Groups){this.store=store;this.groups=groups}
+ constructor(store:EtnosCore,groups:Groups){this.store=store;this.groups=groups}
 
  // ---------- access, checked at every read ----------
  /** Returns a check for one reader. Agents only ever see public scopes. */

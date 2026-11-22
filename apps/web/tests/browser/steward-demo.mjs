@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import {pathToFileURL} from 'node:url'
 import {resolve} from 'node:path'
 import {chromium,origin,api,artifactDir} from './environment.mjs'
-const {simulateSteward}=await import(pathToFileURL(resolve(process.env.STRATA_REPO,'scripts/simulate-steward.ts')).href)
+const {simulateSteward}=await import(pathToFileURL(resolve(process.env.ETNOS_REPO,'scripts/simulate-steward.ts')).href)
 const demo=await simulateSteward(':memory:',origin),handler=api(demo.s),browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']})
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),errors=[];page.on('pageerror',e=>errors.push(e.message))

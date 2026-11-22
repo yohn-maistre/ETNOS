@@ -12,7 +12,7 @@ CC BY 4.0 (see glottolog-data.txt). They are reference points, not boundaries of
 is spoken.
 
 Size, pace and level in apps/web/public/observatory/knowledge/graph.json: computed by the rules in
-src/world-model.ts (Strata, AGPL-3.0). Level classes follow the main classes of the Integrative
+src/world-model.ts (ETNOS, AGPL-3.0). Level classes follow the main classes of the Integrative
 Levels Classification (ILC2, by Claudio Gnoli and colleagues); only the class letters are used,
 no ILC text, because the ILC licence is not stated.
 

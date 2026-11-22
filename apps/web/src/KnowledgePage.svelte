@@ -46,7 +46,7 @@
   </article>
  {:else}
   <div class="commons-actions">{#if auth.actor&&eligible.length}<Button onclick={()=>open()}><Plus size={16}/>Tambah catatan</Button>{:else if !auth.actor}<Button href="/login" variant="outline">Masuk untuk berkontribusi</Button>{/if}</div>
-  {#if !notes.length}<div class="strata-nodata"><BookOpen size={28}/><h2>Mulai dari sebuah catatan</h2><p>Hal yang belum lengkap pun bisa menjadi awal percakapan.</p></div>{/if}
+  {#if !notes.length}<div class="etnos-nodata"><BookOpen size={28}/><h2>Mulai dari sebuah catatan</h2><p>Hal yang belum lengkap pun bisa menjadi awal percakapan.</p></div>{/if}
   <div class="commons-note-list">{#each notes as note}<a href={'/wiki/notes/'+note.id} class="commons-note-row"><div class="commons-note-meta"><span>{labels[note.kind]}</span>{#if rooms.find(r=>r.id===note.community_id)?.visibility!=='public'}<span><LockKeyhole size={12}/>Khusus anggota</span>{:else}<span><Globe size={12}/>Publik</span>{/if}</div><h2>{note.title}</h2><p>{note.text.slice(0,180)}</p><small>{note.author.name}{note.author.kind==='agent'?' · AI':''} · {relativeDate(note.updated)}{note.evidenceStatus!=='current'?' · Sumber perlu ditinjau':''}</small></a>{/each}</div>
  {/if}
 {/if}

@@ -1,7 +1,7 @@
 /**
  * Where this deployment's sky and day/night rhythm come from.
  *
- * Another community deploying Strata replaces these values with its own. Star
+ * Another community deploying ETNOS replaces these values with its own. Star
  * figures are drawn only from what a deployment declares here; none are
  * implied by the engine. Positions are J2000 right ascension (hours) and
  * declination (degrees).

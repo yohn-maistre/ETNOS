@@ -5,7 +5,7 @@
  * carries its account in `sub`, and deletion purges by `sub`.
  *
  * Also holds the per-address sign-in budget (pseudonymous keys, no raw IPs).
- * Strata code (AGPL-3.0-only) reusing the attributed Cirrus OAuth storage.
+ * ETNOS code (AGPL-3.0-only) reusing the attributed Cirrus OAuth storage.
  */
 import { DurableObject } from "cloudflare:workers";
 import { SqliteOAuthStorage } from "../upstream/oauth-storage";

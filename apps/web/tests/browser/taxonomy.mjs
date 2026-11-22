@@ -1,14 +1,14 @@
 // Loopback only: synthetic discovery types and wiki review; no production identities.
 import assert from 'node:assert/strict'
 import {
-  Strata,
+  Etnos,
   Groups,
   api,
   chromium,
   origin,
   artifactDir,
 } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+const s = new Etnos(':memory:', origin),
   owner = s.provision('did:web:taxonomy-owner.example', 'Synthetic moderator'),
   peer = s.provision('did:web:taxonomy-member.example', 'Synthetic member')
 const room = s.createCommunity(

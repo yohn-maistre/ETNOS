@@ -3,7 +3,7 @@ import {Buffer} from 'node:buffer'
 import {NodeOAuthClient,JoseKey,type NodeSavedState,type NodeSavedSession,type RuntimeLock,type Fetch} from '@atproto/oauth-client-node'
 import {Agent} from '@atproto/api'
 import {DidResolverCommon,DidPlcMethod,DidWebMethod} from '@atproto-labs/did-resolver'
-import {StrataCore,Fault,type Actor} from './core.ts'
+import {EtnosCore,Fault,type Actor} from './core.ts'
 import {json,body as readBody} from './api.ts'
 
 const SESSION_COOKIE='__Host-strata',FLOW_COOKIE='__Host-strata_flow'
@@ -87,9 +87,9 @@ class EdgeDidResolver extends DidResolverCommon {
 /** Credentials are sealed with a dedicated deployment key, separate from signing.
  * The hosting operator remains trusted; this is not user-held E2EE. */
 export class OAuthRecords {
-  private store:StrataCore
+  private store:EtnosCore
   private key:Promise<CryptoKey>
-  constructor(store:StrataCore,sealKey:string){
+  constructor(store:EtnosCore,sealKey:string){
     this.store=store
     const bytes=Buffer.from(sealKey,'base64url')
     if(bytes.length!==32)throw Error('A 32-byte OAuth storage key is required')
@@ -117,12 +117,12 @@ export class OAuthRecords {
 }
 
 export class BrowserAuth {
-  private store:StrataCore
+  private store:EtnosCore
   private config:OAuthConfiguration
   readonly records:OAuthRecords
   readonly client:NodeOAuthClient
-  private constructor(store:StrataCore,config:OAuthConfiguration,records:OAuthRecords,client:NodeOAuthClient){this.store=store;this.config=config;this.records=records;this.client=client}
-  static async create(store:StrataCore,config:OAuthConfiguration,fetcher?:Fetch){
+  private constructor(store:EtnosCore,config:OAuthConfiguration,records:OAuthRecords,client:NodeOAuthClient){this.store=store;this.config=config;this.records=records;this.client=client}
+  static async create(store:EtnosCore,config:OAuthConfiguration,fetcher?:Fetch){
     if(new URL(config.origin).protocol!=='https:' || new URL(config.origin).origin!==store.base)throw Error('OAuth requires the canonical HTTPS origin')
     const records=new OAuthRecords(store,config.sealKey),key=await JoseKey.fromJWK(config.privateJwk,'strata-signing-1')
     const locks=new Map<string,Promise<unknown>>()
@@ -136,7 +136,7 @@ export class BrowserAuth {
     const scopes='atproto'+(config.publishingEnabled && config.collection?' repo:'+config.collection:'')
     const fetch=providerFetch(config.allowedHosts,fetcher)
     const client=new NodeOAuthClient({
-      clientMetadata:{client_id:config.origin+'/oauth/client-metadata.json',client_name:config.clientName??'Strata',client_uri:config.origin,
+      clientMetadata:{client_id:config.origin+'/oauth/client-metadata.json',client_name:config.clientName??'ETNOS',client_uri:config.origin,
         redirect_uris:[config.origin+'/auth/callback'],grant_types:['authorization_code','refresh_token'],response_types:['code'],
         scope:scopes,application_type:'web',token_endpoint_auth_method:'private_key_jwt',token_endpoint_auth_signing_alg:'ES256',
         dpop_bound_access_tokens:true,jwks_uri:config.origin+'/oauth/jwks.json'},
@@ -191,7 +191,8 @@ export class BrowserAuth {
     if(request.headers.get('origin')!==this.config.origin)throw new Fault(403,'Origin not allowed')
     const current=this.session(request)
     if(!current)throw new Fault(401,'Authentication required')
-    if(!equal(request.headers.get('x-strata-csrf')??'',current.session.csrf))throw new Fault(403,'Request confirmation required')
+    // x-strata-csrf: the header's name before the rename, still sent by a page loaded from the previous release.
+    if(!equal(request.headers.get('x-etnos-csrf')??request.headers.get('x-strata-csrf')??'',current.session.csrf))throw new Fault(403,'Request confirmation required')
   }
   private limit(request:Request){
     const window=Math.floor(this.store.clock()/600000),key=hash('auth:'+window+':'+(request.headers.get('cf-connecting-ip')??'local'))

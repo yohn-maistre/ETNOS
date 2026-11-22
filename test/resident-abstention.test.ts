@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Resident,residentAbstentionText,type ResidentInput,type ResidentProvider} from '../src/resident.ts'
 import {ResidentFailure} from '../src/resident-failure.ts'
 import {AgentAccess} from '../src/agent-access.ts'
@@ -11,7 +11,7 @@ import {api} from '../src/api.ts'
 const asked='@Aksara Bisa ceritakan soal salib merah di Merauke? Kalau tidak tau, bikin pantun tentang hubungan manusia Papua dengan tanah, laut, langit, api.'
 /** A public room with a mention-enabled resident and no configured sources. */
 function fixture(provider?:ResidentProvider,hourlyLimit=5){
- const s=new Strata(':memory:','https://abstain.example.org'),owner=s.provision('did:web:abstain-owner.example','Synthetic operator'),person=s.provision('did:web:abstain-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Public questions','Synthetic','public',true,'open'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),r=new Resident(s,access,provider,{version:1,timezone:'Asia/Jayapura',slots:[]}),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);s.join(person.actor.id,room.id)
+ const s=new Etnos(':memory:','https://abstain.example.org'),owner=s.provision('did:web:abstain-owner.example','Synthetic operator'),person=s.provision('did:web:abstain-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Public questions','Synthetic','public',true,'open'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),r=new Resident(s,access,provider,{version:1,timezone:'Asia/Jayapura',slots:[]}),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);s.join(person.actor.id,room.id)
  const grant=s.mandate(owner.actor.id,a.agent_id,room.id,'Public conversation',s.clock()+86400000,hourlyLimit);r.configure(owner.actor.id,{communityId:room.id,agentId:a.agent_id,postingMandateId:grant,enabled:true,mentionsEnabled:true,dailyLimit:5,requestKey:randomUUID()})
  const choice=r.routing.choices(person.actor.id,room.id)[0],body=(text=asked)=>({communityId:room.id,text,requestKey:randomUUID(),agentMention:{actorId:choice.actor.id,choiceKey:choice.choiceKey}})
  const ask=(payload=body())=>{const post=r.createMentionPost(person.actor.id,payload);return {post,job:s.get<{job_id:string}>('SELECT job_id FROM resident_job_inputs WHERE target_post_id=?',post.id)!.job_id}}

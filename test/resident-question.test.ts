@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata,LocalDatabase} from '../src/store.ts'
+import {Etnos,LocalDatabase} from '../src/store.ts'
 import {migrations,migrate,schemaVersion} from '../src/schema.ts'
 import {Resident,type ResidentInput,type ResidentOutput,type ResidentProvider} from '../src/resident.ts'
 import {AgentAccess} from '../src/agent-access.ts'
@@ -11,7 +11,7 @@ import {api} from '../src/api.ts'
 import {Media} from '../src/media.ts'
 import {image} from './media-fixture.ts'
 async function fixture(provider?:ResidentProvider){
- const s=new Strata(':memory:','https://commons.example.org'),owner=s.provision('did:web:question-owner.example','Synthetic operator'),person=s.provision('did:web:question-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Public questions','Synthetic','public',true,'open'),hidden=s.createCommunity(owner.actor.id,'Protected questions','Synthetic','hidden-private',true),access=new AgentAccess(s,{stewardDid:owner.actor.did}),r=new Resident(s,access,provider),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);s.join(person.actor.id,room.id)
+ const s=new Etnos(':memory:','https://commons.example.org'),owner=s.provision('did:web:question-owner.example','Synthetic operator'),person=s.provision('did:web:question-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Public questions','Synthetic','public',true,'open'),hidden=s.createCommunity(owner.actor.id,'Protected questions','Synthetic','hidden-private',true),access=new AgentAccess(s,{stewardDid:owner.actor.did}),r=new Resident(s,access,provider),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);s.join(person.actor.id,room.id)
  const grant=s.mandate(owner.actor.id,a.agent_id,room.id,'Public conversation',s.clock()+86400000);r.configure(owner.actor.id,{communityId:room.id,agentId:a.agent_id,postingMandateId:grant,enabled:true,mentionsEnabled:true,dailyLimit:5,requestKey:randomUUID()})
  const d=new Discovery(s,sourceFetcher(['https://source.example.org'],async()=>new Response('<rss><channel><item><title>Public reference</title><link>https://source.example.org/report</link><description>A permitted public excerpt for this synthetic question.</description></item></channel></rss>',{headers:{'content-type':'application/rss+xml'}}))),source=d.add(owner.actor.id,{communityId:room.id,title:'Synthetic reference',url:'https://source.example.org/rss',rights:'excerpt-permitted',mode:'review',requestKey:randomUUID()});await d.refresh(owner.actor.id,source.id);const item=d.items(owner.actor.id,room.id,true)[0];d.decide(owner.actor.id,item.id,{state:'published',revision:item.revision,requestKey:randomUUID()})
  const choice=r.routing.choices(person.actor.id,room.id)[0],handler=api(s,{agentAccess:access,residentProvider:provider}),body=(text='@aksara Can you explain this source?')=>({communityId:room.id,text,requestKey:randomUUID(),agentMention:{actorId:choice.actor.id,choiceKey:choice.choiceKey}}),call=(path:string,payload?:unknown,token:string|null=person.token)=>handler(new Request(s.base+path,{method:payload?'POST':'GET',headers:{...(payload?{'content-type':'application/json',origin:s.base}:{}),...(token?{authorization:'Bearer '+token}:{})},...(payload?{body:JSON.stringify(payload)}:{})}))

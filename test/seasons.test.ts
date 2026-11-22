@@ -1,12 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Seasons} from '../src/seasons.ts'
 import {Forum} from '../src/forum.ts'
 import {api} from '../src/api.ts'
 
 function world(){
- const s=new Strata(':memory:','https://seasons.example.org',()=>Date.parse('2026-11-18T00:00:00Z'))
+ const s=new Etnos(':memory:','https://seasons.example.org',()=>Date.parse('2026-11-18T00:00:00Z'))
  const owner=s.provision('did:web:season-owner.example','Owner'),member=s.provision('did:web:season-member.example','Member'),outsider=s.provision('did:web:season-outsider.example','Outsider')
  return {s,owner,member,outsider,seasons:new Seasons(s),forum:new Forum(s)}
 }

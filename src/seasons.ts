@@ -1,9 +1,9 @@
 import {randomUUID} from 'node:crypto'
-import {Fault,type StrataCore} from './core.ts'
+import {Fault,type EtnosCore} from './core.ts'
 import {readScope} from './commons.ts'
 
 /** A season a community names for itself (a wind, a harvest, a fishing time). Posts may carry one.
- * Seasons are the community's own words, not a calendar Strata imposes, so they have no dates.
+ * Seasons are the community's own words, not a calendar ETNOS imposes, so they have no dates.
  * A season is never deleted: retiring it stops new use and keeps it on records that already carry it. */
 export type Season={id:string;name:string;note:string;position:number;archived:boolean}
 type Row={id:string;community_id:string;name:string;note:string;position:number;archived:number}
@@ -13,8 +13,8 @@ const words=(value:unknown,max:number,field:string)=>{if(typeof value!=='string'
 const fold=(v:string)=>v.toLocaleLowerCase('id-ID')
 
 export class Seasons{
- private store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ private store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  /** Seasons of a community, for anyone who may read it. Retired ones are listed last so old records still resolve. */
  list(communityId:string,actorId?:string){
   readScope(this.store,communityId,actorId)
@@ -59,6 +59,6 @@ export class Seasons{
 }
 
 /** A post may carry a season only from its own community, and only one still in use. */
-export function checkSeason(s:StrataCore,communityId:string,seasonId:string){
+export function checkSeason(s:EtnosCore,communityId:string,seasonId:string){
  if(!s.get('SELECT 1 FROM community_seasons WHERE id=? AND community_id=? AND archived=0',seasonId,communityId))throw new Fault(400,'Choose a season of this community')
 }

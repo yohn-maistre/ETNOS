@@ -2,9 +2,10 @@ import {publicNews,type NewsFeed} from './news.ts'
 import {decisionModel,type DecisionProvider} from './decisions.ts'
 import {type DeskModel} from './desk.ts'
 import {nodeModels,ModelError,type ModelEnv} from './models.ts'
+import {type EtnosEnv} from './env.ts'
 /** Fixed AI binding and public-news service. No caller-selected model, URL or credentials. */
-export function workerDecisions(env:Cloudflare.Env):DecisionProvider|undefined{
- if(env.STRATA_DECISIONS_ENABLED!=='true'||!env.AI)return undefined
+export function workerDecisions(env:EtnosEnv<Cloudflare.Env>):DecisionProvider|undefined{
+ if(env.ETNOS_DECISIONS_ENABLED!=='true'||!env.AI)return undefined
  return {
   async news(){
    if(!env.WATCH_NEWS)throw Error('Public news unavailable')
@@ -18,7 +19,7 @@ export function workerDecisions(env:Cloudflare.Env):DecisionProvider|undefined{
 }
 /** The desk writes with the node's models: Workers AI Gemma 4 unless the operator set a keyed provider.
  * Low temperature, thinking off: the job is copying and retelling. */
-export function workerDesk(env:Cloudflare.Env):DeskModel|undefined{
+export function workerDesk(env:EtnosEnv<Cloudflare.Env>):DeskModel|undefined{
  const models=nodeModels(env as unknown as ModelEnv)
  if(!models)return undefined
  return async(messages,maxTokens)=>{

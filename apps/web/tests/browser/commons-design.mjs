@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
-import { Strata, api, Wiki, chromium, origin, artifactDir } from './environment.mjs'
-const s = new Strata(':memory:', origin)
+import { Etnos, api, Wiki, chromium, origin, artifactDir } from './environment.mjs'
+const s = new Etnos(':memory:', origin)
 const owner = s.provision('did:web:design-fixture.example', 'Synthetic reader')
 const room = s.createCommunity(owner.actor.id, 'Synthetic neighborhood', 'Browser fixture', 'public')
 s.createPost(owner.actor.id, room.id, 'Synthetic post: one shared conversation surface.')

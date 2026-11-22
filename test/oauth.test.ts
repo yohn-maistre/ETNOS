@@ -1,19 +1,19 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {BrowserAuth,OAuthRecords,providerFetch} from '../src/oauth.ts'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {api} from '../src/api.ts'
 
 import {fixture,did,origin,issuer} from './oauth-fixture.ts'
 function req(path:string,options:{method?:string;cookie?:string;body?:unknown;csrf?:string}={}){
   return new Request(origin+path,{method:options.method??(options.body===undefined?'GET':'POST'),
-    headers:{origin,...(options.cookie?{cookie:options.cookie}:{}),...(options.csrf?{'x-strata-csrf':options.csrf}:{}),...(options.body===undefined?{}:{'content-type':'application/json'})},
+    headers:{origin,...(options.cookie?{cookie:options.cookie}:{}),...(options.csrf?{'x-etnos-csrf':options.csrf}:{}),...(options.body===undefined?{}:{'content-type':'application/json'})},
     ...(options.body===undefined?{}:{body:JSON.stringify(options.body)})})
 }
 const cookiePart=(r:Response,name:string)=>r.headers.getSetCookie().find(x=>x.startsWith(name+'='))!.split(';')[0]
 
 test('official OAuth: PKCE/PAR/DPoP, browser binding, verified enrollment, cookie session and replay protection',async()=>{
-  const{s,auth,state,exchanges}=await fixture(new Strata(':memory:',origin))
+  const{s,auth,state,exchanges}=await fixture(new Etnos(':memory:',origin))
   try{
     const start=await auth.route(req('/auth/start',{body:{handle:'member.example'}}))
     assert.equal(start?.status,200,await start?.clone().text())
@@ -32,6 +32,8 @@ test('official OAuth: PKCE/PAR/DPoP, browser binding, verified enrollment, cooki
     const c=s.listCommunities()[0]
     assert.equal((await handle(req('/v1/posts',{cookie:session,body:{communityId:c.id,text:'No CSRF'}}))).status,403)
     assert.equal((await handle(req('/v1/posts',{cookie:session,csrf:me.csrf,body:{communityId:c.id,text:'Authenticated'}}))).status,200)
+    // A page loaded before the rename still sends the old header name.
+    assert.equal((await handle(new Request(origin+'/v1/posts',{method:'POST',headers:{origin,cookie:session,'x-strata-csrf':me.csrf,'content-type':'application/json'},body:JSON.stringify({communityId:c.id,text:'Old header'})}))).status,200)
     await auth.route(req(callback,{cookie:flow}));assert.equal(exchanges(),1)
     assert.equal((await auth.route(req('/auth/logout',{cookie:session,csrf:me.csrf,body:{}})))?.status,200)
     assert.equal((await(await auth.route(req('/auth/me',{cookie:session})))!.json() as {actor:unknown}).actor,null)
@@ -39,7 +41,7 @@ test('official OAuth: PKCE/PAR/DPoP, browser binding, verified enrollment, cooki
 })
 
 test('OAuth state is consumed atomically and sealed records are bound to kind/key',async()=>{
-  const s=new Strata(':memory:',origin)
+  const s=new Etnos(':memory:',origin)
   try{
     const records=new OAuthRecords(s,Buffer.alloc(32,3).toString('base64url'))
     await records.set('state','a',{secret:'fixture'})
@@ -65,7 +67,7 @@ test('OAuth provider fetch rejects arbitrary hosts, redirects, unbounded respons
 })
 
 test('verified AT identity does not bypass enrollment; callback issuer and token subject are checked',async()=>{
-  const s=new Strata(':memory:',origin)
+  const s=new Etnos(':memory:',origin)
   try{
     const denied=await fixture(s,{stewardDid:'did:plc:zzzzzzzzzzzzzzzzzzzzzzzz'})
     assert.equal((await denied.auth.route(req('/auth/start',{body:{handle:'member.example'}})))?.status,403)
@@ -77,7 +79,7 @@ test('verified AT identity does not bypass enrollment; callback issuer and token
     assert.equal(wrong?.headers.get('location'),'/login?error=authentication_failed')
     assert.equal(exchanges(),0);assert.equal(s.all('SELECT * FROM browser_sessions').length,0)
   }finally{s.close()}
-  const other=new Strata(':memory:',origin)
+  const other=new Etnos(':memory:',origin)
   try{
     const{auth,state}=await fixture(other,{},'did:plc:zzzzzzzzzzzzzzzzzzzzzzzz')
     const start=(await auth.route(req('/auth/start',{body:{handle:'member.example'}})))!
@@ -90,7 +92,7 @@ test('verified AT identity does not bypass enrollment; callback issuer and token
 })
 
 test('expired OAuth state, cross-origin login and local bearer shortcuts are rejected',async()=>{
-  const s=new Strata(':memory:',origin)
+  const s=new Etnos(':memory:',origin)
   try{
     const{auth,state,exchanges}=await fixture(s)
     const foreign=new Request(origin+'/auth/start',{method:'POST',headers:{origin:'https://evil.example','content-type':'application/json'},body:JSON.stringify({handle:'member.example'})})
@@ -108,7 +110,7 @@ test('expired OAuth state, cross-origin login and local bearer shortcuts are rej
 // Custom handle and PDS host are independent. This is an invited-login fixture,
 // not an enabled provider-started new-account/signup implementation.
 test('an invited ETNOS-domain handle completes the actual OAuth route on an external PDS',async()=>{
- const s=new Strata(':memory:',origin),customHandle='friend.etnos.example'
+ const s=new Etnos(':memory:',origin),customHandle='friend.etnos.example'
  try{
   const {auth,state}=await fixture(s,{},did,customHandle)
   const start=(await auth.route(req('/auth/start',{body:{handle:customHandle}})))!

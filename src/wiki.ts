@@ -1,5 +1,5 @@
 import {randomUUID,createHash} from 'node:crypto'
-import {StrataCore,Fault,MANDATE_MAX_MS} from './core.ts'
+import {EtnosCore,Fault,MANDATE_MAX_MS} from './core.ts'
 import {canonical} from './transport.ts'
 import {checkPage,type PageBasis} from './desk.ts'
 
@@ -34,8 +34,8 @@ function citations(values:string[]) {
 /** Markdown/HTML-stripped prose for public excerpts. */
 function plainWikiText(text:string){return text.replace(/```[\s\S]*?```/g,' ').replace(/\s?\[\d+(?:\s*,\s*\d+)*\]/g,'').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/<[^>]*>/g,' ').replace(/^\s{0,3}#{1,6}\s+.*$/gm,' ').replace(/[*_`~>|]/g,'').replace(/\s+/g,' ').trim()}
 export class Wiki {
-  private store:StrataCore
-  constructor(store:StrataCore) {this.store=store}
+  private store:EtnosCore
+  constructor(store:EtnosCore) {this.store=store}
   /** Who reviewed a revision: null while a live revision waits for review or after it was reverted. */
   private reviewerOf(revisionId:string,reviewerId:string){
     const r=this.store.get<{state:string;reviewer_id:string|null}>('SELECT state,reviewer_id FROM wiki_reviews WHERE revision_id=?',revisionId)

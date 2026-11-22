@@ -90,7 +90,7 @@
 {/if}
 
 <style>
-  /* Same gutter as the trail below it (knowledge-strata.css). */
+  /* Same gutter as the trail below it (knowledge-layers.css). */
   @media (max-width: 640px) { .wiki-period { padding-inline: 16px; } }
   .wiki-period { padding: 12px 28px; border-top: 1px solid var(--reading-line); font-size: 14px; line-height: 1.55; color: var(--muted-foreground); }
   p { margin: 0; }

@@ -337,7 +337,7 @@
             {context.title}
           </Badge>{/each}{#each post.entries ?? [] as entry (entry.slug)}<Badge href={'/wiki/' + encodeURIComponent(entry.slug)} variant="secondary">{entry.title}</Badge>{/each}
       </div>{/if}
-    {#if post.uri}<div class="strata-publication mt-3">
+    {#if post.uri}<div class="etnos-publication mt-3">
         <Globe size={12} />{#if post.publicationState === 'delivered'}<a
             href={'https://atproto-browser.vercel.app/at/' + post.uri.slice(5)}
             target="_blank"

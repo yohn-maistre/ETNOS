@@ -7,11 +7,11 @@ import {join} from 'node:path'
 import {Miniflare,convertV4MiniflareOptions} from 'miniflare'
 
 import {image} from './media-fixture.ts'
-const origin='https://strata.example'
+const origin='https://etnos.example'
 function runtime(persist) {
   return new Miniflare(convertV4MiniflareOptions({name:'strata-test-only',modules:true,scriptPath:'.wrangler/test/worker-harness.js',
     compatibilityDate:'2026-10-23',compatibilityFlags:['nodejs_compat'],
-    bindings:{STRATA_ORIGIN:origin,STRATA_NODE:'preview'},
+    bindings:{ETNOS_ORIGIN:origin,ETNOS_NODE:'preview'},
     durableObjects:{STRATA:{className:'TestNode',useSQLite:true}},
     resourcePersistencePath:persist,
   }))
@@ -24,7 +24,7 @@ function call(mf,path,token,body) {
 }
 
 test('actual workerd SQLite: access, admission, transaction rollback, bytes, outbox and restart',async()=>{
-  const dir=await mkdtemp(join(tmpdir(),'strata-worker-'))
+  const dir=await mkdtemp(join(tmpdir(),'etnos-worker-'))
   let mf=runtime(dir)
   try {
     const ns=await mf.getDurableObjectNamespace('STRATA'),stub=ns.getByName('preview')

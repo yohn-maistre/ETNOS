@@ -45,7 +45,7 @@ export class Meter{
   start():Mark{return {t:this.clock(),read:this.usage.rowsRead,written:this.usage.rowsWritten,statements:this.usage.statements}}
   finish(mark:Mark,method:string,route:string,status:number){
     const read=this.usage.rowsRead-mark.read,written=this.usage.rowsWritten-mark.written,statements=this.usage.statements-mark.statements,now=this.clock()
-    this.log(JSON.stringify({event:'strata.request',method,route,status,ms:now-mark.t,rowsRead:read,rowsWritten:written,statements}))
+    this.log(JSON.stringify({event:'etnos.request',method,route,status,ms:now-mark.t,rowsRead:read,rowsWritten:written,statements}))
     const day=new Date(now).toISOString().slice(0,10)
     if(day!==this.day){this.save(true);this.day=day;this.totals=this.load(day)}
     const t=this.totals

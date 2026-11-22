@@ -32,6 +32,7 @@
   import WikiPeriod from './WikiPeriod.svelte'
   import { voices as pageVoices } from './wiki-sources'
   import LandscapePrint from './LandscapePrint.svelte'
+  import { readStored, writeStored } from './device-storage.ts'
   let {
     page,
     pages,
@@ -69,8 +70,8 @@
   } = $props()
   let section = $state('read'),
     readingSize = $state('normal')
-  function resize(size:string){readingSize=size;try{localStorage.setItem('strata.ui.wiki-text',size)}catch{/* Optional device preference. */}}
-  $effect(()=>{try{readingSize=localStorage.getItem('strata.ui.wiki-text')==='large'?'large':'normal'}catch{/* Optional device preference. */}})
+  function resize(size:string){readingSize=size;try{writeStored('ui.wiki-text',size)}catch{/* Optional device preference. */}}
+  $effect(()=>{try{readingSize=readStored('ui.wiki-text')==='large'?'large':'normal'}catch{/* Optional device preference. */}})
   // The region a page belongs to, from the public map data, chooses its engraved cover.
   let mapData = $state<MapData | null>(null)
   $effect(() => { if (!mapData) void loadMap().then((d) => (mapData = d)) })
@@ -281,7 +282,7 @@
               </details>
             </details>
             {#each proposal.citations as url}<a
-                class="strata-source"
+                class="etnos-source"
                 href={url}
                 target="_blank"
                 rel="noreferrer"

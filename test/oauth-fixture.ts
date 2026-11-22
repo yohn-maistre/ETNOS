@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
 import {JoseKey,type Fetch} from '@atproto/oauth-client-node'
 import {BrowserAuth,type OAuthConfiguration} from '../src/oauth.ts'
-import type {StrataCore} from '../src/core.ts'
+import type {EtnosCore} from '../src/core.ts'
 
 export const did='did:plc:abcdefghijklmnopqrstuvwx'
-export const origin='https://strata.example',issuer='https://issuer.example',pds='https://pds.example'
-export async function fixture(s:StrataCore,overrides:Partial<OAuthConfiguration>={},tokenSubject=did,identityHandle='member.example',identityDid=did){
+export const origin='https://etnos.example',issuer='https://issuer.example',pds='https://pds.example'
+export async function fixture(s:EtnosCore,overrides:Partial<OAuthConfiguration>={},tokenSubject=did,identityHandle='member.example',identityDid=did){
   const key=await JoseKey.generate(['ES256'],'strata-signing-1')
   const config:OAuthConfiguration={origin,privateJwk:JSON.stringify(key.privateJwk),sealKey:Buffer.alloc(32,7).toString('base64url'),stewardDid:did,allowedHosts:['bsky.social','plc.directory','issuer.example','pds.example'],...overrides}
   let oauthState='',exchanges=0,parParameters=new URLSearchParams()

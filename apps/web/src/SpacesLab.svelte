@@ -49,7 +49,7 @@
   </div>
   <p class="cx-hint">
     Hasil pengujian lokal, bukan PDS yang berjalan di Cloudflare. Forum tetap
-    memakai izin Strata saat ini.
+    memakai izin ETNOS saat ini.
   </p>
   <ul>
     {#each report.checks as item}<li>

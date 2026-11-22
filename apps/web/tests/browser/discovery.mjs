@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict'
 import {
-  Strata,
+  Etnos,
   api,
   Groups,
   chromium,
   origin,
   artifactDir,
 } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+const s = new Etnos(':memory:', origin),
   owner = s.provision('did:web:search-steward.example', 'giyaibo.bsky.social'),
   peer = s.provision('did:web:peer-search.example', 'Martha synthetic'),
   privatePeer = s.provision('did:web:private-search.example', 'Private only'),

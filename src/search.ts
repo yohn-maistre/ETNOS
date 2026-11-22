@@ -1,10 +1,10 @@
 import {agentLabels} from './agent-labels.ts'
-import { StrataCore, Fault } from './core.ts'
+import { EtnosCore, Fault } from './core.ts'
 
 /** Permission-filtered local discovery. Never indexes private proposals or memberships. */
 export class Search {
-  private store: StrataCore
-  constructor(store: StrataCore) { this.store=store }
+  private store: EtnosCore
+  constructor(store: EtnosCore) { this.store=store }
   profile(viewer: string | undefined, targetId: string) {
     const s=this.store, a=s.actor(targetId)
     if(viewer!==a.id&&!this.visibleAuthor(viewer,a.id))throw new Fault(404,'Not found')

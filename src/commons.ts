@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {canonical} from './transport.ts'
 
 export type ArtifactKind='post'|'offering'|'wiki'|'work'|'knowledge'|'news'|'source'|'agent-job'
@@ -22,16 +22,16 @@ export function citations(values:unknown):string[]{
  if(!Array.isArray(values)||values.length>20)throw new Fault(400,'At most 20 citations')
  return [...new Set(values.map(publicURL))]
 }
-export function readScope(s:StrataCore,communityId:string,actorId?:string){
+export function readScope(s:EtnosCore,communityId:string,actorId?:string){
  const c=s.community(communityId);if(!s.canRead(actorId,c))throw new Fault(404,'Not found');return c
 }
-export function publicSteward(s:StrataCore,actorId:string,communityId:string){
+export function publicSteward(s:EtnosCore,actorId:string,communityId:string){
  if(s.community(communityId).visibility!=='public')throw new Fault(404,'Not found')
  s.requireSteward(actorId,communityId)
 }
 /** Caller performs current domain authorization *before* looking up a receipt.
  * Replayed bodies cannot change a completed request or bypass revoked access. */
-export function transition<T>(s:StrataCore,actorId:string,requestKey:unknown,action:string,input:unknown,authorize:()=>void,apply:()=>T):T{
+export function transition<T>(s:EtnosCore,actorId:string,requestKey:unknown,action:string,input:unknown,authorize:()=>void,apply:()=>T):T{
  const k=key(requestKey),digest=hash({action,input})
  return s.tx(()=>{
   authorize()
@@ -42,11 +42,11 @@ export function transition<T>(s:StrataCore,actorId:string,requestKey:unknown,act
 }
 /** Events carry identifiers only, never private body snapshots or credentials.
  * Their projection must still check the current domain and audience. */
-export function emit(s:StrataCore,actorId:string,kind:string,artifact:ArtifactRef){
+export function emit(s:EtnosCore,actorId:string,kind:string,artifact:ArtifactRef){
  s.run('INSERT INTO commons_events(community_id,actor_id,kind,artifact_kind,artifact_id,revision,created) VALUES(?,?,?,?,?,?,?)',artifact.communityId,actorId,kind,artifact.kind,artifact.id,artifact.revision,s.clock())
  s.audit(actorId,kind,artifact.id)
 }
 /** Invalidate future runtime context after correction, withdrawal or policy change.
  * Epoch rotation keeps earlier transcripts/compactions out of new model context. */
-export function invalidateContext(s:StrataCore,communityId:string){s.invalidatePublicContext(communityId)}
-export function contextEpoch(s:StrataCore,communityId:string){return s.get<{epoch:number}>('SELECT epoch FROM community_context_epochs WHERE community_id=?',communityId)?.epoch??0}
+export function invalidateContext(s:EtnosCore,communityId:string){s.invalidatePublicContext(communityId)}
+export function contextEpoch(s:EtnosCore,communityId:string){return s.get<{epoch:number}>('SELECT epoch FROM community_context_epochs WHERE community_id=?',communityId)?.epoch??0}

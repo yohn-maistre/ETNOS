@@ -89,7 +89,7 @@ try {
       if (str(flag) !== undefined) usage[key] = Number(str(flag));
     output(estimate(usage));
   } else if (command === "doctor") {
-    const path = resolve(str("manifest") ?? ".strata-pds/manifest.json"),
+    const path = resolve(str("manifest") ?? ".etnos-pds/manifest.json"),
       manifest = JSON.parse(readFileSync(path, "utf8"));
     if (manifest.version !== 1 || !manifest.input)
       throw Error("Unsupported manifest");
@@ -126,7 +126,7 @@ try {
         throw Error(
           "init creates one isolated account profile. Use plan --accounts for fleet sizing, then init separately per identity.",
         );
-      const directory = resolve(str("directory") ?? ".strata-pds"),
+      const directory = resolve(str("directory") ?? ".etnos-pds"),
         files: Record<string, string> = {
           "manifest.json":
             JSON.stringify({ version: 1, input, plan: planned }, null, 2) +
@@ -187,7 +187,7 @@ try {
             2,
           ) + "\n";
         files["README.md"] =
-          "# Strata PDS profile\n\nExperimental; single-account. No identity, secret, bucket or deployment was created. Use the checkout that generated this profile. Install packages/pds dependencies on a capable machine. Provision a dedicated bucket; supply unique secrets with Wrangler secret put, bind stable HTTPS and verify handle/DID ownership. Do not deploy wrangler.test.jsonc. Run packages/pds qualification checks before inviting anyone. RELAYS is empty but public records remain readable. Keep private Aksara/corpus data outside the public repo.\n";
+          "# ETNOS PDS profile\n\nExperimental; single-account. No identity, secret, bucket or deployment was created. Use the checkout that generated this profile. Install packages/pds dependencies on a capable machine. Provision a dedicated bucket; supply unique secrets with Wrangler secret put, bind stable HTTPS and verify handle/DID ownership. Do not deploy wrangler.test.jsonc. Run packages/pds qualification checks before inviting anyone. RELAYS is empty but public records remain readable. Keep private Aksara/corpus data outside the public repo.\n";
       } else if (input.runtime === "server") {
         if (!input.image)
           throw Error(

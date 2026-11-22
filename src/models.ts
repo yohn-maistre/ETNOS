@@ -17,7 +17,7 @@ export type ChatMessage={role:'system'|'user'|'assistant'|'tool';content:string|
 export type ToolCall={id:string;type:'function';function:{name:string;arguments:string}}
 export type ChatRequest={purpose:ModelPurpose;messages:ChatMessage[];tools?:unknown[];maxTokens:number;temperature?:number;signal?:AbortSignal}
 export type ChatReply={text:string;toolCalls?:ToolCall[];model:string;route:'key'|'keyless';inputTokens:number;outputTokens:number}
-export type ModelEnv={AI?:{run:(model:string,input:unknown,options?:unknown)=>Promise<unknown>};STRATA_MODEL_BASE_URL?:string;STRATA_MODEL_KEY?:string;STRATA_MODEL_FAST?:string;STRATA_MODEL_SYNTHESIS?:string;STRATA_MODEL_REASONING?:string}
+export type ModelEnv={AI?:{run:(model:string,input:unknown,options?:unknown)=>Promise<unknown>};ETNOS_MODEL_BASE_URL?:string;ETNOS_MODEL_KEY?:string;ETNOS_MODEL_FAST?:string;ETNOS_MODEL_SYNTHESIS?:string;ETNOS_MODEL_REASONING?:string}
 export class ModelError extends Error{readonly code:'model-unavailable'|'model-output'|'model-config';constructor(code:'model-unavailable'|'model-output'|'model-config',message:string){super(message);this.code=code}}
 
 type Keyed={baseUrl:string;key:string;fast:string;synthesis:string;reasoning?:string}
@@ -25,12 +25,12 @@ const MAX_REPLY=65536
 
 /** Reads the keyed provider from the environment. Incomplete or non-HTTPS settings are ignored, never half-used. */
 export function keyedProvider(env:ModelEnv):Keyed|undefined{
- const key=env.STRATA_MODEL_KEY?.trim(),base=env.STRATA_MODEL_BASE_URL?.trim(),fast=env.STRATA_MODEL_FAST?.trim()
+ const key=env.ETNOS_MODEL_KEY?.trim(),base=env.ETNOS_MODEL_BASE_URL?.trim(),fast=env.ETNOS_MODEL_FAST?.trim()
  if(!key||!base||!fast)return undefined
  let url:URL;try{url=new URL(base)}catch{return undefined}
  if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)return undefined
- const reasoning=env.STRATA_MODEL_REASONING?.trim()
- return {baseUrl:url.href.replace(/\/+$/,''),key,fast,synthesis:env.STRATA_MODEL_SYNTHESIS?.trim()||fast,...(reasoning&&/^[a-z]{1,12}$/.test(reasoning)?{reasoning}:{})}
+ const reasoning=env.ETNOS_MODEL_REASONING?.trim()
+ return {baseUrl:url.href.replace(/\/+$/,''),key,fast,synthesis:env.ETNOS_MODEL_SYNTHESIS?.trim()||fast,...(reasoning&&/^[a-z]{1,12}$/.test(reasoning)?{reasoning}:{})}
 }
 
 /** Which route a node would use, without the key. Safe for an operator page. */
@@ -124,7 +124,8 @@ export async function modelGateway(request:Request,models:Models|undefined):Prom
  if(!Array.isArray(messages)||!messages.length||messages.length>40||messages.some(m=>!m||typeof m!=='object'||!ROLES.has((m as {role?:unknown}).role as string)))return reply(400,{error:'Invalid messages'})
  const tools=Array.isArray(input.tools)?input.tools.slice(0,8):undefined
  const maxTokens=Math.max(1,Math.min(Number(input.max_tokens)||500,600))
- const purpose:ModelPurpose=request.headers.get('x-strata-purpose')==='synthesis'?'synthesis':'fast'
+ // x-strata-purpose: the header's name before the rename, still sent by a resident Worker deployed before it.
+ const purpose:ModelPurpose=(request.headers.get('x-etnos-purpose')??request.headers.get('x-strata-purpose'))==='synthesis'?'synthesis':'fast'
  try{
   const r=await models.chat({purpose,messages:messages as ChatMessage[],...(tools?{tools}:{}),maxTokens,signal:request.signal})
   return reply(200,{id:'chatcmpl-'+crypto.randomUUID(),object:'chat.completion',model:r.model,choices:[{index:0,message:{role:'assistant',content:r.text,...(r.toolCalls?{tool_calls:r.toolCalls}:{})},finish_reason:r.toolCalls?'tool_calls':'stop'}],usage:{prompt_tokens:r.inputTokens,completion_tokens:r.outputTokens}})
@@ -134,7 +135,7 @@ export async function modelGateway(request:Request,models:Models|undefined):Prom
  }
 }
 
-/** A model the operator chose in Studio. It replaces STRATA_MODEL_FAST (and SYNTHESIS) for the keyed provider only. */
+/** A model the operator chose in Studio. It replaces ETNOS_MODEL_FAST (and SYNTHESIS) for the keyed provider only. */
 export type ModelChoice={fast:string;synthesis?:string}
 const MODEL_NAME=/^[A-Za-z0-9][A-Za-z0-9._:/-]{0,99}$/
 export function validModelChoice(raw:unknown):ModelChoice|null{
@@ -148,7 +149,7 @@ export function validModelChoice(raw:unknown):ModelChoice|null{
 export function withChoice<T extends ModelEnv>(env:T,choice:ModelChoice|null|undefined):T{
  const c=validModelChoice(choice)
  if(!c||!keyedProvider(env))return env
- return {...env,STRATA_MODEL_FAST:c.fast,STRATA_MODEL_SYNTHESIS:c.synthesis??c.fast}
+ return {...env,ETNOS_MODEL_FAST:c.fast,ETNOS_MODEL_SYNTHESIS:c.synthesis??c.fast}
 }
 /** The keyed provider's model list (OpenAI-compatible GET /models), names only. Google's ids come as "models/…". */
 export async function providerModels(env:ModelEnv,fetcher:typeof fetch=fetch):Promise<string[]|null>{
@@ -163,7 +164,7 @@ export async function providerModels(env:ModelEnv,fetcher:typeof fetch=fetch):Pr
  return [...new Set(names)].sort().slice(0,300)
 }
 
-/** A key the operator added in Studio. It takes precedence over STRATA_MODEL_KEY and is never sent to a browser. */
+/** A key the operator added in Studio. It takes precedence over ETNOS_MODEL_KEY and is never sent to a browser. */
 export type StoredKey={key:string;baseUrl:string;added:number}
 export const GOOGLE_OPENAI_BASE='https://generativelanguage.googleapis.com/v1beta/openai'
 export function validKeyInput(raw:unknown):{key:string;baseUrl:string}|null{
@@ -179,13 +180,13 @@ export function validKeyInput(raw:unknown):{key:string;baseUrl:string}|null{
 /** The environment the node's models run with: the Studio key (if any), then the operator's model choice. */
 export function effectiveEnv<T extends ModelEnv>(env:T,stored:StoredKey|null|undefined,choice:ModelChoice|null|undefined):T{
  let e:T=env
- if(stored?.key)e={...e,STRATA_MODEL_KEY:stored.key,STRATA_MODEL_BASE_URL:stored.baseUrl||GOOGLE_OPENAI_BASE}
+ if(stored?.key)e={...e,ETNOS_MODEL_KEY:stored.key,ETNOS_MODEL_BASE_URL:stored.baseUrl||GOOGLE_OPENAI_BASE}
  const c=validModelChoice(choice)
- if(c&&e.STRATA_MODEL_KEY&&e.STRATA_MODEL_BASE_URL)e={...e,STRATA_MODEL_FAST:c.fast,STRATA_MODEL_SYNTHESIS:c.synthesis??c.fast}
+ if(c&&e.ETNOS_MODEL_KEY&&e.ETNOS_MODEL_BASE_URL)e={...e,ETNOS_MODEL_FAST:c.fast,ETNOS_MODEL_SYNTHESIS:c.synthesis??c.fast}
  return e
 }
 /** Lists models for a key before a model is chosen (keyedProvider needs a model name to count as configured). */
-export const listingEnv=(env:ModelEnv):ModelEnv=>({...env,STRATA_MODEL_FAST:env.STRATA_MODEL_FAST||'listing'})
+export const listingEnv=(env:ModelEnv):ModelEnv=>({...env,ETNOS_MODEL_FAST:env.ETNOS_MODEL_FAST||'listing'})
 /** A sensible first model: a general "flash" text model if the provider has one. */
 export function defaultModel(names:string[]):string|null{
  const text=names.filter(n=>!/(embed|image|imagen|tts|audio|live|vision|veo|aqa|learnlm|robotics|computer-use)/i.test(n))

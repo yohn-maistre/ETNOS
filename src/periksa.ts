@@ -2,7 +2,7 @@
  * knowledge (a word's meaning, a grammar note, a place name, a date). It settles when enough members agree,
  * and a split result stays visible as a split instead of failing. Claims never leave their community. */
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 
 export const CLAIM_KINDS=['word','sense','grammar','name','place','date','wiki','other'] as const
 export type ClaimKind=typeof CLAIM_KINDS[number]
@@ -28,8 +28,8 @@ export function settle(yes:number,no:number,quorum:number):Exclude<ClaimState,'w
 }
 
 export class Periksa{
- private store:StrataCore
- constructor(store:StrataCore){this.store=store}
+ private store:EtnosCore
+ constructor(store:EtnosCore){this.store=store}
  quorum(communityId:string){return this.store.get<{quorum:number}>('SELECT quorum FROM claim_settings WHERE community_id=?',communityId)?.quorum??DEFAULT_QUORUM}
  private human(actor:string){if(this.store.actor(actor).kind!=='human')throw new Fault(403,'Human participant required')}
  private row(id:string){return this.store.get<Row>('SELECT * FROM claims WHERE id=?',id)??(()=>{throw new Fault(404,'Not found')})()}

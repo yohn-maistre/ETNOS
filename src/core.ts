@@ -41,7 +41,7 @@ function pollView(poll: { options: string[]; closesAt: number }, votes: PollVote
 }
 function missing(): never { throw new Fault(404, 'Not found') }
 
-export class StrataCore {
+export class EtnosCore {
   db: Database
   base: string
   clock: () => number

@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Groups} from '../src/groups.ts'
 import {Forum} from '../src/forum.ts'
 import {KnowledgeModel,type KnowledgeSeed} from '../src/knowledge-model.ts'
@@ -33,7 +33,7 @@ const seed:KnowledgeSeed={version:1,
 let n=0
 const rk=()=>'request-'+(++n).toString().padStart(6,'0')
 function world(){
- const s=new Strata(':memory:','https://km.example.org')
+ const s=new Etnos(':memory:','https://km.example.org')
  const steward=s.provision('did:web:steward.example','Node steward'),host=s.provision('did:web:host.example','Host'),member=s.provision('did:web:member.example','Member'),outsider=s.provision('did:web:outsider.example','Outsider')
  const agent=s.provision('did:web:agent.example','Agent',host.actor.id)
  const g=new Groups(s,{stewardDid:steward.actor.did}),m=new KnowledgeModel(s,g)
@@ -203,7 +203,7 @@ test('guardrails: a basis is required, agents only interpret and never about per
 })
 
 test('the API serves the public view and keeps writes behind authentication',async()=>{
- const s=new Strata(':memory:','https://km.example.org')
+ const s=new Etnos(':memory:','https://km.example.org')
  try{
   const steward=s.provision('did:web:steward.example','Node steward')
   const handle=api(s,{stewardDid:steward.actor.did})

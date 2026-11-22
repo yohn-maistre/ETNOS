@@ -1,13 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Groups} from '../src/groups.ts'
 import {Wiki} from '../src/wiki.ts'
 import {api} from '../src/api.ts'
 import shipped from '../src/catalogues/tanah-papua-seed-labels.json' with {type:'json'}
 
 function world(){
- const s=new Strata(':memory:','https://labels.example.org')
+ const s=new Etnos(':memory:','https://labels.example.org')
  const steward=s.provision('did:web:steward.example','Steward'),other=s.provision('did:web:other.example','Other steward')
  const g=new Groups(s,{stewardDid:steward.actor.did}),w=new Wiki(s)
  const room=s.createCommunity(steward.actor.id,'Public room','Synthetic','public')
@@ -17,7 +17,7 @@ function world(){
  const publish=(actor:string,community:string,title:string)=>{const page=w.create(actor,community,title),p=w.propose(actor,page.id,null,'Synthetic accepted text',[],'id','Synthetic');w.decide(actor,p.id,p.digest,true);return page}
  return {s,g,w,steward,other,room,otherRoom,region,place,publish}
 }
-const links=(s:Strata,pageId:string)=>s.all<{context_id:string}>("SELECT context_id FROM record_contexts WHERE record_kind='wiki' AND record_id=?",pageId).map(r=>r.context_id).sort()
+const links=(s:Etnos,pageId:string)=>s.all<{context_id:string}>("SELECT context_id FROM record_contexts WHERE record_kind='wiki' AND record_id=?",pageId).map(r=>r.context_id).sort()
 
 test('seed labels attach to published public pages by title, once, and only by the node steward',()=>{
  const x=world()

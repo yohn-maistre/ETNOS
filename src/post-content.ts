@@ -2,7 +2,7 @@ import {Fault} from './core.ts'
 export type PostContent={title?:string;url?:string;format?:'plain'|'markdown';warning?:string;inlineMedia?:{version:1;ids:string[]};poll?:{options:string[];closesAt:number};event?:{startsAt:number;endsAt?:number;location:string};answer?:PostAnswer;sources?:PostSource[];season?:string}
 /** A reply that answers a sourced post: something is wrong, or the writer knows more. */
 export type PostAnswer='wrong'|'more'
-/** A source the author names for the post. Shown as written; Strata does not claim to have checked it. */
+/** A source the author names for the post. Shown as written; ETNOS does not claim to have checked it. */
 export type PostSource={title:string;url?:string;quote?:string}
 const short=(value:unknown,max:number)=>{if(typeof value!=='string'||value.length>max)throw new Fault(400,'Invalid post field');return value.trim()}
 export function contentInput(value:unknown,now:number):PostContent{

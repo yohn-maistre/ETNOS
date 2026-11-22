@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { StrataCore, Fault, type Post } from "./core.ts";
+import { EtnosCore, Fault, type Post } from "./core.ts";
 import { Groups, text, strings } from "./groups.ts";
 import { canonical } from "./transport.ts";
 
@@ -57,9 +57,9 @@ function citations(value: unknown) {
 
 /** Public sponsor coordination only. No private task/tool execution or custody. */
 export class PublicWork {
-  readonly store: StrataCore;
+  readonly store: EtnosCore;
   readonly groups: Groups;
-  constructor(store: StrataCore, groups: Groups) {
+  constructor(store: EtnosCore, groups: Groups) {
     this.store = store;
     this.groups = groups;
   }

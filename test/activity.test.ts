@@ -1,12 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { Strata } from "../src/store.ts";
+import { Etnos } from "../src/store.ts";
 import { Activity } from "../src/activity.ts";
 import { Wiki } from "../src/wiki.ts";
 import { api } from "../src/api.ts";
 
 test("activity rechecks private admission, hidden posts and per-account read state without content snapshots", () => {
-  const s = new Strata(":memory:"),
+  const s = new Etnos(":memory:"),
     activity = new Activity(s),
     owner = s.provision("did:web:owner.example", "Owner"),
     member = s.provision("did:web:member.example", "Member"),
@@ -61,7 +61,7 @@ test("activity rechecks private admission, hidden posts and per-account read sta
 
 test("Wiki and membership review activity requires current authority; decisions stay in the recipient inbox", () => {
   let now = 1000;
-  const s = new Strata(":memory:", "http://localhost:7342", () => now),
+  const s = new Etnos(":memory:", "http://localhost:7342", () => now),
     activity = new Activity(s),
     wiki = new Wiki(s),
     owner = s.provision("did:web:owner.example", "Owner"),
@@ -119,7 +119,7 @@ test("Wiki and membership review activity requires current authority; decisions 
 });
 
 test("activity HTTP requires authentication and never accepts a caller-supplied recipient", async () => {
-  const s = new Strata(":memory:"),
+  const s = new Etnos(":memory:"),
     handler = api(s),
     a = s.provision("did:web:test.example", "Human");
   try {
@@ -148,7 +148,7 @@ test("activity HTTP requires authentication and never accepts a caller-supplied 
 });
 
 test("account pickers expose only currently readable participants, not private-only people or operator relationships", async () => {
-  const s = new Strata(":memory:"),
+  const s = new Etnos(":memory:"),
     a = s.provision("did:web:a.example", "Visible A"),
     b = s.provision("did:web:b.example", "Visible B"),
     owner = s.provision("did:web:private.example", "Private owner"),

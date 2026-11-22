@@ -69,7 +69,7 @@ test("cost model exposes assumptions, shared allowances and measured qualificati
     assert.throws(() => estimate({ requestsPerDay: value }));
 });
 test("agent CLI is parseable, dry by default and never overwrites existing deployment files", () => {
-  const dir = mkdtempSync(join(tmpdir(), "strata-pds-plan-")),
+  const dir = mkdtempSync(join(tmpdir(), "etnos-pds-plan-")),
     dest = join(dir, "profile");
   const run = (args: string[]) =>
     spawnSync(

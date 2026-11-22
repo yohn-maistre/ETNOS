@@ -4,7 +4,7 @@
   "main": "test/worker-harness.ts",
   "compatibility_date": "2026-10-23",
   "compatibility_flags": ["nodejs_compat"],
-  "vars": { "STRATA_ORIGIN": "https://strata.example", "STRATA_NODE": "preview" },
+  "vars": { "ETNOS_ORIGIN": "https://etnos.example", "ETNOS_NODE": "preview" },
   "durable_objects": { "bindings": [{ "name": "STRATA", "class_name": "TestNode" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["TestNode"] }]
 }

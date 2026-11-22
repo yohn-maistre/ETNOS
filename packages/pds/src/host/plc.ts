@@ -1,6 +1,6 @@
 /**
  * did:plc genesis operations and a reconcile-first PLC directory client.
- * Strata code (AGPL-3.0-only), written from the did:plc specification
+ * ETNOS code (AGPL-3.0-only), written from the did:plc specification
  * (https://web.plc.directory/spec/v0.1/did-plc). No PLC library code copied.
  *
  * AGENTS.md: never blindly retry an uncertain outward action. Every

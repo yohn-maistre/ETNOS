@@ -1,13 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Founding,FORMING_DAYS} from '../src/founding.ts'
 import {Groups} from '../src/groups.ts'
 import {api} from '../src/api.ts'
 
 function world(){
  let now=Date.parse('2026-11-18T00:00:00Z')
- const s=new Strata(':memory:','https://founding.example.org',()=>now)
+ const s=new Etnos(':memory:','https://founding.example.org',()=>now)
  const founder=s.provision('did:web:founder.example','Founder'),friend=s.provision('did:web:friend.example','Friend'),third=s.provision('did:web:third.example','Third'),outsider=s.provision('did:web:outsider.example','Outsider')
  return {s,founder,friend,third,outsider,f:new Founding(s),advance:(ms:number)=>{now+=ms}}
 }

@@ -1,5 +1,5 @@
 /**
- * One Durable Object per hosted account (plan §2.1). Strata code
+ * One Durable Object per hosted account (plan §2.1). ETNOS code
  * (AGPL-3.0-only) extending the attributed Cirrus account object.
  *
  * The object holds its own identity: DID, handle, the account's signing key
@@ -353,7 +353,8 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 
 	override async fetch(request: Request): Promise<Response> {
 		try {
-			this.assertAccount(request.headers.get("x-strata-expected-did") ?? "");
+			// x-strata-expected-did: the header's name before the rename, kept for a request from the previous release.
+			this.assertAccount(request.headers.get("x-etnos-expected-did") ?? request.headers.get("x-strata-expected-did") ?? "");
 		} catch {
 			return new Response("Not found", { status: 404 });
 		}

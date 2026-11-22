@@ -35,6 +35,7 @@ import {
   type ThemeMode,
 } from './appearance-schedule'
 import { themeFrame, THEME_SHIFT_MS } from './appearance-transition'
+import { readStored, writeStored } from './device-storage.ts'
 let lastAppearance: {
   theme: 'light' | 'dark'
   mode: ThemeMode
@@ -160,7 +161,7 @@ export function applyAppearance() {
     }
   }
   try {
-    localStorage.setItem('strata.ui.appearance', JSON.stringify({ ...appearance, version: APPEARANCE_VERSION }))
+    writeStored('ui.appearance', JSON.stringify({ ...appearance, version: APPEARANCE_VERSION }))
   } catch {
     /* Optional presentation storage. */
   }
@@ -168,9 +169,9 @@ export function applyAppearance() {
 export function restoreAppearance() {
   try {
     const saved = JSON.parse(
-      localStorage.getItem('strata.ui.appearance') ?? 'null',
+      readStored('ui.appearance') ?? 'null',
     )
-    const theme = saved?.theme ?? localStorage.getItem('strata.ui.theme')
+    const theme = saved?.theme ?? readStored('ui.theme')
     if (theme === 'light' || theme === 'dark') appearance.theme = theme
     if (['clock', 'light', 'dark'].includes(saved?.themeMode))
       appearance.themeMode = saved.themeMode

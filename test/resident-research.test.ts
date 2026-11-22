@@ -1,17 +1,17 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Resident,type ResidentInput,type ResidentOutput,type ResidentProvider} from '../src/resident.ts'
 import {AgentAccess} from '../src/agent-access.ts'
 import {Discovery,sourceFetcher} from '../src/discovery.ts'
 import {Wiki} from '../src/wiki.ts'
 
 type Draft=(input:ResidentInput,f:Fixture)=>Promise<ResidentOutput>|ResidentOutput
-type Fixture={s:Strata;owner:{actor:{id:string}};person:{actor:{id:string}};room:{id:string};access:AgentAccess;r:Resident;a:{agent_id:string};grant:string;page:{id:string};draftPage:{id:string};secret:{id:string};ask:(text?:string)=>{post:{id:string};job:string}}
+type Fixture={s:Etnos;owner:{actor:{id:string}};person:{actor:{id:string}};room:{id:string};access:AgentAccess;r:Resident;a:{agent_id:string};grant:string;page:{id:string};draftPage:{id:string};secret:{id:string};ask:(text?:string)=>{post:{id:string};job:string}}
 const receipt=(input:ResidentInput)=>input.question?{postId:input.question.postId,revision:input.question.revision}:undefined
 async function fixture(draft:Draft):Promise<Fixture>{
- const s=new Strata(':memory:','https://research.example.org'),owner=s.provision('did:web:research-owner.example','Synthetic operator'),person=s.provision('did:web:research-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Public questions','Synthetic','public',true,'open'),access=new AgentAccess(s,{stewardDid:owner.actor.did})
+ const s=new Etnos(':memory:','https://research.example.org'),owner=s.provision('did:web:research-owner.example','Synthetic operator'),person=s.provision('did:web:research-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Public questions','Synthetic','public',true,'open'),access=new AgentAccess(s,{stewardDid:owner.actor.did})
  let f!:Fixture;const provider:ResidentProvider={label:'synthetic:research',researchTools:true,draft:input=>Promise.resolve(draft(input,f))}
  const r=new Resident(s,access,provider),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);s.join(person.actor.id,room.id)
  const grant=s.mandate(owner.actor.id,a.agent_id,room.id,'Public conversation',s.clock()+86400000),editorial=new Wiki(s).grant(owner.actor.id,a.agent_id,room.id,'Knowledge',s.clock()+86400000)

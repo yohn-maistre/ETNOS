@@ -1,4 +1,4 @@
-// The official Strata OAuth client (ETNOS's own sign-in code) against the
+// The official ETNOS OAuth client (ETNOS's own sign-in code) against the
 // local multi-account identity host, with two synthetic accounts. Every network
 // edge is intercepted; no DID, PLC operation or relay request leaves the test.
 import { test } from "node:test";
@@ -8,7 +8,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { BrowserAuth } from "../../../src/oauth.ts";
-import { Strata } from "../../../src/store.ts";
+import { Etnos } from "../../../src/store.ts";
 import { FakePlc, call, domain, hostRuntime, invite, migrate, origin, signup } from "./host-harness.mjs";
 
 const clientOrigin = "https://client.test";
@@ -17,8 +17,8 @@ const form = (url, extra) =>
 	new URLSearchParams({ client_id: url.searchParams.get("client_id"), request_uri: url.searchParams.get("request_uri"), ...extra });
 
 test("ETNOS signs in two hosted accounts through OAuth with an account step; neither can act as the other", async () => {
-	const dir = mkdtempSync(join(tmpdir(), "strata-host-oauth-")), plc = new FakePlc();
-	const s = new Strata(":memory:", clientOrigin);
+	const dir = mkdtempSync(join(tmpdir(), "etnos-host-oauth-")), plc = new FakePlc();
+	const s = new Etnos(":memory:", clientOrigin);
 	let auth;
 	const mf = hostRuntime({
 		persist: dir,
@@ -75,7 +75,7 @@ test("ETNOS signs in two hosted accounts through OAuth with an account step; nei
 			assert.equal(signed.headers.get("location"), "/", await signed.clone().text());
 			const cookie = cookieOf(signed, "__Host-strata");
 			const me = await (await auth.route(new Request(clientOrigin + "/auth/me", { headers: { cookie } }))).json();
-			const agent = await auth.agent(new Request(clientOrigin + "/v1/test", { method: "POST", headers: { origin: clientOrigin, cookie, "x-strata-csrf": me.csrf } }));
+			const agent = await auth.agent(new Request(clientOrigin + "/v1/test", { method: "POST", headers: { origin: clientOrigin, cookie, "x-etnos-csrf": me.csrf } }));
 			return { cookie, me, agent };
 		};
 
@@ -113,7 +113,7 @@ test("ETNOS signs in two hosted accounts through OAuth with an account step; nei
 		assert.equal(bobRecords.records.length, 0);
 
 		// The steward enrolls Bob in ETNOS; enrollment is ETNOS's own decision, separate from the host.
-		const invited = await auth.route(new Request(clientOrigin + "/auth/invite", { method: "POST", headers: { origin: clientOrigin, cookie: aliceSession.cookie, "x-strata-csrf": aliceSession.me.csrf, "content-type": "application/json" }, body: JSON.stringify({ handle: bob.handle }) }));
+		const invited = await auth.route(new Request(clientOrigin + "/auth/invite", { method: "POST", headers: { origin: clientOrigin, cookie: aliceSession.cookie, "x-etnos-csrf": aliceSession.me.csrf, "content-type": "application/json" }, body: JSON.stringify({ handle: bob.handle }) }));
 		assert.equal(invited.status, 200, await invited.clone().text());
 
 		// Bob, on the same device: the hint selects Bob; "use another account" shows the selector with Alice remembered.

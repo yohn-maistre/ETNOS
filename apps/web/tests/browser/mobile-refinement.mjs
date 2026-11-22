@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict'
 import {
-  Strata,
+  Etnos,
   Groups,
   api,
   chromium,
   origin,
   artifactDir,
 } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+const s = new Etnos(':memory:', origin),
   owner = s.provision(
     'did:web:mobile-fixture.example',
     'Synthetic mobile member',
@@ -262,9 +262,9 @@ try {
     'Explore shortcuts have breathing room below the header',
   )
   await page.evaluate(() => {
-    const saved = JSON.parse(localStorage.getItem('strata.ui.appearance'))
+    const saved = JSON.parse(localStorage.getItem('etnos.ui.appearance'))
     localStorage.setItem(
-      'strata.ui.appearance',
+      'etnos.ui.appearance',
       JSON.stringify({ ...saved, texture: 'none' }),
     )
   })

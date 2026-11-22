@@ -1,11 +1,11 @@
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault,type Post} from './core.ts'
+import {EtnosCore,Fault,type Post} from './core.ts'
 import {Search} from './search.ts'
 
 function text(value:string,max:number) { if(typeof value!=='string' || !value.trim() || value.length>max) throw new Fault(400,'Invalid input');return value.trim() }
 export class Social {
-  private store: StrataCore
-  constructor(store:StrataCore) { this.store=store }
+  private store: EtnosCore
+  constructor(store:EtnosCore) { this.store=store }
   follow(actorId:string,targetId:string,follow:boolean) {
     const s=this.store
     return s.tx(()=>{

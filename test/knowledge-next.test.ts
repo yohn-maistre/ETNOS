@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Wiki} from '../src/wiki.ts'
 import {Groups} from '../src/groups.ts'
 import {Search} from '../src/search.ts'
@@ -10,7 +10,7 @@ import {Forum} from '../src/forum.ts'
 import {api} from '../src/api.ts'
 import {image} from './media-fixture.ts'
 test('wiki accountability projects only exact accepted participants and keeps draft contributors restricted',async()=>{
- const s=new Strata(':memory:'),owner=s.provision('did:web:wiki-owner.example','Public reviewer'),peer=s.provision('did:web:wiki-peer.example','Contributor'),stranger=s.provision('did:web:wiki-other.example','Unrelated private person'),w=new Wiki(s),c=s.createCommunity(owner.actor.id,'Public','Public','public')
+ const s=new Etnos(':memory:'),owner=s.provision('did:web:wiki-owner.example','Public reviewer'),peer=s.provision('did:web:wiki-peer.example','Contributor'),stranger=s.provision('did:web:wiki-other.example','Unrelated private person'),w=new Wiki(s),c=s.createCommunity(owner.actor.id,'Public','Public','public')
  try {
   s.setMember(owner.actor.id,c.id,peer.actor.id,true)
   const p=w.createDraft(owner.actor.id,c.id,'Accountable page',{text:'First',citations:[],language:'id',perspective:'Free-text attribution'})
@@ -29,7 +29,7 @@ test('wiki accountability projects only exact accepted participants and keeps dr
  }finally{s.close()}
 })
 test('atomic wiki drafts hide identity, title and history until reviewed; failed creation leaves no page',async()=>{
- const s=new Strata(':memory:','https://next.example'),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:reader.example','Reader'),w=new Wiki(s),c=s.createCommunity(a.actor.id,'Public','Public','public')
+ const s=new Etnos(':memory:','https://next.example'),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:reader.example','Reader'),w=new Wiki(s),c=s.createCommunity(a.actor.id,'Public','Public','public')
  try{
   const body={text:'Private working prose',citations:[],language:'mee',perspective:'Community attribution'}
   const page=w.createDraft(a.actor.id,c.id,'Unpublished Tambeyau title',body)
@@ -52,7 +52,7 @@ test('atomic wiki drafts hide identity, title and history until reviewed; failed
  }finally{s.close()}
 })
 test('wiki group restrictions recheck current contributors/reviewers and filter the activity inbox',()=>{
- const s=new Strata(':memory:'),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:reviewer.example','Reviewer'),g=new Groups(s),w=new Wiki(s),c=s.createCommunity(a.actor.id,'Public','Public','public')
+ const s=new Etnos(':memory:'),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:reviewer.example','Reviewer'),g=new Groups(s),w=new Wiki(s),c=s.createCommunity(a.actor.id,'Public','Public','public')
  try{
   s.setMember(a.actor.id,c.id,b.actor.id,true,'moderator')
   const group=g.create(a.actor.id,'Review council','Scope','collective','hidden-private')
@@ -72,7 +72,7 @@ test('wiki group restrictions recheck current contributors/reviewers and filter 
  }finally{s.close()}
 })
 test('inline document images must belong to the same attached post, preserve private reads and roll back failures',async()=>{
- const s=new Strata(':memory:'),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:outside.example','Outside'),m=new Media(s),f=new Forum(s),g=new Groups(s),c=s.createCommunity(a.actor.id,'Private','Private','hidden-private'),other=s.createCommunity(a.actor.id,'Other','Other','public')
+ const s=new Etnos(':memory:'),a=s.provision('did:web:owner.example','Owner'),b=s.provision('did:web:outside.example','Outside'),m=new Media(s),f=new Forum(s),g=new Groups(s),c=s.createCommunity(a.actor.id,'Private','Private','hidden-private'),other=s.createCommunity(a.actor.id,'Other','Other','public')
  try{
   const upload=m.upload(a.actor.id,c.id,image,'An ordinary preview'),foreign=m.upload(a.actor.id,other.id,image,'Other')
   const content={format:'markdown',inlineMedia:{version:1,ids:[upload.id]}}

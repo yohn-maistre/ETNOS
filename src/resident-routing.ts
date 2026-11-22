@@ -1,4 +1,4 @@
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {AgentAccess} from './agent-access.ts'
 import {publicSteward,text,hash,expected,transition,emit} from './commons.ts'
 import type {ResidentConfig} from './resident.ts'
@@ -20,9 +20,9 @@ export function unavailableReason(e:unknown):ResidentUnavailableReason{
 export type ResidentRoute={config:ResidentConfig;communityId:string;postingMandateId:string;scope:'community'|'sitewide';globalRevision:number;routeRevision:number;coverage:string[];choiceKey:string}
 /** Explicit participation over existing roles, admission and mandates; never a superuser flag. */
 export class ResidentRouting {
- readonly store:StrataCore
+ readonly store:EtnosCore
  readonly access:AgentAccess
- constructor(store:StrataCore,access:AgentAccess){this.store=store;this.access=access}
+ constructor(store:EtnosCore,access:AgentAccess){this.store=store;this.access=access}
  config(id:string){const c=this.store.get<ResidentConfig>('SELECT * FROM resident_configs WHERE community_id=?',id);if(!c)throw new Fault(404,'Resident is not configured');return c}
  global(){return this.store.get<SitewideResident>('SELECT * FROM resident_sitewide WHERE id=1')??null}
  assertBase(c:ResidentConfig){

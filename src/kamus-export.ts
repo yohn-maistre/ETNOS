@@ -36,7 +36,7 @@ export function kamusCldf(x:KamusExport,base:string,today:string){
    'dc:conformsTo':'http://cldf.clld.org/v1.0/terms.rdf#Dictionary',
    'dc:title':`Kamus ${x.languageName}, ${x.community}`,
    'dc:created':today,
-   'dc:description':'Checked entries of a community dictionary on ETNOS (Strata). Each sense keeps its source and licence.',
+   'dc:description':'Checked entries of a community dictionary on ETNOS. Each sense keeps its source and licence.',
    tables:[
     {url:'entries.csv','dc:conformsTo':'http://cldf.clld.org/v1.0/terms.rdf#EntryTable',tableSchema:{columns:[{name:'ID',propertyUrl:'http://cldf.clld.org/v1.0/terms.rdf#id'},{name:'Language_ID',propertyUrl:'http://cldf.clld.org/v1.0/terms.rdf#languageReference'},{name:'Headword',propertyUrl:'http://cldf.clld.org/v1.0/terms.rdf#headword'},{name:'Part_Of_Speech',propertyUrl:'http://cldf.clld.org/v1.0/terms.rdf#partOfSpeech'},{name:'Variants',separator:';'},{name:'Forms',separator:';'},{name:'Dialect'},{name:'Source',separator:';'},{name:'Licence',separator:';'},{name:'Sensitive'}],primaryKey:['ID']}},
     {url:'senses.csv','dc:conformsTo':'http://cldf.clld.org/v1.0/terms.rdf#SenseTable',tableSchema:{columns:[{name:'ID',propertyUrl:'http://cldf.clld.org/v1.0/terms.rdf#id'},{name:'Entry_ID',propertyUrl:'http://cldf.clld.org/v1.0/terms.rdf#entryReference'},{name:'Description',propertyUrl:'http://cldf.clld.org/v1.0/terms.rdf#description'},{name:'Definition'},{name:'Domain'},{name:'Source'},{name:'Licence'}],primaryKey:['ID']}},

@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {AgentAccess} from '../src/agent-access.ts'
 import {Ranking,spreadAgentPosts} from '../src/ranking.ts'
 
@@ -25,7 +25,7 @@ test('a feed that is only agent posts is left as it is, and leftover agent posts
 })
 
 test('public feeds and discovery apply the rule at read time without losing posts or the cursor',()=>{
- let now=Date.parse('2026-11-19T01:00:00Z');const s=new Strata(':memory:','https://share.example.org',()=>now),owner=s.provision('did:web:share-owner.example','Synthetic operator'),person=s.provision('did:web:share-person.example','Synthetic person'),room=s.createCommunity(owner.actor.id,'Public room','Synthetic','public',true,'open')
+ let now=Date.parse('2026-11-19T01:00:00Z');const s=new Etnos(':memory:','https://share.example.org',()=>now),owner=s.provision('did:web:share-owner.example','Synthetic operator'),person=s.provision('did:web:share-person.example','Synthetic person'),room=s.createCommunity(owner.actor.id,'Public room','Synthetic','public',true,'open')
  const access=new AgentAccess(s),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id);const grant=s.mandate(owner.actor.id,a.agent_id,room.id,'Public posts',now+86400000,20)
  s.join(person.actor.id,room.id)
  try{

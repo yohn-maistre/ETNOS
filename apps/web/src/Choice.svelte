@@ -28,7 +28,7 @@
   const uid = $props.id()
   let selectionVersion = $state(0)
   const choices = $derived(
-    items.map((item) => ({ ...item, value: item.value || '__strata_empty__' })),
+    items.map((item) => ({ ...item, value: item.value || '__etnos_empty__' })),
   )
 </script>
 
@@ -40,12 +40,12 @@
     items={choices}
     value={value || ''}
     onValueChange={(next) => {
-      const proposed = next === '__strata_empty__' ? '' : next
+      const proposed = next === '__etnos_empty__' ? '' : next
       if (onbeforechange && !onbeforechange(proposed)) {
         selectionVersion++
         return
       }
-      value = next === '__strata_empty__' ? '' : next
+      value = next === '__etnos_empty__' ? '' : next
       onchange?.(value)
     }}
     allowDeselect={false}

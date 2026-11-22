@@ -1,7 +1,7 @@
 // Test-only entrypoint. This class and its provisioning RPCs MUST NOT be deployed.
 import {Buffer} from 'node:buffer'
 import worker, { StrataNode } from '../src/worker.ts'
-import { StrataCore } from '../src/core.ts'
+import { EtnosCore } from '../src/core.ts'
 import { CloudflareDatabase } from '../src/cloudflare-database.ts'
 import type { Publisher, PublicRecord } from '../src/transport.ts'
 import {Groups} from '../src/groups.ts'
@@ -19,7 +19,7 @@ import {api} from '../src/api.ts'
 import {migrations} from '../src/schema.ts'
 
 export class TestNode extends StrataNode {
-  private core() { return new StrataCore(new CloudflareDatabase(this.ctx.storage),this.env.STRATA_ORIGIN) }
+  private core() { return new EtnosCore(new CloudflareDatabase(this.ctx.storage),this.config.ETNOS_ORIGIN) }
   async residentMigrationContract(){
     // Dedicated test-only DO: discard the constructor's fresh schema before
     // installing the populated v26 fixture. Never available in a deployed class.
@@ -55,7 +55,7 @@ export class TestNode extends StrataNode {
   async traceRequest(path:string,token?:string,body?:unknown,min=50){
     const seen:{sql:string;read:number;written:number}[]=[]
     this.database.trace=(sql,read,written)=>{if(read>=min||written>=min)seen.push({sql:sql.replace(/\s+/g,' ').slice(0,240),read,written})}
-    try{await this.request(new Request(this.env.STRATA_ORIGIN+path,{method:body===undefined?'GET':'POST',headers:{...(token?{authorization:'Bearer '+token}:{}),...(body===undefined?{}:{'content-type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})}))}
+    try{await this.request(new Request(this.config.ETNOS_ORIGIN+path,{method:body===undefined?'GET':'POST',headers:{...(token?{authorization:'Bearer '+token}:{}),...(body===undefined?{}:{'content-type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})}))}
     finally{this.database.trace=undefined}
     return JSON.stringify(seen)
   }
@@ -183,22 +183,22 @@ export class TestNode extends StrataNode {
   }
   async authContract(){
     const{auth,state}=await fixture(this.core())
-    const start=await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.env.STRATA_ORIGIN,'content-type':'application/json'},body:JSON.stringify({handle:'member.example'})}))
+    const start=await auth.route(new Request(this.config.ETNOS_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.config.ETNOS_ORIGIN,'content-type':'application/json'},body:JSON.stringify({handle:'member.example'})}))
     if(start?.status!==200)return JSON.stringify({start:start?.status})
     const flow=start.headers.getSetCookie().find(x=>x.startsWith('__Host-strata_flow='))!.split(';')[0]
-    const callback=await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}}))
+    const callback=await auth.route(new Request(this.config.ETNOS_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}}))
     return JSON.stringify({start:start.status,callback:callback?.status,location:callback?.headers.get('location'),hasCookie:callback?.headers.getSetCookie().some(x=>x.startsWith('__Host-strata='))})
   }
   async signupContract(){
     const s=this.core(),owner=s.provision(did,'Fixture steward'),newcomer='did:plc:zzzzzzzzzzzzzzzzzzzzzzzz'
     const hidden=s.createCommunity(owner.actor.id,'Protected language','Private','hidden-private')
     const {auth,state,parameters}=await fixture(s,{enrollmentMode:'open'},newcomer,'new.bsky.social',newcomer)
-    const start=(await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.env.STRATA_ORIGIN,'content-type':'application/json'},body:JSON.stringify({mode:'signup',returnTo:'/communities?welcome=1'})})))!
+    const start=(await auth.route(new Request(this.config.ETNOS_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.config.ETNOS_ORIGIN,'content-type':'application/json'},body:JSON.stringify({mode:'signup',returnTo:'/communities?welcome=1'})})))!
     if(start.status!==200)return JSON.stringify({start:start.status})
     const flow=start.headers.getSetCookie().find(x=>x.startsWith('__Host-strata_flow='))!.split(';')[0]
-    const callback=(await auth.route(new Request(this.env.STRATA_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}})))!
+    const callback=(await auth.route(new Request(this.config.ETNOS_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}})))!
     const cookie=callback.headers.getSetCookie().find(x=>x.startsWith('__Host-strata='))!.split(';')[0]
-    const actor=auth.principal(new Request(this.env.STRATA_ORIGIN+'/auth/me',{headers:{cookie}}))!
+    const actor=auth.principal(new Request(this.config.ETNOS_ORIGIN+'/auth/me',{headers:{cookie}}))!
     return JSON.stringify({start:start.status,location:callback.headers.get('location'),noLoginHint:!parameters().has('login_hint'),verified:actor.did===newcomer,
       memberships:s.all('SELECT 1 FROM memberships WHERE actor_id=?',actor.id).length,hiddenOmitted:!s.listCommunities(actor.id).some(c=>c.id===hidden.id),schema:s.get<{version:number}>('SELECT max(version) version FROM strata_migrations')!.version})
   }

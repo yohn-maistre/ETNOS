@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { Strata, api, chromium, origin, artifactDir } from './environment.mjs'
-const s = new Strata(':memory:', origin),
+import { Etnos, api, chromium, origin, artifactDir } from './environment.mjs'
+const s = new Etnos(':memory:', origin),
   owner = s.provision('did:web:polish-fixture.example', 'Synthetic reader'),
   c = s.createCommunity(
     owner.actor.id,

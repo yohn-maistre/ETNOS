@@ -7,23 +7,23 @@ import { generateKeyPairSync, randomBytes } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
 import { BrowserAuth } from "../../../src/oauth.ts";
-import { Strata } from "../../../src/store.ts";
+import { Etnos } from "../../../src/store.ts";
 const cfg = parseConfig(
     readFileSync("wrangler.test.jsonc", "utf8").replace(/^\/\/[^\n]*\n/, ""),
   ),
   clientOrigin = "https://client.test",
   pdsOrigin = "https://pds.test";
-test("official Strata OAuth client completes PAR/PKCE/DPoP with local Strata PDS and writes a permitted record", async () => {
+test("official ETNOS OAuth client completes PAR/PKCE/DPoP with local ETNOS PDS and writes a permitted record", async () => {
   let auth, mf;
   const writes = [];
-  const s = new Strata(":memory:", clientOrigin),
+  const s = new Etnos(":memory:", clientOrigin),
     outbound = [];
   const privateJwk = generateKeyPairSync("ec", {
     namedCurve: "prime256v1",
   }).privateKey.export({ format: "jwk" });
   mf = new Miniflare(
     convertV4MiniflareOptions({
-      name: "strata-pds-oauth-local-only",
+      name: "etnos-pds-oauth-local-only",
       modules: [
         { type: "ESModule", path: "dist/worker.js" },
         ...readdirSync("dist")
@@ -150,7 +150,7 @@ test("official Strata OAuth client completes PAR/PKCE/DPoP with local Strata PDS
     const agent = await auth.agent(
       new Request(clientOrigin + "/v1/test", {
         method: "POST",
-        headers: { origin: clientOrigin, cookie, "x-strata-csrf": me.csrf },
+        headers: { origin: clientOrigin, cookie, "x-etnos-csrf": me.csrf },
       }),
     );
     const created = await agent.com.atproto.repo.createRecord({
@@ -239,7 +239,7 @@ test("official Strata OAuth client completes PAR/PKCE/DPoP with local Strata PDS
         headers: {
           origin: clientOrigin,
           cookie: readSession,
-          "x-strata-csrf": readMe.csrf,
+          "x-etnos-csrf": readMe.csrf,
         },
       }),
     );

@@ -13,7 +13,7 @@
  * Nothing here leaves the community: entries are read with the community's own read rule, and example sentences
  * are re-checked against their posts at read time, so a deleted or hidden post stops counting at once. */
 import {randomUUID} from 'node:crypto'
-import {StrataCore,Fault} from './core.ts'
+import {EtnosCore,Fault} from './core.ts'
 import {Periksa,type Claim} from './periksa.ts'
 
 export const KAMUS_CONTEXTS=['Kebun','Hutan','Rumah','Adat','Tubuh','Alam','Keluarga','Gereja','Jual beli','Lainnya'] as const
@@ -44,11 +44,11 @@ export function trigramScore(word:string,seedGrams:Map<string,number>,contactGra
 function grams(list:Iterable<string>){const m=new Map<string,number>();let total=0;for(const x of list){const w='^'+x+'$';for(let i=0;i+3<=w.length;i++){m.set(w.slice(i,i+3),(m.get(w.slice(i,i+3))??0)+1);total++}}for(const [k,v] of m)m.set(k,v/Math.max(1,total)*1000);return m}
 
 export class Kamus{
- private store:StrataCore
+ private store:EtnosCore
  private periksa:Periksa
  private lexicon:KamusLexicon
  private operator:(actorId:string)=>boolean
- constructor(store:StrataCore,lexicon:KamusLexicon,o:{operator?:(actorId:string)=>boolean}={}){this.store=store;this.periksa=new Periksa(store);this.lexicon=lexicon;this.operator=o.operator??(()=>false)}
+ constructor(store:EtnosCore,lexicon:KamusLexicon,o:{operator?:(actorId:string)=>boolean}={}){this.store=store;this.periksa=new Periksa(store);this.lexicon=lexicon;this.operator=o.operator??(()=>false)}
 
  /** The dictionary belongs to a language community. Its language comes from the community's "Bahasa yang dipakai"
   * (a label with role 'language' on a language context with a glottocode, other than a contact language); the node operator can set it instead, which is the only way for a hidden

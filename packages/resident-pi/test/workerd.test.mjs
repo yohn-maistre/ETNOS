@@ -2,14 +2,14 @@ import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {randomUUID} from 'node:crypto'
 import {Miniflare,convertV4MiniflareOptions} from 'miniflare'
-import {Strata} from '../../../src/store.ts'
+import {Etnos} from '../../../src/store.ts'
 import {AgentAccess} from '../../../src/agent-access.ts'
 import {Wiki} from '../../../src/wiki.ts'
 import {Resident} from '../../../src/resident.ts'
 import {piResidentProvider} from '../../../src/resident-provider.ts'
 import {Discovery,sourceFetcher} from '../../../src/discovery.ts'
-test('actual workerd Pi Lifecycle, SQLite storage, named entrypoint and current Strata inference authority',async()=>{
- const s=new Strata(':memory:','https://pi-runtime.example.org'),owner=s.provision('did:web:workerd-pi.example','Synthetic Pi operator'),room=s.createCommunity(owner.actor.id,'Workerd resident','Fixture','public',true,'open'),access=new AgentAccess(s),agent=access.enroll(owner.actor.id,{name:'Test Pi Aksara',communityId:room.id,role:'steward',family:'aksara'});access.admit(owner.actor.id,agent.agent_id)
+test('actual workerd Pi Lifecycle, SQLite storage, named entrypoint and current ETNOS inference authority',async()=>{
+ const s=new Etnos(':memory:','https://pi-runtime.example.org'),owner=s.provision('did:web:workerd-pi.example','Synthetic Pi operator'),room=s.createCommunity(owner.actor.id,'Workerd resident','Fixture','public',true,'open'),access=new AgentAccess(s),agent=access.enroll(owner.actor.id,{name:'Test Pi Aksara',communityId:room.id,role:'steward',family:'aksara'});access.admit(owner.actor.id,agent.agent_id)
  let resident,calls=0,maxInputBytes=0;const prompts=[];const mf=new Miniflare(convertV4MiniflareOptions({workers:[
   {name:'caller',modules:true,compatibilityDate:'2026-10-23',script:`export default {fetch(request,env){return env.RUNTIME.fetch(request)}}`,serviceBindings:{RUNTIME:{name:'runtime',entrypoint:'ResidentRuntime'}}},
   {name:'runtime',modules:true,scriptPath:'dist/worker.js',compatibilityDate:'2026-10-23',compatibilityFlags:['nodejs_compat'],durableObjects:{SESSIONS:{className:'PiResidentSession',useSQLite:true}},serviceBindings:{

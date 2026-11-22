@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite'
 import type { Database, Binding } from './database.ts'
-import { StrataCore } from './core.ts'
+import { EtnosCore } from './core.ts'
 export * from './core.ts'
 
 export class LocalDatabase implements Database {
@@ -32,7 +32,7 @@ export class LocalDatabase implements Database {
 }
 
 /** Local convenience host. Worker bundles import core.ts, never node:sqlite. */
-export class Strata extends StrataCore {
+export class Etnos extends EtnosCore {
   constructor(path = ':memory:', base = 'http://127.0.0.1:7342', clock = () => Date.now()) {
     const database = new LocalDatabase(path)
     try { super(database,base,clock) } catch (error) { database.close(); throw error }

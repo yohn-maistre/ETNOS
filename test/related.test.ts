@@ -1,9 +1,9 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {api} from '../src/api.ts'
 test('canonical-link discussions preserve current community visibility, revocation and paging',async()=>{
- const s=new Strata(':memory:','http://localhost:7788'),owner=s.provision('did:web:related-owner.example','Owner'),reader=s.provision('did:web:related-reader.example','Reader')
+ const s=new Etnos(':memory:','http://localhost:7788'),owner=s.provision('did:web:related-owner.example','Owner'),reader=s.provision('did:web:related-reader.example','Reader')
  try{
  const pub=s.createCommunity(owner.actor.id,'Public','Visible','public'),priv=s.createCommunity(owner.actor.id,'Hidden','Private','hidden-private')
  s.setMember(owner.actor.id,priv.id,reader.actor.id,true)

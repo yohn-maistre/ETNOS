@@ -6,7 +6,7 @@ import {Harness,MemoryStorage,AssistantEntry} from '@earendil-works/pi-durable'
 import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context'
 import type {WebSearchSource} from 'agents/websearch'
 import type {WebFetchSource} from 'agents/webfetch'
-import {Strata} from '../../../src/store.ts'
+import {Etnos} from '../../../src/store.ts'
 import {Resident,type ResidentInput,type ResidentProvider} from '../../../src/resident.ts'
 import {residentPromptContext} from '../../../src/resident-prompt.ts'
 import {AgentAccess} from '../../../src/agent-access.ts'
@@ -16,9 +16,9 @@ import {residentRegistry,webExtension} from '../src/extensions.ts'
 
 type Call={name:string;args:object}
 /** Actual Pi tool loops over the Agents SDK web_search/web_fetch tools, with
- * substitute sources (no network, no AI binding) and Strata's real authority. */
+ * substitute sources (no network, no AI binding) and ETNOS's real authority. */
 function setup(script:(n:number,wikiUrl:string)=>Call[]|string){
- const s=new Strata(':memory:','https://pi-web.example.org'),owner=s.provision('did:web:pi-web-owner.example','Synthetic operator'),person=s.provision('did:web:pi-web-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Pi web room','Test','public',true,'open'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),agent=access.enroll(owner.actor.id,{name:'Synthetic Aksara',family:'aksara',role:'steward',communityId:room.id});access.admit(owner.actor.id,agent.agent_id);s.join(person.actor.id,room.id)
+ const s=new Etnos(':memory:','https://pi-web.example.org'),owner=s.provision('did:web:pi-web-owner.example','Synthetic operator'),person=s.provision('did:web:pi-web-person.example','Synthetic neighbor'),room=s.createCommunity(owner.actor.id,'Pi web room','Test','public',true,'open'),access=new AgentAccess(s,{stewardDid:owner.actor.did}),agent=access.enroll(owner.actor.id,{name:'Synthetic Aksara',family:'aksara',role:'steward',communityId:room.id});access.admit(owner.actor.id,agent.agent_id);s.join(person.actor.id,room.id)
  const posting=s.mandate(owner.actor.id,agent.agent_id,room.id,'Public conversation',Date.now()+3600000),editorial=new Wiki(s).grant(owner.actor.id,agent.agent_id,room.id,'Knowledge',Date.now()+3600000)
  const wiki=new Wiki(s),page=wiki.create(owner.actor.id,room.id,'Sungai Digul'),p=wiki.propose(owner.actor.id,page.id,null,'The Digul river carries accepted reviewed knowledge.',[],'id','Community');wiki.decide(owner.actor.id,p.id,p.digest,true)
  const wikiUrl=s.base+'/wiki/'+page.id,searches:string[]=[],fetches:string[]=[],payloads:string[]=[]

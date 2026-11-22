@@ -1,13 +1,13 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {Buffer} from 'node:buffer'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {Media,inspectWebP,MEDIA_MAX_BYTES} from '../src/media.ts'
 import {api} from '../src/api.ts'
 // Generated 32x16 WebP fixture, metadata removed; no real community content.
 import {image} from './media-fixture.ts'
 function setup(){
- let now=Date.now();const s=new Strata(':memory:','https://strata.example',()=>now),m=new Media(s)
+ let now=Date.now();const s=new Etnos(':memory:','https://etnos.example',()=>now),m=new Media(s)
  const a=s.provision('did:web:media-owner.example','Owner'),b=s.provision('did:web:media-member.example','Member'),o=s.provision('did:web:media-outsider.example','Outside')
  const pub=s.createCommunity(a.actor.id,'Public','Public','public'),priv=s.createCommunity(a.actor.id,'Private','Private','hidden-private')
  s.setMember(a.actor.id,priv.id,b.actor.id,true)

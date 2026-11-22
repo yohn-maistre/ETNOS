@@ -25,7 +25,7 @@ export function scopedStub(stub: DurableObjectStub<HostedAccountDurableObject>, 
 		fetch: (input: Request | string, init?: RequestInit) => {
 			const request = new Request(input, init);
 			const headers = new Headers(request.headers);
-			headers.set("x-strata-expected-did", did);
+			headers.set("x-etnos-expected-did", did);
 			return stub.fetch(new Request(request, { headers }));
 		},
 	};

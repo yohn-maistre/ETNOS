@@ -1,12 +1,12 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {Strata} from '../src/store.ts'
+import {Etnos} from '../src/store.ts'
 import {api} from '../src/api.ts'
 import {Wiki} from '../src/wiki.ts'
 import {Groups} from '../src/groups.ts'
 import {resolveShare,shareTags,articleHTML,articleLD} from '../src/share.ts'
 test('sharing reads only anonymous public views; protected identities, groups and wiki drafts stay generic',async()=>{
- const s=new Strata(':memory:','https://etnos.space'),owner=s.provision('did:web:sharing-owner.example','Public author'),secret=s.provision('did:web:sharing-secret.example','Secret person'),publicRoom=s.createCommunity(owner.actor.id,'Public room','Public description','public'),hidden=s.createCommunity(secret.actor.id,'Secret room','Secret description','hidden-private'),listed=s.createCommunity(secret.actor.id,'Listed private','Private description','listed-private'),g=new Groups(s),w=new Wiki(s),handler=api(s)
+ const s=new Etnos(':memory:','https://etnos.space'),owner=s.provision('did:web:sharing-owner.example','Public author'),secret=s.provision('did:web:sharing-secret.example','Secret person'),publicRoom=s.createCommunity(owner.actor.id,'Public room','Public description','public'),hidden=s.createCommunity(secret.actor.id,'Secret room','Secret description','hidden-private'),listed=s.createCommunity(secret.actor.id,'Listed private','Private description','listed-private'),g=new Groups(s),w=new Wiki(s),handler=api(s)
  const privatePost=s.createPost(secret.actor.id,hidden.id,'SECRET PRIVATE TEXT'),publicPost=s.createPost(owner.actor.id,publicRoom.id,'A **public** conversation'),group=g.create(secret.actor.id,'SECRET GROUP','Private','collective','hidden-private'),draft=w.createDraft(owner.actor.id,publicRoom.id,'SECRET DRAFT',{text:'Working text',citations:[],language:'id',perspective:'Author'})
  const read=async(path:string)=>{const r=await handler(new Request(s.base+path));if(!r.ok)throw Error();return r.json()},news=async()=>null
  try{
@@ -44,7 +44,7 @@ test('a dataset record shares only when an anonymous reader can see it',async()=
  const {KnowledgeModel}=await import('../src/knowledge-model.ts'),{Datasets,datasetId}=await import('../src/datasets.ts')
  const knowledge=(await import('../src/catalogues/tanah-papua-knowledge-seed.json',{with:{type:'json'}})).default
  const shipped=(await import('../src/catalogues/tanah-papua-datasets.json',{with:{type:'json'}})).default as {datasets:{key:string;title:string}[]}
- const s=new Strata(':memory:','https://etnos.space'),steward=s.provision('did:web:share-steward.example','Steward'),member=s.provision('did:web:share-member.example','Member'),handler=api(s)
+ const s=new Etnos(':memory:','https://etnos.space'),steward=s.provision('did:web:share-steward.example','Steward'),member=s.provision('did:web:share-member.example','Member'),handler=api(s)
  const read=async(path:string)=>{const r=await handler(new Request(s.base+path));if(!r.ok)throw Error();return r.json()},news=async()=>null
  try{
   const g=new Groups(s,{stewardDid:steward.actor.did});new KnowledgeModel(s,g).importSeed(steward.actor.id,knowledge as never)

@@ -10,7 +10,7 @@ export type UsageReceipt={model:string;input:number;output:number}
  * helper conversations and compactions cannot borrow a newer job's authority. */
 export function jobProvider(work:ResidentWork,ports:{authority:ServicePort;gateway:ServicePort},record:(usage:UsageReceipt)=>void,replay?:ProtocolReplay,onFailure?:(code:ResidentFailureCode)=>void){
  const providerId='strata-'+work.jobId+'-'+work.generation
- const models:Model<'openai-completions'>[]=['fast','synthesis'].map(id=>({id,name:'Strata node model ('+id+')',api:'openai-completions',provider:providerId,baseUrl:'https://commons-model.internal/v1',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:600}))
+ const models:Model<'openai-completions'>[]=['fast','synthesis'].map(id=>({id,name:'ETNOS node model ('+id+')',api:'openai-completions',provider:providerId,baseUrl:'https://commons-model.internal/v1',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:600}))
  const transport:typeof fetch=async(input,init)=>{
   try{
   const request=new Request(input,init),target=new URL(request.url)
@@ -21,7 +21,7 @@ export function jobProvider(work:ResidentWork,ports:{authority:ServicePort;gatew
   await restoreSignatures(minimal.messages,replay)
   const encoded=JSON.stringify(minimal);if(new TextEncoder().encode(encoded).byteLength>32768)throw new ResidentFailure('runtime-budget')
   const grant=await authority(ports.authority,'inference',work,crypto.randomUUID());minimal.max_tokens=Math.min(minimal.max_tokens,grant.maxOutputTokens)
-  const response=await ports.gateway.fetch(new Request('https://commons-model.internal/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-strata-purpose':model},body:JSON.stringify(minimal),signal:request.signal}))
+  const response=await ports.gateway.fetch(new Request('https://commons-model.internal/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-etnos-purpose':model},body:JSON.stringify(minimal),signal:request.signal}))
   if(!response.ok)throw await serviceFailure(response,'provider-unavailable')
   const reader=response.body?.getReader();if(!reader)throw Error('Empty model response');let n=0;const parts:Uint8Array[]=[]
   try{while(true){const r=await reader.read();if(r.done)break;n+=r.value.length;if(n>65536)throw Error('Model output budget reached');parts.push(r.value)}}finally{await reader.cancel().catch(()=>{});reader.releaseLock()}
@@ -38,5 +38,5 @@ export function jobProvider(work:ResidentWork,ports:{authority:ServicePort;gatew
   }catch(error){const code=residentFailureCode(error)??'provider-transport';onFailure?.(code);throw new ResidentFailure(code)}
  }
  const wire=openAICompletionsApi(),api:ProviderStreams={stream:(m,c,o)=>wire.stream(m,c,{...o,fetch:transport,maxRetries:0,timeoutMs:20000}),streamSimple:(m,c,o)=>wire.streamSimple(m,c,{...o,fetch:transport,maxRetries:0,timeoutMs:20000})}
- return createProvider({id:providerId,name:'Strata work-scoped gateway',baseUrl:'https://commons-model.internal/v1',models,auth:{apiKey:{name:'private service binding',resolve:async()=>({auth:{apiKey:'service-binding'}})}},api})
+ return createProvider({id:providerId,name:'ETNOS work-scoped gateway',baseUrl:'https://commons-model.internal/v1',models,auth:{apiKey:{name:'private service binding',resolve:async()=>({auth:{apiKey:'service-binding'}})}},api})
 }

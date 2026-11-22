@@ -1,7 +1,7 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { Buffer } from "node:buffer";
 import { importJWK, jwtVerify, type JWK } from "jose";
-import { StrataCore, Fault, type Actor } from "./core.ts";
+import { EtnosCore, Fault, type Actor } from "./core.ts";
 import { Groups, text } from "./groups.ts";
 import { Wiki } from "./wiki.ts";
 
@@ -46,11 +46,11 @@ const scopes = [
 ] as const;
 /** Registered public-key entrance. Identity, membership and effect mandates remain independent. */
 export class AgentAccess {
-  readonly store: StrataCore;
+  readonly store: EtnosCore;
   readonly groups: Groups;
   private operatorAllowed: (id: string) => boolean;
   constructor(
-    store: StrataCore,
+    store: EtnosCore,
     options: {
       stewardDid?: string;
       operatorAllowed?: (id: string) => boolean;
