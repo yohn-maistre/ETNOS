@@ -20,6 +20,8 @@
 
 [Live site](https://etnos.space) · [Docs](docs/README.md) · [How it works](#how-it-works) · [Tour](#a-short-tour) · [Architecture](#under-the-hood) · [Run locally](#run-locally) · [Licence](#licence-and-credits)
 
+**English** · [Bahasa Indonesia](README.id.md)
+
 <br>
 
 <picture>

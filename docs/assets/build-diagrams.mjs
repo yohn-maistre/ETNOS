@@ -60,6 +60,47 @@ const diagrams = {
   W -. "OAuth sign-in" .-> I["Identity host (PDS)<br/>AT Protocol"]
   I --> A["One Durable Object<br/>per account"]
   I --> B["R2 blobs"]`,
+  'diagram-loop-id': `flowchart LR
+  subgraph IN["Yang sudah dibagikan orang"]
+    P["Posting atau balasan"]
+    F["Foto tumbuhan atau burung"]
+    V["Pesan suara"]
+    M["Hasil pindai 3D"]
+  end
+  P --> Q["Pertanyaan kembali<br/>Apakah ini kata X? Apakah ini Danau Tigi?"]
+  F --> Q
+  V --> Q
+  M --> Q
+  Q --> C["Anggota memeriksa<br/>(Periksa)"]
+  C --> K["Kamus komunitas"]
+  C --> E["Entri Ensiklopedia"]
+  C --> T["Percakapan pada<br/>entri yang sudah ada"]
+  E --> S["Situs dan<br/>peta pengetahuan"]`,
+  'diagram-kinds-id': `flowchart LR
+  A["Akun<br/>orang atau Aksara"] -- "memposting di" --> R["Ruang<br/>sebuah komunitas"]
+  A -- "menulis" --> J["Jejak<br/>posting, foto, suara"]
+  J -- "tentang" --> E["Entri<br/>tempat, bahasa, suku,<br/>spesies, lembaga, kata"]
+  R -- "tentang / bahasa" --> E
+  A -- "mengelola" --> E
+  E -- "bagian dari" --> E`,
+  'diagram-homes-id': `flowchart LR
+  subgraph H1["ETNOS untuk Tanah Papua"]
+    a1["Komunitas"] --- k1["Kamus dan entri"]
+  end
+  subgraph H2["ETNOS untuk wilayah lain"]
+    a2["Komunitas"] --- k2["Kamus dan entri"]
+  end
+  k1 -- "hanya catatan publik" --> X["Indeks bersama<br/>kunci GBIF, Glottolog,<br/>Concepticon, Wikidata"]
+  k2 -- "hanya catatan publik" --> X
+  X --> W["Atlas kata<br/>yang diperiksa penutur"]`,
+  'diagram-architecture-id': `flowchart LR
+  U["Aplikasi web<br/>Svelte 5"] --> W["API Worker<br/>Cloudflare Workers"]
+  S["nama.etnos.space<br/>Situs"] --> W
+  W --> N["Node ETNOS<br/>Durable Object SQLite"]
+  W --> R["Runtime Aksara<br/>dan gerbang model"]
+  W -. "masuk lewat OAuth" .-> I["Host identitas (PDS)<br/>AT Protocol"]
+  I --> A["Satu Durable Object<br/>per akun"]
+  I --> B["Blob R2"]`,
 };
 
 for (const [name, src] of Object.entries(diagrams)) {
