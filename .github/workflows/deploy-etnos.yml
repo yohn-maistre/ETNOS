@@ -159,6 +159,15 @@ jobs:
             r=$(post "/zones/$zone/workers/routes" "{\"pattern\":\"*.$DOMAIN/.well-known/atproto-did\",\"script\":\"etnos-identity-host\"}")
             echo "Route: $(printf '%s' "$r" | jq -c '{success, errors}')"
           fi
+          # Situs at <name>.etnos.space: every other path on a subdomain goes to the web Worker, whose
+          # dispatcher serves a published Situs or answers 404 (ETNOS_SITUS_SUBDOMAINS in wrangler.web.jsonc).
+          # The handle route above is more specific, so it keeps winning for /.well-known/atproto-did.
+          if printf '%s' "$routes" | jq -e --arg p "*.$DOMAIN/*" '[.result[]? | select(.pattern == $p)] | length > 0' >/dev/null; then
+            echo "The Situs route exists."
+          else
+            r=$(post "/zones/$zone/workers/routes" "{\"pattern\":\"*.$DOMAIN/*\",\"script\":\"strata-preview\"}")
+            echo "Situs route: $(printf '%s' "$r" | jq -c '{success, errors}')"
+          fi
           sleep 5
           after=""; for n in $names; do after="$after $n:$(status "$n")"; done
           echo "After:$after"

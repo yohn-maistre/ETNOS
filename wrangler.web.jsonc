@@ -22,6 +22,7 @@
     "STRATA_DECISIONS_ENABLED": "true",
     "STRATA_RESIDENT_RESEARCH": "off",
     "STRATA_CATALOGUE": "tanah-papua",
+    "ETNOS_SITUS_SUBDOMAINS": "on",
     "STRATA_SOURCE_ORIGINS": "https://papua.antaranews.com,https://www.antaranews.com,https://westpapua.watch"
   },
   "durable_objects": {
