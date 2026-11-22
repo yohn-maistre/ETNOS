@@ -1116,6 +1116,8 @@
     {#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} onCreate={()=>startOffering()}/>{/await}
   {:else if path === '/studio'}
     {#await import('./StudioPage.svelte') then module}<module.default {auth}/>{/await}
+  {:else if path === '/studio/pengaturan'}
+    {#await import('./DeploymentSettings.svelte')}<ContentSkeleton />{:then module}<module.default {auth}/>{/await}
   {:else if path === '/agents'}
     {#await import('./AgentConnections.svelte') then module}<module.default
         {auth}

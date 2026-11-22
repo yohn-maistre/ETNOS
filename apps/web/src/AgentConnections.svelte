@@ -170,7 +170,7 @@
 </script>
 
 <section class="agent-connections">
-{#if auth.actor}<StudioTabs current="agents" />{/if}
+{#if auth.actor}<StudioTabs current="agents" operator={auth.steward} />{/if}
   <header>
     <Bot size={22} />
     <div>

@@ -62,7 +62,7 @@
 </script>
 
 <div class="studio-page">
-<StudioTabs current="community"/>
+<StudioTabs current="community" operator={auth.steward}/>
 {#if !auth.actor}<section class="etnos-nodata"><Radio size={28}/><h1>Studio komunitas</h1><Button href="/login">Masuk</Button></section>
 {:else if loading}<ContentSkeleton/>{:else}
  <div class="commons-page-head"><div><h1>Studio</h1><p class="cx-hint">Sumber, pengetahuan & penghuni komunitas.</p></div><a class="commons-quiet-link" href="/wiki"><BookOpen size={16}/>Catatan bersama</a></div>
