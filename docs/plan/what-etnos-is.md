@@ -1,10 +1,10 @@
-# What Strata is
+# What ETNOS is
 
 The whole picture, in one place. Every agent and contributor should read this first. Written 19 November 2026 from the owner's description and checked against the code that day. Status words follow `competition/claims-2026-11-18.md`: **live** (deployed on etnos.space), **built** (merged and tested, not yet deployed), **planned** (designed, not built), **idea** (not yet designed). Names follow `naming.md`.
 
 ## 1. The short version
 
-Strata is a social network for a region and its peoples. People post, comment, vote, run polls, announce events, share photos and links, and join communities, much as they would on Reddit or Threads. The difference is what the network is organised around. Every post, community and page can be tied to a place, a people, a language or a topic. Underneath the conversation sits a shared wiki, written from cited sources, which researchers can also use as data. A small staff of AI assistants (Aksara) does the library work: gathering news, finding sources, drafting wiki pages and asking people questions. They work under rules each community sets, and they can be switched off.
+ETNOS is a social network for a region and its peoples. People post, comment, vote, run polls, announce events, share photos and links, and join communities, much as they would on Reddit or Threads. The difference is what the network is organised around. Every post, community and page can be tied to a place, a people, a language or a topic. Underneath the conversation sits a shared wiki, written from cited sources, which researchers can also use as data. A small staff of AI assistants (Aksara) does the library work: gathering news, finding sources, drafting wiki pages and asking people questions. They work under rules each community sets, and they can be switched off.
 
 ETNOS (etnos.space) is the first deployment, for Tanah Papua. The software is open source (AGPL-3.0), so another region can run its own.
 
@@ -45,7 +45,7 @@ What exists in the code today. Rows marked **built** are in the code and tests; 
 
 ## 3. Organised around places and peoples
 
-Most social platforms are organised around people and their followers. Strata is organised around where people are from and what they share:
+Most social platforms are organised around people and their followers. ETNOS is organised around where people are from and what they share:
 
 - **Places**, from province down to regency and named features (mountains, lakes, rivers, forests). Each has a page with its wiki article, its conversation, its news and its communities. **built**
 - **Languages and topics**, each with the same kind of page. **built**
@@ -108,7 +108,7 @@ Today the record holds text, images, links and video cards. We plan to add more 
 | Geodata | Routes, garden plots and named landscape features drawn by the community, at the precision the community chooses | idea |
 | Dictionary entries and grammar notes | Words with forms, meanings, examples and audio | planned |
 
-Alongside the originals, Strata keeps **derived views**, each labelled as derived and traceable to its source:
+Alongside the originals, ETNOS keeps **derived views**, each labelled as derived and traceable to its source:
 
 - transcripts and translations;
 - labels and metadata (Dublin Core, Local Contexts labels);
@@ -180,4 +180,4 @@ Things we should **not** add, because they work against the rest:
 
 A plain description to adapt. The final proposal keeps only what is **live** at submission.
 
-> ETNOS adalah jejaring sosial untuk Tanah Papua. Orang bisa mengirim tulisan, foto, tautan dan video, membuat jajak pendapat dan acara, bergabung dengan komunitas umum maupun privat, dan mengikuti kabar dari tempat asalnya. Setiap kiriman, komunitas dan halaman bisa dikaitkan dengan tempat, bahasa atau topik, sehingga percakapan tersusun menurut wilayah. Di bawah percakapan ada wiki bersama yang ditulis dari sumber yang disebutkan, dan bisa dipakai peneliti sebagai data. Asisten AI bernama Aksara mengumpulkan kabar, mencari sumber, menyusun draf halaman wiki dan mengajukan pertanyaan kepada warga, menurut aturan yang ditetapkan tiap komunitas. Akun memakai AT Protocol, sehingga orang memegang identitas dan datanya sendiri. Perangkat lunaknya, Strata, terbuka (AGPL-3.0) dan bisa dijalankan wilayah lain.
+> ETNOS adalah jejaring sosial untuk Tanah Papua. Orang bisa mengirim tulisan, foto, tautan dan video, membuat jajak pendapat dan acara, bergabung dengan komunitas umum maupun privat, dan mengikuti kabar dari tempat asalnya. Setiap kiriman, komunitas dan halaman bisa dikaitkan dengan tempat, bahasa atau topik, sehingga percakapan tersusun menurut wilayah. Di bawah percakapan ada wiki bersama yang ditulis dari sumber yang disebutkan, dan bisa dipakai peneliti sebagai data. Asisten AI bernama Aksara mengumpulkan kabar, mencari sumber, menyusun draf halaman wiki dan mengajukan pertanyaan kepada warga, menurut aturan yang ditetapkan tiap komunitas. Akun memakai AT Protocol, sehingga orang memegang identitas dan datanya sendiri. Perangkat lunaknya, ETNOS, terbuka (AGPL-3.0) dan bisa dijalankan wilayah lain.

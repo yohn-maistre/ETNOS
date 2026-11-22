@@ -13,7 +13,7 @@ Items differ only by small marks, never by a separate layout.
 | Conversation | None. A normal post. |
 | Aksara finding | A dotted ring on the avatar, an AI label, sources, and check buttons (*Sesuai*, *Ada yang salah*, *Sa tahu lebih*) beside the votes. |
 | Gap | A small *Celah* label and an action (*Ceritakan*, *Jadikan kerja publik*). |
-| Reviewed page | A card with a serif title, the reviewer, and a thin strata bar showing whose voices it rests on. |
+| Reviewed page | A card with a serif title, the reviewer, and a thin layer bar showing whose voices it rests on. |
 
 An earlier draft set findings and pages into the panel as dashed and recessed blocks. The owner dropped that: it made knowledge feel like a different product. Votes stay on posts for ranking. Claim-level reactions live on wiki pages.
 

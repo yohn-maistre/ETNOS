@@ -55,7 +55,7 @@ First story chosen: **Koyeidaba**, told by Mee people. Sources read: Prihartanti
 
 ## Aksara Node
 
-A node is what a community or team runs for itself: its own Aksara, its own files, and its private spaces. ETNOS is the public commons; a node is where a community keeps its own. They are one project with two halves, and `aksara-core/docs/integrations/etnos-handoff.md` already draws the line: Aksara owns private and institutional conversation, the library, memory, tasks and approvals; Strata owns community membership, public conversation, wiki review and agent mandates.
+A node is what a community or team runs for itself: its own Aksara, its own files, and its private spaces. ETNOS is the public commons; a node is where a community keeps its own. They are one project with two halves, and `aksara-core/docs/integrations/etnos-handoff.md` already draws the line: Aksara owns private and institutional conversation, the library, memory, tasks and approvals; ETNOS owns community membership, public conversation, wiki review and agent mandates.
 
 What exists in aksara-core today (surveyed 16 Nov 2026, alpha, Apache-2.0):
 
@@ -86,7 +86,7 @@ Open questions: what hardware a node needs (aksara-core has no low-memory measur
 
 ## Hosting for others
 
-- Default: a Cloudflare account and a one-click deploy or `npx create-strata`. The free plan allows 100,000 requests, 5 million rows read and 100,000 rows written a day.
+- Default: a Cloudflare account and a one-click deploy or `npx create-etnos`. The free plan allows 100,000 requests, 5 million rows read and 100,000 rows written a day.
 - Keyless model: Workers AI, 10,000 neurons a day free. Enough for a setup chat. A busy Aksara needs the host's own key.
 - OpenCode's free models only work inside the OpenCode app, so they are not an option.
 - Setup is a chat with Aksara that drafts a catalogue file: area, languages, customary regions typed by the community with a source, topics, kinds, news feeds, quake source, literature words. A steward reviews and loads it. Nothing applies itself.
@@ -286,13 +286,13 @@ The owner tried the mandate flow: create a mandate on one screen, then pick it o
 
 ## Studio, news sources and the knowledge map (owner, 16 November, evening)
 
-- **Two Studios.** The site operator's Studio manages the default communities every Strata deployment starts with, and is what exists now. A community made by an organisation account with an Aksara Node gets its own Studio and brings its own Aksara identity and inference. Both are wanted; the operator Studio comes first.
-- **West Papua Watch is not a news source.** It is the owner's aggregation project. The news module takes the sources WPW uses (its registry lists 18 publishers, 11 with RSS: Jubi, Suara Papua, Mongabay Indonesia, Project Multatuli, Human Rights Monitor, Pusaka, Kalawai and others; see `research/wpw-seed-inventory-2026-11-15.md`, section 4), and the Watch engine moves into Strata for the Cloudflare deployment. The current ANTARA feed was a test.
+- **Two Studios.** The site operator's Studio manages the default communities every ETNOS deployment starts with, and is what exists now. A community made by an organisation account with an Aksara Node gets its own Studio and brings its own Aksara identity and inference. Both are wanted; the operator Studio comes first.
+- **West Papua Watch is not a news source.** It is the owner's aggregation project. The news module takes the sources WPW uses (its registry lists 18 publishers, 11 with RSS: Jubi, Suara Papua, Mongabay Indonesia, Project Multatuli, Human Rights Monitor, Pusaka, Kalawai and others; see `research/wpw-seed-inventory-2026-11-15.md`, section 4), and the Watch engine moves into ETNOS for the Cloudflare deployment. The current ANTARA feed was a test.
 - **The knowledge map** becomes one component on the wiki page under the sky-card carousel, folded as a time band and unfolding into an explorer with lenses. Design: `knowledge/knowledge-map-design-2026-11-16.md`.
 
 ## Wiki pages go live before review (owner decision, 16 November)
 
-Agent-written pages publish at once and are reviewed afterwards, as on Wikipedia. The page says who wrote it: how much came from people and how much from Aksara, and whether a person has reviewed it yet. Review marks a page "ditinjau"; it no longer gates publication. Reason: Strata exists so agents can gather what is publicly known about a people or place and everyone can discuss it, and a small model now and a larger one later both benefit from pages being read and corrected in the open.
+Agent-written pages publish at once and are reviewed afterwards, as on Wikipedia. The page says who wrote it: how much came from people and how much from Aksara, and whether a person has reviewed it yet. Review marks a page "ditinjau"; it no longer gates publication. Reason: ETNOS exists so agents can gather what is publicly known about a people or place and everyone can discuss it, and a small model now and a larger one later both benefit from pages being read and corrected in the open.
 
 ## Knowledge observatory (16 November)
 
@@ -308,7 +308,7 @@ Prototype built 16 November from the seed (39 pages, 551 verified sentences, 87 
 
 ## Labels, places and groups
 
-Labels are native to Strata, not part of AT Protocol. They already form a hierarchy and a post under a child shows under its parents.
+Labels are native to ETNOS, not part of AT Protocol. They already form a hierarchy and a post under a child shows under its parents.
 
 Four separate axes, each its own tree, never mixed into one:
 
@@ -327,7 +327,7 @@ Groups, three kinds and no more:
 
 ## News sources
 
-Two paths exist today. Kabar reads the West Papua Watch engine. Studio also has an older per-community source list (ANTARA Papua is on it) that checks a feed and lets a steward turn a finding into a note. The plan is one path: move the Watch engine's ingest, clustering and story packets into Strata as an optional news module, so every host can run news without a second deployment. Strata already has a bounded feed reader with per-source rights (`src/discovery.ts`); the Watch engine adds extraction, relevance, clustering, story packets, places and weekly views, and today depends on D1, R2, queues and Workflows. The move starts with the read model and the feed reader, then clustering, and leaves the heavy crawl optional. Until then the older source list can stay paused.
+Two paths exist today. Kabar reads the West Papua Watch engine. Studio also has an older per-community source list (ANTARA Papua is on it) that checks a feed and lets a steward turn a finding into a note. The plan is one path: move the Watch engine's ingest, clustering and story packets into ETNOS as an optional news module, so every host can run news without a second deployment. ETNOS already has a bounded feed reader with per-source rights (`src/discovery.ts`); the Watch engine adds extraction, relevance, clustering, story packets, places and weekly views, and today depends on D1, R2, queues and Workflows. The move starts with the read model and the feed reader, then clustering, and leaves the heavy crawl optional. Until then the older source list can stay paused.
 
 ## Agent gate hardening
 
@@ -450,7 +450,7 @@ A read of every earlier planning document against this one. Items below were pla
 6. Setup chat and one-click deploy, tested on a fresh Cloudflare account.
 7. Spaces test after 1 December, then the node setup interface.
 8. Online musyawarah.
-9. Agent gate hardening, then the Watch engine as a Strata module.
+9. Agent gate hardening, then the Watch engine as an ETNOS module.
 
 Agent work, in its own order, running beside the list above:
 

@@ -4,9 +4,9 @@ Working refinement, 11 November 2026, Asia/Bangkok. Consolidates the owner's cur
 
 ## The proposition
 
-**ETNOS helps communities participate in everyday life, keep a shared understanding of their world, and turn that understanding into useful activity. Strata is the reusable communal harness behind it.**
+**ETNOS helps communities participate in everyday life, keep a shared understanding of their world, and turn that understanding into useful activity. ETNOS is the reusable communal harness behind it.**
 
-The founder traces the idea to 2023 and forum work to 2025. Repository evidence now supplies additional dated anchors for those periods, March Honai work and October Strata development. The [evidence index](../evidence/README.md) explains the lineage without treating the newest backend as the beginning of the project. Its judge-facing selection stays concise: March Honai work, an optional credited 2025 forum-fork reference and the current demo; omit landing/Basehub links and retain detailed records internally.
+The founder traces the idea to 2023 and forum work to 2025. Repository evidence now supplies additional dated anchors for those periods, March Honai work and October ETNOS development. The [evidence index](../evidence/README.md) explains the lineage without treating the newest backend as the beginning of the project. Its judge-facing selection stays concise: March Honai work, an optional credited 2025 forum-fork reference and the current demo; omit landing/Basehub links and retain detailed records internally.
 
 Culture includes language, songs, jokes, work, exchange, changes in place, displacement, political disagreement and how people respond to current events. Give those activities space to happen, and make durable knowledge a useful consequence. A casual conversation must remain worthwhile even when nobody turns it into a Wiki page.
 
@@ -98,13 +98,13 @@ The supplied Jakarta image suggests a **two-colour screenprint/risograph treatme
 
 Start with an ETNOS preset: form on the left and a quiet landscape print on the right, within one rounded dialog. On mobile, shorten or omit the art so controls fit above the keyboard. Keep form text off the illustration, reserve dimensions before load, respect reduced motion/transparency and keep the artwork compatible with gradual light/dark themes. An illustrative image is labelled appropriately rather than presented as a documentary photograph of an exact place.
 
-Strata needs a small optional branding asset contract, not a required image-generation service. Support **no artwork**, **operator-supplied credited asset**, or **approved place-photo print treatment**. Generation can be an optional operator tool later; it does not run for each visitor or block authentication. Photos from Wikipedia require checking the actual file/Commons license, artist, attribution and permitted derivative use. Host the selected asset locally and retain its provenance/rights metadata. The upcoming landscape ZIP is a reference input, not automatic proof of rights or approval to publish every image in it.
+ETNOS needs a small optional branding asset contract, not a required image-generation service. Support **no artwork**, **operator-supplied credited asset**, or **approved place-photo print treatment**. Generation can be an optional operator tool later; it does not run for each visitor or block authentication. Photos from Wikipedia require checking the actual file/Commons license, artist, attribution and permitted derivative use. Host the selected asset locally and retain its provenance/rights metadata. The upcoming landscape ZIP is a reference input, not automatic proof of rights or approval to publish every image in it.
 
 ## e-means is an immediate implementation slice
 
 The owner selected implementing e-means now. This supersedes the earlier recommendation to wait until a larger corpus makes clustering expensive. Keep it optional behind the clustering port so a forum can run without a training host. Do not label it implemented until the actual backend has trained/assigned and connected results through current permissions.
 
-The [official Faiss implementation](https://github.com/facebookresearch/faiss/blob/main/contrib/e_means/README.md) supports CPU operation with Faiss/NumPy. Faiss [v1.16.0](https://github.com/facebookresearch/faiss/releases/tag/v1.16.0) was published November 10. It replaces the k-means optimization problem, but the current Strata engine has no k-means stage to swap; Watch currently uses its own candidate/evidence/decision pipeline. The integration adds a real backend at that seam.
+The [official Faiss implementation](https://github.com/facebookresearch/faiss/blob/main/contrib/e_means/README.md) supports CPU operation with Faiss/NumPy. Faiss [v1.16.0](https://github.com/facebookresearch/faiss/releases/tag/v1.16.0) was published November 10. It replaces the k-means optimization problem, but the current ETNOS engine has no k-means stage to swap; Watch currently uses its own candidate/evidence/decision pipeline. The integration adds a real backend at that seam.
 
 Use the existing durable-job/evidence/receipt model:
 
@@ -122,7 +122,7 @@ Useful acceptance cases: real upstream fit/assign on synthetic public vectors, i
 
 OpenCode is optional/experimental and can be omitted. The existing authenticated MCP entrance is the main harness-neutral integration: public reads plus enrolled deployment credentials, community admission, current posting/editorial grants and durable action receipts. Human browser OAuth is a different session. An authenticated agent still receives no private cultural-room traversal, institutional source estate or automatic representative role.
 
-Pi remains the optional embedded resident selected for Strata. Aksara Core/Node remains independently custodial. External tools such as Codex, Claude or OpenCode can act through the same bounded entrance as labelled agents when actually configured. There is no reason to ship another mandatory harness merely to obtain a temporary free model. Current OpenCode/Jev source research remains in the [provider/clustering note](../aksara/agent-seeding-and-clustering-2026-11-11.md).
+Pi remains the optional embedded resident selected for ETNOS. Aksara Core/Node remains independently custodial. External tools such as Codex, Claude or OpenCode can act through the same bounded entrance as labelled agents when actually configured. There is no reason to ship another mandatory harness merely to obtain a temporary free model. Current OpenCode/Jev source research remains in the [provider/clustering note](../aksara/agent-seeding-and-clustering-2026-11-11.md).
 
 ## Immediate build order and demo
 

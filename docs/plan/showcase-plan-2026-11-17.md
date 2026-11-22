@@ -1,6 +1,6 @@
 # ETNOS for the showcase: what it is and how we build it
 
-17 November 2026, night. A brainstorm with the owner, written down as one plan. It answers the outside review (`research/advisor-review-2026-11-17.md`), records the owner's decisions of 17 November, and settles the open design questions it can. Where it disagrees with `plan/direction-2026-11-16.md` or `plan/strata-model-2026-11-17.md`, this document wins for the showcase build. The build list lives in `plan/open-work-2026-11-17.md`.
+17 November 2026, night. A brainstorm with the owner, written down as one plan. It answers the outside review (`research/advisor-review-2026-11-17.md`), records the owner's decisions of 17 November, and settles the open design questions it can. Where it disagrees with `plan/direction-2026-11-16.md` or `plan/etnos-model-2026-11-17.md`, this document wins for the showcase build. The build list lives in `plan/open-work-2026-11-17.md`.
 
 Status: **draft for the owner**. Sections marked *proposal* are my calls with reasons; the owner can overturn any of them. Questions only the owner can answer are at the end.
 
@@ -24,9 +24,9 @@ The owner's position: everything on the list gets built before the proposal goes
 
 Framed in the judges' own law: Cerita is *tradisi lisan* and Ruang bahasa is *bahasa*, two of the ten objects of UU 5/2017. Draft, to be written last and to claim only what is live on upload day:
 
-> Orang Papua mencatat, membicarakan dan memakai budayanya sendiri setiap hari di ETNOS. Cerita dan sejarah dari sumber terbitan ada di satu tempat, dan orang dari wilayahnya bisa menambah versi mereka; satu tanggapan dari seorang tetua Mee tersimpan di samping catatan yang sudah terbit. Setiap tulisan menunjukkan sumbernya, dan Aksara, sebuah program, membantu mencari dan merangkum. ETNOS berjalan di Strata, mesin terbuka yang bisa dipakai wilayah lain, dan laporan keadaan pengetahuan per wilayah bisa menjadi masukan PPKD kabupaten.
+> Orang Papua mencatat, membicarakan dan memakai budayanya sendiri setiap hari di ETNOS. Cerita dan sejarah dari sumber terbitan ada di satu tempat, dan orang dari wilayahnya bisa menambah versi mereka; satu tanggapan dari seorang tetua Mee tersimpan di samping catatan yang sudah terbit. Setiap tulisan menunjukkan sumbernya, dan Aksara, sebuah program, membantu mencari dan merangkum. ETNOS berjalan di ETNOS, mesin terbuka yang bisa dipakai wilayah lain, dan laporan keadaan pengetahuan per wilayah bisa menjadi masukan PPKD kabupaten.
 
-**What leads at the showcase.** The direction document named two things: **Cerita** (stories of Tanah Papua with sources, and the people a story belongs to say what it means) and **Ruang bahasa** (rooms where people talk in their language). The owner had forgotten the first; it was Cerita. The Strata model, the wiki, the map and the communities are how those two work. Surveys and government data stay out of the headline.
+**What leads at the showcase.** The direction document named two things: **Cerita** (stories of Tanah Papua with sources, and the people a story belongs to say what it means) and **Ruang bahasa** (rooms where people talk in their language). The owner had forgotten the first; it was Cerita. The ETNOS model, the wiki, the map and the communities are how those two work. Surveys and government data stay out of the headline.
 
 **The demo in one walk:**
 
@@ -37,7 +37,7 @@ Framed in the judges' own law: Cerita is *tradisi lisan* and Ruang bahasa is *ba
 5. Share a story card to WhatsApp. It looks like a printed page.
 6. Close on the printed A4 bulletin with the elder's correction on it.
 
-The Strata model (layers, places, columns) is the explanation slide after the walk.
+The ETNOS model (layers, places, columns) is the explanation slide after the walk.
 
 ## 3. Thirty people on the free tier
 
@@ -82,20 +82,20 @@ What already exists: `packages/pds` is an attributed fork of Cirrus (MIT) runnin
 - Spaces public beta on 1 December is confirmed by the official post of 13 November; the reference PDS gets it by update that day.
 - A new PDS may be capped by Bluesky's relay at a small number of accounts until trusted (figure from 2024, current value unverified). This only matters once public AT publishing is on; ETNOS keeps posts in its own store today.
 
-**One thing that shrinks the work** *(my finding)*: ETNOS uses the AT account for identity and sign-in. Posts live in Strata, and public AT publishing is off. So for ETNOS the PDS only has to create accounts, sign people in through OAuth, hold a `did:plc` and resolve `nama.etnos.space`. Firehose, relay, blob serving and large imports can wait. An identity-first multi-account PDS is a smaller job than a full one.
+**One thing that shrinks the work** *(my finding)*: ETNOS uses the AT account for identity and sign-in. Posts live in ETNOS, and public AT publishing is off. So for ETNOS the PDS only has to create accounts, sign people in through OAuth, hold a `did:plc` and resolve `nama.etnos.space`. Firehose, relay, blob serving and large imports can wait. An identity-first multi-account PDS is a smaller job than a full one.
 
 **Update 18 November:** [research/pds-multi-identity-plan-2026-11-18.md](../research/pds-multi-identity-plan-2026-11-18.md) checks this against the code. It is smaller than a full PDS, but OAuth (the provider has no account selector) and key custody are real work: about 14.5 days to a demo with test identities, about 20.5 before a real member. The riskiest unknown is whether Durable Objects on Workers Free get enough CPU. A one-day spike settles it and needs the owner's go-ahead to deploy and touch DNS. Real members' identities stay on the official-PDS track for the showcase.
 
 **Proposal: two tracks** (revised after the second review).
 
 1. **For people, now and through the pilot: the official PDS on a small server.** Real multi-account, invites, `did:plc`, `nama.etnos.space` handles, email through a free tier, no phone gate, Spaces by update on 1 December. Sign-up form on etnos.space with the invite code in the link; relay crawling off until publishing is wanted; PDS data and the PLC rotation keys backed up off the machine from day one, because ETNOS becomes the custodian of these identities. Free candidates to check: Google Cloud's always-free e2-micro (1 GB, US regions), or Oracle in another region with a new account (an Oracle account's home region is fixed at sign-up, which is likely why Singapore blocked it). Otherwise a VPS at about $4–6 a month. The owner rents; I set it up.
-2. **For Strata: a serverless identity host on Workers**, one Durable Object per account, hashing and signing inside the object. Started only after the walk is complete (about 22 November), with throwaway identities, never holding a real person's identity before it is qualified. Named honestly as an identity host until it holds repositories: its accounts cannot use the Bluesky app, and Spaces needs a full PDS. Shown at the showcase as the way Strata deploys without a server, if it is ready; otherwise a roadmap slide with the design. Accounts can move between hosts later because `did:plc` identities are portable.
+2. **For ETNOS: a serverless identity host on Workers**, one Durable Object per account, hashing and signing inside the object. Started only after the walk is complete (about 22 November), with throwaway identities, never holding a real person's identity before it is qualified. Named honestly as an identity host until it holds repositories: its accounts cannot use the Bluesky app, and Spaces needs a full PDS. Shown at the showcase as the way ETNOS deploys without a server, if it is ready; otherwise a roadmap slide with the design. Accounts can move between hosts later because `did:plc` identities are portable.
 
-To check in our code: whether Strata reads a profile record or the session from the PDS after sign-in; if it does, the identity host must answer that too.
+To check in our code: whether ETNOS reads a profile record or the session from the PDS after sign-in; if it does, the identity host must answer that too.
 
 Rejected: one Cirrus Worker per person (thirty deployments, thirty sets of keys). ETNOS-only accounts stay an emergency option: they contradict Decision 004 and need a migration later.
 
-*Owner note:* Supabase would add a second company and a second free tier that every community deploying Strata must sign up for, and it does not give anyone an AT account. Not needed.
+*Owner note:* Supabase would add a second company and a second free tier that every community deploying ETNOS must sign up for, and it does not give anyone an AT account. Not needed.
 
 ## 5. Places as a table first
 
@@ -143,7 +143,7 @@ For the showcase: one or more Mee rooms opened by the owner and other Mee speake
 
 ## 8. Communities and organisations
 
-- **Community catalogue with "Buka komunitas ini"** (strata model §3), interest communities first: Penulis Papua, Foto Papua, Baca bersama, Musik Papua, Sepak bola Papua, Perantau Papua, Mahasiswa Papua di luar Papua; one open room per region.
+- **Community catalogue with "Buka komunitas ini"** (ETNOS model §3), interest communities first: Penulis Papua, Foto Papua, Baca bersama, Musik Papua, Sepak bola Papua, Perantau Papua, Mahasiswa Papua di luar Papua; one open room per region.
 - **Open admission** for Beranda and Tanya & bantu, and for every interest community by default. Approval stays for language rooms, organisations and rooms that ask for it. (The reviewer found every live room on approval; that blocks every first visit.)
 - **Gossip, family feuds and fun belong here.** People should be able to talk about anything. Community rules and moderation handle the rest, not the design.
 - **Organisations**: listing, claim form ("Ajukan organisasi resmi"), verified mark, their own Studio. Seeded from public lists (schools, health posts, churches, customary councils, NGOs) per regency.
@@ -220,7 +220,7 @@ Expanded:
 
 **Differences from the sketch above, on purpose.**
 
-- The panel never says "diperiksa". Sources an author names are shown as written, with "Periksa sebelum mengutip", because nothing checks them yet. The label should come back only where Strata itself has checked the quotes (the resident's pinned evidence, the desk's fact sheet).
+- The panel never says "diperiksa". Sources an author names are shown as written, with "Periksa sebelum mengutip", because nothing checks them yet. The label should come back only where ETNOS itself has checked the quotes (the resident's pinned evidence, the desk's fact sheet).
 - The panel counts "tanggapan", not "tanggapan diterima". A reply does not yet become a wiki proposal or a Versi lain, and no one can accept it. That is the next step: a steward turns a marked reply into a proposal on the linked page.
 
 
@@ -289,7 +289,7 @@ The owner does not like a sitewide map. Neither do I: one map for everything end
 - **What is known** → Peta wiki, on the wiki home (exists). Lenses: Menurut isi, Waktu, Tempat.
 - **Where** → the place map, inside the place switcher. Tapping "Tanah Papua" opens a sheet with search on top and the engraved map below: regions as soft fields, kampung as stipple, tap to choose. On a place page the same map sits at the top, zoomed to it.
 
-**Built 18 November, needs an owner decision:** Jelajah now has a Tanah Papua atlas (`apps/web/src/ExplorePlaces.svelte`): the seven reference regions as plain outlines built from the BIG regency lines, the 256 languages as Glottolog 5.4 reference points, regions with wiki pages tinted. It follows the advisor's call (plain reference outlines with hatching, no soft fields): Nabire, Mimika, Puncak, Puncak Jaya, Mamberamo Raya and Teluk Wondama are hatched as placed differently by different sources (`research/customary-regions-and-boundaries-2026-11-17.md` §4), and hovering a region lights them up with it. This is a third map next to the two above. Either it becomes the shared map component that the place switcher and place pages use (task 36), or it moves into the switcher and Jelajah keeps the list. Soft fields (`strata-model` §4.1a) against plain outlines (advisor) is also still open.
+**Built 18 November, needs an owner decision:** Jelajah now has a Tanah Papua atlas (`apps/web/src/ExplorePlaces.svelte`): the seven reference regions as plain outlines built from the BIG regency lines, the 256 languages as Glottolog 5.4 reference points, regions with wiki pages tinted. It follows the advisor's call (plain reference outlines with hatching, no soft fields): Nabire, Mimika, Puncak, Puncak Jaya, Mamberamo Raya and Teluk Wondama are hatched as placed differently by different sources (`research/customary-regions-and-boundaries-2026-11-17.md` §4), and hovering a region lights them up with it. This is a third map next to the two above. Either it becomes the shared map component that the place switcher and place pages use (task 36), or it moves into the switcher and Jelajah keeps the list. Soft fields (`etnos-model` §4.1a) against plain outlines (advisor) is also still open.
 
 **Consolidate the places page.** Since place is a scope, the place page and the place's wiki page become one page: Tentang (the wiki text), Percakapan, Kabar, Komunitas, Data. `/places/...` redirects to it. No separate "Tempat" destination to confuse people.
 
@@ -334,14 +334,14 @@ What the build owes them: sign-up that works on a phone in two minutes, open roo
 2. Who besides you holds the identity keys and backups?
 3. Do you accept saying in every private room that ETNOS's operator can technically read it until Spaces arrives?
 
-## 23. Deploying Strata and the operator's first run
+## 23. Deploying ETNOS and the operator's first run
 
 Research: `research/deploy-paths-and-seeding-agent-2026-11-17.md`. Roadmap, not part of the proposal build (see §19).
 
 **Two deploy paths.**
 
-1. **Cloudflare free tier.** A "Deploy to Cloudflare" button on a neutral template: one Worker, the SQLite Durable Object, static assets, optional `AI` binding and R2. The two secrets are generated by the setup step, not typed. Needs a public repository, a `.dev.vars.example`, a `deploy` script that builds the web app, and a template that does not share the ETNOS Worker name. A command line (`npx strata init`) does the same from a laptop.
-2. **VPS.** One script: checks the OS and ports, runs the official Bluesky PDS installer (checksum pinned), then adds Strata behind the PDS's Caddy on a different hostname. Not ready: the Node host is documented as a developer API, so the owner must choose between qualifying it for production sign-in and running the Worker build under workerd.
+1. **Cloudflare free tier.** A "Deploy to Cloudflare" button on a neutral template: one Worker, the SQLite Durable Object, static assets, optional `AI` binding and R2. The two secrets are generated by the setup step, not typed. Needs a public repository, a `.dev.vars.example`, a `deploy` script that builds the web app, and a template that does not share the ETNOS Worker name. A command line (`npx etnos init`) does the same from a laptop.
+2. **VPS.** One script: checks the OS and ports, runs the official Bluesky PDS installer (checksum pinned), then adds ETNOS behind the PDS's Caddy on a different hostname. Not ready: the Node host is documented as a developer API, so the owner must choose between qualifying it for production sign-in and running the Worker build under workerd.
 
 **Operator onboarding, each step drafted by Aksara and confirmed by the operator, with a receipt and sources.**
 
@@ -358,9 +358,9 @@ Steps run in daily slices and resume, because the free model allowance is small.
 
 **Models.** Cloudflare path: Workers AI (keyless, in the Worker, not used for training) for labels, matching and extraction; an optional AI Studio key or local model for page writing. VPS: the same, plus a local model if memory allows. Laptop CLI: any of these, or opencode's free models by the operator's choice. Public data only on every free hosted model.
 
-**Verdict on embedding opencode.** Do not ship it inside Strata. It is MIT and can run headless with an SDK, but it cannot run in a Worker; its keyless models are promotional, usable only through its own client, have unpublished limits, and several may keep or train on prompts. "OpenBot" and "dusk.bot" are real but ship no models of their own; they let users plug opencode in. Offer opencode as an optional adapter in the laptop CLI, public data only.
+**Verdict on embedding opencode.** Do not ship it inside ETNOS. It is MIT and can run headless with an SDK, but it cannot run in a Worker; its keyless models are promotional, usable only through its own client, have unpublished limits, and several may keep or train on prompts. "OpenBot" and "dusk.bot" are real but ship no models of their own; they let users plug opencode in. Offer opencode as an optional adapter in the laptop CLI, public data only.
 
-**Build first.** (1) Neutral template and secret generation. (2) Seed API with draft, confirm and receipt records, reusing the verify and check scripts. (3) Studio "Mulai dari awal" on Workers AI. (4) `strata init` with model adapters and a public-only guard. (5) VPS script after the host decision.
+**Build first.** (1) Neutral template and secret generation. (2) Seed API with draft, confirm and receipt records, reusing the verify and check scripts. (3) Studio "Mulai dari awal" on Workers AI. (4) `etnos init` with model adapters and a public-only guard. (5) VPS script after the host decision.
 
 ### 23.1 opencode's keyless models, second pass (source read)
 
@@ -376,16 +376,16 @@ Research: `research/opencode-keyless-seeding-2026-11-17.md`. This corrects the "
 The owner set opencode aside. Every node now has its own model module (`src/models.ts`).
 
 - **Keyless default.** Workers AI Gemma 4 (`@cf/google/gemma-4-26b-a4b-it`) through the node's `AI` binding, thinking off. No account beyond Cloudflare.
-- **Bring your own key.** One OpenAI-compatible provider, set by the operator: `STRATA_MODEL_BASE_URL`, `STRATA_MODEL_FAST`, optional `STRATA_MODEL_SYNTHESIS` and `STRATA_MODEL_REASONING` as variables, `STRATA_MODEL_KEY` as a Worker secret. Incomplete or non-HTTPS settings are ignored. A rate limit or outage falls back to Gemma 4 once; a refused key does not fall back, so a wrong key shows up.
+- **Bring your own key.** One OpenAI-compatible provider, set by the operator: `ETNOS_MODEL_BASE_URL`, `ETNOS_MODEL_FAST`, optional `ETNOS_MODEL_SYNTHESIS` and `ETNOS_MODEL_REASONING` as variables, `ETNOS_MODEL_KEY` as a Worker secret. Incomplete or non-HTTPS settings are ignored. A rate limit or outage falls back to Gemma 4 once; a refused key does not fall back, so a wrong key shows up.
 - **ETNOS.** A Google AI Studio key, base URL `https://generativelanguage.googleapis.com/v1beta/openai`. AI Studio's free tier may use prompts to improve Google's products, so only public material goes to it, which is already the rule for the resident and the desk.
-- **Who uses it.** The desk and the resident. The resident no longer calls the West Papua Watch gateway: its `MODEL_GATEWAY` binding points at Strata's own `ModelGateway` entrypoint, which bounds size, roles, tools and output length and answers in the OpenAI shape. Deploy Strata before the resident.
+- **Who uses it.** The desk and the resident. The resident no longer calls the West Papua Watch gateway: its `MODEL_GATEWAY` binding points at ETNOS's own `ModelGateway` entrypoint, which bounds size, roles, tools and output length and answers in the OpenAI shape. Deploy ETNOS before the resident.
 - **Decisions.** On Cloudflare they stay on `@cf/cloudflare/clef-flash` (owner, 18 November): it returns real probabilities, and the thresholds (0.85 and 0.8) depend on that. On hosts without Workers AI, a free Google AI Studio key can power everything, decisions included; that path needs a chat-model adapter and thresholds checked against labelled examples before it is trusted.
 - **Operator view.** `GET /v1/ops/usage` now also shows which route is configured (host and model names, never the key).
 - **Harness.** Whether pi stays the resident's agent loop, or Flue, Mastra or the Agents SDK replaces it, is assessed in `research/resident-harness-2026-11-17.md`. The gateway is independent of that choice.
 
 ### 23.3 The Aksara communal harness and the Workers harness (18 November)
 
-**Self-hosted (owner's picture).** An office or a VPS installs the Aksara communal harness once and gets the whole set: the agent, an account host (PDS), a library and vault, and the Rust kernel from aksara-core that keeps public and private data apart. A switch connects it to a Strata node. Think of it as a community's own agent, the way a person runs their own assistant. Community ownership is covered in `research/aksara-node-for-communities-2026-11-17.md`.
+**Self-hosted (owner's picture).** An office or a VPS installs the Aksara communal harness once and gets the whole set: the agent, an account host (PDS), a library and vault, and the Rust kernel from aksara-core that keeps public and private data apart. A switch connects it to an ETNOS node. Think of it as a community's own agent, the way a person runs their own assistant. Community ownership is covered in `research/aksara-node-for-communities-2026-11-17.md`.
 
 **Free entry on Workers.** Research: `research/aksara-workers-harness-2026-11-18.md`. Findings that change the plan:
 
@@ -419,9 +419,9 @@ Every UI step uses the impeccable skill, `vite build` and screenshots at phone a
 
 **Progress (18 November, evening).** Steps 1 to 9 are built and pushed. Step 6: the seed format takes `kind: "being"`, the wiki home lists beings per region, news alone never starts a wiki draft, and the seeding plan is `research/wiki-beings-seeding-plan-2026-11-18.md`; the first being pages are being surveyed through the verify pipeline and still need proposing and a `map.json` rebuild. Step 7: seasons per community on posts (`src/seasons.ts`). Step 8: founding with two people (`src/founding.ts`, `/gabung#token`). Step 9: Tentang ETNOS section under Dasar penggolongan. Owner actions after deploy: click "Muat katalog" in Studio for the topic renames. Next is step 10, the proposal pack.
 
-**Run 1b (decided 18 November evening, before step 10).** Spec amendment at the end of `product/information-architecture-design-2026-11-18.md`. Task 60: Jelajah becomes the home of places, languages and topics (anchors, Sedang dibicarakan, strata layers, language specimen index, topic tiles, Kabar strip; map to Wiki home; `/contexts` folds in). Task 61: sidebar sub-items and Menu sheet, retire a context (Musik Reggae), `/wiki/<id>` redirect for context articles, Kabar tab grouped by layer. Task 62: kind-specific top blocks on thing pages. Task 63: Pesan, Aktivitas and Tersimpan hidden from visitors who are not signed in (the server already refuses them with 401; the menu still showed them). Order: 63 and the Musik Reggae retirement first, then 60, 61, 62, then step 10. Task 64 (added after a live check showed 0 of 372 contexts with any labelled record): first labels for the 39 seed wiki pages from `src/catalogues/tanah-papua-seed-labels.json`, applied by the node steward with "Pasang label awal" in Studio (`Groups.applySeedLabels`, `test/seed-labels.test.ts`). Each page gets its wilayah adat; kabupaten pages also their kabupaten; language pages also their language by Glottolog name (Lani is Western Dani, west2594); pages about peoples and language families get the region only.
+**Run 1b (decided 18 November evening, before step 10).** Spec amendment at the end of `product/information-architecture-design-2026-11-18.md`. Task 60: Jelajah becomes the home of places, languages and topics (anchors, Sedang dibicarakan, etnos layers, language specimen index, topic tiles, Kabar strip; map to Wiki home; `/contexts` folds in). Task 61: sidebar sub-items and Menu sheet, retire a context (Musik Reggae), `/wiki/<id>` redirect for context articles, Kabar tab grouped by layer. Task 62: kind-specific top blocks on thing pages. Task 63: Pesan, Aktivitas and Tersimpan hidden from visitors who are not signed in (the server already refuses them with 401; the menu still showed them). Order: 63 and the Musik Reggae retirement first, then 60, 61, 62, then step 10. Task 64 (added after a live check showed 0 of 372 contexts with any labelled record): first labels for the 39 seed wiki pages from `src/catalogues/tanah-papua-seed-labels.json`, applied by the node steward with "Pasang label awal" in Studio (`Groups.applySeedLabels`, `test/seed-labels.test.ts`). Each page gets its wilayah adat; kabupaten pages also their kabupaten; language pages also their language by Glottolog name (Lani is Western Dani, west2594); pages about peoples and language families get the region only.
 
-**Run 1b, second pass (18 November night).** Tasks 60 to 64 shipped. The owner then asked for Jelajah to feel like one place: shadcn-like primitives, illustration around them rather than a different style per section, a mosaic with one tile on top (reference: westpapua.watch/issues). Task 66 rebuilt Jelajah on one tile (`ExploreTile.svelte`): Kabar first, then Sedang dibicarakan, Tempat, Bahasa, Topik, Komunitas, each a mosaic with one wide tile. The art slot carries the kind: a news photo or engraving, a small Papua silhouette with the region lit (`RegionArt.svelte`), a crop of names in the serif for languages and topics (`WordArt.svelte`), an engraving for the first community. The strata cross-section left Jelajah (people asked what the shades meant) and stays on place pages as an idea to keep exploring (ontology §10, the Lapisan lens). The thing page's Kabar tab is now Perkembangan (task 65). Task 67 holds Peta wiki on old phones and its rebuild around Hal from `research/knowledge-ontology-2026-11-18.md`. All maps follow the switcher's region (`scope-region.svelte.ts`).
+**Run 1b, second pass (18 November night).** Tasks 60 to 64 shipped. The owner then asked for Jelajah to feel like one place: shadcn-like primitives, illustration around them rather than a different style per section, a mosaic with one tile on top (reference: westpapua.watch/issues). Task 66 rebuilt Jelajah on one tile (`ExploreTile.svelte`): Kabar first, then Sedang dibicarakan, Tempat, Bahasa, Topik, Komunitas, each a mosaic with one wide tile. The art slot carries the kind: a news photo or engraving, a small Papua silhouette with the region lit (`RegionArt.svelte`), a crop of names in the serif for languages and topics (`WordArt.svelte`), an engraving for the first community. The etnos cross-section left Jelajah (people asked what the shades meant) and stays on place pages as an idea to keep exploring (ontology §10, the Lapisan lens). The thing page's Kabar tab is now Perkembangan (task 65). Task 67 holds Peta wiki on old phones and its rebuild around Hal from `research/knowledge-ontology-2026-11-18.md`. All maps follow the switcher's region (`scope-region.svelte.ts`).
 
 **Run 2.** Multi-identity PDS (task 24, plan in `research/pds-multi-identity-plan-2026-11-18.md`).
 

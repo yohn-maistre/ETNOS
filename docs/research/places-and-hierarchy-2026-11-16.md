@@ -14,7 +14,7 @@ People start from where they are. Today the app does not. Places sit behind "Tem
 - Community kinds and institution kinds are `kind: topic` entries. A community "carries" its kind as a label, so each kind gets a page. This is the problem the owner saw.
 - The catalogue's own notes say: the seven regions are reference regions, not customary land boundaries; regions with more than eight members (La Pago, Domberai) list only eight; districts and villages are not included; languages have no place parent because Glottolog gives only a point.
 - Limits that matter later: the context list endpoint returns at most 1,000 rows and the parent list at most 5,000 (`src/groups.ts`, `contexts()`). A record may carry at most 10 public contexts.
-- Web app: `/contexts` and `/contexts/:slug` (38 references to `/contexts` in `apps/web/src`). Map components today: `PlaceMap`, `PlaceStrata`, `CoreSample`, `KnowledgeMap`, `NewsMap`. After signup the app goes to `/communities?welcome=1`. There is no onboarding for place, language or interests yet (the direction doc says it should be optional; sections "Ruang bahasa" and the later sweep).
+- Web app: `/contexts` and `/contexts/:slug` (38 references to `/contexts` in `apps/web/src`). Map components today: `PlaceMap`, the region stack, `CoreSample`, `KnowledgeMap`, `NewsMap`. After signup the app goes to `/communities?welcome=1`. There is no onboarding for place, language or interests yet (the direction doc says it should be optional; sections "Ruang bahasa" and the later sweep).
 - No lexicon (AT record schema) mentions contexts, so renaming routes and axes does not break published records.
 
 Two data issues to fix whatever else happens:
@@ -200,7 +200,7 @@ Proposal. One map component with a `scope` prop.
 | A topic page | whole site | Optional shading by count |
 | News | whole site or the story's places | Stories as points |
 
-The knowledge-map design already puts "Tempat" as one lens and says the place page shows the same band filtered to its place ("Buka inti lapisan"). So the "core sample" on context pages and the map on the wiki home are one component with different scope and lens, not two features. Today there are separate `PlaceMap`, `PlaceStrata`, `CoreSample`, `KnowledgeMap` and `NewsMap` components. Work out which can merge. I have not compared their code line by line.
+The knowledge-map design already puts "Tempat" as one lens and says the place page shows the same band filtered to its place ("Buka inti lapisan"). So the "core sample" on context pages and the map on the wiki home are one component with different scope and lens, not two features. Today there are separate `PlaceMap`, the region stack, `CoreSample`, `KnowledgeMap` and `NewsMap` components. Work out which can merge. I have not compared their code line by line.
 
 Map rules: list fallback for every view (phones, screen readers); regions drawn hatched with the caveat; kampung are points, never invented outlines; no living person is ever a dot.
 

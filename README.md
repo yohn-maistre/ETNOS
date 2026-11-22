@@ -1,6 +1,6 @@
 <div align="center">
 
-# Strata
+# ETNOS
 
 **Open-source software that turns everyday community conversation into a record that the community owns, checks and corrects.**
 
@@ -13,7 +13,7 @@
 
 [![Foundation checks](https://img.shields.io/github/actions/workflow/status/yohn-maistre/strata/check.yml?style=flat-square&logo=githubactions&logoColor=white&label=checks)](https://github.com/yohn-maistre/strata/actions/workflows/check.yml)
 [![Deploy ETNOS](https://img.shields.io/github/actions/workflow/status/yohn-maistre/strata/deploy-etnos.yml?style=flat-square&logo=githubactions&logoColor=white&label=deploy)](https://github.com/yohn-maistre/strata/actions/workflows/deploy-etnos.yml)
-[![BUDAYA GO! 2026](https://img.shields.io/badge/BUDAYA_GO!-2026-b22222?style=flat-square)](#why-strata-exists)
+[![BUDAYA GO! 2026](https://img.shields.io/badge/BUDAYA_GO!-2026-b22222?style=flat-square)](#why-etnos-exists)
 [![Live site etnos.space](https://img.shields.io/badge/live-etnos.space-2da44e?style=flat-square)](https://etnos.space)
 
 [Live site](https://etnos.space) · [Docs](docs/README.md) · [Architecture](#how-it-works) · [Run locally](#run-locally) · [Licence](#licence-and-credits)
@@ -29,7 +29,7 @@
 > [!IMPORTANT]
 > **Observatory redesign, phase 1 built (20 November 2026).** The wiki front at `/wiki` is now the observatory front (*Observatorium*): a knowledge map in three lenses (size and pace, the network of statements, and a map of places), a catalogue of public datasets at `/wiki/data`, a *Data* tab on thing pages and a locator map on place pages, all built on the world model fields and dataset records. Phase 2 adds the starter-data build, crosswalks, embeddings and access tiers beyond the open tier. Start with [docs/observatory/](docs/observatory/README.md), which lists what is built and what remains, then the [world model and starter data](docs/observatory/world-model-and-starter-data-2026-11-20.md) and the [data observatory](docs/observatory/data-observatory-2026-11-20.md). Remove this notice when phase 2 is built.
 
-**ETNOS** at [etnos.space](https://etnos.space) is the first deployment of Strata, built for Tanah Papua. Anyone can read it, and people join with an ETNOS account or an existing Bluesky account.
+**ETNOS** is open-source software, and [etnos.space](https://etnos.space) is its first deployment, built for Tanah Papua. Anyone can read it, and people join with an ETNOS account or an existing Bluesky account.
 
 <details>
 <summary><b>Ringkasan dalam bahasa Indonesia</b></summary>
@@ -40,7 +40,7 @@ ETNOS adalah tempat orang Papua mengobrol seperti biasa di komunitas, dan obrola
 
 </details>
 
-## Why Strata exists
+## Why ETNOS exists
 
 - People in Tanah Papua write every day in small news sites, city Facebook groups, Instagram captions and WhatsApp groups. These places do not connect, and most of what is said in them is lost within days.
 - Most published knowledge about Papua was written by outsiders and sits in journals, expensive books and museums abroad. The project's own source survey of three customary regions lists **105 sources**, held in places such as Leiden, Canberra and Jayapura.
@@ -48,7 +48,7 @@ ETNOS adalah tempat orang Papua mengobrol seperti biasa di komunitas, dan obrola
 - The largest open wordlist database for New Guinea, TransNewGuinea.org, holds **41 words of Ekari**, all taken from one source of 1975. The largest Ekari dictionary is Steltenpool's, published in 1969.
 
 <details>
-<summary><b>Indonesian law and policy already ask for what Strata does</b></summary>
+<summary><b>Indonesian law and policy already ask for what ETNOS does</b></summary>
 
 <br>
 
@@ -61,7 +61,7 @@ ETNOS adalah tempat orang Papua mengobrol seperti biasa di komunitas, dan obrola
 
 </details>
 
-Strata is entered in BUDAYA GO! 2026, in the Inovasi Digital category, under the subtheme of digital platforms for cultural communities. The cases and sources are in [framing and impact](docs/plan/framing-and-impact-2026-11-17.md) and [rationale threads](docs/plan/rationale-threads-2026-11-19.md).
+ETNOS is entered in BUDAYA GO! 2026, in the Inovasi Digital category, under the subtheme of digital platforms for cultural communities. The cases and sources are in [framing and impact](docs/plan/framing-and-impact-2026-11-17.md) and [rationale threads](docs/plan/rationale-threads-2026-11-19.md).
 
 ## How it works
 
@@ -79,7 +79,7 @@ Everything is written in TypeScript. The same engine runs on Cloudflare Workers 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/diagram-architecture-dark.svg">
-    <img src="docs/assets/diagram-architecture-light.svg" alt="Architecture: the Svelte 5 web app calls the Worker API on Cloudflare Workers. The Worker uses the Strata node in a SQLite Durable Object and the Aksara runtime with its model gateway. It signs people in through OAuth with the identity host, a PDS that speaks the AT Protocol and keeps one Durable Object per account plus R2 blobs." width="100%">
+    <img src="docs/assets/diagram-architecture-light.svg" alt="Architecture: the Svelte 5 web app calls the Worker API on Cloudflare Workers. The Worker uses the ETNOS node in a SQLite Durable Object and the Aksara runtime with its model gateway. It signs people in through OAuth with the identity host, a PDS that speaks the AT Protocol and keeps one Durable Object per account plus R2 blobs." width="100%">
   </picture>
 </p>
 
@@ -147,12 +147,12 @@ npm run build:ui
 npm run build:worker
 ```
 
-The developer and operator guide is [docs/accounts-and-hosting/engineering.md](docs/accounts-and-hosting/engineering.md). Contributions are welcome. Read [AGENTS.md](AGENTS.md) first, because it holds the rules for access, withdrawal and tests. Names in the interface follow [docs/naming.md](docs/naming.md), and public text follows [docs/voice.md](docs/voice.md). Security reports go through [SECURITY.md](SECURITY.md), and the sign-in design is in [AUTH.md](AUTH.md).
+Settings are named `ETNOS_*`; the older `STRATA_*` names from before the rename still work ([setting names](docs/accounts-and-hosting/engineering.md#cloudflare-development)). The developer and operator guide is [docs/accounts-and-hosting/engineering.md](docs/accounts-and-hosting/engineering.md). Contributions are welcome. Read [AGENTS.md](AGENTS.md) first, because it holds the rules for access, withdrawal and tests. Names in the interface follow [docs/naming.md](docs/naming.md), and public text follows [docs/voice.md](docs/voice.md). Security reports go through [SECURITY.md](SECURITY.md), and the sign-in design is in [AUTH.md](AUTH.md).
 
 ## Repository layout
 
 ```text
-src/            Strata node: communities, posts, wiki, news, knowledge model, web Worker, model gateway
+src/            ETNOS node: communities, posts, wiki, news, knowledge model, web Worker, model gateway
 apps/web/       Web app in Svelte 5, with the interface in Indonesian
 packages/pds/   Identity host: a multi-account PDS forked from Cirrus
 docs/           Plans, decisions, research and release records
@@ -164,12 +164,12 @@ test/           Tests for the node and the Worker
 
 | Document | What it holds |
 | --- | --- |
-| [docs/plan/what-strata-is.md](docs/plan/what-strata-is.md) | The whole picture in plain words |
+| [docs/plan/what-etnos-is.md](docs/plan/what-etnos-is.md) | The whole picture in plain words |
 | [docs/plan/communities-spaces-2026-11-19.md](docs/plan/communities-spaces-2026-11-19.md) | Talk becomes knowledge, private spaces, AT Protocol spaces and Periksa |
 | [docs/plan/platform-2026-11-19.md](docs/plan/platform-2026-11-19.md) | Building blocks in the code and planned |
-| [docs/plan/strata-model-2026-11-17.md](docs/plan/strata-model-2026-11-17.md) | The layers, columns and places of a deployment |
+| [docs/plan/etnos-model-2026-11-17.md](docs/plan/etnos-model-2026-11-17.md) | The layers, columns and places of a deployment |
 | [docs/research/epistemic-multiplex-2026-11-19.md](docs/research/epistemic-multiplex-2026-11-19.md) | The knowledge model of Entity, Assertion and Witness |
-| [docs/plan/framing-and-impact-2026-11-17.md](docs/plan/framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, evidence and laws |
+| [docs/plan/framing-and-impact-2026-11-17.md](docs/plan/framing-and-impact-2026-11-17.md) | Why ETNOS exists, who it helps, evidence and laws |
 | [docs/competition/code-disclosure-2026-11-17.md](docs/competition/code-disclosure-2026-11-17.md) | Which code is ours and which existed before |
 | [docs/accounts-and-hosting/engineering.md](docs/accounts-and-hosting/engineering.md) | Developer and operator guide |
 
@@ -193,7 +193,7 @@ The community, the wiki and the Papuan look stayed the same while the foundation
 
 ## Licence and credits
 
-Strata is licensed under [AGPL-3.0-only](LICENSE). Anyone who runs a changed version for other people must share their changes.
+ETNOS is licensed under [AGPL-3.0-only](LICENSE). Anyone who runs a changed version for other people must share their changes.
 
 - The identity host in `packages/pds` is a fork of [Cirrus](https://github.com/ascorbic/cirrus) by Matt Kane and contributors (`@getcirrus` packages), under the MIT licence in [`packages/pds/LICENSE.cirrus`](packages/pds/LICENSE.cirrus). The full account of what was reused is in [docs/competition/code-disclosure-2026-11-17.md](docs/competition/code-disclosure-2026-11-17.md).
 - Thank you to the Photon project, whose work the earlier clients were built on, and to the PieFed project, whose forum behaviour inspired parts of this one.

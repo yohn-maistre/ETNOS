@@ -4,7 +4,7 @@
 
 ## The distribution
 
-Ship **Strata with Honai included**, one versioned release and one configuration. A community chooses Cloudflare, a Linux host, or Docker; its identities, content IDs, rules and UI remain the same. WPW remains an independent publication and can consume the same configurable news engine. The resident is optional, and ordinary reading/posting/Wiki must work without a model key.
+Ship **ETNOS with Honai included**, one versioned release and one configuration. A community chooses Cloudflare, a Linux host, or Docker; its identities, content IDs, rules and UI remain the same. WPW remains an independent publication and can consume the same configurable news engine. The resident is optional, and ordinary reading/posting/Wiki must work without a model key.
 
 Keep infrastructure adapters thin rather than requiring a new distributed system for every install:
 
@@ -22,14 +22,14 @@ The existing Node CLI is a loopback foundation API with local credentials. It do
 
 ## Extract the Watch engine by seams
 
-Read the actual Watch modules before copying: `services/watch-engine/src/sources/{registry,discover}`, `ingest/{extract,publication-date,prefilter,relevance,story,process}`, `cluster/{partition,evidence,synthesis-quality,index,editorial}`, `news-read`, `workflow`, `types`, and the shared following/analysis code. The current branch contains investigative-site changes unrelated to Strata: never merge that branch wholesale into a shared engine or overwrite the live Watch router incidentally.
+Read the actual Watch modules before copying: `services/watch-engine/src/sources/{registry,discover}`, `ingest/{extract,publication-date,prefilter,relevance,story,process}`, `cluster/{partition,evidence,synthesis-quality,index,editorial}`, `news-read`, `workflow`, `types`, and the shared following/analysis code. The current branch contains investigative-site changes unrelated to ETNOS: never merge that branch wholesale into a shared engine or overwrite the live Watch router incidentally.
 
 1. **Inventory and provenance.** Record copied-file commit hashes, license/owner authorization and third-party notices. Watch's root lacks a clear license declaration; owner-directed use is authorized, but we must settle redistribution terms rather than invent an MIT label. Preserve authorship for parser/extractor dependencies.
 2. **Pure domain first.** Extract canonical URL normalization, publication-date validation, bounded packet validation, partition checks, evidence comparison and synthesis acceptance rules. Keep model output untrusted; a classification cannot grant access, rights or publication authority.
 3. **Typed ports.** Define `SourceRepository`, `ArticleRepository`, `DevelopmentRepository`, `SnapshotStore`, `JobQueue`, `ModelGateway`, `Clock` and `SourceFetcher`. Keep typed tables and operations; do not expose arbitrary SQL or turn every record into a universal JSON object. Node and Cloudflare can each supply repository adapters over their existing SQLite facilities.
-4. **Move fixed editorial policy into presets.** WPW's place names, relevance thresholds, source registry, role taxonomy, desks, bilingual style, following sets and news branding become its own versioned preset. A new Strata install starts with an operator-confirmed place/language/source preset; a model may suggest sources, never silently authorize harvesting or infer ethnicity.
+4. **Move fixed editorial policy into presets.** WPW's place names, relevance thresholds, source registry, role taxonomy, desks, bilingual style, following sets and news branding become its own versioned preset. A new ETNOS install starts with an operator-confirmed place/language/source preset; a model may suggest sources, never silently authorize harvesting or infer ethnicity.
 5. **Parallel read qualification.** Replay a small public, rights-qualified corpus into an isolated destination. Compare article canonical IDs, syndication groups, source counts, dated evidence, cluster merges/splits and accepted-public projections. Preserve disagreement rather than forcing exact model wording. Deterministic ingestion remains useful when the model is unavailable.
-6. **Adopt incrementally.** Keep the existing private Watch gateway bridge and read adapter working while Strata adopts the extracted module. The engine publishes candidates through Strata's current Discovery/Knowledge transitions. It cannot insert public Wiki revisions or reach protected language rooms.
+6. **Adopt incrementally.** Keep the existing private Watch gateway bridge and read adapter working while ETNOS adopts the extracted module. The engine publishes candidates through ETNOS's current Discovery/Knowledge transitions. It cannot insert public Wiki revisions or reach protected language rooms.
 7. **Switch with a receipt.** Match engine/UI/schema/preset versions, back up/restore, retain old read URLs and reconcile uncertain jobs/outbox operations. Do not restart an outward action just because its previous response was lost. WPW can then adopt the shared package separately under its own editorial settings.
 
 Start with one in-process module and SQL repository per deployment. A queue, vector database, browser service or model reranker is optional when measured demand justifies it. Watch's current code directly calls D1, Queues, Workflows and optional Vectorize; those calls must move behind ports before promising Linux portability. Feed intake must retain host/path approval, redirect revalidation, byte/deadline limits, cooldowns, terms/rights and source-revision checks. A trusted fixed publisher registry is not a safe arbitrary-URL crawler.
@@ -39,13 +39,13 @@ Start with one in-process module and SQL repository per deployment. A queue, vec
 Proposed commands (names are a proposal, **not published commands**):
 
 ```text
-strata init                  # interactive, creates a private local draft
-strata init --ui              # the same draft through a loopback browser wizard
-strata plan                  # resources, modules, permissions, quotas, changes
-strata doctor                # bounded read-only checks and specific remedies
-strata deploy --target ...   # applies the reviewed plan, records a receipt
-strata backup / restore      # encrypted portable state, integrity, rehearsal
-strata upgrade               # backed-up migration plus matched assets/runtime
+etnos init                  # interactive, creates a private local draft
+etnos init --ui              # the same draft through a loopback browser wizard
+etnos plan                  # resources, modules, permissions, quotas, changes
+etnos doctor                # bounded read-only checks and specific remedies
+etnos deploy --target ...   # applies the reviewed plan, records a receipt
+etnos backup / restore      # encrypted portable state, integrity, rehearsal
+etnos upgrade               # backed-up migration plus matched assets/runtime
 ```
 
 Publish a real npm package only after reproducible packaging and name/provenance verification. `npx` can run that release on servers; Linux release archives can include a pinned runtime where helpful. A signed Docker image is another package of the same application, not another configuration format. Prefer a CLI-launched browser wizard over an Electron desktop installer: fewer platforms and no second privileged updater to maintain.
@@ -73,7 +73,7 @@ The core requires no model/vector/browser service. Bound news source counts, int
 
 ## Portability and migration contract
 
-Use one `strata.instance.json` manifest with schema/release/preset versions, module toggles, public origin, adapter names/resource references and secret **references**, not values. Validate it identically in CLI and GUI. Infrastructure-specific details belong in the target adapter section; stable actor/DID/community/artifact IDs and institutional mandates belong to durable state, never to machine identity.
+Use one `etnos.instance.json` manifest with schema/release/preset versions, module toggles, public origin, adapter names/resource references and secret **references**, not values. Validate it identically in CLI and GUI. Infrastructure-specific details belong in the target adapter section; stable actor/DID/community/artifact IDs and institutional mandates belong to durable state, never to machine identity.
 
 An export contains encrypted database/media/source snapshots, checksums and a release/schema manifest. Keep keys separate, record secret re-entry/rotation requirements, and prove restore on an isolated destination. Moving a forum database is different from migrating an AT PDS account: retain each user's DID and provider relationship, and update public origins/OAuth client metadata/allowed redirects deliberately. Preserve IDs, roles, protected-space access, source rights, outbox identities, tombstones and job receipts. Do not auto-resume an uncertain public publish after import.
 

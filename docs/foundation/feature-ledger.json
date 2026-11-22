@@ -24,13 +24,13 @@
       "workstream": "A",
       "status": "partial",
       "depends_on": [],
-      "current_evidence": "Strata README.md; Honai apps/strata/UPSTREAM.md: separate buildable connected app, not embedded legacy Photon",
+      "current_evidence": "ETNOS README.md; Honai apps/strata/UPSTREAM.md: separate buildable connected app, not embedded legacy Photon",
       "acceptance": "One canonical UI source, attributed donor snapshot, reproducible same-origin build and matched release manifest",
       "release_gate": "Donor notices and build parity before source relocation",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Local canonical apps/web copy, donor notices, isolated install and successful UI build; hosted release manifest outstanding.",
-        "2026-11-11 hosted checkpoint: canonical apps/web deployed on the existing same-origin Strata Worker; Honai main connected UI build passed. Receipt: docs/history/release-2026-11-11-commons-checkpoint.md.",
+        "2026-11-11 hosted checkpoint: canonical apps/web deployed on the existing same-origin ETNOS Worker; Honai main connected UI build passed. Receipt: docs/history/release-2026-11-11-commons-checkpoint.md.",
         "2026-11-11 plan: docs/news/portable-commons-and-watch-plan-2026-11-11.md maps Node/Docker/Cloudflare adapters, common CLI/browser wizard, Watch extraction, deploy-button limitations and migration gates. Installer and Linux web/Pi ports remain planned.",
         "2026-11-12 deployed welcome/profile/writing slice: matched main source, real provider form, visible existing rich editor/Ctrl+B fix, final solid compact compose buttons, quiet scrollbars and public browser qualification. Exact code/CI/version/deployment and remaining scope: docs/history/release-2026-11-12-welcome-writing.md. No claim of full foundation or hosted inference completion.",
         "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained."
@@ -178,8 +178,8 @@
       "completion_evidence": [
         "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.",
         "2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
-        "2026-11-15 context hierarchy and deployment catalogue (implementation, local evidence only; not deployed): migration 29 adds context_parents (many parents, loops refused) and contexts.facet; node-steward routes POST /v1/contexts/:id/parents and POST /v1/contexts/catalogue (idempotent, fills only empty fields, never deletes; STRATA_CATALOGUE, default tanah-papua); src/catalogues/tanah-papua.json has 7 reference regions, 6 provinces, 42 regencies/cities, 256 Glottolog 5.3 languages and 19 topic lenses/institution kinds with sources and gaps in notes; tests test/catalogue.test.ts and test/governance.test.ts; /contexts groups the directory by region, province, language and topic. Reference regions are labelled as generalised planning regions, not customary-land boundaries; no membership is inferred"
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
+        "2026-11-15 context hierarchy and deployment catalogue (implementation, local evidence only; not deployed): migration 29 adds context_parents (many parents, loops refused) and contexts.facet; node-steward routes POST /v1/contexts/:id/parents and POST /v1/contexts/catalogue (idempotent, fills only empty fields, never deletes; ETNOS_CATALOGUE, default tanah-papua); src/catalogues/tanah-papua.json has 7 reference regions, 6 provinces, 42 regencies/cities, 256 Glottolog 5.3 languages and 19 topic lenses/institution kinds with sources and gaps in notes; tests test/catalogue.test.ts and test/governance.test.ts; /contexts groups the directory by region, province, language and topic. Reference regions are labelled as generalised planning regions, not customary-land boundaries; no membership is inferred"
       ],
       "decisions": [
         "D04",
@@ -255,7 +255,7 @@
       "release_gate": "Space audience enforced independently of public group identity",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D05",
@@ -289,7 +289,7 @@
       "release_gate": "Separate representation and posting grants",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D05",
@@ -378,7 +378,7 @@
         "F10",
         "F69"
       ],
-      "current_evidence": "Watch ingest/process.ts records source/archive provenance; Strata has custody fixture only",
+      "current_evidence": "Watch ingest/process.ts records source/archive provenance; ETNOS has custody fixture only",
       "acceptance": "Every acquired resource has canonical source/time/hash, evidence kind, terms, excerpt/media use and retention; unauthorized body storage is refused",
       "release_gate": "Source licenses and image rights; archive storage cap",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
@@ -436,7 +436,7 @@
         "F12",
         "F27"
       ],
-      "current_evidence": "src/worker-decisions.ts supplies bounded decision adapter; no native Strata source clustering",
+      "current_evidence": "src/worker-decisions.ts supplies bounded decision adapter; no native ETNOS source clustering",
       "acceptance": "Headlines work without model; grouped developments and longer issues retain sources, uncertainty and editable membership; model abstains when unsuitable",
       "release_gate": "Validate current free endpoint/model availability; no assumed free generation quota",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
@@ -657,7 +657,7 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "2026-11-11 owner-selected plan (not implementation qualification): Distinguish source-linked working notes, attributed accounts, reviewed reference and participation reports; preserve temporal scope, disagreement and correction. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D06",
@@ -846,13 +846,13 @@
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Local durable resident jobs, leases and budgets plus real Pi SQLite/workerd named-entrypoint/authority test pass at the engine compatibility pin; hosted inference/service bindings and full scheduler qualification remain pending.",
         "2026-11-11: native Studio setup uses real registration/admission and 24-hour posting/editorial grants with 3 jobs/day; private/no-automation/outsider/revoked-operator and replay tests pass. Pi service/bindings deployed, hosted inference awaiting authenticated operator activation.",
-        "Native activation refinement: explicit owner-only automation opt-in, atomic rollback on registration failure and 100-character idempotency keys covered; actual browser setup with initially disabled automation passes. Hosted Strata deployment a1bf590fe3f44e5e92a3e22f6b3b7a47; authenticated live inference still pending.",
+        "Native activation refinement: explicit owner-only automation opt-in, atomic rollback on registration failure and 100-character idempotency keys covered; actual browser setup with initially disabled automation passes. Hosted ETNOS deployment a1bf590fe3f44e5e92a3e22f6b3b7a47; authenticated live inference still pending.",
         "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.",
         "2026-11-12 connected implementation in progress: integrated provisional Wiki home/reader under /wiki/notes, public-only preview contract and opt-in atomic steward announcement with unchanged-evidence abstention; optional actual Faiss 1.16 CPU fit/final assign, versioned public source snapshot, stale-result rejection and local lexical preprocessing. Local 122-engine-test suite (including native CPU), three independent numerical tests and actual web Worker isolation test pass. Full live release and useful multilingual/corpus qualification are recorded separately; status retained.",
         "2026-11-12 ranking/steward follow-up: docs/product/ranking-and-steward-demo-2026-11-12.md; real isolated source/Knowledge/announcement pipeline with researched Crocodylus halli draft and explicitly simulated acquisition/provider; transparent bounded public Explore recipe and actual sort controls. Local 126 engine tests and focused browser/runtime qualification; exact release receipts distinguish hosted features from local simulation. No fabricated hosted model, partner or community acceptance.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
         "2026-11-12 interaction packet: Additive question jobs/input pins and inference-start budget accounting; actual workerd upgrade/rollback and Pi native-runtime qualification with synthetic gateway. See docs/aksara/steward-interaction-release-2026-11-12.md; hosted run remains separate.",
-        "2026-11-12 deployed Strata 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
+        "2026-11-12 deployed ETNOS 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
       ],
       "decisions": [
         "D02",
@@ -892,9 +892,9 @@
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Owner selected one Aksara identity and scoped specialists; local source/knowledge/question skills plus Pi helper. Mentions/weekly review incomplete.",
         "2026-11-11 research/plan: docs/aksara/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
         "2026-11-12 interaction packet: One canonical sitewide identity with explicit public coverage and separate destination admission/grants; local identity remains distinct. No inferred private or institutional authority.",
-        "2026-11-12 deployed Strata 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work.",
+        "2026-11-12 deployed ETNOS 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work.",
         "2026-11-15 local branch (not deployed): thread-reply abstention (no current source or model ABSTAIN) publishes one fixed, labelled note through the ordinary post/outbox path, job state 'abstained' with result_kind 'abstention-reply'; revoked mandate, exhausted budget, locked/warning thread and suspended agent keep silent abstention. search_reviewed_wiki (accepted public revisions only) and Agents SDK web_search/web_fetch (thread replies only, authority-reserved per call, 6 calls/job) through ResidentAuthority; published inline citations limited to URLs returned to the job generation. Engine and real Pi tool-loop tests with substitute web sources pass; no hosted web search, AI Gateway billing or live model run is qualified"
       ],
       "decisions": [
@@ -935,7 +935,7 @@
         "Local checkpoint 2026-11-11: Local typed resident provider contract and Pi authority/model/tool adapters; native fixture loops passed, production qualification pending.",
         "2026-11-11 research/plan: docs/aksara/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.",
         "2026-11-11 owner-selected plan (not implementation qualification): Existing authenticated MCP is the harness-neutral external port; OpenCode is experimental/omittable; embedded Pi remains selected. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D02",
@@ -972,7 +972,7 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "2026-11-11 research/plan: docs/aksara/agent-seeding-and-clustering-2026-11-11.md distinguishes optional real OpenCode companion/free-tier limits, Jev typed decisions and e-means batch clustering from explicit regional/institutional/offer structure. No new provider or clustering runtime enabled.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D02",
@@ -1005,9 +1005,9 @@
       "release_gate": "No hidden membership, operator credential or institution spoofing leak",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
         "2026-11-12 interaction packet: Typed @aksara chooser, actual scope/operator labels, removable explicit request, keyboard/touch/Escape, public question-to-child response, minimal status and private-room exclusion are implemented/isolated-qualified. Literal mentions do not trigger; current publication/authority/source pins fence effects.",
-        "2026-11-12 deployed Strata 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
+        "2026-11-12 deployed ETNOS 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
       ],
       "decisions": [
         "D03",
@@ -1042,9 +1042,9 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Local resident result commit uses actual post/working-note pipelines and atomic terminal receipt; wider artifact types remain incomplete.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence.",
         "2026-11-12 interaction packet: Selected public questions yield ordinary sourced child posts with native job receipts. Large non-Latin runtime input and minimized bounded prompts are qualified through actual Pi/workerd with a synthetic gateway. Native agent poll intents/daily policy remain next work.",
-        "2026-11-12 deployed Strata 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
+        "2026-11-12 deployed ETNOS 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
       ],
       "decisions": [
         "D03",
@@ -1078,7 +1078,7 @@
       "release_gate": "Boundary tests for revoke-after-read, timeout, replay and uncertain remote success",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D03",
@@ -1115,7 +1115,7 @@
       "release_gate": "No access to institution private memory; credential issuance by legitimate operator",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D03",
@@ -1190,7 +1190,7 @@
         "Local checkpoint 2026-11-11: Owner refined to ordinary typed posts and shared replies; current polls remain. No separate mandatory Discussion product; event/question slices remain pending.",
         "2026-11-11 owner-selected plan (not implementation qualification): Weekly questions/reports reuse posts/polls/replies, preserve method, response scope, disagreements and actual follow-through; no claim of population representativeness. See docs/foundation/living-culture-refinement-2026-11-11.md and docs/foundation/execution-plan.md; lineage in docs/evidence/README.md.",
         "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D05",
@@ -1413,7 +1413,7 @@
       "release_gate": "Real institutional SharingGrant integration, not fixture credentials",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D03",
@@ -1460,7 +1460,7 @@
       "completion_evidence": [
         "2026-11-12 owner refinement saved (planning, not qualification): docs/foundation/commons-experience-2026-11-12.md; A18–A20. Integrated provisional Wiki, independent Node/private language custody, AT adapter gates, restrained visual system and truthful discovery. Existing status retained.",
         "2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D04",
@@ -1497,7 +1497,7 @@
       "release_gate": "Program governance, source rights and separately provisioned training compute",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D04",
@@ -1656,7 +1656,7 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "Local checkpoint 2026-11-11: Local Studio source/knowledge/resident settings and job views, actual local browser journey; role-aware full operations scope incomplete.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D13",
@@ -1708,7 +1708,7 @@
       ],
       "current_evidence": "Existing local hide/report/block flows; complete appeal/case lifecycle missing",
       "acceptance": "Assigned case captures allowed evidence, reason, decision, notice, appeal and reversible action with audit receipt",
-      "release_gate": "Honai donor behavior adapted to Strata authority, not legacy JWT API",
+      "release_gate": "Honai donor behavior adapted to ETNOS authority, not legacy JWT API",
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [],
       "decisions": [
@@ -2166,7 +2166,7 @@
       "target": "Nov 11–14 build programme; gates reported explicitly; exploratory extensions qualified separately",
       "completion_evidence": [
         "2026-11-12 owner-delegated research saved: docs/research/knowledge-observatory-2026-11-12.md (24 inspectable references, evidence-type/transfer limits, Kala PNG example, community-governed relational assertions and accessible trails/focal graph options). Planning only for later discussion; no graph/ontology implementation or community authority claimed.",
-        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/strata-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
+        "2026-11-12 intelligence refinement/audit (planning, not runtime qualification): docs/research/etnos-intelligence-catalogue-2026-11-12.md; A22. Retain @aksara scoped identity picker and daily proactive sitewide responsibilities/follow-through; distinguish existing scheduling/grants from unwired mention/reply, task-selected input, native poll output, multi-community admission and independent memory/release bridge. October catalogue is context only; current session/code take precedence."
       ],
       "decisions": [
         "D06",
@@ -2539,7 +2539,7 @@
         "2026-11-12 adaptive writing implementation: docs/history/writing-release-2026-11-12.md. Existing Tiptap/Markdown now defaults on for local posts/replies; shared Markdown post edit, selected formatting, preserved preview/undo, link editor, submission bounds and one dialog scroller. Final exact release qualification is recorded in that checkpoint; no full draft-recovery/private-Node claim.",
         "2026-11-12 owner follow-up / current UI slice: docs/history/shell-sorotan-2026-11-12.md; A23. Root-mounted app-wide/mobile request progress, sticky independently scrolling backdrop rail, compact up-to-nine public Sorotan mosaic using existing ranking, visible decorative mountains and pointer-transparent mobile dock vignette. Qualification/release evidence lives in that checkpoint; this does not complete community statistics or the ongoing steward/observatory implementation.",
         "2026-11-12 interaction packet: docs/competition/competition-demo-rehearsal-2026-11-12.md records connected demo, failure/recovery, mobile/keyboard and recording steps. Matched interaction release is being qualified; actual hosted activation and recording remain external steps, full foundation stays active.",
-        "2026-11-12 deployed Strata 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
+        "2026-11-12 deployed ETNOS 1c55c05 / Honai 48f98f1, additive schema 27 and paired Pi runtime: both CIs/public smoke pass. Exact versions/checks: docs/aksara/steward-interaction-release-2026-11-12.md. Actual hosted-model task is awaiting the signed-in owner; daily policies/observatory remain active work."
       ],
       "decisions": [
         "D07",

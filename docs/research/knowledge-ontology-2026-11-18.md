@@ -30,13 +30,13 @@ On seeding and the cultural voice: "We still need a starting point to seed, whic
 
 - Contexts in the catalogue: 256 languages, 42 regencies and cities, 13 regions, and 57 topics of several kinds.
 - Wiki seed pages: regency (20), people (9), being (8), language (6), region (4).
-- So the only *things* Strata knows as things are **places, peoples, languages and beings**. Practices, objects, events, ideas, stories, seasons and institutions as things do not exist yet.
+- So the only *things* ETNOS knows as things are **places, peoples, languages and beings**. Practices, objects, events, ideas, stories, seasons and institutions as things do not exist yet.
 
 **The axes are settled** (place, language, topic, kind, plus seasons per community and beings). Keep them. They answer "where does this sit"; this note answers "what is it".
 
 ## 3. The model in one picture
 
-Three planes, plus the two layers Strata already has. *(proposal)*
+Three planes, plus the two layers ETNOS already has. *(proposal)*
 
 ```
   Kerangka (schemes)   Mee's own categories · 18 topics · UU 5/2017 OPK · disciplines   ← lenses, SKOS
@@ -118,7 +118,7 @@ Ethnobiology offers a ready, well-studied structure for living kinds. Berlin's p
 
 ### 5.1 Shape
 
-Borrowed from Wikidata's statement model (claims with qualifiers, references and ranks), with Strata's voice and protocol added:
+Borrowed from Wikidata's statement model (claims with qualifiers, references and ranks), with ETNOS's voice and protocol added:
 
 ```json
 {
@@ -195,12 +195,12 @@ Philosophy has a name for this middle path. Ludwig and Weiskopf's *ethnoontology
 
 ## 8. Other ways of organising knowledge, and what each is good for
 
-The owner asked what else is popular or gaining ground. A survey, with a verdict for Strata:
+The owner asked what else is popular or gaining ground. A survey, with a verdict for ETNOS:
 
-| Approach | What it is | Use in Strata |
+| Approach | What it is | Use in ETNOS |
 | --- | --- | --- |
 | **DIKW** (data, information, knowledge, wisdom) | A pyramid from raw data up to wisdom | **As a reading ladder, not a storage model** (section 9). It has been criticised as logically unsound: Frické (2009) argued it should be dropped from information science. Useful for explaining, not for building. |
-| **Facets** (Ranganathan's PMEST) | Independent axes instead of one tree | Already adopted as Strata's axes |
+| **Facets** (Ranganathan's PMEST) | Independent axes instead of one tree | Already adopted as ETNOS's axes |
 | **Taxonomies and SKOS schemes** | Trees of concepts with labels in many languages, plus links between schemes | **Kerangka**: Mee categories, the 18 topics, UU 5/2017 objects and disciplines as parallel schemes with crosswalks |
 | **Knowledge graphs with typed things** (Wikidata, property graphs) | Things, typed relations, statements with qualifiers and references | **The core**: Hal and Pernyataan |
 | **Upper ontologies** (BFO, ISO/IEC 21838-2; DOLCE) | A small, rigorous top level | Quiet alignment for the twelve kinds; never shown to users |
@@ -218,7 +218,7 @@ The owner asked what else is popular or gaining ground. A survey, with a verdict
 
 The owner likes DIKW, and it does explain the commons well, as long as it is not used as a pipeline:
 
-| Rung | In Strata | Who makes it |
+| Rung | In ETNOS | Who makes it |
 | --- | --- | --- |
 | **Data** | Rekaman: sources, recordings, verified sentences | Collected and verified |
 | **Information** | Pernyataan: who said what about which thing | Extracted, checked, reviewed |
@@ -246,7 +246,7 @@ That last row says the project's whole stance in one line, and it reads well to 
 
 1. **Jaringan:** a force layout over typed relations, grouped by kind.
 2. **Peta:** places anchored on the map, with other things hanging from their places.
-3. **Lapisan:** things arranged by pace layer. Tempat and Makhluk sit deep; Praktik, Gagasan and Cerita in the middle; Peristiwa and the news on top. This ties the map to the Strata model.
+3. **Lapisan:** things arranged by pace layer. Tempat and Makhluk sit deep; Praktik, Gagasan and Cerita in the middle; Peristiwa and the news on top. This ties the map to the ETNOS model.
 4. **Pohon:** pick a scheme (Mee categories, the 18 topics, UU 5/2017, disciplines) and see the same things as a tree. Switching schemes shows how the same world looks under different eyes, which the owner asked for on 16 November.
 5. **Waktu:** the two clocks (when it is about, when it was recorded).
 6. **Celah:** gaps. Things with few sources, or only outsiders' voices, glow. This is the state-of-knowledge report as a picture, and it feeds Jadwal Aksara's questions.

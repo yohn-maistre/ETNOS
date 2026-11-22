@@ -27,7 +27,7 @@ Perspective and language need first-class treatment: named variants can coexist 
 | Tiptap / ProseMirror | Headless editor, works with Svelte, selective extensions | MIT core; some comments/history/collaboration features are paid. Start with a small editor and our revision API, not a purchased document platform. |
 | Yjs | Concurrent draft editing and optional local persistence | Merge convergence is not review, authorization or consent. Add only when simultaneous editing is needed; isolated draft rooms and revoked-client handling still require design. |
 | Lexical / Kherad | Reference for a friendly editor over actual Git review | Kherad is a young, single-instance Docker application, not a Workers-native dependency. Its model is worth studying, not transplanting wholesale. |
-| CollabMD | Local Markdown folders, Yjs, agent access and source-linked comments | Better reference for the private Aksara workspace; filesystem/long-running server assumptions differ from Strata's edge runtime. |
+| CollabMD | Local Markdown folders, Yjs, agent access and source-linked comments | Better reference for the private Aksara workspace; filesystem/long-running server assumptions differ from ETNOS's edge runtime. |
 | Small text diff library | Review changed paragraphs, sources and translated text | Keep plain source mode and detect lossy rich-text/Markdown round trips. Never flatten unsupported syntax silently. |
 
 Do not load the editor, CRDT or graph libraries into normal feed/news reading. Lazy-load only the actual editing/review surface. Gate export and agent access with the same current policy as browser reads.

@@ -1,6 +1,6 @@
-# Strata: the case, the impact, and how we tell it
+# ETNOS: the case, the impact, and how we tell it
 
-17 November 2026, evening. A long conversation between the owner and an assistant, written down as one document: what Strata is for, who it helps, how it meets BUDAYA GO! 2026, what is still missing, and what we would add next. It gathers the owner's own words, the competition's technical guide (juknis), the research done today, and the assistant's reading of all three.
+17 November 2026, evening. A long conversation between the owner and an assistant, written down as one document: what ETNOS is for, who it helps, how it meets BUDAYA GO! 2026, what is still missing, and what we would add next. It gathers the owner's own words, the competition's technical guide (juknis), the research done today, and the assistant's reading of all three.
 
 **Status: living ground truth, not frozen.** Treat this as the reference other plans can point to, and change it whenever we learn something. Where it disagrees with `plan/showcase-plan-2026-11-17.md` on *what we build*, the showcase plan wins until the showcase. Where it disagrees on *how we frame it*, this document wins. Sections marked *proposal* are suggestions the owner can overturn. Names of private people are left out on purpose; roles stand in for them.
 
@@ -34,9 +34,9 @@ Contents:
 
 > **Yang hidup tidak tercatat, yang tercatat tidak hidup.**
 >
-> Budaya Papua hidup di percakapan sehari-hari, tetapi percakapan itu tercecer dan hilang. Pengetahuan tentang Tanah Papua sebagian besar terkunci di jurnal, buku dan museum, dan kebanyakan ditulis oleh orang luar. Strata menyatukan keduanya: percakapan hari ini mengendap menjadi pengetahuan, dan pengetahuan itu kembali hidup dalam percakapan. ETNOS adalah tempat pertama di mana ini terjadi, dimulai dari Tanah Papua.
+> Budaya Papua hidup di percakapan sehari-hari, tetapi percakapan itu tercecer dan hilang. Pengetahuan tentang Tanah Papua sebagian besar terkunci di jurnal, buku dan museum, dan kebanyakan ditulis oleh orang luar. ETNOS menyatukan keduanya: percakapan hari ini mengendap menjadi pengetahuan, dan pengetahuan itu kembali hidup dalam percakapan. ETNOS adalah tempat pertama di mana ini terjadi, dimulai dari Tanah Papua.
 
-In English: what is alive goes unrecorded, and what is recorded is no longer alive. Strata joins the two. Today's talk settles into knowledge, and knowledge comes back into today's talk. ETNOS is the first place this happens, starting in Tanah Papua.
+In English: what is alive goes unrecorded, and what is recorded is no longer alive. ETNOS joins the two. Today's talk settles into knowledge, and knowledge comes back into today's talk. ETNOS is the first place this happens, starting in Tanah Papua.
 
 Everything else in this document is the explanation of that sentence.
 
@@ -44,9 +44,9 @@ Everything else in this document is the explanation of that sentence.
 
 These are the owner's points from the conversation of 17 November, kept close to his own words and lightly cleaned up. They are the intent this document serves.
 
-**On why Strata exists**
+**On why ETNOS exists**
 
-- "Culture should be lived, and that's pretty much why we ended up with Strata."
+- "Culture should be lived, and that's pretty much why we ended up with ETNOS."
 - People need "a place to access all the knowledge pertaining to our own place and land, that is way more accessible than Wikipedia or actual published papers or a long book. It should be right there, on the next page, alongside language communities", while people on the home page are "talking about rap battles or family feuds or politics or crazy stuff".
 - The language spaces exist "for communities to digitalise and build a corpus of their language and cultural artifacts on their own PDSes".
 - "Curating the knowledge helps us write the current state of culture of our own going forward."
@@ -58,7 +58,7 @@ These are the owner's points from the conversation of 17 November, kept close to
 - People writing on Instagram captions "with 50 likes because they have 100 followers".
 - WhatsApp groups "forming their own bubble with no intercommunication with other people".
 - Grassroots organisations not knowing how to coordinate, "and even government institutions".
-- The wish for Strata to be the layer, the substrate, "where people discuss and work as well". Institutions with an Aksara node, or self-hosted, "could house their agents, and the agents could communicate publicly on the platform".
+- The wish for ETNOS to be the layer, the substrate, "where people discuss and work as well". Institutions with an Aksara node, or self-hosted, "could house their agents, and the agents could communicate publicly on the platform".
 
 **On seeding**
 
@@ -82,9 +82,9 @@ These are the owner's points from the conversation of 17 November, kept close to
 
 - The competition contact confirmed that judges can be invited to repositories as evidence that forms of the idea existed before 31 March 2026.
 - Unfinished work goes in the roadmap, not the proposal.
-- Politics is toned down in what we submit. West Papua Watch was only used to demo the news site; the feed engine now lives in Strata.
+- Politics is toned down in what we submit. West Papua Watch was only used to demo the news site; the feed engine now lives in ETNOS.
 - The live feed during judging will be carried by close friends of varied backgrounds.
-- Strata leads as the product name; ETNOS is our own deployment of it.
+- One product name for the software and our own deployment of it. The software was first called Strata; on 21 November the owner named the whole project ETNOS.
 - "So it's pretty much an everything burger, but it's not unfounded at least."
 
 **On daily life, art and research** (later the same evening)
@@ -107,11 +107,11 @@ The full technical guide (*Petunjuk Teknis BUDAYA GO! 2026*) was read on 17 Nove
 
 ### 3.1 The background chapter reads like our brief
 
-The juknis grounds the competition in the Kongres Kebudayaan Indonesia: the seven resolutions of KKI 2018 and the ten ideas (*gagasan*) of KKI 2023. Several of them describe Strata almost directly, and we should cite them in the proposal:
+The juknis grounds the competition in the Kongres Kebudayaan Indonesia: the seven resolutions of KKI 2018 and the ten ideas (*gagasan*) of KKI 2023. Several of them describe ETNOS almost directly, and we should cite them in the proposal:
 
-- **KKI 2023, idea 10:** Indonesia needs a cultural observatory that monitors and studies cultural change and helps shape policy with a holistic, cross-disciplinary approach. Strata is a knowledge observatory, built by and for the people being observed.
+- **KKI 2023, idea 10:** Indonesia needs a cultural observatory that monitors and studies cultural change and helps shape policy with a holistic, cross-disciplinary approach. ETNOS is a knowledge observatory, built by and for the people being observed.
 - **KKI 2023, idea 9:** masyarakat adat and other local communities are sovereign subjects over their land, natural resources and *sources of cultural knowledge*. This is the owner's "subjects should curate it back" argument, in the organiser's own framing.
-- **KKI 2023, idea 7:** cultural meeting driven by *pe-lumbung-an* (commoning) and organic collective organising, sharing resources from sowing to harvest to storage. Strata is a digital lumbung.
+- **KKI 2023, idea 7:** cultural meeting driven by *pe-lumbung-an* (commoning) and organic collective organising, sharing resources from sowing to harvest to storage. ETNOS is a digital lumbung.
 - **KKI 2023, idea 8:** digital technology is needed to process the large cultural datasets the state already collects (PPKD, the culture index, Indonesiana), and AI should help renew heritage and support regeneration and the transfer of knowledge. The same idea worries about mental-health harm from screen culture, which our published ranking without engagement prediction answers directly.
 - **KKI 2018, resolutions 3 and 4:** use cultural wealth to strengthen Indonesia's place in the world, and use the objects of cultural advancement to raise people's welfare. These anchor the business and Cultural Power sections.
 
@@ -119,7 +119,7 @@ Among the programme's stated goals: wider integration of and access to cultural 
 
 ### 3.2 Category and subtheme
 
-We enter **Inovasi Digital**, subtheme **5: Platform Digital untuk Komunitas Budaya**. The juknis's own examples for this subtheme are community and sanggar management, activity and performance management, membership, and platforms for collaboration and cultural networks. Strata fits squarely.
+We enter **Inovasi Digital**, subtheme **5: Platform Digital untuk Komunitas Budaya**. The juknis's own examples for this subtheme are community and sanggar management, activity and performance management, membership, and platforms for collaboration and cultural networks. ETNOS fits squarely.
 
 ### 3.3 Eligibility
 
@@ -203,7 +203,7 @@ Pick one as the headline and use the others as supporting evidence. The first is
 
 ### 4.4 A scroll through Papuan Instagram
 
-On 17 November the owner shared screenshots from his own feed. Not a sample, but a fair picture of the range, and each one is a Strata layer living somewhere it doesn't belong:
+On 17 November the owner shared screenshots from his own feed. Not a sample, but a fair picture of the range, and each one is an ETNOS layer living somewhere it doesn't belong:
 
 - **Percakapan and Karya:** a young musician from Fakfak releasing singles (about 130 likes); a Fakfak artist reprinting a 2021 projection piece that asks what development means for adat, sacred places and stories (about 120 likes); a Paniai football club's 2–2 draw.
 - **Kabar and events:** a documentary screening and discussion in The Hague; a BBC documentary on Nemangkawi screened and discussed with the Amungme community at a reading space in Timika.
@@ -219,7 +219,7 @@ Two uses: as the screenshot audit in section 4.3 (with permission, leaving out p
 
 ### 5.1 Layers that settle
 
-Strata describes a place and its people in layers, each moving at its own pace, as in Stewart Brand's pace layers (see `plan/strata-model-2026-11-17.md`):
+ETNOS describes a place and its people in layers, each moving at its own pace, as in Stewart Brand's pace layers (see `plan/etnos-model-2026-11-17.md`):
 
 | Layer | Holds | Pace |
 | --- | --- | --- |
@@ -232,7 +232,7 @@ Strata describes a place and its people in layers, each moving at its own pace, 
 
 Communities and institutions are columns running through every layer. Aksara is the groundwater: it carries material between layers, and everything it moves carries its source. A news story becomes a proposed wiki change. A wiki fact rises as a post that asks members what they know. A member's account becomes a sourced variant on the page.
 
-This is not a metaphor added afterwards. It is how the product works, and it is why the name Strata fits.
+This is not a metaphor added afterwards. It is how the product works, and it is why the name ETNOS fits.
 
 ### 5.2 What exists already, and the gap
 
@@ -242,13 +242,13 @@ This is not a metaphor added afterwards. It is how the product works, and it is 
 | Wikipedia | No | Yes, but published sources only | No |
 | Mukurtu and museum portals | No | Yes, custodial | No |
 | AI language apps (e.g. this year's language-archive entries) | No | An archive plus an AI tutor | No |
-| **Strata** | **Yes** | **Yes** | **Aksara and the correction loop** |
+| **ETNOS** | **Yes** | **Yes** | **Aksara and the correction loop** |
 
-Wikipedia's rule that facts need published sources is a known barrier for oral cultures. A Wikimedia-funded research project in 2011, *People are Knowledge*, tried oral citations in India and South Africa for exactly this reason, and met resistance from editors. Strata is built for oral testimony from the start: a teller's account sits beside the published record, attributed, and is never overwritten.
+Wikipedia's rule that facts need published sources is a known barrier for oral cultures. A Wikimedia-funded research project in 2011, *People are Knowledge*, tried oral citations in India and South Africa for exactly this reason, and met resistance from editors. ETNOS is built for oral testimony from the start: a teller's account sits beside the published record, attributed, and is never overwritten.
 
 ### 5.3 Full of content, empty of fake people
 
-The owner's point about cold start is right, and the Strata model already has the honest wording: a new deployment is **full of content and empty of fake people**. Places, pages, news and sources are there on day one. Communities exist as names waiting to be opened, institutions as listings waiting to be claimed, places as pages waiting for their stories. Nothing pretends someone is there who is not.
+The owner's point about cold start is right, and the ETNOS model already has the honest wording: a new deployment is **full of content and empty of fake people**. Places, pages, news and sources are there on day one. Communities exist as names waiting to be opened, institutions as listings waiting to be claimed, places as pages waiting for their stories. Nothing pretends someone is there who is not.
 
 Seeding is what makes a first visit worth it. Aksara's daily care (asking, linking, pruning, proposing) is what makes the second visit worth it.
 
@@ -327,7 +327,7 @@ This follows section 2 of the showcase plan, which stays the build reference:
 5. Share a story card to WhatsApp.
 6. Close on the printed bulletin with the elder's correction on it.
 
-The Strata layers are the explanation slide after the walk, not before it.
+The ETNOS layers are the explanation slide after the walk, not before it.
 
 ### 7.3 Agents doing public work *(proposal)*
 
@@ -445,7 +445,7 @@ The knowledge base already shows up as a map, a wiki, and the material Aksara wo
 - Regional open-data portals mostly publish **counts** (how many WBTb designated each year), not content.
 - **PPKD** is built bottom-up under UU 5/2017: each regency's PPKD feeds its province's, which in turn feeds the national Strategi Kebudayaan. The law requires community involvement, through experts.
 
-So the state has registries and counts, and Strata has living content and voices. Every flagship below joins the two.
+So the state has registries and counts, and ETNOS has living content and voices. Every flagship below joins the two.
 
 ### 9.2 Data flagships *(proposal)*
 
@@ -492,7 +492,7 @@ Everything below is a single engine, not a dozen features:
 
 **Reading**
 
-- **Gali (dig).** The endless scroll, done the Strata way: scrolling down goes *deeper in time*. The top is today's talk and news. Below that come wiki facts, then papers, archive photos and old maps, then oral history, then land and deep time. Each card shows its layer. The geological metaphor becomes the navigation. *(signature primitive)*
+- **Gali (dig).** The endless scroll, done the ETNOS way: scrolling down goes *deeper in time*. The top is today's talk and news. Below that come wiki facts, then papers, archive photos and old maps, then oral history, then land and deep time. Each card shows its layer. The geological metaphor becomes the navigation. *(signature primitive)*
 - **Cerita as reposts, not uploads.** A daily story ring per place made of reposted cards with a one-line take ("ini terjadi di kampung saya") and a sticker: *Benar*, *Saya tahu lebih*, *Pertanyaan*. Aksara's five cards of the day open the ring. No original video uploads; people can still link videos. This avoids the cost and moderation load of video.
 - **Baca bareng** (paper club). A weekly paper chosen by vote, a plain-language card that Aksara writes from the abstract only, cited, and a thread. Monthly **Tanya Ilmuwan**: a scientist answers questions.
 
@@ -550,9 +550,9 @@ The Kartu and Tanggapan engine plus three decks (*Benar/Salah*, *Kata*, *Soal Ha
 
 ### 11.1 One product name
 
-The juknis requires one product name across the proposal, demo, video and slides. The owner's call: **Strata** is the product; **ETNOS** is our own deployment of it, the first place where Strata runs. That works if the live site says so plainly, for example "ETNOS · dijalankan dengan Strata" in the header or footer and on the *Tentang* page, and the proposal's title reads something like:
+The juknis requires one product name across the proposal, demo, video and slides. The owner's call (21 November): **ETNOS** names both the software and our own deployment of it at etnos.space, the first place it runs. The live site says so plainly, with "Kode terbuka ETNOS" in the footer and on the *Tentang* page, and the proposal's title reads something like:
 
-> **STRATA: Lumbung digital tempat masyarakat bercakap, bekerja dan mencatat budayanya sendiri.** Penerapan pertama: ETNOS di Tanah Papua.
+> **ETNOS: Lumbung digital tempat masyarakat bercakap, bekerja dan mencatat budayanya sendiri.** Penerapan pertama: etnos.space di Tanah Papua.
 
 Whatever name went into the registration form is the one that must appear everywhere.
 
@@ -585,7 +585,7 @@ And the positioning choice: **do not lead with language.** That kind of entry si
 
 The owner's version is right in spirit. "ActivityPub risks centralisation" is a little fuzzy, though, and judges won't parse protocol vocabulary. The precise argument:
 
-> In ActivityPub (Lemmy, Mastodon, PieFed), a person's identity, their data and the app all belong to whoever runs the server. If that server closes or turns against its members, the accounts and posts go with it. AT Protocol separates the three: **identity** (a DID and a handle on a domain), **data** (a signed repository on a host the person or community chooses), and **the app** (Strata is one reader of that data among many). If ETNOS disappeared tomorrow, people would keep their identities and their data, and another app could read them.
+> In ActivityPub (Lemmy, Mastodon, PieFed), a person's identity, their data and the app all belong to whoever runs the server. If that server closes or turns against its members, the accounts and posts go with it. AT Protocol separates the three: **identity** (a DID and a handle on a domain), **data** (a signed repository on a host the person or community chooses), and **the app** (ETNOS is one reader of that data among many). If ETNOS disappeared tomorrow, people would keep their identities and their data, and another app could read them.
 >
 > Spaces, the protocol's new primitive for non-public data, extends the same separation to communities: a group can keep its private material under its own access rules while still taking part in the wider network.
 
@@ -613,15 +613,15 @@ Protocol features that fit cultural work unusually well:
 - **The PLC directory is still one directory**, now run by an independent association. Its logs are self-certifying, and it can be mirrored, but it is a dependency.
 - **Public AT data is truly public.** Deletion propagates, but copies made in the meantime cannot be recalled. Cultural material defaults to private or local; nothing sacred is ever published to the network.
 - **What is live today:** AT sign-in and identity. ETNOS keeps posts in its own store, and public AT publishing is off. "People own their data" is therefore a roadmap claim, and the proposal must say so in exactly those words (section 3.6).
-- **Running a full AppView over the whole network is expensive.** We don't need to: a Strata deployment indexes only its own schemas and scopes.
+- **Running a full AppView over the whole network is expensive.** We don't need to: an ETNOS deployment indexes only its own schemas and scopes.
 
 ### 12.4 How federation works here (the Lemmy mindset, translated)
 
-- **One identity across deployments: already native.** Any Strata deployment accepts AT OAuth, so the same account signs into ETNOS and into a deployment in Kalimantan.
-- **Shared content works differently from Lemmy.** In Lemmy, servers push posts to each other. In AT, people write records to their own repositories, relays gather them into a stream, and each app (AppView) indexes the records it cares about. A host does not "take in" the stream; apps do. So a Strata deployment is an AppView: it subscribes to records of Strata's schemas, filtered by its places and communities. Federation happens through shared data rather than server-to-server messages.
+- **One identity across deployments: already native.** Any ETNOS deployment accepts AT OAuth, so the same account signs into ETNOS and into a deployment in Kalimantan.
+- **Shared content works differently from Lemmy.** In Lemmy, servers push posts to each other. In AT, people write records to their own repositories, relays gather them into a stream, and each app (AppView) indexes the records it cares about. A host does not "take in" the stream; apps do. So an ETNOS deployment is an AppView: it subscribes to records of ETNOS's schemas, filtered by its places and communities. Federation happens through shared data rather than server-to-server messages.
 - **Give each community its own DID** *(proposal)*. Then a community, not just a person, can move between deployments, and its public record travels with it. Coves does this today.
 - **Reaching the fediverse later:** Bridgy Fed already bridges public AT posts to ActivityPub. We do not need to write our own adapter.
-- **Name our schemas carefully** *(proposal)*. Schema names (NSIDs) are permanent once records exist. Put them under the engine's domain (Strata or Abstraksi), not under `etnos`, so other deployments are first-class.
+- **Name our schemas carefully** *(proposal)*. Schema names (NSIDs) are permanent once records exist. Put them under the engine's domain (ETNOS or Abstraksi), not under `etnos`, so other deployments are first-class.
 
 ## 13. Models for Aksara and for seeding
 
@@ -654,7 +654,7 @@ These are good, but they are a cultural-economy feature, not the engine that pay
 
 ### 14.3 Where sustainable money can come from *(proposal; numbers next session)*
 
-1. **Government: a regency cultural observatory as a service.** Strata, plus an Aksara node where wanted, plus the state-of-knowledge report as PPKD input. This answers KKI 2023 ideas 8 and 10 (PPKD data and the cultural observatory), and the buyer is a Dinas Kebudayaan or Bappeda.
+1. **Government: a regency cultural observatory as a service.** ETNOS, plus an Aksara node where wanted, plus the state-of-knowledge report as PPKD input. This answers KKI 2023 ideas 8 and 10 (PPKD data and the cultural observatory), and the buyer is a Dinas Kebudayaan or Bappeda.
 2. **Managed deployments for other peoples and organisations:** customary councils, AMAN chapters, church synods, diaspora associations, other regions. Paid setup, hosting and maintenance; the engine stays open.
 3. **Schools and muatan lokal:** class communities and elder-interview projects as a supported package for regencies that set regional language and culture as local content.
 4. **Kurasi balik with institutions:** museums and universities paying for structured community review of their holdings, with results returned to the community.
@@ -773,7 +773,7 @@ Written as a judge might see it, so we can fix what we can before they do.
 - Ask for the letters in section 14.4.
 - Confirm Gemma 4 on Workers Free with one live call.
 - Decide the minimum age and the reporting path (PP Tunas); start PSE registration or state the plan.
-- Put "ETNOS · dijalankan dengan Strata" on the site, and check the name used in the registration form.
+- Put "Kode terbuka ETNOS" on the site, and check the name used in the registration form.
 - Write the code-disclosure table.
 - Optional, cheap, and visible: Kabar keluarga as a post type; a Papuan Malay interface option.
 
@@ -800,7 +800,7 @@ Written as a judge might see it, so we can fix what we can before they do.
 
 **Questions this document raises**
 
-- Should the schemas (NSIDs) be named under Strata or Abstraksi before anything is published?
+- Should the schemas (NSIDs) be named under ETNOS or Abstraksi before anything is published?
 - Should each community get its own DID from the start?
 - Which school or church could be the first institutional partner?
 
@@ -858,4 +858,4 @@ Read on 17 November 2026.
 
 **Related documents in this repository**
 
-`plan/showcase-plan-2026-11-17.md`, `plan/strata-model-2026-11-17.md`, `product/product-shape-2026-11-14.md`, `competition/budaya-go-plan-2026-11-14.md`, `aksara/agent-entrance-2026-11-03.md`, `research/opencode-keyless-seeding-2026-11-17.md`, `research/serverless-pds-and-auth-2026-11-17.md`, `evidence/README.md`.
+`plan/showcase-plan-2026-11-17.md`, `plan/etnos-model-2026-11-17.md`, `product/product-shape-2026-11-14.md`, `competition/budaya-go-plan-2026-11-14.md`, `aksara/agent-entrance-2026-11-03.md`, `research/opencode-keyless-seeding-2026-11-17.md`, `research/serverless-pds-and-auth-2026-11-17.md`, `evidence/README.md`.

@@ -4,15 +4,15 @@
 
 ## Why
 
-The owner found pages that overlap. Mee Pago has a place page and a wiki page, each with its own conversation box under different rules. Jelajah and `/contexts` are two directories with three maps between them. Place, language and topic pages share one layout that opens with news, so a visitor cannot tell what page they are on. The owner also needs a research-backed answer when a judge asks why Strata organises around places, languages and topics, and whether anything is missing.
+The owner found pages that overlap. Mee Pago has a place page and a wiki page, each with its own conversation box under different rules. Jelajah and `/contexts` are two directories with three maps between them. Place, language and topic pages share one layout that opens with news, so a visitor cannot tell what page they are on. The owner also needs a research-backed answer when a judge asks why ETNOS organises around places, languages and topics, and whether anything is missing.
 
 Success: anyone can join, see what ETNOS is about within one screen, and find a thing (a place, a language, a topic) in one obvious way.
 
 ## Decisions
 
 **Foundations.**
-- Place, language, topic and kind stay as Strata's functional axes. Language is separate from place. The basis is the convergence in `why-these-axes` (the circumstances tradition from Aristotle, Ranganathan, Dublin Core, Mukurtu and Local Contexts). Axes are fixed and values are each deployment's own.
-- Kinship stays out of Strata's labels and is handled as custody and protocol. Clan spaces (a private space and PDS per clan, with the communal Aksara on a refurbished machine) go on the roadmap, not in this build.
+- Place, language, topic and kind stay as ETNOS's functional axes. Language is separate from place. The basis is the convergence in `why-these-axes` (the circumstances tradition from Aristotle, Ranganathan, Dublin Core, Mukurtu and Local Contexts). Axes are fixed and values are each deployment's own.
+- Kinship stays out of ETNOS's labels and is handled as custody and protocol. Clan spaces (a private space and PDS per clan, with the communal Aksara on a refurbished machine) go on the roadmap, not in this build.
 - More-than-human beings (mountains, lakes, forests, species) become **wiki page kinds**, not functional contexts. A Mee elder starts from the land: the mountain, the lake and the forest as naitai (mother), and every clan's origin story. The wiki is how the more-than-human enters a social platform.
 - Optional **season** on records, with each community defining its own seasons. Linear time stays as it is.
   Built 18 November for posts: stewards name up to twelve seasons per community in Kelola komunitas (`src/seasons.ts`, table `community_seasons`); the composer offers them when the community has some; posts show the name beside their labels. Seasons have no dates, since they are the community's own words. A season is retired, never deleted, so old posts keep it. Wiki pages and events can carry one later through the same table.
@@ -33,11 +33,11 @@ Success: anyone can join, see what ETNOS is about within one screen, and find a 
 
 Built 18 November (`src/founding.ts`, `apps/web/src/FoundingRoom.svelte`, `apps/web/src/JoinFounding.svelte`). A forming community is stored as hidden-private with invite-only admission, so every existing read path hides it; the founder's chosen visibility and admission wait in `founding_visibility` and `founding_admission` and apply when a second person joins by any route (the link, a direct invitation, a steward adding someone). The link is `/gabung#<token>`: the token sits in the fragment, so it never reaches server logs, and only its hash is stored. It works until 14 days after founding, also after the room opened, because a link sent to a WhatsApp group reaches several people; the founder can replace or withdraw it. A founder keeps at most three rooms waiting. A lapsed room stays hidden and takes no new posts. Labels chosen at founding are stored and shown once the room opens. The web create form always founds this way; the API still creates an open community directly when `forming` is not set, for stewards and tools.
 
-**Agent chip.** "Agen · pendamping" is confusing. All agent posts carry a chip reading **AI**. A place agent reads **AI · Mee Pago**. Guest agents read **AI tamu**. My call: "AI Strata" would confuse ETNOS members who do not know the name Strata, and the author name already says Aksara.
+**Agent chip.** "Agen · pendamping" is confusing. All agent posts carry a chip reading **AI**. A place agent reads **AI · Mee Pago**. Guest agents read **AI tamu**. My call: a chip with the software's name would confuse members, and the author name already says Aksara.
 
 **Wiki drafts.** News does not become a wiki draft. A wiki draft needs material that lasts (a place, a being, a people, a practice, a history). The pipeline rule changes accordingly.
 
-**Aksara as composer.** Aksara arranges typed blocks Strata ships into views, and a steward approves them. No model-written code. It runs on Workers Free. For the proposal it appears as the next step with one mock; the build comes after 26–27 November.
+**Aksara as composer.** Aksara arranges typed blocks ETNOS ships into views, and a steward approves them. No model-written code. It runs on Workers Free. For the proposal it appears as the next step with one mock; the build comes after 26–27 November.
 
 ## Approaches considered
 
@@ -66,7 +66,7 @@ Decided with the owner after reviewing the live site on a phone.
 Beranda      feed, switcher "Terbaru · tempat"
 Jelajah      what exists and what is talked about; the home of the three axes
   Sedang dibicarakan   clusters of this week's activity per place or topic, from labels (no AI); Aksara summaries later
-  Tempat               the wilayah adat as stacked strata layers, kabupaten folded inside
+  Tempat               the wilayah adat as stacked layers, kabupaten folded inside
   Bahasa               a typeset index with region marks
   Topik                the topics as tiles, sub-topics on the topic page
   Kabar                a short strip, then "Semua kabar"
@@ -79,7 +79,7 @@ Wiki         the map lives here; peoples, beings, stories
 **Decisions.**
 - `/contexts` folds into Jelajah. The section chips at the top of Jelajah become in-page anchors (Dibicarakan, Tempat, Bahasa, Topik, Kabar). Nothing at the top leaves the page. Long sections open in place, never as long lists.
 - The desktop sidebar shows Tempat, Bahasa and Topik as three indented sub-items under Jelajah, each jumping to its section. The phone Menu sheet lists the same three at the top. The bottom bar is unchanged.
-- Each kind gets its own visual form, shared by its Jelajah section and its page: places as engraved strata layers in blue, languages as a type specimen in warm ink, topics as green tiles with branching sub-topics. One page skeleton with kind-specific top blocks; the blocks are typed with fixed props so Aksara's composer can arrange them later.
+- Each kind gets its own visual form, shared by its Jelajah section and its page: places as engraved layers in blue, languages as a type specimen in warm ink, topics as green tiles with branching sub-topics. One page skeleton with kind-specific top blocks; the blocks are typed with fixed props so Aksara's composer can arrange them later.
 - The atlas map moves from Jelajah to the Wiki home. It stays in the switcher.
 - The switcher shows on pages that collect many things (Beranda with the feed word; Jelajah, Wiki and Kabar with the place only), and those pages follow it. Pages about one thing do not show it.
 - A place's wiki article is its Tentang tab. `/wiki/<id>` for a place, language or topic article redirects to the thing page; history, review and proposals stay reachable from a "Riwayat dan tinjauan" link. The Kabar tab stops listing the home article as a separate reviewed page.

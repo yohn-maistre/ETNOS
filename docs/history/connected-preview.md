@@ -35,7 +35,7 @@ Validation: 58 Node tests; actual-workerd access/rollback/persistence/restart an
 
 Node tests cover access/custody, admission, proposals, transactions/outbox plus OAuth binding, replay, wrong issuer/subject, expiry, provider egress and fixture-credential rejection. Actual workerd exercises both SQLite policy and the synthetic OAuth start/callback/session flow. The test-only fixture has no production route or provisioning RPC.
 
-Public live smoke checks: health, anonymous session, capabilities, OAuth metadata/JWKS and frontend deep links return 200. A real authorization start for giyaibo.bsky.social returns a bsky.social authorization endpoint. This requests identity-only OAuth; it does not complete login, grant publishing consent, migrate the account or publish anything. The account owner must complete authentication in their own browser; no password is requested or handled by Strata.
+Public live smoke checks: health, anonymous session, capabilities, OAuth metadata/JWKS and frontend deep links return 200. A real authorization start for giyaibo.bsky.social returns a bsky.social authorization endpoint. This requests identity-only OAuth; it does not complete login, grant publishing consent, migrate the account or publish anything. The account owner must complete authentication in their own browser; no password is requested or handled by ETNOS.
 
 Browser checks cover seven public routes at 390px and 1280px widths. This is narrower than authenticated real-provider end-to-end verification, assistive-technology testing, a security review or operational load qualification.
 
@@ -59,7 +59,7 @@ A public custom AT record is public even if this deployment only admits invited 
 
 Deployment evidence: initial connected web deployment `2f93605c466748739399b70ecccc35a1`; final UI asset update `d1413b18288f4371a8b7663a2cfdf9d8`. Engine artifact SHA-256 `9101567ea25e260be8782aa62cb880c629459cc1bd4763de8e1700cf5b153ee4`; Durable Object migration tag remains `v1`. Final reported startup 122ms. Automated local verification: 32 Node tests plus the actual-workerd contract; UI component check reports zero errors/warnings.
 
-A separate browser journey used the deployed UI with all auth/API requests intercepted into an in-memory Strata fixture. It exercised persisted posting/replies, voting, bookmarking, Wiki creation/proposal/acceptance with zero page errors and zero real public writes. This verifies UI/API behavior, not real-user authentication or operational custody.
+A separate browser journey used the deployed UI with all auth/API requests intercepted into an in-memory ETNOS fixture. It exercised persisted posting/replies, voting, bookmarking, Wiki creation/proposal/acceptance with zero page errors and zero real public writes. This verifies UI/API behavior, not real-user authentication or operational custody.
 
 ## Commons / shadcn / DM deployment — 1 November 2026
 
@@ -93,7 +93,7 @@ Validation: 64 Node tests, Worker type checks, real workerd migration/search/fol
 
 Public reading and invited participation are the owner's selected alpha policy. AT broadcasting remains disabled. `etnos.space` was rechecked: active Cloudflare Free DNS zone and expected nameservers, but apex/www still pointed to Namecheap forwarding/parking and no Worker custom domain was attached. No domain or origin cutover was applied; browser encrypted-vault/OAuth continuity remains a separate operation. No hosted PDS signup, live WPW/Aksara adapter, ActivityPub or private AT federation is implied. [Alpha readiness](alpha-20.md) and [full AT account hosting](../decisions/decision-004-at-account-hosting.md) record the remaining work and current provider limits.
 
-The final Honai follow-up removes unused imports and prevents an Explore response from being applied after the active identity changes. Root ESLint, Svelte check, build and the affected browser journey passed locally. R2 listing also confirmed `westpapua-watch-archive` already exists in the connected account: R2 is available, but no Strata/PDS bucket or object-store adapter was provisioned and existing storage consumption was not measured. Shared free allowances are not all unallocated capacity.
+The final Honai follow-up removes unused imports and prevents an Explore response from being applied after the active identity changes. Root ESLint, Svelte check, build and the affected browser journey passed locally. R2 listing also confirmed `westpapua-watch-archive` already exists in the connected account: R2 is available, but no ETNOS/PDS bucket or object-store adapter was provisioned and existing storage consumption was not measured. Shared free allowances are not all unallocated capacity.
 
 ## Canonical ETNOS alpha, 1 November 2026
 

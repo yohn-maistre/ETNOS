@@ -16,7 +16,7 @@ Deployed to **https://etnos.space** on **4 November 2026 at 16:00:10.340529 UTC*
 
 The owner selected open signup through Bluesky. The actual provider-owned OAuth UI now replaces the generic outbound Bluesky link. Existing identities can enroll through the same continuation. A verified callback creates an ETNOS human session, with zero automatic community memberships. [Implementation and policy contract](../accounts-and-hosting/signup-2026-11-04.md).
 
-`STRATA_ENROLLMENT_MODE=open` and `STRATA_CLIENT_NAME=ETNOS` are explicit. Compatibility date `2026-10-23`, `nodejs_compat`, existing OAuth/sealing secrets, ASSETS/AI/WATCH_NEWS bindings, canonical origin, existing DO namespace and disabled AT publishing remain. Live settings confirm preservation. Observability/logpush remains disabled under the incumbent privacy choice. No account migration, PDS, domain-handle mutation, service provisioning or billing change occurred.
+`ETNOS_ENROLLMENT_MODE=open` and `ETNOS_CLIENT_NAME=ETNOS` are explicit. Compatibility date `2026-10-23`, `nodejs_compat`, existing OAuth/sealing secrets, ASSETS/AI/WATCH_NEWS bindings, canonical origin, existing DO namespace and disabled AT publishing remain. Live settings confirm preservation. Observability/logpush remains disabled under the incumbent privacy choice. No account migration, PDS, domain-handle mutation, service provisioning or billing change occurred.
 
 ## Validation
 

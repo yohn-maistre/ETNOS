@@ -1,6 +1,6 @@
 ---
 name: Grafit
-description: The visual system of ETNOS on Strata. Neutral graphite surfaces, heavy type, open rows and pills, ink-print landscapes as the only imagery.
+description: The visual system of ETNOS. Neutral graphite surfaces, heavy type, open rows and pills, ink-print landscapes as the only imagery.
 colors:
   ground-light: "#fafafa"
   surface-light: "#ffffff"

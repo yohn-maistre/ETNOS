@@ -6,7 +6,7 @@
 
 | Claim in the brief | What the repo says | Consequence |
 | --- | --- | --- |
-| Spaces is implemented | **No.** `labs/spaces` is a real probe against the official alpha using synthetic accounts. The forum still uses Strata's own storage. The lexicon is `org.example.strata.post` and `STRATA_PUBLISHING_ENABLED=false` in both wrangler profiles. The only remote branches are `main` and `feat/connected-oauth`, both already merged. | The proposal may claim a *tested Spaces experiment* and a *plan for the 1 Dec beta*, not Spaces-backed communities. If unpushed Spaces work exists on a laptop, push it before we write the deck. |
+| Spaces is implemented | **No.** `labs/spaces` is a real probe against the official alpha using synthetic accounts. The forum still uses ETNOS's own storage. The lexicon is `org.example.strata.post` and `ETNOS_PUBLISHING_ENABLED=false` in both wrangler profiles. The only remote branches are `main` and `feat/connected-oauth`, both already merged. | The proposal may claim a *tested Spaces experiment* and a *plan for the 1 Dec beta*, not Spaces-backed communities. If unpushed Spaces work exists on a laptop, push it before we write the deck. |
 | News isn't joined to contexts | Correct, but **the join is cheap.** The West Papua Watch API behind `/v1/news` already accepts `place=<slug>` (verified live: `place=nabire` works), and each item carries `places[]` with slugs such as `nabire`, `papua-tengah` and `kampung-sima`. `contexts.aliases` exists and is empty. | Map each context to WPW place slugs. No schema change. Meepago → `nabire, paniai, deiyai, dogiyai, intan-jaya, mimika`. |
 | Notes aren't a `record_contexts` kind | Correct. The CHECK constraint allows only `post, group, wiki, work`. | Adding `note` needs a table-rebuild migration and the boundary tests in AGENTS.md. Before judging, show notes through their linked page or community instead. |
 | Polls are public | **No, already aggregate-only.** `core.ts` returns `COUNT(*)` per option plus a `mine` flag. No voter list reaches the API. | Add a minimum-n display rule and "dari N penjawab di ETNOS" labelling. Small UI work. |
@@ -28,7 +28,7 @@
 
 ## 2. Design direction: make the name literal
 
-*Strata* means layers. Today the UI is calm, warm paper with a serif for the Wiki: tidy, but it could be any product. The signature should be **the cross-section**, used consistently:
+*ETNOS* means layers. Today the UI is calm, warm paper with a serif for the Wiki: tidy, but it could be any product. The signature should be **the cross-section**, used consistently:
 
 - **The context page *is* a cross-section.** Don't build nine tabs (Kabar, Obrolan, Suara, Bacaan, Catatan, Halaman, Celah, Kerja, Tawaran), which won't fit on a phone. Stack three bands, top to bottom, like sediment:
   1. **Permukaan / Sekarang** (live): Kabar · Obrolan · Suara · Tawaran

@@ -117,7 +117,7 @@ Source text: `services/site/src/lib/legal/terms-of-service.ts`, also at `opencod
 - **Not clearly allowed, not clearly forbidden for a single operator running opencode on their own machine to seed their own site once.** That is "your own internal use" using the real client, the same thing dusk bot and OpenBot do for their users. A one-time, supervised, public-data run is the strongest case.
 - **Unattended server use is a grey area that leans against us.** The "programmatically extracts … Output" and "processes that run while you are not logged in" clauses were not written about anonymous use, but they read broadly, and the vendor decides. dusk runs this in server containers, which shows it is tolerated in practice, not that it is permitted. That inference is mine.
 - **Using the free endpoint from anything other than the opencode program is against the vendor's stated rule** ("require OpenCode") and would mean copying its client fingerprints. We should not do that, in a Worker or anywhere.
-- **Use for the benefit of third parties.** A Strata deployment belongs to its operator and serves a community, so "not on behalf of any third party" is another reason for operator-by-operator, not a shared hosted seeder run by the Strata project.
+- **Use for the benefit of third parties.** An ETNOS deployment belongs to its operator and serves a community, so "not on behalf of any third party" is another reason for operator-by-operator, not a shared hosted seeder run by the ETNOS project.
 - **No written permission exists.** The earlier note's suggestion still stands: ask the maintainers before the feature is documented as a supported path.
 
 ## 4. Feasibility on Cloudflare Workers Free
@@ -137,16 +137,16 @@ What the Worker side still does: hold the seed API, the drafts, confirmations an
 
 ### Integration
 
-1. **Install.** A small `strata init` step downloads the pinned release archive for the platform from `github.com/anomalyco/opencode/releases`, checks its SHA-256 against a value we record, unpacks into the deployment's data folder (for example `<data>/engines/opencode/`), and sets `OPENCODE_DISABLE_AUTOUPDATE=1`. This is what `opencode-release.ts` and `free-backup.ts` do; we write our own version with our own measured hashes. The vendor publishes no checksum file (per dusk's comment), so we measure and record them ourselves. I checked the Linux x64 hash against dusk's.
+1. **Install.** A small `etnos init` step downloads the pinned release archive for the platform from `github.com/anomalyco/opencode/releases`, checks its SHA-256 against a value we record, unpacks into the deployment's data folder (for example `<data>/engines/opencode/`), and sets `OPENCODE_DISABLE_AUTOUPDATE=1`. This is what `opencode-release.ts` and `free-backup.ts` do; we write our own version with our own measured hashes. The vendor publishes no checksum file (per dusk's comment), so we measure and record them ourselves. I checked the Linux x64 hash against dusk's.
 2. **Run.** Two options.
    - `opencode run --model opencode/deepseek-v4.1-flash-free --format json "<prompt>"` for each job (`commands.ts:400,426,432`). Simple, no long-lived process, easy to remove. One start-up cost per call (not measured).
    - `opencode serve --hostname 127.0.0.1 --port <p>` with a generated password (`OPENCODE_PASSWORD` or `OPENCODE_SERVER_PASSWORD`, `packages/cli/src/env.ts:10-11`), as OpenBot does, driven from Node. Better for many calls. Bind to loopback only.
    - In both, run in an empty working folder, set `OPENCODE_DISABLE_PROJECT_CONFIG=1`, and deny every tool permission (the seeding step only needs text out). Both OpenBot (`config.ts:50-52`) and dusk (`opencode-go.ts:881-890`) isolate config the same way.
-   - Set `OPENCODE_CLIENT=strata-seed` so the vendor can see who is calling, as OpenBot does with `openbot`. That is honest and keeps us out of impersonation.
+   - Set `OPENCODE_CLIENT=etnos-seed` so the vendor can see who is calling, as OpenBot does with `openbot`. That is honest and keeps us out of impersonation.
 3. **Call from the seeding job.** A new script (proposed, not written) such as `scripts/seed-draft.ts` has a one-function adapter, `draft(prompt) -> text`, with three implementations: opencode (`run` or `serve`), an OpenAI-compatible endpoint with the operator's key, and Workers AI. The rest is the pipeline that already exists in `history/next-2026-11-16.md`: public sentences gathered and checked by `verify-wiki-seed.py`, the writer step, `check-wiki-pages.ts`, then `scripts/propose-wiki-pages.ts`, which already sends each page as a hidden draft with a request key so reruns never double a page. The resident's own model call (`src/resident-provider.ts`, an OpenAI-shaped chat call through a `MODEL_GATEWAY` binding) stays untouched; the seeder is a separate offline job, not a Worker change.
 4. **Guard.** The adapter refuses any input not marked public, passes text through `redactPublicModelText` (`src/redaction.ts`, already used by the resident), and pins an allowed model list: `deepseek-v4.1-flash-free`, `glm-5.3-flash-free`, `hy4-flash-free`, `longcat-2.5-free`. All others in section 3 are excluded for retention or training.
 5. **Switch to BYOK and remove opencode.**
-   - The operator pastes a key in the first-run form (or runs `strata init --key`). The CLI writes it to the deployment's secret store (a Worker secret through `wrangler secret put` on Cloudflare, a protected env file on a VPS), never to a repository or log.
+   - The operator pastes a key in the first-run form (or runs `etnos init --key`). The CLI writes it to the deployment's secret store (a Worker secret through `wrangler secret put` on Cloudflare, a protected env file on a VPS), never to a repository or log.
    - Our adapter switches to the OpenAI-compatible implementation. It needs no opencode.
    - The CLI then stops any `opencode serve`, deletes `<data>/engines/opencode/` and the empty working folder, and records "opencode removed" in the first-run receipt. Because the binary lives in one folder and keeps no state elsewhere (isolated home), removal is a directory delete. Unverified: that opencode writes nothing outside its isolated XDG folders; dusk and OpenBot both isolate for this reason.
 6. **Removal on a VPS** also means closing the loopback port and removing the systemd unit if one was added.
@@ -167,7 +167,7 @@ The owner's target is under 30 minutes. I could not measure it: I did not run a 
 | Hallucination | Small and promotional models invent names and links. The project forbids fabricated content. | Every sentence in a page must trace to a supplied source (the existing `basis` field in `propose-wiki-pages.ts`); the model may return `ABSTAIN` as the resident does (`src/resident-provider.ts`); a page failing the checker is dropped, not repaired. |
 | Supply chain | We would download an 80 MB vendor binary. | Pin version and hash; fetch only from the vendor's GitHub release; show the hash in the receipt. |
 | Tool access | opencode can run shell and file tools. | Empty folder, all permissions denied, loopback only, no secrets in the environment. |
-| Licences | opencode is MIT. dusk bot is PolyForm Noncommercial and OpenBot is MIT; we copy neither. Strata is AGPL-3.0. | Write our own thin adapter; cite behaviour, not code. |
+| Licences | opencode is MIT. dusk bot is PolyForm Noncommercial and OpenBot is MIT; we copy neither. ETNOS is AGPL-3.0. | Write our own thin adapter; cite behaviour, not code. |
 
 ## 7. Recommendation
 

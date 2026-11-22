@@ -1,8 +1,8 @@
-# PieFed behavior and Strata delivery ledger
+# PieFed behavior and ETNOS delivery ledger
 
 Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.py`, community/user/post/feed/topic routes and README. This is a living feature-family checklist, not a claim of endpoint/API/federation parity. Inspect full donor behavior when implementing each family. No copied implementation.
 
-**Local** means implemented backend behavior with synthetic tests, not completed UI or production deployment qualification. **Partial** identifies a narrower implementation. **Planned** has no working feature claim. **Adapt** changes the donor behavior for the selected protocol/authority. **Separate** belongs outside ordinary Strata authority.
+**Local** means implemented backend behavior with synthetic tests, not completed UI or production deployment qualification. **Partial** identifies a narrower implementation. **Planned** has no working feature claim. **Adapt** changes the donor behavior for the selected protocol/authority. **Separate** belongs outside ordinary ETNOS authority.
 
 | Family | Status | Existing behavior / missing acceptance |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ Baseline: PieFed `36dbeb44e1a729466917dc6d141bc965f6557cb4`, local `app/models.p
 | Community Wiki | Partial | Public page, restricted proposal, exact review/base, accepted revisions, history |
 | Wiki collaboration / correction UI | Planned | Proposal queues, reviewed rebase, revision detail/diff, safe rendering, contestation and page lifecycle |
 | Research within Wiki | Planned | Typed evidence/datasets/methods; preserve perspectives rather than AI consensus |
-| Protected institutional knowledge | Separate | Aksara Library and authority; no private Wiki archive in public Strata |
+| Protected institutional knowledge | Separate | Aksara Library and authority; no private Wiki archive in public ETNOS |
 | PublicWork | Partial | Admitted institutional/group sponsors, explicit adoption/author consent, bounded agent grants and reviewed public results; milestones/execution adapters remain |
 | Agents | Partial | Human operator, separate admission, expiring posting mandate, budget and revocation |
 | Agent profile / handoff / mute | Planned | Public remit, operator/challenge route, human-first feed controls |

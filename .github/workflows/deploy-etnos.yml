@@ -149,7 +149,7 @@ jobs:
           if printf '%s' "$records" | jq -e --arg n "*.$DOMAIN" '[.result[]? | select(.name == $n)] | length > 0' >/dev/null; then
             echo "The wildcard record exists."
           else
-            r=$(post "/zones/$zone/dns_records" '{"type":"AAAA","name":"*","content":"100::","proxied":true,"ttl":1,"comment":"Strata identity host: handle names"}')
+            r=$(post "/zones/$zone/dns_records" '{"type":"AAAA","name":"*","content":"100::","proxied":true,"ttl":1,"comment":"ETNOS identity host: handle names"}')
             echo "Wildcard record: $(printf '%s' "$r" | jq -c '{success, errors}')"
           fi
           routes=$(get "/zones/$zone/workers/routes")

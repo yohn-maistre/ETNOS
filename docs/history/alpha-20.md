@@ -25,8 +25,8 @@ The preview currently accepts invited **existing AT accounts** using official OA
 For the alpha:
 
 - Public forum content is readable by visitors. Only invited, authenticated members with appropriate community access may write.
-- New communities publish locally by default. `STRATA_PUBLISHING_ENABLED=false` remains set. Login must clearly say no account migration and no automatic outward post publishing.
-- Public AT repositories are not private storage. Custom Strata records would not automatically become ordinary Bluesky posts, but compatible readers/indexers may still discover them.
+- New communities publish locally by default. `ETNOS_PUBLISHING_ENABLED=false` remains set. Login must clearly say no account migration and no automatic outward post publishing.
+- Public AT repositories are not private storage. Custom ETNOS records would not automatically become ordinary Bluesky posts, but compatible readers/indexers may still discover them.
 - Exercise actual AT writes on a disposable consenting test account/PDS, separately from the ordinary forum. Qualify create, read-back/CID, uncertain response reconciliation, update/delete and revocation before enabling any alpha community. Establish a real owned schema namespace before enduring public records. Do not write public test data using the owner's account implicitly.
 - ActivityPub/Threads bridging is not implemented. AT OAuth or public custom records do not provide it.
 
@@ -83,7 +83,7 @@ Reviewed `yohn-maistre/westpapua-watch` main at `658f55f6a5eeacdd2711a31b58140fb
 
 Its Worker uses D1, archive R2, queues/dead letters, scheduled Workflows, model routing and optional Vectorize/browser facilities. It is a separate deployment and cost envelope. Importing it into every forum would add those provisioning requirements and couple conversation availability to a newsroom pipeline. No WPW source or infrastructure was modified here.
 
-Use an optional Watch adapter returning **only published developments**, with stable upstream ID, canonical story URL, title/summary language, places/topics, report time, source count and attributed image/rights where present. Read `/current`, `/development/:id`, `/issues`, `/places` and `/search` through a configured service binding or fixed allowlisted HTTPS endpoint. Keep credentials server-side and ingestion/admin routes unavailable through Strata. Apply bounded response size/timeouts, cache only public upstream data, and fail with a small unavailable state; a slow newsroom must never block posting/search.
+Use an optional Watch adapter returning **only published developments**, with stable upstream ID, canonical story URL, title/summary language, places/topics, report time, source count and attributed image/rights where present. Read `/current`, `/development/:id`, `/issues`, `/places` and `/search` through a configured service binding or fixed allowlisted HTTPS endpoint. Keep credentials server-side and ingestion/admin routes unavailable through ETNOS. Apply bounded response size/timeouts, cache only public upstream data, and fail with a small unavailable state; a slow newsroom must never block posting/search.
 
 On mobile: an optional compact News strip below the composer/primary content, a few horizontal story cards, and a clearly separate News category in search. Open the original dossier or start a local discussion linked to its stable source ID. Do not duplicate whole copyrighted articles or fabricate a news tab before the adapter returns actual data. A later `with-news` deployment preset can install a generic source adapter; WPW's Papuan editorial policy should not become mandatory for every institution or region.
 
@@ -100,9 +100,9 @@ On mobile: an optional compact News strip below the composer/primary content, a 
 | Poll / event | 2–6 single-choice options, closes within 30 days; event dates/location and RSVP |
 | Video | Click-to-load YouTube/Vimeo allowlisted embeds; no arbitrary iframe/autoplay fetch |
 | Uploaded video/audio/files | Not implemented; no transcode, HLS pipeline, audio player or general file store |
-| AT record | Draft custom Strata schema has its own 6,000-character validation boundary; do not confuse this with the local 20,000-body limit or Bluesky's app-specific schema |
+| AT record | Draft custom ETNOS schema has its own 6,000-character validation boundary; do not confuse this with the local 20,000-body limit or Bluesky's app-specific schema |
 
-Photon provides interaction patterns, not missing storage/codecs/media processing. Its Lemmy endpoints do not transparently operate against Strata.
+Photon provides interaction patterns, not missing storage/codecs/media processing. Its Lemmy endpoints do not transparently operate against ETNOS.
 
 **First likely alpha bottleneck is media policy, not twenty identities.** At 20 people × 3 photos/day × 250 KiB, image growth is about 14.65 MiB/day; a fresh 64 MiB cap lasts about 4.37 days, before existing media. Raise no cap blindly: put authorized private-bucket R2 storage behind the same read checks, verify ownership/cleanup/backup and quotas, then permit more generous posting. Do not make private image URLs publicly cacheable or bypass current membership with permanent links.
 
@@ -110,7 +110,7 @@ For a later tiny video experiment, bounded direct MP4 upload with supported code
 
 ## Capacity and costs
 
-Provider limits are ceilings, not an ETNOS benchmark. No real users were load-tested. A single Strata node is currently one serial transactional Durable Object; the platform's ability to create many objects does not automatically shard its authority. Cloudflare documents a soft 1,000 requests/s/object, explicitly workload-dependent. Do not advertise that as our throughput.
+Provider limits are ceilings, not an ETNOS benchmark. No real users were load-tested. A single ETNOS node is currently one serial transactional Durable Object; the platform's ability to create many objects does not automatically shard its authority. Cloudflare documents a soft 1,000 requests/s/object, explicitly workload-dependent. Do not advertise that as our throughput.
 
 Prices checked against official product docs today:
 

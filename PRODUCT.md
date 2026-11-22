@@ -12,7 +12,7 @@ Papuans, Papuan communities and lembaga adat in Tanah Papua. They talk in commun
 
 ## Product Purpose
 
-ETNOS (etnos.space) is the first deployment of Strata, open-source software (AGPL-3.0) that turns a region's everyday conversation into a record its people own, check and correct. Success is a community whose talk becomes checked knowledge it controls: wiki pages with sources, a dictionary, a map of what is known and what is not.
+ETNOS is open-source software (AGPL-3.0), and etnos.space is its first deployment. It turns a region's everyday conversation into a record its people own, check and correct. Success is a community whose talk becomes checked knowledge it controls: wiki pages with sources, a dictionary, a map of what is known and what is not.
 
 The problem in one line: what is alive is not recorded, and what is recorded is not alive. What is written about Tanah Papua is mostly written by outsiders, while what Papuans say every day disappears in chats and feeds. Badan Bahasa counts 428 languages in Tanah Papua, and regional-language use in Provinsi Papua is among the lowest in Indonesia (BPS 2024 as reported; check the table before quoting). Internet use in Maluku and Papua is 69.74% against 81.72% nationally (APJII 2026). In our own seed, 92% of quoted sentences come from Wikipedia, and culture and ecology are under 6% of what is written.
 

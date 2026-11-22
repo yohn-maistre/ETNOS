@@ -10,7 +10,7 @@ Why, in four sentences. Pi already gives us the hard, boring half of an agent (d
 
 ## 2. What we have today
 
-`packages/resident-pi/` is **460 lines in 5 source files** (31 KB, written in a dense style) and 4 test files (about 150 lines), plus about 590 lines on the Strata side (`src/resident*.ts`) that own jobs, routing, mandates and publication.
+`packages/resident-pi/` is **460 lines in 5 source files** (31 KB, written in a dense style) and 4 test files (about 150 lines), plus about 590 lines on the ETNOS side (`src/resident*.ts`) that own jobs, routing, mandates and publication.
 
 | Piece | File, lines | What it does | Who wrote it |
 | --- | --- | --- | --- |
@@ -19,12 +19,12 @@ Why, in four sentences. Pi already gives us the hard, boring half of an agent (d
 | Durable sessions in a Durable Object | `agents/harness/pi` (`PiHarness`) + `agents/lifecycle` | opens pi over `ctx.storage.sql`, wakes on alarm | **agents 0.33.0** |
 | Web search and fetch tools | `agents/websearch/pi`, `agents/webfetch/pi` | optional, off by default | **agents** (we wrap them) |
 | Entry, input validation, one DO per (community, agent, epoch, session) | `worker.ts`, 114 | 64 KB body cap, skill allow-list, work table, 100-job retention, failure codes | us |
-| Model transport | `gateway-models.ts`, 42 | one allowed URL, redaction, 32 KB cap, `inference` reservation through Strata, token cap, **fake SSE** so pi's OpenAI adapter can read a buffered reply | us |
-| Authority calls | `authority.ts`, 11 | every call re-checks the job capability in Strata | us |
+| Model transport | `gateway-models.ts`, 42 | one allowed URL, redaction, 32 KB cap, `inference` reservation through ETNOS, token cap, **fake SSE** so pi's OpenAI adapter can read a buffered reply | us |
+| Authority calls | `authority.ts`, 11 | every call re-checks the job capability in ETNOS | us |
 | Tools | `extensions.ts`, 78 | `read_current_sources`, `research_helper` (a child pi conversation), `search_reviewed_wiki`, gated `web_search` and `web_fetch` (6 calls per job, each page read recorded) | us |
 | Gemini tool-call signatures | `protocol-replay.ts`, 33 | pi's OpenAI adapter drops `extra_content.google.thought_signature`; we store and restore it | us |
 
-What it is, plainly: **a bounded, one-shot-per-job drafting agent.** Evidence in, a few tool rounds, one text out, Strata publishes or abstains. Declared limits: context window 8,192 tokens, 600 output tokens, 3 turns, 6 tool calls, 5 pieces of evidence.
+What it is, plainly: **a bounded, one-shot-per-job drafting agent.** Evidence in, a few tool rounds, one text out, ETNOS publishes or abstains. Declared limits: context window 8,192 tokens, 600 output tokens, 3 turns, 6 tool calls, 5 pieces of evidence.
 
 **Memory today is only the transcript of one thread.** A changed community epoch (any corrected, deleted or moderated post, any accepted wiki revision) starts a fresh session, by design. Nothing carries between jobs, between threads or between days. "Compaction" shrinks one transcript; it is not a memory of a place. So "an Aksara that knows Mee Pago" does not exist yet, and neither pi nor the `agents` package ships one (pi's README has no memory feature; `agents` has context blocks, see §4).
 
@@ -45,7 +45,7 @@ Other things the code tells us:
 | Provenance and withdrawal on every remembered fact | no | resolve at read time against the source |
 | People's corrections kept beside facts | no | corrections table, never auto-merged |
 | Open questions as first-class | no | questions table |
-| Recent events (news, posts, edits) | partly (Strata has them) | a ring buffer view for the prompt |
+| Recent events (news, posts, edits) | partly (ETNOS has them) | a ring buffer view for the prompt |
 | Seven regions plus one sitewide face | one resident per community | region identity, per-region budget, sitewide as a view |
 | Skills beyond draft and reply (morning story, weekly summary, Tanya) | 4 skills | 3 to 4 more prompts and tools |
 
@@ -113,14 +113,14 @@ Other things the code tells us:
 
 ### 6.1 Principles
 
-1. Memory is **pointers with receipts, not copies of truth.** Wiki pages, claims, posts and sources already live in Strata. The notebook stores what Aksara has noticed and a pointer to the source revision; it never becomes a second source of truth.
+1. Memory is **pointers with receipts, not copies of truth.** Wiki pages, claims, posts and sources already live in ETNOS. The notebook stores what Aksara has noticed and a pointer to the source revision; it never becomes a second source of truth.
 2. **Resolve at use time** (AGENTS.md). Every fact is joined to its source when read; a withdrawn, deleted, private or superseded source drops the fact from the prompt that instant.
 3. Small enough for the Free budget: the model sees a **bounded briefing (about 2,500 tokens, at most about 40 rows read)**, not a database.
 4. Nobody's words are merged. People's corrections sit beside the fact, attributed; humans accept wiki changes.
 
 ### 6.2 Where it lives
 
-In the **Strata node's Durable Object SQLite**, in `pn_*` tables beside the claims, wiki and posts. Reason: the withdrawal join and the "write notes together with publication outbox" rule are one transaction there. The resident Worker reads and writes it only through new `ResidentAuthority` paths (`/notebook`, `/note`), as it does for `/context` and `/wiki-search` today. The pi DO keeps only conversations. (Alternative considered: a notebook DO per region inside resident-pi. Rejected: it cannot check withdrawal atomically and doubles the places an access bug can hide.)
+In the **ETNOS node's Durable Object SQLite**, in `pn_*` tables beside the claims, wiki and posts. Reason: the withdrawal join and the "write notes together with publication outbox" rule are one transaction there. The resident Worker reads and writes it only through new `ResidentAuthority` paths (`/notebook`, `/note`), as it does for `/context` and `/wiki-search` today. The pi DO keeps only conversations. (Alternative considered: a notebook DO per region inside resident-pi. Rejected: it cannot check withdrawal atomically and doubles the places an access bug can hide.)
 
 ### 6.3 Memory model (per region, plus the sitewide view)
 
@@ -137,14 +137,14 @@ Sitewide Aksara has **no memory of its own**: it reads the seven `pn_digest` row
 
 ### 6.4 Writing, compaction, reading
 
-- **Ingest (code, no model).** On existing Strata events (wiki revision accepted, post published in a public place, news item stored, correction posted) append to `pn_events`; mark facts `stale` when their source revision changes and `withdrawn` when source access ends. Only public, accepted or published material enters. Private rooms never do; a test enforces it.
+- **Ingest (code, no model).** On existing ETNOS events (wiki revision accepted, post published in a public place, news item stored, correction posted) append to `pn_events`; mark facts `stale` when their source revision changes and `withdrawn` when source access ends. Only public, accepted or published material enters. Private rooms never do; a test enforces it.
 - **Notes by the model (propose only).** Tool `propose_note` writes a fact or question as `proposed` with a mandatory source ref that resolves to something Aksara actually read this job. Web pages are labelled unreviewed and cannot become `active` facts. A steward or the existing verification gates promote.
 - **Consolidation (alarm, per region, daily, about 200 rows read).** Deterministic SQL: expire events, dedupe, flag stale, re-rank by use. **Weekly, one model call** rewrites the digest from the active facts, the open questions and the week's events (about 3,000 in and 600 out, about 44 neurons by the showcase plan's rates, so about 350 neurons a week for all eight). The new digest is accepted only if every fact id it cites is still `active`; otherwise the old digest stays.
 - **Read (per job).** One authority call returns: the digest (1 row), the top 6 `pn_fts` hits for the question (at most 600 tokens), up to 5 open questions, up to 8 recent events, plus corrections attached to the chosen facts. Injected as a pi prompt section, so the typical job needs **no extra tool round just to remember**. Hard cap about 2,500 tokens and about 40 rows read.
 
 ### 6.5 The agent loop
 
-One pi-durable session per (region, epoch) for scheduled editorial work, and per thread for replies, as now. Each job: Strata creates the job and ticket (unchanged) → authority returns the evidence and the notebook briefing → pi runs 1 to 3 turns with tools → the draft returns → Strata's existing gates (verified sentences, redaction, mandate, budget, atomic publication) decide. `ABSTAIN` stays a first-class outcome. Per-region daily budgets (neurons, jobs, rows) are checked by Strata before inference, as `inference` reservations are today.
+One pi-durable session per (region, epoch) for scheduled editorial work, and per thread for replies, as now. Each job: ETNOS creates the job and ticket (unchanged) → authority returns the evidence and the notebook briefing → pi runs 1 to 3 turns with tools → the draft returns → ETNOS's existing gates (verified sentences, redaction, mandate, budget, atomic publication) decide. `ABSTAIN` stays a first-class outcome. Per-region daily budgets (neurons, jobs, rows) are checked by ETNOS before inference, as `inference` reservations are today.
 
 Skills: keep `source-digest`, `research-question`, `knowledge-draft`, `thread-reply`; add `morning-story`, `weekly-summary`, `tanya` (question or poll draft), and `survey-draft` later.
 
@@ -156,7 +156,7 @@ Delete or demote: `research_helper` (a second model call inside a job; neurons a
 
 ### 6.7 Model backend (replacing the gateway)
 
-> **Update, same day.** Points 1 and 2 shipped in a different place: the model logic lives in Strata's `src/models.ts`, and the resident's `MODEL_GATEWAY` binding now points at Strata's own binding-only `ModelGateway` entrypoint instead of `westpapua-watch-engine` (commits 6dcdc4f and 32227d1, both deployed). The key stays a secret on the Strata Worker only, and `jobProvider`'s transport rules are unchanged. Still open from this section: the live Gemma 4 call, `protocol-replay.ts`, and whether to drop the binding later and call `env.AI` inside the runtime.
+> **Update, same day.** Points 1 and 2 shipped in a different place: the model logic lives in ETNOS's `src/models.ts`, and the resident's `MODEL_GATEWAY` binding now points at ETNOS's own binding-only `ModelGateway` entrypoint instead of `westpapua-watch-engine` (commits 6dcdc4f and 32227d1, both deployed). The key stays a secret on the ETNOS Worker only, and `jobProvider`'s transport rules are unchanged. Still open from this section: the live Gemma 4 call, `protocol-replay.ts`, and whether to drop the binding later and call `env.AI` inside the runtime.
 
 Keep `jobProvider`'s transport rules (single allowed origin, redaction, 32 KB cap, `inference` reservation, token cap). Replace only what is behind them:
 1. **Workers AI**, default: call `env.AI.run('@cf/google/gemma-4-26b-a4b-it', {messages, tools, max_tokens})` from the same guarded function, or hand `agents/models/pi-ai` `createAI` a guarded wrapper of the binding. One live call on a Free account is still needed to confirm the model is not paid-only and what shape the tool-call reply has *(to verify)*. Reasoning stays off (thinking tokens bill as output).
@@ -165,7 +165,7 @@ Keep `jobProvider`'s transport rules (single allowed origin, redaction, 32 KB ca
 
 **Neuron arithmetic (from the showcase plan's rates, not re-measured).** One job with the briefing: about 4,500 tokens in and 600 out is about 57 neurons, so one tool round-free job is about 175 jobs a day across all eight. Each extra tool round resends the context, so a three-round job is about 170 neurons and only about 58 a day. The consequence: **default to one round, allow more only for thread replies, and give each region a daily neuron ledger** (about 1,200 each plus a sitewide share).
 
-**Rows.** A pi job writes transcript, task and document rows; I estimate 50 to 150 per job *(not measured)*, which keeps 100k writes/day far away. Reads are the account-wide risk (Strata already uses about 40% in a heavy simulated day): the notebook read must stay under about 40 rows, and the daily consolidation under about 200 per region.
+**Rows.** A pi job writes transcript, task and document rows; I estimate 50 to 150 per job *(not measured)*, which keeps 100k writes/day far away. Reads are the account-wide risk (ETNOS already uses about 40% in a heavy simulated day): the notebook read must stay under about 40 rows, and the daily consolidation under about 200 per region.
 
 ### 6.8 Tests (required by AGENTS.md)
 

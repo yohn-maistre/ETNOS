@@ -16,7 +16,7 @@ Qualification: TypeScript check and all 138 engine tests passed, including the o
 
 ## Deployed release receipt
 
-Canonical Strata `66b24e06737d3be3ab99718181edf13981dab301`; matching Honai UI `7c95573bd511f694609d75fdf6d3a511121f8cd8`. Both are pushed to main. CI: [Strata](https://github.com/yohn-maistre/strata/actions/runs/43168906316) · [Honai](https://github.com/yohn-maistre/honai-metro/actions/runs/43168902393).
+Canonical ETNOS `66b24e06737d3be3ab99718181edf13981dab301`; matching Honai UI `7c95573bd511f694609d75fdf6d3a511121f8cd8`. Both are pushed to main. CI: [ETNOS](https://github.com/yohn-maistre/strata/actions/runs/43168906316) · [Honai](https://github.com/yohn-maistre/honai-metro/actions/runs/43168902393).
 
 Existing https://etnos.space Worker deployed 12 November 2026 at 13:32:37 Asia/Bangkok, deployment `1fc46348-9933-41db-8c97-9ef3edfea23a`, version `7a96ec36-9d97-475e-87f8-872812085227`, 100%. The UI-only upload preserves server SHA-256 `b5cd38f9cebaf219fc6c5576f82996c0d3b22ee39264475dfaae25c5175960e5`, schema 26, existing bindings/secrets and server etag `c24b7a2eea6ffc4cae0adea71a5b67d84dbe539cd3095fbdae3130127d07ecfb`. No new resource or production account/model action was created.
 

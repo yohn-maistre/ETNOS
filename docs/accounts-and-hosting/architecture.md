@@ -5,18 +5,18 @@ Status: architectural baseline is frozen in [Decision 001](../decisions/decision
 ## Three kinds of data
 
 1. **Custodial originals and institutional work:** owned by a community/institution's trust domain. A local or explicitly authorized hosted Aksara node keeps sources, eligibility, private work and receipts. A node can hold more than one logical trust domain only with qualified isolation; a domain can migrate between machines. One region does not imply one database or one mandatory node.
-2. **Private Strata conversations:** membership-protected social discussion, managed by the community's Strata authority. These are not public AT records and are not the same as institutional source custody. Hosting operators are part of the threat model; this foundation does not implement end-to-end encryption.
-3. **Public knowledge and discussion:** deliberate, separately identified contributions in AT repositories and Strata's public views. A public answer or memory is a reviewed public derivative, never a public pointer to a private source row or a dump of institutional memory.
+2. **Private ETNOS conversations:** membership-protected social discussion, managed by the community's ETNOS authority. These are not public AT records and are not the same as institutional source custody. Hosting operators are part of the threat model; this foundation does not implement end-to-end encryption.
+3. **Public knowledge and discussion:** deliberate, separately identified contributions in AT repositories and ETNOS's public views. A public answer or memory is a reviewed public derivative, never a public pointer to a private source row or a dump of institutional memory.
 
 ```mermaid
 flowchart TD
-  Human[People on ordinary browsers] --> Strata[Strata: community policy and public square]
-  Strata --> Private[Protected community discussion]
-  Strata --> AT[Public AT records and application index]
-  Strata --> Requests[Institution-sponsored public work]
+  Human[People on ordinary browsers] --> ETNOS[ETNOS: community policy and public square]
+  ETNOS --> Private[Protected community discussion]
+  ETNOS --> AT[Public AT records and application index]
+  ETNOS --> Requests[Institution-sponsored public work]
   Requests --> A[Aksara A: independent admission, sources, work and receipts]
   A --> Release[Exact reviewed public derivative]
-  Release --> Strata
+  Release --> ETNOS
   A <-->|Authenticated A2A over HTTPS| B[Aksara B: separate authority]
   A <-->|Optional Iroh artifact/peer transport| B
 ```
@@ -27,7 +27,7 @@ Custody is independent of hardware location. Public copies cannot be made privat
 
 AT identity is not membership. Community membership is not institutional access. Agent operation is not a mandate to represent a community. Each boundary authenticates and authorizes the specific use.
 
-The hosted preview uses the official AT OAuth SDK and an application session with invitation-controlled deployment enrollment. Local fixture tokens are rejected by this profile. Private-only identity enrollment is still unimplemented. Aksara web UI, Strata, devices and messaging channels are surfaces; their authentication does not issue institutional source/execution rights. Public moderation, Wiki acceptance, custodial release and institutional execution are different rights. No owner/global administrator HTTP fallback exposes someone else's sources.
+The hosted preview uses the official AT OAuth SDK and an application session with invitation-controlled deployment enrollment. Local fixture tokens are rejected by this profile. Private-only identity enrollment is still unimplemented. Aksara web UI, ETNOS, devices and messaging channels are surfaces; their authentication does not issue institutional source/execution rights. Public moderation, Wiki acceptance, custodial release and institutional execution are different rights. No owner/global administrator HTTP fallback exposes someone else's sources.
 
 An agent has its own public actor, accountable operator, per-community membership and a current mandate. Model output cannot issue or widen those grants. In this slice the mandate authorizes bounded posting only; it is not an institutional SharingGrant, inference lease or sensor/tool capability. An eventual credential broker performs only admitted operations.
 
@@ -41,7 +41,7 @@ Local post mutation, its outbox intent and audit entry are transactional. Remote
 
 ## Deployment
 
-The owner selected TypeScript for Strata and the official AT SDK, retaining Rust where justified in Aksara/native adapters. The initial runnable profile is a loopback Node 24 host with persistent SQLite and built-in HTTP. It requires no Redis, container, vector database or resident model. There is no claim of a measured phone minimum, serverless compatibility or production reliability yet.
+The owner selected TypeScript for ETNOS and the official AT SDK, retaining Rust where justified in Aksara/native adapters. The initial runnable profile is a loopback Node 24 host with persistent SQLite and built-in HTTP. It requires no Redis, container, vector database or resident model. There is no claim of a measured phone minimum, serverless compatibility or production reliability yet.
 
 The Worker profile now uses a SQLite Durable Object per configured logical node, `transactionSync`, portable schema migrations and the same policy/Fetch handler. Node retains its own SQLite adapter. Actual-workerd tests cover isolation, atomic rollback, source bytes, uncertain delivery, independent node storage and restart; this is narrower than production recovery/resource/security qualification. No `node:sqlite` import enters the Worker. Outward AT publishing is separately selected per public community and defaults off.
 
@@ -49,7 +49,7 @@ AT public ingestion/indexing, PDS operations and hosted services have their own 
 
 ## Protocol roles and catalogue delta
 
-- AT: selected future public record/identity substrate, with versioned Strata schemas.
+- AT: selected future public record/identity substrate, with versioned ETNOS schemas.
 - A2A: independent tasks/results where actual agent collaboration exists; receiving policy always applies.
 - HTTPS: default web and task transport and scoped direct-resource access.
 - Iroh: optional native peer connection/artifact transport, not a new authority or task protocol. A2A-over-Iroh needs a separately tested transport binding.

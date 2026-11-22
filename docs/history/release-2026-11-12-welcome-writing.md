@@ -4,12 +4,12 @@
 
 ## Source and deployment
 
-- Strata code: `ee8e05c3da8783b3629c9d67139eb482a887e5b7` (welcome `7af3965`, writing/scrollbars `62fe196`, final solid-button refinement `ee8e05c`).
+- ETNOS code: `ee8e05c3da8783b3629c9d67139eb482a887e5b7` (welcome `7af3965`, writing/scrollbars `62fe196`, final solid-button refinement `ee8e05c`).
 - Matched Honai Metro main UI: `6e52a08eaf3a1fca66ee3b752d2189167cb3595e`.
 - Existing Worker: `strata-preview`; deployment `e321a626-7c34-4899-90cb-abf24856026c`, version `dee31d92-c46c-4fea-82b2-9c857870ae81`, 100% traffic. API creation time `2026-11-11T18:03:26.223407Z` is November 12 in Asia/Bangkok.
 - Server module SHA-256 unchanged: `b503f443cf22bdbbf7cc5748ffd975005f2245cba394732daf9d799a09b47ed6`; script etag unchanged: `8d43072dc447a0cc421d1c101308c366c81f5e3963a21c155af06b98cca7a845`.
 - Refreshed static client assets on the same Worker. Existing secret bindings, namespace, service bindings, source/OAuth policy and open enrollment retained. No schema migration, additional paid resource or hosted model call.
-- Remote code CI passed: [Strata](https://github.com/yohn-maistre/strata/actions/runs/43073490272) and [Honai](https://github.com/yohn-maistre/honai-metro/actions/runs/43073498240).
+- Remote code CI passed: [ETNOS](https://github.com/yohn-maistre/strata/actions/runs/43073490272) and [Honai](https://github.com/yohn-maistre/honai-metro/actions/runs/43073498240).
 
 ## Visible behavior
 
@@ -33,7 +33,7 @@ The main scrollbar keeps a translucent thumb and transparent track, with native 
 
 Final public post-deploy probe passed against the exact locally built main bundle: health `ok`, open signup controls, first welcome and repeat suppression, Paper/Jakarta defaults, coded Tigi caption, accent-aware Raja Ampat print, public profile cover/footer, directly readable Wiki and the legacy recovery bootstrap under its existing CSP. Solid current-accent buttons and layout fit were verified at 320, 390, 768 and 1440px. Zero page errors. These are anonymous public reads and device-local appearance changes; no hosted account was created and no live post/model job was submitted.
 
-Live screenshots are retained locally in `/tmp/strata-browser-evidence/live-*`. The code release uses the unchanged server-module hash above, with the final client bundle and solid-button refinement. To inspect the first-visitor morph while already signed in, use a fresh private browser window on Home.
+Live screenshots are retained locally in `/tmp/etnos-browser-evidence/live-*`. The code release uses the unchanged server-module hash above, with the final client bundle and solid-button refinement. To inspect the first-visitor morph while already signed in, use a fresh private browser window on Home.
 
 ## Continue implementation
 

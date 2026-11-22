@@ -4,7 +4,7 @@ Research/proposal, 1 November 2026 (Asia/Bangkok). This responds to the founder'
 
 ## Recommendation
 
-Keep Strata as an independently useful social engine. Let communities establish private spaces with clear preservation policies. Keep a separately governed archive/corpus under the chosen community custodian. Treat training, external processing and public publication as distinct, explicit uses. Use AT for the public network and optional portable identity; evaluate AT Spaces through a replaceable adapter with synthetic data. A community's private language programme must not depend on an unfinished protocol or an always-running AI.
+Keep ETNOS as an independently useful social engine. Let communities establish private spaces with clear preservation policies. Keep a separately governed archive/corpus under the chosen community custodian. Treat training, external processing and public publication as distinct, explicit uses. Use AT for the public network and optional portable identity; evaluate AT Spaces through a replaceable adapter with synthetic data. A community's private language programme must not depend on an unfinished protocol or an always-running AI.
 
 Working product framing: **a community-governed commons where people use their languages, keep shared memory, develop useful tools and choose what they share.** A corpus is a governed derivative of participation, not an automatic consequence of joining the forum. Each language/community can adopt its own rules and choose whether to participate at all.
 
@@ -14,14 +14,14 @@ The catalogue v2.5.8 already specifies these boundaries in §§38–39, 58 and 6
 
 | Area | Verified current behavior | Still required |
 | --- | --- | --- |
-| Strata private forums | Current-membership checks; hidden/listed-private modes; private posts/media excluded from public feeds and AT intents | Qualified operator isolation, recovery/retention, private-only onboarding and private federation; community posts are not E2EE |
+| ETNOS private forums | Current-membership checks; hidden/listed-private modes; private posts/media excluded from public feeds and AT intents | Qualified operator isolation, recovery/retention, private-only onboarding and private federation; community posts are not E2EE |
 | Hosting | Connected preview stores forum data in its configured Cloudflare SQLite Durable Object | Separate community-chosen custody/storage and key/recovery arrangements; a namespace is not isolation from a privileged provider/operator |
 | AT integration | Invited AT OAuth and a guarded public publication outbox; live public publishing remains disabled | Owned Lexicons, live delivery/ingestion and qualified Spaces adapter |
 | Wiki | Public accepted pages, restricted proposals, human exact-base/digest acceptance | Language-specific entry types, multiple attributed perspectives and safe private editorial/corpus tools; the current public Wiki is not a private archive |
-| Aksara | Rust-scoped Library originals, current principal/lane/purpose gates and withdrawal-aware projections | Real SharingGrant/data-use enforcement, explicit training/evaluation/export operations and a qualified Strata custody connector |
+| Aksara | Rust-scoped Library originals, current principal/lane/purpose gates and withdrawal-aware projections | Real SharingGrant/data-use enforcement, explicit training/evaluation/export operations and a qualified ETNOS custody connector |
 | Training | No forum-to-corpus collector or training service exists | Programme consent, candidate review, versioned datasets, training receipts, release controls and community evaluation |
 
-Aksara checkout reviewed: `2017d5b`. Its kernel currently accepts `knowledge` or `work` purposes, not a complete granular training-purpose policy. `protocols/aksara/v1/README.md` explicitly says the publication schema's SharingGrant field is not an implemented evaluator. Do not relabel those scaffolds as permission to train. Strata's development custody fixture must not become a competing institutional authority kernel.
+Aksara checkout reviewed: `2017d5b`. Its kernel currently accepts `knowledge` or `work` purposes, not a complete granular training-purpose policy. `protocols/aksara/v1/README.md` explicitly says the publication schema's SharingGrant field is not an implemented evaluator. Do not relabel those scaffolds as permission to train. ETNOS's development custody fixture must not become a competing institutional authority kernel.
 
 ## What AT supports today
 
@@ -33,18 +33,18 @@ Important distinctions:
 - A Space is an access/sync boundary with a DID authority. Records normally remain in per-author, per-space repos on their repo hosts, rather than all moving onto the community authority's server. A Space therefore does not by itself establish community-controlled storage placement.
 - Spaces provide access control, not E2EE. PDS hosts and authorized syncing applications can read the data they handle. An application view may hold another plaintext copy. Approving a reader is a meaningful distribution decision.
 - A group's shared DID and roles can improve continuity across apps without sharing a password. They do not establish cultural legitimacy or replace source-specific contributor/community permissions.
-- The current draft's `managedspace` policy delegates access decisions to a managing application. This is a plausible future Strata integration seam for current membership. It is not permission to read Aksara's archive or train a model.
+- The current draft's `managedspace` policy delegates access decisions to a managing application. This is a plausible future ETNOS integration seam for current membership. It is not permission to read Aksara's archive or train a model.
 - Optional `allowedApps` controls under `memberspace` are relevant to limiting admitted syncing clients. Read/write access is not a protocol-level restriction on downstream training, copying or commercialization after plaintext has been delivered.
 - Short-lived credentials are the primary revocation mechanism: draft defaults are about ten minutes, with optional revocation fanout to repo hosts. Private federation needs tested expiry/fanout/caching behavior; instant global revocation must not be promised.
 - A hidden member list does not hide all participation from admitted readers: the draft notes that writers can be enumerated from the writer set. Sensitive rosters/associations need their own threat assessment.
 
-A future deployment may choose community-operated compatible repo/space hosts and only approved syncers. Alternatively, the community archive can remain off-protocol and publish only separately approved derivatives. Existing public AT identities can still authenticate to local Strata membership without sending private posts to those accounts' PDSs. Private-only/local identities remain an onboarding requirement, not a delivered feature.
+A future deployment may choose community-operated compatible repo/space hosts and only approved syncers. Alternatively, the community archive can remain off-protocol and publish only separately approved derivatives. Existing public AT identities can still authenticate to local ETNOS membership without sending private posts to those accounts' PDSs. Private-only/local identities remain an onboarding requirement, not a delivered feature.
 
 ## Three connected experiences
 
 ```mermaid
 flowchart TD
-  P[People using a private Strata space] --> C[Community-chosen preservation policy]
+  P[People using a private ETNOS space] --> C[Community-chosen preservation policy]
   C --> A[Protected originals and archive under custodian control]
   A --> D[Private candidate corpus: lineage, rights and human review]
   D --> T[Exact dataset version and separately authorized training or evaluation]
@@ -62,7 +62,7 @@ No space automatically changes old messages' rights when a steward enables a new
 
 ## Directly in the forum: the proposed interaction
 
-The founder clarified that this must be a clean forum capability. The custody boundary above is a backend responsibility, not a requirement to send people to a different archive app. Strata is a surface for the protected workflow as well as ordinary public conversation. Aksara's Workbench remains another optional surface; an LLM is not required for human language contribution/review.
+The founder clarified that this must be a clean forum capability. The custody boundary above is a backend responsibility, not a requirement to send people to a different archive app. ETNOS is a surface for the protected workflow as well as ordinary public conversation. Aksara's Workbench remains another optional surface; an LLM is not required for human language contribution/review.
 
 A participating community can expose these contextual tabs:
 
@@ -100,7 +100,7 @@ These are policy operations, not seven mandatory toggles every time someone post
 
 Permission checks must use current authenticated authority at selection, extraction, external processing, training start, reconnect/retry and release. An AI or programme moderator cannot invent or widen a grant. Mixed-source derivatives inherit applicable source restrictions; redaction/de-identification alone does not grant reuse rights. Source withdrawal blocks future authorized use and triggers feasible dependent-dataset/index/model reviews. It cannot guarantee unlearning from an existing model or erasure of copies already distributed.
 
-Strata's code remains AGPL-3.0-only. Community data, recordings, annotations, datasets and model artifacts do not acquire an open licence from the code licence. Local Contexts labels express community protocols; they are not encryption or automatic technical enforcement. Māori and African examples inform discussion, not the naming or legitimacy of Mee governance.
+ETNOS's code remains AGPL-3.0-only. Community data, recordings, annotations, datasets and model artifacts do not acquire an open licence from the code licence. Local Contexts labels express community protocols; they are not encryption or automatic technical enforcement. Māori and African examples inform discussion, not the naming or legitimacy of Mee governance.
 
 ## Useful corpus pipeline
 
@@ -125,7 +125,7 @@ Start with useful, measurable tools: community lexicon and corpus search, spelli
 | ZDS permissioned-data implementation | Small alternative PDS prototype and migration/route references | Its own docs call it experimental/operator-gated and narrower than complete group support; current API details can differ from the changing upstream proposal |
 | Te Hiku / Papa Reo / Rongo | Local processing, explicit contribution, community stewardship and return of benefits | Rongo's published policy processes recordings on-device unless explicitly shared. Their cultural framework/licence is not a generic text to transplant; the licence repository restricts reuse of its licence text |
 | Mukurtu | Cultural protocols, dictionary roles, multiple community records/perspectives on an asset | Already a catalogue reference. Especially useful for preserving attributed variants without overwriting one community's account with another's; an archival adapter/UX reference, not a mandatory forum replacement |
-| ELAN | Established local time-aligned audio/video annotation and portable export | Evaluate EAF/TSV import/export instead of building a full linguistic annotation workstation into Strata |
+| ELAN | Established local time-aligned audio/video annotation and portable export | Evaluate EAF/TSV import/export instead of building a full linguistic annotation workstation into ETNOS |
 | Common Voice | Speech contribution/review workflows; openly licensed collection code | Public Common Voice datasets use CC0 in the reviewed listings; code is MPL-2.0. Do not submit a private Mee corpus to that public donation workflow by default; code licence and dataset rights are different |
 | Esethu, ACL 2025 | Community-centred dataset governance, benefit-sharing and isiXhosa ASR proof of concept | A substantive research precedent, not proof of Mee model quality or a licence automatically suitable in Papua |
 | Karya | Community-linked multilingual collection, annotation and evaluation case studies | Practitioner reference for contributor benefit/QA; company outcome claims are not reproduced benchmarks or an adopted vendor agreement |
@@ -165,7 +165,7 @@ Reading never grants training; collective approval never invents missing contrib
 - Governance: [CARE](https://www.gida-global.org/careprinciples), [Local Contexts TK Labels](https://localcontexts.org/labels/traditional-knowledge-labels/), [Papa Reo stewardship guide](https://blog.papareo.nz/a-practical-guide-to-creating-your-own-stewardship-license/), [Rongo policy](https://github.com/TeHikuMedia/Kaitiakitanga-License/blob/tumu/rongo.md).
 - Language tooling: [Mukurtu community records](https://docs.mukurtu.org/digital-heritage-items/UnderstandCommunityRecords), [Mukurtu protocols](https://docs.mukurtu.org/communities-cultural-protocols-categories/), [ELAN manual](https://www.mpi.nl/tools/elan/docs/manual/Pref_Introduction.html), [Common Voice source](https://github.com/common-voice/common-voice), [Common Voice dataset listings](https://mozilladatacollective.com/organization/cmfh0j9o10006ns07jq45h7xk), [Esethu paper](https://aclanthology.org/2025.acl-long.1487/), [Karya practitioner work](https://www.karya.in/).
 - Alternatives: [Habitat proxy](https://api.habitat.network/docs/space-proxy), [ZDS permissioned-data status](https://tangled.org/zat.dev/zds/blob/main/docs/permissioned-data.md), [Germ/AT integration](https://www.germnetwork.com/blog/integrating-germ-atproto).
-- Limits: [training-data extraction research](https://www.usenix.org/conference/usenixsecurity21/presentation/carlini-extracting), [federated language-model leakage study](https://arxiv.org/abs/2310.16152). Neither is an assessment of Strata's particular code.
+- Limits: [training-data extraction research](https://www.usenix.org/conference/usenixsecurity21/presentation/carlini-extracting), [federated language-model leakage study](https://arxiv.org/abs/2310.16152). Neither is an assessment of ETNOS's particular code.
 - Mee resource inventory leads: [Library of Congress dictionary scan](https://tile.loc.gov/storage-services/master/gdc/gdcebookspublic/20/19/66/75/00/2019667500/2019667500.pdf), [Universitas Cenderawasih repository](http://repository.uncen.ac.id/id/eprint/526/2/BAB%20I.pdf). Rights, collection history and community permission remain unverified.
 
 Research used official pages/repos, the supplied catalogue and local code inspection. Exa initially returned a credit-limit error; after the user reconfigured it, two retries returned MCP `Unknown tool: exa.web_search_exa`. Supplemental sweeps used Parallel with Firecrawl/GitHub primary-source verification. Search hits and project claims were not treated as implementation/security proof. No provider account or service configuration was changed.

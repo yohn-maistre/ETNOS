@@ -51,7 +51,7 @@ The scope switcher already reads "Tanah Papua" and narrows to a region or kampun
 | Stage | What | Partners to talk to |
 | --- | --- | --- |
 | 1, now | ETNOS for Tanah Papua, alive with real communities (Mee first) | Komunitas Sastra Papua, UNCEN, Balai Bahasa Papua, Kamus Mee |
-| 2 | ETNOS installable by another region of the archipelago: `strata.yaml` (P6), a seeding catalogue per region, an operator's guide | AMAN, which links thousands of masyarakat adat communities; BRWA, which maps wilayah adat |
+| 2 | ETNOS installable by another region of the archipelago: `etnos.yaml` (P6), a seeding catalogue per region, an operator's guide | AMAN, which links thousands of masyarakat adat communities; BRWA, which maps wilayah adat |
 | 3 | Shared lexicons published, a cross-home index, the word atlas | Concepticon and CLDF maintainers; Local Contexts |
 | 4 | The Pacific: homes run by Pacific organisations on their own terms | Te Hiku Media (data sovereignty peers), Pacific universities |
 

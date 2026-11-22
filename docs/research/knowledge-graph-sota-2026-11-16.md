@@ -2,7 +2,7 @@
 
 Research note · 16 November 2026 · Planning only. Nothing here is built, deployed or decided.
 
-This note builds on [the relational landscape note](knowledge-observatory-2026-11-12.md), [the intelligence catalogue](strata-intelligence-catalogue-2026-11-12.md), [organising knowledge](../knowledge/knowledge-organisation-2026-11-15.md) and [the 16 November direction](../plan/direction-2026-11-16.md). It does not repeat their reasoning on relationality, CARE, Local Contexts or label families. It adds current tools, licences and costs, and a concrete pipeline.
+This note builds on [the relational landscape note](knowledge-observatory-2026-11-12.md), [the intelligence catalogue](etnos-intelligence-catalogue-2026-11-12.md), [organising knowledge](../knowledge/knowledge-organisation-2026-11-15.md) and [the 16 November direction](../plan/direction-2026-11-16.md). It does not repeat their reasoning on relationality, CARE, Local Contexts or label families. It adds current tools, licences and costs, and a concrete pipeline.
 
 How to read the claims. Every tool claim has a source number in square brackets, listed in section 7 with the page, date or version I read. "Unverified" means I could not read a primary source. "Inferred" means my own reasoning from facts I read.
 
@@ -266,7 +266,7 @@ Design choices, in short: sentences are the ground truth, claims are interpretat
 | --- | --- | --- |
 | `source` | A document, page, recording, book or dataset record | url or archive id, publisher, date published, language, rights tier, `perspective` tag (for example `colonial_administration`, `academic`, `government`, `community`, `encyclopedia`), `cites` list (ancestry), access level |
 | `passage` | A verified sentence or span in a source | source id, offsets, text, text hash, verbatim-verified date, language |
-| `item` | A thing people read in the commons: wiki page, post, story, recording excerpt, observation | existing Strata id, kind, labels, space |
+| `item` | A thing people read in the commons: wiki page, post, story, recording excerpt, observation | existing ETNOS id, kind, labels, space |
 | `claim` | One atomic assertion | normalised text in the source language, subject, predicate, object or literal, modality (reported, observed, believed), `about_time` |
 | `matter` | A question of fact or interpretation that has more than one answer | question text, claims attached |
 | `entity` | Subtypes: `place`, `people_group` (self-named only), `language`, `organisation`, `taxon`, `practice`, `work`, `event`, `term` (local word with its language), `concept` | names with language and speaker group, external refs, kind |
@@ -405,7 +405,7 @@ All fetched on 16 November 2026 unless a date is given. "Secondary" means a blog
 
 **Project documents read**
 
-- S0. `docs/research/knowledge-observatory-2026-11-12.md`, `docs/research/strata-intelligence-catalogue-2026-11-12.md`, `docs/knowledge/knowledge-organisation-2026-11-15.md`, `docs/plan/direction-2026-11-16.md`, `seed/wiki/pages/meepago.json`, `saireri.json`, `la-pago.json` (counts: 39 pages, 525 basis sentences, 87 distinct cited URLs, my own script).
+- S0. `docs/research/knowledge-observatory-2026-11-12.md`, `docs/research/etnos-intelligence-catalogue-2026-11-12.md`, `docs/knowledge/knowledge-organisation-2026-11-15.md`, `docs/plan/direction-2026-11-16.md`, `seed/wiki/pages/meepago.json`, `saireri.json`, `la-pago.json` (counts: 39 pages, 525 basis sentences, 87 distinct cited URLs, my own script).
 
 **References**
 

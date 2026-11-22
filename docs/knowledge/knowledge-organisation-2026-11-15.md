@@ -79,7 +79,7 @@ Other gaps, in order of how much they'd help:
 - **Pages have no kind.** A person, an event, a place below regency, a practice, a work and an organisation are all "a page". Six page kinds would let a page show the right fields and let the timeline pick out events. Proposal: orang, peristiwa, tempat, praktik, karya, lembaga.
 - **Pages don't link to each other with meaning.** A small set of typed links would do: bagian dari, tentang, bertentangan dengan, menggantikan, terjemahan dari.
 - **One thing, many names.** Contexts have aliases. Pages don't. A river or a clan house has names in several languages, and each name belongs to its speakers.
-- **Accounts that stay plural.** The strata read as a ladder toward "reviewed". Two clans can hold two accounts, and both stay. Add a state beside the ladder: berdampingan, recorded side by side, each with its own sources and its own reviewers.
+- **Accounts that stay plural.** The layers read as a ladder toward "reviewed". Two clans can hold two accounts, and both stay. Add a state beside the ladder: berdampingan, recorded side by side, each with its own sources and its own reviewers.
 - **Questions as an entry point.** "Celah" is computed. The questions people ask and nobody has answered are the best map of what the commons should learn next. Give them a page.
 - **Kept items have no shelf.** Already in the plan as the collection view.
 

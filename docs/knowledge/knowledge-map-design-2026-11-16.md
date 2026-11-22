@@ -21,7 +21,7 @@ Every piece of knowledge in the commons gets coordinates: where it is about, whe
 
 | Coordinate | What it records | Where it comes from |
 | --- | --- | --- |
-| **Tempat** | Places the item is about: region, regency, kampung, lake, mountain, sea | Labels already in Strata (`context_parents`), plus extraction |
+| **Tempat** | Places the item is about: region, regency, kampung, lake, mountain, sea | Labels already in ETNOS (`context_parents`), plus extraction |
 | **Waktu** | Two clocks: when it is about (a day to "sejak dahulu") and when it was recorded | `record_times` for pages today; extraction for claims; source date for "recorded" |
 | **Ranah pengetahuan** | Domain of knowledge, more than one allowed (list in section 2) | Classifier with receipts, stewards correct |
 | **Bentuk budaya** | Cultural form: the ten objects of UU 5/2017 (tradisi lisan, manuskrip, adat istiadat, ritus, pengetahuan tradisional, teknologi tradisional, seni, bahasa, permainan rakyat, olahraga tradisional), or none | Same classifier |
@@ -119,7 +119,7 @@ No completeness score, as the earlier rule says; numbers and gaps, not a grade. 
 The owner's layout, made concrete:
 
 1. **Untuk dibaca.** The sky cards stay, as a carousel of reviewed or popular pages and new paths. They are the warm front door.
-2. **Peta pengetahuan, folded.** A wide band under the carousel: the Waktu lens laid sideways, earliest on the left and now on the right, with both clocks stacked (when it happened above, when it was recorded below), one stripe per domain, thickness by number of items. One line under it: "551 kalimat · 39 halaman · paling awal 1857 · 22 sel kosong". It reads as a core sample, which is what Strata means.
+2. **Peta pengetahuan, folded.** A wide band under the carousel: the Waktu lens laid sideways, earliest on the left and now on the right, with both clocks stacked (when it happened above, when it was recorded below), one stripe per domain, thickness by number of items. One line under it: "551 kalimat · 39 halaman · paling awal 1857 · 22 sel kosong". It reads as a core sample, which is what ETNOS means.
 3. **Unfolded.** Tapping the band opens the full explorer: lens switcher, search, filters for place, domain, form, voice, time, and the reading panel. Full screen on phones.
 4. **Below.** Lini masa, search results and the lists that exist today.
 

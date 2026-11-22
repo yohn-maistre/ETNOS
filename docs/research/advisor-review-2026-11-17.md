@@ -4,7 +4,7 @@ A one-time review the owner asked for: an advisor model was given the plan-of-re
 
 ## Checked before recording
 
-- **One storage object for everything**: confirmed. `src/worker.ts:90` routes every request to one Durable Object (`STRATA_NODE`); private and public rows are separated by query.
+- **One storage object for everything**: confirmed. `src/worker.ts:90` routes every request to one Durable Object (`ETNOS_NODE`); private and public rows are separated by query.
 - **No sensitivity or protocol field**: confirmed. `src/schema.ts` has none.
 - **Every room needs approval to post**: confirmed on the live site: Beranda, Tanya & bantu, Budaya & bahasa, Kabar komunitas and Pemberitahuan are `approval`, Koordinasi daerah `invite`.
 - **Shell pages titled "ETNOS"**: partly wrong. The server rewrites titles and adds page text for wiki pages; it was doubling the suffix ("· ETNOS · ETNOS"), fixed the same day.
@@ -17,18 +17,18 @@ For the owner to decide, because the review argues against earlier decisions: on
 
 ---
 
-# ETNOS / Strata: advisor review
+# ETNOS: advisor review
 
 17 November 2026. Based on the plan-of-record docs, a read of `src/` and `apps/web/src/`, the seed, and the public endpoints of etnos.space today.
 
 ## Verdict
 
-The strong part is real and rare: sentence-level provenance (verified sentences, Dasar, receipts), an honest agent gate, a founder with standing, and a refusal to fake people. The biggest risk is not technical. It is that the plan is growing much faster than the place. The docs run to about 179,000 words for an engine of about 8,500 lines; the agent model was replaced four times in one day (desks, team, by place, switch, all still in `plan/direction-2026-11-16.md`); and there are three different "orders of work" (`direction`, `knowledge-map-design` §10, `strata-model` §7), none sized to 17 days. Meanwhile the live site has 16 posts by two authors (the founder and Aksara), six communities that all require approval to post in, two of them with placeholder descriptions ("Geng", "Hen tecahi yo onomi tmar ni hanased"), and 367 labels with nothing attached to any of them. ETNOS is at present a knowledge-organisation project presented as a social app. With 30% of the rubric on consistency, the gap between documents and site is the thing most likely to cost you, and the absence of a second human is the thing most likely to kill the pilot.
+The strong part is real and rare: sentence-level provenance (verified sentences, Dasar, receipts), an honest agent gate, a founder with standing, and a refusal to fake people. The biggest risk is not technical. It is that the plan is growing much faster than the place. The docs run to about 179,000 words for an engine of about 8,500 lines; the agent model was replaced four times in one day (desks, team, by place, switch, all still in `plan/direction-2026-11-16.md`); and there are three different "orders of work" (`direction`, `knowledge-map-design` §10, `etnos-model` §7), none sized to 17 days. Meanwhile the live site has 16 posts by two authors (the founder and Aksara), six communities that all require approval to post in, two of them with placeholder descriptions ("Geng", "Hen tecahi yo onomi tmar ni hanased"), and 367 labels with nothing attached to any of them. ETNOS is at present a knowledge-organisation project presented as a social app. With 30% of the rubric on consistency, the gap between documents and site is the thing most likely to cost you, and the absence of a second human is the thing most likely to kill the pilot.
 
 ## Ten recommendations, ranked
 
 **1. Get ten real people in before building anything else on the map.**
-- Why: `strata-model` §2 says a deployment is "full of content and empty of fake people". Judges and visitors will read that as empty. `/v1/feed` shows one human author.
+- Why: `etnos-model` §2 says a deployment is "full of content and empty of fake people". Judges and visitors will read that as empty. `/v1/feed` shows one human author.
 - First step: the founder recruits 10 Mee speakers by name this week into one room, and one of them corrects one Aksara sentence so that the Koreksi → variant loop is shown with a real person.
 - Stop: treating seeded content as the cold-start answer. Content gets a first visit; only people get a second.
 
@@ -61,7 +61,7 @@ The strong part is real and rare: sentence-level provenance (verified sentences,
 - Stop: private language spaces and declared languages until this is written. A list of who speaks what, in one database, is sensitive data.
 
 **7. Model place claims as a table now; skip soft fields.**
-- Why: `strata-model` §4.2 needs whole/part/contested with sources and dates. The schema has `context_parents(context_id, parent_id, issuer_id, created)` and `contexts.kind IN ('place','region','topic','language')`. There is nowhere to put a claim. "Continuum, not tree" (§4.1a) is at the moment only a drawing idea.
+- Why: `etnos-model` §4.2 needs whole/part/contested with sources and dates. The schema has `context_parents(context_id, parent_id, issuer_id, created)` and `contexts.kind IN ('place','region','topic','language')`. There is nowhere to put a claim. "Continuum, not tree" (§4.1a) is at the moment only a drawing idea.
 - First step: a `place_claims` table (place, region, state, source, claimant, date) and Nabire's page with its "Beda versi" section and two chips. On the map, plain reference outlines with hatching.
 - Kampung: do not seed every kampung as a label. `src/groups.ts:364` caps at 1,000 rows and the free plan counts rows read. Seed down to distrik; ship kampung as a search-only gazetteer; a kampung becomes a label the first time someone attaches something. "Usulkan tempat" is then the same action.
 - Stop: soft density fields. They look like a claim about territory that no source makes, which is worse than a labelled reference outline.
@@ -72,12 +72,12 @@ The strong part is real and rare: sentence-level provenance (verified sentences,
 - Keep the UU 5/2017 crosswalk visible: it is what a dinas kebudayaan and the judges recognise.
 
 **9. Decide the data boundary before the pilot.**
-- Why: the brief says Durable Objects per community. The code has one: `env.STRATA.getByName(env.STRATA_NODE)` (`src/worker.ts:90`), one SQLite database holding public posts, private communities and DM envelopes. Public/private separation is by row and by query. `knowledge-map-design` §9 ("private items live in their community's own index") describes a system that does not exist.
+- Why: the brief says Durable Objects per community. The code has one: `env.STRATA.getByName(env.ETNOS_NODE)` (`src/worker.ts:90`), one SQLite database holding public posts, private communities and DM envelopes. Public/private separation is by row and by query. `knowledge-map-design` §9 ("private items live in their community's own index") describes a system that does not exist.
 - This is fine for a pilot of public material. It is the one thing that is expensive to change once private spaces hold real speech.
 - First step: either move private communities to their own object before any language space opens, or say plainly in Tentang that private spaces are not offered yet. Do the second for December.
 
 **10. Freeze the plan and make one page the truth.**
-- Why: `docs/README.md` says start with `direction`; the foundation is now `strata-model`; `direction` contains "Desks", "Aksara as a team" and "Aksara by place" in sequence, each revising the last, plus "a person reviews before it is published" beside "review sources, not posts" beside "wiki pages go live before review". A judge who reads two sections will find a contradiction.
+- Why: `docs/README.md` says start with `direction`; the foundation is now `etnos-model`; `direction` contains "Desks", "Aksara as a team" and "Aksara by place" in sequence, each revising the last, plus "a person reviews before it is published" beside "review sources, not posts" beside "wiki pages go live before review". A judge who reads two sections will find a contradiction.
 - First step: one two-page document, "What ETNOS is on 4 December", from which README, Tentang and the deck are copied. Everything else moves to `docs/history/`.
 - Stop: writing research documents until the showcase.
 
@@ -108,7 +108,7 @@ Six map coordinates become: three facets, one kind, one time range, and two thin
 - **Teacher**: needs something printable and reviewed. The bulletin is not built, and "live before review" pages written by a small model are not something a teacher can hand out. Give a "ditinjau" filter and a print layout.
 - **Researcher**: needs a stable citation. Live pages change; cite by revision, and get the dataset DOI (an owner action still open).
 - **Church or school claiming itself**: no form or mark. Do the first five by hand; do not build the flow yet.
-- **Operator in Kalimantan or Aotearoa**: packs are described (`strata-model` §4.5) but do not exist as files, and setup is not built. Do not claim it; show the Papua catalogue file as the first pack.
+- **Operator in Kalimantan or Aotearoa**: packs are described (`etnos-model` §4.5) but do not exist as files, and setup is not built. Do not claim it; show the Papua catalogue file as the first pack.
 
 ## For the showcase
 
@@ -152,7 +152,7 @@ The reviewer read `plan/showcase-plan-2026-11-17.md`, its build order, the accou
 7. No big refactors in the week people arrive: renames once through one strings file on day one; freeze navigation on 21 November; Studio and the page merge after the proposal.
 8. Consistency: this is the fifth document that "wins"; the README still points to direction. Write the one paragraph last and claim only what is live on upload day.
 
-**Accounts.** The official PDS on a small server is right and is the whole answer this year: invite codes in a sign-up link on etnos.space, crawling off, PDS data and PLC rotation keys backed up off the machine from day one. With publishing off, the client asks only for `atproto`, so a serverless host needs handle resolution, OAuth server metadata, PAR, authorise, token with DPoP and refresh rotation, JWKS, revocation, account creation with invites and password reset; no repo, sync, firehose or blobs (check whether Strata reads a profile or session after sign-in). Caveats: that is an identity host, not a PDS (accounts cannot use the Bluesky app; calling it "a PDS" is a consistency risk); Spaces needs a real PDS; did:plc genesis and key custody are irreversible. Advice: no serverless build before the proposal; a roadmap slide, and a throwaway demo after 26 November if there is time.
+**Accounts.** The official PDS on a small server is right and is the whole answer this year: invite codes in a sign-up link on etnos.space, crawling off, PDS data and PLC rotation keys backed up off the machine from day one. With publishing off, the client asks only for `atproto`, so a serverless host needs handle resolution, OAuth server metadata, PAR, authorise, token with DPoP and refresh rotation, JWKS, revocation, account creation with invites and password reset; no repo, sync, firehose or blobs (check whether ETNOS reads a profile or session after sign-in). Caveats: that is an identity host, not a PDS (accounts cannot use the Bluesky app; calling it "a PDS" is a consistency risk); Spaces needs a real PDS; did:plc genesis and key custody are irreversible. Advice: no serverless build before the proposal; a roadmap slide, and a throwaway demo after 26 November if there is time.
 
 **Build order.** One writer owns schema migrations (they are a positional list). Lead: sign-in, private boundary, agent write path, schema. Helpers: batch and leaf work. Walk complete by Saturday 21 November; breadth and the proposal 22–25; the rest 26 November to 2 December; freeze 2 December, rehearse the 3rd.
 
@@ -168,6 +168,6 @@ The reviewer read `plan/showcase-plan-2026-11-17.md`, its build order, the accou
 
 I agree with almost all of it. Points I would weigh differently:
 
-- **The serverless identity host.** The owner asked for it explicitly. I agree with the reviewer that it must not be what real people's identities depend on before the proposal, and that it should be called an identity host until it holds repos. I would still start it after the walk is complete (from about 22 November) with throwaway identities, so the showcase can show Strata deploying without a server, rather than leave it as a slide.
+- **The serverless identity host.** The owner asked for it explicitly. I agree with the reviewer that it must not be what real people's identities depend on before the proposal, and that it should be called an identity host until it holds repos. I would still start it after the walk is complete (from about 22 November) with throwaway identities, so the showcase can show ETNOS deploying without a server, rather than leave it as a slide.
 - **Labels on posts.** Labelling a post with a people is not labelling a person, but on a member's post about their family it effectively tags them, so I accept the narrower rule.
 - **Politics.** The owner wanted politics in. The reviewer's version keeps the feature and moves elections and budgets after the showcase; that is the owner's call (question 3).

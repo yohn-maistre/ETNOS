@@ -6,11 +6,11 @@
 
 An AT account's DID document points to its PDS. The website need not run there: ETNOS can authenticate accounts on several qualified PDS providers and assemble a forum view. A community can therefore operate its members' PDS while we operate etnos.space. A PDS is not inherently one account per server; the two Cloudflare candidates inspected below deliberately deploy one identity at a time. Serving twenty identities means a managed fleet or additional, qualified multi-account hosting work.
 
-Use “a node hosts the accounts of people who choose it,” rather than “every node is the PDS for everyone.” Each account has one authoritative PDS location. An offline community node makes those hosted account services unavailable; a central AppView does not make its missing PDS available for login, writes or fresh sync. Hosting also does not automatically grant Strata community membership. Our current provider egress allowlist must qualify a new node before OAuth will accept it.
+Use “a node hosts the accounts of people who choose it,” rather than “every node is the PDS for everyone.” Each account has one authoritative PDS location. An offline community node makes those hosted account services unavailable; a central AppView does not make its missing PDS available for login, writes or fresh sync. Hosting also does not automatically grant ETNOS community membership. Our current provider egress allowlist must qualify a new node before OAuth will accept it.
 
 ```mermaid
 flowchart LR
-  S[ETNOS / channels / devices] --> A[Strata access and community authority]
+  S[ETNOS / channels / devices] --> A[ETNOS access and community authority]
   S --> P[Member PDS: identity and public AT records]
   A --> V[Community private data and Aksara workspace]
   V --> R[Reviewed public derivative]
@@ -26,9 +26,9 @@ Lexicons can describe language material, task artifacts, provenance or agent rec
 
 AT Spaces is the relevant **official experimental protocol** for permissioned records, distinct from custom PDS projects. The alpha and proposal explicitly provide access control, not E2EE: PDSes and authorized applications can read the data they handle. A space host/authority and a repo host are distinct roles and need not be one service. Per-user space repos remain on their respective hosts; the application assembles the shared view. This matches distributed community hosting considerably better than copying one institution's entire archive into every member's public repo. It also means a community is an authority over access, not necessarily the physical custodian of every original.
 
-Keep the existing two-PDS Spaces experiment and local Strata Groups separate from production sensitive data. The alpha warns of breaking changes and data deletion. Do not enable experimental Spaces as the only copy of a language corpus, raw agent trace or activist archive. No production Spaces claim follows from a successful local lab.
+Keep the existing two-PDS Spaces experiment and local ETNOS Groups separate from production sensitive data. The alpha warns of breaking changes and data deletion. Do not enable experimental Spaces as the only copy of a language corpus, raw agent trace or activist archive. No production Spaces claim follows from a successful local lab.
 
-A private-object envelope can be shared across Aksara and Strata:
+A private-object envelope can be shared across Aksara and ETNOS:
 
 - Stable object ID, custodian/collective authority, contributing person, language and provenance.
 - Sensitivity, retention, current policy version and an audit receipt.
@@ -43,7 +43,7 @@ Raw agent traces may contain tokens, private source excerpts, personal data and 
 
 | Profile | Public account hosting | Private authority and data | Appropriate now |
 | --- | --- | --- | --- |
-| Hosted alpha | Existing qualified external PDS accounts; ETNOS on Workers | Strata local access-controlled forum data; Aksara connector still pending | Twenty invited participants, public reading |
+| Hosted alpha | Existing qualified external PDS accounts; ETNOS on Workers | ETNOS local access-controlled forum data; Aksara connector still pending | Twenty invited participants, public reading |
 | Community node | Community-operated always-reachable PDS for opted-in members | Community storage and Aksara, local/private by default | Pilot after hosting, recovery and security qualification |
 | Field node | Hosted PDS initially; offline outbox for approved actions later | Local private store, sensors, devices and Aksara | Future offline-first pilot, not autonomous public signing on two primaries |
 
@@ -59,7 +59,7 @@ Inspected upstream source snapshots, not just homepages:
 | [pds.js](https://tangled.org/chadtmiller.com/pds.js), commit `72a7c998bdc765c3d196b1f0a8f65ac54016c862`, core 2.5.2 | Explicit actor/shared/blob/WebSocket ports; Node, Deno and Workers adapters; optional extensions outside core; streaming/multipart blob paths; DO WebSocket hibernation | Community implementation, single-account and no multi-user invite administration. Own MST/repository/crypto code increases compatibility review scope. Extension hooks are trusted code. Relay URL defaults to none |
 | [Official PDS](https://github.com/bluesky-social/pds) | Mature multi-account operational path, official AT implementation, SQLite account repositories | Persistent service and storage; the recommended 1GB VM is a deployment starting point, **not** measured per-user RAM or a minimum proven for our workload |
 
-**Proposed approach:** qualify Cirrus first for a narrowly scoped Cloudflare AT-hosting pilot because repository-format correctness benefits from official library reuse. Borrow the *port boundaries* of pds.js for our node design and keep it as the portable-runtime comparison. Do not combine two implementations' cryptography or create a multi-tenant fork by changing a hostname. Neither is “the official Cloudflare PDS.” An attributed, optional Cirrus-derived Strata PDS package now exists and passes local checks; no public DID, deployed PDS or real account was created.
+**Proposed approach:** qualify Cirrus first for a narrowly scoped Cloudflare AT-hosting pilot because repository-format correctness benefits from official library reuse. Borrow the *port boundaries* of pds.js for our node design and keep it as the portable-runtime comparison. Do not combine two implementations' cryptography or create a multi-tenant fork by changing a hostname. Neither is “the official Cloudflare PDS.” An attributed, optional Cirrus-derived ETNOS PDS package now exists and passes local checks; no public DID, deployed PDS or real account was created.
 
 For a pilot, use disposable identities and interop tests for OAuth, DPoP, MST/CAR imports, blobs/range requests, relay restart, deletion, key rotation, recovery, exports and restore. An entire-node backup includes blobs, signing/recovery material, authority policy and service state; a CAR alone is not a full-node backup.
 
@@ -76,14 +76,14 @@ Free request/CPU/storage limits remain in Decision 004. A PDS may receive public
 ## Modular rollout
 
 1. Ship surface improvements, optional news and canonical origin independently of PDS hosting.
-2. Retain Strata's policy/transaction/outbox core, SQLite DO adapter, JSON API and standalone Honai client. The Node CLI remains loopback-only, not a production OAuth server just because the core is portable.
+2. Retain ETNOS's policy/transaction/outbox core, SQLite DO adapter, JSON API and standalone Honai client. The Node CLI remains loopback-only, not a production OAuth server just because the core is portable.
 3. Keep PDS lifecycle as a separate service with explicit provider adapters and export/recovery contracts. No Postgres/Supabase/Neon dependency is needed to qualify account hosting.
-4. Keep blob storage, public news and Aksara authority behind ports. Current news reads only the fixed public WPW endpoint, caches a small projection at the edge and never forwards forum credentials, member identities or search queries. WPW ingestion does not move into Strata.
+4. Keep blob storage, public news and Aksara authority behind ports. Current news reads only the fixed public WPW endpoint, caches a small projection at the edge and never forwards forum credentials, member identities or search queries. WPW ingestion does not move into ETNOS.
 5. Add a community node installer only after the single-node paths are qualified. Use one manifest with separately scoped keys and backups, not one shared admin token. Later Spaces can implement part of the private-data exchange without replacing our purpose/consent rules.
 
 ## Canonical-origin operation
 
-The owner attached `etnos.space` to `strata-preview` and authorized making it canonical. DNS/custom-domain attachment is now confirmed; prior observations of registrar parking are historical. Before this release the application rejected it because `STRATA_ORIGIN` still named workers.dev. Change only the application origin; preserve logical node `preview`, DO namespace, schema and both existing secret bindings. Public AT publishing remains disabled and invited participation remains enforced.
+The owner attached `etnos.space` to `strata-preview` and authorized making it canonical. DNS/custom-domain attachment is now confirmed; prior observations of registrar parking are historical. Before this release the application rejected it because `ETNOS_ORIGIN` still named workers.dev. Change only the application origin; preserve logical node `preview`, DO namespace, schema and both existing secret bindings. Public AT publishing remains disabled and invited participation remains enforced.
 
 Fresh OAuth consent is required at the new client URL; no cookies or tokens are forwarded to the new domain. The legacy URL redirects GET navigation, drops OAuth callback parameters, rejects writes, and keeps only `/recover-messages` plus static assets available. Its recovery page has no network API access and can export the browser's existing passphrase-encrypted vault. Import on etnos.space checks actor ID and allowed source origin, authenticates/decrypts with the passphrase, rejects replacing an existing vault, and seals again for the new origin. Do not run the same ratchet state on two devices or restore stale backups over active history. This is an explicit experimental migration path, not general multi-device DM recovery.
 

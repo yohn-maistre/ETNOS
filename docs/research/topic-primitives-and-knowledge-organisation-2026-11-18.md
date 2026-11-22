@@ -20,7 +20,7 @@
 | Source | Decision | This research |
 | --- | --- | --- |
 | `knowledge/knowledge-organisation-2026-11-15.md` | Label families need a citable source, about a dozen top entries, and never label a person. Topics are a hand-made list of 23 in three groups. Themes come from posts. | Agrees on all three rules. The three groups are an extra level that this note recommends treating as headings (section 6). |
-| `plan/strata-model-2026-11-17.md` 4.1a, 4.5 | Place spine is administrative, cultural regions are overlays. Topic schemes ship as data and sit side by side. | Agrees. Section 5 applies the same overlay idea to topics. |
+| `plan/etnos-model-2026-11-17.md` 4.1a, 4.5 | Place spine is administrative, cultural regions are overlays. Topic schemes ship as data and sit side by side. | Agrees. Section 5 applies the same overlay idea to topics. |
 | `advisor-review-2026-11-17.md` section 8 | One working scheme, the fourteen ranah. UU 5/2017 and Western disciplines are crosswalks. | Agrees on the principle. Disagrees that fourteen are enough for a default to every deployment (section 6). |
 | `plan/direction-2026-11-16.md` | Four axes, topic tree two levels at most. | Agrees. |
 | `knowledge/knowledge-map-design-2026-11-16.md` 2 | Fourteen ranah, multi-label, communities may rename, merge or add. | Agrees. Bridges across ranah are supported by section 3. |
@@ -30,11 +30,11 @@
 
 **Facets.** Ranganathan's Colon Classification is an early faceted (analytico-synthetic) scheme. Its facets are Personality (the focal subject), Matter, Energy (processes and activities), Space (place) and Time, abbreviated PMEST [V, Wikipedia, https://en.wikipedia.org/wiki/Colon_classification]. The argument for facets is that a subject is a combination, so one tree forces a single order on things that vary independently. A single tree must pick whether "sago in Nabire in the 1950s" files under food, place or period. Facets let all three hold at once [S].
 
-Strata's axes line up with this. Place is Space. The "when it is about" range is Time. Kind (cerita, kabar, tanya) is close to Energy. Topic and people or language together cover Personality and Matter [S, my mapping]. Colon Classification itself starts from a discipline main class and then applies facets [S]. Strata starts from facets and has no discipline-first step, which avoids that dependence.
+ETNOS's axes line up with this. Place is Space. The "when it is about" range is Time. Kind (cerita, kabar, tanya) is close to Energy. Topic and people or language together cover Personality and Matter [S, my mapping]. Colon Classification itself starts from a discipline main class and then applies facets [S]. ETNOS starts from facets and has no discipline-first step, which avoids that dependence.
 
 **Bias in the general schemes.** Hope Olson's *The Power to Name* (2002) examines Dewey Decimal Classification and Library of Congress Subject Headings and argues that their claim to universality marginalises groups, including by gender, race and ethnicity [V, Wikipedia summary of the book, https://en.wikipedia.org/wiki/Hope_A._Olson]. I did not read the book. Sanford Berman's critique of subject headings is collected in *The Joy of Cataloging* (1981), which includes a chapter on Dewey [V for the existence of the chapter, via a 1984 review at https://core.ac.uk/download/4813936.pdf]. His 1971 *Prejudices and Antipathies* is the best-known earlier work [S]. The commonly cited Dewey example is that class 200 gives most of its subdivisions to Christianity [S]. UDC inherits Dewey's structure [S].
 
-The lesson for Strata is narrow. A scheme written in one place and time puts its own concerns at the centre and everyone else's under "other". The defence is local naming, visible provenance and the ability to change, which section 7 builds in.
+The lesson for ETNOS is narrow. A scheme written in one place and time puts its own concerns at the centre and everyone else's under "other". The defence is local naming, visible provenance and the ability to change, which section 7 builds in.
 
 **Basic level.** Rosch and colleagues (1976) argued that people prefer a middle level of generality (chair, not furniture or armchair) and that this level carries most shared attributes [V, https://www.cns.nyu.edu/~msl/courses/2223/Readings/Rosch-CogPsych1976.pdf, via search excerpts]. Two cautions apply. The 1976 sample was Berkeley undergraduates, and for biological kinds the basic level came out as bird, fish and tree rather than robin, trout and maple. Medin and Waxman (1998) suggested that people from farming societies know more about plants and animals and would show a finer basic level [V as reported in search excerpts, https://groups.psych.northwestern.edu/medin/documents/MedinWaxman1998ConceptOrg.pdf]. Later studies found expertise moves the basic level [V as reported, Tanaka and Taylor 1991].
 
@@ -61,7 +61,7 @@ Implication. Top-level topics should be at the grain people already name in dail
 - Local-language terms lead.
 - Access rules are separate from topic labels.
 
-Strata's design (topics as labels, protocol as a separate field) follows all four.
+ETNOS's design (topics as labels, protocol as a separate field) follows all four.
 
 ## 4. Platforms and what they teach
 
@@ -73,7 +73,7 @@ Only the rows marked [V] were opened or returned by a search today. The rest are
 | Meetup | Each group has one category from 30 or more (33 in a 2016 archived page) and up to 15 topics. Staff review suggested topics before adding them [V via search, https://www.meetup.com/blog/how-to-use-topics-to-maximize-your-meetup-experience]. | Two layers: a short fixed list for browsing, a larger reviewed list for matching. The count of 30 or more is higher than the other schemes here. |
 | Stack Exchange | Tags with synonyms and a "burninate" process to retire a tag. A tag that cannot stand alone as the only tag on a question is treated as a meta-tag [V via search, https://stackoverflow.blog/2010/08/01/tag-folksonomy-and-tag-synonyms/]. | A working merge and retire process, run by the community with moderator help. |
 | Discourse | Guidance that categories should stay few and tags carry detail [S]. The official page I tried returned 404. | Plausible, unverified. |
-| Reddit | Communities are created by anyone, with no shared taxonomy beyond search and recommendation [S]. | Gives freedom and duplicates. Strata's communities are already free to start. The topic list is only a way to find them. |
+| Reddit | Communities are created by anyone, with no shared taxonomy beyond search and recommendation [S]. | Gives freedom and duplicates. ETNOS's communities are already free to start. The topic list is only a way to find them. |
 | Mastodon | Hashtags, with follow-a-tag [S]. | Free tags work for discovery. No synonym handling [S]. |
 | Bluesky | Custom feeds and starter packs, which bundle accounts and feeds for a newcomer [S]. The docs page redirected and the redirect target returned 404. | Starter packs suggest the form for a deployment's default: a bundle a newcomer can accept, edit or drop. |
 | Facebook Groups, YouTube, Spotify | Category and genre lists maintained by the operator [S]. | Operator-owned lists. Not useful as models for community authority. |
@@ -164,9 +164,9 @@ Where this disagrees with the advisor review. The review asks for "one working t
 ### 6.3 Avoiding imposition
 
 - **Provenance line on every family**, already the "Dasar label" practice. For topics the line should read as what it is, for example "Daftar awal dari tim ETNOS, disusun dari rancangan peta pengetahuan. Dapat diubah oleh komunitas."
-- **Local names first.** A topic has several names. Each name records its language and who gave it. A deployment, or a community inside it, chooses which name leads in its own pages. A Mee, Biak or Dani name may lead in a language space while the Indonesian name stays as an alias. SKOS allows one prefLabel per language tag, so community-specific leading names need a scope field Strata adds itself [S, my design, SKOS itself does not provide it].
+- **Local names first.** A topic has several names. Each name records its language and who gave it. A deployment, or a community inside it, chooses which name leads in its own pages. A Mee, Biak or Dani name may lead in a language space while the Indonesian name stays as an alias. SKOS allows one prefLabel per language tag, so community-specific leading names need a scope field ETNOS adds itself [S, my design, SKOS itself does not provide it].
 - **Aliases and searchable synonyms.** altLabel equivalent for old names, slang and spellings. Old titles stay (as `previousTitles` already does).
-- **Facet for who defined it.** Each topic and each crosswalk link shows its source, creator and date. The shipped 18 are labelled as Strata defaults.
+- **Facet for who defined it.** Each topic and each crosswalk link shows its source, creator and date. The shipped 18 are labelled as ETNOS defaults.
 - **No label on a person.** Already a rule. Keep it for topics.
 - **Protocol separate from topic.** An item may be on "Kepercayaan" and carry a protocol that restricts viewing. The community sets that protocol (Local Contexts, Mukurtu pattern) [V].
 
@@ -186,7 +186,7 @@ Rules that hold in all cases.
 - A deployment can replace the whole starter set at setup. The default is an offer, in the style of a Bluesky starter pack [S, not verified].
 - Changes to a deployment's top level are logged publicly with reasons.
 - A community's local topics never need approval from the deployment to exist inside that community.
-- Upstream Strata changes to the default set arrive as a proposal the operator accepts or declines, never as an automatic edit.
+- Upstream ETNOS changes to the default set arrive as a proposal the operator accepts or declines, never as an automatic edit.
 
 ### 6.5 Where the evidence is thin
 

@@ -1,6 +1,6 @@
 # Optional PDS hosting
 
-The [Strata PDS package](../../packages/pds/README.md) is now an implemented, separately deployable experimental Worker service. Its foundation is an attributed MIT Cirrus fork using official AT repo/crypto libraries. The operator CLI supports Cloudflare, official-server/node and existing-provider profiles, JSON planning, dry-by-default initialization, local configuration checks and assumption-driven cost estimates. It does not silently provision cloud resources or identities.
+The [ETNOS PDS package](../../packages/pds/README.md) is now an implemented, separately deployable experimental Worker service. Its foundation is an attributed MIT Cirrus fork using official AT repo/crypto libraries. The operator CLI supports Cloudflare, official-server/node and existing-provider profiles, JSON planning, dry-by-default initialization, local configuration checks and assumption-driven cost estimates. It does not silently provision cloud resources or identities.
 
 A meaningful interoperability checkpoint now uses the actual official OAuth client against the actual workerd PDS: PAR, PKCE, DPoP and a scoped repository write, with synthetic local identities and intercepted network edges. Signed CAR verification, R2 visibility, restart and refresh-token replay/logout also run locally. Read the package for exact limits and remaining production gates; this is not live PDS signup for ETNOS users.
 

@@ -1,6 +1,6 @@
 # Peoples, places and public data: a reference model and seed sources
 
-17 November 2026. Research for ETNOS (etnos.space) on the Strata engine. It builds on `plan/strata-model-2026-11-17.md` (sections 1-5), `research/places-and-hierarchy-2026-11-16.md`, `research/customary-regions-and-boundaries-2026-11-17.md`, `research/2026-11-01-community-language-custody.md` and `knowledge/sources-and-sensitive-material-2026-11-16.md`. All links were read on 17 November 2026 unless noted. Items marked **[UNVERIFIED]** rest on a search snippet, a third-party page, or memory, or could not be reached from the research environment.
+17 November 2026. Research for ETNOS (etnos.space). It builds on `plan/etnos-model-2026-11-17.md` (sections 1-5), `research/places-and-hierarchy-2026-11-16.md`, `research/customary-regions-and-boundaries-2026-11-17.md`, `research/2026-11-01-community-language-custody.md` and `knowledge/sources-and-sensitive-material-2026-11-16.md`. All links were read on 17 November 2026 unless noted. Items marked **[UNVERIFIED]** rest on a search snippet, a third-party page, or memory, or could not be reached from the research environment.
 
 ## Summary of recommendations
 
@@ -38,7 +38,7 @@ Lessons: use Glottolog's tree for "language X is a dialect or variety of Y" but 
 
 **Wikidata** [7, 8]. For groups the common pattern is: instance of (P31) ethnic group (Q41710), and these properties, all read on 17 November 2026:
 
-| Property | Label | Use for Strata |
+| Property | Label | Use for ETNOS |
 |---|---|---|
 | P2341 | indigenous to | people or language to place (or to a people) |
 | P1412 | languages spoken, written or signed | people to language |
@@ -49,15 +49,15 @@ Lessons: use Glottolog's tree for "language X is a dialect or variety of Y" but 
 | P1999 | UNESCO language status | endangerment level |
 | P1098 | number of speakers, writers, or signers | counts, always dated |
 | P1588 | Statistics Indonesia area code | BPS code, but its description says it was last issued in 2021, so stale |
-| P172 | ethnic group | for persons; its description demands a very high standard of proof, so Strata should not use it |
+| P172 | ethnic group | for persons; its description demands a very high standard of proof, so ETNOS should not use it |
 
-Wikidata statements can carry qualifiers and references, which is the pattern Strata should copy for claims. Coverage for Papuan peoples is uneven; check before relying on it.
+Wikidata statements can carry qualifiers and references, which is the pattern ETNOS should copy for claims. Coverage for Papuan peoples is uneven; check before relying on it.
 
 **Joshua Project** [9]. Lists people groups by country with an API. Terms: free, non-commercial, revocable, attribution required, key required, no replicating its services, delete cached data on termination. Its stated purpose is non-commercial missions research. That framing (counting "unreached" peoples by religion) is not neutral for a platform serving Indigenous communities, and the terms conflict with caching. Do not seed from it.
 
 **BRWA and AMAN** (Indonesia) [10, 11]. BRWA (Badan Registrasi Wilayah Adat) registers participatory maps of customary territories and tags each with a status. Reported figures (second-hand, from news and a statistics site, **[UNVERIFIED]** against BRWA itself): 1,633 maps and 33.6 million ha nationally by August 2025, and 324 maps on the island of Papua at a March 2026 cut-off, with the largest areas in Papua Selatan, Papua and Papua Barat Daya. The statuses distinguish maps that are registered from those that are "ditetapkan" (formally designated by a regional government), with the difference being legal recognition. AMAN is the national indigenous alliance whose members' maps feed BRWA.
 
-**Legal category: masyarakat hukum adat (MHA)** [12]. Under Permendagri 52/2014, a regent or governor may recognise an MHA by decree (Surat Keputusan Bupati) after identification, verification and a committee's recommendation, with the regent reporting to the governor. Other routes are regional regulations (Perda). In Papua, Perdasus 23/2008 on ulayat rights is the usual reference, and Perdasus 21/2008 deals with forest management. Kabupaten Jayapura has a Perda (No. 8/2021) and decrees for specific territories, per a search summary **[UNVERIFIED]**. So a recognition has: the community, the territory, the legal instrument and number, the issuing authority, a date, and a status. That is exactly a sourced, dated claim, and Strata should store the instrument number and issuer instead of a yes/no "recognised".
+**Legal category: masyarakat hukum adat (MHA)** [12]. Under Permendagri 52/2014, a regent or governor may recognise an MHA by decree (Surat Keputusan Bupati) after identification, verification and a committee's recommendation, with the regent reporting to the governor. Other routes are regional regulations (Perda). In Papua, Perdasus 23/2008 on ulayat rights is the usual reference, and Perdasus 21/2008 deals with forest management. Kabupaten Jayapura has a Perda (No. 8/2021) and decrees for specific territories, per a search summary **[UNVERIFIED]**. So a recognition has: the community, the territory, the legal instrument and number, the issuing authority, a date, and a status. That is exactly a sourced, dated claim, and ETNOS should store the instrument number and issuer instead of a yes/no "recognised".
 
 ## 1.3 Aotearoa
 
@@ -74,8 +74,8 @@ Registries: provincial law gives structure rather than a register. Central Kalim
 
 ## 1.5 Others
 
-- **Sámi**. Parliaments in Norway and Finland keep electoral rolls built on self-declaration plus language or descent criteria; Norwegian and Finnish authorities state there is no official ethnicity registration in the Nordic countries. The rolls are protected by data protection law, and the Finnish roll has been contested in court [18]. Lesson: a membership list is the most sensitive artefact a platform can hold. Strata should never build one.
-- **First Nations in Canada**. OCAP (Ownership, Control, Access, Possession) from the First Nations Information Governance Centre. FNIGC holds OCAP as a registered trademark and says these are First Nations principles, not generic Indigenous ones, with interpretation unique to each nation [19]. Strata should cite it, not claim compliance.
+- **Sámi**. Parliaments in Norway and Finland keep electoral rolls built on self-declaration plus language or descent criteria; Norwegian and Finnish authorities state there is no official ethnicity registration in the Nordic countries. The rolls are protected by data protection law, and the Finnish roll has been contested in court [18]. Lesson: a membership list is the most sensitive artefact a platform can hold. ETNOS should never build one.
+- **First Nations in Canada**. OCAP (Ownership, Control, Access, Possession) from the First Nations Information Governance Centre. FNIGC holds OCAP as a registered trademark and says these are First Nations principles, not generic Indigenous ones, with interpretation unique to each nation [19]. ETNOS should cite it, not claim compliance.
 - **Australian Aboriginal nations**. The AIATSIS map (made 1996, from sources to 1994, drawn by a named cartographer) shows only general locations of larger groupings, which may contain clans, dialects or languages. It says some information is contested and it is not suitable for native title or land claims [20, 4].
 
 ## 1.6 Governance standards for content
@@ -84,7 +84,7 @@ Registries: provincial law gives structure rather than a register. Central Kalim
 - **Local Contexts** [22, 23]: TK (Traditional Knowledge) Labels and BC (Biocultural) Labels. Two kinds of mark with different authors: **Notices** are applied by institutions and researchers as placeholders; **Labels** are made by the Indigenous community on the Local Contexts Hub and carry their own text. The Hub exposes an API (v2 is the default since 10 February 2025; sandbox and production hosts exist; an API key from a Hub account is needed). The API fetches the Labels and Notices attached to a Hub Project by a GET request. The v2 guide says Notice text, icons and titles may not be altered when displayed. DataCite records them as rights identifiers such as `TK-Notice` with scheme "Local Contexts" [22]. Labels express protocols and are not enforcement. Endpoint paths come from the OpenAPI spec the guide links to; I did not read it **[UNVERIFIED]**.
 - **Mukurtu CMS** [24]: three structural elements. Communities (who) group users; cultural protocols (how) attach to communities and set access, from open to community-only, with categories such as gender or seasonal access; categories (what) are site-wide controlled vocabularies for browsing. A site has no built-in protocols; each community defines its own. Mukurtu documents integration with the Local Contexts Hub [23].
 
-**What Strata should borrow.** (1) Mukurtu's separation of who, how and what, so a community, its protocol and the topic of an item are three independent things. (2) The Notice and Label split: Aksara and operators may apply a Notice ("not yet reviewed by the community") while only the community creates the Label. (3) CARE and OCAP as review questions on every deployment, not as claims of compliance. (4) The Kaitiakitanga and TMR idea that provenance (whakapapa of data) travels with each record, which the claim schema below already does. Existing language-custody work (`2026-11-01-community-language-custody.md`) remains the authority for private language communities.
+**What ETNOS should borrow.** (1) Mukurtu's separation of who, how and what, so a community, its protocol and the topic of an item are three independent things. (2) The Notice and Label split: Aksara and operators may apply a Notice ("not yet reviewed by the community") while only the community creates the Label. (3) CARE and OCAP as review questions on every deployment, not as claims of compliance. (4) The Kaitiakitanga and TMR idea that provenance (whakapapa of data) travels with each record, which the claim schema below already does. Existing language-custody work (`2026-11-01-community-language-custody.md`) remains the authority for private language communities.
 
 ---
 
@@ -102,14 +102,14 @@ Registries: provincial law gives structure rather than a register. Central Kalim
 
 | Kind | Examples | Identifier |
 |---|---|---|
-| `place` (spine) | Indonesia, Papua Tengah, Nabire, Wanggar district, a kampung; New Zealand, Gisborne district | Government code and Wikidata QID; Strata ID |
-| `overlay` | Wilayah adat Mee Pago; Dayak group territories as named in a pack; an iwi rohe; a tribal region | Strata ID, scheme name, source |
-| `people` | Mee, Yerisiam, Ngaju, Ngāti Porou | Strata ID, Wikidata QID, TKM ID where one exists; names in several languages, each sourced |
-| `subgroup` | Clan, marga, hapū, kedamangan | Strata ID; relation to its parent people is itself a claim |
+| `place` (spine) | Indonesia, Papua Tengah, Nabire, Wanggar district, a kampung; New Zealand, Gisborne district | Government code and Wikidata QID; ETNOS ID |
+| `overlay` | Wilayah adat Mee Pago; Dayak group territories as named in a pack; an iwi rohe; a tribal region | ETNOS ID, scheme name, source |
+| `people` | Mee, Yerisiam, Ngaju, Ngāti Porou | ETNOS ID, Wikidata QID, TKM ID where one exists; names in several languages, each sourced |
+| `subgroup` | Clan, marga, hapū, kedamangan | ETNOS ID; relation to its parent people is itself a claim |
 | `language` | Language or dialect | Glottocode; ISO 639-3 as secondary |
-| `organisation` | Church, school, customary council (LMA), iwi authority, NGO | Strata ID; registration number where public |
-| `community` | Interest community, place community, private language community | Strata ID (managed in Strata) |
-| `steward` | One Aksara with a scope | Strata ID; scope is itself a set of claims |
+| `organisation` | Church, school, customary council (LMA), iwi authority, NGO | ETNOS ID; registration number where public |
+| `community` | Interest community, place community, private language community | ETNOS ID (managed in ETNOS) |
+| `steward` | One Aksara with a scope | ETNOS ID; scope is itself a set of claims |
 
 ## 2.3 Relation types
 

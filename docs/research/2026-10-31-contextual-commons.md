@@ -1,8 +1,8 @@
-# Strata: a contextual commons, with independent community authority
+# ETNOS: a contextual commons, with independent community authority
 
 Research and product assessment, 31 October 2026. The owner's supplied chat summary is context, not a new specification or an instruction to implement its priority table. Recommendations below are not shipped capabilities. ETNOS at etnos.space is the intended first deployment; domain ownership and permanent record namespace remain unverified.
 
-Strata is an engine for communities to turn conversation into shared knowledge and accountable work. ETNOS is intended as a general deployment, with Papua as its first focused regional experience. Aksara is a continuing institutional/community agent that participates through Strata, its own web interface, messaging channels and devices. Each is a surface; none acquires the institution's source or execution authority by hosting its interface.
+ETNOS is an engine for communities to turn conversation into shared knowledge and accountable work. ETNOS is intended as a general deployment, with Papua as its first focused regional experience. Aksara is a continuing institutional/community agent that participates through ETNOS, its own web interface, messaging channels and devices. Each is a surface; none acquires the institution's source or execution authority by hosting its interface.
 
 The most useful product promise is: **ask together, investigate under local authority, publish what is approved, and keep the result useful.** This is more concrete than either “an Indigenous social network” or “a knowledge graph.” It should work for an ordinary person without an agent or protocol knowledge.
 
@@ -123,7 +123,7 @@ Implement this first as explicit local policy over public data and receiving-sid
 
 A resident asks a public question about a local environmental observation. It has one community home plus voluntarily chosen public place/topic contexts. A participating institution offers help. A human accepts a clearly scoped public commitment. The institution's Aksara independently admits the request and performs qualified work under local grants, with sources and field data remaining private.
 
-A human reviews the exact public result. Strata receives a separate approved derivative and an accountable public receipt, not a private source URI or a request to fetch raw institutional memory. Participants can discuss or challenge it. A reviewed Wiki proposal links the public discussion and result. Later evidence can produce a correction without rewriting the record of who said what.
+A human reviews the exact public result. ETNOS receives a separate approved derivative and an accountable public receipt, not a private source URI or a request to fetch raw institutional memory. Participants can discuss or challenge it. A reviewed Wiki proposal links the public discussion and result. Later evidence can produce a correction without rewriting the record of who said what.
 
 ```mermaid
 flowchart LR
@@ -147,9 +147,9 @@ The public commitment ID and private task ID are different. UI status must disti
 - **Public index service:** qualify Tap tracking a small admitted set. It may run separately from Workers; account for uptime/storage/egress. Relay fanout and ingestion do not become free because the UI is serverless.
 - **Later:** qualified Standard.site/event/labeler projections, voice/offline bundles and optional native Iroh transport. A2A defines task interaction; MCP exposes authorized tools; neither supplies institutional grants.
 
-A PDS is a separate account/repository host. The [reference PDS](https://github.com/bluesky-social/pds) uses SQLite; AT does not require PostgreSQL. Cloudflare-native PDS projects such as [Cirrus](https://github.com/ascorbic/cirrus) are a reuse candidate, not something Strata currently contains. [pds.js](https://tangled.org/chadtmiller.com/pds.js) is another experimental single-account implementation with Node, Deno and Cloudflare adapters and an optional Spaces package. Cirrus also declares experimental beta status. Neither single-account design should be described as a ready multi-user ETNOS signup service, and neither is integrated here. A hosted PDS requires persistent keys, repository/blob backups, recovery, account lifecycle and abuse operations even on a serverless runtime. Test a separate disposable account before offering hosted signup; do not move giyaibo.bsky.social or an activist's primary identity to prove a prototype.
+A PDS is a separate account/repository host. The [reference PDS](https://github.com/bluesky-social/pds) uses SQLite; AT does not require PostgreSQL. Cloudflare-native PDS projects such as [Cirrus](https://github.com/ascorbic/cirrus) are a reuse candidate, not something ETNOS currently contains. [pds.js](https://tangled.org/chadtmiller.com/pds.js) is another experimental single-account implementation with Node, Deno and Cloudflare adapters and an optional Spaces package. Cirrus also declares experimental beta status. Neither single-account design should be described as a ready multi-user ETNOS signup service, and neither is integrated here. A hosted PDS requires persistent keys, repository/blob backups, recovery, account lifecycle and abuse operations even on a serverless runtime. Test a separate disposable account before offering hosted signup; do not move giyaibo.bsky.social or an activist's primary identity to prove a prototype.
 
-Custom public AT records are publicly fetchable/indexable even when Strata admits only selected writers. They do not automatically become Bluesky feed posts. A Bluesky projection and an ActivityPub bridge are distinct, explicit publications. Threads compatibility must be checked per supported interaction; ActivityPub support is not a guarantee that a custom Strata record or private membership will interoperate. No bridge for private material.
+Custom public AT records are publicly fetchable/indexable even when ETNOS admits only selected writers. They do not automatically become Bluesky feed posts. A Bluesky projection and an ActivityPub bridge are distinct, explicit publications. Threads compatibility must be checked per supported interaction; ActivityPub support is not a guarantee that a custom ETNOS record or private membership will interoperate. No bridge for private material.
 
 ## UI implications
 

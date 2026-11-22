@@ -1,6 +1,6 @@
 # Mobile reading and profile refinement
 
-This follows the owner's screenshots from the first commons deployment. It uses the existing Taste v2 direction and same-origin Strata contract. No backend schema, auth, custody or AT publication behavior changes.
+This follows the owner's screenshots from the first commons deployment. It uses the existing Taste v2 direction and same-origin ETNOS contract. No backend schema, auth, custody or AT publication behavior changes.
 
 - The drawer has one shared scroll area, one navigation list and the account area. Compose is no longer trapped behind a separately fixed footer. Its existing focus trap, Escape, touch dismissal and close-on-route behavior remain.
 - A bottom-right Menu control opens that same drawer. Messages remains a navigation item. The conversation reply dock continues to replace the ordinary bottom navigation while replying.

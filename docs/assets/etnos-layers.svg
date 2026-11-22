@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="Georgia, 'Times New Roman', serif">
-  <title>Strata: the layers of a place</title>
+  <title>ETNOS: the layers of a place</title>
   <desc>A cross-section of ground. Six layers from the surface down: conversation, news, public work, knowledge, memory, place. Communities and institutions are columns that pass through every layer. Aksara moves material between layers like groundwater.</desc>
   <defs>
     <pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="0.9" fill="#1d2320" opacity="0.35"/></pattern>
@@ -10,7 +10,7 @@
   </defs>
   <rect width="960" height="600" fill="#eef0ea"/>
   <!-- sky and people on the surface -->
-  <text x="40" y="44" font-size="26" fill="#1d2320">Strata</text>
+  <text x="40" y="44" font-size="26" fill="#1d2320">ETNOS</text>
   <text x="40" y="68" font-size="14" fill="#5d6660" font-family="Helvetica, Arial, sans-serif">Each layer changes at its own pace. Fast at the surface, slow in the bedrock.</text>
   <g font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#1d2320">
     <circle cx="610" cy="92" r="5"/><circle cx="640" cy="96" r="5"/><circle cx="668" cy="90" r="5"/><circle cx="700" cy="95" r="5"/><circle cx="730" cy="92" r="5"/><circle cx="760" cy="97" r="5"/>

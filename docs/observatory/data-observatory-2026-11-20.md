@@ -1,10 +1,10 @@
-# Strata as an open data observatory: scope, data model, modalities, access and deployment
+# ETNOS as an open data observatory: scope, data model, modalities, access and deployment
 
 20 November 2026. Design research; no product code changed. Marks: *(proposal)*, *(not measured)*, *(to verify)*, *(roadmap)*. Names follow `../naming.md` and sentences follow `../voice.md`. This note sits beside [world-model-and-starter-data-2026-11-20.md](world-model-and-starter-data-2026-11-20.md), which defines how a people's world is modelled and seeded. This note defines what else the observatory holds, how people see it, who may use what, and where it runs. Sources are at the end.
 
 ## 1. In one paragraph
 
-The owner wants the observatory to become the place where anyone finds up-to-date public and communal knowledge about a place and its peoples. That knowledge includes cultural and scientific datasets and artifacts as well as the wiki. Strata should hold the **record** of each dataset or artifact (what it is, where it comes from, what it is about, who may use it and how it changed), show it in a **viewer** made for its kind of data, and connect it to the world model. Aksara works as the librarian. It finds and describes data, answers "what exists about this place", routes requests for restricted data to the right stewards, and prepares starting packs for researchers and local governments. Strata stays a public observatory and social platform. It does not become a GIS, a CAD program or a records system. It embeds open, standard viewers and links out to specialised software. Restricted originals stay on Aksara Nodes or with their custodians, and Strata holds only the catalogue entry and the route to ask. Two deployment profiles share one data model. An **edge profile** on Cloudflare is the wedge, and a **server profile** on a VPS or the community's own hardware can carry heavy data and heavy viewers.
+The owner wants the observatory to become the place where anyone finds up-to-date public and communal knowledge about a place and its peoples. That knowledge includes cultural and scientific datasets and artifacts as well as the wiki. ETNOS should hold the **record** of each dataset or artifact (what it is, where it comes from, what it is about, who may use it and how it changed), show it in a **viewer** made for its kind of data, and connect it to the world model. Aksara works as the librarian. It finds and describes data, answers "what exists about this place", routes requests for restricted data to the right stewards, and prepares starting packs for researchers and local governments. ETNOS stays a public observatory and social platform. It does not become a GIS, a CAD program or a records system. It embeds open, standard viewers and links out to specialised software. Restricted originals stay on Aksara Nodes or with their custodians, and ETNOS holds only the catalogue entry and the route to ask. Two deployment profiles share one data model. An **edge profile** on Cloudflare is the wedge, and a **server profile** on a VPS or the community's own hardware can carry heavy data and heavy viewers.
 
 ## 2. What the owner asked
 
@@ -20,19 +20,19 @@ From 20 November, lightly edited:
 - The Aksara Node is for anything internal.
 - Flesh out the framing, use cases, app views, modalities and dataset viewers.
 
-## 3. The boundary: what Strata is and is not
+## 3. The boundary: what ETNOS is and is not
 
-Strata is three things joined together:
+ETNOS is three things joined together:
 
 1. **A social platform for a place** (posts, communities, events, news). This is unchanged.
 2. **A record of what is known**: the world model with things, statements, witnesses and voices.
 3. **A catalogue of data and artifacts**, each with a record, a viewer, its links to the world model and its access rules. This note adds this part.
 
-Strata is not, and should not become, specialised software. A rule of thumb keeps the boundary clear *(proposal)*:
+ETNOS is not, and should not become, specialised software. A rule of thumb keeps the boundary clear *(proposal)*:
 
-- **View in Strata** when an open, standard browser viewer exists for the format, and when viewing is what most readers need. Examples are a map layer, a table, a scanned page, a recording, a 3D scan and a building model.
+- **View in ETNOS** when an open, standard browser viewer exists for the format, and when viewing is what most readers need. Examples are a map layer, a table, a scanned page, a recording, a 3D scan and a building model.
 - **Link out** when the work needs editing, heavy analysis or a professional tool. Examples are editing a CAD drawing, running a hydrological model and managing population records.
-- **Never hold** restricted originals on the public node. They stay on an Aksara Node, with the custodian, or in a trusted research environment. Strata holds the catalogue entry, the protocol and the route to ask.
+- **Never hold** restricted originals on the public node. They stay on an Aksara Node, with the custodian, or in a trusted research environment. ETNOS holds the catalogue entry, the protocol and the route to ask.
 
 This follows rules that already exist in `AGENTS.md`. Private content never enters public records, search or exports. Custodial originals and approved public derivatives are different records with different identifiers. Access is checked at the time of use.
 
@@ -64,15 +64,15 @@ Within that test, the scope is as wide as the world model. The following kinds o
 | Community | *Komunitas* | Everyone sees that it exists, unless the community hides even that | Members, under the community's protocol | A language community's recordings, a clan's map layer |
 | Controlled | *Atas permintaan* | Everyone sees that it exists and how to ask | Approved people for an approved purpose, in an approved setting | Clinical speech data, sensitive locations, unpublished archives |
 
-The controlled tier follows the **Five Safes** framework, which trusted research environments use to decide on access to sensitive data. It asks five questions. Is the use appropriate (safe projects)? Can the users be trusted (safe people)? Does the facility prevent unauthorised use (safe settings)? Is there a disclosure risk in the data (safe data)? Are the results non-disclosive (safe outputs)? Strata answers the first two through a request and a steward's decision. The custodian answers the last three, because the data never sits on the public node.
+The controlled tier follows the **Five Safes** framework, which trusted research environments use to decide on access to sensitive data. It asks five questions. Is the use appropriate (safe projects)? Can the users be trusted (safe people)? Does the facility prevent unauthorised use (safe settings)? Is there a disclosure risk in the data (safe data)? Are the results non-disclosive (safe outputs)? ETNOS answers the first two through a request and a steward's decision. The custodian answers the last three, because the data never sits on the public node.
 
-The first screenshot shows why this tier matters. The DISCOURSE consortium's first public dataset holds audio recordings, transcripts and tables from people in early-stage psychosis. Access is granted by the consortium's Data Access Committee to approved researchers. A catalogue that lists such data, explains how to ask and never stores it is the right pattern for health, conflict and sacred material in Strata.
+The first screenshot shows why this tier matters. The DISCOURSE consortium's first public dataset holds audio recordings, transcripts and tables from people in early-stage psychosis. Access is granted by the consortium's Data Access Committee to approved researchers. A catalogue that lists such data, explains how to ask and never stores it is the right pattern for health, conflict and sacred material in ETNOS.
 
 ## 5. The data model: a dataset record beside the world model
 
 ### 5.1 A dataset is a new record kind that links to things *(proposal)*
 
-The world model already has things, statements and witnesses. This note adds one record kind, the **dataset** (*Dataset*, with *Katalog data* as the interface label for the list). A dataset can be a table, a map layer, a collection of images, a 3D scan, a corpus or a single document. Its fields come from published standards rather than from Strata:
+The world model already has things, statements and witnesses. This note adds one record kind, the **dataset** (*Dataset*, with *Katalog data* as the interface label for the list). A dataset can be a table, a map layer, a collection of images, a 3D scan, a corpus or a single document. Its fields come from published standards rather than from ETNOS:
 
 | Part | What it records | Standard |
 | --- | --- | --- |
@@ -81,14 +81,14 @@ The world model already has things, statements and witnesses. This note adds one
 | Versions and series | Earlier versions, the current one, and series such as yearly statistics | DCAT 3 versioning and `dcat:DatasetSeries` |
 | Structure | Fields, types and units, so a viewer and a machine-learning loader know the shape | Croissant, which builds on schema.org Dataset |
 | Package | A folder of files with its own metadata, for archives and research outputs | RO-Crate |
-| About | Links to things in the world model (*Hal*): places, beings, practices | Strata's knowledge model |
+| About | Links to things in the world model (*Hal*): places, beings, practices | ETNOS's knowledge model |
 | Access | Tier, licence, community protocol, Local Contexts labels and notices | ODRL policy, generated (section 7) |
 | Lineage | Which datasets or records this one was derived from, and how | DCAT and PROV relations *(to verify the exact terms)* |
 | Indonesian rules | Standard data, metadata, interoperability, and reference codes such as BPS region codes | Satu Data Indonesia (Perpres 39/2019) |
 
-DCAT is the W3C vocabulary for describing datasets and data services in catalogs so that metadata from many catalogs can be gathered together. Version 3 adds checksums for distributions, version properties and dataset series. Croissant is a community metadata format for machine-learning datasets that builds on schema.org Dataset. It is supported by Kaggle, Hugging Face and OpenML and by the main ML frameworks. Using both means that a Strata catalogue can be harvested by government portals and research search engines, and that its datasets load directly into analysis tools.
+DCAT is the W3C vocabulary for describing datasets and data services in catalogs so that metadata from many catalogs can be gathered together. Version 3 adds checksums for distributions, version properties and dataset series. Croissant is a community metadata format for machine-learning datasets that builds on schema.org Dataset. It is supported by Kaggle, Hugging Face and OpenML and by the main ML frameworks. Using both means that an ETNOS catalogue can be harvested by government portals and research search engines, and that its datasets load directly into analysis tools.
 
-Satu Data Indonesia requires four principles: data meets a data standard, has metadata, follows interoperability rules, and uses reference codes or master data. Strata's record meets all four if every dataset carries DCAT metadata, a declared structure, open formats and official region codes. This lets a regency publish through Strata and still meet national rules.
+Satu Data Indonesia requires four principles: data meets a data standard, has metadata, follows interoperability rules, and uses reference codes or master data. ETNOS's record meets all four if every dataset carries DCAT metadata, a declared structure, open formats and official region codes. This lets a regency publish through ETNOS and still meet national rules.
 
 ### 5.2 Datasets connect to the world model in both directions
 
@@ -104,7 +104,7 @@ Anyone with an account can propose a dataset record, as anyone can post now. A s
 
 ## 6. Modalities and viewers
 
-Strata shows each kind of data with an open, standard viewer. The table lists the format to store, the viewer to embed, and whether it fits the edge profile, the server profile or both. Edge-friendly formats are **cloud-native**, which means that a browser reads only the bytes it needs from one file through HTTP range requests, with no server in the middle.
+ETNOS shows each kind of data with an open, standard viewer. The table lists the format to store, the viewer to embed, and whether it fits the edge profile, the server profile or both. Edge-friendly formats are **cloud-native**, which means that a browser reads only the bytes it needs from one file through HTTP range requests, with no server in the middle.
 
 | Modality | Store as | Viewer in the browser | Edge | Server | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -134,20 +134,20 @@ Two rules keep the viewers maintainable:
 
 ### 7.1 A protocol becomes a machine-readable policy *(proposal)*
 
-Every dataset and record already carries a community protocol in Strata's model. This note proposes compiling each protocol into an **ODRL** policy. ODRL is the W3C information model for statements that permit, prohibit or require actions on content. Its basic rule is that any use not explicitly permitted is prohibited. The compiled policy states:
+Every dataset and record already carries a community protocol in ETNOS's model. This note proposes compiling each protocol into an **ODRL** policy. ODRL is the W3C information model for statements that permit, prohibit or require actions on content. Its basic rule is that any use not explicitly permitted is prohibited. The compiled policy states:
 
 - the permitted actions (read, display, download, derive, train a model, cite), each for a party (everyone, members, approved requesters);
 - the prohibited actions (commercial use, publishing exact locations);
 - the duties (attribute the community, report outputs, delete after the project ends);
 - the Local Contexts labels and notices that apply.
 
-The policy does not enforce anything by itself. Strata's server checks it at every read, export and model run, as it checks access today. Local Contexts' own position is the same: a label states a responsibility, and a system must honour it. Labels come from the community's Local Contexts Hub project when one exists. API v2 of the Hub needs a key, and platforms can become certified integration partners.
+The policy does not enforce anything by itself. ETNOS's server checks it at every read, export and model run, as it checks access today. Local Contexts' own position is the same: a label states a responsibility, and a system must honour it. Labels come from the community's Local Contexts Hub project when one exists. API v2 of the Hub needs a key, and platforms can become certified integration partners.
 
 ### 7.2 AT Protocol carries what is safe to carry
 
 | What | On AT Protocol? | Why |
 | --- | --- | --- |
-| Public dataset records (catalogue entries) | Yes, as a Strata lexicon | Other apps and catalogues can find them; the community's account signs them |
+| Public dataset records (catalogue entries) | Yes, as an ETNOS lexicon | Other apps and catalogues can find them; the community's account signs them |
 | Public statements and derived datasets | Yes | Portable and attributable |
 | Policies and labels attached to public records | Yes, as records that reference the dataset | Apps can read the rules with the data |
 | Community-tier records | Only inside AT Protocol spaces, under the 19 November design | Spaces keep them out of the public firehose |
@@ -169,7 +169,7 @@ The policy does not enforce anything by itself. Strata's server checks it at eve
 | Builds | CI jobs (GitHub Actions) | Workers on the server, with an optional GPU for BioCLIP 2, Perch or ASR |
 | Best for | A new deployment, low cost, global reach | Large archives, sensitive hosting, institutions that must keep data in country |
 
-The limits that decide when to move are known. A D1 database holds at most 10 GB, and that limit cannot be raised. SQLite-backed Durable Objects are generally available with a 10 GB database per object. Strata already spreads data across objects, so a deployment reaches the server profile because of heavy files, heavy processing or rules about where data is kept, not because of record count.
+The limits that decide when to move are known. A D1 database holds at most 10 GB, and that limit cannot be raised. SQLite-backed Durable Objects are generally available with a 10 GB database per object. ETNOS already spreads data across objects, so a deployment reaches the server profile because of heavy files, heavy processing or rules about where data is kept, not because of record count.
 
 The **polyglot store** in the server profile is a roadmap item. One rule keeps it sane: there is one source of truth per record kind. Records live in the relational store. Files live in object storage. Every other store (columns, vectors, tiles, search indexes) is a **projection** that can be rebuilt from those two. This is the same rule the knowledge portal follows today, where static files are rebuilt from the model's export.
 
@@ -221,11 +221,11 @@ A teacher opens the world model for the school's district at the *Ringkas* level
 
 ### 10.5 A health researcher plans a study
 
-The researcher finds that malaria case counts exist at the province level (open), that a regency data warehouse exists (catalogue entry, controlled), and that clinic locations exist in OpenStreetMap (open). Strata never holds patient data. It shows what exists, who holds it and how to ask, and it records the request.
+The researcher finds that malaria case counts exist at the province level (open), that a regency data warehouse exists (catalogue entry, controlled), and that clinic locations exist in OpenStreetMap (open). ETNOS never holds patient data. It shows what exists, who holds it and how to ask, and it records the request.
 
 ### 10.6 An archive returns images
 
-A museum abroad holds photographs from an expedition a century ago and publishes them through IIIF. Strata shows them in the IIIF viewer with a Local Contexts notice and asks the community to add names and context. The community decides which images stay public and which should be restricted, and the museum receives the community's labels and corrections.
+A museum abroad holds photographs from an expedition a century ago and publishes them through IIIF. ETNOS shows them in the IIIF viewer with a Local Contexts notice and asks the community to add names and context. The community decides which images stay public and which should be restricted, and the museum receives the community's labels and corrections.
 
 ## 11. Views in the app *(proposal)*
 
@@ -241,7 +241,7 @@ A museum abroad holds photographs from an expedition a century ago and publishes
 | Steward desk | inside *Studio* | Records to accept, requests to decide, harvests to check |
 | Researcher export | *Unduh untuk penelitian* | DCAT and Croissant metadata, coded things (world model doc §5.5), and files the reader is allowed to have |
 
-## 12. What Strata will not build
+## 12. What ETNOS will not build
 
 - **No editing of specialised formats.** No CAD editing, BIM authoring, GIS editing or video editing. The observatory views these formats and links to proper tools.
 - **No records system.** No population register, patient records or case management. These belong to government systems or to Aksara for institutions.
@@ -251,9 +251,9 @@ A museum abroad holds photographs from an expedition a century ago and publishes
 
 ## 13. Notes from Engagic, a comparable civic data system
 
-The owner pointed to [Engagic](https://github.com/Longissima/engagic) on 20 November. Engagic collects what local governments in the United States publish (agendas, packets, minutes, votes, reports), keeps the originals, and turns them into structured, summarised and searchable records at engagic.org. It is AGPL-3.0 like Strata. It runs as one VPS with PostgreSQL and PostGIS for the core and a SvelteKit site on Cloudflare Workers for the front, with originals in R2. That is the edge and server split from section 8, already working in production. The notes below were read from its README and design documents. `AGENTS.md` forbids copying AGPL donor code until licensing is settled, so these are patterns to adopt, not code to copy.
+The owner pointed to [Engagic](https://github.com/Longissima/engagic) on 20 November. Engagic collects what local governments in the United States publish (agendas, packets, minutes, votes, reports), keeps the originals, and turns them into structured, summarised and searchable records at engagic.org. It is AGPL-3.0 like ETNOS. It runs as one VPS with PostgreSQL and PostGIS for the core and a SvelteKit site on Cloudflare Workers for the front, with originals in R2. That is the edge and server split from section 8, already working in production. The notes below were read from its README and design documents. `AGENTS.md` forbids copying AGPL donor code until licensing is settled, so these are patterns to adopt, not code to copy.
 
-| Engagic pattern | What it does there | What Strata should take |
+| Engagic pattern | What it does there | What ETNOS should take |
 | --- | --- | --- |
 | Content-addressed corpus | Every original is stored once in R2 under the SHA-256 of its bytes, with its extracted text beside it. | Store every dataset distribution and witness source the same way. This fulfils the `AGENTS.md` rule to keep source bytes and receipts durable, and it removes duplicates for free. |
 | Bytes and sightings are separate | One table describes each unique file, and another records where and when those bytes were seen. | A dataset distribution points to a blob. A source sighting records the URL, when it was last seen and when it was last checked. One URL can serve new bytes later without breaking old citations. |
@@ -267,7 +267,7 @@ The owner pointed to [Engagic](https://github.com/Longissima/engagic) on 20 Nove
 | Structured public input modelled on Polis | Residents post short statements and vote agree, disagree or pass on each other's. Clustering then shows the groups of opinion and where they agree. | A *Pendapat warga* (public input) feature for a policy dossier (*Berkas*) or a regency plan. This builds on polls and Periksa, and the clustering fits in `knowledge-graph.ts`. *(proposal)* |
 | Weekly digest by watched place and keywords | One email a week per watched city, with repeated hearings of the same matter merged into one alert. | A weekly digest per place for followers of a place page, with news, new datasets and open questions, and repeated items merged. |
 | Layers and funding | A free open data layer, consumer features on top, read-only bridges such as AT Protocol feeds, and a paid layer for organisations (API keys, coverage filters, webhooks). | This matches the sustainability plan: the commons stays free, and institutions pay for API access, Aksara Nodes and support. |
-| MCP server | Exposes the data to AI clients. | Strata already has `src/agent-mcp.ts`. The catalogue and the place data packs should be added to it. |
+| MCP server | Exposes the data to AI clients. | ETNOS already has `src/agent-mcp.ts`. The catalogue and the place data packs should be added to it. |
 
 The closest Indonesian equivalents of Engagic's vendor adapters are the national platforms that regencies publish on, such as JDIH portals for regulations, SPSE and SIRUP for procurement, Satu Data portals and BPS. Each would need one adapter *(to verify which of these offer machine-readable access)*. That makes a **regency document and data tracker** a natural extension of the place data pack in section 10.2. It would follow regulations, budgets, procurement and public plans for each regency in Tanah Papua, keep the originals, and summarise them in plain Indonesian.
 
@@ -297,7 +297,7 @@ The order follows the plan in the world model doc and adds the observatory in th
 - **Stale data.** A catalogue of outdated datasets misleads people. Every record shows its last check, and Aksara's watch duty flags changes.
 - **False sense of permission.** A policy in a record does not stop a person from copying open files. The tiers decide what is ever put on the public node.
 - **Viewer weight.** Heavy viewers load only on demand, and phones get a light preview and a list first.
-- **Duplication with government portals.** Strata harvests and links to official portals rather than copying them, and it keeps the official publisher as the publisher.
+- **Duplication with government portals.** ETNOS harvests and links to official portals rather than copying them, and it keeps the official publisher as the publisher.
 
 ## 16. Open questions for the owner
 
@@ -305,7 +305,7 @@ The order follows the plan in the world model doc and adds the observatory in th
 2. Should the controlled tier exist in the first release, or only open and community?
 3. Which regency would try a place data pack first?
 4. Which server should host the first server-profile deployment: a VPS, a university machine or an Aksara Node?
-5. Should Strata apply to be a Local Contexts integration partner now, or after the request flow exists?
+5. Should ETNOS apply to be a Local Contexts integration partner now, or after the request flow exists?
 6. Should a regency document and data tracker, on the Engagic pattern (section 13), be part of the place data pack, or a separate project?
 
 ## 17. Sources

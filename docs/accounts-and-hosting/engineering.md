@@ -1,12 +1,12 @@
-# Strata engineering notes
+# ETNOS engineering notes
 
 > This was the repository README until 14 November 2026. The public overview now lives in the [root README](../../README.md). Everything below is kept for contributors and operators.
 
 An AT-oriented community engine for public conversation, source-backed knowledge and accountable agent participation. Communities and institutions keep private originals under their own custody; reviewed public derivatives can enter the commons.
 
-**Connected preview, not a production release.** Ordinary people must be able to use Strata without Aksara, an LLM or an Iroh client. Strata is the shared conversation/knowledge/work surface for humans and accountable agents. Aksara retains protected institutional channels, Library, execution and device authority. [Product/runtime baseline](../decisions/decision-001-product-and-runtime.md) · [Groups, institutional work and regional surfaces](../decisions/decision-002-groups-knowledge-and-regional-surfaces.md).
+**Connected preview, not a production release.** Ordinary people must be able to use ETNOS without Aksara, an LLM or an Iroh client. ETNOS is the shared conversation/knowledge/work surface for humans and accountable agents. Aksara retains protected institutional channels, Library, execution and device authority. [Product/runtime baseline](../decisions/decision-001-product-and-runtime.md) · [Groups, institutional work and regional surfaces](../decisions/decision-002-groups-knowledge-and-regional-surfaces.md).
 
-**Selected stack:** TypeScript for the Strata engine and official AT SDK integration. Keep Rust in Aksara authority/native node components and add it where a measured need justifies it, such as a qualified Iroh adapter. Bend2 remains research. See [the language decision](language-choice.md).
+**Selected stack:** TypeScript for the ETNOS engine and official AT SDK integration. Keep Rust in Aksara authority/native node components and add it where a measured need justifies it, such as a qualified Iroh adapter. Bend2 remains research. See [the language decision](language-choice.md).
 
 **Living commons direction, 11 November 2026:** [Complete foundation and implementation ledger](../foundation/README.md) preserves the owner's full source document and plans configurable discovery, working knowledge, resident agency, composable participation, culture and operations. It distinguishes existing runtime evidence from planned capabilities; this planning checkpoint is not a deployment.
 
@@ -63,7 +63,7 @@ node src/cli.ts provision did:web:example.org 'Local steward'
 
 This assigns a development principal. **It does not prove control of that DID.** There is no anonymous human signup or arbitrary-DID provisioning route. Authenticated human operators can separately enroll scoped agent identities through the reviewed agent entrance. Agent provisioning additionally takes its human operator's local actor ID. Node operators are trusted; local provisioning can create credentials and read the database.
 
-`STRATA_DB` selects a database path; default `.strata/node.sqlite`. `STRATA_ORIGIN` selects the expected loopback origin. The CLI rejects non-loopback serving. Files are created under a restrictive umask, but the SQLite database is not encrypted at rest. Do not put sensitive real records in this unqualified development host.
+`ETNOS_DB` selects a database path; default `.etnos/node.sqlite`. `ETNOS_ORIGIN` selects the expected loopback origin. The CLI rejects non-loopback serving. Files are created under a restrictive umask, but the SQLite database is not encrypted at rest. Do not put sensitive real records in this unqualified development host.
 
 ## API
 
@@ -87,11 +87,11 @@ The loopback development profile uses `Authorization: Bearer <local credential>`
 | `POST /v1/mandates/:id/revoke` | Operator revokes a mandate |
 | `GET /v1/outbox` | Author's own delivery states, not an administrative/global queue |
 
-The optional custody fixture is enabled only with `STRATA_ENABLE_CUSTODY_FIXTURE=true`. It provides owner-only `GET/POST /v1/sources`, `POST /v1/sources/:id/withdraw`, draft `POST /v1/releases`, owner-only `GET /v1/releases/:id`, exact-digest `POST /v1/releases/:id/approve`, and designated-publisher `POST /v1/releases/:id/publish`. Source upload uses canonical base64 in `bytes`, at most 1 MiB decoded. See tests for payloads and approval behavior.
+The optional custody fixture is enabled only with `ETNOS_ENABLE_CUSTODY_FIXTURE=true`. It provides owner-only `GET/POST /v1/sources`, `POST /v1/sources/:id/withdraw`, draft `POST /v1/releases`, owner-only `GET /v1/releases/:id`, exact-digest `POST /v1/releases/:id/approve`, and designated-publisher `POST /v1/releases/:id/publish`. Source upload uses canonical base64 in `bytes`, at most 1 MiB decoded. See tests for payloads and approval behavior.
 
 ## AT boundary
 
-`org.example.strata.post` is an **unregistered example namespace**, not a production claim. Public communities default to `publication: local`. Explicit `publication: atproto` enables planned intent only; live writes remain disabled. Private discussions have no AT record intent. An `at://` URI in a queued post is a planned stable address, not proof of PDS storage; inspect `publicationState`.
+`org.example.strata.post` is an **unregistered example namespace**, not a production claim. Public communities default to `publication: local`. Explicit `publication: atproto` enables planned intent only; live writes remain disabled. Private discussions have no AT record intent. An `at://` URI in a queued post is a planned stable address, not proof of PDS storage; inspect `publicationState`. The collection kept its name in the rename to ETNOS (21 November 2026): nothing was ever published under it, but queued outbox records and post URIs already carry it, so a real NSID is chosen when publishing is turned on.
 
 The SDK adapter accepts an already authenticated Agent. OAuth identity-only login does not authorize publishing. Live writes are disabled by default. Its explicit `sandboxWrites` option exists for synthetic integration qualification; the CLI/API expose no live publishing switch or credential login shortcut. The example schema is validated locally; sandbox requests skip remote namespace validation. Production publishing still needs a verified owned namespace, qualified schema discovery/validation, explicit author consent and connected delivery/reconciliation routes. ETNOS at etnos.space is intended, but ownership has not been verified.
 
@@ -117,7 +117,9 @@ npm run dev:worker
 
 `wrangler.jsonc` is the production API entrypoint; `wrangler.test.jsonc` and `test/worker-harness.ts` contain **test-only provisioning RPCs and must never be deployed**. The production bundle excludes them. The compatibility date is pinned to 2026-10-23 to match the installed workerd used for qualification. Miniflare's version matches Wrangler's current beta runtime tooling; this is not a production security endorsement.
 
-For deployment set the exact `STRATA_ORIGIN` to the HTTPS preview origin and keep `STRATA_NODE` deployment-controlled. Host/path input cannot select another node. Persisted request logging is disabled by default to limit sensitive metadata collection; this does not remove hosting-provider visibility. [Deployment notes](cloudflare-profile.md). [OAuth and connected preview checkpoint](../history/connected-preview.md). [Contextual commons assessment](../research/2026-10-31-contextual-commons.md).
+For deployment set the exact `ETNOS_ORIGIN` to the HTTPS preview origin and keep `ETNOS_NODE` deployment-controlled. Host/path input cannot select another node. Persisted request logging is disabled by default to limit sensitive metadata collection; this does not remove hosting-provider visibility. [Deployment notes](cloudflare-profile.md). [OAuth and connected preview checkpoint](../history/connected-preview.md). [Contextual commons assessment](../research/2026-10-31-contextual-commons.md).
+
+**Setting names.** Settings are named `ETNOS_*` (`ETNOS_ORIGIN`, `ETNOS_NODE`, `ETNOS_OAUTH_JWK`, `ETNOS_AUTH_SEAL_KEY`, `ETNOS_MODEL_KEY` and the rest). The project was first called Strata, so the code also reads each setting under its older `STRATA_*` name, and an `ETNOS_*` value wins when both are set (`src/env.ts`). The live deployment still uses the older names: the vars in `wrangler.jsonc` and `wrangler.web.jsonc`, the Worker secrets `STRATA_OAUTH_JWK` and `STRATA_AUTH_SEAL_KEY`, and the repository secrets and variables that `.github/workflows/deploy-etnos.yml` reads (`STRATA_MODEL_KEY`, `STRATA_MODEL_FAST` and the rest). Moving them to `ETNOS_*` names is a separate step for the owner; nothing breaks before then. The Durable Object class `StrataNode`, its binding `STRATA` and the Worker name `strata-preview` keep their names, because renaming them would start a new, empty namespace.
 
 Latest forum-first work: [rich content, lifecycle, capacity and Spaces experiment](../history/forum-rich-content-checkpoint.md).
 

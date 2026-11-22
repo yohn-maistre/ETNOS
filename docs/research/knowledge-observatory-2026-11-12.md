@@ -42,7 +42,7 @@ The 2021 *Scientific Data* article on operationalizing CARE with FAIR [10] is us
 
 **Schreyer, Longenecker & Wagner (2025)** document collaborative work with Kala-speaking communities in Morobe Province, **Papua New Guinea**, through river walks, reef-video interviews and adapted word-collection workshops [9]. The activities connect language with environments, subsistence, place histories and community knowledge experts.
 
-The paper contains a direct warning against designing the shelves first: an initial environmental encyclopedia divided entries taxonomically into fish, plants and shells. The Kala research team rejected that organization in favor of **ocean and river**, with **village browsing** also requested. This does not establish ocean/river as the right structure for Strata. It demonstrates that apparently reasonable scientific categories can fail a community's intended way of finding and relating knowledge, and that the structure should be revisable by the people using it.
+The paper contains a direct warning against designing the shelves first: an initial environmental encyclopedia divided entries taxonomically into fish, plants and shells. The Kala research team rejected that organization in favor of **ocean and river**, with **village browsing** also requested. This does not establish ocean/river as the right structure for ETNOS. It demonstrates that apparently reasonable scientific categories can fail a community's intended way of finding and relating knowledge, and that the structure should be revisable by the people using it.
 
 **Kik et al. (2021)** studied language and ethnobiological knowledge among 6,190 students representing 392 languages in Papua New Guinea [12]. The observational findings connect language use and ethnobiological skills, and describe local names that need not have established translations or scientific identifications. This supports preserving local terms and relationships without requiring a scientific or Wikidata match before they become usable. It does **not** show that a Wiki or AI assistant prevents language loss, nor establish prevalence or causality for Papua Indonesia.
 
@@ -56,23 +56,23 @@ Local Contexts' **Traditional Knowledge (TK)** Labels communicate community-spec
 
 The official FAQ describes Labels and Notices as **extra-legal mechanisms that complement licenses**. They are not equivalent to copyright ownership, software authorization or a substitute for access controls. The Hub distributes Labels/Notices; it is not the archive itself. Customized community text and the Label icons also have their own rights and usage conditions [13].
 
-For Strata, a future integration could preserve a Local Contexts project/Label identifier and show the approved community text with an item or approved derivative. It should respect display/use conditions and updated community decisions. **Do not copy or redesign their icons, auto-apply Labels, or use “TK” as a new permission enum.** A visible label can communicate expectations while actual API, storage, search, export and model access remain separately enforced.
+For ETNOS, a future integration could preserve a Local Contexts project/Label identifier and show the approved community text with an item or approved derivative. It should respect display/use conditions and updated community decisions. **Do not copy or redesign their icons, auto-apply Labels, or use “TK” as a new permission enum.** A visible label can communicate expectations while actual API, storage, search, export and model access remain separately enforced.
 
 ### Mukurtu: one shared item can carry several situated records
 
 Mukurtu's documented **Community Records** let different communities retain their own metadata and narratives around an item without editing away each other's contributions [14]. Records can use different cultural protocols; its documentation also assigns protocols to media assets and language recordings. This is stronger than attaching one supposedly definitive description to a file.
 
-Useful lesson: a shared public photograph or named place may have several attributed interpretations and access conditions. Strata can learn from that separation while keeping its own contexts/community/Node model. Mukurtu's terminology and detailed membership rules should not be transplanted verbatim, and these documentation pages describe system behavior rather than establish a user-study result for Strata.
+Useful lesson: a shared public photograph or named place may have several attributed interpretations and access conditions. ETNOS can learn from that separation while keeping its own contexts/community/Node model. Mukurtu's terminology and detailed membership rules should not be transplanted verbatim, and these documentation pages describe system behavior rather than establish a user-study result for ETNOS.
 
 ### Wikipedia, Wikidata and Wikibase: take sourced statements, not compulsory external authority
 
 Wikipedia's reading experience and Wikidata's data model solve related but different problems. A sourced Wiki article is a readable synthesis; an item/property graph supports precise relationships. Neither replaces the other.
 
-Wikidata/Wikibase statements can carry **qualifiers, references and ranks**, retaining more context than a bare subject–predicate–object edge [11,15]. That is a useful pattern for time-bounded or attributed assertions. References are supported but not magically supplied by the model; missing references remain missing. Preferred/normal/deprecated ranks are not probabilities, Indigenous authority decisions or Strata's editorial acceptance state.
+Wikidata/Wikibase statements can carry **qualifiers, references and ranks**, retaining more context than a bare subject–predicate–object edge [11,15]. That is a useful pattern for time-bounded or attributed assertions. References are supported but not magically supplied by the model; missing references remain missing. Preferred/normal/deprecated ranks are not probabilities, Indigenous authority decisions or ETNOS's editorial acceptance state.
 
 Local identifiers should remain first-class. A possible external match is not identity. Avoid automatic `owl:sameAs` assertions or collapsing two communities' concepts just because names, embeddings or translations resemble one another. Some local concepts will have no external equivalent. Keep the original local term, its language, definition/context and attribution; a broad or related mapping can be explicitly weaker than equivalence.
 
-**Public Wikidata structured data is CC0** [16]. Exporting to it is a publication and reuse decision, not a harmless internal synchronization step. Self-hosted Wikibase is different from publishing to Wikidata, but adopting its statement model still does not itself implement Strata's required access boundaries. The default plan does not require operating another service.
+**Public Wikidata structured data is CC0** [16]. Exporting to it is a publication and reuse decision, not a harmless internal synchronization step. Self-hosted Wikibase is different from publishing to Wikidata, but adopting its statement model still does not itself implement ETNOS's required access boundaries. The default plan does not require operating another service.
 
 ## A minimal model to discuss, not a new ontology to ship
 
@@ -119,7 +119,7 @@ These are interoperability/reference tools, **not empirical evidence that one wo
 
 RDF named graphs can organize datasets and attribution; **a named graph is not an access-control boundary by itself**. Graph databases, RDF serializations, SQLite tables and visualizations are separate choices. None needs to be selected to finish the current demo.
 
-## Fit with Strata and independent Aksara Nodes
+## Fit with ETNOS and independent Aksara Nodes
 
 Keep the existing distinctions visible in implementation and ordinary UI:
 
@@ -129,7 +129,7 @@ Keep the existing distinctions visible in implementation and ordinary UI:
 | **Community** | People participate under rules and a defined audience; a language community can choose what to share, discuss and review. It can relate to several contexts without claiming to speak for all people connected to them. |
 | **Organization** | A group with accountable representatives and explicit mandates, not an automatic authority over every associated community or cultural source. |
 | **Audience / Space** | Controls participation/access where implemented; it is not a synonym for a language, ethnicity, context or graph namespace. Standard AT PDS publication is public; Spaces alpha access control is not encryption. |
-| **Independent Aksara Node** | Custodies originals, internal workspace, language data and permitted agent operations under its own grants. Its local knowledge landscape need not be mirrored into Strata. |
+| **Independent Aksara Node** | Custodies originals, internal workspace, language data and permitted agent operations under its own grants. Its local knowledge landscape need not be mirrored into ETNOS. |
 | **Public Wiki** | Readable accepted and explicitly provisional pages in one home, with sources and review state. No separate “working knowledge” destination is needed. |
 | **Steward** | Suggests links, prepares sourced drafts and may announce an entry under current editorial/posting mandates. It does not infer cultural authority or turn private language data into public context. |
 
@@ -139,7 +139,7 @@ The current optional Faiss **e-means** receipt/candidate pipeline can suggest **
 
 ### Privacy is a property of the whole projection
 
-These are requirements inherited from Strata's existing boundaries, with graph-specific consequences:
+These are requirements inherited from ETNOS's existing boundaries, with graph-specific consequences:
 
 1. **Filter before retrieval, clustering, graph traversal and layout.** Public endpoints must not read protected originals or compute on a mixed private/public graph and hide labels afterward. Node degrees, counts, paths, “related” suggestions and empty silhouettes can disclose protected relations.
 2. **Authorize edges independently.** Two public names can have a protected association. The existence of a private record, withheld term or sensitive site must not be exposed through a public stub, relation count or “request access” hint unless that disclosure itself is approved.
@@ -213,7 +213,7 @@ Success is people finding and caring for meaningful relationships with evidence 
 10. Carroll, S. R., Herczog, E., Hudson, M., Russell, K. & Stall, S. (2021). *Operationalizing the CARE and FAIR Principles for Indigenous data futures*. **Scientific Data**, **Comment**. [DOI:10.1038/s41597-021-00892-0](https://doi.org/10.1038/s41597-021-00892-0). [Publisher text](https://www.nature.com/articles/s41597-021-00892-0). Classified here as commentary; not counted as an empirical evaluation.
 11. Vrandečić, D. & Krötzsch, M. (2014). *Wikidata: a free collaborative knowledgebase*. **Communications of the ACM 57(10)**. [DOI:10.1145/2629489](https://doi.org/10.1145/2629489). System/model paper, not Indigenous governance research.
 12. Kik, A. et al. (2021). *Language and ethnobiological skills decline precipitously in Papua New Guinea, the world's most linguistically diverse nation*. **PNAS**. [DOI:10.1073/pnas.2100096118](https://doi.org/10.1073/pnas.2100096118). Observational research; location and causal limits matter.
-13. **Local Contexts**, official living documentation: [FAQ](https://localcontexts.org/support/frequently-asked-questions/), [working with Labels](https://localcontexts.org/support/working-with-labels/), [Indigenous Data Sovereignty terms](https://localcontexts.org/indigenous-data-sovereignty/), [2025 integration partner guide](https://localcontexts.org/wp-content/uploads/2025/02/Integration-Partner-Guide.pdf). Capabilities, usage conditions and community roles; not a Strata integration receipt.
+13. **Local Contexts**, official living documentation: [FAQ](https://localcontexts.org/support/frequently-asked-questions/), [working with Labels](https://localcontexts.org/support/working-with-labels/), [Indigenous Data Sovereignty terms](https://localcontexts.org/indigenous-data-sovereignty/), [2025 integration partner guide](https://localcontexts.org/wp-content/uploads/2025/02/Integration-Partner-Guide.pdf). Capabilities, usage conditions and community roles; not an ETNOS integration receipt.
 14. **Mukurtu**, official documentation: [Community Records](https://docs.mukurtu.org/digital-heritage-items/UnderstandCommunityRecords/), [Communities and Cultural Protocols](https://docs.mukurtu.org/communities-cultural-protocols-categories/), [dictionary imports/media protocols](https://docs.mukurtu.org/roundtrip/Dictionary/). Living documentation; check version before any integration.
 15. **Wikibase/Wikidata**, official documentation: [conceptual data model](https://www.mediawiki.org/wiki/Wikibase/DataModel), [statements, qualifiers, references and ranks](https://www.wikidata.org/wiki/Help:Statements). Living specifications/documentation.
 16. **Wikidata**, [licensing](https://www.wikidata.org/wiki/Wikidata:Licensing). Public structured-data CC0 requirement; other namespaces differ.

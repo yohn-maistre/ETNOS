@@ -1,6 +1,6 @@
 # ETNOS conversation ergonomics — 1 November 2026
 
-The owner selected the supplied Threads desktop/mobile screenshots as the target and authorized implementation and preview deployment. This pass preserves Strata's community, Wiki, work, moderation, media and messaging features while changing presentation and navigation.
+The owner selected the supplied Threads desktop/mobile screenshots as the target and authorized implementation and preview deployment. This pass preserves ETNOS's community, Wiki, work, moderation, media and messaging features while changing presentation and navigation.
 
 ## Direction
 
@@ -10,7 +10,7 @@ Taste v2's `true-black-flat` app direction was selected for community reading, w
 
 ## Captured audit and implementation
 
-The local built application was exercised against an isolated real Strata SQLite/API fixture. Test names/content are synthetic; none was written to the hosted community. Before and after screens cover 390/768/1440px feed, thread, composer, login and settings; final review also checks light mode. This is viewport/browser evidence, not physical Android/iOS keyboard or assistive-technology certification.
+The local built application was exercised against an isolated real ETNOS SQLite/API fixture. Test names/content are synthetic; none was written to the hosted community. Before and after screens cover 390/768/1440px feed, thread, composer, login and settings; final review also checks light mode. This is viewport/browser evidence, not physical Android/iOS keyboard or assistive-technology certification.
 
 1. **Feed:** the prior desktop screen repeated Beranda, a wide breadcrumb/search bar and two full-width tabs above the first post, with promotional and access copy in the right rail. The new header owns the real latest/member-community switch; the centered rounded reading surface starts with a lightweight composer. Related communities and Wiki remain in a quieter rail. The mobile switch remains available, with accessible labels on compact navigation.
 2. **Thread:** the prior opening body was 17px desktop/16px phone while ordinary posts were 15px; action boxes and expanded indentation added visual weight. The shared 15px reading scale, restrained rails, smaller metadata and rounded action hit areas align opening posts/replies. Human author/moderator controls and collapse/load/sort behavior remain. The compact reply field expands tools on focus.

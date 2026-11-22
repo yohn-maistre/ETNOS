@@ -1,12 +1,12 @@
-# Strata PDS · experimental
+# ETNOS PDS · experimental
 
-Optional, separately deployed AT account hosting inside the Strata repository. ETNOS and the forum engine do not require this package to run. It is a Strata-maintained fork of Cirrus's MIT PDS source using official AT repository and crypto libraries; see [UPSTREAM.md](UPSTREAM.md) for provenance and local changes. This is not an official Bluesky PDS distribution or a completed security audit.
+Optional, separately deployed AT account hosting inside the ETNOS repository. ETNOS and the forum engine do not require this package to run. It is an ETNOS-maintained fork of Cirrus's MIT PDS source using official AT repository and crypto libraries; see [UPSTREAM.md](UPSTREAM.md) for provenance and local changes. This is not an official Bluesky PDS distribution or a completed security audit.
 
 ## Implemented and checked locally
 
 - Worker edge + SQLite account Durable Object + R2 blobs, with hibernating public sync sockets inherited from the attributed foundation.
 - Public AT repository create/read/update/delete, signed commits and CAR export; official `verifyRepoCar` checks an actual local export.
-- Real official Strata OAuth client → local PDS PAR/PKCE/DPoP authorization → scoped repository write, with all network edges intercepted. A read-only consent cannot write and a reused DPoP proof is rejected. No fake token exchange stands in for this test.
+- Real official ETNOS OAuth client → local PDS PAR/PKCE/DPoP authorization → scoped repository write, with all network edges intercepted. A read-only consent cannot write and a reused DPoP proof is rejected. No fake token exchange stands in for this test.
 - Serialized account operations, authoritative conditional-write preconditions and atomic SQL block/root/reference updates; identical records at two paths retain their shared bytes when one changes.
 - Upload staging: uploads initially have no public serving URL. Promotion occurs during a public write attempt and may survive a failed commit; treat every PDS upload as intended-public. Do not use staging as private institutional storage.
 - Durable legacy refresh-session registration, one-use rotation and logout revocation. A legacy access JWT remains valid until its normal two-hour expiry; immediate access-token revocation is not implemented.
@@ -27,19 +27,19 @@ From the repository root; requires Node 24.19+. These commands do not open the f
 node src/pds-cli.ts capabilities --json
 node src/pds-cli.ts cost --requests-per-day 20000 --cpu-ms-per-request 2 --json
 node src/pds-cli.ts plan --runtime cloudflare --hostname pds.example.org --handle alice.example.org --did did:web:pds.example.org --accounts 20 --json
-node src/pds-cli.ts init --runtime cloudflare --hostname pds.example.org --handle alice.example.org --did did:web:pds.example.org --directory .strata-pds/alice --json
+node src/pds-cli.ts init --runtime cloudflare --hostname pds.example.org --handle alice.example.org --did did:web:pds.example.org --directory .etnos-pds/alice --json
 ```
 
 `init` is dry by default. Add `--write` to create private config files; an existing destination is refused. The sample hostname/DID above is illustrative, not an existing account. For real did:plc identities, verify ownership and migration authority; this command does not register or migrate a DID. A generated config references this checkout, so do not move it away independently.
 
-Cloudflare profiles contain secret **names**, never values. They require a dedicated R2 bucket, a fresh namespace, unique signing/session/operator/password-hash secrets, stable HTTPS, handle verification, backups and OAuth/recovery qualification. Install dependencies in this package on a capable machine with `npm ci --ignore-scripts`. Supply secrets through the provider's secret channel; do not put passwords in CLI arguments or committed files. Only after qualification should a provider enter Strata's OAuth allowlist. PDS hosting does not grant forum enrollment.
+Cloudflare profiles contain secret **names**, never values. They require a dedicated R2 bucket, a fresh namespace, unique signing/session/operator/password-hash secrets, stable HTTPS, handle verification, backups and OAuth/recovery qualification. Install dependencies in this package on a capable machine with `npm ci --ignore-scripts`. Supply secrets through the provider's secret channel; do not put passwords in CLI arguments or committed files. Only after qualification should a provider enter ETNOS's OAuth allowlist. PDS hosting does not grant forum enrollment.
 
 Server/node option:
 
 ```sh
 node src/pds-cli.ts plan --runtime server --hostname pds.example.org --accounts 20 --json
-node src/pds-cli.ts init --runtime server --hostname pds.example.org --image 'ghcr.io/bluesky-social/pds@sha256:<verified-image-digest>' --directory .strata-pds/server --write --json
-node src/pds-cli.ts doctor --manifest .strata-pds/server/manifest.json --json
+node src/pds-cli.ts init --runtime server --hostname pds.example.org --image 'ghcr.io/bluesky-social/pds@sha256:<verified-image-digest>' --directory .etnos-pds/server --write --json
+node src/pds-cli.ts doctor --manifest .etnos-pds/server/manifest.json --json
 ```
 
 The server profile intentionally uses the official multi-account PDS container behind a localhost-only port and an operator-managed TLS reverse proxy. It does **not** claim Cloudflare Durable Objects run unchanged on Linux. A future shared-storage-port implementation can replace that adapter without changing the CLI manifest. Resolve an actual official image digest; the placeholder is rejected. Generated env examples have empty secret fields and cannot safely start until completed.

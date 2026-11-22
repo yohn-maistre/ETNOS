@@ -6,9 +6,9 @@
 
 ## Summary and recommendation
 
-1. Recommendation: do not make Aksara a coding agent. Let her compose views from a fixed, typed catalogue of components that Strata ships. Call this the composer model.
+1. Recommendation: do not make Aksara a coding agent. Let her compose views from a fixed, typed catalogue of components that ETNOS ships. Call this the composer model.
 2. A view is a versioned JSON spec, validated by zod on the server. It holds layout, text and query parameters. It never holds data, code, HTML or URLs outside an allow-list.
-3. Each primitive declares the one kind of Strata query it may run. The server runs that query as the viewer at render time, so visibility, withdrawal and membership are checked on every load.
+3. Each primitive declares the one kind of ETNOS query it may run. The server runs that query as the viewer at render time, so visibility, withdrawal and membership are checked on every load.
 4. A view is a record attached to a community or context page, with author, approver, revision history and a withdraw and rollback path. Aksara only drafts. A steward approves.
 5. Borrow the shape of Vercel's json-render (Apache-2.0, flat element tree, catalogue of zod props, JSONL streaming) and the surface and data-model split of Google's A2UI. Own the schema and a small Svelte renderer. Spike `@json-render/svelte` for half a day before deciding to write our own renderer.
 6. This runs on Workers Free. One drafting call costs about 40 neurons on Gemma 4 26B. JSON Mode is not documented for Gemma 4, so use prompt, zod check and one repair round.
@@ -19,7 +19,7 @@
 
 ## 1. The main choice
 
-The wishes are a region page with a map, timeline, language list and market board; a festival community with a schedule and sign-up; a language room with a word-of-the-day card. Each wish is a known arrangement of things Strata already knows how to show. That points to composing, not coding.
+The wishes are a region page with a map, timeline, language list and market board; a festival community with a schedule and sign-up; a language room with a word-of-the-day card. Each wish is a known arrangement of things ETNOS already knows how to show. That points to composing, not coding.
 
 | Concern | (a) Agent writes and runs code | (b) Agent composes a JSON spec from a catalogue |
 | --- | --- | --- |
@@ -41,9 +41,9 @@ Verdict for this section. Choose (b). Keep (a) as a Paid opt-in described in the
 
 | Project | What it is | Licence | Maturity | Svelte and Workers fit | What to borrow |
 | --- | --- | --- | --- | --- | --- |
-| **json-render** (Vercel Labs) | Generative UI framework. Catalogue defined with `defineCatalog`, props as zod objects, `defineRegistry` maps entries to components, `catalog.prompt()` writes the system prompt [V] | Apache-2.0 [V] | About 19.8k stars [V]. npm core 0.23.1, 16 Nov 2026, 38 releases since 14 Jan 2026 [V]. Pre-1.0 and moves quickly | `@json-render/svelte` 0.23.1 is a Svelte 5 renderer with `zod ^4` and `svelte ^5` peers [V]. Pure JS, so Workers is fine for validation. Strata already uses zod v4 | Flat element tree (`type`, `props`, `children`, root key), `$state` bindings, repeat over arrays, visibility conditions, JSONL patch streaming, prompt generated from the catalogue |
+| **json-render** (Vercel Labs) | Generative UI framework. Catalogue defined with `defineCatalog`, props as zod objects, `defineRegistry` maps entries to components, `catalog.prompt()` writes the system prompt [V] | Apache-2.0 [V] | About 19.8k stars [V]. npm core 0.23.1, 16 Nov 2026, 38 releases since 14 Jan 2026 [V]. Pre-1.0 and moves quickly | `@json-render/svelte` 0.23.1 is a Svelte 5 renderer with `zod ^4` and `svelte ^5` peers [V]. Pure JS, so Workers is fine for validation. ETNOS already uses zod v4 | Flat element tree (`type`, `props`, `children`, root key), `$state` bindings, repeat over arrays, visibility conditions, JSONL patch streaming, prompt generated from the catalogue |
 | **A2UI** (Google) | Agent-to-UI protocol. The agent sends declarative JSON such as `createSurface`, using components from a catalogue the host registers. Data bindings and two-way bindings exist [V] | Apache-2.0 [V] | v1.0 spec, 17.6k stars, 309 open issues, roadmap lists v1.1 and sandboxed logic [V]. npm `@a2ui/web_core` 0.15.0, 2 Nov 2026 [V] | First-party renderers for Lit, Angular, React, Flutter, SwiftUI. Community renderers include Svelte, quality unchecked [V on a2ui.org, U on the renderer] | The split between the component tree, the data model and the catalogue. Locked catalogue as the safety boundary. Surfaces as the unit that can be replaced |
-| **MCP Apps** and MCP-UI | A tool points to a `ui://` HTML resource that the host renders in a sandboxed iframe, with `_meta.ui.csp` and a postMessage JSON-RPC bridge [V] | `@modelcontextprotocol/ext-apps` 2.0.4 is MIT; `@mcp-ui/client` 7.1.1 is Apache-2.0 [V] | Supported by Claude, VS Code Copilot, Goose and others [V] | This is model-made HTML in an iframe, so it is the (a) family. Starter template for Svelte exists [V] | Not for our pages. Useful later if an outside agent such as Claude should show a Strata view in chat. The CSP declaration idea (declared origins checked against behaviour) is worth copying for any iframe we ever allow |
+| **MCP Apps** and MCP-UI | A tool points to a `ui://` HTML resource that the host renders in a sandboxed iframe, with `_meta.ui.csp` and a postMessage JSON-RPC bridge [V] | `@modelcontextprotocol/ext-apps` 2.0.4 is MIT; `@mcp-ui/client` 7.1.1 is Apache-2.0 [V] | Supported by Claude, VS Code Copilot, Goose and others [V] | This is model-made HTML in an iframe, so it is the (a) family. Starter template for Svelte exists [V] | Not for our pages. Useful later if an outside agent such as Claude should show an ETNOS view in chat. The CSP declaration idea (declared origins checked against behaviour) is worth copying for any iframe we ever allow |
 | **OpenAI Apps SDK widgets** | MCP Apps plus `window.openai` extras. The widget is an iframe. The page says to treat `structuredContent` as untrusted and keep authoritative data on the server [V] | Spec pages, not a library | Current | Not a fit for rendering our own pages | Two rules worth keeping. Treat tool output as untrusted input, and keep the server as the source of truth for state |
 | **Vercel AI SDK generative UI** | Tools return data and the app maps `tool-<name>` parts to components [V]. Package `ai` 7.0.176, Apache-2.0 [V] | Apache-2.0 | Very active | Examples are React only [V]. I could not confirm `streamUI` status from the page [U] | The idea that a tool result is typed data and the component is chosen by the app. We already do this with `etnos_*` tools |
 | **Thesys C1 / OpenUI** | C1 was a hosted API that returns UI. docs.thesys.dev now redirects to openui.com, which presents "OpenUI Lang" and a gateway [V]. Licence for the SDK reads "see LICENSE.md" on npm [V] | Unclear | Product has been renamed | Svelte is listed as supported on the OpenUI page [V]. Hosted gateway is a dependency | Avoid. A hosted generator adds a vendor and a data path. The compact-language idea (fewer output tokens than JSON) is worth testing only if JSON proves too long |
@@ -55,7 +55,7 @@ Verdict for this section. Choose (b). Keep (a) as a Paid opt-in described in the
 Licence note for AGPL-3.0. Apache-2.0 and MIT code may be included in an AGPL project. Neither json-render nor A2UI is AGPL or unlicensed. The AGENTS.md rule about AGPL donor code does not block them. Record attribution if we vendor anything.
 
 My recommendation for the spec itself.
-- Own the spec and its zod schema. Reason: Strata bindings are queries with visibility rules, not a generic `$state` path, and a pre-1.0 package that releases several times a month is a poor base for stored data that must stay valid for years.
+- Own the spec and its zod schema. Reason: ETNOS bindings are queries with visibility rules, not a generic `$state` path, and a pre-1.0 package that releases several times a month is a poor base for stored data that must stay valid for years.
 - Match the flat tree shape of json-render closely so a later move onto `@json-render/svelte` or an A2UI adapter stays cheap.
 - Spike `@json-render/svelte` for half a day. If it renders our catalogue with our zod schemas and works under Cloudflare's build, use it for the renderer and keep our own schema and validation. If not, write a renderer of about 200 lines. Either path is small.
 
@@ -86,7 +86,7 @@ Primitives map to components and data that exist today. File names are in `apps/
 | `signup_form` | New: `view_forms` and `view_form_entries` | None | Fields from an enum of types (name, text, choice, number), capped at 8. Entries visible to stewards only. Needs a privacy line. Phase 2 |
 | `counter` | A count query from an enum (members, posts this week, pages in a context) | Part of the stats on community pages | Props: which count, label text. The number is computed, never typed |
 | `word_card` | Words in a language context; word of the day is chosen by a deterministic rule | New, builds on the language room design in the showcase plan, section 7 | Needs a word source. Without one it is an empty state |
-| `gallery` | Strata media ids already attached to the community | `PostMedia.svelte` | Ids are checked for community ownership and visibility at render |
+| `gallery` | ETNOS media ids already attached to the community | `PostMedia.svelte` | Ids are checked for community ownership and visibility at render |
 | `text` | Short authored text, plain or restricted markdown through the existing `markdown.ts` | `PostText.svelte` | Hard cap, no HTML, links only to internal routes or https URLs shown with their host |
 | `section`, `columns`, `tabs` | Layout | shadcn `tabs`, `card` | Max depth 3. Max 40 elements per view |
 
@@ -217,7 +217,7 @@ The showcase plan already asks for a lot before the 26 to 27 November proposal u
 4. Should the first live view be on a festival community, a region page or a language room?
 5. Is a template-first mode acceptable if Gemma 4 cannot produce valid specs reliably?
 6. Should views be allowed on public pages for anonymous visitors, or only for logged-in members at first?
-7. Do we want outside agents (for example Claude through MCP Apps) to be able to show a Strata view in chat later?
+7. Do we want outside agents (for example Claude through MCP Apps) to be able to show an ETNOS view in chat later?
 
 ## Sources (accessed 18 November 2026)
 

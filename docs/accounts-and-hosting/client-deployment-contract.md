@@ -4,7 +4,7 @@
 
 ## Current separation
 
-Strata (`yohn-maistre/strata`) owns policy, storage, transactional posts/outbox, API, OAuth/session and deployment adapters. Honai (`yohn-maistre/honai-metro`, `apps/strata`) owns the Svelte client. The selected preview builds Honai's static assets and bundles them with the Worker for a convenient same-origin application. The engine does not depend on Svelte, shadcn or Honai component code.
+ETNOS (`yohn-maistre/strata`) owns policy, storage, transactional posts/outbox, API, OAuth/session and deployment adapters. Honai (`yohn-maistre/honai-metro`, `apps/strata`) owns the Svelte client. The selected preview builds Honai's static assets and bundles them with the Worker for a convenient same-origin application. The engine does not depend on Svelte, shadcn or Honai component code.
 
 There are already two Worker entry points:
 
@@ -20,7 +20,7 @@ There are already two Worker entry points:
 
 A deployer can build any client, host those assets on their chosen platform, and reverse-proxy `/v1`, `/auth` and OAuth metadata/callback to the engine under **one public origin**. Alternatively the integrated Worker serves the client directly. No browser credential or private node secret is baked into frontend assets. Share a canonical origin for sessions and content/media URLs. This preserves the present exact-Origin/Host, HttpOnly/Secure/SameSite cookies and CSRF boundary.
 
-A separate *repository* or static build is already supported. A separately hosted client calling a different engine origin is **not currently supported merely by setting a base URL**: there is no general CORS credential policy or third-party app enrollment. Do not solve it with wildcard credentialed CORS, tokens in localStorage, removing CSRF, or forwarding the user's session to arbitrary clients. A genuinely independent native/mobile/third-party web client needs a documented OAuth client/scoped API capability model, revocation and tests. AT login to a different app does not confer local Strata rights.
+A separate *repository* or static build is already supported. A separately hosted client calling a different engine origin is **not currently supported merely by setting a base URL**: there is no general CORS credential policy or third-party app enrollment. Do not solve it with wildcard credentialed CORS, tokens in localStorage, removing CSRF, or forwarding the user's session to arbitrary clients. A genuinely independent native/mobile/third-party web client needs a documented OAuth client/scoped API capability model, revocation and tests. AT login to a different app does not confer local ETNOS rights.
 
 ## Contract to stabilize
 
@@ -34,11 +34,11 @@ A separate *repository* or static build is already supported. A separately hoste
 - News and agent providers are optional ports with independent costs/credentials; their absence cannot prevent ordinary conversation.
 - Backend contract tests for any client; built-browser end-to-end tests for each shipped client. Current handwritten Honai types are not the same as a generated stable SDK.
 
-A default beautiful client helps deployments start; it should not be a mandatory engine dependency. PyFedi's integrated application and Lemmy's separate clients are both reasonable packaging precedents. Our practical alpha choice is integrated same-origin hosting with separate source/builds, plus an explicitly documented engine-only profile. This is not yet compatibility with Photon/Lemmy clients: those speak Lemmy's API and semantics, which Strata does not implement.
+A default beautiful client helps deployments start; it should not be a mandatory engine dependency. PyFedi's integrated application and Lemmy's separate clients are both reasonable packaging precedents. Our practical alpha choice is integrated same-origin hosting with separate source/builds, plus an explicitly documented engine-only profile. This is not yet compatibility with Photon/Lemmy clients: those speak Lemmy's API and semantics, which ETNOS does not implement.
 
-## What Strata brings, without uniqueness claims
+## What ETNOS brings, without uniqueness claims
 
-| Reference | Established strengths | Strata's intended emphasis / current tradeoff |
+| Reference | Established strengths | ETNOS's intended emphasis / current tradeoff |
 | --- | --- | --- |
 | PyFedi/PieFed | Mature forum, community/topic and moderation workflows; ActivityPub interoperability | Local controlled communities, explicit human/agent mandates and a reviewed knowledge/work path, on a lightweight Worker runtime. Much moderation/discovery/ops maturity and ActivityPub federation remain missing here |
 | Bluesky / AT clients | AT identity/repos, public records, portable account identity, large existing social infrastructure | Community-controlled local conversation and access rather than treating all repo data as the private forum. We currently use AT OAuth; live public record delivery/ingestion and PDS operations remain separate work |

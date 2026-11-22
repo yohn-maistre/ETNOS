@@ -4,7 +4,7 @@
 
 **Decided by the owner (21 Nov, evening):** the one page system, Lembaga as the name, communities by topic and language, Kios, Situs, Percakapan as in section 4, the Kamus as in section 10 including Mode belajar, and the Ensiklopedia front in the superapp shape (section 3a). **Goal: all of it before the 26–27 Nov proposal upload**, built by one Opus worker at a time in the packages of section 13. **Still open:** two voices on the lembaga page, Situs pricing, the land-listing ban (section 12).
 
-Related: [communities-spaces-2026-11-19.md](communities-spaces-2026-11-19.md) (site hierarchy, Periksa), [strata-model-2026-11-17.md](strata-model-2026-11-17.md) (layers and columns), [../research/mee-text-sources-2026-11-21.md](../research/mee-text-sources-2026-11-21.md) (coverage test, false friends), [../observatory/README.md](../observatory/README.md) (map and Penampil).
+Related: [communities-spaces-2026-11-19.md](communities-spaces-2026-11-19.md) (site hierarchy, Periksa), [etnos-model-2026-11-17.md](etnos-model-2026-11-17.md) (layers and columns), [../research/mee-text-sources-2026-11-21.md](../research/mee-text-sources-2026-11-21.md) (coverage test, false friends), [../observatory/README.md](../observatory/README.md) (map and Penampil).
 
 ## 1. Why
 
@@ -78,7 +78,7 @@ One template for every kind. The URL stays under `/wiki/<slug>`, because Indones
 
 - **Tabs, four at most:** Tentang · Percakapan · Riset dan data · Riwayat. *Riset dan data* merges today's Sumber (OpenAlex research) with Data (datasets), because both answer "where can I read or download more". *Komunitas* moves to the rail, since it is a list of places to go, not something to read.
 - **Kind modules sit inside Tentang, never as new tabs:** a map and Kabar for places; public Kamus entries and the communities that write in it for languages; sebaran, photos, sound and *nama lokal* for species; relief and facts for landforms; the lembaga module for lembaga (section 5).
-- **The rail is the *Letak* navigator,** a general version of today's region stack (PlaceStrata, "Letak di antara wilayah adat"). It shows the entry's place in its chain with the current one open, then the communities, lembaga and Kios that point here, then graph neighbours. On phones it becomes one row of chips under the title. This answers "underutilising the rail".
+- **The rail is the *Letak* navigator,** a general version of today's region stack ("Letak di antara wilayah adat"). It shows the entry's place in its chain with the current one open, then the communities, lembaga and Kios that point here, then graph neighbours. On phones it becomes one row of chips under the title. This answers "underutilising the rail".
 - **The Ensiklopedia front is a superapp grid,** and the Penampil gets its catalogue inside. Both are in section 3a.
 
 ### 3a. The Ensiklopedia front, shaped like a superapp
@@ -175,7 +175,7 @@ From cheapest and most accurate to most automatic. Steps 1 to 3 need no model an
 - **Dari lembaga ini:** their own words, photos, communities, Kios, a link to their Situs. Editable by its stewards.
 - **Di ensiklopedia:** reviewed facts with sources, edited through the normal review.
 
-An unclaimed listing (strata-model step 4: "institutions listed by kind and place, unclaimed until they claim them") is an entry without the first part. Claiming adds it. Recognition by a customary body stays a sourced claim, never a badge we grant.
+An unclaimed listing (etnos-model step 4: "institutions listed by kind and place, unclaimed until they claim them") is an entry without the first part. Claiming adds it. Recognition by a customary body stays a sourced claim, never a badge we grant.
 
 **What is built (P3, 21 November).**
 
@@ -242,7 +242,7 @@ Where I'd change the Sonnet write-up:
   - a reserved-names list protects pds, www, api and the like.
 
   Today the identity host answers every path on a handle hostname with a 404 except the DID file, so this dispatcher is new work.
-- **In Strata or not.** The schema, renderer, templates and dispatcher go in Strata (AGPL), so any deployment can host sites for its own lembaga. Payment stays outside Strata. A deployment flag, *situs aktif*, is switched by the operator, at first after a QRIS transfer. A payment gateway (Xendit, Midtrans) needs a badan usaha and can wait.
+- **In ETNOS or not.** The schema, renderer, templates and dispatcher go in ETNOS (AGPL), so any deployment can host sites for its own lembaga. Payment stays outside ETNOS. A deployment flag, *situs aktif*, is switched by the operator, at first after a QRIS transfer. A payment gateway (Xendit, Midtrans) needs a badan usaha and can wait.
 
 ## 9. YAML as the shape of everything
 
@@ -250,12 +250,12 @@ One family of small files, validated by JSON Schema. Forms in the interface writ
 
 | File | Holds |
 | --- | --- |
-| `strata.yaml` | A deployment: name, root place (Wikidata ID), languages, catalogues on, news sources, model provider |
+| `etnos.yaml` | A deployment: name, root place (Wikidata ID), languages, catalogues on, news sources, model provider |
 | `lembaga.yaml` | A lembaga: profile, jenis, places, contacts, communities |
 | `situs.yaml` | A Situs: template, theme, blocks that point at lembaga data |
 | `kamus.csv` (CLDF columns) | A seed word list with source and licence per row |
 
-A free model can draft any of these from a conversation, and a person reviews it before it is used. This is how "easy to set up for everyone else" becomes concrete: a new region's operator answers questions, and Aksara writes `strata.yaml`.
+A free model can draft any of these from a conversation, and a person reviews it before it is used. This is how "easy to set up for everyone else" becomes concrete: a new region's operator answers questions, and Aksara writes `etnos.yaml`.
 
 ## 10. Kamus: how any language community starts, even with no data
 
@@ -346,9 +346,9 @@ One Opus worker at a time, each on a coherent set (owner, 21 Nov). The lead sess
 
 | # | Package | Contents | Depends on |
 | --- | --- | --- | --- |
-| P1 | **Halaman dan Ensiklopedia** (**built** 21 Nov, see §3 and §3a) | One entry page for every kind at `/wiki/<slug>` with `/contexts/<slug>` redirecting; four tabs (Tentang, Percakapan, Riset dan data, Riwayat); the Letak rail, generalised from PlaceStrata; kind modules inside Tentang; the Ensiklopedia front in the superapp shape (3a); the Penampil catalogue strip; the name moves to Ensiklopedia in `observatory-name.ts`. One API shape (`/v1/entri/:slug`) that reads today's tables through an adapter. **No destructive storage migration before the showcase.** | none |
+| P1 | **Halaman dan Ensiklopedia** (**built** 21 Nov, see §3 and §3a) | One entry page for every kind at `/wiki/<slug>` with `/contexts/<slug>` redirecting; four tabs (Tentang, Percakapan, Riset dan data, Riwayat); the Letak rail, generalised from the region stack; kind modules inside Tentang; the Ensiklopedia front in the superapp shape (3a); the Penampil catalogue strip; the name moves to Ensiklopedia in `observatory-name.ts`. One API shape (`/v1/entri/:slug`) that reads today's tables through an adapter. **No destructive storage migration before the showcase.** | none |
 | P2 | **Kamus in posts** (**built** 21 Nov, see §10, except voice) | The tokenizer and matcher (proper names skipped, suffix rules per language); question underlines; tap any word for the card; *Artinya* on posts; the notice card and the deck with correction, word class and Ucapkan; *Mode belajar*; questions from word frequency; *Kata hari ini* from a concept list; picture questions from Penampil species. Shaped by `docs/research/language-from-nothing-2026-11-21.md`. | P1 for species links (soft) |
 | P3 | **Lembaga, komunitas dan Kios** (**built** 21 Nov, see §5, §6, §7) | Lembaga as the one word; jenis lembaga sections on the Komunitas page; the lembaga page (two voices if the owner agrees) with claiming an entry; community creation with *Tentang apa / di mana*, *Bahasa yang dipakai* (switches the Kamus on) and *Dikelola oleh*; Kios as a view of `offerings` with a toggle, place listing and house rules | P1 |
 | P4 | **Percakapan** (**built** 21 to 22 Nov, see §4) | Entry tagging in the composer; inherited tags; "Tandai …?" suggestions by name match on public posts; the Percakapan tab on entries | P1 |
 | P5 | **Situs** | The `situs.yaml` and `lembaga.yaml` schemas; the block renderer with two templates; a preview at `etnos.space/situs/<lembaga>`; the `*.etnos.space` dispatcher written and tested, switched on only after the owner confirms DNS | P3 |
-| P6 | **strata.yaml** | The deployment file and its schema; Studio reads and writes it | P5 schemas |
+| P6 | **etnos.yaml** | The deployment file and its schema; Studio reads and writes it | P5 schemas |

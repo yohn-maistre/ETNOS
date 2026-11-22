@@ -28,6 +28,6 @@ Adaptive writing remains the next part of this slice: rich formatting should be 
 
 ## Hosted offering release receipt
 
-Strata `06f22ef`; matched public Honai Metro main `6140f66`. Existing Worker deployment `5d6295d2-e561-4842-a89d-33c3667cb68a`; version `dcee5713-6b1a-4252-8652-4f5aef74a339`, 100% traffic, created `2026-11-11T23:25:01.552156Z` (November 12 Bangkok). Server SHA-256 `b5cd38f9cebaf219fc6c5576f82996c0d3b22ee39264475dfaae25c5175960e5`, etag `c24b7a2eea6ffc4cae0adea71a5b67d84dbe539cd3095fbdae3130127d07ecfb`. Schema 26 applied additively; current OAuth/secret/DO/service bindings retained and no new paid resource or model request.
+ETNOS `06f22ef`; matched public Honai Metro main `6140f66`. Existing Worker deployment `5d6295d2-e561-4842-a89d-33c3667cb68a`; version `dcee5713-6b1a-4252-8652-4f5aef74a339`, 100% traffic, created `2026-11-11T23:25:01.552156Z` (November 12 Bangkok). Server SHA-256 `b5cd38f9cebaf219fc6c5576f82996c0d3b22ee39264475dfaae25c5175960e5`, etag `c24b7a2eea6ffc4cae0adea71a5b67d84dbe539cd3095fbdae3130127d07ecfb`. Schema 26 applied additively; current OAuth/secret/DO/service bindings retained and no new paid resource or model request.
 
 Public smoke matched the exact built bundle, actual public offer catalog and sort/Wiki/snapshot contracts, and narrow widths 320/390/1440 without overflow. Existing profiles, community art, welcome/auth controls, directly readable Wiki and recovery remained available; health `ok`, zero page errors. No live seller, offer, inquiry or purchase was inserted by this smoke.

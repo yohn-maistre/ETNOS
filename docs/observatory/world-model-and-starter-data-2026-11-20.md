@@ -8,7 +8,7 @@ A working prototype of the interface is saved as [`docs/assets/peta-pengetahuan-
 
 ## 1. In one paragraph
 
-Strata should hold everything that a people has learned about its world, from the starch in a sago trunk to the stars used for direction, and connect each item to what modern science knows about it. The unit of this knowledge is a **thing in the world** (*Hal*), such as a plant, a practice, a season, a law or a story. It is not a document, a discipline or a category. Every thing gets three coordinates that anyone can estimate and that science already uses: **size**, **pace** (how long it takes to change) and **level of organisation** (from molecules to knowledge). Every statement about a thing gets a **depth** (what it is, how it is done, what rules govern it, what it means) and a **voice** (who says it). Published classification schemes are **lenses** over the same things, not the structure itself. The schemes are the Integrative Levels Classification, the Outline of Cultural Materials, the Intercontinental Dictionary Series, OpenAlex topics, nature's contributions to people, the UU 5/2017 cultural objects and a school curriculum, plus the community's own scheme. Crosswalks between them are computed with embeddings and checked by people. Relations form a typed hypergraph, and a prerequisite graph is only used for learning paths. On top sit **synthesis notes** that set what people say beside what science records and state what it means now. The interface is a three-dimensional map of points that can be rearranged by size and pace, by level, by field of science or by need. A new deployment receives all of this pre-computed from public sources in one build.
+ETNOS should hold everything that a people has learned about its world, from the starch in a sago trunk to the stars used for direction, and connect each item to what modern science knows about it. The unit of this knowledge is a **thing in the world** (*Hal*), such as a plant, a practice, a season, a law or a story. It is not a document, a discipline or a category. Every thing gets three coordinates that anyone can estimate and that science already uses: **size**, **pace** (how long it takes to change) and **level of organisation** (from molecules to knowledge). Every statement about a thing gets a **depth** (what it is, how it is done, what rules govern it, what it means) and a **voice** (who says it). Published classification schemes are **lenses** over the same things, not the structure itself. The schemes are the Integrative Levels Classification, the Outline of Cultural Materials, the Intercontinental Dictionary Series, OpenAlex topics, nature's contributions to people, the UU 5/2017 cultural objects and a school curriculum, plus the community's own scheme. Crosswalks between them are computed with embeddings and checked by people. Relations form a typed hypergraph, and a prerequisite graph is only used for learning paths. On top sit **synthesis notes** that set what people say beside what science records and state what it means now. The interface is a three-dimensional map of points that can be rearranged by size and pace, by level, by field of science or by need. A new deployment receives all of this pre-computed from public sources in one build.
 
 ## 2. What the owner asked
 
@@ -55,7 +55,7 @@ The fix is to stop authoring a taxonomy. Measurable coordinates set the position
 
 Knowledge organisation distinguishes classifying by **discipline** (who studies something) from classifying by **phenomenon** (what is studied). In a phenomenon-based scheme, each phenomenon has one place of its own, and it is the disciplines that get scattered. The Integrative Levels Classification (ILC) by Claudio Gnoli is the working example of this approach.
 
-Strata already made this choice on 18 November, when the owner asked that map nodes be the entities of a people's world rather than documents. This note keeps the existing *Hal* and its twelve classes and adds coordinates, depth and lenses to it. A phenomenon can be a being (sago palm), a process (pig feast, flood, glacier retreat), a practice (processing sago), an institution (customary land right) or an idea (a counting system). The twelve classes already cover these.
+ETNOS already made this choice on 18 November, when the owner asked that map nodes be the entities of a people's world rather than documents. This note keeps the existing *Hal* and its twelve classes and adds coordinates, depth and lenses to it. A phenomenon can be a being (sago palm), a process (pig feast, flood, glacier retreat), a practice (processing sago), an institution (customary land right) or an idea (a counting system). The twelve classes already cover these.
 
 ### 5.2 Three coordinates that anyone can estimate place every thing *(proposal)*
 
@@ -94,7 +94,7 @@ Fikret Berkes describes traditional ecological knowledge as a **knowledge-practi
 3. social institutions, meaning the rules and codes of behaviour;
 4. worldview, meaning religion, ethics and belief.
 
-Strata adds this as a field on each assertion, called **depth** (*kedalaman*) *(proposal)*. The four values are *apa* (what it is), *cara* (how it is done), *aturan* (who decides and by what rule) and *makna* (what it means). The field sits beside the existing epistemic layer (*jejak, tuturan, tafsir*), which records the kind of evidence. Depth records which part of the complex the statement belongs to.
+ETNOS adds this as a field on each assertion, called **depth** (*kedalaman*) *(proposal)*. The four values are *apa* (what it is), *cara* (how it is done), *aturan* (who decides and by what rule) and *makna* (what it means). The field sits beside the existing epistemic layer (*jejak, tuturan, tafsir*), which records the kind of evidence. Depth records which part of the complex the statement belongs to.
 
 Depth answers the owner's demand that the model cover everything a people has learned and not only cultural artefacts. A sago palm has *apa* statements (where it grows, how long it takes to mature) and *cara* statements (how the pith is beaten and washed). It also has *aturan* statements (whose grove it is) and *makna* statements (the stories in which sago appears). Science usually fills the first depth only. A people usually holds all four. The depth chart shows that difference at a glance.
 
@@ -102,12 +102,12 @@ Depth answers the owner's demand that the model cover everything a people has le
 
 Voice is already in the code. Two ideas fix how voices meet:
 
-- The **multiple evidence base** approach treats Indigenous, local and scientific knowledge as parallel systems that each produce evidence. Each system is evaluated mainly within itself, not across systems. In Strata, a speaker's account is checked by the community, and a measurement is checked against its method.
-- **Situated knowledge.** Haraway argued that objectivity comes from partial, located perspectives rather than a view from nowhere. Every view in Strata names its voices, including the scientific ones.
+- The **multiple evidence base** approach treats Indigenous, local and scientific knowledge as parallel systems that each produce evidence. Each system is evaluated mainly within itself, not across systems. In ETNOS, a speaker's account is checked by the community, and a measurement is checked against its method.
+- **Situated knowledge.** Haraway argued that objectivity comes from partial, located perspectives rather than a view from nowhere. Every view in ETNOS names its voices, including the scientific ones.
 
 ### 5.5 Published schemes are lenses over the same things *(proposal)*
 
-A scheme is a named list of concepts with an owner, a licence and a version. Strata loads each scheme as data, embeds every concept, and gives every thing a soft code in each scheme (section 5.6). A reader picks a scheme, and the map regroups by it. The structure underneath does not change.
+A scheme is a named list of concepts with an owner, a licence and a version. ETNOS loads each scheme as data, embeds every concept, and gives every thing a soft code in each scheme (section 5.6). A reader picks a scheme, and the map regroups by it. The structure underneath does not change.
 
 | Scheme | What it is | Size | Why it is here | Access |
 | --- | --- | --- | --- | --- |
@@ -119,13 +119,13 @@ A scheme is a named list of concepts with an owner, a licence and a version. Str
 | UU 5/2017 *objek pemajuan kebudayaan* and UNESCO ICH domains | Legal heritage categories | 10 and 5 | Reports to the Ministry and to UNESCO | Public law |
 | Marble open taxonomy | Primary-school micro-topics with prerequisite links | 1,861 topics, 4,003 edges, 9 subjects (v1) | Learning paths from local knowledge to school concepts | ODbL 1.0 and CC BY-SA 4.0; curriculum standards file has its own terms |
 | The community's own scheme | The people's categories, in their language | Any | The arrangement that leads in the community's spaces | Under the community's protocol |
-| ETNOS post topics (18) | Everyday topics for posts and communities | 18 | Feeds and community discovery | Strata |
+| ETNOS post topics (18) | Everyday topics for posts and communities | 18 | Feeds and community discovery | ETNOS |
 
-This answers the questions about arbitrariness and research use. The coordinates are physical. The schemes are published and maintained by others, with known histories. A researcher can export a deployment with ILC, OCM, Concepticon, OpenAlex, GBIF, Wikidata and Glottolog identifiers on every thing and compare it with eHRAF, D-PLACE or another Strata deployment. The 18 post topics keep their job for posts and are not used to classify knowledge.
+This answers the questions about arbitrariness and research use. The coordinates are physical. The schemes are published and maintained by others, with known histories. A researcher can export a deployment with ILC, OCM, Concepticon, OpenAlex, GBIF, Wikidata and Glottolog identifiers on every thing and compare it with eHRAF, D-PLACE or another ETNOS deployment. The 18 post topics keep their job for posts and are not used to classify knowledge.
 
 ### 5.6 Crosswalks are computed with embeddings and confirmed by people
 
-Coding every thing in every scheme by hand is impossible. Ontology matching research gives a working method. The current best systems retrieve the most relevant target concepts with embeddings first, and then ask a language model to choose among them. Some systems keep the model only for the borderline cases. Strata follows the same pattern *(proposal)*:
+Coding every thing in every scheme by hand is impossible. Ontology matching research gives a working method. The current best systems retrieve the most relevant target concepts with embeddings first, and then ask a language model to choose among them. Some systems keep the model only for the borderline cases. ETNOS follows the same pattern *(proposal)*:
 
 1. Embed every scheme concept once, using its label and definition, in a multilingual model (section 7.3).
 2. Embed every thing using its title, aliases, description and the excerpts behind it.
@@ -135,7 +135,7 @@ Coding every thing in every scheme by hand is impossible. Ontology matching rese
 
 ### 5.7 Relations form a typed hypergraph, and a DAG is used only for learning *(proposal)*
 
-Marble's map shows what a prerequisite graph is good at. Every link says what must come first, so a learner can trace everything below a concept. That is the right primitive for **learning**, and the wrong one for **the world**. A forest has cycles: cassowaries eat fruit, spread seeds, and the forest feeds the cassowaries. A feast joins pigs, stones, clans, songs and a season in one event. Strata therefore uses three structures, all built from the same assertions:
+Marble's map shows what a prerequisite graph is good at. Every link says what must come first, so a learner can trace everything below a concept. That is the right primitive for **learning**, and the wrong one for **the world**. A forest has cycles: cassowaries eat fruit, spread seeds, and the forest feeds the cassowaries. A feast joins pigs, stones, clans, songs and a season in one event. ETNOS therefore uses three structures, all built from the same assertions:
 
 - **A typed graph** for pairwise relations. The predicate families already in `knowledge-model.ts` (space, groups, life, making, practice, words, stories, custody, knowledge) cover most cases. This note adds four families with public sources:
 
@@ -147,7 +147,7 @@ Marble's map shows what a prerequisite graph is good at. Every link says what mu
   | Governance | decides, holds rights over, regulated by | Laws and the community; Ostrom's social-ecological systems framework as question templates |
 
 - **Hyperedges** for practices and events. One *praktik* or *peristiwa* links all its parts, which the motif library calls M7.
-- **Learning paths** computed as a DAG view. From any thing, Strata can compute a path to school concepts (Marble) and to science topics (OpenAlex). For example, processing sago leads to starch settling in water, then to density, then to the school concept of mixtures and separation. This is the bridge for *muatan lokal*.
+- **Learning paths** computed as a DAG view. From any thing, ETNOS can compute a path to school concepts (Marble) and to science topics (OpenAlex). For example, processing sago leads to starch settling in water, then to density, then to the school concept of mixtures and separation. This is the bridge for *muatan lokal*.
 
 Disagreement between voices is kept as it is today, with both statements standing. The sheaf-based measure of where voices disagree (M6) stays a research item.
 
@@ -182,7 +182,7 @@ The needs arrangement (*Kebutuhan*) groups things by the need they meet: food, w
 
 Molecules enter through the beings that hold them. LOTUS publishes more than 750,000 referenced pairs of a chemical structure and an organism, hosted on Wikidata. One rule protects the community, and the prototype shows it as a locked link:
 
-> Strata never joins a community's statement that a plant is used as medicine to that plant's compound list in any public view, export or API, unless the community decides to publish it. This pairing is what bioprospecting looks for, and it falls under prior informed consent and agreed terms in the Nagoya Protocol (UU 11/2013, PP 56/2022).
+> ETNOS never joins a community's statement that a plant is used as medicine to that plant's compound list in any public view, export or API, unless the community decides to publish it. This pairing is what bioprospecting looks for, and it falls under prior informed consent and agreed terms in the Nagoya Protocol (UU 11/2013, PP 56/2022).
 
 ## 7. The starter dataset
 
@@ -224,7 +224,7 @@ Three cautions apply to the whole list. Keyless does not mean unlimited, so ever
 
 ### 7.3 Embeddings are computed once per build and reused everywhere *(proposal)*
 
-Each modality has an open model that already turns the world into vectors. Strata stores the vectors with the model name, version and dimension, as [knowledge-graph-sota](../research/knowledge-graph-sota-2026-11-16.md) already requires.
+Each modality has an open model that already turns the world into vectors. ETNOS stores the vectors with the model name, version and dimension, as [knowledge-graph-sota](../research/knowledge-graph-sota-2026-11-16.md) already requires.
 
 | What is embedded | Model | Where it runs | Used for |
 | --- | --- | --- | --- |
@@ -284,7 +284,7 @@ No interface text says "outside voice". Voices are named by kind: *ensiklopedia*
 
 ### 8.1 Onboarding starts by asking who is starting the deployment, and for whom
 
-The first questions record who is setting up the deployment and whether the people's own bodies have agreed. Strata cannot verify this, so it records the answer and shows it on the *Tentang* page. Without such a statement, the deployment runs in **place mode**: places, nature, news and public data, but no pages that speak for a people and no language spaces.
+The first questions record who is setting up the deployment and whether the people's own bodies have agreed. ETNOS cannot verify this, so it records the answer and shows it on the *Tentang* page. Without such a statement, the deployment runs in **place mode**: places, nature, news and public data, but no pages that speak for a people and no language spaces.
 
 ### 8.2 The questions fit in one profile file
 
@@ -371,7 +371,7 @@ Planned additions *(proposal)*:
 
 ## 10. What others have built, and what is missing
 
-| Work | What it does well | What Strata adds |
+| Work | What it does well | What ETNOS adds |
 | --- | --- | --- |
 | eHRAF and the OCM | Every paragraph of ethnography indexed by subject for cross-cultural research | A living record that the people write and check, coded with the same OCM categories |
 | D-PLACE | Links cultural data on 2,000+ groups with languages and environments | Today's knowledge from the people, beside pre-1950 coding |
@@ -430,7 +430,7 @@ After the showcase: OCM coding once reuse terms are clear, BioCLIP 2 and Perch, 
 3. Should the size and pace arrangement be the default front of the wiki, or should the current network lens stay first?
 4. Is place mode the right default when no consent statement exists?
 5. Which small place outside Tanah Papua should be the second test deployment?
-6. Should Strata ask HRAF about using OCM categories, and Local Contexts about becoming an integration partner?
+6. Should ETNOS ask HRAF about using OCM categories, and Local Contexts about becoming an integration partner?
 
 ## 15. Sources
 

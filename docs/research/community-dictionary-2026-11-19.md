@@ -4,7 +4,7 @@
 
 ## 1. The northstar
 
-**Every language community on Strata gets a dictionary and a grammar that grow from how its people already talk.** The dictionary is seeded from everything that has been published, it is owned and governed by the community, and it powers the community's own small models.
+**Every language community on ETNOS gets a dictionary and a grammar that grow from how its people already talk.** The dictionary is seeded from everything that has been published, it is owned and governed by the community, and it powers the community's own small models.
 
 People do not have to do lexicography. They chat, post and send voice notes in their language rooms, as they would anyway. The system:
 - notices words it has not seen;
@@ -173,7 +173,7 @@ Each of these is publishable, with Papuan co-authors by their choice.
 ## 11. Collaboration *(proposal)*
 
 - **TransNewGuinea.org's maintainers** (University of Auckland). Ask for input on the import, and offer, with speakers' consent, attributed corrections and new words back to the database and to Lexibank. The owner will reach out after the proposal.
-- **Living Dictionaries** (Living Tongues Institute). It has 846+ community dictionaries, audio from named speakers, public or unlisted dictionaries (not private by default), and an API with per-dictionary read and write keys that agents can use. We do not rebuild it. Strata's dictionary is fed by conversation and governed by room protocol, which Living Dictionaries is not designed for. A room that wants a public Living Dictionary can sync its published entries there through that API.
+- **Living Dictionaries** (Living Tongues Institute). It has 846+ community dictionaries, audio from named speakers, public or unlisted dictionaries (not private by default), and an API with per-dictionary read and write keys that agents can use. We do not rebuild it. ETNOS's dictionary is fed by conversation and governed by room protocol, which Living Dictionaries is not designed for. A room that wants a public Living Dictionary can sync its published entries there through that API.
 - **AT Protocol.** Once proven, the lexeme and voice-post records can be offered as community lexicons (multiplex §10.3).
 
 ## 12. Composed cards: OpenUI *(decided 19 November)*
@@ -185,7 +185,7 @@ The owner's decision: use **OpenUI** rather than our own spec, to minimise fragi
   - The library generates the system prompt from those components.
   - The parser and renderer do not depend on any hosted service.
 - **Svelte:** `@openuidev/svelte-lang` (MIT, Svelte 5, zod 3.25 or 4) gives `defineComponent`, `createLibrary`, prompt generation and a streaming `Renderer`. It supports OpenUI Lang 0.5. Version 1.0 features need the React renderer for now.
-- **How Strata uses it:**
+- **How ETNOS uses it:**
   - The catalogue's primitives become OpenUI components.
   - Aksara writes OpenUI Lang, and the server validates it with `@openuidev/lang-core`'s parser before storing it as a versioned view.
   - The browser renders it with `Renderer`.

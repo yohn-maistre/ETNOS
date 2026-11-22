@@ -4,8 +4,8 @@
 
 ## Summary
 
-1. A Cloudflare one-click path is feasible on the free plan for the Strata Worker, its SQLite Durable Object and static assets. It needs a neutral template first (the current configs are tied to the ETNOS preview) and a small setup script for secrets and the first steward.
-2. A VPS path is feasible as one script that installs Docker, the official Bluesky PDS installer and a Strata container, with the PDS's own Caddy serving both. Strata's Node host needs Node 24.19 or later (`package.json` engines) because `src/store.ts` uses `node:sqlite`.
+1. A Cloudflare one-click path is feasible on the free plan for the ETNOS Worker, its SQLite Durable Object and static assets. It needs a neutral template first (the current configs are tied to the ETNOS preview) and a small setup script for secrets and the first steward.
+2. A VPS path is feasible as one script that installs Docker, the official Bluesky PDS installer and an ETNOS container, with the PDS's own Caddy serving both. ETNOS's Node host needs Node 24.19 or later (`package.json` engines) because `src/store.ts` uses `node:sqlite`.
 3. The operator onboarding flow can be built on what exists: the resident (Pi on a Durable Object), the `seed.config.json` pipeline in `history/next-2026-11-16.md`, and Studio.
 4. opencode is MIT-licensed and can run headless with an HTTP API and an SDK. Its keyless "free models" exist today but are promotional, are restricted to the opencode client, have unpublished limits, and several of them may keep or train on prompts. It cannot run inside a Worker. Embedding it as the seeding engine of every deployment is not recommended. Using it by choice, for public data only, on a laptop or VPS is reasonable.
 5. "OpenBot" is real (more than one project of that name). "dusk.bot" is a real desktop app. Neither ships its own keyless models. The nearest match is a third-party listing saying OpenBot can use opencode's free models.
@@ -70,11 +70,11 @@ So the owner's recollection is half right: such apps let a user plug in opencode
 | Free plan, R2 | 10 GB-month storage, 1 million Class A and 10 million Class B operations a month, free egress. Whether a payment method must be on file to enable R2 is not stated on that page (*unverified*). | [R2 pricing](https://developers.cloudflare.com/r2/pricing/) |
 | Free plan, Workers | 100,000 requests a day and 10 ms CPU per request, as already recorded in `plan/showcase-plan-2026-11-17.md` §3. Sign-in cost on Free is still unmeasured. | repo |
 
-What a Strata template needs, from `wrangler.web.jsonc` and `docs/accounts-and-hosting/cloudflare-profile.md`:
+What an ETNOS template needs, from `wrangler.web.jsonc` and `docs/accounts-and-hosting/cloudflare-profile.md`:
 
 - One Worker (`src/web-worker.ts`) with an `ASSETS` binding for the built Svelte app, one SQLite Durable Object class `StrataNode` with migration `v1`, `nodejs_compat`, observability off.
-- Plain variables: `STRATA_ORIGIN`, `STRATA_NODE`, `STRATA_STEWARD_DID`, `STRATA_CLIENT_NAME`, `STRATA_CATALOGUE`, enrolment and publishing switches.
-- Two secrets: `STRATA_OAUTH_JWK` and `STRATA_AUTH_SEAL_KEY`. Both are generated, so a setup script should create them rather than ask the operator.
+- Plain variables: `ETNOS_ORIGIN`, `ETNOS_NODE`, `ETNOS_STEWARD_DID`, `ETNOS_CLIENT_NAME`, `ETNOS_CATALOGUE`, enrolment and publishing switches.
+- Two secrets: `ETNOS_OAUTH_JWK` and `ETNOS_AUTH_SEAL_KEY`. Both are generated, so a setup script should create them rather than ask the operator.
 - Optional: an `AI` binding for Workers AI; an R2 bucket (the cloudflare-profile says none is required today); a separate PDS Worker (`packages/pds`, one identity per deployment, not multi-account).
 
 Gaps found in the repository:
@@ -82,10 +82,10 @@ Gaps found in the repository:
 - `docs/accounts-and-hosting/client-deployment-contract.md` already says the current configs share the preview Worker name and node and must not be deployed unchanged, and that neutral validated templates are needed before calling this an installer.
 - The web assets live in `apps/web` and are built by `npm run build:ui` before `wrangler deploy`. The button's build step must run that, so a root `deploy` script such as `npm ci && npm run build:ui && wrangler deploy` is needed.
 - The root repository is one package with `apps/web` and `packages/*` inside it, so the button should point at the repository root, not a subdirectory.
-- `STRATA_STEWARD_DID` is an AT identity, which the operator has before they have a deployment only if they already hold a Bluesky or PDS account. The setup flow must say so, or offer to create one on a PDS first.
-- The origin must be known at deploy time (`STRATA_ORIGIN`); with a `workers.dev` name it is predictable, with a custom domain the operator sets it in the second step. Custom domains are attached after deploy and are available on the free plan (*unverified in this research*).
+- `ETNOS_STEWARD_DID` is an AT identity, which the operator has before they have a deployment only if they already hold a Bluesky or PDS account. The setup flow must say so, or offer to create one on a PDS first.
+- The origin must be known at deploy time (`ETNOS_ORIGIN`); with a `workers.dev` name it is predictable, with a custom domain the operator sets it in the second step. Custom domains are attached after deploy and are available on the free plan (*unverified in this research*).
 
-The alternative to the button is a C3 template (`npm create cloudflare@latest -- --template <repo>`), which suits the laptop path (`npx strata init`) because it can run the secret generation and the first publish locally. Not read in this research; the Cloudflare C3 documentation should be checked before relying on it.
+The alternative to the button is a C3 template (`npm create cloudflare@latest -- --template <repo>`), which suits the laptop path (`npx etnos init`) because it can run the secret generation and the first publish locally. Not read in this research; the Cloudflare C3 documentation should be checked before relying on it.
 
 ## 5. VPS one-command install
 
@@ -95,19 +95,19 @@ The alternative to the button is a C3 template (`npm create cloudflare@latest --
 | What it writes | Data in `/pds` (the script refuses any other path), `/pds/compose.yaml`, `/pds/pds.env` with generated secrets, `/pds/caddy/etc/caddy/Caddyfile`, a systemd unit `pds.service`, `/usr/local/bin/pdsadmin`. Installs Docker from Docker's apt repository if missing. | [installer.sh](https://raw.githubusercontent.com/bluesky-social/pds/main/installer.sh) |
 | Caddyfile | One block for `*.${PDS_HOSTNAME}, ${PDS_HOSTNAME}` with on-demand TLS and `reverse_proxy http://localhost:3000`. | same |
 
-Consequences for putting Strata beside it:
+Consequences for putting ETNOS beside it:
 
-- The PDS's Caddy owns ports 80 and 443 and its Caddyfile already claims the wildcard of the PDS hostname. Strata should therefore live on a different hostname (for example `etnos.example.org` for Strata and `pds.example.org` for the PDS, so user handles are `name.pds.example.org`). A second block is added to the same Caddyfile with `reverse_proxy` to Strata's port; one Caddy, one certificate manager. The installer's file is regenerated only on install, so the Strata script must append to it idempotently and reload Caddy (inference; not tested).
-- Do not point the PDS wildcard at the same name as Strata. This is why the PDS `hostname` and the Strata origin must differ.
-- Strata on the VPS runs from the repository's Node host (`npm start` runs `src/cli.ts serve`, which uses `src/http.ts` and `node:sqlite`). `docs/accounts-and-hosting/client-deployment-contract.md` calls this host a "loopback developer API; not a production browser-auth server". So the VPS path is **not ready**: the Node host has to be qualified for production sign-in (OAuth, sealed cookies, exact Origin), or Strata on the VPS must run the Worker code under workerd (`wrangler dev` or the open-source `workerd` binary) with the same Durable Object. The second is closer to what is already tested (`test:worker`, `test:web`) and keeps one code path. This choice is a decision for the owner.
-- Package as a Docker image (`node:24` or a workerd image), a compose file added next to `/pds/compose.yaml`, and one script (`install.sh`) that: checks the OS and ports, downloads the PDS installer, verifies a published SHA-256, runs it, then adds Strata. The `curl | sh` pattern is acceptable only with a pinned checksum, a version in the URL and a readable script; the PDS README itself downloads then runs, which is the safer shape to copy.
+- The PDS's Caddy owns ports 80 and 443 and its Caddyfile already claims the wildcard of the PDS hostname. ETNOS should therefore live on a different hostname (for example `etnos.example.org` for ETNOS and `pds.example.org` for the PDS, so user handles are `name.pds.example.org`). A second block is added to the same Caddyfile with `reverse_proxy` to ETNOS's port; one Caddy, one certificate manager. The installer's file is regenerated only on install, so the ETNOS script must append to it idempotently and reload Caddy (inference; not tested).
+- Do not point the PDS wildcard at the same name as ETNOS. This is why the PDS `hostname` and the ETNOS origin must differ.
+- ETNOS on the VPS runs from the repository's Node host (`npm start` runs `src/cli.ts serve`, which uses `src/http.ts` and `node:sqlite`). `docs/accounts-and-hosting/client-deployment-contract.md` calls this host a "loopback developer API; not a production browser-auth server". So the VPS path is **not ready**: the Node host has to be qualified for production sign-in (OAuth, sealed cookies, exact Origin), or ETNOS on the VPS must run the Worker code under workerd (`wrangler dev` or the open-source `workerd` binary) with the same Durable Object. The second is closer to what is already tested (`test:worker`, `test:web`) and keeps one code path. This choice is a decision for the owner.
+- Package as a Docker image (`node:24` or a workerd image), a compose file added next to `/pds/compose.yaml`, and one script (`install.sh`) that: checks the OS and ports, downloads the PDS installer, verifies a published SHA-256, runs it, then adds ETNOS. The `curl | sh` pattern is acceptable only with a pinned checksum, a version in the URL and a readable script; the PDS README itself downloads then runs, which is the safer shape to copy.
 - Hardware: the PDS recommends 1 GB RAM; add roughly the engine's needs (not measured here). Treat 2 GB RAM as a working guess, *unverified*.
 
 ## 6. Where the seeding agent can run
 
 Existing pieces in the repository:
 
-- `packages/resident-pi`: the optional Aksara resident. One Pi agent session per community/thread on a SQLite Durable Object (`PiResidentSession`), bound to Strata through `ResidentAuthority` (budgets, work tickets, publication) and to a model through a `MODEL_GATEWAY` service binding (today the owner's WPW gateway). Web search and fetch tools need an `AI` binding and AI Gateway. It has no model keys inside.
+- `packages/resident-pi`: the optional Aksara resident. One Pi agent session per community/thread on a SQLite Durable Object (`PiResidentSession`), bound to ETNOS through `ResidentAuthority` (budgets, work tickets, publication) and to a model through a `MODEL_GATEWAY` service binding (today the owner's WPW gateway). Web search and fetch tools need an `AI` binding and AI Gateway. It has no model keys inside.
 - `docs/history/next-2026-11-16.md`: the seed pipeline (`seed.config.json`, survey, `verify-wiki-seed.py`, writer step, `check-wiki-pages.ts`, `propose-wiki-pages.ts`). Today these are scripts run by the owner.
 - `docs/plan/direction-2026-11-16.md`, "Aksara Node": the separate aksara-core host (Mastra-based harness, alpha, Apache-2.0) for a community's private work. Out of scope for first seeding.
 - `src/web-worker.ts` shows no model call in the engine itself; inference is behind the resident and a gateway.
@@ -117,7 +117,7 @@ Existing pieces in the repository:
 | Cloudflare free, no extra account | Workers AI through an `AI` binding, driven by the resident or a small seeding Durable Object, in daily slices | Keyless, in-Worker, non-training, stable; 10,000 Neurons a day means a seed of a few hundred pages takes days, so the flow must show progress and resume | Public only |
 | Cloudflare free, with a Google AI Studio key | Gemma 4 for bulk, Flash-Lite for writing, as already planned | Higher volume and quality | Public only (free-tier terms) |
 | VPS | Same as above, plus a local model if the server has the memory, plus opencode if the operator chooses it | More freedom; PDS beside it | Public only for free hosted models; private data only with a local model |
-| Operator laptop, `npx strata init` | opencode free models by choice, or any key the operator has, or a local model; the CLI calls the deployment's seed API | Seeding is a one-time public-data job; the laptop avoids both the Worker's CPU limit and Workers AI's daily cap | Public only |
+| Operator laptop, `npx etnos init` | opencode free models by choice, or any key the operator has, or a local model; the CLI calls the deployment's seed API | Seeding is a one-time public-data job; the laptop avoids both the Worker's CPU limit and Workers AI's daily cap | Public only |
 
 ## 7. Verdict on the owner's guess
 
@@ -129,15 +129,15 @@ The guess is right in shape. Corrections:
 
 ## 8. Recommended build order
 
-1. Neutral template: root config, `.dev.vars.example`, `deploy` script, a `strata init` step that generates the two secrets and writes `STRATA_ORIGIN` and the steward. Test it against a fresh free account (not created in this research).
+1. Neutral template: root config, `.dev.vars.example`, `deploy` script, a `etnos init` step that generates the two secrets and writes `ETNOS_ORIGIN` and the steward. Test it against a fresh free account (not created in this research).
 2. Seed API in the engine: draft, confirm and receipt records for each step, with the sources per item; reuse the existing verification scripts as library code.
 3. Operator onboarding screens in Studio ("Mulai dari awal"), driven by Workers AI first.
-4. `npx strata init` CLI with model adapters (Workers AI over the API, AI Studio key, local model, opencode through its SDK) and a public-data-only guard.
+4. `npx etnos init` CLI with model adapters (Workers AI over the API, AI Studio key, local model, opencode through its SDK) and a public-data-only guard.
 5. VPS script, after the production-host question in section 5 is decided.
 
 ## Open questions for the owner
 
-- Is the VPS Strata process to be the Node host (needs production sign-in work) or workerd running the Worker build?
+- Is the VPS ETNOS process to be the Node host (needs production sign-in work) or workerd running the Worker build?
 - Is the first steward required to already hold an AT account?
 - Does ETNOS ask opencode's maintainers whether seeding through their free models is within their terms before it appears in docs?
 
@@ -163,4 +163,4 @@ All read 17 November 2026.
 - Durable Objects pricing: https://developers.cloudflare.com/durable-objects/platform/pricing/
 - R2 pricing: https://developers.cloudflare.com/r2/pricing/
 - Bluesky PDS: https://github.com/bluesky-social/pds ; installer: https://raw.githubusercontent.com/bluesky-social/pds/main/installer.sh
-- Repository documents: `docs/plan/showcase-plan-2026-11-17.md`, `docs/history/next-2026-11-16.md`, `docs/plan/strata-model-2026-11-17.md` §4.5, `docs/research/free-tier-llm-coverage-2026-11-16.md`, `docs/accounts-and-hosting/cloudflare-profile.md`, `docs/accounts-and-hosting/client-deployment-contract.md`, `docs/accounts-and-hosting/pds-hosting.md`, `docs/plan/direction-2026-11-16.md`, `packages/resident-pi/README.md`, `wrangler.web.jsonc`, `package.json`.
+- Repository documents: `docs/plan/showcase-plan-2026-11-17.md`, `docs/history/next-2026-11-16.md`, `docs/plan/etnos-model-2026-11-17.md` §4.5, `docs/research/free-tier-llm-coverage-2026-11-16.md`, `docs/accounts-and-hosting/cloudflare-profile.md`, `docs/accounts-and-hosting/client-deployment-contract.md`, `docs/accounts-and-hosting/pds-hosting.md`, `docs/plan/direction-2026-11-16.md`, `packages/resident-pi/README.md`, `wrangler.web.jsonc`, `package.json`.

@@ -1,6 +1,6 @@
 # Explicit Aksara questions and sourced thread replies
 
-12 November 2026, Asia/Bangkok. Implements the next cut in the [interaction contract](steward-interaction-build-2026-11-12.md) and [intelligence plan](../research/strata-intelligence-catalogue-2026-11-12.md). The [competition rehearsal guide](../competition/competition-demo-rehearsal-2026-11-12.md) records the connected story and live operator step. Deployment identifiers and hosted checks are added after the matched release.
+12 November 2026, Asia/Bangkok. Implements the next cut in the [interaction contract](steward-interaction-build-2026-11-12.md) and [intelligence plan](../research/etnos-intelligence-catalogue-2026-11-12.md). The [competition rehearsal guide](../competition/competition-demo-rehearsal-2026-11-12.md) records the connected story and live operator step. Deployment identifiers and hosted checks are added after the matched release.
 
 ## Writing and reading
 
@@ -38,7 +38,7 @@ Final local checks: TypeScript and all 144 engine tests pass, including optional
 
 ## Deployed receipt
 
-- Canonical Strata `1c55c051a588e1882da458bfda6fa28b46b72303`; matching Honai UI `48f98f1bb88b6186d6c3213bf37a814a9abe0c5c`. Both main pushes passed [Strata CI](https://github.com/yohn-maistre/strata/actions/runs/43241886419) and [Honai CI](https://github.com/yohn-maistre/honai-metro/actions/runs/43241887225).
+- Canonical ETNOS `1c55c051a588e1882da458bfda6fa28b46b72303`; matching Honai UI `48f98f1bb88b6186d6c3213bf37a814a9abe0c5c`. Both main pushes passed [ETNOS CI](https://github.com/yohn-maistre/strata/actions/runs/43241886419) and [Honai CI](https://github.com/yohn-maistre/honai-metro/actions/runs/43241887225).
 - Existing Pi Worker updated first, 12 November at 21:54:12 Asia/Bangkok: deployment `d766c40d-7f58-4f90-82ac-59f6ea9c5c38`, version `5965047e-ec11-4623-a8ee-3cee01b3d539`, 100%, module SHA-256 `409f16220d7cf199c9fd189ca330124cf39dc7ac561451fabd2072c22ba7d898`, etag `280178d9a7b58ed96aa3ba6465ad1f330274248489bc64d2c9ee5c9e4c7c414c`. Existing session namespace/authority/model service bindings retained; no new runtime resource.
 - Existing same-origin forum/UI Worker updated at 21:55:21 Asia/Bangkok: deployment `aac16644-76ed-4741-bc68-f05eef773b9f`, version `46e4fd13-5e91-4c99-b3d2-a014be78ab5f`, 100%, module SHA-256 `92f2d3a43aeec1fc1a9f3c9227e82726f09c7b5cc3622069c0493f1cd4262bb0`, etag `bb84fdb9f7727b7137296bc42beea598ac07fc1056027d3f21eaf836b82324ff`. Additive schema 27; existing OAuth/secrets/DO/AI/source/model/news bindings retained. No test harness, provisioning bypass or new paid service was uploaded.
 - Final shell browser journey passed after the connected source/Wiki and crocodile rehearsals: one viewport progress line, 320/390/1440px, compact nine-post mosaic, independent sticky rail, mountain footer and mobile vignette. Writing, offering and interaction journeys also pass. Artifact capture was repeated separately after shared-runner screenshot timeouts; no application assertion was relaxed.

@@ -2,7 +2,7 @@
 
 19 November 2026 · build note for task 24 (Run 2), following `pds-multi-identity-plan-2026-11-18.md`. All identities in tests are synthetic and live in an in-memory fake directory.
 
-**Update, later on 19 November (owner's go-ahead for a test deploy):** the host is **live on workers.dev with sign-up closed**, at `https://etnos-identity-host.giyaibo.workers.dev` (`/health` answers `"signup":"closed"`). It was deployed by the `identity-host` job in `.github/workflows/deploy-etnos.yml` (deploy line `2026-11-19l`). No DNS was touched and no DID was registered on the public PLC directory. AT Protocol spaces (alpha) are built on the host (§9), and the same bundle runs on plain workerd for self-hosting (§10). ETNOS does not offer hosted sign-up until the owner sets `STRATA_ACCOUNT_HOST` (§6).
+**Update, later on 19 November (owner's go-ahead for a test deploy):** the host is **live on workers.dev with sign-up closed**, at `https://etnos-identity-host.giyaibo.workers.dev` (`/health` answers `"signup":"closed"`). It was deployed by the `identity-host` job in `.github/workflows/deploy-etnos.yml` (deploy line `2026-11-19l`). No DNS was touched and no DID was registered on the public PLC directory. AT Protocol spaces (alpha) are built on the host (§9), and the same bundle runs on plain workerd for self-hosting (§10). ETNOS does not offer hosted sign-up until the owner sets `ETNOS_ACCOUNT_HOST` (§6).
 
 Status words follow `competition/claims-2026-11-18.md`: the host is **live for testing, closed to sign-up**; spaces are **built** (alpha upstream); self-hosting on workerd is **built and tested locally**; Docker is a **plan**.
 
@@ -21,20 +21,20 @@ A second Worker entry in `packages/pds`, `src/host/worker.ts`, hosts many AT acc
 | PLC | `src/host/plc.ts` | Genesis operation, signing, DID derivation (checked against a public genesis operation from plc.directory), and `registerGenesis`, which reads `log/last` before posting and reads again after any unclear outcome. It never posts a second time on an unknown result. |
 | Lifecycle | `src/host/service.ts` | Sign-up saga (claim → provision → record DID → PLC → active), resumable with the same invite, name and password; deactivate, reactivate, delete (directory `deleting` → purge hub, object and blobs → `deleted`, name kept). |
 | Pages | `src/host/pages.ts` | `/akun/baru` sign-up form and the OAuth pages. No scripts, strict CSP, `frame-ancestors 'none'`. |
-| ETNOS side | `src/oauth.ts`, `src/worker.ts` | Optional `accountHost` (`STRATA_ACCOUNT_HOST`). `/auth/options` returns it; `/auth/start` in sign-up mode accepts `provider: "host"` (authorise at the configured host, which shows the selector) or `handle` (enrol an existing account with an ETNOS invitation). The host is never taken from request input and must be in `allowedHosts`. |
+| ETNOS side | `src/oauth.ts`, `src/worker.ts` | Optional `accountHost` (`ETNOS_ACCOUNT_HOST`). `/auth/options` returns it; `/auth/start` in sign-up mode accepts `provider: "host"` (authorise at the configured host, which shows the selector) or `handle` (enrol an existing account with an ETNOS invitation). The host is never taken from request input and must be in `allowedHosts`. |
 | Tools | `scripts/measure-host.mjs`, `scripts/host-escrow-key.mjs`, `wrangler.host.example.jsonc` | Local timing; offline escrow key generation; deployment template with D1. |
 | Ports | `src/host/ports.ts`, `src/host/directory-do.ts` | The directory depends on a small `SqlDatabase` port. D1 satisfies it; `DirectoryDurableObject` is the same schema in one SQLite Durable Object (used on workers.dev and on plain workerd). |
 | Deployed config | `wrangler.host.jsonc` | workers.dev, directory in a Durable Object, no D1 or R2, `PLC_WRITES "off"` (sign-up closed, no escrow key needed), spaces on. |
 | Spaces | `src/host/spaces.ts` | AT Protocol spaces (alpha) for many accounts; §9. |
 | Self-hosting | `scripts/selfhost-config.mjs` | Writes a workerd configuration for the same bundle with Durable Objects on local disk; §10. |
 
-What Strata reads after sign-in (checked in `src/oauth.ts`): only the OAuth session's DID and the handle from identity resolution (handle → DID through `bsky.social`'s resolver, DID → document through plc.directory). No profile record. So the host must answer the well-known handle file, OAuth, and the PLC document must list the workers.dev service host and `at://<name>.etnos.space`. All three are covered.
+What ETNOS reads after sign-in (checked in `src/oauth.ts`): only the OAuth session's DID and the handle from identity resolution (handle → DID through `bsky.social`'s resolver, DID → document through plc.directory). No profile record. So the host must answer the well-known handle file, OAuth, and the PLC document must list the workers.dev service host and `at://<name>.etnos.space`. All three are covered.
 
 Not built yet (plan phases 5–7): passkeys and recovery links, outbound migration (`signPlcOperation` returns 501), member-held rotation key, nightly CAR backup to R2, firehose hub and relay crawling, blob quotas, email. `getRepo` (CAR export) works, so a member can download their repository.
 
 ## 2. Tests
 
-All in `packages/pds/test/`, run by `npm test` in that package (workerd through Miniflare; the official Strata OAuth client from `src/oauth.ts`; every network edge intercepted).
+All in `packages/pds/test/`, run by `npm test` in that package (workerd through Miniflare; the official ETNOS OAuth client from `src/oauth.ts`; every network edge intercepted).
 
 - `host-units.test.mjs`: DID derivation equals the public directory's for a known genesis; a changed operation fails verification; `registerGenesis` reads first, never posts on an unreadable directory, and posts exactly once on a thrown request; handle rules; password hashes and key wrapping fail closed for another DID or purpose.
 - `host-runtime.test.mjs`:
@@ -77,7 +77,7 @@ Reading: the edge Worker's own work is a D1 query, an HKDF and an HMAC, well und
 
 ## 4. Licence checks (19 November)
 
-- **Cirrus** (`ascorbic/cirrus`): `packages/pds/package.json` on `main` declares `"license": "MIT"`; no LICENSE file was found at the repository root or package root on `main` today (raw requests returned 404). The fork's grant and notice are kept in `packages/pds/LICENSE.cirrus`. New code in `src/host/` is Strata's (AGPL-3.0-only); it reuses Cirrus files (account object, OAuth storage, repository handlers) by import, with the one change recorded in `UPSTREAM.md`.
+- **Cirrus** (`ascorbic/cirrus`): `packages/pds/package.json` on `main` declares `"license": "MIT"`; no LICENSE file was found at the repository root or package root on `main` today (raw requests returned 404). The fork's grant and notice are kept in `packages/pds/LICENSE.cirrus`. New code in `src/host/` is ETNOS's (AGPL-3.0-only); it reuses Cirrus files (account object, OAuth storage, repository handlers) by import, with the one change recorded in `UPSTREAM.md`.
 - **rust-pds-cloudflare** (`Spirallex/rust-pds-cloudflare`): LICENSE says "PolyForm Noncommercial License 1.0.0" and `Cargo.toml` says `license = "PolyForm-Noncommercial-1.0.0"`. Nothing was copied and its code was not read; only the licence file and `Cargo.toml` were fetched. It stays out of this repository.
 - `@getcirrus/oauth-provider` 0.6.0 (MIT) is wrapped as a dependency, not copied.
 
@@ -95,7 +95,7 @@ The owner approved the go-live for a test with 5 to 20 people on 19 November. Th
 - **The PDS keeps its workers.dev name**, `etnos-identity-host.giyaibo.workers.dev`, and no second domain is bought. `workers.dev` is on the Public Suffix List, so the PDS is a separate site from `etnos.space`, which meets Bluesky's production guidance (§12). Changing the PDS host name later means migrating each account, so this name is meant to last. `pds.etnos.space` and `papua.etnos.space` are not used as the PDS host.
 - **Handles stay `nama.etnos.space`.** `HANDLE_DOMAIN` is `etnos.space`, and the route `*.etnos.space/.well-known/atproto-did` sends handle checks to the identity host.
 - **Sign-up is by invite code only.** `/health` (`signup: "invite"` and `signupNote`), `describeServer` (`inviteCodeRequired: true`) and the home page of the host say so.
-- **The escrow key, PLC writes, one test DID, `STRATA_ACCOUNT_HOST` and the knowledge-model decisions are approved.**
+- **The escrow key, PLC writes, one test DID, `ETNOS_ACCOUNT_HOST` and the knowledge-model decisions are approved.**
 - **Blobs are stored in the R2 bucket `etnos-identity-blobs`.** They are served with `content-security-policy: default-src 'none'; sandbox`, `x-content-type-options: nosniff`, and `content-disposition: attachment` for everything except plain images, video and audio. Only a plain CID is accepted, so a crafted CID cannot reach staged uploads or private space blobs (`test/host-blobs.test.mjs`).
 
 What was done, in order:
@@ -104,7 +104,7 @@ What was done, in order:
 2. **The KEK is never replaced by the workflow.** The workflow makes a KEK only on the very first deploy, when the Worker has neither the KEK nor the operator token. If the operator token exists without a KEK, the step stops, because that means that the KEK was removed by hand. A lost KEK loses the wrapped account keys, but the escrow key can still rotate each DID to a new key.
 3. **PLC writes are on** (`PLC_WRITES: "public-directory-approved"` in `wrangler.host.jsonc`).
 4. **The test account `uji-1.etnos.space` exists** as `did:plc:5ldynkk4iomg45uu37nmgdhy`. plc.directory serves its DID document with the handle and the workers.dev endpoint, and `resolveHandle` on the host answers with the DID. Sign-in works (§3 has the CPU figures).
-5. **ETNOS points at the host.** The deploy workflow sets `STRATA_ACCOUNT_HOST` to the workers.dev origin unless a repository variable overrides it, and adds the host to `STRATA_OAUTH_HOSTS`.
+5. **ETNOS points at the host.** The deploy workflow sets `STRATA_ACCOUNT_HOST` (read as `ETNOS_ACCOUNT_HOST`) to the workers.dev origin unless a repository variable overrides it, and adds the host to `STRATA_OAUTH_HOSTS`.
 6. **Five invite codes for the owner** were made with the operator token and handed over outside the repository. They last 30 days.
 
 The public values are in `wrangler.host.jsonc` rather than in repository variables, because this session cannot write repository variables. That file is now the one place to read them. The operator token is accepted either as the `OPERATOR_TOKEN` secret or as any token whose SHA-256 equals `OPERATOR_TOKEN_SHA256`. Publishing the hash of a 256-bit random token is safe, and it lets the operator act without a secrets channel.
@@ -120,14 +120,14 @@ What is left:
 - On the sign-in page, when `/auth/options` returns `accountHost`: a button "Buat akun ETNOS" that links to `<accountHost>/akun/baru` (with `?kode=` when the person has a host invite), and a sign-up button that posts `/auth/start` with `{mode: "signup", invitation, provider: "host"}`.
 - After sign-up on the host, the "Masuk ke ETNOS" button goes to `SIGNIN_URL?handle=<name>.etnos.space`; the login page can prefill the handle from that parameter.
 - In Studio, for stewards: an "Undang anggota" action that calls the host's `/admin/invites` through the ETNOS server (needs the operator token as an ETNOS secret; not built, because it would put a host credential in the ETNOS worker and should be decided with the owner).
-- For spaces (§9), when the community UI wants them: a steward action "Buat ruang AT" on a private community that calls `com.atproto.space.createSpace` with a `com.atproto.memberspace.policy` for the lembaga's account, and member changes that call `com.atproto.memberspace.putMembers` and `removeMembers` together with the Strata membership change. The UI should say plainly that the operator can read space data (access control, not encryption) and that spaces are in trial.
+- For spaces (§9), when the community UI wants them: a steward action "Buat ruang AT" on a private community that calls `com.atproto.space.createSpace` with a `com.atproto.memberspace.policy` for the lembaga's account, and member changes that call `com.atproto.memberspace.putMembers` and `removeMembers` together with the ETNOS membership change. The UI should say plainly that the operator can read space data (access control, not encryption) and that spaces are in trial.
 
 ## 8. Live deployment (19 November)
 
 - Worker `etnos-identity-host` on `https://etnos-identity-host.giyaibo.workers.dev`, deployed by the `identity-host` job after the ETNOS job in `deploy-etnos.yml`. A failure there does not hold back ETNOS.
 - Bindings: `ACCOUNT`, `AUTH_HUB`, `DIRECTORY_DO`, `SPACES`, `SPACES_INDEX` (all SQLite Durable Objects, available on the Free plan), and the R2 bucket `etnos-identity-blobs` as `BLOBS`.
 - Since 2026-11-19o, PLC writes are on and sign-up is by invite code only (§6).
-- Secrets: `ACCOUNT_KEK_V1` (set once, never replaced by the workflow), `OPERATOR_TOKEN` (from `STRATA_PDS_OPERATOR_TOKEN` when set, otherwise random once).
+- Secrets: `ACCOUNT_KEK_V1` (set once, never replaced by the workflow), `OPERATOR_TOKEN` (from the repository secret `STRATA_PDS_OPERATOR_TOKEN` when set, otherwise random once).
 - Public settings live in `wrangler.host.jsonc`. The repository variables `STRATA_PDS_HOSTNAME` and `STRATA_ACCOUNT_HOST` still override the host name and the ETNOS link.
 - Bundle: 3.5 MiB raw, 690 KiB gzip with spaces (Free limit 3 MiB gzip).
 
@@ -186,13 +186,13 @@ What a reader and a writer see:
 - Service-auth `jti` values are not stored. Replays within the 60-second token life are possible but harmless, because both methods are idempotent.
 - `SPACES_REMOTE_CREDENTIAL_MAX_AGE` is now off by default. Revocation from a remote authority arrives through `notifyCredentialsRevoked`. Setting the variable still caps how old a remote credential may be.
 
-Strata's private communities stay the store of record. Mirroring a community into a space is behind the design doc's per-community flag and is not wired into the Strata app.
+ETNOS's private communities stay the store of record. Mirroring a community into a space is behind the design doc's per-community flag and is not wired into the ETNOS app.
 
 ## 10. Self-hosting: one codebase, plain workerd *(recommendation confirmed; Docker is a plan)*
 
 The owner's recommendation holds, with one change from the original plan: the directory no longer needs D1.
 
-- `packages/pds` is its own package with its own entry (`src/host/worker.ts`) and configs. It imports no Strata app code; Strata talks to it only over XRPC and OAuth (the OAuth test uses Strata's client as an outside client).
+- `packages/pds` is its own package with its own entry (`src/host/worker.ts`) and configs. It imports no ETNOS app code; ETNOS talks to it only over XRPC and OAuth (the OAuth test uses ETNOS's client as an outside client).
 - The seam: `SqlDatabase` for the directory (D1 or `DirectoryDurableObject`), SQLite Durable Objects for accounts, auth, spaces (workerd runs these on local disk), R2 for blobs (optional), and the Workers runtime API for fetch, alarms and secrets, which workerd implements.
 - **Tested**: `host-workerd.test.mjs` runs the production bundle on the open-source `workerd` binary with `scripts/selfhost-config.mjs`, and it survives a restart. So a Node adapter is not needed; nothing in workerd blocked the host.
 - **Not yet**: blobs on workerd (no R2 there). Options: a disk-backed blob object behind the `R2Bucket` subset Cirrus uses, or an S3-compatible store. Records and accounts work without it; voice notes need it.
@@ -242,7 +242,7 @@ Then the first step would be one WASM module for secp256k1 signing and CAR writi
 
 **Handles under `etnos.space` can be offered to accounts on any PDS.** A handle only needs `etnos.space` to answer `/.well-known/atproto-did` for that name. ETNOS could therefore give a member on their own PDS, or on a lembaga's machine, a name such as `nama.etnos.space`. A lembaga can do the same on its own domain. This separates the name that people see from the place where the data is stored, and it lets people move hosts without losing their name.
 
-**Public participation should stay open to any AT Protocol account; private spaces can limit hosts.** Signing in with an account from any PDS is the main value of the network, and AGENTS.md already says that an AT identity never grants community membership. Membership stays a Strata decision. Private spaces are different, because each member's private records are stored on that member's own PDS. A lembaga that wants its records to stay on hosts it trusts should be able to set a list of allowed hosts for a space: the ETNOS host, its own Aksara Node, or both. Strata would check the `atproto_pds` entry in the member's DID document when they join and again when it reads. This is a proposal and is not built.
+**Public participation should stay open to any AT Protocol account; private spaces can limit hosts.** Signing in with an account from any PDS is the main value of the network, and AGENTS.md already says that an AT identity never grants community membership. Membership stays an ETNOS decision. Private spaces are different, because each member's private records are stored on that member's own PDS. A lembaga that wants its records to stay on hosts it trusts should be able to set a list of allowed hosts for a space: the ETNOS host, its own Aksara Node, or both. ETNOS would check the `atproto_pds` entry in the member's DID document when they join and again when it reads. This is a proposal and is not built.
 
 Recommended order for the 5 to 20 person test:
 1. Keep the PDS on its workers.dev name (owner decision, 19 November).

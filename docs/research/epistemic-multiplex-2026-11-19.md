@@ -8,7 +8,7 @@ For the case built on top of this note (why it matters, which laws and policies 
 
 ## 1. In one paragraph
 
-Strata keeps a people's knowledge as **entities** (what knowledge is about), **assertions** (what is said about them, by whom, on what basis) and **witnesses** (the documents, recordings, tellers' accounts and measurements the assertions rest on). Because every assertion carries its voice and its witness, the whole graph can be read as a **multiplex**: one layer per voice (colonial records, missions, the state, scholars, Papuan writers, tellers, scientific measurement). On that structure we run a library of **mathematical motifs** that have travelled across fields (community detection, higher-order networks, topology, link prediction, sheaves, optimal transport, ecological network metrics, phylogenetic signal) to see what no single voice can see: what is core to a people, what is at risk, where voices agree or diverge, where the gaps are, and what to ask next. Science enters the same graph as one more voice, not as the referee, so the commons brings modern science closer to people and people's knowledge closer to science. As far as our searches found, nobody has yet built a provenance-aware, multi-voice knowledge graph of one people's world and analysed it this way.
+ETNOS keeps a people's knowledge as **entities** (what knowledge is about), **assertions** (what is said about them, by whom, on what basis) and **witnesses** (the documents, recordings, tellers' accounts and measurements the assertions rest on). Because every assertion carries its voice and its witness, the whole graph can be read as a **multiplex**: one layer per voice (colonial records, missions, the state, scholars, Papuan writers, tellers, scientific measurement). On that structure we run a library of **mathematical motifs** that have travelled across fields (community detection, higher-order networks, topology, link prediction, sheaves, optimal transport, ecological network metrics, phylogenetic signal) to see what no single voice can see: what is core to a people, what is at risk, where voices agree or diverge, where the gaps are, and what to ask next. Science enters the same graph as one more voice, not as the referee, so the commons brings modern science closer to people and people's knowledge closer to science. As far as our searches found, nobody has yet built a provenance-aware, multi-voice knowledge graph of one people's world and analysed it this way.
 
 ## 2. What the owner asked
 
@@ -107,7 +107,7 @@ Bulmer's classic New Guinea case shows why both matter. The Karam of the Schrade
 | Tuturan | a teller's account given on the platform | Always attributed to the teller or to a consenting group |
 | Measurement | a GBIF occurrence, a rainfall series, a satellite index, an elevation model | How science enters the graph |
 | Paper | a scholarly work (OpenAlex) | Also a document; listed separately for the science layer |
-| Post | an accepted reply or thread on Strata, including voice notes and videos | Enters only after acceptance (section 10) |
+| Post | an accepted reply or thread on ETNOS, including voice notes and videos | Enters only after acceptance (section 10) |
 | Derived | a transcript, a caption, a species suggestion, a satellite embedding for a place | Machine-made; labelled as such until a person confirms; keeps the model, version and licence |
 
 Every witness keeps its bytes or its stable link and receipt, as the repository rules already require.
@@ -185,7 +185,7 @@ Below are the motifs worth running on a people's knowledge graph. Each is a know
 
 **M13. Phylogenetic signal.** Saslis-Lagoudakis et al. (2012) found that traditionally used medicinal plants cluster on the evolutionary tree across three distant floras, and that this can focus the search for bioactive species. Applied with great care: do Papuan plant uses cluster on the tree of life? Benefit-sharing (Nagoya Protocol, UU 11/2013) and protocol flags decide what is even computed. *(rencana; consent first)*
 
-**M14. Cultural phylogenetics across deployments.** D-PLACE links cultural data for over 1,400 societies to language trees and environment, so cross-cultural comparison can control for shared ancestry (Galton's problem). When several Strata deployments exist, comparing practices across peoples should control for language family in the same way. New Guinea's many language families make this important. *(later; needs more than one deployment)*
+**M14. Cultural phylogenetics across deployments.** D-PLACE links cultural data for over 1,400 societies to language trees and environment, so cross-cultural comparison can control for shared ancestry (Galton's problem). When several ETNOS deployments exist, comparing practices across peoples should control for language family in the same way. New Guinea's many language families make this important. *(later; needs more than one deployment)*
 
 ### 6.7 Measures on single entities
 
@@ -286,7 +286,7 @@ The owner asked what more we can do with public data, including specialised embe
 
 ### 9.1 What is available
 
-| Modality | Resource | What it gives | Access and licence (as read 19 Nov) | Use in Strata |
+| Modality | Resource | What it gives | Access and licence (as read 19 Nov) | Use in ETNOS |
 | --- | --- | --- | --- | --- |
 | Land | **AlphaEarth Foundations** Satellite Embedding (Google DeepMind) | A 64-number vector for every 10 m pixel per year (2017–2025), summarising optical, radar and other sensors; consistent across years | Earth Engine (free for non-commercial and research use with a registered project); CC BY 4.0; also as COGs in a GCS bucket that is "provider pays" since July 2026 | Place fingerprints, change detection (M21), M20, habitat models for Makhluk |
 | Land | **TESSERA** (University of Cambridge) | 128-number vectors per 10 m pixel per year, 2017–2025, from Sentinel-1 and -2 | Embeddings CC0, encoder MIT; streamed over HTTPS (Zarr) with no request; fine-tunes on a CPU | **The sovereign choice**: fully open, can be cached by us or by a partner in Papua |
@@ -316,7 +316,7 @@ The owner asked what more we can do with public data, including specialised embe
 The owner asked about genomics. **Our recommendation is no, for now, and never for human data.**
 
 - AlphaGenome (and AlphaGenome 2, November 2026) is a human DNA model, free for non-commercial use, with terms that bar using its outputs to train other models.
-- Human genetic data is among the most sensitive data a people has. UU 27/2022 classes genetic data as specific personal data, and Indigenous peoples have a long record of genetic research done without proper consent. Strata will never collect, hold or analyse human genetic data.
+- Human genetic data is among the most sensitive data a people has. UU 27/2022 classes genetic data as specific personal data, and Indigenous peoples have a long record of genetic research done without proper consent. ETNOS will never collect, hold or analyse human genetic data.
 - For plants and animals, the only step that makes sense is **linking** a Makhluk entity to existing public taxonomic and genome records as a witness. Anything beyond that touches genetic resources and the knowledge associated with them, which needs prior informed consent and agreed terms under the Nagoya Protocol (UU 11/2013) and PP 56/2022.
 
 ### 9.4 Practical notes
@@ -359,8 +359,8 @@ The owner wants people to post **voice notes and short videos**, as on Threads, 
 - A 60-second cap at first; captions from the transcript; an audio-only fallback for low bandwidth.
 
 **On AT Protocol:**
-- Bluesky's video embed allows up to 10 minutes and 300 MB per video with up to 20 WebVTT caption files, handled by a separate video service before the blob reaches the PDS. A Strata video post can use the same shape, so it plays in other Atmosphere apps.
-- There is no standard audio post in Bluesky's schemas. Strata defines its own voice-post record (audio blob, waveform, transcript, language, protocol). For reach, a voice note can also be published as a short video with a waveform frame, so it plays in Bluesky. *(proposal)*
+- Bluesky's video embed allows up to 10 minutes and 300 MB per video with up to 20 WebVTT caption files, handled by a separate video service before the blob reaches the PDS. An ETNOS video post can use the same shape, so it plays in other Atmosphere apps.
+- There is no standard audio post in Bluesky's schemas. ETNOS defines its own voice-post record (audio blob, waveform, transcript, language, protocol). For reach, a voice note can also be published as a short video with a waveform frame, so it plays in Bluesky. *(proposal)*
 - **Contribute it back** *(flagged by the owner, 19 November; after the proposal, not before)*: once our voice-post record has run in production, publish it as a community lexicon and propose it to the Atmosphere (the community lexicon index at lexicon.garden, and the AT Protocol developer community), so any app can post and play voice notes. Same later for the place, language and assertion records if they prove useful to others.
 
 **Estimated effort** *(agent's working time, not measured)*: voice notes with transcripts, about 1.5–2 days including tests for access and withdrawal; video with Stream or R2, about 2 days more.

@@ -1,6 +1,6 @@
 # Cloudflare API profile
 
-This profile runs Strata's shared Fetch handler and domain policy inside a SQLite-backed Durable Object, selected by a fixed node name from deployment configuration. Separate deployments have separate namespaces. It is not a PDS, an Aksara private workspace or a general peer gateway.
+This profile runs ETNOS's shared Fetch handler and domain policy inside a SQLite-backed Durable Object, selected by a fixed node name from deployment configuration. Separate deployments have separate namespaces. It is not a PDS, an Aksara private workspace or a general peer gateway.
 
 ## Evidence and limits
 

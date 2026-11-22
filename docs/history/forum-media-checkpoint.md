@@ -1,6 +1,6 @@
 # Conversation and media checkpoint — 1 November 2026
 
-The connected Honai app keeps Strata's OAuth, policy, Wiki, Groups/Spaces, PublicWork, activity and experimental encrypted-DM foundation. This pass adapts Photon/Honai behavior to Strata's own API rather than importing components bound to Lemmy/PieFed clients.
+The connected Honai app keeps ETNOS's OAuth, policy, Wiki, Groups/Spaces, PublicWork, activity and experimental encrypted-DM foundation. This pass adapts Photon/Honai behavior to ETNOS's own API rather than importing components bound to Lemmy/PieFed clients.
 
 Implemented UI: conversational feed spacing, a mobile thread header and reply dock, author/avatar rails, nested replies with bounded visual indentation, branch collapse, reply-level vote/bookmark/report/share actions, specific reply permalinks, direct child counts, oldest/newest/top sibling ordering and explicit cursor loading. Sorting applies to loaded replies; it is not an AppView-wide ranking algorithm. Missing/hidden/unloaded parents retain an explicit context link. The post composer uses shadcn Dialog, Avatar, NativeSelect, Textarea and Button with an integrated destination and audience, image drafts, alt text and Ctrl/Cmd+Enter. Mobile uses a full-height composer and Chrome's resize-content keyboard behavior; physical-device keyboard testing remains.
 

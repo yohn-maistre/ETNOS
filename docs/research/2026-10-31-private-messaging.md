@@ -19,7 +19,7 @@ Use established protocols and maintained implementations. Evaluate Germ's AT-spe
 | `signalapp/libsignal` | Official Rust implementation with Java, Swift and TypeScript wrappers; AGPLv3. README explicitly says use outside Signal is unsupported; npm includes native Node libraries. | Valuable established protocol, but no supported drop-in browser/Workers SDK established here. Copying a wrapper does not connect us to the Signal network. Prefer the existing Signal app as a companion initially. |
 | Matrix | Existing messaging ecosystem with client-device crypto and recovery/device-verification workflows. SDK and homeserver integration require a separate current-version review. | Consider a complete Matrix integration instead of assembling a new messenger. Requires a Matrix service/account and operations; do not assume an entire homeserver is a free Worker or that all Matrix rooms are encrypted. No SDK compatibility was tested here. |
 
-These are research candidates, not a decision that Germ/OpenMLS/Matrix is universally more secure. A failed fetch of an old Matrix WASM documentation URL was not treated as proof that the SDK is unavailable. No third-party messenger implementation was copied into Strata.
+These are research candidates, not a decision that Germ/OpenMLS/Matrix is universally more secure. A failed fetch of an old Matrix WASM documentation URL was not treated as proof that the SDK is unavailable. No third-party messenger implementation was copied into ETNOS.
 
 ## Linking Signal or Matrix to an AT identity
 
@@ -27,7 +27,7 @@ The accounts remain independent. AT OAuth proves control of the AT identity; it 
 
 The safe initial product is an optional companion contact card, private to its owner until explicitly shared with a chosen audience. Do not infer links from names, crawl contacts, publish institutional staff rosters or write a public AT declaration automatically. Genuine cross-account verification needs a time-limited, recipient-bound challenge completed in the external channel, plus revocation, key-change handling and a way to unbind. No messages/challenges should be sent without the person's explicit action. A contact link is not a verified badge or an embedded E2EE DM implementation.
 
-Avoid a transparent Signal/Matrix/Strata bridge: a bridge that reads and re-encrypts messages is another plaintext endpoint. Disclose such an endpoint and obtain consent if it is ever added; otherwise keep the companion apps separate. Do not use an unofficial `signal-cli` bot to silently ingest activists' chats.
+Avoid a transparent Signal/Matrix/ETNOS bridge: a bridge that reads and re-encrypts messages is another plaintext endpoint. Disclose such an endpoint and obtain consent if it is ever added; otherwise keep the companion apps separate. Do not use an unofficial `signal-cli` bot to silently ingest activists' chats.
 
 ## Endpoint, identity and relay boundary
 

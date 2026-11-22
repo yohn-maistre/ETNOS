@@ -2,7 +2,7 @@
 
 *19 November 2026. Status marks: **built** (in the code), **proposal** (not built), **alpha** (built by someone else, unstable).*
 
-Related: [platform-2026-11-19.md §4](platform-2026-11-19.md) (peoples, languages and private spaces), [research/community-dictionary-2026-11-19.md](../research/community-dictionary-2026-11-19.md) (the dictionary pipeline), [showcase-plan-2026-11-17.md §25](showcase-plan-2026-11-17.md) (build order), [strata-model-2026-11-17.md](strata-model-2026-11-17.md) (Entity, Assertion, Witness).
+Related: [platform-2026-11-19.md §4](platform-2026-11-19.md) (peoples, languages and private spaces), [research/community-dictionary-2026-11-19.md](../research/community-dictionary-2026-11-19.md) (the dictionary pipeline), [showcase-plan-2026-11-17.md §25](showcase-plan-2026-11-17.md) (build order), [etnos-model-2026-11-17.md](etnos-model-2026-11-17.md) (Entity, Assertion, Witness).
 
 ## 1. The flagship
 
@@ -45,7 +45,7 @@ What to add *(proposal)*:
 
 | Mode | Who holds the data | Who can read | When |
 | --- | --- | --- | --- |
-| **Operator-hosted Strata community** | The deployment (ETNOS) | Members, and technically the operator. The interface says so | **Built** |
+| **Operator-hosted ETNOS community** | The deployment (ETNOS) | Members, and technically the operator. The interface says so | **Built** |
 | **Operator-hosted AT Protocol space** | Members' records on their own PDS accounts (on the ETNOS multi-identity PDS); the space authority's DID also on the ETNOS PDS | Members with a space credential; the PDS operator can still read it | **Alpha** upstream; being built on our PDS (worker) |
 | **The community's own PDS** | A PDS the lembaga runs (Aksara Node, a mini PC, or its own Cloudflare account) | Members; the lembaga's chosen operator | Proposal (the PDS is built to run self-hosted, see `packages/pds`) |
 
@@ -74,12 +74,12 @@ From the Spaces alpha announcement ([atproto.com/blog/atproto-spaces-alpha](http
 
 ### 4.1 How ETNOS maps onto it *(proposal)*
 
-- **A lembaga holds a dedicated authority DID, not a person's DID.** Stewards change; a person can leave or die; the space must stay with the lembaga. The lembaga's stewards (Strata group roles) act for that DID. A person may still create a personal space for a small group of their own.
-- **One `memberspace` per private community.** Membership in the Strata community and in the space move together (join, leave, removal).
+- **A lembaga holds a dedicated authority DID, not a person's DID.** Stewards change; a person can leave or die; the space must stay with the lembaga. The lembaga's stewards (ETNOS group roles) act for that DID. A person may still create a personal space for a small group of their own.
+- **One `memberspace` per private community.** Membership in the ETNOS community and in the space move together (join, leave, removal).
 - **Host-managed mode:** the authority DID lives on the ETNOS multi-identity PDS. **Own-PDS mode:** it lives on the lembaga's PDS, which becomes the space host; members' records stay on their own PDS wherever that is.
-- **Strata stays the store of record until spaces reach beta.** Private communities mirror into a space behind a per-community flag, for testing only. Nothing sensitive goes into the alpha.
-- **Removal is checked at read time by Strata too**, not only by credential expiry (see the trial above).
-- **Withdrawal** deletes the record from the member's space repository and from every Strata derivative, as it does today.
+- **ETNOS stays the store of record until spaces reach beta.** Private communities mirror into a space behind a per-community flag, for testing only. Nothing sensitive goes into the alpha.
+- **Removal is checked at read time by ETNOS too**, not only by credential expiry (see the trial above).
+- **Withdrawal** deletes the record from the member's space repository and from every ETNOS derivative, as it does today.
 
 *Build note, 19 November:* host-managed and own-PDS modes are built on our PDS (`packages/pds/src/host/spaces.ts`) to the proposal text of 19 November, on the official `@atproto/space` alpha of 17 November. Removal is checked at read time, and `notifyCredentialsRevoked` is sent to every writer's repo host. Tests and the remaining differences are in `research/pds-multi-identity-build-2026-11-19.md` §9.
 

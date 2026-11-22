@@ -1,4 +1,4 @@
-# Why Strata: eight threads of rationale
+# Why ETNOS: eight threads of rationale
 
 19 November 2026. Proposal support. This note gathers everything we have (findings from our own data, published research, features, laws and policy, impact) into eight threads, each of which can carry a part of the BUDAYA GO! 2026 proposal, deck and showcase. It sits beside `plan/framing-and-impact-2026-11-17.md` (the case and the competition) and draws its research from `research/epistemic-multiplex-2026-11-19.md` (the knowledge model and its analyses).
 
@@ -42,7 +42,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 ## 1. Sumber tentang Papua kebanyakan ditulis dari luar
 
-**Claim.** Most published knowledge about Tanah Papua was written by outsiders, and the open web's version of it is mostly the state's administrative view. The people it describes can rarely read it and almost never answer it. Strata makes their answer part of the record.
+**Claim.** Most published knowledge about Tanah Papua was written by outsiders, and the open web's version of it is mostly the state's administrative view. The people it describes can rarely read it and almost never answer it. ETNOS makes their answer part of the record.
 
 **Our own findings**
 - The seed holds 657 verbatim quotes chosen by a seeding agent for three regions; 586 were confirmed word for word against their sources. **92% come from Wikipedia**, the rest from regency government sites. Tellers' accounts: none yet. *(computed 19 November; method in multiplex note §5)*
@@ -103,11 +103,11 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 **Voice and media**
 - Every voice note and video carries a protocol (public, community only, *Jangan disebarkan*) and a training-permission flag. No voiceprints, speaker identification or face recognition, ever.
-- On AT Protocol, video can live on the poster's own data host; Strata defines its own voice-post record so people keep their recordings if ETNOS goes away.
+- On AT Protocol, video can live on the poster's own data host; ETNOS defines its own voice-post record so people keep their recordings if ETNOS goes away.
 
 **Public data**
 - Open data flows in with its licence attached (TESSERA CC0; AlphaEarth and Open-Meteo CC BY 4.0). People's observations flow out to science (GBIF) only with consent, with sensitive locations generalised.
-- Genomics: no. Strata never collects or analyses human genetic data; for plants and animals it only links existing public records.
+- Genomics: no. ETNOS never collects or analyses human genetic data; for plants and animals it only links existing public records.
 
 **Impact and indicators**
 - Communities with their own protocols set; items held back by a protocol (counted, never shown).
@@ -116,7 +116,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 ## 3. Observatorium kebudayaan berbasis komunitas
 
-**Claim.** Strata turns scattered sources and conversations into a provenance-aware knowledge graph of a people's world: entities, assertions with voice and witness, and analyses that show what is core, what is at risk, how voices differ and what to ask next. As far as our searches found, this combination has not been built before.
+**Claim.** ETNOS turns scattered sources and conversations into a provenance-aware knowledge graph of a people's world: entities, assertions with voice and witness, and analyses that show what is core, what is at risk, how voices differ and what to ask next. As far as our searches found, this combination has not been built before.
 
 **Our own findings**
 - The current map shows records, not the things they are about (diagnosis in `research/knowledge-ontology-2026-11-18.md`).
@@ -153,7 +153,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 ## 4. Pengetahuan lokal dan sains
 
-**Claim.** Strata brings the good art of modern science closer to people, and people's knowledge closer to science, without making either the judge of the other. Measurements, papers and biodiversity records enter the same graph as one more voice.
+**Claim.** ETNOS brings the good art of modern science closer to people, and people's knowledge closer to science, without making either the judge of the other. Measurements, papers and biodiversity records enter the same graph as one more voice.
 
 **Our own findings**
 - None yet; the seed has no measurement witnesses. The first spike would set one seasonal assertion beside one climate series.
@@ -190,7 +190,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 ## 5. Catatan yang terus diperbarui
 
-**Claim.** What matters is not only what was recorded, but what is still told and done. Strata measures vitality from provenance and helps keep knowledge in use.
+**Claim.** What matters is not only what was recorded, but what is still told and done. ETNOS measures vitality from provenance and helps keep knowledge in use.
 
 **Our own findings**
 - Badan Bahasa counts about 428 regional languages in Tanah Papua, yet reported BPS data for 2024 puts Provinsi Papua second-lowest nationally for daily use of a regional language (13.84%). *(check the BPS table before quoting; framing doc §4.2)*
@@ -223,7 +223,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 ## 6. Ruang bersama yang dikelola
 
-**Claim.** People need a reason to open the app on an ordinary day. Strata is a social commons kept active by a small, visible, sourced staff (Aksara and its regional voices) following a public rhythm (Jadwal Aksara), without engagement prediction or infinite feeds.
+**Claim.** People need a reason to open the app on an ordinary day. ETNOS is a social commons kept active by a small, visible, sourced staff (Aksara and its regional voices) following a public rhythm (Jadwal Aksara), without engagement prediction or infinite feeds.
 
 **Our own findings**
 - Papuans already write every day across scattered Facebook groups, Instagram captions and WhatsApp groups that never speak to each other (framing doc §4).
@@ -283,7 +283,7 @@ The idea that ties them: **small sovereign heads on big open bodies.** Open foun
 
 ## 8. Keberlanjutan dan portabilitas
 
-**Claim.** Strata is one product with many deployments. ETNOS is the first; any community (a Kalimantan deployment, a church synod, a partner in Aotearoa) can run its own, on open standards, with its own schemes and Jadwal Aksara. A business and a research programme keep it alive.
+**Claim.** ETNOS is one product with many deployments. etnos.space is the first; any community (a Kalimantan deployment, a church synod, a partner in Aotearoa) can run its own, on open standards, with its own schemes and Jadwal Aksara. A business and a research programme keep it alive.
 
 **Our own findings**
 - Free-tier Workers AI runs the default model; one key serves all resident agents (Jadwal Aksara note §6).
@@ -331,7 +331,7 @@ For the showcase video's six parts: introduction (1), demonstration (6, 3), usef
 
 ## 10. Regulatory map
 
-| Instrument | What it says, in short | How Strata responds | Status |
+| Instrument | What it says, in short | How ETNOS responds | Status |
 | --- | --- | --- | --- |
 | UUD 1945 Art. 18B(2), 28I(3), 32 | Adat communities and their rights recognised; cultural identity respected; regional languages maintained | Communities govern their spaces, protocols and schemes | live (spaces); rencana (protocols) |
 | UU 5/2017; PP 87/2021; Perpres 65/2018 | Ten OPK; PPKD bottom-up; integrated cultural data system | OPK as a scheme; state-of-knowledge reports fit for PPKD | rencana |

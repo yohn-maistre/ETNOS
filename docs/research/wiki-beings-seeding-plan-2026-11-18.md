@@ -4,7 +4,7 @@
 
 ## Why
 
-A Mee elder starts from the land. The mountain, the lake and the forest are naitai (mother), and every clan has an origin story tied to them. Strata's functional axes (place, language, topic) cannot hold that without labelling people or turning a lake into a feed filter. A wiki page can. The page sits under its region, is linked from posts like any other page, and gathers what is known about the being with sources.
+A Mee elder starts from the land. The mountain, the lake and the forest are naitai (mother), and every clan has an origin story tied to them. ETNOS's functional axes (place, language, topic) cannot hold that without labelling people or turning a lake into a feed filter. A wiki page can. The page sits under its region, is linked from posts like any other page, and gathers what is known about the being with sources.
 
 ## What is built
 

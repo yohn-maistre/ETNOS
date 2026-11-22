@@ -4,7 +4,7 @@
 
 ## 1. Recommendation (one paragraph)
 
-**Keep pi. Give each region a real workspace (a durable folder of files) using Cloudflare's `@cloudflare/computer` Workspace, which runs on Workers Free. Keep the place notebook in Strata's own database as the one source of truth, and show it to the agent as read-only markdown files. Let the agent write only to a scratch and drafts area. Do not promise model-written code execution on the free tier, because every Cloudflare way to do it needs the $5 Workers Paid plan. Use a small set of Strata-defined functions ("scripts") instead, and add real code execution as an opt-in Paid step and as the self-hosted harness's job.** Do not adopt optmem: its method is a good idea but upstream has no licence and its store does not allow withdrawal. Copy the shape (append-only log, rebuildable summary, small startup read), not the code.
+**Keep pi. Give each region a real workspace (a durable folder of files) using Cloudflare's `@cloudflare/computer` Workspace, which runs on Workers Free. Keep the place notebook in ETNOS's own database as the one source of truth, and show it to the agent as read-only markdown files. Let the agent write only to a scratch and drafts area. Do not promise model-written code execution on the free tier, because every Cloudflare way to do it needs the $5 Workers Paid plan. Use a small set of ETNOS-defined functions ("scripts") instead, and add real code execution as an opt-in Paid step and as the self-hosted harness's job.** Do not adopt optmem: its method is a good idea but upstream has no licence and its store does not allow withdrawal. Copy the shape (append-only log, rebuildable summary, small startup read), not the code.
 
 So: "coding agent" is the wrong frame for the free tier. The right frame is **a notebook-keeping research editor that works in files**. Reasons are in section 6 (the daily model budget allows a handful of long coding tasks a day, not a coding assistant).
 
@@ -60,7 +60,7 @@ Correction to the brief: Workers now limit only the **uncompressed** script size
 **Why not adopt.**
 1. **Licence.** No licence means all rights reserved: we must not copy or vendor it into an AGPL repo. The ideas (append-only log, summary tree, small wake read) are not protected; a clean re-implementation from the description is allowed, but then we are building it ourselves anyway.
 2. **Withdrawal.** "Never edited" and "forget drops summaries only" conflict with our rule that withdrawing a source removes everything derived from it. The log would need tombstones and a rebuild of every summary node that touched the line.
-3. **No provenance.** A line is free text. Strata needs a source id and revision on every fact (yesterday's `pn_facts`).
+3. **No provenance.** A line is free text. ETNOS needs a source id and revision on every fact (yesterday's `pn_facts`).
 4. **Wrong scale and cost.** A binary tree and agent-driven merges make sense for one developer's years of notes. A region has hundreds of facts; a flat digest rebuilt weekly (one model call) is simpler and cheaper. Every `nap` merge is a model call, which costs neurons.
 5. **Model-written memory is untrusted.** optmem's agent writes its own memories freely; ours may only *propose*.
 
@@ -83,7 +83,7 @@ What a coding agent needs: a workspace, shell or code execution, many tool round
 - **Workspace**: free tier yes.
 - **Execution**: free tier only via QuickJS-in-WASM (unproven here) with no network and a tiny library; real shells (just-bash in a Dynamic Worker) and real Linux (containers) are Paid.
 - **Many rounds**: the free model budget decides this (next section).
-- **Safety**: Aksara's job is not to write code; it is to read sources, keep notes, ask questions and draft wiki text that Strata and people accept. The interesting "code" for her is small: count rows in a table, compare two lists, convert a date, parse a CSV a steward uploaded. Those are better as **named, tested functions that Strata defines** than as code the model writes live, because tested functions can be budgeted, replayed and audited.
+- **Safety**: Aksara's job is not to write code; it is to read sources, keep notes, ask questions and draft wiki text that ETNOS and people accept. The interesting "code" for her is small: count rows in a table, compare two lists, convert a date, parse a CSV a steward uploaded. Those are better as **named, tested functions that ETNOS defines** than as code the model writes live, because tested functions can be budgeted, replayed and audited.
 
 So: **a workspace yes, a coding agent no (on Free).** Offer "run a script" in two forms: (1) free: `run_script(name, args)` for scripts that live in the workspace's bundled `/scripts` folder (read-only, shipped with the Worker via `WorkerBundle`, reviewed in git) and run in QuickJS; (2) Paid or self-hosted: the model may *write* a script and run it in a Dynamic Worker (egress off, authority-bound bindings only) or in the aksara-core harness.
 
@@ -103,7 +103,7 @@ With a free Google AI Studio key as the keyed route, the neuron limit does not a
 Other Free limits, with the workspace added:
 - **SQL rows**: 5M read and 100k written a day, account-wide. A workspace file read is a few rows (inode plus chunks, *(not measured)*). Cap each job at about 60 file operations and 40 notebook rows; grep over a whole region folder is a full scan of its files, so grep only inside a subfolder or use the FTS table.
 - **CPU**: the entry Worker stays tiny (10 ms). All work happens in DOs (30 s CPU listed). QuickJS must run with a hard time and memory cap.
-- **Workers count**: two Workers (Strata, resident) plus DO classes fit well inside 100.
+- **Workers count**: two Workers (ETNOS, resident) plus DO classes fit well inside 100.
 - **Subrequests**: 50 per invocation; the 6-calls-per-job cap keeps us far under.
 
 Realistic per-day plan: **about 40 to 60 ordinary jobs (replies, morning stories, digests), plus a few deeper "research" jobs (8 rounds) a day.** If neurons run out, Aksara abstains and the site works as before (already the rule).
@@ -112,25 +112,25 @@ Realistic per-day plan: **about 40 to 60 ordinary jobs (replies, morning stories
 
 ### 7.1 Where things live
 
-Two stores, one rule: **Strata's node database holds truth; the workspace holds working files.**
+Two stores, one rule: **ETNOS's node database holds truth; the workspace holds working files.**
 
 | Store | Holds | Who writes | Withdrawal |
 | --- | --- | --- | --- |
-| Strata node DO (`pn_*`, from yesterday) | facts with source and revision, corrections, questions, events, digest | Strata code, plus `propose` from Aksara (state `proposed`) | Atomic: join to the source at read time |
-| Region workspace DO (one per region plus one sitewide, in `resident-pi`, name = region id) using `withWorkspace` | the files below | Aksara, inside her allowed folders; Strata's projector for `/place` | Lineage sweep and read-time check (7.3) |
+| ETNOS node DO (`pn_*`, from yesterday) | facts with source and revision, corrections, questions, events, digest | ETNOS code, plus `propose` from Aksara (state `proposed`) | Atomic: join to the source at read time |
+| Region workspace DO (one per region plus one sitewide, in `resident-pi`, name = region id) using `withWorkspace` | the files below | Aksara, inside her allowed folders; ETNOS's projector for `/place` | Lineage sweep and read-time check (7.3) |
 
 Sitewide Aksara has a workspace of her own but **no copies of regional notes**; she reads the seven `digest.md` files through the authority path, as yesterday's design said.
 
 ### 7.2 Layout (plain markdown, front matter, no binary formats)
 
 ```
-/place/                 READ-ONLY. Rebuilt by Strata's projector from pn_*. Mount via a bundled-or-generated tree.
+/place/                 READ-ONLY. Rebuilt by ETNOS's projector from pn_*. Mount via a bundled-or-generated tree.
   digest.md             the briefing (<= 1,200 tokens), 'updated' date, built-from hash
   facts/<id>.md         one fact: text (<=280 chars), source kind/id/revision, state, corrections listed beside it
   questions/<id>.md     open questions
   events/YYYY-MM-DD.md  last 14 days
 /scratch/               Aksara's working notes for the current job; auto-deleted after 14 days; never published
-/drafts/                proposed wiki edits and note proposals; each file has 'sources:' front matter; Strata promotes or discards
+/drafts/                proposed wiki edits and note proposals; each file has 'sources:' front matter; ETNOS promotes or discards
 /scripts/               READ-ONLY, shipped with the Worker (WorkerBundle): reviewed small scripts with a README line each
 /journal.md             append-only log of what she did and asked (one line each, 280 chars), for continuity between jobs
 ```
@@ -140,7 +140,7 @@ Every file under `/drafts` and `/scratch` carries front matter:
 ```
 ---
 region: mee-pago
-sources: [wiki:rev:412, post:9981]   # ids Strata can resolve
+sources: [wiki:rev:412, post:9981]   # ids ETNOS can resolve
 created: 2026-12-01T03:00Z
 state: draft | proposed
 ---
@@ -148,10 +148,10 @@ state: draft | proposed
 
 ### 7.3 Withdrawal and the "resolve at use time" rule
 
-1. `/place` is only a view. It is regenerated when a source revision changes (event from Strata) and each file records `source@revision`. On read, the tool asks the authority (one call, cheap) whether each cited source is still current; a withdrawn source returns "removed" instead of text.
-2. `/drafts` and `/scratch` files list their `sources:`. A **sweep** runs on every withdrawal event (and daily): delete or blank files whose sources include a withdrawn id; delete any `journal.md` line that cites one. `propose` into Strata happens only through the authority path, which re-checks sources then.
+1. `/place` is only a view. It is regenerated when a source revision changes (event from ETNOS) and each file records `source@revision`. On read, the tool asks the authority (one call, cheap) whether each cited source is still current; a withdrawn source returns "removed" instead of text.
+2. `/drafts` and `/scratch` files list their `sources:`. A **sweep** runs on every withdrawal event (and daily): delete or blank files whose sources include a withdrawn id; delete any `journal.md` line that cites one. `propose` into ETNOS happens only through the authority path, which re-checks sources then.
 3. The notebook rule already in force still applies: only public, accepted or published material is ever written into `/place`; a test enforces that no private-room text appears in any workspace file.
-4. Publication stays in Strata: a draft file never becomes a post or wiki revision by itself; the existing gates (verified sentences, redaction, mandate, budget, atomic publication) are the only path.
+4. Publication stays in ETNOS: a draft file never becomes a post or wiki revision by itself; the existing gates (verified sentences, redaction, mandate, budget, atomic publication) are the only path.
 
 ### 7.4 Tools for pi
 
@@ -163,7 +163,7 @@ Built from `@cloudflare/computer/tools/pi-ai` `createPiTools`, restricted by pat
 | `write`, `edit`, `delete` | `/scratch`, `/drafts`, `/journal.md` (append) | size and file-count caps per job; path check in our wrapper, not the model |
 | `search_notebook(query)` | pn_fts via authority | from yesterday |
 | `run_script(name, args)` | `/scripts` only (free); phase 3 adds model-written code | QuickJS, no network, 1 s CPU, 16 MB memory, 8 KB output (*to verify*) |
-| `query_strata(endpoint, params)` | an allow-list of Strata's public read API (places, wiki, news, data) | GET only, public data only, through the authority path |
+| `query_etnos(endpoint, params)` | an allow-list of ETNOS's public read API (places, wiki, news, data) | GET only, public data only, through the authority path |
 | `propose_note`, `propose_wiki_edit` | write a file in `/drafts` then register it | `proposed` only; humans or existing gates promote |
 | gated `web_search`, `web_fetch` | thread replies only | unchanged |
 
@@ -181,12 +181,12 @@ Keep yesterday's design (`pn_facts`, `pn_corrections`, `pn_questions`, `pn_event
 | Today | Becomes |
 | --- | --- |
 | Work-scoped authority (ticket tied to job generation, evidence, operator, agent, community) | Every workspace tool call carries the ticket; the region workspace DO is selected by the ticket's region, so cross-region reads are impossible by construction, then checked again |
-| Egress allow-list (one model origin, gated web tools) | Unchanged for the model. Scripts get **no** network (QuickJS) or `globalOutbound: null` (Dynamic Worker). `query_strata` goes only to Strata through the binding |
+| Egress allow-list (one model origin, gated web tools) | Unchanged for the model. Scripts get **no** network (QuickJS) or `globalOutbound: null` (Dynamic Worker). `query_etnos` goes only to ETNOS through the binding |
 | Redaction | Applied to everything read from files before it reaches the model, and to everything written to `/drafts` before registration |
 | Budgets (neurons, calls, rows) | Add: file ops per job, bytes written per job, script CPU ms, rows per job; per-region daily ledgers include them |
 | Replay safety (`replay: safe/unsafe`) | Reads and greps are safe to replay; `write`, `edit`, `run_script` and `propose_*` are marked unsafe, and writes use content-hash names so a replay is idempotent |
 | Epoch change starts a fresh session | The workspace persists across epochs, so each file's `source@revision` is rechecked on read, not trusted |
-| No secrets | Workspace files never hold keys; tokens stay in Strata's secrets; a test scans workspace writes for key-shaped strings |
+| No secrets | Workspace files never hold keys; tokens stay in ETNOS's secrets; a test scans workspace writes for key-shaped strings |
 
 ### 7.7 Mapping onto the self-hosted aksara-core harness
 
@@ -231,7 +231,7 @@ I did not check aksara-core's contracts in depth; confirm the field names before
 
 **Phase 2 (February): scripts without model-written code.** `/scripts` bundle plus `run_script` in QuickJS (after a spike on CPU, memory and wasm loading), 5 to 10 reviewed scripts (CSV summary, date conversion, list diff, table counts from the public Data API).
 
-**Phase 3 (opt-in Paid, when a node operator pays $5):** a feature flag turning on the codemode backend with a Dynamic Worker, egress off, bindings limited to Strata's public read API; the model may write scripts. Never on by default.
+**Phase 3 (opt-in Paid, when a node operator pays $5):** a feature flag turning on the codemode backend with a Dynamic Worker, egress off, bindings limited to ETNOS's public read API; the model may write scripts. Never on by default.
 
 **Phase 4 (with aksara-core):** publish the workspace format and tool schemas as a short spec in both repos; add export and import (zip or git); implement the `recall` contract on both sides; run one shared skill against both as the interoperability test. Self-hosted gets containers, private lanes and the full coding-agent experience.
 

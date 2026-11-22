@@ -16,7 +16,7 @@ The local API provides `POST /v1/posts/:id/{edit,delete,moderate,poll,rsvp}` and
 
 ## Official AT Spaces trial
 
-[Runnable pinned lab and limits](../../labs/spaces/README.md). Two actual official alpha PDSes, a local PLC directory and three disposable accounts; no Strata production content or real identity migration. Fourteen assertions cover creation, cross-PDS writing/authorized reading, credential keys, outsider/anonymous denial, public API omission, private blob isolation and removal behavior. Expected denials check protocol error codes rather than treating a network failure as success. MAC verification and signatures use official helpers.
+[Runnable pinned lab and limits](../../labs/spaces/README.md). Two actual official alpha PDSes, a local PLC directory and three disposable accounts; no ETNOS production content or real identity migration. Fourteen assertions cover creation, cross-PDS writing/authorized reading, credential keys, outsider/anonymous denial, public API omission, private blob isolation and removal behavior. Expected denials check protocol error codes rather than treating a network failure as success. MAC verification and signatures use official helpers.
 
 The lab **observed old credentials remain usable immediately after member removal**, while new credential issuance is denied. Credentials last 600 seconds in this snapshot. This is a concrete integration gate, not a blanket claim that all revocation is broken or that expiry alone is sufficient. The read-only `/labs/spaces` page reports the experiment; it is not a live hosted PDS, federation switch or privacy guarantee. No existing private community was mapped/exported automatically. Upstream packaging contribution candidates are documented, not submitted.
 

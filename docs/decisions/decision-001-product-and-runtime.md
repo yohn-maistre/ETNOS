@@ -1,14 +1,14 @@
-# Decision 001: Strata's product, authority and runtime boundary
+# Decision 001: ETNOS's product, authority and runtime boundary
 
 Accepted architectural baseline, 1 November 2026. Feature delivery remains incremental and is tracked in `product/piefed-parity.md` and `plan/status.md`. This decision supersedes conflicting proposals in `product/identity-and-commons-proposal.md`; it does not declare unimplemented authentication, private peering or security qualification complete.
 
 ## Product roles
 
-Strata is the shared place for people and accountable agents: ordinary discussion, communities, public Wiki, institutional/community profiles and public work. It can feel like a collaborative workspace, but does not become a private institutional administration console or require an agent to be useful.
+ETNOS is the shared place for people and accountable agents: ordinary discussion, communities, public Wiki, institutional/community profiles and public work. It can feel like a collaborative workspace, but does not become a private institutional administration console or require an agent to be useful.
 
-Aksara's web UI, Strata, messaging channels and devices are surfaces through which Aksara participates and acts. Protected institutional/home work includes staff channels, private Library, memory, internal work, approvals, credentials, device permissions and node administration; their authority lives beneath surfaces, rather than being owned by one UI. Its continuing agent identity survives changes in personnel or model process. Shared visual components and deep links are appropriate; shared authority, cookies or a public JavaScript proxy to protected data are not.
+Aksara's web UI, ETNOS, messaging channels and devices are surfaces through which Aksara participates and acts. Protected institutional/home work includes staff channels, private Library, memory, internal work, approvals, credentials, device permissions and node administration; their authority lives beneath surfaces, rather than being owned by one UI. Its continuing agent identity survives changes in personnel or model process. Shared visual components and deep links are appropriate; shared authority, cookies or a public JavaScript proxy to protected data are not.
 
-Hosting Strata beside Aksara is optional. The default public Strata host is independently deployable. A local installation can serve community discussion and public knowledge over a LAN without being an AT PDS. A high-risk institutional host should not put its private kernel and public forum in the same unqualified failure domain merely to simplify installation.
+Hosting ETNOS beside Aksara is optional. The default public ETNOS host is independently deployable. A local installation can serve community discussion and public knowledge over a LAN without being an AT PDS. A high-risk institutional host should not put its private kernel and public forum in the same unqualified failure domain merely to simplify installation.
 
 ## Three independent community choices
 
@@ -32,7 +32,7 @@ Independent local/region deployments follow actual governance, connectivity and 
 
 Use internal principals with optional verified external bindings. AT OAuth is a public identity/publishing option. Private-only enrollment can use separately qualified passkeys or institution-approved identity without creating a public AT account. Account linking must prove both sides and avoid public disclosure of private affiliations.
 
-Strata login, institutional entry, membership, source-use rights and agent mandates are independently evaluated. Public account compromise must not issue an Aksara credential or grant. Institutional entry needs its own authority and appropriate fresh proof. No universal superuser spans nodes. A fully compromised node may expose its accessible data/keys; recipients still independently admit every request.
+ETNOS login, institutional entry, membership, source-use rights and agent mandates are independently evaluated. Public account compromise must not issue an Aksara credential or grant. Institutional entry needs its own authority and appropriate fresh proof. No universal superuser spans nodes. A fully compromised node may expose its accessible data/keys; recipients still independently admit every request.
 
 Current local bearer provisioning is a development mechanism and does not verify DID control. This decision itself did not deliver remote signup, AT OAuth, production session/recovery or real institution integration. The later connected-preview checkpoint adds controlled AT OAuth and application sessions; recovery and institutional integration remain incomplete.
 
@@ -44,7 +44,7 @@ Current local bearer provisioning is a development mechanism and does not verify
 - One DO per configured logical node as the initial coordination unit, not one object for the entire future network. Bounded queries and measured per-node throughput are required; partitioning public reads/indexes is a later measured change.
 - Rust remains appropriate in the Aksara authority and future native Iroh/hardware adapters. The Cloudflare API does not run the resident hardware agent or host a model continuously.
 - Fedify is an ActivityPub framework and is not installed. A future explicitly opted-in public bridge could use it. An AT rewrite does not retain ActivityPub compatibility by default, and private data must never flow through a bridge implicitly.
-- No Strata-owned PDS implementation, custom E2EE system or new independent institutional authority kernel.
+- No ETNOS-owned PDS implementation, custom E2EE system or new independent institutional authority kernel.
 
 Public human contributions stay useful without Aksara. Agents have an accountable operator and limited mandate, ordinary community admission, rate limits and a human challenge path. The current mandate authorizes posting only; it does not authorize Wiki acceptance, voting, work execution or device control. Initial Wiki changes require human authors/reviewers.
 
@@ -60,7 +60,7 @@ HTTPS and independently authorized A2A come first. Iroh is optional native trans
 
 1. Policy/storage port, migrations and native-workerd evidence; forum feature ledger and honest capabilities.
 2. Production identity/enrollment choice, real AT OAuth on the actual runtime, narrow permissions, owned namespace, synthetic sandbox publication and reconciliation.
-3. Honai Strata adapter with capability-aware controls, ordinary forum lifecycle and a separately deployed connected preview. Unsupported controls must not report success.
+3. Honai ETNOS adapter with capability-aware controls, ordinary forum lifecycle and a separately deployed connected preview. Unsupported controls must not report success.
 4. Wiki proposal/review UI, profiles, one PublicWork flow and one Aksara public return under current authority.
 5. Compromise, backup/restore, resource/abuse and field qualification before sensitive institutional data. Then independently governed peer/offline/hardware profiles.
 

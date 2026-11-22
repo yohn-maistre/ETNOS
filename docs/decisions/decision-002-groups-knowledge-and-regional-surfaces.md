@@ -4,7 +4,7 @@ Product direction accepted from the owner's follow-up, 1 November 2026. This ref
 
 ## The full target and the first slice
 
-Strata is a community-governed engine for conversation, shared knowledge and accountable institutional participation. ETNOS is intended as a general deployment, with Papua as its first focused regional experience. Aksara is a continuing agent acting through Strata, its own web UI, messaging and device surfaces; source and execution authority remains beneath all those surfaces.
+ETNOS is a community-governed engine for conversation, shared knowledge and accountable institutional participation. ETNOS is intended as a general deployment, with Papua as its first focused regional experience. Aksara is a continuing agent acting through ETNOS, its own web UI, messaging and device surfaces; source and execution authority remains beneath all those surfaces.
 
 The small release must fit this larger model. It must not quietly redefine a place as a membership group, a forum moderator as an institutional custodian, an agent answer as accepted knowledge, or an ordinary question as an institutional task. Keep the long-term relationships explicit while implementing a narrow workflow. These are continuity requirements, not reasons to build every subsystem before testing with people.
 
@@ -88,11 +88,11 @@ Contexts make explicit data collection easier to scope and compare; they are not
 
 A public context view aggregates only material already eligible for that viewer. Hidden endpoints/edges, private counts and unpublished aliases do not become discoverable through search suggestions, maps, analytics, notification fanout or exports. First use reviewed public contexts and minimal indexed links; later add richer geometry and claims under the same disclosure contract.
 
-## 4. Groups and Spaces are a durable Strata capability
+## 4. Groups and Spaces are a durable ETNOS capability
 
 Implement governed Groups and scoped Spaces as real engine primitives, even if the upstream AT proposal changes or disappears. Reuse current local admission/policy rather than fork an institutional authority kernel. The AT Groups/Spaces integration is a replaceable experimental adapter over a durable local model.
 
-A Group has a stable local ID, optional verified external DID binding, explicit public metadata policy, a protected authority/membership domain, versioned roles, succession/recovery policy and separately registered Spaces. A Space has a stable ID, owning Group, modality, audience, allowed operations and publication policy. One group may have several spaces; one Strata host may serve many groups. A region does not require a PDS, worker or group account of its own.
+A Group has a stable local ID, optional verified external DID binding, explicit public metadata policy, a protected authority/membership domain, versioned roles, succession/recovery policy and separately registered Spaces. A Space has a stable ID, owning Group, modality, audience, allowed operations and publication policy. One group may have several spaces; one ETNOS host may serve many groups. A region does not require a PDS, worker or group account of its own.
 
 The authority boundary should resolve current grants for `(actor, group, space, action, policy revision)` rather than export one global list of admins. A local implementation provides current membership/admission and revocation. An AT adapter verifies identity, membership/acceptance, issuer and space credentials, then maps only explicitly understood roles. Unknown semantics fail closed. An upstream outage does not silently open access or switch to weaker authority.
 

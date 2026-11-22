@@ -1,14 +1,14 @@
-# The Strata model: layers, columns, and a place to start
+# The ETNOS model: layers, columns, and a place to start
 
-17 November 2026. A foundation document. It names how everything in Strata fits together, how a deployment grows from nothing, and what the owner decided on 16–17 November. It extends `history/next-2026-11-16.md` and replaces the three-layer description (surface, sediment, bedrock) in the README.
+17 November 2026. A foundation document. It names how everything in ETNOS fits together, how a deployment grows from nothing, and what the owner decided on 16–17 November. It extends `history/next-2026-11-16.md` and replaces the three-layer description (surface, sediment, bedrock) in the README.
 
-![Strata layers](../assets/strata-layers.svg)
+![ETNOS layers](../assets/etnos-layers.svg)
 
 ## 1. Layers
 
 Every deployment describes one place and the people of it. What it holds settles in layers, and each layer changes at its own pace. The idea is close to Stewart Brand's pace layers: fast layers try things, slow layers remember.
 
-| Layer | Holds | Pace | Already in Strata |
+| Layer | Holds | Pace | Already in ETNOS |
 | --- | --- | --- | --- |
 | **Percakapan** | Posts, threads, art, writing, photos, polls, open calls | Hours | Feed, communities, polls, media |
 | **Kabar** | News and events from credited sources | Days | News desk, source feeds |
@@ -26,7 +26,7 @@ Two things are not layers:
 
 ## 2. Building upward from a place
 
-A deployment starts at the bedrock and builds upward. This is how ETNOS should grow in Papua, and how Strata should start anywhere else.
+A deployment starts at the bedrock and builds upward. This is how ETNOS should grow in Papua, and how it should start anywhere else.
 
 | Step | Layer | What happens | Who confirms |
 | --- | --- | --- | --- |
@@ -108,7 +108,7 @@ Seed every regency, district and kampung from the government codes, as many as e
 
 Technical note: context lists cap at 1,000 rows today; seeding kampung needs paged lists and search-first browsing.
 
-### 4.5 What ships with Strata
+### 4.5 What ships with ETNOS
 
 A deployment starts from a pack the operator picks in setup, and every pack is data, not code:
 

@@ -13,7 +13,7 @@ Decided by the owner on 19 November 2026. The rule covers the interface, documen
 
    Keep a research method's proper name (Two-Eyed Seeing, Etuaptmumk) as a citation, not as a feature name.
 4. **Neutral tone.** Descriptions say what something does and what it does not do. No drama, no "revolutionary", no claims of firsts in the interface.
-5. **Product names stay as they are:** Strata (the software), ETNOS (the deployment), Aksara (the assistant). Do not add new ones.
+5. **Product names stay as they are:** ETNOS (the software and its first deployment, etnos.space, the way Mastodon names both the software and mastodon.social) and Aksara (the assistant). Do not add new ones.
 6. **Language.** The interface is in plain Indonesian. Documents are in English, with the Indonesian interface label given once in italics.
 7. **When in doubt**, use a two- or three-word description, even if it is longer than a catchy name.
 

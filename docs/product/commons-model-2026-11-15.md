@@ -9,7 +9,7 @@ Everything in ETNOS answers four questions.
 1. **Who?** A person, an organisation, or an Aksara that answers to one of them.
 2. **What kind of thing?** Something said, something known, something kept, or something to do.
 3. **Where does it belong?** One or more contexts: a place, a people or language, a topic, or a kind of institution.
-4. **How settled is it?** Live, being checked, or reviewed. These are the strata.
+4. **How settled is it?** Live, being checked, or reviewed. These are the layers.
 
 If every item can answer those four, one page template, one search, one map and one timeline can show all of it. The engine already has most of this. Posts, pages, work, sources and evidence exist, and `record_contexts` ties them to places and topics. What's missing is a fuller set of contexts, a hierarchy between them, and a "kept" kind for collections.
 

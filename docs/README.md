@@ -2,7 +2,7 @@
 
 > **Observatory redesign, phase 1 built (20 November 2026).** Read [observatory/](observatory/README.md) first if you work on the wiki, the knowledge map, the knowledge model, datasets or deployment setup. Its [build status](observatory/README.md#build-status) lists what phase 1 built (the observatory front, the size and pace chart, the data catalogue, the *Data* tab and place locator maps) and what phase 2 still has to build (the starter-data build, crosswalks, embeddings and access tiers beyond the open tier). Where these documents disagree with older knowledge-map documents, they win. Remove this notice when phase 2 is built.
 
-This folder holds the plans, decisions, research and release records for Strata and ETNOS. The [project README](../README.md) is the shortest way in. Documents sit in folders by subject, and a date in a file name shows when it was written. Read the "Which document wins" table before you trust an older plan.
+This folder holds the plans, decisions, research and release records for ETNOS. The [project README](../README.md) is the shortest way in. Documents sit in folders by subject, and a date in a file name shows when it was written. Read the "Which document wins" table before you trust an older plan.
 
 ## Start here
 
@@ -10,12 +10,12 @@ These documents give the whole project in reading order.
 
 | Order | Document | What you get |
 | --- | --- | --- |
-| 1 | [what-strata-is.md](plan/what-strata-is.md) | The whole picture in plain words: a social platform organised around places and peoples, with a sourced wiki, Aksara and a community dictionary. It ends with a plain Indonesian paragraph for the proposal. |
+| 1 | [what-etnos-is.md](plan/what-etnos-is.md) | The whole picture in plain words: a social platform organised around places and peoples, with a sourced wiki, Aksara and a community dictionary. It ends with a plain Indonesian paragraph for the proposal. |
 | 2 | [one-page-system-2026-11-21.md](plan/one-page-system-2026-11-21.md) | Proposal: one entry page for every kind of thing, Lembaga with two voices, communities by topic and language, Kios, Situs at nama.etnos.space, YAML files, and a Kamus that starts from nothing. | proposal |
 | [communities-spaces-2026-11-19.md](plan/communities-spaces-2026-11-19.md) | The flagship. Talk in a community becomes structured knowledge that the community owns. It also covers the site hierarchy, where private things live, AT Protocol spaces and Periksa. |
 | 3 | [platform-2026-11-19.md](plan/platform-2026-11-19.md) | The building blocks that exist in code and those that are planned, and how peoples, languages and private spaces relate. |
-| 4 | [strata-model-2026-11-17.md](plan/strata-model-2026-11-17.md) | The layers, columns and places that organise a deployment, and how one grows from nothing. |
-| 5 | [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | Why Strata exists, who it helps, the evidence and numbers, the laws, and what the BUDAYA GO! guide asks for. |
+| 4 | [etnos-model-2026-11-17.md](plan/etnos-model-2026-11-17.md) | The layers, columns and places that organise a deployment, and how one grows from nothing. |
+| 5 | [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | Why ETNOS exists, who it helps, the evidence and numbers, the laws, and what the BUDAYA GO! guide asks for. |
 | 6 | [showcase-plan-2026-11-17.md](plan/showcase-plan-2026-11-17.md) | What ETNOS is for the showcase and the build order. Section 25 says what to build next. |
 | 7 | [lessons-2026-11-20.md](plan/lessons-2026-11-20.md) | The latest notes on design, the identity host, invites, deploys and working alongside helpers. |
 | 8 | [observatory/](observatory/README.md) | The observatory redesign of 20 November: the model of a people's world, the starter dataset for any deployment, datasets with viewers, access tiers and two deployment profiles. |
@@ -52,11 +52,11 @@ The plan of record, the framing for the proposal, and the notes that guide the n
 
 | Document | What it holds | Status |
 | --- | --- | --- |
-| [what-strata-is.md](plan/what-strata-is.md) | The whole picture of Strata in plain words, what is built, who it serves, extra ideas and the proposal paragraph in Indonesian. | current |
+| [what-etnos-is.md](plan/what-etnos-is.md) | The whole picture of ETNOS in plain words, what is built, who it serves, extra ideas and the proposal paragraph in Indonesian. | current |
 | [communities-spaces-2026-11-19.md](plan/communities-spaces-2026-11-19.md) | The flagship: talk becomes knowledge the community owns. Site hierarchy, private spaces on three hosting modes, AT Protocol spaces, private Kamus and Tata bahasa, Periksa, build order and owner decisions. | current |
-| [platform-2026-11-19.md](plan/platform-2026-11-19.md) | What Strata gives a people, its building blocks in code and planned, and how peoples, languages and private spaces relate. | current |
-| [strata-model-2026-11-17.md](plan/strata-model-2026-11-17.md) | Layers, columns, building upward from a place, social first, places as spine and overlays, organisations and their Aksara. | current |
-| [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | The case for Strata: the owner's intent, what the juknis asks for, problem statements with evidence, impact and indicators, flagships, last-mile ideas, why AT Protocol, models, business, risks and the field. | current |
+| [platform-2026-11-19.md](plan/platform-2026-11-19.md) | What ETNOS gives a people, its building blocks in code and planned, and how peoples, languages and private spaces relate. | current |
+| [etnos-model-2026-11-17.md](plan/etnos-model-2026-11-17.md) | Layers, columns, building upward from a place, social first, places as spine and overlays, organisations and their Aksara. | current |
+| [framing-and-impact-2026-11-17.md](plan/framing-and-impact-2026-11-17.md) | The case for ETNOS: the owner's intent, what the juknis asks for, problem statements with evidence, impact and indicators, flagships, last-mile ideas, why AT Protocol, models, business, risks and the field. | current |
 | [showcase-plan-2026-11-17.md](plan/showcase-plan-2026-11-17.md) | What ETNOS is for the showcase and how it is built: dates, free-tier load, accounts, places, language rooms, Aksara per region, plain names, seeding, deploy and build order. | current |
 | [rationale-threads-2026-11-19.md](plan/rationale-threads-2026-11-19.md) | Eight threads of rationale for the proposal, each with findings, research, features, laws and indicators, and a regulatory map. | current |
 | [open-work-2026-11-17.md](plan/open-work-2026-11-17.md) | Every planned item not yet built, with the document it comes from. Checked against the code on 17 November, so some items are built since. | current, partly out of date |
@@ -70,7 +70,7 @@ Architecture and product decisions that other documents must respect.
 
 | Document | What it holds | Status |
 | --- | --- | --- |
-| [decision-001-product-and-runtime.md](decisions/decision-001-product-and-runtime.md) | What Strata is, where authority sits, the runtime boundary. | current |
+| [decision-001-product-and-runtime.md](decisions/decision-001-product-and-runtime.md) | What ETNOS is, where authority sits, the runtime boundary. | current |
 | [decision-002-groups-knowledge-and-regional-surfaces.md](decisions/decision-002-groups-knowledge-and-regional-surfaces.md) | Durable groups, institutional work (PublicWork), regional surfaces. | current |
 | [decision-003-forum-first-alpha.md](decisions/decision-003-forum-first-alpha.md) | Forum first, content scoped to communities. | current |
 | [decision-004-at-account-hosting.md](decisions/decision-004-at-account-hosting.md) | Full AT accounts, hosted separately, with the options researched. | current |
@@ -83,7 +83,7 @@ How the product is shaped, organised and designed.
 
 | Document | What it holds | Status |
 | --- | --- | --- |
-| [product-shape-2026-11-14.md](product/product-shape-2026-11-14.md) | Where everything lives, Aksara's limits, ranking, market. | current; earlier than strata-model |
+| [product-shape-2026-11-14.md](product/product-shape-2026-11-14.md) | Where everything lives, Aksara's limits, ranking, market. | current; earlier than etnos-model |
 | [design-direction-2026-11-14.md](product/design-direction-2026-11-14.md) | One stream, Aksara in the stream, place and wiki pages. Its palette (Kabut), type pairing and ink-print cover are replaced by Grafit, Serat and cover-wash. | partly superseded by plan/lessons-2026-11-20.md (Design) |
 | [commons-model-2026-11-15.md](product/commons-model-2026-11-15.md) | The commons model and regional Aksaras. | current proposal |
 | [sitemap-and-communities-2026-11-15.md](product/sitemap-and-communities-2026-11-15.md) | Sitemap, community kinds and the seeding path. | current; directory parts superseded by product/information-architecture-design-2026-11-18.md |
@@ -138,7 +138,7 @@ Plans and ports for news. Today Kabar reads clusters from the West Papua Watch A
 | Document | What it holds | Status |
 | --- | --- | --- |
 | [news-transplant-plan-2026-11-20.md](news/news-transplant-plan-2026-11-20.md) | Plan to move the news engine into ETNOS: how it works, free-tier footprint, licences, steps. | current plan |
-| [portable-commons-and-watch-plan-2026-11-11.md](news/portable-commons-and-watch-plan-2026-11-11.md) | Moving the news engine into Strata with one installer. | superseded in part by news/news-transplant-plan-2026-11-20.md |
+| [portable-commons-and-watch-plan-2026-11-11.md](news/portable-commons-and-watch-plan-2026-11-11.md) | Moving the news engine into ETNOS with one installer. | superseded in part by news/news-transplant-plan-2026-11-20.md |
 | [alpha-news-and-video-2026-11-03.md](news/alpha-news-and-video-2026-11-03.md) | Bounded news and video-card ports. | current for the adapters until Kabar moves |
 
 ## accounts-and-hosting/: architecture, accounts and engineering
@@ -223,7 +223,7 @@ Notes that back the plans. Most are proposals with sources, and a few record wha
 | [aksara-workers-harness-2026-11-18.md](research/aksara-workers-harness-2026-11-18.md) | What Aksara's harness can run on Workers and what the free tier allows. | current |
 | [aksara-composed-views-2026-11-18.md](research/aksara-composed-views-2026-11-18.md) | Aksara composing community views from typed components instead of code. | proposal |
 | [resident-harness-2026-11-17.md](research/resident-harness-2026-11-17.md) | Pi versus Flue and Mastra for the resident, and the place notebook design. | current |
-| [strata-intelligence-catalogue-2026-11-12.md](research/strata-intelligence-catalogue-2026-11-12.md) | Where models could help, by seam. | current |
+| [etnos-intelligence-catalogue-2026-11-12.md](research/etnos-intelligence-catalogue-2026-11-12.md) | Where models could help, by seam. | current |
 | [knowledge-ontology-2026-11-18.md](research/knowledge-ontology-2026-11-18.md) | What the nodes are: Hal, Pernyataan, Rekaman, schemes as lenses. | superseded by research/epistemic-multiplex-2026-11-19.md for naming and analysis |
 | [why-these-axes-2026-11-18.md](research/why-these-axes-2026-11-18.md) | Why place, language, topic and kind organise knowledge, with a judge-ready answer. | current |
 | [topic-primitives-and-knowledge-organisation-2026-11-18.md](research/topic-primitives-and-knowledge-organisation-2026-11-18.md) | Which topics every deployment ships, and a starter set of 18. | current |
@@ -264,7 +264,7 @@ Each answer points to the document and the section that holds it.
 
 | Question | Where the answer is |
 | --- | --- |
-| What is Strata, in plain words? | [what-strata-is §1](plan/what-strata-is.md#1-the-short-version) |
+| What is ETNOS, in plain words? | [what-etnos-is §1](plan/what-etnos-is.md#1-the-short-version) |
 | What may the proposal claim, and where is each claim proven? | [claims-2026-11-18](competition/claims-2026-11-18.md) |
 | What does the BUDAYA GO! guide ask for, and how is it scored? | [framing §3](plan/framing-and-impact-2026-11-17.md#3-what-the-competition-asks-for) |
 | Which problem statements and numbers can we use? | [framing §4](plan/framing-and-impact-2026-11-17.md#4-the-problem) |
@@ -284,7 +284,7 @@ Each answer points to the document and the section that holds it.
 | How do communities build a language from nothing, and what does the Kamus take from that? | [language-from-nothing](research/language-from-nothing-2026-11-21.md) and [one-page-system §10](plan/one-page-system-2026-11-21.md#10-kamus-how-any-language-community-starts-even-with-no-data) |
 | How is knowledge modelled (entities, assertions, witnesses)? | [epistemic-multiplex §4](research/epistemic-multiplex-2026-11-19.md#4-the-model) |
 | What are the knowledge map coordinates and lenses? | [knowledge-map §1](knowledge/knowledge-map-design-2026-11-16.md#1-six-coordinates-for-every-item) and [§3](knowledge/knowledge-map-design-2026-11-16.md#3-lenses) |
-| How do we seed a new place? | [showcase-plan §23](plan/showcase-plan-2026-11-17.md#23-deploying-strata-and-the-operators-first-run) and [public data, part 3](research/peoples-places-and-public-data-2026-11-17.md#part-3-public-data-to-seed-a-papua-deployment) |
+| How do we seed a new place? | [showcase-plan §23](plan/showcase-plan-2026-11-17.md#23-deploying-etnos-and-the-operators-first-run) and [public data, part 3](research/peoples-places-and-public-data-2026-11-17.md#part-3-public-data-to-seed-a-papua-deployment) |
 | Which sources may be stored, by licence? | [direction](plan/direction-2026-11-16.md#wiki-ingestion-mee-pago-saireri-la-pago) |
 | Which code is ours and which existed before? | [code-disclosure](competition/code-disclosure-2026-11-17.md) |
 | Where is the design system and the visual direction? | [lessons §Design](plan/lessons-2026-11-20.md#design), [PRODUCT.md](../PRODUCT.md) and [older design-direction](product/design-direction-2026-11-14.md#tokens) |

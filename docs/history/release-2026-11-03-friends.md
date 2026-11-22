@@ -7,7 +7,7 @@ Deployed 3 November 2026 at 13:08 UTC (20:08 Asia/Bangkok).
 - Worker version: `7ae9db26-4b9f-41b9-92c2-758beb154731`.
 - Deployment: `b5f480ca-cceb-4f38-bbab-284d2e963a3c`, 100%.
 - Bundle SHA-256: `9df28611977041acf20ba458ef1e346b016b12f2ba8f28991695a295e304da1f`.
-- Origin: https://etnos.space; existing StrataNode namespace and logical node retained. OAuth secrets retained without reading their values. Existing WPW service binding and publishing-disabled policy retained. New AI binding and STRATA_DECISIONS_ENABLED=true. WPW/Detak configuration unchanged.
+- Origin: https://etnos.space; existing StrataNode namespace and logical node retained. OAuth secrets retained without reading their values. Existing WPW service binding and publishing-disabled policy retained. New AI binding and ETNOS_DECISIONS_ENABLED=true. WPW/Detak configuration unchanged.
 - Schema 17 adds decision_requests and its budget index. Do not roll back to a schema-16-only binary after migration.
 
 The release includes denser news with photo rows on phones and a lead story/columns on desktop; scrollable community/group/profile tabs; one mobile menu; mobile single-feed layout while retaining desktop column preference; simpler nested replies and focused continuation; context relations; news-bottom dock clearance; and an explicit human-steward, public-only AI review button. See [decision pilot](../decisions/decision-pilot-2026-11-03.md) for boundaries and the local Aksara HTTP simulation.

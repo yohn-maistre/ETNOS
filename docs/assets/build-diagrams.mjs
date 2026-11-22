@@ -27,7 +27,7 @@ const diagrams = {
   D --> F["Knowledge map"]`,
   'diagram-architecture': `flowchart LR
   U["Web app<br/>Svelte 5"] --> W["Worker API<br/>Cloudflare Workers"]
-  W --> N["Strata node<br/>SQLite Durable Object"]
+  W --> N["ETNOS node<br/>SQLite Durable Object"]
   W --> R["Aksara runtime<br/>and model gateway"]
   W -. "OAuth sign-in" .-> I["Identity host (PDS)<br/>AT Protocol"]
   I --> A["One Durable Object<br/>per account"]

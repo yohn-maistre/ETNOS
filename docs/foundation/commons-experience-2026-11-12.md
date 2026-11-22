@@ -17,9 +17,9 @@ Use typed many-to-many relations: community relates to place/language/topic; org
 
 Home is a permission-filtered public commons/feed lens. **Beranda is one actual community**, not a universal parent or an authority over every community. The same post/offer/question/page retains one canonical identifier across permitted lenses.
 
-## A useful Strata + Aksara Node bundle
+## A useful ETNOS + Aksara Node bundle
 
-Selected direction: package the two together for operators, keeping their authority boundaries intact. Strata remains usable without a Node or model. An optional Linux/Docker distribution can start Strata, an independently stored Node and an authenticated gateway; external AT providers remain the default identity route. Do not merge the institutional vault into the forum database or claim the existing Rust host runs inside a free Cloudflare Worker.
+Selected direction: package the two together for operators, keeping their authority boundaries intact. ETNOS remains usable without a Node or model. An optional Linux/Docker distribution can start ETNOS, an independently stored Node and an authenticated gateway; external AT providers remain the default identity route. Do not merge the institutional vault into the forum database or claim the existing Rust host runs inside a free Cloudflare Worker.
 
 The hosted ETNOS Worker may connect to a separately operated Node over an explicitly configured authenticated endpoint. Node controls its own sources, workspace, cultural artifacts, language data, internal channels, jobs, grants, backups and publication decisions. Pairing must verify the Node/operator, issue narrowly scoped revocable credentials, show connection status, and support disconnect/export. MCP is the harness-neutral tool entrance, not the authorization evaluator. Public resident Pi and an institutional Node are separate principals even when their UI looks related.
 

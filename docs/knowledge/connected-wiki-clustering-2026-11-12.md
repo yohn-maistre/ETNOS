@@ -16,7 +16,7 @@ Remaining: real hosted resident inference and useful real-source clustering qual
 
 ## Hosted release receipt
 
-- Strata `8687938860fa589086ea2c9fe179e9b21e0e081e`; Honai Metro main `a727a617ba6c2df3a70566a4e4a35f1f6cd20111`.
+- ETNOS `8687938860fa589086ea2c9fe179e9b21e0e081e`; Honai Metro main `a727a617ba6c2df3a70566a4e4a35f1f6cd20111`.
 - Existing Worker deployment `fd7f54c4-d615-4379-b5bd-bb51a8c94f71`; version `74de72a1-9564-4814-9d68-16def698c189`, 100% traffic, created `2026-11-11T22:41:30.531489Z` (November 12 Bangkok).
 - Server SHA-256 `9c1d8c1428d706b407f524c239321ce8a9a67cb08928ba374af9155af66bb857`; etag `ef9698d729a1e145a761aafb36bf730f3faca0564b7457bce5fd266ee647c6a9`. Existing DO, service/OAuth/secret bindings and open enrollment retained. No paid resource or hosted inference call.
 - Public smoke matched the exact built main bundle, health `ok`, existing public profile/community/feed, new public provisional projection, authenticated-only snapshot export, open signup UI, saved appearance, Wiki deep links and recovery bootstrap. Zero page errors. No live post or account created by the smoke.

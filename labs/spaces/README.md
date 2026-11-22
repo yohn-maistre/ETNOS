@@ -1,6 +1,6 @@
 # Official AT Spaces alpha trial
 
-This is a real integration test against the official alpha PDS and SDK, isolated from Strata's production dependencies and database. It starts two disposable PDS services and a development PLC directory, creates three synthetic accounts, runs the access checks and destroys the services. No real account, OAuth grant, community or data is imported.
+This is a real integration test against the official alpha PDS and SDK, isolated from ETNOS's production dependencies and database. It starts two disposable PDS services and a development PLC directory, creates three synthetic accounts, runs the access checks and destroys the services. No real account, OAuth grant, community or data is imported.
 
 Snapshot: **0.0.0-spaces-alpha-20261029171913**. Node 24.19+; run on a development machine/cloud workspace, **not the secondary phone**. No PostgreSQL, Redis or Docker is needed for this smaller official devnet.
 
@@ -12,11 +12,11 @@ npm run probe
 
 `report.json` records the passing checks and observed limits. Expected-denial requests also produce upstream development server error logs; a successful probe exits 0. No credentials or private keys are written to the report. The development PDS uses temporary filesystem directories; this is not an unattended public service or a supported production hosting configuration.
 
-The report is displayed read-only at `/labs/spaces` in Honai. That page is evidence of this local protocol experiment, **not a live Cloudflare-hosted PDS or an enabled private-AT community**. The Worker cannot run the official Node PDS unchanged. The existing hosted forum continues using Strata's local access-controlled storage.
+The report is displayed read-only at `/labs/spaces` in Honai. That page is evidence of this local protocol experiment, **not a live Cloudflare-hosted PDS or an enabled private-AT community**. The Worker cannot run the official Node PDS unchanged. The existing hosted forum continues using ETNOS's local access-controlled storage.
 
 ## Observed fit
 
-- A community can map to a `com.atproto.memberspace.policy` Space controlled by its authority. That mapping does not confer Strata membership or permission to use conversations for training.
+- A community can map to a `com.atproto.memberspace.policy` Space controlled by its authority. That mapping does not confer ETNOS membership or permission to use conversations for training.
 - Members write in their own PDS's repository within the Space. The authority and each author's PDS are separate trust/storage locations; this is not automatically one community-owned database.
 - Cross-PDS reading uses a delegation token, P-256-bound credential, the official HTTP signature helper and a per-request KEM/MAC verified with official helpers. This trial does not invent cryptography.
 - Private records were absent from public `repo.getRecord`/`repo.listRecords`; an attached private blob was readable with a Space credential and denied through anonymous private and public sync blob endpoints. Full public CAR/firehose isolation still needs independent inspection.
@@ -26,7 +26,7 @@ The report is displayed read-only at `/labs/spaces` in Honai. That page is evide
 
 ## Remaining integration gates
 
-Production OAuth and least-privilege Space scopes; deployable alpha PDS placement; complete writer-set synchronization and spoofed/removed-author exclusion; protected cache/index invalidation; deletion/revocation/expiry races; metadata leakage and blob deduplication across public/private records; pagination, backup/restore, migration, limits and abuse controls; version upgrade strategy. Only then should an explicitly selected test community opt in. Never automatically export existing private Strata rows.
+Production OAuth and least-privilege Space scopes; deployable alpha PDS placement; complete writer-set synchronization and spoofed/removed-author exclusion; protected cache/index invalidation; deletion/revocation/expiry races; metadata leakage and blob deduplication across public/private records; pagination, backup/restore, migration, limits and abuse controls; version upgrade strategy. Only then should an explicitly selected test community opt in. Never automatically export existing private ETNOS rows.
 
 ## Upstream contribution candidates
 

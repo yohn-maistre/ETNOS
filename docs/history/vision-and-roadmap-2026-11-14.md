@@ -14,7 +14,7 @@ ETNOS today is a managed site with a managed steward and seeded public sources. 
 - **Reply, vote, save and share stay as icons.** Check buttons on findings keep their words.
 - **Places are destinations. Explore is personal.** Explore shows news, threads, things to check and pages from the places you follow, and everything when you follow none.
 - **You choose your places in the app.** Never inferred from where your account is hosted. The choice is private.
-- **Many squares, one engine, portable accounts.** ETNOS is Papua's square. Strata is what other peoples deploy for their own, with their own name, art, languages, sources and rules. Accounts work across squares. Squares reading each other's public posts depends on AT publishing, which is off today.
+- **Many squares, one engine, portable accounts.** ETNOS is Papua's square, and the same software is what other peoples deploy for their own, with their own name, art, languages, sources and rules. Accounts work across squares. Squares reading each other's public posts depends on AT publishing, which is off today.
 - **Nothing Papua-specific is hardcoded in the engine.** Place names, the news desk and cover art become deployment settings.
 - **Aksara's posts are typed blocks.** A source list, a claim check, a poll proposal, a comparison, a gap, a page draft. The app renders each with a real component wired to a real action. No free-form generated interface, and no mockups.
 - **Aksara's visible work is the seed, and it must be true.** People arrive, watch it work on their knowledge and get invited in. Cap its volume, label it, and show receipts.
@@ -42,7 +42,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-  A["Operator deploys Strata"] --> B["Guided conversation with Aksara"]
+  A["Operator deploys ETNOS"] --> B["Guided conversation with Aksara"]
   B --> C["Where is this place? Which sources do you trust? What must I never touch?"]
   C --> D["Aksara proposes a plan: places, sources, starter pages, opening questions"]
   D --> E{"Operator approves?"}
@@ -62,7 +62,7 @@ gantt
   New tokens, bigger covers                   :a2, after a1, 1d
   Findings as posts with check buttons        :a3, after a1, 2d
   Wiki home modules                           :a4, after a2, 2d
-  Place page with strata cut and linked news  :a5, after a2, 2d
+  Place page with a layer cut and linked news  :a5, after a2, 2d
   section Showcase (4-5 Dec)
   Guided setup with Aksara                    :b1, 2026-11-19, 6d
   Claim reactions and recorded differences    :b2, 2026-11-20, 6d
@@ -95,7 +95,7 @@ Dates are targets, not commitments.
 - **Disagreement on a timeline.** Where accounts differ, show who said what and when.
 - **A steward you can fork.** A new community copies another's Aksara setup, with its sources, rules and tone, and adjusts it.
 - **Elders' line.** A phone number to call and leave a story. No app needed.
-- **The news engine moves into Strata** so any community can register its own trusted sources and get a local news desk.
+- **The news engine moves into ETNOS** so any community can register its own trusted sources and get a local news desk.
 
 ### Later, with partners
 

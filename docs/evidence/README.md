@@ -1,6 +1,6 @@
 # ETNOS project history and demonstration evidence
 
-This is the maintained evidence index for the continuing ETNOS project: the founder's idea dates to 2023, forum work to 2025, Honai development follows, and Strata evolves the shared community/knowledge direction into the current engine. The live build is a development milestone. It is not the project's origin date.
+This is the maintained evidence index for the continuing ETNOS project: the founder's idea dates to 2023, forum work to 2025, Honai development follows, and ETNOS evolves the shared community/knowledge direction into the current engine. The live build is a development milestone. It is not the project's origin date.
 
 The narrative can be concise and compelling while each link retains its actual date and provenance. Repository creation, project-specific code, inherited code, a deployed function and a demonstrated outcome provide different kinds of evidence. Judge access and publication remain separate from collecting that evidence here.
 
@@ -12,7 +12,7 @@ The owner prefers a few necessary links rather than a repository catalogue. Leav
 | --- | --- |
 | **March Honai work:** [Papua/Indonesian adaptation](https://github.com/yohn-maistre/honai-metro/commit/ff77dbab9f86238e24710c1d932c0081cc3985bb) and [March 25 Wiki/dashboard/menu work](https://github.com/yohn-maistre/honai-metro/commit/af0af053ecfcabd737c74ac1bd2b9a52c2934a6b) | Project-specific community/cultural interface work before April. The latter diff modifies `src/routes/wiki/+page.svelte` and `src/routes/dashboard/+page.svelte`; it is source evidence, with any contemporaneous demonstration linked separately. |
 | **Optional 2025 continuity:** [Saireri ETNOS](https://github.com/yohn-maistre/saireri-etnos), with selected Meepago material only through arranged private access if needed | Early federated-forum deployment/client experiments based on Photon. Credit the donor; describe the actual plans/configuration/adaptation, not an original client engine. |
-| **Current result:** [Live ETNOS](https://etnos.space), [Honai source](https://github.com/yohn-maistre/honai-metro) and [matched reading-pass receipt](../history/ui-reading-pass-2026-11-11.md) | The present connected build. Strata's engine can be linked through the owner's chosen review access, without filling the opening page with infrastructure repositories. |
+| **Current result:** [Live ETNOS](https://etnos.space), [Honai source](https://github.com/yohn-maistre/honai-metro) and [matched reading-pass receipt](../history/ui-reading-pass-2026-11-11.md) | The present connected build. ETNOS's engine can be linked through the owner's chosen review access, without filling the opening page with infrastructure repositories. |
 
 Lead with the March artifacts, use one short 2025 reference if helpful, then let the actual demo show the evolution. The current engine is a later implementation of the continuing ETNOS direction. Do not substitute inherited upstream commits for ETNOS-specific work or rewrite dated history.
 
@@ -22,19 +22,19 @@ Keep the full record available here without promoting every repository into the 
 
 - [Project lineage metadata](project-lineage.json): repository creation, visibility and selected commit records; **contains private repository metadata**.
 - [Honai before April 2026](honai-before-april-2026.json): older project-specific and inherited source history retrieved from GitHub because the local checkout was shallow.
-- [Honai late-October UTC window](honai-october-2026.json) and [Strata late-October UTC window](strata-october-2026.json): current engine/client evolution. Raw timestamps stay UTC; some late-October UTC commits fall on November 1 in Asia/Bangkok.
+- [Honai late-October UTC window](honai-october-2026.json) and [ETNOS late-October UTC window](strata-october-2026.json): current engine/client evolution. Raw timestamps stay UTC; some late-October UTC commits fall on November 1 in Asia/Bangkok.
 
 No commit history or timestamps were modified. Public exports omit private entries/URLs and internal planning material unless separately authorized. This pass changes neither repository visibility nor judge access.
 
 ## One clear entry point for judges
 
-A small **ETNOS project index** repository or page can offer one clean URL without moving code into an umbrella monorepo. Keep the authoritative detailed evidence here in Strata and generate a short README from the selected records when needed. No new repository is created by this planning pass.
+A small **ETNOS project index** repository or page can offer one clean URL without moving code into an umbrella monorepo. Keep the authoritative detailed evidence here in ETNOS and generate a short README from the selected records when needed. No new repository is created by this planning pass.
 
 The opening page only needs:
 
 1. What ETNOS does and the live demo/video.
 2. A short continuing-project timeline, using the concise evidence selection above.
-3. How Strata and Honai implement it, with upstream credit and a chosen source-review path.
+3. How ETNOS and Honai implement it, with upstream credit and a chosen source-review path.
 4. A short sustainability/stewardship explanation and an optional evidence appendix.
 
 The demo follows source → conversation → labelled working knowledge → review/correction → an everyday action. Link the exact demonstrated build and identify any fixtures or unavailable steps. Retain immutable release/build receipts behind the short presentation rather than duplicating every working document.

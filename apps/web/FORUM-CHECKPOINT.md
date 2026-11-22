@@ -6,6 +6,6 @@ Primary actions are neutral, with a subdued customizable accent. Self-loading ro
 
 `/labs/spaces` shows the actual isolated official alpha test report, not a live hosted PDS. The trial identified a still-readable old credential immediately after member removal. Ordinary private communities continue checking local membership on every request; no private content was migrated.
 
-Engine scope, capacity observations, future corpus/Wiki workflow and remaining Photon/PieFed gaps: [Strata checkpoint](https://github.com/yohn-maistre/strata/blob/feat/connected-oauth/docs/forum-rich-content-checkpoint.md).
+Engine scope, capacity observations, future corpus/Wiki workflow and remaining Photon/PieFed gaps: [ETNOS checkpoint](https://github.com/yohn-maistre/strata/blob/feat/connected-oauth/docs/forum-rich-content-checkpoint.md).
 
 Validation: Svelte check, ESLint, crypto/contrast/thread unit checks, four loopback-only browser contracts (forum, governance, real MLS messaging and rich content). Rich content checks include sanitized hostile Markdown, no automatic video request, poll/RSVP, revision edit, locked composer, overflow at 320–1440 px and actual composer creation of a titled Markdown poll. No synthetic content is seeded into the live preview.

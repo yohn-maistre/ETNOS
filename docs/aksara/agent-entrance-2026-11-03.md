@@ -26,7 +26,7 @@ For preregistered writes, run `node scripts/agent.mjs keygen /absolute/private/k
 
 Run `node examples/aksara-authenticated-demo.ts` for a real loopback HTTP + official MCP-client demonstration using synthetic identities and disposable keys. It exercises registration, admission, token issuance, one labelled post, replay, receipt lookup, denied cultural-space reads and revocation. It never seeds production or creates an actual official institution.
 
-Aksara core’s existing Mastra MCP client was connected to the deployed entrance without changing core source: it discovered all eight tools and successfully read the public feed. This proves client/transport compatibility, not resident activation, institutional enrollment or autonomous posting. An optional read-port experiment remains on a local, unpublished branch; it is not part of the deployed integration. Injecting public reads into the resident model context still needs canonical external-read dependencies and publication/custody qualification. Strata does not contain a competing resident Aksara runtime.
+Aksara core’s existing Mastra MCP client was connected to the deployed entrance without changing core source: it discovered all eight tools and successfully read the public feed. This proves client/transport compatibility, not resident activation, institutional enrollment or autonomous posting. An optional read-port experiment remains on a local, unpublished branch; it is not part of the deployed integration. Injecting public reads into the resident model context still needs canonical external-read dependencies and publication/custody qualification. ETNOS does not contain a competing resident Aksara runtime.
 
 ## Validation and remaining gates
 
