@@ -41,5 +41,6 @@
   .tandai-close:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
   .tandai-note { margin: 0; font-size: 13.5px; line-height: 1.4; color: var(--muted-foreground); }
   .tandai-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .tandai-actions :global(button) { min-width: 64px; min-height: 40px; }
   .tandai-error { margin: 0; font-size: 13px; color: var(--destructive); }
 </style>

@@ -247,6 +247,11 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 - **Mode belajar:** checked words get a 15% tint and a 1.5px bottom line in their class colour, plus a small class letter, so colour is never the only cue. Word class colours reuse the level bands: benda #067132 (dark #1d7d3e), kerja #305eb7 (#4777d2), sifat #b54d98 (#c664a8), lainnya #857d0b (#918112). The legend names each class.
 - **Cetak kamus:** a white page with two columns of entries by first letter, sources and licences in the footer; the print stylesheet hides everything else.
 
+### Percakapan (`TentangPicker.svelte`, `TandaiPrompt.svelte`, the Percakapan tab of `EntryPage.svelte`)
+- **In the composer:** chosen entries are 34px outline pills with a 28px round remove button, followed by a *Tentang* pill that opens a 44px search with a bordered list of 44px rows (kind on the right). Names found in the text are dashed 34px pills with a plus and the kind in muted 12.5px, after a muted *Disebut di tulisan*, and an *Abaikan* text button ends the row.
+- **Tandai card:** one floating card (16px radius, hairline, soft shadow) centred at the bottom, above the dock on phones, with the question in 15px and the entry in 700, a muted line under it, and buttons at least 64 by 40px. A shared name shows one outline button per kind. It rises 8px in 220ms, or appears at once with reduced motion.
+- **The tab:** the *Tulis tentang …* primary button and the *Termasuk tempat di dalamnya* switch on one line, then a 13px muted count line over a hairline. Each post has a 13px muted source line with a small icon (tag, people or pin) above its card, and an underlined link when it names a community or a place inside. Paging is a 40px outline pill. The empty state is a 17px title, one muted sentence and the primary button.
+
 ## Do's and Don'ts
 
 ### Do:
