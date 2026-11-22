@@ -61,7 +61,7 @@ const logo = (c: Ctx, cls: string) =>
     ? `<img class="${cls}" src="/v1/groups/${esc(c.snap.lembaga.id)}/logo" alt="" width="64" height="64">`
     : `<span class="${cls} mono" aria-hidden="true">${esc(initials(c.snap.lembaga.title))}</span>`
 const paragraphs = (t: string) =>
-  t.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => `<p>${esc(p).replace(/\n/g, '<br>')}</p>`).join('')
+  t.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p, i) => `<p${i === 0 ? ' class="lead"' : ''}>${esc(p).replace(/\n/g, '<br>')}</p>`).join('')
 const heading = (c: Ctx, b: SitusBlock) => `<h2 class="block-title">${esc(b.title?.trim() || BLOCK_LABELS[b.type])}</h2>`
 
 /** Quick ways to reach the lembaga: the first phone, email and WhatsApp it gives. */
@@ -87,9 +87,11 @@ const blocks: Record<SitusBlock['type'], (c: Ctx, b: SitusBlock) => string> = {
       text = (h.text ?? '').trim() || l.description
     const cover = (h.image ?? 'cover') === 'cover' ? l.cover : null
     const kind = [l.jenis ?? (l.kind === 'institution' ? 'Lembaga' : 'Kelompok'), ...l.places.slice(0, 2).map((p) => p.title)].join(' · ')
+    if (c.editorial && cover)
+      return `<section class="hero has-cover"><figure class="hero-media">${img(cover, 'hero-img', true)}<div class="hero-over wrap"><h1>${esc(title)}</h1>${text ? `<p class="hero-text">${esc(text)}</p>` : ''}</div></figure>
+        <div class="hero-foot wrap"><p class="hero-kind">${esc(kind)}</p>${quick(c)}</div></section>`
     if (c.editorial)
-      return `<section class="hero${cover ? ' has-cover' : ''}">${cover ? `<figure class="hero-media">${img(cover, 'hero-img', true)}</figure>` : ''}<div class="hero-copy wrap">
-        <h1>${esc(title)}</h1>${text ? `<p class="hero-text">${esc(text)}</p>` : ''}<p class="hero-kind">${esc(kind)}</p>${quick(c)}</div></section>`
+      return `<section class="hero no-cover"><div class="wrap hero-copy">${(h.image ?? 'cover') === 'none' ? '' : logo(c, 'hero-logo')}<h1>${esc(title)}</h1>${text ? `<p class="hero-text">${esc(text)}</p>` : ''}<p class="hero-kind">${esc(kind)}</p>${quick(c)}</div></section>`
     return `<section class="hero band"><div class="wrap hero-grid"><div class="hero-id">${(h.image ?? 'cover') === 'none' ? '' : logo(c, 'hero-logo')}<div><h1>${esc(title)}</h1><p class="hero-kind">${esc(kind)}</p></div></div>
       ${text ? `<p class="hero-text">${esc(text)}</p>` : ''}${quick(c)}</div>${cover ? `<figure class="hero-strip wrap">${img(cover, 'hero-img', true)}</figure>` : ''}</section>`
   },
@@ -105,6 +107,11 @@ const blocks: Record<SitusBlock['type'], (c: Ctx, b: SitusBlock) => string> = {
   },
   kegiatan(c, b) {
     if (!c.snap.posts.length) return ''
+    if (c.editorial) {
+      const cards = c.snap.posts.map((p) => `<li><a class="card${p.image ? '' : ' text-only'}" href="${esc(etnos(c, '/square/' + encodeURIComponent(p.id)))}">${p.image ? img(p.image, 'card-img') : ''}
+        <span class="card-body"><span class="meta"><time datetime="${new Date(p.created).toISOString().slice(0, 10)}">${esc(date(p.created))}</time> · ${esc(p.community.title)}</span><strong>${esc(p.title)}</strong>${p.excerpt ? `<span class="excerpt">${esc(p.excerpt)}</span>` : ''}</span></a></li>`)
+      return `${heading(c, b)}<ul class="cards">${cards.join('')}</ul><p class="more"><a href="${esc(c.lembagaHref)}">Kegiatan lain di ETNOS${icons.arrow}</a></p>`
+    }
     const rows = c.snap.posts.map((p) => {
       const d = shortDate(p.created)
       return `<li><a class="post" href="${esc(etnos(c, '/square/' + encodeURIComponent(p.id)))}">
@@ -145,6 +152,16 @@ const blocks: Record<SitusBlock['type'], (c: Ctx, b: SitusBlock) => string> = {
       l.whatsapp ? row('WhatsApp', '+' + l.whatsapp, 'https://wa.me/' + l.whatsapp) : '',
       l.website ? row('Situs web', domain(l.website), l.website) : '',
     ].join('')
+    if (!c.editorial) {
+      const icon = (v: string, label: string) => (contactHref(v).startsWith('tel:') ? icons.phone : contactHref(v).startsWith('mailto:') ? icons.mail : contactHref(v).startsWith('https:') ? icons.globe : /alamat|kantor|sekretariat|lokasi/i.test(label) ? icons.pin : icons.book)
+      const card = (ic: string, label: string, value: string, href: string) => `<li>${ic}<span><span class="meta">${esc(label)}</span>${href ? `<a href="${esc(href)}"${href.startsWith('https:') ? ' rel="noreferrer"' : ''}>${esc(value)}</a>` : `<span>${esc(value)}</span>`}</span></li>`
+      const items = [
+        ...l.contacts.map((x: Contact) => card(icon(x.value, x.label), x.label, x.value, contactHref(x.value))),
+        l.whatsapp ? card(icons.chat, 'WhatsApp', '+' + l.whatsapp, 'https://wa.me/' + l.whatsapp) : '',
+        l.website ? card(icons.globe, 'Situs web', domain(l.website), l.website) : '',
+      ].join('')
+      return `${heading(c, b)}<ul class="contact-cards">${items}</ul>`
+    }
     return `${heading(c, b)}<dl class="facts contact">${list}</dl>`
   },
 }
@@ -157,8 +174,14 @@ export function renderSitus(page: SitusPage, o: RenderOptions) {
   const rendered = config.blocks.map((b) => ({ b, html: blocks[b.type](c, b) })).filter((x) => x.html)
   const shown = new Set(rendered.map((x) => x.b.id))
   const nav = (config.navigation ?? []).filter((n) => shown.has(n.block) && rendered.find((x) => x.b.id === n.block)?.b.type !== 'hero')
+  const content = rendered.filter((x) => x.b.type !== 'hero').length
+  if (content < 2)
+    rendered.push({
+      b: { id: 'etnos', type: 'kontak' },
+      html: `<div class="sparse"><h2 class="block-title">${content ? 'Lebih banyak di ' + esc(o.siteName) : esc(l.title) + ' di ' + esc(o.siteName)}</h2><p>Kegiatan, komunitas dan kabar terbaru ${esc(l.title)} ada di halaman lembaga di ${esc(o.siteName)}. Siapa saja bisa membacanya tanpa akun.</p><a class="pill solid" href="${esc(c.lembagaHref)}">Buka halaman lembaga${icons.arrow}</a></div>`,
+    })
   const body = rendered
-    .map(({ b, html }) => (b.type === 'hero' ? html : `<section class="block b-${b.type}" id="${esc(b.id)}"><div class="wrap">${html}</div></section>`))
+    .map(({ b, html }) => (b.type === 'hero' ? html : `<section class="block b-${b.id === 'etnos' ? 'etnos' : b.type}" id="${esc(b.id)}"><div class="wrap">${html}</div></section>`))
     .join('\n')
   const description = (l.description || l.about).replace(/\s+/g, ' ').trim().slice(0, 200)
   const shareImage = l.cover ? o.origin + '/v1/media/' + l.cover.id : l.logo ? o.origin + '/v1/groups/' + l.id + '/logo' : ''
