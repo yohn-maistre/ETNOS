@@ -82,6 +82,17 @@
   const jenisChoices = $derived(JENIS.map((j) => ({ ...j, id: contexts.find((c) => c.slug === j.slug && c.facet === 'institution-kind')?.id ?? '' })).filter((j) => j.id))
   const kindLine = $derived([group.jenis?.title ?? (group.kind === 'institution' ? 'Lembaga' : 'Kelompok'), group.visibility === 'public' ? 'Publik' : 'Tertutup'].join(' · '))
 
+  // Situs (§8): the published address for everyone, the state for stewards and the operator.
+  let situs = $state<{ name: string | null; published: boolean; active?: boolean; saved?: boolean; canManage: boolean } | null>(null)
+  const host = typeof location === 'undefined' ? 'etnos.space' : location.host
+  $effect(() => {
+    const id = group.id,
+      abort = new AbortController()
+    void auth.actor?.id
+    situs = null
+    request<typeof situs>('/v1/groups/' + id + '/situs', undefined, abort.signal, true).then((r) => { if (!abort.signal.aborted) situs = r }).catch(() => {})
+    return () => abort.abort()
+  })
   $effect(() => {
     const slug = group.entry,
       abort = new AbortController()
@@ -227,7 +238,13 @@
     {#if group.hiddenSpaces}<p class="lb-hidden"><LockKeyhole size={14} aria-hidden="true" />{group.spaces.length ? 'Lembaga ini juga punya' : 'Lembaga ini punya'} {group.hiddenSpaces} komunitas tertutup. Isinya hanya untuk anggota, dan namanya tidak ditampilkan.</p>{/if}
     {#if !group.spaces.length && !group.hiddenSpaces}<p class="lb-empty">Belum ada komunitas yang terbuka untuk umum.</p>{/if}
   </div>
-  {#if steward}<p class="lb-empty">Situs lembaga dengan alamat sendiri di etnos.space belum tersedia.</p>{/if}
+  {#if situs?.published && situs.name}<a class="lb-situs" href={'/situs/' + situs.name} target="_blank" rel="noreferrer">
+      <Globe size={18} aria-hidden="true" /><span><strong>Situs {group.title}</strong><small>{host}/situs/{situs.name}</small></span><ArrowUpRight size={16} aria-hidden="true" />
+    </a>{/if}
+  {#if situs?.canManage}<div class="lb-situs-manage">
+      <p class="lb-empty">{situs.published ? 'Situs sudah terbit. Ubah tampilan atau terbitkan versi baru di halaman Situs.' : situs.saved ? (situs.active ? 'Draf situs siap diterbitkan.' : 'Draf situs tersimpan. Situs bisa diterbitkan setelah diaktifkan oleh pengelola ' + host + '.') : 'Lembaga ini bisa punya situs sendiri dengan alamat ' + host + '/situs/nama-lembaga, yang isinya diambil dari halaman ini.'}</p>
+      <Button variant="outline" size="sm" href={'/groups/' + group.id + '/situs'}><Globe size={15} />{situs.saved ? 'Atur situs' : 'Buat situs'}</Button>
+    </div>{/if}
 </section>
 
 <section class="lb-voice lb-encyclopedia" aria-labelledby={uid + '-ens'}>
@@ -379,6 +396,12 @@
   .lb-room small { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--muted-foreground); }
   .lb-hidden { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--muted-foreground); }
   .lb-hidden :global(svg) { flex: none; margin-top: 2px; }
+  .lb-situs { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: color-mix(in oklab, var(--brand) 8%, transparent); color: inherit; text-decoration: none; }
+  .lb-situs:hover { background: color-mix(in oklab, var(--brand) 13%, transparent); }
+  .lb-situs > span { display: grid; gap: 2px; flex: 1; min-width: 0; }
+  .lb-situs strong { font-size: 15.5px; font-weight: 700; }
+  .lb-situs small { font-size: 13.5px; color: var(--muted-foreground); overflow-wrap: anywhere; }
+  .lb-situs-manage { display: grid; gap: 10px; justify-items: start; }
   .lb-entry { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 16px; background: color-mix(in oklab, var(--foreground) 3%, transparent); color: inherit; text-decoration: none; }
   .lb-entry:hover { background: color-mix(in oklab, var(--foreground) 6%, transparent); }
   .lb-entry > span { display: grid; gap: 2px; min-width: 0; }

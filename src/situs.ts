@@ -24,7 +24,7 @@ import { stringify } from './yaml.ts'
 import { checkHandle } from '../packages/pds/src/host/handles.ts'
 import situsSchema from '../schemas/situs.schema.json' with { type: 'json' }
 import lembagaSchema from '../schemas/lembaga.schema.json' with { type: 'json' }
-import { BLOCK_LABELS, type BlockType, type FontId, type TemplateId } from './situs-theme.ts'
+import { BLOCK_LABELS, BLOCK_TYPES, FONTS, PALETTE, TEMPLATES, type BlockType, type FontId, type TemplateId } from './situs-theme.ts'
 
 // situs.yaml and lembaga.yaml as types (the JSON Schemas in schemas/ are the rule; these follow them).
 export type SitusBlock =
@@ -343,6 +343,13 @@ export class Situs {
       versions: versions.map((v) => ({ ...v, by: this.s.get<{ name: string }>('SELECT name FROM actors WHERE id=?', v.created_by)?.name ?? '' })),
       canManage: this.canManage(actorId, groupId),
       canActivate: operator,
+      // The fixed lists the editor offers, from src/situs-theme.ts, so the web app keeps no copy of them.
+      choices: {
+        templates: TEMPLATES,
+        palette: PALETTE.map((p) => ({ id: p.id, label: p.label, light: p.light.fill, dark: p.dark.fill })),
+        fonts: FONTS.map((f) => ({ id: f.id, label: f.label })),
+        blocks: BLOCK_TYPES.map((t) => ({ type: t, label: BLOCK_LABELS[t] })),
+      },
       sources: {
         pictures: this.pictures(groupId).map((p) => ({ ...p, url: '/v1/media/' + p.id })),
         communities: this.publicCommunities(groupId),

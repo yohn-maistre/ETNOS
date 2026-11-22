@@ -525,7 +525,9 @@
     if (
       u.origin !== location.origin ||
       u.pathname.startsWith('/auth/') ||
-      u.pathname.startsWith('/oauth/')
+      u.pathname.startsWith('/oauth/') ||
+      // A Situs is a server-rendered page of its own, not a route of this app.
+      u.pathname.startsWith('/situs/')
     )
       return
     if (
@@ -1218,6 +1220,8 @@
       onCreate={() => open('community')}
       {navigate}
     />
+  {:else if parts[0] === 'groups' && parts[1] && parts[2] === 'situs'}
+    {#await import('./SitusEditor.svelte')}<ContentSkeleton />{:then module}<module.default groupId={parts[1]} {auth} />{/await}
   {:else if ['groups', 'work', 'contexts', 'explore'].includes(parts[0])}
     <FeaturePages
       {path}

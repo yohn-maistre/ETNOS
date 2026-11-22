@@ -40,7 +40,7 @@
       "additionalProperties": false,
       "properties": {
         "ref": { "type": "string", "pattern": "^(media:[0-9a-f-]{36}|logo)$", "description": "media:<id> for a photo, or logo" },
-        "url": { "type": "string", "pattern": "^https://", "maxLength": 2048 },
+        "url": { "type": "string", "pattern": "^https?://", "maxLength": 2048, "description": "where the image can be downloaded" },
         "alt": { "type": "string", "maxLength": 1000 }
       }
     }
