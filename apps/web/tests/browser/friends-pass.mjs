@@ -253,8 +253,8 @@ try {
       ['community', '/communities/' + community.id],
       ['profile', '/people/' + owner.actor.id],
       ['thread', '/square/' + root.id],
-      ['contexts', '/contexts'],
-      ['context', '/contexts/jayapura'],
+      ['places', '/explore#tempat'],
+      ['context', '/wiki/jayapura'],
       ['group', '/groups/' + group.id],
     ]) {
       await page.goto(origin + path, { waitUntil: 'networkidle' })

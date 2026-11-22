@@ -54,10 +54,6 @@
 
 /* Steward-only: declare which news-desk places feed a place page. */
 .place-news-setup { margin-top: 12px; font-size: 13px; }
-/* On a thing page these sit straight inside the tab panel, which has no gutter of its own. */
-.thing-panel > .place-news-setup { margin: 0; padding: 4px 24px 0; }
-.thing-panel > .place-news-setup:last-of-type { padding-bottom: 8px; }
-@media (max-width: 767px) { .thing-panel > .place-news-setup { padding-inline: 16px; } }
 .place-news-setup summary { cursor: pointer; color: var(--muted-foreground); min-height: 32px; display: inline-flex; align-items: center; }
 .place-news-setup form { display: grid; gap: 8px; max-width: 460px; padding: 8px 0 4px; }
 

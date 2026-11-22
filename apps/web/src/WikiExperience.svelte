@@ -1,27 +1,18 @@
 <script lang="ts">
+  // The wiki article reader: one page, its sources, history and proposals. The wiki front is EnsiklopediaFront.
   import {
     BookOpen,
-    Plus,
     ArrowUpRight,
     GitPullRequest,
     History,
     FileText,
-    Search,
-    MapPin,
-    ChevronDown,
-    ArrowRight,
-    Clock3,
-    Shuffle,
     Type,
-    Newspaper,
   } from '@lucide/svelte'
   import { markdown } from './markdown'
   import { wikiDiff, languageName } from './wiki-diff'
   import {
-    request,
     relativeDate,
     relativeLong,
-    clip,
     type WikiPage,
     type Proposal,
     type Community,
@@ -29,25 +20,18 @@
     type Auth,
   } from './api'
   import { Button } from '$lib/components/ui/button/index.js'
-  import { Input } from '$lib/components/ui/input/index.js'
-  import Observatorium from './Observatorium.svelte'
-  import { OBSERVATORY_NAME } from './observatory-name.ts'
   import WikiViewerLinks from './WikiViewerLinks.svelte'
   import './styles/observatorium.css'
   import WikiDiscussion from './WikiDiscussion.svelte'
   import WikiContents from './WikiContents.svelte'
-  import WikiPlaces from './WikiPlaces.svelte'
   import { loadMap, highlandRegions, type MapData } from './observatory'
   import { siteBranding } from './site-branding'
-  import { placeScope, setPlaceScope } from './place-scope.svelte'
-  import { REGION_ORDER, loadAtlasLangs, loadContexts, regionTitle, regionsOf } from './explore-data'
   import WikiVoices from './WikiVoices.svelte'
   import WikiSourceNotes from './WikiSourceNotes.svelte'
   import WikiTrail from './WikiTrail.svelte'
   import WikiPeriod from './WikiPeriod.svelte'
   import { voices as pageVoices } from './wiki-sources'
   import LandscapePrint from './LandscapePrint.svelte'
-  import { communityArtwork } from './site-branding'
   let {
     page,
     pages,
@@ -56,7 +40,6 @@
     communities,
     memberships,
     auth,
-    onCreate,
     onPropose,
     onDecide,
     onReview,
@@ -78,75 +61,19 @@
     communities: Community[]
     memberships: Membership[]
     auth: Auth
-    onCreate: () => void
     onPropose: () => void
     onDecide: (p: Proposal, accept: boolean) => void
     onReview: (revisionId: string, accept: boolean) => void
     onShare: (url: string) => void
     busy: boolean
   } = $props()
-  let query = $state(''),
-    section = $state('read'),
-    context = $state(placeScope.slug),
-    contexts = $state<
-      { id: string; slug: string; title: string; kind: string; facet?: string; parents?: string[] }[]
-    >([]),
-    contextPages = $state<string[] | null>(null)
-  type Growing={id:string;community_id:string;title:string;excerpt:string;updated:number;citationCount:number;author:{id:string;name:string;kind:string};evidenceStatus:string}
-  let growing=$state<Growing[]>([]),growingError=$state('')
-  /** Drops a model's greeting, self-introduction and "based on the evidence, here is…:" preface at the start of an excerpt. */
-  const opening=(text:string)=>text.replace(/^\s*(?:(?:halo|hai)\b[^.!?]*[.!?]\s*)?(?:saya aksara\b[^.!?]*[.!?]\s*)?(?:berdasarkan (?:bukti|sumber)\b[^:]{0,160}:\s*)?/i,'')
-  const growingMatches=$derived(growing.filter(p=>p.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())&&(!communityFilter||p.community_id===communityFilter)&&!context))
-  $effect(()=>{const controller=new AbortController();request<Growing[]>('/v1/wiki/growing',undefined,controller.signal).then(rows=>{if(!controller.signal.aborted)growing=rows}).catch(()=>{if(!controller.signal.aborted)growingError='Draf belum dapat dimuat.'});return()=>controller.abort()})
-  type Preview={id:string;community_id:string;title:string;revision_id:string;excerpt:string;updated:number;language:string;citationCount:number;sectionCount:number;newsCitations?:number;authorKind?:string;reviewer?:{name:string;kind:string}|null;review?:string}
-  type Gaps={contexts:{id:string;slug:string;title:string;kind:string}[];uncited:{id:string;title:string;community_id:string}[]}
-  let gaps=$state<Gaps|null>(null)
-  $effect(()=>{const controller=new AbortController();request<Gaps>('/v1/wiki/gaps',undefined,controller.signal,true).then(r=>{if(!controller.signal.aborted)gaps=r}).catch(()=>{});return()=>controller.abort()})
-  const kindName:Record<string,string>={place:'Tempat',region:'Wilayah',topic:'Topik',language:'Bahasa'}
-  let discoveries=$state<Preview[]>([]),discovering=$state(true),discoveryError=$state(''),communityFilter=$state(''),lastReadId=$state(''),readingSize=$state('normal')
-  const accepted=$derived(discoveries.filter(p=>p.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())&&(!contextPages||contextPages.includes(p.id))&&(!communityFilter||communityFilter===p.community_id)))
-  const fromNews=$derived(discoveries.filter(p=>(p.newsCitations??0)>0).slice(0,4))
-  // Five pages to read, rotated by day so the front changes without tracking anyone.
-  const featuredList=$derived.by(()=>{if(!accepted.length)return [];const day=Math.floor(Date.now()/86400000),start=day%accepted.length;return [...accepted.slice(start),...accepted.slice(0,start)].slice(0,5)})
-  let slide=$state(0),track=$state<HTMLDivElement>()
-  function goTo(i:number){slide=i;track?.children[i]?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest',inline:'start'})}
-  function onTrackScroll(){if(!track)return;const w=track.clientWidth;if(w)slide=Math.round(track.scrollLeft/w)}
-  const featured=$derived(featuredList[0]),continued=$derived(discoveries.find(p=>p.id===lastReadId)),recent=$derived(accepted.filter(p=>!featuredList.some(f=>f.id===p.id)).slice(0,6)),groups=$derived(communities.map(c=>({...c,count:discoveries.filter(p=>p.community_id===c.id).length})).filter(c=>c.count))
-  function surprise(){if(accepted.length)location.assign('/wiki/'+accepted[Math.floor(Math.random()*accepted.length)].id)}
+  let section = $state('read'),
+    readingSize = $state('normal')
   function resize(size:string){readingSize=size;try{localStorage.setItem('strata.ui.wiki-text',size)}catch{/* Optional device preference. */}}
-  async function discover(signal:AbortSignal|undefined=undefined){discovering=true;discoveryError='';try{const rows=await request<Preview[]>('/v1/wiki/discover',undefined,signal);if(!signal?.aborted)discoveries=rows}catch{if(!signal?.aborted)discoveryError='Halaman belum dapat dimuat.'}finally{if(!signal?.aborted)discovering=false}}
-  $effect(()=>{const controller=new AbortController();void discover(controller.signal);try{lastReadId=localStorage.getItem('strata.ui.wiki-last')??'';readingSize=localStorage.getItem('strata.ui.wiki-text')==='large'?'large':'normal'}catch{};return()=>controller.abort()})
-  $effect(()=>{if(page?.revision){try{localStorage.setItem('strata.ui.wiki-last',page.id)}catch{}}})
-  // The map stays on the wiki home whatever place is chosen; it opens on that place's customary region.
-  let mapRegion = $state('')
-  $effect(() => {
-    const slug = context
-    mapRegion = ''
-    if (!slug) return
-    let live = true
-    void Promise.all([loadContexts(), loadAtlasLangs()]).then(([all, langs]) => { if (live) mapRegion = regionsOf(slug, all, langs)[0] ?? '' }).catch(() => {})
-    return () => { live = false }
-  })
+  $effect(()=>{try{readingSize=localStorage.getItem('strata.ui.wiki-text')==='large'?'large':'normal'}catch{/* Optional device preference. */}})
   // The region a page belongs to, from the public map data, chooses its engraved cover.
   let mapData = $state<MapData | null>(null)
   $effect(() => { if (!mapData) void loadMap().then((d) => (mapData = d)) })
-  // The wiki follows the place chosen in the header switcher, and the map at the top of the wiki home sets it:
-  // pressing a region narrows the wiki (and the rest of the site) to it; pressing it again shows all of Papua.
-  $effect(() => { context = placeScope.slug })
-  const regionPages = (slug: string) => mapData?.nodes.filter((n) => n.k === 'page' && n.reg === slug).length ?? 0
-  const regionChoices = $derived<{ slug: string; title: string; count?: number }[]>(
-    !contexts.length ? [] :
-    REGION_ORDER.map((slug) => {
-      const c = contexts.find((x) => x.slug === slug)
-      return { slug, title: c ? regionTitle(c) : slug, count: mapData ? regionPages(slug) : undefined }
-    }),
-  )
-  const pickedRegion = $derived(contexts.find((c) => c.slug === context && c.facet === 'customary-region'))
-  function pickRegion(slug: string) {
-    const c = contexts.find((x) => x.slug === slug)
-    if (!c || context === slug) setPlaceScope({ slug: '', title: 'Tanah Papua' })
-    else setPlaceScope({ slug: c.slug, title: regionTitle(c) })
-  }
   const pageRegion = $derived.by(() => {
     if (!page || !mapData) return null
     const node = mapData.nodes.find((n) => n.href === '/wiki/' + page.id)
@@ -155,14 +82,6 @@
     return { reg: node.reg, title: region?.t.replace(/^Wilayah adat /, '') ?? '', href: region && region.href !== node.href ? region.href : undefined }
   })
   const pageArt = $derived(pageRegion ? siteBranding.welcomeArtworks.find((a) => a.id === (highlandRegions.has(pageRegion.reg) ? 'tigi' : 'raja-ampat')) ?? null : null)
-  const headings = $derived.by(() => {
-    if (!page?.revision) return []
-    const template = document.createElement('template')
-    template.innerHTML = markdown(page.revision.text, [], 'wiki-' + page.id)
-    return Array.from(template.content.querySelectorAll('h1,h2,h3,h4')).map(
-      (h) => ({ id: h.id, text: h.textContent ?? '' }),
-    )
-  })
   const member = $derived(
       !!page && memberships.some((m) => m.community_id === page.community_id),
     ),
@@ -172,43 +91,6 @@
           (m) => m.community_id === page.community_id && m.role !== 'member',
         ),
     )
-  const filtered = $derived(
-    pages.filter(
-      (p) =>
-        p.title.toLocaleLowerCase().includes(query.toLocaleLowerCase()) &&
-        (!contextPages || contextPages.includes(p.id)),
-    ),
-  )
-  const drafts=$derived(filtered.filter(p=>!p.revision_id&&(!communityFilter||communityFilter===p.community_id)))
-  $effect(() => {
-    const actor = auth.actor?.id,
-      abort = new AbortController()
-    request<typeof contexts>('/v1/contexts', undefined, abort.signal)
-      .then((rows) => {
-        if (!abort.signal.aborted && actor === auth.actor?.id) contexts = rows
-      })
-      .catch(() => {})
-    return () => abort.abort()
-  })
-  $effect(() => {
-    const id = context,
-      abort = new AbortController()
-    contextPages = null
-    if (id)
-      request<{ pages: { id: string }[] }>(
-        '/v1/contexts/' + id,
-        undefined,
-        abort.signal,
-      )
-        .then((result) => {
-          if (!abort.signal.aborted)
-            contextPages = result.pages.map((p) => p.id)
-        })
-        .catch(() => {
-          if (!abort.signal.aborted) contextPages = []
-        })
-    return () => abort.abort()
-  })
   $effect(() => {
     void page?.id
     section = 'read'
@@ -438,78 +320,4 @@
           </article>{/each}
       </section>{/if}
   </article>
-{:else}
-  {#snippet reading()}
-    <section class="obs-section" aria-labelledby="obs-read-title">
-      <div class="obs-head">
-        <h2 id="obs-read-title">{query ? 'Hasil pencarian' : 'Halaman wiki'}</h2>
-        {#if accepted.length > 1 && !query}<button type="button" class="obs-more" onclick={surprise}><Shuffle size={15} />Halaman acak</button>{/if}
-      </div>
-      {#if !query}<p class="obs-lede">Halaman yang ditulis dan diperiksa bersama warga, masing-masing dengan sumbernya.</p>{/if}
-      {#if regionChoices.length && !query}<div class="obs-chips" role="group" aria-label="Pilih wilayah adat">
-          <button type="button" aria-pressed={!context} onclick={() => setPlaceScope({ slug: '', title: 'Tanah Papua' })}>Semua</button>
-          {#each regionChoices as r (r.slug)}<button type="button" aria-pressed={context === r.slug} onclick={() => pickRegion(r.slug)}>{r.title}{#if r.count !== undefined}<small>{r.count}</small>{/if}</button>{/each}
-        </div>
-        {#if context}<p class="obs-foot">{#if pickedRegion}Menampilkan halaman tentang {regionTitle(pickedRegion)}. <a href={'/contexts/' + pickedRegion.slug}>Buka halaman wilayahnya</a>{:else}Menampilkan halaman tentang {placeScope.title}.{/if}</p>{/if}{/if}
-      {#if discovering}<div class="obs-skeleton" aria-hidden="true"></div><p class="sr-only" role="status">Menyiapkan bacaan</p>
-      {:else if discoveryError}<p class="obs-note">{discoveryError} <button type="button" class="obs-inline" onclick={() => discover()}>Coba lagi</button></p>
-      {:else if featured}
-        {#if continued && !query && !context && !communityFilter}<a class="obs-row obs-continue" href={'/wiki/' + continued.id}><Clock3 size={17} /><span class="obs-row-main"><span class="obs-row-meta">Lanjutkan membaca di perangkat ini</span><span class="obs-row-title">{continued.title}</span></span><ArrowRight size={17} /></a>{/if}
-        {@const art = communityArtwork(featured.community_id)}
-        <div class="obs-featured" aria-label="Untuk dibaca">
-          <div class="wiki-front-cover cover-wash">{#if art}<div class="cover-wash-art" aria-hidden="true"><LandscapePrint artwork={art} decorative /></div>{/if}
-            <div class="wiki-front-track" bind:this={track} onscroll={onTrackScroll}>
-              {#each featuredList as item (item.id)}<a class="wiki-front-card" href={'/wiki/' + item.id}><div class="cover-wash-body"><span class="cover-wash-meta wiki-featured-meta">{languageName(item.language)} · {item.citationCount ? item.citationCount + ' sumber' : 'Sumber belum ditautkan'}{item.reviewer ? ' · ditinjau ' + item.reviewer.name : item.review === 'unreviewed' ? ' · belum ditinjau' : ''}</span><h3 class="cover-wash-title">{item.title}</h3>{#if item.excerpt}<p class="cover-wash-text">{clip(item.excerpt, 180)}</p>{/if}</div></a>{/each}
-            </div>
-          </div>
-          {#if featuredList.length > 1}<div class="wiki-front-dots" role="tablist" aria-label="Pilih bacaan">{#each featuredList as item, i (item.id)}<button role="tab" aria-selected={slide === i} aria-label={item.title} onclick={() => goTo(i)}></button>{/each}</div>{/if}
-        </div>
-        {#if recent.length}<div>
-            <h3 class="obs-sub">Baru diperbarui</h3>
-            <div class="obs-rows">{#each recent as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">{p.reviewer ? 'Ditinjau ' + p.reviewer.name + ' · ' : p.review === 'unreviewed' ? (p.authorKind === 'agent' ? 'AI · belum ditinjau · ' : 'Belum ditinjau · ') : ''}{relativeLong(p.updated)}</span></span><ArrowUpRight size={16} /></a>{/each}</div>
-          </div>{/if}
-        <p class="obs-foot"><a href="/lini-masa">Lihat lini masa</a> untuk membaca halaman menurut urutan waktu.</p>
-      {:else if !growingMatches.length}<p class="obs-note">{query || context || communityFilter ? 'Belum ada halaman yang cocok. Coba kata atau pilihan lain.' : 'Belum ada halaman wiki. Halaman yang sudah ditinjau akan muncul di sini.'}</p>{/if}
-    </section>
-  {/snippet}
-  {#snippet more()}
-    {#if !query && !communityFilter}<WikiPlaces />{/if}
-    {#if growingMatches.length}<section class="obs-section" aria-labelledby="obs-growing-title">
-        <div class="obs-head"><h2 id="obs-growing-title">Draf</h2></div>
-        <p class="obs-lede">Catatan ini belum ditinjau dan bisa berubah.</p>
-        <div class="obs-rows">{#each growingMatches as p (p.id)}<a class="obs-row" href={'/wiki/notes/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-text">{opening(p.excerpt)}</span><span class="obs-row-meta">{p.author.name}{p.author.kind === 'agent' ? ' · AI' : ''} · {p.citationCount ? p.citationCount + ' sumber' : 'Belum ada sumber'}{p.evidenceStatus !== 'current' ? ' · sumber perlu ditinjau' : ''}</span></span><ArrowUpRight size={16} /></a>{/each}</div>
-      </section>{:else if growingError}<p class="commons-alert" role="status">{growingError}</p>{/if}
-    {#if fromNews.length && !query && !context && !communityFilter}<section class="obs-section" aria-labelledby="obs-news-title">
-        <h2 id="obs-news-title">Dari kabar</h2>
-        <p class="obs-lede">Halaman ini mengutip kabar yang dirangkum di ETNOS.</p>
-        <div class="obs-rows">{#each fromNews as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><Newspaper size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">Mengutip {p.newsCitations} kabar{p.citationCount > (p.newsCitations ?? 0) ? ' dan ' + (p.citationCount - (p.newsCitations ?? 0)) + ' sumber lain' : ''}</span></span><ArrowUpRight size={16} /></a>{/each}</div>
-      </section>{/if}
-    {#if gaps && (gaps.contexts.length || gaps.uncited.length) && !query && !context && !communityFilter}<section class="obs-section" aria-labelledby="obs-write-title">
-        <h2 id="obs-write-title">Perlu ditulis</h2>
-        <div class="obs-rows">
-          {#each gaps.contexts.slice(0, 3) as c (c.id)}<a class="obs-row" href={'/contexts/' + c.slug}><MapPin size={18} /><span class="obs-row-main"><span class="obs-row-title">{c.title}</span><span class="obs-row-meta">{kindName[c.kind] ?? 'Tempat'} · belum ada halaman</span></span><ArrowUpRight size={16} /></a>{/each}
-          {#each gaps.uncited.slice(0, 3) as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">Belum ada sumber</span></span><ArrowUpRight size={16} /></a>{/each}
-        </div>
-      </section>{/if}
-    {#if groups.length > 1}<section class="obs-section" aria-labelledby="obs-browse-title">
-        <div class="obs-head"><h2 id="obs-browse-title">Halaman menurut komunitas</h2>{#if communityFilter}<button type="button" class="obs-more" onclick={() => (communityFilter = '')}>Lihat semua</button>{/if}</div>
-        <div class="obs-chips">{#each groups as c (c.id)}<button type="button" aria-pressed={communityFilter === c.id} onclick={() => (communityFilter = communityFilter === c.id ? '' : c.id)}>{c.title}<small>{c.count}</small></button>{/each}</div>
-      </section>{/if}
-    {#if drafts.length}<section class="obs-section" aria-labelledby="obs-review-title">
-        <h2 id="obs-review-title">Dalam tinjauan</h2>
-        <div class="obs-rows">{#each drafts as p (p.id)}<a class="obs-row" href={'/wiki/' + p.id}><FileText size={18} /><span class="obs-row-main"><span class="obs-row-title">{p.title}</span><span class="obs-row-meta">Draf</span></span><ArrowUpRight size={16} /></a>{/each}</div>
-      </section>{/if}
-  {/snippet}
-  <div class="obs obs-front">
-    <header class="obs-section obs-top">
-      <div class="obs-head">
-        <h1>{OBSERVATORY_NAME}</h1>
-        <div class="obs-actions">{#if memberships.length}<a class="obs-more" href="/wiki/notes/new">Tambah catatan <Plus size={14} /></a>{/if}{#if memberships.some((m) => m.role !== 'member')}<Button variant="outline" onclick={onCreate}><Plus size={15} />Tulis halaman</Button>{/if}</div>
-      </div>
-      <p class="obs-lede">{OBSERVATORY_NAME} memuat apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan juga menunjukkan apa yang belum diketahui.</p>
-      <label class="obs-search"><Search size={18} aria-hidden="true" /><input bind:value={query} type="search" aria-label="Cari halaman wiki" placeholder="Cari halaman wiki" /></label>
-    </header>
-    {#if !query && !communityFilter}<Observatorium region={mapRegion} {reading} {more} />{:else}{@render reading()}{@render more()}{/if}
-    <footer class="obs-section obs-end"><p class="obs-foot"><a href="/knowledge">Tambah sumber atau catatan</a> untuk melengkapi halaman dan peta pengetahuan.</p></footer>
-  </div>
 {/if}

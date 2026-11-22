@@ -8,48 +8,26 @@
   import {
     Building2,
     Users,
-    Globe,
     LockKeyhole,
     Plus,
     ArrowUpRight,
     MapPin,
     ListTodo,
-    BookOpen,
     Check,
     LoaderCircle,
     Link,
-    MessageCircle,
   } from '@lucide/svelte'
   import * as Card from '$lib/components/ui/card/index.js'
   import * as Dialog from '$lib/components/ui/dialog/index.js'
   import * as Tabs from '$lib/components/ui/tabs/index.js'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import Choice from './Choice.svelte'
-  import type { PlaceCommunity } from './PlaceCommunities.svelte'
-  import ThingPage, { type ThingTab } from './ThingPage.svelte'
-  import { openWorkStates } from './place-layers'
-  import { facetNames, orderedParents } from './context-tree'
-  // A description that only restates the kind ("Kelompok topik: …") drops that prefix; the badge already says it.
-  const tabNames = ['tentang', 'percakapan', 'perkembangan', 'komunitas', 'sumber', 'data']
-  // The tab was called Lapisan, then Kabar; both old addresses still open Perkembangan.
-  const thingTab = $derived.by((): ThingTab => {
-    if (segments[2] === 'lapisan') return 'perkembangan'
-    const raw = typeof location === 'undefined' ? '' : new URLSearchParams(location.search).get('tab') ?? ''
-    const t = raw === 'kabar' ? 'perkembangan' : raw
-    return (tabNames.includes(t) ? t : 'tentang') as ThingTab
-  })
-  const blurb = (text: string | undefined, kind: string | undefined) => {
-    // Older catalogue descriptions start with "Lensa:"; the page says what it is already.
-    const t = (text ?? '').trim().replace(/^Lensa:\s*/, '')
-    return kind && t.toLowerCase().startsWith(kind.toLowerCase() + ':') ? t.slice(kind.length + 1).trim().replace(/^./, (c) => c.toUpperCase()) : t
-  }
   import ContentSkeleton from './ContentSkeleton.svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
   import { Textarea } from '$lib/components/ui/textarea/index.js'
   import { Label } from '$lib/components/ui/label/index.js'
   import { Badge } from '$lib/components/ui/badge/index.js'
-  import PostCard from './PostCard.svelte'
   import {
     request,
     initials,
@@ -57,7 +35,6 @@
     type Auth,
     type Community,
     type Membership,
-    type Post,
   } from './api'
   type Context = {
     id: string
@@ -81,19 +58,6 @@
     contexts: Context[]
     result: { id: string; text: string; citations: string[] } | null
   }
-  type ContextRef = { id: string; slug: string; title: string; kind: string; facet?: string }
-  type ContextDetail = Context & {
-    facet?: string
-    family?: { key: string; title: string; basis: string; sources: { title: string; url: string }[] } | null
-    parents?: ContextRef[]
-    children?: ContextRef[]
-    childCount?: number
-    groups: Group[]
-    communities?: PlaceCommunity[]
-    pages: { id: string; title: string }[]
-    newsPlaces?: string[]
-    aliases?: string[]
-  }
   type Result = {
     id: string
     digest: string
@@ -107,35 +71,20 @@
     auth,
     onError,
     navigate,
-    onContextResolved,
-    onCompose,
-    onStartCommunity,
   }: {
     path: string
     auth: Auth
     onError: (s: string) => void
-    onContextResolved?: (kind: string) => void
-    onCompose?: (place?: { id: string; title: string }) => void
-    onStartCommunity?: (place: { id: string; title: string }) => void
     navigate: (s: string) => void
   } = $props()
   let communities = $state<Community[]>([]),
     memberships = $state<Membership[]>([])
   let groups = $state<Group[]>([]),
     contexts = $state<Context[]>([]),
-    newsPlacesDraft = $state(''),
-    placeOptions = $state<{ slug: string; name: string }[]>([]),
-    placeFilter = $state(''),
-    placeOptionsLoaded = false,
     works = $state<Work[]>([]),
     roles = $state<{ group_id: string; role: string }[]>([])
   let group = $state<Group | null>(null),
     work = $state<Work | null>(null),
-    context = $state<
-      | ContextDetail
-      | null
-    >(null),
-    posts = $state<Post[]>([]),
     results = $state<Result[]>([])
   let loading = $state(true),
     busy = $state(false),
@@ -187,21 +136,13 @@
     completed: 'Selesai',
     withdrawn: 'Ditarik',
   }
-  const kinds: Record<string, string> = {
-    place: 'Tempat',
-    region: 'Wilayah',
-    topic: 'Topik',
-    language: 'Bahasa',
-  }
   async function load(route = path, actorId = auth.actor?.id) {
     const mine = ++generation
     loading = true
     error = ''
     group = null
     work = null
-    context = null
     results = []
-    posts = []
     try {
       const [gs, cs, ws, rs, forums, forumRoles] = await Promise.all([
         request<Group[]>('/v1/groups'),
@@ -257,18 +198,6 @@
             ? 'topic'
             : 'region'
         slug = ''
-      }
-      if (page === 'contexts' && id) {
-        const c = await request<ContextDetail>('/v1/contexts/' + id)
-        const feed = await request<{ items: Post[] }>(
-          '/v1/feed/page?roots=true&context=' + encodeURIComponent(c.id),
-        )
-        if (mine !== generation) return
-        context = c
-        newsPlacesDraft = (c.aliases ?? []).some((a) => a.startsWith('kabar:')) ? (c.newsPlaces ?? []).join(', ') : ''
-        onContextResolved?.(c.kind)
-        posts = feed.items
-        works = ws.filter((w) => w.contexts.some((x) => x.id === c.id))
       }
     } catch (e) {
       if (mine === generation)
@@ -364,7 +293,7 @@
           aliases: [],
         })
         modal = null
-        navigate('/contexts/' + c.slug)
+        navigate('/wiki/' + c.slug)
       } else if (modal === 'work') {
         const w = await request<Work>('/v1/work', {
           groupId,
@@ -398,31 +327,6 @@
     })
   }
 
-  const parsePlaces = (v: string) =>
-    v.split(',').map((x) => x.trim().toLowerCase().replace(/\s+/g, '-')).filter((x) => /^[-a-z0-9]{1,100}$/.test(x))
-  const draftSlugs = $derived(parsePlaces(newsPlacesDraft))
-  const extraSlugs = $derived(draftSlugs.filter((x) => !placeOptions.some((p) => p.slug === x)))
-  const visiblePlaces = $derived.by(() => {
-    const q = placeFilter.trim().toLowerCase()
-    return q ? placeOptions.filter((p) => p.name.toLowerCase().includes(q) || p.slug.includes(q)) : placeOptions
-  })
-  function togglePlace(slug: string, on: boolean) {
-    const rest = draftSlugs.filter((x) => x !== slug)
-    newsPlacesDraft = (on ? [...rest, slug] : rest).join(', ')
-  }
-  function setExtraPlaces(v: string) {
-    newsPlacesDraft = [...draftSlugs.filter((x) => placeOptions.some((p) => p.slug === x)), ...parsePlaces(v)].join(', ')
-  }
-  async function loadPlaceOptions() {
-    if (placeOptionsLoaded) return
-    placeOptionsLoaded = true
-    try {
-      const r = await fetch('/v1/news', { credentials: 'omit' })
-      if (r.ok) placeOptions = ((await r.json()) as { placeOptions?: { slug: string; name: string }[] }).placeOptions ?? []
-    } catch {
-      placeOptionsLoaded = false
-    }
-  }
 </script>
 
 {#snippet workList(items: Work[])}
@@ -541,7 +445,7 @@
     <p class="strata-body">{work.description}</p>
     <div class="context-links">
       {#each work.contexts as c}<Badge
-          href={'/contexts/' + c.slug}
+          href={'/wiki/' + c.slug}
           variant="secondary"
         >
           {c.title}
@@ -645,23 +549,6 @@
             </Button>{/if}
         </article>{/each}
     </Card.Root>{/if}
-{:else if segments[0] === 'contexts' && context}
-  {@const contextBlurb = blurb(context.description, facetNames[context.facet ?? ''] ?? kinds[context.kind])}
-  <ThingPage
-    thing={context}
-    kindLabel={facetNames[context.facet ?? ''] ?? kinds[context.kind] ?? 'Topik'}
-    blurb={contextBlurb}
-    {posts}
-    {works}
-    {auth}
-    {communities}
-    canVote={isMember}
-    initialTab={thingTab}
-    {onError}
-    {onCompose}
-    onStartCommunity={onStartCommunity ? () => onStartCommunity({ id: context!.id, title: context!.title }) : undefined}
-    stewardTools={auth.steward ? stewardNews : undefined}
-  />
 {:else if segments[0] === 'groups'}
   <div class="cx-page-head">
     <h1>Lembaga</h1>
@@ -721,7 +608,7 @@
         {@const rows = contexts.filter((c) => c.kind === value)}
         {#if rows.length}<section class="context-directory-section">
             <h2>{label}</h2>
-            {#each rows as c}<a href={'/contexts/' + c.slug}>
+            {#each rows as c}<a href={'/wiki/' + c.slug}>
                 <span>
                   <strong>{c.title}</strong>
                   {#if c.description}<small>{c.description}</small>{/if}
@@ -1000,67 +887,3 @@
   </Dialog.Content>
 </Dialog.Root>
 
-{#snippet stewardNews()}
-  <details class="place-news-setup" ontoggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) void loadPlaceOptions() }}>
-        <summary>Atur tempat kabar</summary>
-        <form
-          onsubmit={async (e) => {
-            e.preventDefault()
-            if (!context) return
-            const slugs = newsPlacesDraft
-              .split(',')
-              .map((x) => x.trim().toLowerCase().replace(/\s+/g, '-'))
-              .filter((x) => /^[-a-z0-9]{1,100}$/.test(x))
-            try {
-              await request('/v1/contexts/' + context.id + '/aliases', {
-                aliases: [
-                  ...(context.aliases ?? []).filter((a) => !a.startsWith('kabar:')),
-                  ...slugs.map((x) => 'kabar:' + x),
-                ],
-              })
-              const next = await request<ContextDetail>('/v1/contexts/' + context.id)
-              context = next
-              newsPlacesDraft = (next.newsPlaces ?? []).join(', ')
-            } catch (error) {
-              onError(error instanceof Error ? error.message : 'Tempat kabar belum tersimpan.')
-            }
-          }}
-        >
-          {#if placeOptions.length}
-            <Label for="place-news-filter">Pilih tempat kabar</Label>
-            <Input id="place-news-filter" type="search" bind:value={placeFilter} placeholder="Cari tempat" autocomplete="off" />
-            <div class="place-news-list" role="group" aria-label="Tempat kabar">
-              {#each visiblePlaces as p (p.slug)}
-                <label class="place-news-option">
-                  <input type="checkbox" checked={draftSlugs.includes(p.slug)} onchange={(e) => togglePlace(p.slug, e.currentTarget.checked)} />
-                  <span>{p.name}</span>
-                </label>
-              {:else}
-                <p class="cx-hint">Tidak ada tempat yang cocok.</p>
-              {/each}
-            </div>
-            <Label for="place-news-slugs">Tempat lain (nama pendek, dipisah koma)</Label>
-            <Input id="place-news-slugs" value={extraSlugs.join(', ')} onchange={(e) => setExtraPlaces(e.currentTarget.value)} placeholder="nabire, paniai" autocomplete="off" />
-          {:else}
-            <Label for="place-news-slugs">Nama tempat kabar, dipisah koma</Label>
-            <Input id="place-news-slugs" bind:value={newsPlacesDraft} placeholder="nabire, paniai, deiyai" autocomplete="off" />
-          {/if}
-          <p class="cx-hint">Kabar dari tempat-tempat ini tampil di halaman {context?.title}. Kosongkan untuk memakai nama halaman ini saja.</p>
-          <Button type="submit" size="sm">Simpan</Button>
-        </form>
-      </details>
-  <!-- Node steward only (the server checks): a retired page leaves lists, menus and label pickers; labels and history stay stored. -->
-  <details class="place-news-setup">
-    <summary>Pensiunkan halaman ini</summary>
-    <p class="cx-hint">Halaman {context?.title} tidak lagi tampil di Jelajah, daftar dan pilihan label. Label yang sudah terpasang dan riwayatnya tetap tersimpan, dan halaman bisa dipulihkan.</p>
-    <Button size="sm" variant="outline" onclick={async () => {
-      if (!context) return
-      try {
-        await request('/v1/contexts/' + context.id + '/retire', { retired: true })
-        navigate('/explore')
-      } catch (error) {
-        onError(error instanceof Error ? error.message : 'Halaman belum dapat dipensiunkan.')
-      }
-    }}>Pensiunkan {context?.title}</Button>
-  </details>
-{/snippet}

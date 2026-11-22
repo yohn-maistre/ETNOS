@@ -159,7 +159,6 @@
     handle = $state(''),
     publishingConsent = $state(false),
     inviteHandle = $state('')
-  let contextHeading = $state<{ path: string; kind: string } | null>(null)
   let modal = $state<
     null | 'compose' | 'community' | 'wiki' | 'proposal' | 'manage' | 'join'
   >(null)
@@ -371,13 +370,7 @@
                                       ? 'Kerja publik'
                                       : path === '/topics' || path === '/contexts'
                                         ? 'Tempat, bahasa & topik'
-                                        : parts[0] === 'contexts'
-                                          ? contextHeading?.path === path && contextHeading.kind === 'topic'
-                                            ? 'Topik'
-                                            : contextHeading?.path === path && contextHeading.kind === 'language'
-                                              ? 'Bahasa'
-                                              : 'Tempat'
-                                          : 'ETNOS',
+                                        : 'ETNOS',
   )
   function fail(value: unknown) {
     notifyError(value)
@@ -1231,17 +1224,6 @@
       {auth}
       onError={fail}
       {navigate}
-      onContextResolved={(kind) => {
-        contextHeading = { path, kind }
-      }}
-      onCompose={(place) => {
-        open('compose')
-        composePlace = place ?? null
-      }}
-      onStartCommunity={(place) => {
-        open('community')
-        if (auth.actor) communityAbout = [{ ...place, slug: '', kind: 'place' }]
-      }}
     />
   {:else if parts[0] === 'wiki' && parts[1] === 'jenis'}
     {#await import('./KindPage.svelte')}<ContentSkeleton />{:then module}<module.default kind={parts[2] ?? 'semua'} {search} />{/await}
@@ -1262,7 +1244,7 @@
     {#await import('./EnsiklopediaFront.svelte')}<ContentSkeleton />{:then module}<module.default {auth} {memberships} {communities} />{/await}
   {:else if parts[0] === 'wiki'}
     {#if loading}<ContentSkeleton
-      />{:else}{#await import('./WikiExperience.svelte')}<ContentSkeleton/>{:then module}<module.default
+      />{:else if !selectedPage}{#await import('./EnsiklopediaFront.svelte')}<ContentSkeleton />{:then module}<module.default {auth} {memberships} {communities} />{/await}{:else}{#await import('./WikiExperience.svelte')}<ContentSkeleton/>{:then module}<module.default
           page={selectedPage}
           pages={wiki}
           {proposals}
@@ -1271,7 +1253,6 @@
           {memberships}
           {auth}
           {busy}
-          onCreate={() => open('wiki')}
           onPropose={() => {
             open('proposal')
           }}
@@ -1779,7 +1760,7 @@
         <h2>Terkait</h2>
         {#each selectedPost.contexts as context}<a
             class="rail-context-link"
-            href={'/contexts/' + context.slug}
+            href={'/wiki/' + context.slug}
           >
             {context.title}<ArrowUpRight size={14} />
           </a>{/each}

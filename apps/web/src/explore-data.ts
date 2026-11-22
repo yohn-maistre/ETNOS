@@ -4,8 +4,17 @@
 import { request } from './api'
 import { contextTree } from './context-tree'
 import type { MapData } from './observatory'
-import type { Stratum } from './PlaceStrata.svelte'
-import type { TopicTile } from './TopicTiles.svelte'
+/** One customary region on Jelajah, with its kabupaten and counts. */
+export type Stratum = {
+  slug: string
+  title: string
+  href: string
+  places: { slug: string; title: string }[]
+  languages: number
+  pages: number
+}
+/** A topic and its child topics. */
+export type TopicTile = { slug: string; title: string; children: { slug: string; title: string }[] }
 import type { Atlas } from './RegionArt.svelte'
 
 export type Ctx = { id: string; slug: string; title: string; kind: string; facet: string; parents?: string[]; indexed: number; description?: string; aliases?: string[] }
@@ -76,25 +85,3 @@ export function topicTiles(contexts: Ctx[]): TopicTile[] {
   }))
 }
 
-/** Tiles for one topic page: a topic with branches shows its branches; a branch shows the topics it belongs to. */
-export function topicNeighbourhood(slug: string, contexts: Ctx[]): { tiles: TopicTile[]; mode: 'branches' | 'parents' | 'roots' } {
-  const bySlug = new Map(contexts.map((c) => [c.slug, c])),
-    byId = new Map(contexts.map((c) => [c.id, c]))
-  const self = bySlug.get(slug)
-  if (!self) return { tiles: [], mode: 'branches' }
-  const kids = (id: string) =>
-    contexts
-      .filter((c) => c.kind === 'topic' && c.parents?.includes(id))
-      .sort((a, b) => a.title.localeCompare(b.title, 'id'))
-      .map((c) => ({ slug: c.slug, title: c.title }))
-  const own = contexts.filter((c) => c.kind === 'topic' && c.parents?.includes(self.id))
-  if (own.length)
-    return {
-      mode: 'branches',
-      tiles: own.sort((a, b) => a.title.localeCompare(b.title, 'id')).map((c) => ({ slug: c.slug, title: c.title, children: kids(c.id) })),
-    }
-  const parents = (self.parents ?? []).map((p) => byId.get(p)).filter((p): p is Ctx => !!p && p.kind === 'topic' && p.facet !== 'topic-group')
-  if (parents.length) return { mode: 'parents', tiles: parents.map((p) => ({ slug: p.slug, title: p.title, children: kids(p.id) })) }
-  // A starter topic with no branches of its own: the other starter topics, by name only.
-  return { mode: 'roots', tiles: topicTiles(contexts).map((t) => ({ ...t, children: [] })) }
-}

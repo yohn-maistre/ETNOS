@@ -111,7 +111,7 @@ try {
   const go = async (path) => p.goto(origin + path, { waitUntil: 'networkidle' })
   for (const width of [320, 390, 768, 1440]) {
     await p.setViewportSize({ width, height: 900 })
-    await go('/contexts')
+    await go('/explore#tempat')
     await p
       .locator('.community-directory')
       .getByText('Jayapura', { exact: true })
@@ -153,19 +153,15 @@ try {
       })
   }
   await p.setViewportSize({ width: 390, height: 844 })
-  await go('/contexts/musik-reggae')
+  await go('/wiki/musik-reggae')
   await p.getByRole('heading', { name: 'Musik Reggae', exact: true }).waitFor()
-  await p.waitForFunction(
-    () =>
-      document.querySelector('.surface-heading').textContent.trim() === 'Topik',
-  )
   assert.equal(await p.locator('.context-relations').count(), 0)
   assert.equal(
     await p.getByRole('heading', { name: 'Percakapan', exact: true }).count(),
     0,
   )
   await p
-    .getByText('Belum ada percakapan tentang Musik Reggae.', { exact: true })
+    .getByText('Belum ada tulisan tentang Musik Reggae yang sudah diperiksa.', { exact: true })
     .waitFor()
   await p.screenshot({
     path: artifactDir + '/taxonomy-empty-topic-390.png',

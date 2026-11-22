@@ -197,7 +197,6 @@ try {
       '/',
       '/communities',
       '/groups',
-      '/contexts',
       '/explore',
       '/news',
     ]) {
@@ -263,7 +262,7 @@ try {
     animations: 'disabled',
     path: artifactDir + '/navigation-directory-390.png',
   })
-  await go('/contexts')
+  await go('/explore#tempat')
   await p.getByRole('link', { name: /Jayapura/ }).waitFor()
   const filter = p.getByRole('combobox', { name: 'Jenis tempat dan konteks' })
   const search = p.getByRole('textbox', { name: 'Cari di direktori' })

@@ -150,7 +150,7 @@ try {
   )
   s.createPost(other.actor.id, space.id, 'Synthetic reply', root.id)
   new Groups(s).attach(owner.actor.id, 'post', root.id, context.id)
-  await p.goto(origin + '/contexts/synthetic-region', {
+  await p.goto(origin + '/wiki/synthetic-region?tab=percakapan', {
     waitUntil: 'networkidle',
   })
   await p.getByText('Synthetic public conversation', { exact: true }).waitFor()

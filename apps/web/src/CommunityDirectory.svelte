@@ -322,7 +322,7 @@
             />
           </label>
           <div class="context-chips">
-            {#each shownLanguages as l (l.id)}<a href={'/contexts/' + l.slug}>{l.title}</a>{/each}
+            {#each shownLanguages as l (l.id)}<a href={'/wiki/' + l.slug}>{l.title}</a>{/each}
           </div>
           {#if !languageMatches.length}<p class="context-map-note">
               Belum ada bahasa yang cocok.
@@ -342,7 +342,7 @@
           <h2 id="topik-heading">Topik <span>{tree.topics.length}</span></h2>
           <p class="context-map-note">{topicBasis}</p>
           <div class="context-chips">
-            {#each [...tree.topics.map((b) => b.node), ...otherTopics] as t (t.id)}<a href={'/contexts/' + t.slug}><Hash size={14} />{t.title}</a>{/each}
+            {#each [...tree.topics.map((b) => b.node), ...otherTopics] as t (t.id)}<a href={'/wiki/' + t.slug}><Hash size={14} />{t.title}</a>{/each}
           </div>
           {#each tree.lensBranches as branch (branch.node.id)}{@render branchBlock(branch, false)}{/each}
         </section>{/if}
@@ -419,7 +419,7 @@
   </a>
 {/snippet}
 {#snippet contextRow(place: Place)}
-  <a href={'/contexts/' + place.slug} class="directory-row">
+  <a href={'/wiki/' + place.slug} class="directory-row">
     <span class="directory-avatar avatar-tinted" style={avatarTone(place.id)}>
       {#if place.kind === 'topic'}<Hash size={22} />{:else if place.kind === 'language'}<Languages
           size={22}
@@ -445,8 +445,8 @@
       <small>{branch.children.length}</small>
     </summary>
     <div class="context-chips">
-      <a class="context-chip-parent" href={'/contexts/' + branch.node.slug}>Buka {branch.node.title}<ArrowUpRight size={14} /></a>
-      {#each branch.children as c (c.id)}<a href={'/contexts/' + c.slug}>{c.title}</a>{/each}
+      <a class="context-chip-parent" href={'/wiki/' + branch.node.slug}>Buka {branch.node.title}<ArrowUpRight size={14} /></a>
+      {#each branch.children as c (c.id)}<a href={'/wiki/' + c.slug}>{c.title}</a>{/each}
     </div>
   </details>
 {/snippet}

@@ -77,11 +77,6 @@
 @media (max-width: 640px) { .wiki-trail { padding-inline: 16px; } }
 
 /* Wiki front page */
-.wiki-front-cover { --wash-min: 340px; --wash-title-max: 44px; border-radius: 24px; }
-.wiki-front-cover .cover-wash-art > .landscape-print { object-position: 50% 30%; }
-.wiki-front-card { display: flex; flex-direction: column; justify-content: flex-end; color: inherit; text-decoration: none; }
-.wiki-front-card .cover-wash-body > * { max-width: 600px; }
-.wiki-front-card:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
 .wiki-front-tools { display: flex; justify-content: flex-end; align-items: center; gap: 18px; padding-top: 6px; }
 .wiki-front-tools button { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--muted-foreground); font: inherit; font-size: 13px; cursor: pointer; }
 .wiki-module-sub { margin: -4px 0 6px; font-size: 13px; color: var(--muted-foreground); }
@@ -94,27 +89,16 @@
 .wiki-rank-row:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
 .wiki-rank-row:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
 .wiki-rank { width: 26px; height: 26px; flex: none; border-radius: 7px; background: var(--brand); color: var(--brand-foreground, #fff); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
-@media (prefers-reduced-motion: reduce) { .wiki-front-card, .wiki-rank-row { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .wiki-rank-row { transition: none; } }
 .wiki-module { padding: 20px 24px 24px; border-top: 1px solid var(--commons-hairline, var(--reading-line)); }
 .wiki-module .wiki-module-heading { margin-bottom: 8px; }
-@media (max-width: 640px) { .wiki-module { padding: 16px 16px 20px; } .wiki-front-cover { --wash-min: 320px; } }
+@media (max-width: 640px) { .wiki-module { padding: 16px 16px 20px; } }
 
 /* A story started from a place says so, and can be unlinked before posting. */
 
 .wiki-map-slot { padding: 4px 24px 8px; }
 @media (max-width: 640px) { .wiki-map-slot { padding: 4px 16px 8px; } }
 
-.wiki-front-track { position: relative; display: flex; flex: 1 1 auto; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
-.wiki-front-track::-webkit-scrollbar { display: none; }
-.wiki-front-track > .wiki-front-card { flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; max-width: none; }
-.wiki-front-dots { display: flex; justify-content: center; gap: 8px; padding-top: 10px; }
-.wiki-front-dots { gap: 0; }
-/* A 28px target around a 9px dot. */
-.wiki-front-dots button { position: relative; width: 28px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; }
-.wiki-front-dots button::before { content: ''; position: absolute; inset: 9.5px; border-radius: 50%; background: color-mix(in srgb, var(--muted-foreground) 45%, transparent); transition: transform 160ms cubic-bezier(.2,.8,.2,1), background 160ms ease; }
-.wiki-front-dots button[aria-selected='true']::before { background: var(--foreground); transform: scale(1.3); }
-.wiki-front-dots button:focus-visible { outline: 2px solid var(--foreground); outline-offset: -4px; border-radius: 50%; }
-@media (prefers-reduced-motion: reduce) { .wiki-front-dots button::before { transition: none; } }
 
 /* Engraved cover above a wiki page, chosen by its region. */
 .wiki-page-cover { position: relative; height: 132px; overflow: hidden; border-radius: 18px 18px 0 0; background: var(--paper-print, var(--muted)); }

@@ -59,9 +59,3 @@ export function contextTree(all: ContextNode[]) {
 export function topTopics<T extends ContextNode>(all: T[]) {
   return contextTree(all).topics.map((b) => b.node as T)
 }
-
-/** Parents in reading order: reference region, then province, then the rest. */
-export function orderedParents<T extends { facet?: string; title: string }>(parents: T[]) {
-  const rank = (p: T) => (p.facet === 'customary-region' ? 0 : p.facet === 'province' ? 1 : 2)
-  return [...parents].sort((a, b) => rank(a) - rank(b) || a.title.localeCompare(b.title, 'id'))
-}
