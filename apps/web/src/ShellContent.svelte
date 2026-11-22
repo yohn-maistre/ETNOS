@@ -20,7 +20,8 @@
     Moon,
     Menu,
     X,
-    Bot,
+    Sparkle,
+    SlidersHorizontal,
     ArrowLeft,
     ChevronDown,
     RefreshCw,
@@ -64,13 +65,12 @@
     { href: '/explore', label: 'Jelajah', icon: Compass },
     { href: '/communities', label: 'Komunitas', icon: Users },
     { href: '/wiki', label: OBSERVATORY_NAME, icon: BookOpen },
-    { href: '/aksara', label: 'Aksara', icon: Bot },
     { href: '/messages', label: 'Pesan', icon: MessagesSquare },
     { href: '/notifications', label: 'Aktivitas', icon: Bell },
     { href: '/saved', label: 'Tersimpan', icon: Bookmark },
   ]
   const exploreSections = [['tempat', 'Tempat'], ['bahasa', 'Bahasa'], ['topik', 'Topik']]
-  const navGroups = $derived(auth.actor ? [nav.slice(0, 5), nav.slice(5)] : [nav.slice(0, 5)])
+  const navGroups = $derived(auth.actor ? [nav.slice(0, 4), nav.slice(4)] : [nav.slice(0, 4)])
   function active(href: string) {
     return href === '/'
       ? path === '/'
@@ -161,7 +161,28 @@
       {/if}{/each}
   </Sidebar.Content>
   <Sidebar.Footer class="p-4 gap-3">
-    {#if auth.actor}<a href="/studio" class="preview-label sidebar-studio" onclick={() => sidebar.setOpenMobile(false)}>Studio</a>{/if}
+    <a
+      href="/aksara"
+      class="sidebar-aksara"
+      class:active={path.startsWith('/aksara') || path.startsWith('/jadwal')}
+      aria-current={path.startsWith('/aksara') || path.startsWith('/jadwal') ? 'page' : undefined}
+      title="Aksara, asisten AI di ETNOS"
+      onclick={() => sidebar.setOpenMobile(false)}
+    >
+      <Sparkle size={16} />
+      <span><strong>Aksara</strong><small>Asisten AI</small></span>
+    </a>
+    {#if auth.actor}<Button
+        href="/studio"
+        variant="ghost"
+        class="sidebar-settings"
+        aria-label="Studio"
+        title="Studio"
+        onclick={() => sidebar.setOpenMobile(false)}
+      >
+        <SlidersHorizontal size={18} />
+        <span>Studio</span>
+      </Button>{/if}
     <Button
       href="/preferences"
       variant="ghost"

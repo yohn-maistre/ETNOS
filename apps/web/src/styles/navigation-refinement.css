@@ -327,3 +327,52 @@
 }
 .directory-controls .directory-up { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--foreground); text-decoration: none; }
 .directory-controls .directory-up:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* Aksara sits in the footer, apart from the main menu, so it reads as the AI helper and not as a word list. */
+.sidebar-aksara {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--commons-hairline, var(--border));
+  border-radius: 10px;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background-color 120ms ease;
+}
+.sidebar-aksara:hover,
+.sidebar-aksara.active {
+  background: var(--muted);
+}
+.sidebar-aksara > svg {
+  flex: none;
+  color: var(--muted-foreground);
+}
+.sidebar-aksara > span {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+.sidebar-aksara strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.sidebar-aksara small {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.sidebar-aksara:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+@media (min-width: 768px) and (max-width: 1099px) {
+  .etnos-sidebar:not([data-mobile='true']) .sidebar-aksara {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+  .etnos-sidebar:not([data-mobile='true']) .sidebar-aksara > span {
+    display: none;
+  }
+}
