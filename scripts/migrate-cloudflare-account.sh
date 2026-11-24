@@ -66,4 +66,4 @@ echo "==> 5/5 Deploying identity host (packages/pds)..."
 
 echo "==> Done! Verify live endpoints:"
 echo "  curl -fsS ${ETNOS_ORIGIN}/health"
-echo "  curl -fsS -I ${ETNOS_ORIGIN}/v1/aksara/jadwal | grep -i x-etnos-edge-cache"
+echo "  curl -fsS -D - -o /dev/null ${ETNOS_ORIGIN}/v1/aksara/jadwal | grep -i x-etnos-edge-cache"

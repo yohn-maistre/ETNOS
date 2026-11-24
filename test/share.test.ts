@@ -60,7 +60,11 @@ test('a dataset record shares only when an anonymous reader can see it',async()=
   // An entry shares under its own /wiki address, and an old /contexts link points there too.
   const entry=await resolveShare('/wiki/danau-paniai',read,news);assert.equal(entry.path,'/wiki/danau-paniai');assert.match(entry.title,/· Ensiklopedia$/);assert.equal(entry.index,true)
   assert.equal((await resolveShare('/contexts/danau-paniai',read,news)).path,'/wiki/danau-paniai')
-  for(const path of ['/wiki/tidak-ada-entri','/wiki/peta']){const c=await resolveShare(path,read,news);assert.equal(c.title,'ETNOS',path);assert.equal(c.index,false,path)}
+  const missing=await resolveShare('/wiki/tidak-ada-entri',read,news);assert.equal(missing.title,'ETNOS');assert.equal(missing.index,false)
+  assert.equal((await resolveShare('/wiki/peta',read,news)).title,'Peta Pengetahuan · ETNOS')
+  assert.equal((await resolveShare('/peta-kata',read,news)).title,'Peta Kata · ETNOS')
+  assert.equal((await resolveShare('/groups',read,news)).title,'Lembaga · ETNOS')
+  assert.equal((await resolveShare('/wiki/lihat/sample-3d',read,news)).title,'Penampil · ETNOS')
   assert.equal((await resolveShare('/wiki/data',read,news)).title,'Katalog data · ETNOS')
  }finally{s.close()}
 })

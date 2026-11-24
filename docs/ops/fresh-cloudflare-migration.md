@@ -64,7 +64,7 @@ Move or point `etnos.space` DNS on the new Cloudflare account:
 
 ```bash
 curl -fsS https://etnos.space/health | jq .
-curl -fsS -I https://etnos.space/v1/aksara/jadwal | grep -i x-etnos-edge-cache
+curl -fsS -D - -o /dev/null https://etnos.space/v1/aksara/jadwal | grep -i x-etnos-edge-cache
 curl -fsS https://etnos.space/v1/peta-kata/concepts | jq '.concepts | length'
 curl -fsS https://pds.etnos.space/health | jq .
 ```

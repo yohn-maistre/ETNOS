@@ -3,45 +3,43 @@
   import { request } from './api'
 
   const live = [
-    'Komunitas dengan ruang publik dan ruang khusus anggota.',
-    'Kiriman, balasan, jajak pendapat, media, pencarian, dan penanda.',
-    'Moderasi dan laporan.',
-    'Masuk dengan Bluesky.',
-    'Ensiklopedia dengan tinjauan dan riwayat perubahan.',
-    'Kabar dari banyak penerbit, dengan ringkasan otomatis.',
-    'Sumber berita dengan hak per sumber.',
-    'Catatan kerja.',
-    'Penawaran dan permintaan.',
-    'Pertanyaan untuk @aksara.',
-    'Halaman tempat dengan kabar dari wilayahnya dan semua lapisannya.',
-    'Riwayat setiap halaman wiki, dari sumber sampai tinjauan dan pekerjaan yang masih terbuka.',
-    'Bilah suara di tiap halaman wiki dan celah yang bisa diisi komunitas.',
-    'Langit di atas Papua saat ini, dihitung dari jam, tanpa data lokasi.',
-    'Studio untuk pengurus.',
-    'Penghubung baca-saja untuk agen AI dari luar.',
+    'Komunitas menyediakan ruang publik dan ruang privat khusus anggota, lengkap dengan label tempat, bahasa dan topik.',
+    'Posting mendukung teks, gambar, pesan suara, jajak pendapat, acara, penawaran Kios, kartu Peluang (beasiswa, hibah, kerja, pelatihan), dan Titip bagasi.',
+    'Pesan suara mendukung rekaman langsung di peramban, pemutaran kecepatan 0,75x untuk belajar, Bantu tulis transkrip oleh komunitas, serta pembagian audio dari WhatsApp melalui PWA.',
+    'Kamus komunitas menggarisbawahi kata bahasa daerah di dalam posting, menyediakan rekaman pelafalan, Mode belajar, Kata hari ini, ekspor CSV atau CLDF, dan cetakan Lembar Ajar ber-QR.',
+    'Peta Kata di /peta-kata menampilkan padanan kata dasar dari daftar Leipzig-Jakarta di atas peta 256 bahasa Tanah Papua beserta pelafalannya.',
+    'Ensiklopedia memuat halaman untuk tempat, bahasa, suku, spesies, bentang alam dan lembaga, lengkap dengan riwayat tinjauan, Peta Pengetahuan, katalog data dan sumber rujukan.',
+    'Penampil layar penuh membuka foto spesimen, rekaman suara dan model 3D berformat .glb, .spz dan .ply dengan pin spasial 3D yang bisa diklik.',
+    'Periksa memungkinkan anggota memeriksa klaim satu per satu dengan kartu geser sebelum hasil yang disepakati masuk ke Kamus atau Ensiklopedia.',
+    'Kios anggota menyediakan Kartu Asal ber-QR yang siap dicetak untuk menautkan hasil kerajinan atau pangan ke halaman pembuatnya.',
+    'Aksara bekerja terjadwal di ruang publik untuk merangkum kabar harian, menyusun draf Ensiklopedia bersumber yang langsung ditandai belum ditinjau, dan menjawab sebutan @aksara.',
+    'Saluran opt-in per komunitas mendukung identifikasi tumbuhan Pl@ntNet pada foto publik dan Kurasi Balik catatan komunitas pada koleksi museum IIIF dengan ekspor W3C JSON-LD.',
+    'Kabar mengumpulkan berita dari berbagai penerbit Papua menurut tempat, lengkap dengan tautan ke sumber aslinya.',
+    'Akun berjalan di atas AT Protocol melalui host identitas ETNOS (dengan kata sandi dan Passkey WebAuthn) atau akun Bluesky yang sudah ada.',
+    'Studio memberi pengurus kendali penuh atas jadwal Aksara, kunci model (Google AI Studio, OpenRouter, atau Workers AI), kunci layanan, dan peninjauan.',
   ]
   const testing = [
-    'Uji langsung pengurus yang dihosting, lengkap dengan tanda terimanya.',
-    'Pesan langsung terenkripsi.',
-    'Pengelompokan sumber terkait secara otomatis.',
+    'Situs lembaga menerbitkan halaman web mandiri dari data publik lembaga dengan dua templat dan riwayat versi.',
+    'Pesan langsung terenkripsi ujung ke ujung antar perangkat.',
+    'Ruang privat AT Protocol Spaces alfa dengan pencabutan akses otomatis saat anggota keluar dari komunitas privat.',
+    'Pekerja GPU opsional di Modal untuk mengubah video keliling benda menjadi pindai 3D Gaussian Splat (.spz).',
   ]
   const lab = [
     {
-      text: 'AT Protocol Spaces, fitur data privat dari protokol, dicoba pada versi alfa resminya dengan akun uji.',
-      href: 'https://github.com/yohn-maistre/strata/blob/main/labs/spaces/README.md',
-      label: 'Catatan uji',
+      text: 'AT Protocol Spaces alfa diuji pada host identitas ETNOS untuk sinkronisasi anggota ruang privat.',
+      href: 'https://github.com/yohn-maistre/etnos/tree/main/packages/pds',
+      label: 'Kode host identitas',
     },
     {
-      text: 'Host akun eksperimental yang dibangun dari Cirrus.',
-      href: 'https://github.com/yohn-maistre/strata/blob/main/packages/pds/README.md',
-      label: 'Catatan host',
+      text: 'Pekerja pindai 3D tanpa server untuk mengubah video pendek menjadi Gaussian Splat (.spz) di Penampil.',
+      href: 'https://github.com/yohn-maistre/etnos/tree/main/packages/splat-worker',
+      label: 'Kode pekerja 3D',
     },
   ]
   const next = [
-    'Sumber yang ditemukan Aksara, sebagai posting yang bisa diperiksa bersama.',
-    'Tanggapan pada kalimat wiki, termasuk "jangan disebarkan".',
-    'Ruang bagi dua catatan untuk berdampingan saat orang mengingat hal yang berbeda.',
-    'Ringkasan mingguan "apa artinya bagi kita".',
+    'Pemindahan akun antar server AT Protocol dan cadangan berkala yang bisa diunduh sendiri oleh pemilik akun.',
+    'Ruang berdampingan bagi dua catatan yang berbeda saat komunitas mengingat sebuah peristiwa dengan versi masing-masing.',
+    'Penerapan ETNOS mandiri oleh komunitas di wilayah lain dengan satu berkas etnos.yaml.',
   ]
   type Family = { key: string; title: string; basis: string; sources: { title: string; url: string }[] }
   let families = $state<Family[]>([])
@@ -80,7 +78,7 @@
     },
     {
       why: 'Skema baku sering salah menamai pengetahuan masyarakat adat. Komunitas menamai dirinya sendiri.',
-      cite: 'Duarte & Belarde-Lewis (2015), Imagining: Creating Spaces for Indigenous Ontologies, Cataloging & Classification Quarterly 53(5–6)',
+      cite: 'Duarte & Belarde-Lewis (2015), Imagining: Creating Spaces for Indigenous Ontologies, Cataloging & Classification Quarterly 53(5-6)',
       href: 'https://doi.org/10.1080/01639374.2015.1018396',
     },
     {
@@ -105,10 +103,10 @@
     },
   ]
   const principles = [
-    'Manusia yang memutuskan. Aksara menyusun draf, merangkum, dan bertanya. Setiap perubahan wiki diterima oleh seseorang.',
-    'Setiap tindakan AI diberi label, dibatasi, dan dicatat.',
+    'Manusia yang memutuskan. Aksara menyusun draf, merangkum, dan bertanya. Pengurus dapat menerima, memperbaiki atau mengembalikan setiap perubahan wiki.',
+    'Setiap tindakan AI diberi label, dibatasi, dan dicatat secara terbuka.',
     'Sumber mendapat kredit. Sumber yang hanya dibagikan sebagai judul tetap hanya judul.',
-    'Yang privat tetap privat, termasuk jumlah, hasil pencarian, dan saran yang dibuat dari isi privat.',
+    'Yang privat tetap privat, termasuk jumlah, hasil pencarian, cache publik, dan saran yang dibuat dari isi privat.',
     'Istilah lokal dan nama akun dibiarkan apa adanya. Perbedaan pendapat boleh dicatat.',
     'Semuanya berfungsi saat AI dimatikan.',
   ]
@@ -135,8 +133,8 @@
   <header>
     <h1>Ruang bersama untuk pengetahuan Papua</h1>
     <p>
-      ETNOS adalah tempat orang, lembaga dan agen AI berbincang, membaca
-      kabar, dan menyusun pengetahuan bersama. Halaman ini memuat fitur yang
+      ETNOS adalah ruang digital tempat orang dan lembaga di Tanah Papua berbincang, membaca
+      kabar, dan menyusun kamus serta ensiklopedia bersama. Halaman ini mencatat fitur yang
       sudah berjalan hari ini.
     </p>
   </header>
@@ -162,9 +160,7 @@
         </li>{/each}
     </ul>
     <p class="about-note">
-      Uji Spaces akan diulang saat beta publiknya dibuka pada 1 Desember.
-      Sementara itu, komunitas privat tetap disimpan di penyimpanan forum
-      sendiri.
+      Komunitas privat selalu disimpan dengan pemeriksaan akses di server ETNOS. Jembatan AT Protocol Spaces bersifat tambahan dan mencabut izin secara otomatis saat anggota keluar.
     </p>
   </section>
 
@@ -230,7 +226,7 @@
   <section aria-labelledby="about-origin">
     <h2 id="about-origin">Asal-usul</h2>
     <p>
-      <a href="https://github.com/yohn-maistre/strata" target="_blank" rel="noreferrer">Kode ETNOS</a>
+      <a href="https://github.com/yohn-maistre/etnos" target="_blank" rel="noreferrer">Kode ETNOS</a>
       terbuka dengan lisensi AGPL-3.0. Komunitas lain bisa memakainya untuk
       wilayahnya sendiri.
     </p>
@@ -259,7 +255,7 @@
 
   <p class="about-source">
     <a
-      href="https://github.com/yohn-maistre/strata"
+      href="https://github.com/yohn-maistre/etnos"
       target="_blank"
       rel="noreferrer"
     >

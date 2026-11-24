@@ -12598,6 +12598,163 @@ Place labels and dots are drawn from the story's own place metadata.
 
 
 
+observatory-data.txt
+Observatory data: place points, the knowledge graph's size and pace, and dataset records
+
+Place points: apps/web/public/observatory/places.json (same as src/catalogues/tanah-papua-places.json)
+Derived by scripts/observatory/build-place-points.ts from the simplified Badan Informasi Geospasial
+(BIG) outlines in apps/web/public/geo/ (see map-data.txt): one reference point and one area per
+catalogue place, rounded to 0.01 degree. Customary-region membership follows Narasi RPJMN 2020-2024
+(Bappenas). The points mark administrative or planning areas, not particular sites, and are not
+for delineating boundaries.
+
+Language points on the observatory map and on language pages: Glottolog 5.4 reference points,
+CC BY 4.0 (see glottolog-data.txt). They are reference points, not boundaries of where a language
+is spoken.
+
+Size, pace and level in apps/web/public/observatory/knowledge/graph.json: computed by the rules in
+src/world-model.ts (ETNOS, AGPL-3.0). Level classes follow the main classes of the Integrative
+Levels Classification (ILC2, by Claudio Gnoli and colleagues); only the class letters are used,
+no ILC text, because the ILC licence is not stated.
+
+Dataset records: src/catalogues/tanah-papua-datasets.json holds metadata and links only. No dataset
+files are stored or served by ETNOS. Each record names its publisher and licence, checked on
+20 November 2026:
+  Glottolog 5.4 (CLDF) - Max Planck Institute for Evolutionary Anthropology - CC BY 4.0
+    https://doi.org/10.5281/zenodo.24101243
+  Grambank 1.0.3 - Grambank Consortium - CC BY 4.0
+    https://doi.org/10.5281/zenodo.7844558
+  Ekari word list - TransNewGuinea.org (Simon J. Greenhill) - CC BY 4.0
+    https://transnewguinea.org/language/ekari
+  D-PLACE, Ethnographic Atlas 3.3, society Ie1 (Mee) - D-PLACE - CC BY-NC 4.0
+    https://d-place.org/society/Ie1
+  Global Forest Change 2000-2025 v1.13 - University of Maryland, GLAD - CC BY 4.0
+    https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/download.html
+  ESA WorldCover 10 m 2021 v200 - European Space Agency - CC BY 4.0
+    https://doi.org/10.5281/zenodo.7254221
+  Butterfly collection, Universitas Cenderawasih (GBIF) - Universitas Cenderawasih - CC0 1.0
+    https://doi.org/10.15468/4tp4nw
+The record titles and descriptions in Indonesian were written for ETNOS from the publishers' pages.
+
+Landform points: apps/web/public/observatory/landforms.json
+Coordinates of seven landforms from Wikidata (CC0 1.0), checked on 21 November 2026; each point
+names its Wikidata item. Danau Tage has no coordinate there yet and stays in the tray.
+
+Viewer records and media: apps/web/public/observatory/viewer/ (built by scripts/observatory/build-viewer-seed.mjs,
+checked on 21 November 2026). ETNOS resized images, re-encoded 3D files (quantised geometry, JPEG
+texture; shape and colours unchanged) and converted the recording to MP3. Licences per file:
+  Spesimen nokdiak naroten di Tübingen (spesimen-nokdiak-tubingen)
+    Präparat eines Langschnabeligels - Model oleh escience-tuebingen, Universitas Tübingen - Zenodo, komunitas 3D Big Data Space (salinan Objaverse 1.0 dari Sketchfab) - CC BY 4.0
+      https://zenodo.org/records/10341250
+    Halaman model di Sketchfab - Sketchfab - CC BY 4.0
+      https://sketchfab.com/3d-models/praparat-eines-langschnabeligels-089def5fa750415cb6826b21612699ee
+  Kapak batu yang diasah (kapak-batu-manchester)
+    Stone Axe - Model oleh ursulackah - Zenodo, komunitas 3D Big Data Space (salinan Objaverse 1.0 dari Sketchfab) - CC BY 4.0
+      https://zenodo.org/records/10273384
+    Catatan pembuatan model - ursulackah
+      https://uackahmsc.wordpress.com/2021/02/26/processing-the-stone-axe/
+  Cenderawasih kuning besar (cenderawasih-kuning-besar)
+    GBIF Backbone Taxonomy, takson 2494862 - GBIF Secretariat - CC BY 4.0
+      https://www.gbif.org/species/2494862
+    Catatan keberadaan di Tanah Papua - GBIF.org (21 November 2026), pencarian occurrence - GBIF.org
+      https://www.gbif.org/occurrence/map?taxon_key=2494862&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1
+    Wikidata Q325356, nama dan status konservasi - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q325356
+    Foto: Naturalis Biodiversity Center - RMNH.AVES.43200 2 - Paradisaea apoda apoda Linnaeus, 1758 - Paradisaeidae - bird skin specimen.jpeg - Naturalis Biodiversity Center - Wikimedia Commons - CC0 1.0
+      https://commons.wikimedia.org/wiki/File:Naturalis_Biodiversity_Center_-_RMNH.AVES.43200_2_-_Paradisaea_apoda_apoda_Linnaeus,_1758_-_Paradisaeidae_-_bird_skin_specimen.jpeg
+    Foto: Paradisaea apoda -Bali Bird Park-5.jpg - Andrea Lawardi - Wikimedia Commons - CC BY 2.0
+      https://commons.wikimedia.org/wiki/File:Paradisaea_apoda_-Bali_Bird_Park-5.jpg
+  Kanguru pohon nemena (kanguru-pohon-nemena)
+    GBIF Backbone Taxonomy, takson 2440221 - GBIF Secretariat - CC BY 4.0
+      https://www.gbif.org/species/2440221
+    Catatan keberadaan di Tanah Papua - GBIF.org (21 November 2026), pencarian occurrence - GBIF.org
+      https://www.gbif.org/occurrence/map?taxon_key=2440221&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1
+    Wikidata Q209139, nama dan status konservasi - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q209139
+    Foto: Dendrolagus ursinus 349114871.jpg - kalyanvarma - Wikimedia Commons - CC BY 4.0
+      https://commons.wikimedia.org/wiki/File:Dendrolagus_ursinus_349114871.jpg
+    Foto: Ursine tree-kangaroo.jpg - Daniel Boyland - Wikimedia Commons - CC BY 4.0
+      https://commons.wikimedia.org/wiki/File:Ursine_tree-kangaroo.jpg
+  Kupu-kupu sayap burung Rothschild (kupu-kupu-sayap-burung-rothschild)
+    GBIF Backbone Taxonomy, takson 1937479 - GBIF Secretariat - CC BY 4.0
+      https://www.gbif.org/species/1937479
+    Catatan keberadaan di Tanah Papua - GBIF.org (21 November 2026), pencarian occurrence - GBIF.org
+      https://www.gbif.org/occurrence/map?taxon_key=1937479&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1
+    Wikidata Q142839, nama dan status konservasi - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q142839
+    Foto: Rothschildi P3010061.jpg - Robert Nash Curator of Entomology, Ulster Museum - Wikimedia Commons - CC BY 2.5
+      https://commons.wikimedia.org/wiki/File:Rothschildi_P3010061.jpg
+    Foto: Rothschildi fups P3010001.jpg - Robert Nash Curator of Entomology, ulster Museum - Wikimedia Commons - CC BY 2.5
+      https://commons.wikimedia.org/wiki/File:Rothschildi_fups_P3010001.jpg
+  Nokdiak naroten (nokdiak-naroten)
+    GBIF Backbone Taxonomy, takson 2433391 - GBIF Secretariat - CC BY 4.0
+      https://www.gbif.org/species/2433391
+    Catatan keberadaan di Tanah Papua - GBIF.org (21 November 2026), pencarian occurrence - GBIF.org
+      https://www.gbif.org/occurrence/map?taxon_key=2433391&has_coordinate=true&has_geospatial_issue=false&gadm_gid=IDN.22_1&gadm_gid=IDN.23_1
+    Wikidata Q635949, nama dan status konservasi - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q635949
+    Foto: Zaglossus bruijnii 581779220.jpg - Кирилл - Wikimedia Commons - CC BY 4.0
+      https://commons.wikimedia.org/wiki/File:Zaglossus_bruijnii_581779220.jpg
+  Puncak Jaya (bentang-puncak-jaya)
+    Wikidata Q1045888, Puncak Jaya - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q1045888
+    Terrain Tiles - SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA) - Mapzen dan AWS Open Data
+      https://registry.opendata.aws/terrain-tiles/
+  Danau Paniai (bentang-danau-paniai)
+    Wikidata Q2329795, Danau Paniai - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q2329795
+    Terrain Tiles - SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA) - Mapzen dan AWS Open Data
+      https://registry.opendata.aws/terrain-tiles/
+  Lembah Baliem (bentang-lembah-baliem)
+    Wikidata Q804967, Lembah Baliem - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q804967
+    Terrain Tiles - SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA) - Mapzen dan AWS Open Data
+      https://registry.opendata.aws/terrain-tiles/
+  Danau Habema (bentang-danau-habema)
+    Wikidata Q24940441, Danau Habema - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q24940441
+    Terrain Tiles - SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA) - Mapzen dan AWS Open Data
+      https://registry.opendata.aws/terrain-tiles/
+  Teluk Cenderawasih (bentang-teluk-cenderawasih)
+    Wikidata Q1053381, Teluk Cenderawasih - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q1053381
+    Terrain Tiles - SRTM dan GMTED2010 (USGS), ETOPO1 (NOAA) - Mapzen dan AWS Open Data
+      https://registry.opendata.aws/terrain-tiles/
+  Patung tiang rumah dari Sentani (patung-tiang-rumah-sentani)
+    House post figure (1979.206.1440) - The Michael C. Rockefeller Memorial Collection, Bequest of Nelson A. Rockefeller, 1979 - The Metropolitan Museum of Art - CC0 1.0
+      https://www.metmuseum.org/art/collection/search/313629
+  Suara cikukua tanduk (suara-cikukua-tanduk)
+    Rekaman iNaturalist 1717096 - Rekaman oleh Ben Costamagna - iNaturalist - CC BY 4.0
+      https://www.inaturalist.org/sounds/1717096
+    Catatan GBIF 5935303582 - GBIF.org, dataset iNaturalist research-grade observations
+      https://www.gbif.org/occurrence/5935303582
+    Wikidata Q795511, nama - Wikidata - CC0 1.0
+      https://www.wikidata.org/wiki/Q795511
+  Koleksi kupu-kupu Papua di Universitas Cenderawasih (data-ds-1db332c2ac9546726058)
+    UNCEN, Cenderawasih University Papuan Butterflies - Ramandey E. R., Warikar E. L., Overduin-de Vries A. M. 2024 - Universitas Cenderawasih, lewat GBIF - CC0 1.0
+      https://doi.org/10.15468/4tp4nw
+  Occurrence points (occ-*.json): GBIF.org occurrence search, 21 November 2026, records licensed
+    CC0 1.0 or CC BY 4.0 only, in GADM 4.1 regions IDN.22_1 and IDN.23_1, rounded to 0.1 degree and
+    counted per cell. Each file keeps its query URL. Credit: GBIF.org and the publishing datasets.
+  Relief in the landform viewer: Terrain Tiles on AWS Open Data (Mapzen), from SRTM and GMTED2010
+    (USGS) and ETOPO1 (NOAA), loaded from https://elevation-tiles-prod.s3.amazonaws.com and not stored.
+    https://registry.opendata.aws/terrain-tiles/
+The Indonesian titles and summaries were written for ETNOS from the sources listed with each record.
+
+
+
+photon-AGPL.txt
+Photon — Web client for Lemmy and PieFed
+Source: https://github.com/Xyphyn/photon
+Licence: GNU Affero General Public License v3.0 (AGPL-3.0-only)
+
+Earlier ETNOS web clients (Saireri ETNOS and Honai Metro) were forked from Photon,
+and parts of the layout vocabulary and forum ergonomics in apps/web carry forward
+from that lineage. ETNOS is distributed under the same AGPL-3.0-only licence
+(see LICENSE at the repository root).
+
+
+
 shadcn-svelte-MIT.txt
 MIT License
 

@@ -1822,7 +1822,7 @@
         Honai
       </a>
       <a
-        href="https://github.com/yohn-maistre/strata"
+        href="https://github.com/yohn-maistre/etnos"
         target="_blank"
         rel="noreferrer"
       >

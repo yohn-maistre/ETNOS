@@ -87,3 +87,4 @@
 2026-11-24d 3D Gaussian Splat (.spz/.ply) viewer, Modal GPU capture worker, and clickable 3D spatial pins
 2026-11-24e Saluran (Usulan, Pl@ntNet, Kurasi Balik JSON-LD), Peta Kata atlas, Kartu Asal & Lembar Ajar QR, Peluang & Titip bagasi
 2026-11-24f Cloudflare Free edge cache for anonymous reads, hot-path SQLite indexes, daily PDS signup cap, and fresh-account migration kit
+2026-11-24g Polish voice in READMEs and Tentang page, update share cards, add Photon AGPL notice, and fix browser shell test

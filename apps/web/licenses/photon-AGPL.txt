@@ -1,0 +1,8 @@
+Photon — Web client for Lemmy and PieFed
+Source: https://github.com/Xyphyn/photon
+Licence: GNU Affero General Public License v3.0 (AGPL-3.0-only)
+
+Earlier ETNOS web clients (Saireri ETNOS and Honai Metro) were forked from Photon,
+and parts of the layout vocabulary and forum ergonomics in apps/web carry forward
+from that lineage. ETNOS is distributed under the same AGPL-3.0-only licence
+(see LICENSE at the repository root).
