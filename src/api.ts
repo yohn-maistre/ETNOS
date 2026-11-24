@@ -72,7 +72,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={models?:()=>Promise<Models|undefined>;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -85,7 +85,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const social=new Social(store),search=new Search(store)
   const wiki=new Wiki(store),seasons=new Seasons(store),founding=new Founding(store)
   const groups=new Groups(store,{stewardDid:options.stewardDid}),work=new PublicWork(store,groups),model=new KnowledgeModel(store,groups),datasets=new Datasets(store,groups,{datasets:datasetSeed as DatasetSeed,things:(knowledgeSeed as KnowledgeSeed).entities.map(e=>({slug:e.slug,class:e.class,title:e.title,context:e.context}))})
-  const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider)
+  const clustering=new Clustering(store),discovery=new Discovery(store,options.sourceFetcher),knowledge=new Knowledge(store),resident=new Resident(store,agents,options.residentProvider,undefined,{models:options.models,newsFetcher:options.newsFetcher,fetcher:options.researchFetcher})
   if(options.residentBudget)resident.budget=options.residentBudget
   const requests=new AksaraRequests(store,groups)
   const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups),situs=new Situs(store,groups,lembaga,kios)
@@ -297,6 +297,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
       else if(path==='/v1/resident/sitewide')result=resident.routing.setGlobal(caller,b)
       else if(path==='/v1/resident/destinations')result=resident.routing.setDestination(caller,b)
       else if(path==='/v1/resident/jobs')result=resident.enqueue(caller,string(b.communityId),string(b.skill) as ResidentSkill,string(b.requestKey))
+      else if(path==='/v1/resident/run-now')result=await resident.runNow(caller,string(b.communityId),string(b.skill) as ResidentSkill,string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(parts.length===5&&parts[1]==='resident'&&parts[2]==='jobs'&&parts[4]==='run'){resident.job(caller,parts[3]);result=await resident.run(parts[3],()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req);resident.job(caller,parts[3])})}
       else if(parts.length===5&&parts[1]==='resident'&&parts[2]==='jobs'&&parts[4]==='cancel')result=resident.cancel(caller,parts[3])
       else if(path==='/v1/agents')result=agents.enroll(caller,b)

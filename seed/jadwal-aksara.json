@@ -2,8 +2,10 @@
   "version": 1,
   "timezone": "Asia/Jayapura",
   "slots": [
-    { "id": "kabar-pagi", "at": "06:30", "skill": "source-digest", "label": "Kabar pagi" },
-    { "id": "pertanyaan-hari-ini", "at": "10:00", "skill": "research-question", "label": "Pertanyaan hari ini" },
-    { "id": "hari-ini-di-wiki", "at": "18:00", "skill": "knowledge-draft", "label": "Hari ini di Wiki" }
+    { "id": "kabar-pagi", "at": "06:30", "skill": "kabar-harian", "label": "Kabar pagi" },
+    { "id": "pertanyaan-hari-ini", "at": "10:00", "skill": "pertanyaan-harian", "label": "Pertanyaan hari ini" },
+    { "id": "riset-ensiklopedia", "at": "14:00", "skill": "riset-ensiklopedia", "label": "Riset Ensiklopedia" },
+    { "id": "kartu-periksa", "at": "17:30", "skill": "usulan-periksa", "label": "Kartu Periksa" },
+    { "id": "hari-ini-di-wiki", "at": "20:00", "skill": "knowledge-draft", "label": "Hari ini di Wiki" }
   ]
 }

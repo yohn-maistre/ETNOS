@@ -16,11 +16,13 @@ const jayapura=(date:string,at:string)=>Date.parse(`${date}T${at}:00+09:00`)
 const slot=(patch:Record<string,unknown>={})=>({id:'a-slot',at:'08:00',skill:'source-digest',label:'Satu',...patch})
 const file=(patch:Record<string,unknown>={},slots:unknown[]=[slot()])=>({version:1,timezone:'Asia/Jayapura',slots,...patch})
 
+const legacyJadwal=parseJadwal({version:1,timezone:'Asia/Jayapura',slots:[{id:'kabar-pagi',at:'06:30',skill:'source-digest',label:'Kabar pagi'},{id:'pertanyaan-hari-ini',at:'10:00',skill:'research-question',label:'Pertanyaan hari ini'},{id:'hari-ini-di-wiki',at:'18:00',skill:'knowledge-draft',label:'Hari ini di Wiki'}]})
+
 function fixture(options:{evidence?:boolean;jadwal?:Jadwal;dailyLimit?:number;start?:number;private?:boolean}={}){
  let now=options.start??jayapura('2026-11-19','05:00')
  const s=new Etnos(':memory:','https://jadwal.example.org',()=>now),owner=s.provision('did:web:jadwal-owner.example','Synthetic operator')
  const room=s.createCommunity(owner.actor.id,'Ruang jadwal','Synthetic','public',true,'open'),access=new AgentAccess(s),a=access.enroll(owner.actor.id,{communityId:room.id,name:'Synthetic Aksara',role:'steward',family:'aksara'});access.admit(owner.actor.id,a.agent_id)
-  const d=new Discovery(s,sourceFetcher(['https://news.example.org'],async()=>new Response(feed,{headers:{'content-type':'application/rss+xml'}}))),r=new Resident(s,access,undefined,options.jadwal??defaultJadwal)
+  const d=new Discovery(s,sourceFetcher(['https://news.example.org'],async()=>new Response(feed,{headers:{'content-type':'application/rss+xml'}}))),r=new Resident(s,access,undefined,options.jadwal??legacyJadwal)
  const source=d.add(owner.actor.id,{communityId:room.id,title:'Public reference',url:'https://news.example.org/rss',rights:'excerpt-permitted',mode:'review',requestKey:randomUUID()})
  /** Mandates last at most a day, so a test that spans days issues new ones. */
  const configure=()=>{const post=s.mandate(owner.actor.id,a.agent_id,room.id,'Public source digest',now+86400000-1000,20),editorial=new Wiki(s).grant(owner.actor.id,a.agent_id,room.id,'Working knowledge',now+86400000-1000)
@@ -36,7 +38,7 @@ test('the shipped Jadwal Aksara file is valid, in Asia/Jayapura, and only names 
  assert.equal(defaultJadwal.version,1);assert.equal(defaultJadwal.timezone,'Asia/Jayapura')
  assert.deepEqual(parseJadwal(shipped),defaultJadwal)
  for(const x of defaultJadwal.slots){assert.ok(jadwalSkills.includes(x.skill));assert.match(x.at,/^\d\d:\d\d$/);assert.ok(x.label.length>0)}
- assert.deepEqual(defaultJadwal.slots.map(x=>x.label),['Kabar pagi','Pertanyaan hari ini','Hari ini di Wiki'])
+ assert.deepEqual(defaultJadwal.slots.map(x=>x.label),['Kabar pagi','Pertanyaan hari ini','Riset Ensiklopedia','Kartu Periksa','Hari ini di Wiki'])
 })
 
 test('the validator rejects bad times, unknown skills, repeated ids, unknown zones and stray fields',()=>{

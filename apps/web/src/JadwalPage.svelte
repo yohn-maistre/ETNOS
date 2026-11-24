@@ -16,8 +16,12 @@
     failed = $state(false)
   const does: Record<string, string> = {
     'source-digest': 'Merangkum kabar terbaru dari sumber yang dipantau.',
+    'kabar-harian': 'Merangkum kabar terbaru dari penerbit lokal beserta sumber dan pertanyaan untuk warga.',
     'research-question': 'Mengajukan satu pertanyaan yang bisa dijawab dengan sumber.',
-    'knowledge-draft': 'Menulis draf Ensiklopedia yang menunggu tinjauan orang.',
+    'pertanyaan-harian': 'Mengajukan satu pertanyaan harian dari kabar terbaru atau celah Ensiklopedia.',
+    'riset-ensiklopedia': 'Meneliti entri Ensiklopedia yang belum terisi dari sumber terbuka dan menerbitkan draf awalnya.',
+    'usulan-periksa': 'Menyiapkan kartu klaim dan kosakata baru di antrean Periksa untuk diperiksa bersama.',
+    'knowledge-draft': 'Menulis catatan Ensiklopedia dari sumber referensi yang menunggu tinjauan orang.',
   }
   const stateText: Record<Slot['state'], string> = {
     menunggu: 'Menunggu jamnya',

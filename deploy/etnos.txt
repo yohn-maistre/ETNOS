@@ -81,3 +81,4 @@
 2026-11-22d
 2026-11-22e
 2026-11-22f
+2026-11-24a autonomous Aksara librarian, OpenRouter/Gemini/Workers AI fallback, live-wiki review bar

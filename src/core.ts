@@ -401,7 +401,7 @@ export class EtnosCore {
     if(options.aksara)add("(EXISTS(SELECT 1 FROM agent_registrations ar WHERE ar.agent_id=p.author_id AND ar.family='aksara') OR EXISTS(SELECT 1 FROM resident_sitewide rs WHERE rs.agent_id=p.author_id))")
     if(options.work)add("EXISTS(SELECT 1 FROM work_posts wp WHERE wp.post_id=p.id AND wp.status!='ditarik')")
     // A program is one Jadwal slot. Its posts are the results of that slot's skill, recorded on the finished job.
-    if(options.programSkill!=null)add("EXISTS(SELECT 1 FROM resident_jobs j WHERE j.skill=? AND j.work_kind='editorial' AND j.state='succeeded' AND ((j.result_kind='post' AND j.result_id=p.id) OR (j.result_kind='knowledge' AND EXISTS(SELECT 1 FROM knowledge_announcements ka WHERE ka.note_id=j.result_id AND ka.post_id=p.id))))",options.programSkill)
+    if(options.programSkill!=null)add("EXISTS(SELECT 1 FROM resident_jobs j WHERE COALESCE(j.program,j.skill)=? AND j.work_kind='editorial' AND j.state='succeeded' AND ((j.result_kind='post' AND j.result_id=p.id) OR (j.result_kind='knowledge' AND EXISTS(SELECT 1 FROM knowledge_announcements ka WHERE ka.note_id=j.result_id AND ka.post_id=p.id))))",options.programSkill)
     // Paling dibahas: opening posts of the last two weeks by reply count. Bounded, so it has no cursor.
     const discussed=options.sort==='discussed'&&!options.rootId&&!options.cursor
     if(discussed){add('+p.parent_id IS NULL');add('p.created>?',this.clock()-14*86400000)}

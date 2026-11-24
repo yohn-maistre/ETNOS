@@ -43,6 +43,19 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
       const stored=await ctx.storage.get<StoredKey>('model-key')
       const budget=this.budget;Object.assign(budget,residentBudget(env as {ETNOS_RESIDENT_DAILY_CALLS?:string},!!keyedProvider(effectiveEnv(listingEnv(env as unknown as ModelEnv),stored,null))))
       core.recoverInterrupted()
+      const newsFetcher:typeof fetch=async(input,init)=>{
+        const watch=(rawEnv as unknown as {WATCH_NEWS?:Fetcher}).WATCH_NEWS
+        if(watch){
+          try{
+            const target=new URL(String(input))
+            const r=await watch.fetch(new Request('https://watch.internal'+target.pathname.replace(/^\/api/,'')+target.search,{headers:{accept:'application/json'},signal:init?.signal}))
+            if(r.ok)return r
+          }catch{/* fallback to public fetch */}
+        }
+        return fetch(input,init)
+      }
+      const models=async()=>nodeModels((await this.modelState()).env)
+      const autoDeps={models,newsFetcher,fetcher:fetch}
       if(env.ETNOS_AUTH_MODE==='atproto'){
         if(!env.ETNOS_OAUTH_JWK || !env.ETNOS_AUTH_SEAL_KEY){
           const publicApi=api(core,{runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE,principal:()=>undefined,writeGuard:()=>{throw new Fault(503,'Enrollment unavailable')}})
@@ -55,15 +68,15 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
             collection:env.ETNOS_COLLECTION,publishingEnabled:env.ETNOS_PUBLISHING_ENABLED==='true',
             enrollmentMode,clientName:env.ETNOS_CLIENT_NAME,accountHost:(env as {ETNOS_ACCOUNT_HOST?:string}).ETNOS_ACCOUNT_HOST||undefined})
           const access=new AgentAccess(core,{stewardDid:env.ETNOS_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access,{desk:workerDesk(env)})
-          this.resident=new Resident(core,access,residentProvider);this.resident.budget=budget
+          this.resident=new Resident(core,access,residentProvider,undefined,autoDeps);this.resident.budget=budget
           this.discovery=acquire?new Discovery(core,acquire):undefined
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
           this.operatorOf=r=>{const p=auth.principal(r);return !!p&&auth.operatorAllowed(p.id)}
           this.writeGuard=r=>auth.writeGuard(r)
-          const handler=api(core,{models:async()=>nodeModels((await this.modelState()).env),sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.ETNOS_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
+          const handler=api(core,{models,newsFetcher,researchFetcher:fetch,sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.ETNOS_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
-      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{models:async()=>nodeModels((await this.modelState()).env),sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE});this.resident=new Resident(core,access,residentProvider);this.resident.budget=budget;this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.writeGuard=()=>{};this.handle=async r=>(await routes(r))??handler(r)}
+      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{models,newsFetcher,researchFetcher:fetch,sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE});this.resident=new Resident(core,access,residentProvider,undefined,autoDeps);this.resident.budget=budget;this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.writeGuard=()=>{};this.handle=async r=>(await routes(r))??handler(r)}
     })
   }
   private alarmUpdates:Promise<void>=Promise.resolve()

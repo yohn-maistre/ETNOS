@@ -514,6 +514,10 @@ ALTER TABLE lembaga_profiles ADD COLUMN communities TEXT;
 CREATE TABLE situs(group_id TEXT PRIMARY KEY REFERENCES groups(id),name TEXT NOT NULL UNIQUE,draft TEXT NOT NULL,active INTEGER NOT NULL DEFAULT 0,activated_by TEXT REFERENCES actors(id),activated INTEGER,published INTEGER,updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id));
 CREATE TABLE situs_versions(group_id TEXT NOT NULL REFERENCES groups(id),version INTEGER NOT NULL,name TEXT NOT NULL,situs TEXT NOT NULL,lembaga TEXT NOT NULL,snapshot TEXT NOT NULL,created INTEGER NOT NULL,created_by TEXT NOT NULL REFERENCES actors(id),PRIMARY KEY(group_id,version));
 CREATE TABLE deployment_settings(key TEXT PRIMARY KEY,value TEXT NOT NULL,updated INTEGER NOT NULL,updated_by TEXT NOT NULL REFERENCES actors(id));
+`,`
+ALTER TABLE resident_jobs ADD COLUMN program TEXT;
+CREATE TABLE aksara_research_log(community_id TEXT NOT NULL REFERENCES communities(id),target_slug TEXT NOT NULL,status TEXT NOT NULL,page_id TEXT REFERENCES wiki_pages(id),attempted INTEGER NOT NULL,PRIMARY KEY(community_id,target_slug));
+CREATE INDEX aksara_research_community ON aksara_research_log(community_id,attempted DESC);
 `]
 
 export const schemaVersion=migrations.length

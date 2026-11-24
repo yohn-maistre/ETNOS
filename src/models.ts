@@ -56,11 +56,13 @@ export function nodeModels(env:ModelEnv,fetcher:typeof fetch=fetch):Models|undef
 async function keyedChat(p:Keyed,request:ChatRequest,fetcher:typeof fetch):Promise<ChatReply>{
  const model=request.purpose==='synthesis'?p.synthesis:p.fast
  const body={model,messages:request.messages,max_tokens:request.maxTokens,...(request.temperature===undefined?{}:{temperature:request.temperature}),...(request.tools?.length?{tools:request.tools}:{}),...(p.reasoning?{reasoning_effort:p.reasoning}:{})}
+ const openrouter=new URL(p.baseUrl).hostname==='openrouter.ai'
+ const headers:Record<string,string>={'content-type':'application/json',authorization:'Bearer '+p.key,...(openrouter?{'HTTP-Referer':'https://etnos.space','X-Title':'ETNOS'}:{})}
  let response:Response
- try{response=await fetcher(p.baseUrl+'/chat/completions',{method:'POST',redirect:'error',headers:{'content-type':'application/json',authorization:'Bearer '+p.key},body:JSON.stringify(body),signal:request.signal??AbortSignal.timeout(60000)})}
+ try{response=await fetcher(p.baseUrl+'/chat/completions',{method:'POST',redirect:'error',headers,body:JSON.stringify(body),signal:request.signal??AbortSignal.timeout(60000)})}
  catch{throw new ModelError('model-unavailable','Keyed provider unreachable')}
- if(response.status===429||response.status>=500){await response.body?.cancel().catch(()=>{});throw new ModelError('model-unavailable','Keyed provider '+response.status)}
- // 4xx other than 429 means the request or the key is wrong. Falling back would hide it.
+ if(response.status===402||response.status===408||response.status===429||response.status>=500){await response.body?.cancel().catch(()=>{});throw new ModelError('model-unavailable','Keyed provider '+response.status)}
+ // 4xx other than 402/408/429 means the request or the key is wrong. Falling back would hide it.
  if(!response.ok){await response.body?.cancel().catch(()=>{});throw new ModelError('model-config','Keyed provider refused the request ('+response.status+')')}
  return normalize(await bounded(response),model,'key')
 }
@@ -167,13 +169,14 @@ export async function providerModels(env:ModelEnv,fetcher:typeof fetch=fetch):Pr
 /** A key the operator added in Studio. It takes precedence over ETNOS_MODEL_KEY and is never sent to a browser. */
 export type StoredKey={key:string;baseUrl:string;added:number}
 export const GOOGLE_OPENAI_BASE='https://generativelanguage.googleapis.com/v1beta/openai'
+export const OPENROUTER_OPENAI_BASE='https://openrouter.ai/api/v1'
 export function validKeyInput(raw:unknown):{key:string;baseUrl:string}|null{
  if(!raw||typeof raw!=='object')return null
  const {key,baseUrl}=raw as {key?:unknown;baseUrl?:unknown}
  if(typeof key!=='string')return null
  const k=key.trim()
  if(k.length<10||k.length>300||/\s/.test(k))return null
- let base=GOOGLE_OPENAI_BASE
+ let base=k.startsWith('sk-or-')?OPENROUTER_OPENAI_BASE:GOOGLE_OPENAI_BASE
  if(typeof baseUrl==='string'&&baseUrl.trim()){try{const u=new URL(baseUrl.trim());if(u.protocol!=='https:'||u.username||u.password||u.search||u.hash)return null;base=u.href.replace(/\/+$/,'')}catch{return null}}
  return {key:k,baseUrl:base}
 }
@@ -187,9 +190,13 @@ export function effectiveEnv<T extends ModelEnv>(env:T,stored:StoredKey|null|und
 }
 /** Lists models for a key before a model is chosen (keyedProvider needs a model name to count as configured). */
 export const listingEnv=(env:ModelEnv):ModelEnv=>({...env,ETNOS_MODEL_FAST:env.ETNOS_MODEL_FAST||'listing'})
-/** A sensible first model: a general "flash" text model if the provider has one. */
+/** A sensible first model: a free or general "flash" text model if the provider has one. */
 export function defaultModel(names:string[]):string|null{
  const text=names.filter(n=>!/(embed|image|imagen|tts|audio|live|vision|veo|aqa|learnlm|robotics|computer-use)/i.test(n))
+ const free=text.filter(n=>/:free$/i.test(n))
+ if(free.length){
+  return free.find(n=>/(gemini|gemma|qwen|llama)/i.test(n)&&!/thinking|r1/i.test(n))??free[0]!
+ }
  return text.find(n=>/flash/i.test(n)&&!/lite|preview|exp/i.test(n))??text.find(n=>/flash/i.test(n))??text[0]??null
 }
 

@@ -7,7 +7,7 @@ import shipped from '../seed/jadwal-aksara.json' with {type:'json'}
 /** Jadwal Aksara: named posting slots at local times. The file only chooses
  * when a skill may run. Every run still goes through the ordinary job path, so
  * mandates, the daily budget, the one-pending-job rule and the model budget apply. */
-export const jadwalSkills=['source-digest','research-question','knowledge-draft'] as const satisfies readonly ResidentSkill[]
+export const jadwalSkills=['source-digest','research-question','knowledge-draft','kabar-harian','riset-ensiklopedia','usulan-periksa','pertanyaan-harian'] as const satisfies readonly ResidentSkill[]
 export type JadwalSlot={id:string;at:string;skill:typeof jadwalSkills[number];label:string;/** ISO weekdays, 1 = Monday to 7 = Sunday. Every day when absent. */days?:number[]}
 export type Jadwal={version:1;timezone:string;slots:JadwalSlot[]}
 export type SlotState='menunggu'|'berjalan'|'selesai'|'diam'|'dilewati'

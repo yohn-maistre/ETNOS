@@ -7,7 +7,7 @@
   // A section shows only when there is something in it.
   import { onDestroy, untrack } from 'svelte'
   import { SvelteURLSearchParams } from 'svelte/reactivity'
-  import { ArrowUpRight, BookOpen, ChevronDown, Expand, Link2, MapPin, PenLine, Tag, Users } from '@lucide/svelte'
+  import { ArrowUpRight, BookOpen, CheckCircle2, ChevronDown, Clock, Expand, Link2, MapPin, PenLine, RotateCcw, Tag, Users } from '@lucide/svelte'
   import { Switch } from '$lib/components/ui/switch/index.js'
   import LandscapePrint from './LandscapePrint.svelte'
   import PlaceLocator from './PlaceLocator.svelte'
@@ -57,8 +57,23 @@
     phase = $state<'loading' | 'ready' | 'missing' | 'failed'>('loading'),
     tab = $state<EntryTab>(untrack(() => initialTab)),
     railOpen = $state(false),
-    reload = $state(0)
+    reload = $state(0),
+    reviewBusy = $state(false)
   $effect(() => { tab = initialTab })
+  async function reviewArticle(accept: boolean) {
+    const revId = entry?.article?.id
+    if (!revId || reviewBusy) return
+    if (!accept && !confirm('Kembalikan perubahan ini ke revisi sebelumnya?')) return
+    reviewBusy = true
+    try {
+      await request('/v1/wiki-revisions/' + encodeURIComponent(revId) + '/review', { accept })
+      reload++
+    } catch (e) {
+      onError(e instanceof Error ? e.message : 'Status tinjauan belum dapat diubah.')
+    } finally {
+      reviewBusy = false
+    }
+  }
 
   $effect(() => {
     const asked = slug, abort = new AbortController()
@@ -248,7 +263,20 @@
           </dl>{/if}
 
         {#if entry.article}<section class="ep-article" aria-label={'Halaman ' + entry.article.title}>
-            <p class="ep-byline">{languageName(entry.article.language)} · {entry.article.review === 'unreviewed' ? 'Belum ditinjau' : entry.article.reviewer ? 'Ditinjau ' + entry.article.reviewer.name : 'Diterima'} · {relativeDate(entry.article.created)}{entry.article.author?.kind === 'agent' ? ' · ditulis dengan AI' : ''}</p>
+            {#if entry.article.review === 'unreviewed'}
+              <div class="ep-review-bar" data-state="unreviewed" role="status">
+                <span class="ep-review-text"><Clock size={15} aria-hidden="true" /><span><strong>Belum ditinjau manusia.</strong> {entry.article.author?.kind === 'agent' ? 'Ditulis oleh Aksara (AI) dari sumber terbuka.' : 'Terbit langsung sebelum ditinjau.'}</span></span>
+                {#if auth.steward}<span class="ep-review-actions">
+                    <button type="button" class="ep-review-ok" disabled={reviewBusy} onclick={() => void reviewArticle(true)}>Tandai sudah ditinjau</button>
+                    <button type="button" class="ep-review-undo" disabled={reviewBusy} onclick={() => void reviewArticle(false)}><RotateCcw size={13} aria-hidden="true" />Kembalikan</button>
+                  </span>{/if}
+              </div>
+            {:else}
+              <div class="ep-review-bar" data-state="reviewed">
+                <span class="ep-review-text"><CheckCircle2 size={15} aria-hidden="true" /><span><strong>Sudah ditinjau{entry.article.reviewer ? ' oleh ' + entry.article.reviewer.name : ''}.</strong>{entry.article.author?.kind === 'agent' ? ' Draf awal disusun dengan AI.' : ''}</span></span>
+              </div>
+            {/if}
+            <p class="ep-byline">{languageName(entry.article.language)} · {relativeDate(entry.article.created)}{entry.article.author ? ' · ' + entry.article.author.name : ''}</p>
             <div class="wiki-body wiki-serif post-markdown">{@html markdown(entry.article.text, [], 'entri-' + entry.article.pageId)}</div>
             <WikiSourceNotes citations={entry.article.citations} />
             <WikiViewerLinks text={entry.article.text} exclude={entry.media.map((m) => m.id)} />
@@ -425,7 +453,17 @@
   .ep-chiplist a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border); color: var(--foreground); text-decoration: none; font-size: 14px; }
   .ep-chiplist a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
   .ep-article { margin-top: 18px; border-top: 1px solid var(--border); }
-  .ep-byline { margin: 0; padding: 16px 28px 0; font-size: 13.5px; color: var(--muted-foreground); }
+  .ep-review-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; margin: 16px 28px 0; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); font-size: 13.5px; line-height: 1.45; }
+  .ep-review-bar[data-state='unreviewed'] { background: color-mix(in oklab, var(--brand) 9%, var(--background)); border-color: color-mix(in oklab, var(--brand) 32%, var(--border)); }
+  .ep-review-bar[data-state='reviewed'] { background: color-mix(in oklab, var(--foreground) 3%, var(--background)); color: var(--muted-foreground); }
+  .ep-review-text { display: inline-flex; align-items: center; gap: 8px; }
+  .ep-review-bar[data-state='reviewed'] strong { color: var(--foreground); font-weight: 600; }
+  .ep-review-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ep-review-ok, .ep-review-undo { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 0 12px; border-radius: 999px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .ep-review-ok { border: 0; background: var(--foreground); color: var(--background); }
+  .ep-review-undo { border: 1px solid var(--border); background: var(--background); color: var(--foreground); }
+  .ep-review-ok:disabled, .ep-review-undo:disabled { opacity: 0.55; cursor: default; }
+  .ep-byline { margin: 0; padding: 12px 28px 0; font-size: 13.5px; color: var(--muted-foreground); }
   .ep-article .wiki-body { padding: 0 28px; }
   .ep-article-foot { margin: 0; padding: 4px 28px 8px; }
   .ep-inline { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; color: var(--muted-foreground); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
