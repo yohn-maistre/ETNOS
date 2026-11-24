@@ -30,26 +30,29 @@
 
 <div class="cx-page-head">
   <h1 class="lab-heading"><FlaskConical size={18} />AT Spaces</h1>
-  <span class="post-state">Eksperimen lokal</span>
+  <span class="post-state">Uji coba aktif</span>
 </div>
 <div class="spaces-lab">
   <p>
-    Uji protokol resmi dengan dua PDS dan tiga akun percobaan. Tidak memakai
-    akun atau percakapan komunitas.
+    Server akun ETNOS menjalankan AT Protocol Spaces (proposal 0016, tahap alpha),
+    kunci sandi WebAuthn (Passkeys), pencabutan akses saat anggota dihapus, dan
+    cadangan repositori CAR ke R2.
   </p>
   <div class="lab-warning">
     <ShieldAlert size={18} />
     <div>
-      <strong>Penghapusan anggota belum langsung memutus akses.</strong>
+      <strong>Ruang AT bukan enkripsi ujung ke ujung.</strong>
       <p>
-        Kredensial yang sudah diterbitkan masih dapat membaca pada pengujian
-        ini. Masa berlakunya 10 menit.
+        Ruang AT mengatur izin akses lintas server. Pengelola server akun masih
+        dapat membaca isi ruang privat. Untuk percakapan terenkripsi ujung ke
+        ujung, gunakan Pesan langsung.
       </p>
     </div>
   </div>
   <p class="cx-hint">
-    Hasil pengujian lokal, bukan PDS yang berjalan di Cloudflare. Forum tetap
-    memakai izin ETNOS saat ini.
+    Pengurus komunitas privat dapat mengaktifkan dan menyinkronkan Ruang AT dari
+    tab Tentang di halaman komunitas privat. Daftar di bawah adalah catatan uji
+    protokol awal di dua PDS.
   </p>
   <ul>
     {#each report.checks as item}<li>
@@ -57,24 +60,21 @@
         <span>{labels[item.name] ?? item.name}</span>
       </li>{/each}
   </ul>
-  <p class="cx-hint">
-    Spaces mengatur akses. Hosting operator masih dapat membaca data; ini bukan
-    enkripsi ujung ke ujung.
-  </p>
   <details class="form-details">
-    <summary>Versi dan langkah berikutnya</summary>
+    <summary>Versi protokol dan catatan teknis</summary>
     <code>{report.snapshot}</code>
     <p>
-      OAuth, pencabutan kredensial, sinkronisasi indeks, cadangan dan pembatasan
-      layanan masih perlu diuji sebelum memakai data komunitas.
+      Server akun ETNOS memeriksa pencabutan keanggotaan pada setiap pembacaan
+      lokal dan mengirim <code>notifyCredentialsRevoked</code> saat anggota
+      dikeluarkan.
     </p>
   </details>
   <a
     class="post-inline-link"
-    href="https://github.com/yohn-maistre/strata/tree/feat/connected-oauth/labs/spaces"
+    href="https://github.com/yohn-maistre/etnos/tree/main/packages/pds"
     target="_blank"
     rel="noopener noreferrer"
   >
-    Kode dan hasil lengkap <ExternalLink size={14} />
+    Kode server akun dan Spaces <ExternalLink size={14} />
   </a>
 </div>

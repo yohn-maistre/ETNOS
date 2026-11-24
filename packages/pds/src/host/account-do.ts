@@ -87,6 +87,12 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 			nonce TEXT NOT NULL, ciphertext TEXT NOT NULL)`);
 		sql.exec(`CREATE TABLE IF NOT EXISTS host_password_failures (window INTEGER PRIMARY KEY, count INTEGER NOT NULL)`);
 		sql.exec(`CREATE TABLE IF NOT EXISTS host_tombstone (id INTEGER PRIMARY KEY CHECK (id = 1), did TEXT, at INTEGER NOT NULL)`);
+		sql.exec(`CREATE TABLE IF NOT EXISTS host_passkeys (
+			credential_id TEXT PRIMARY KEY, public_key TEXT NOT NULL,
+			counter INTEGER NOT NULL, transports TEXT NOT NULL,
+			label TEXT NOT NULL, created INTEGER NOT NULL)`);
+		sql.exec(`CREATE TABLE IF NOT EXISTS host_passkey_challenges (
+			challenge TEXT PRIMARY KEY, kind TEXT NOT NULL, expires INTEGER NOT NULL)`);
 		this.hostSchemaReady = true;
 	}
 
@@ -217,6 +223,61 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 		const ok = typeof password === "string" && password.length <= 256 && (await verifyPassword(password, row.password_hash));
 		if (!ok) sql.exec("INSERT INTO host_password_failures VALUES (?,1) ON CONFLICT(window) DO UPDATE SET count = count + 1", window);
 		return { ok, locked: false };
+	}
+
+	async listPasskeys(expectedDid: string): Promise<{ credential_id: string; public_key: string; counter: number; transports: string; label: string; created: number }[]> {
+		this.assertAccount(expectedDid);
+		return this.ctx.storage.sql
+			.exec("SELECT credential_id, public_key, counter, transports, label, created FROM host_passkeys ORDER BY created DESC")
+			.toArray() as unknown as { credential_id: string; public_key: string; counter: number; transports: string; label: string; created: number }[];
+	}
+
+	async savePasskeyChallenge(expectedDid: string, challenge: string, kind: "register" | "login", ttlMs = 300_000): Promise<void> {
+		this.assertAccount(expectedDid);
+		const now = Date.now();
+		this.ctx.storage.sql.exec("DELETE FROM host_passkey_challenges WHERE expires < ?", now);
+		this.ctx.storage.sql.exec("INSERT OR REPLACE INTO host_passkey_challenges VALUES (?,?,?)", challenge, kind, now + ttlMs);
+	}
+
+	async consumePasskeyChallenge(expectedDid: string, challenge: string, kind: "register" | "login"): Promise<boolean> {
+		this.assertAccount(expectedDid);
+		const now = Date.now();
+		const row = this.ctx.storage.sql
+			.exec<{ challenge: string }>("SELECT challenge FROM host_passkey_challenges WHERE challenge = ? AND kind = ? AND expires >= ?", challenge, kind, now)
+			.toArray()[0];
+		this.ctx.storage.sql.exec("DELETE FROM host_passkey_challenges WHERE challenge = ? OR expires < ?", challenge, now);
+		return !!row;
+	}
+
+	async savePasskey(
+		expectedDid: string,
+		input: { credentialId: string; publicKey: string; counter: number; transports: string[]; label: string },
+	): Promise<void> {
+		this.assertAccount(expectedDid);
+		const count = this.ctx.storage.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM host_passkeys").one().n;
+		if (count >= 10) throw new Error("Maximum 10 passkeys per account");
+		this.ctx.storage.sql.exec(
+			"INSERT OR REPLACE INTO host_passkeys VALUES (?,?,?,?,?,?)",
+			input.credentialId,
+			input.publicKey,
+			input.counter,
+			JSON.stringify(input.transports),
+			input.label.slice(0, 80) || "Perangkat ini",
+			Date.now(),
+		);
+	}
+
+	async updatePasskeyCounter(expectedDid: string, credentialId: string, counter: number): Promise<void> {
+		this.assertAccount(expectedDid);
+		this.ctx.storage.sql.exec("UPDATE host_passkeys SET counter = ? WHERE credential_id = ?", counter, credentialId);
+	}
+
+	async deletePasskey(expectedDid: string, credentialId: string): Promise<boolean> {
+		this.assertAccount(expectedDid);
+		const existing = this.ctx.storage.sql.exec("SELECT 1 FROM host_passkeys WHERE credential_id = ?", credentialId).toArray().length;
+		if (!existing) return false;
+		this.ctx.storage.sql.exec("DELETE FROM host_passkeys WHERE credential_id = ?", credentialId);
+		return true;
 	}
 
 	async repoFor(expectedDid: string): Promise<RepoFacet> {

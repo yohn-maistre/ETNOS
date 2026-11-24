@@ -1377,6 +1377,11 @@
                     ? 'Keanggotaan melalui undangan.'
                     : 'Keanggotaan terbuka.'}
               </p>
+              {#if community.visibility !== 'public' && currentMembership}
+                {#await import('./AtSpaceCard.svelte') then module}
+                  <module.default communityId={community.id} />
+                {/await}
+              {/if}
             </Card.Root>{:else if tab === 'wiki'}<Card.Root class="etnos-card">
               {#each wiki.filter((p) => p.community_id === community.id) as p}<a
                   href={'/wiki/' + p.id}

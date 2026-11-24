@@ -541,6 +541,27 @@ CREATE TABLE voice_clips(
 CREATE INDEX voice_clips_post ON voice_clips(post_id,created);
 CREATE INDEX voice_clips_kamus ON voice_clips(community_id,kamus_norm,created DESC);
 CREATE INDEX voice_clips_owner ON voice_clips(owner_id,created DESC);
+`,`
+CREATE TABLE community_at_spaces(
+ community_id TEXT PRIMARY KEY REFERENCES communities(id),
+ space_uri TEXT NOT NULL,
+ authority_did TEXT NOT NULL,
+ host_origin TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('active','paused','revoked')),
+ created_by TEXT NOT NULL REFERENCES actors(id),
+ created INTEGER NOT NULL,
+ updated INTEGER NOT NULL
+);
+CREATE TABLE community_at_space_members(
+ community_id TEXT NOT NULL REFERENCES communities(id),
+ actor_id TEXT NOT NULL REFERENCES actors(id),
+ member_did TEXT NOT NULL,
+ role TEXT NOT NULL,
+ synced INTEGER NOT NULL,
+ revoked INTEGER,
+ PRIMARY KEY(community_id,actor_id)
+);
+CREATE INDEX community_at_space_members_did ON community_at_space_members(community_id,revoked);
 `]
 
 export const schemaVersion=migrations.length

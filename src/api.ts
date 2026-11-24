@@ -28,6 +28,7 @@ import leipzigJakarta from '../seed/kamus/leipzig-jakarta-100.json' with { type:
 import type {Models} from './models.ts'
 import { Media } from './media.ts'
 import { Voice, type VoiceBucket } from './voice.ts'
+import { AtSpaces } from './spaces.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
 import {AgentAccess} from './agent-access.ts'
@@ -80,7 +81,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon(),{operator:id=>!!options.stewardDid&&store.actor(id).did===options.stewardDid})
   const ask=new KamusAsk(store,kamus,kamusLexicon(),leipzigJakarta as ConceptList,viewerRecords)
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
-  const media=new Media(store),voice=new Voice(store,options.voiceBucket)
+  const media=new Media(store),voice=new Voice(store,options.voiceBucket),spaces=new AtSpaces(store)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
@@ -248,6 +249,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if (parts.length === 3 && parts[1] === 'wiki-proposals') result=wiki.proposal(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'reports') result=social.reports(authenticated(),parts[2])
         else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'requests') result = store.joinRequests(authenticated(),parts[2])
+        else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'at-space') result = spaces.view(actor?.id,parts[2])
         else if (parts.length === 3 && parts[1] === 'communities') {
           const c = store.community(parts[2])
           if (c.visibility === 'hidden-private' && !store.canRead(actor?.id,c)) throw new Fault(404,'Not found')
@@ -428,6 +430,9 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         if (typeof b.active !== 'boolean') throw new Fault(400,'Boolean required')
         result = store.setMember(caller,parts[2],string(b.actorId),b.active,b.role === undefined ? 'member' : string(b.role) as 'member'|'moderator')
       }
+      else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'at-space') result = spaces.enable(caller,parts[2],b)
+      else if (parts.length === 5 && parts[1] === 'communities' && parts[3] === 'at-space' && parts[4] === 'sync') result = spaces.sync(caller,parts[2])
+      else if (parts.length === 5 && parts[1] === 'communities' && parts[3] === 'at-space' && parts[4] === 'revoke') result = spaces.revoke(caller,parts[2])
       else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='decide')result=requests.decide(caller,parts[2],b.decision)
       else if(parts.length===4&&parts[1]==='aksara-requests'&&parts[3]==='withdraw')result=requests.withdraw(caller,parts[2])
       // A post may carry the entries it is about (Percakapan); they are checked first and saved with the post, in one unit.

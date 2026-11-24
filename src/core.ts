@@ -146,6 +146,7 @@ export class EtnosCore {
       if (role === 'moderator' && this.actor(target).kind !== 'human') throw new Fault(403, 'Human moderation required')
       this.run('INSERT INTO memberships VALUES(?,?,?,?) ON CONFLICT(community_id,actor_id) DO UPDATE SET role=excluded.role,active=excluded.active', communityId, target, role, Number(active))
       if(!active) this.run('UPDATE invitations SET revoked=1 WHERE community_id=? AND recipient_id=?',communityId,target)
+      if(!active) this.run('UPDATE community_at_space_members SET revoked=? WHERE community_id=? AND actor_id=? AND revoked IS NULL',this.clock(),communityId,target)
       if(!active || role==='member') this.run('UPDATE invitations SET revoked=1 WHERE community_id=? AND issuer_id=?',communityId,target)
       this.audit(actorId, active ? 'membership.admit' : 'membership.revoke', communityId)
       if (active) this.openIfReady(actorId, communityId)

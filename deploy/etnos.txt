@@ -83,3 +83,4 @@
 2026-11-22f
 2026-11-24a autonomous Aksara librarian, OpenRouter/Gemini/Workers AI fallback, live-wiki review bar
 2026-11-24b voice notes, Kamus pronunciations, Bantu tulis, PWA Share Target
+2026-11-24c AT Spaces bridge, identity host WebAuthn Passkeys, and R2 CAR backups

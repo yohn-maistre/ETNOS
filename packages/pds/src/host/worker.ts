@@ -26,6 +26,13 @@ export { AuthHubDurableObject } from "./auth-hub.ts";
 export { DirectoryDurableObject } from "./directory-do.ts";
 export { HostedSpaceDurableObject, HostedSpaceIndexDurableObject } from "./spaces.ts";
 import { handleSpaces, spacesEnabled } from "./spaces.ts";
+import {
+	createPasskeyLoginOptions,
+	createPasskeyRegistrationOptions,
+	verifyPasskeyLogin,
+	verifyPasskeyRegistration,
+} from "./passkeys.ts";
+import type { AuthenticationResponseJSON, RegistrationResponseJSON } from "@simplewebauthn/server";
 
 const json = (status: number, body: unknown, headers: Record<string, string> = {}) =>
 	Response.json(body, { status, headers: { "cache-control": "no-store", ...headers } });
@@ -112,9 +119,39 @@ async function isOperator(env: HostEnv, header: string): Promise<boolean> {
 	return !!env.OPERATOR_TOKEN_SHA256 && equal(await sha256Hex(token), env.OPERATOR_TOKEN_SHA256.toLowerCase());
 }
 
-async function admin(host: Host, request: Request, path: string): Promise<Response> {
+async function admin(host: Host, request: Request, path: string, ctx: ExecutionContext): Promise<Response> {
 	if (!(await isOperator(host.env, request.headers.get("authorization") ?? ""))) return xerr(401, "AuthenticationRequired", "Operator token required");
 	const now = Date.now();
+	if (path === "/admin/backup" && request.method === "POST") {
+		if (!host.env.BLOBS) return xerr(503, "Unavailable", "R2 blob bucket is not bound");
+		const day = new Date(now).toISOString().slice(0, 10);
+		const rows = await host.dir.listActive(200);
+		const backedUp: { did: string; handle: string; key: string; bytes: number; sha256: string }[] = [];
+		for (const row of rows) {
+			if (!row.did) continue;
+			const repoUrl = new URL(`${host.origin}/xrpc/com.atproto.sync.getRepo?did=${encodeURIComponent(row.did)}`);
+			const res = await scoped(host, new Request(repoUrl, { method: "GET" }), ctx, row);
+			if (!res.ok) continue;
+			const bytes = new Uint8Array(await res.arrayBuffer());
+			const key = `backups/${day}/${row.did.replace(/[^a-zA-Z0-9._:-]/g, "_")}.car`;
+			await host.env.BLOBS.put(key, bytes, { httpMetadata: { contentType: "application/vnd.ipld.car" } });
+			backedUp.push({ did: row.did, handle: row.handle, key, bytes: bytes.byteLength, sha256: await sha256Hex(bytes) });
+		}
+		const manifestKey = `backups/${day}/manifest.json`;
+		const manifest = { date: day, createdAt: new Date(now).toISOString(), count: backedUp.length, accounts: backedUp };
+		await host.env.BLOBS.put(manifestKey, JSON.stringify(manifest, null, 2), { httpMetadata: { contentType: "application/json" } });
+		await host.dir.audit("operator", "backup.run", manifestKey, now);
+		return json(200, manifest);
+	}
+	if (path === "/admin/backups" && request.method === "GET") {
+		if (!host.env.BLOBS) return xerr(503, "Unavailable", "R2 blob bucket is not bound");
+		const listed = await host.env.BLOBS.list({ prefix: "backups/", limit: 100 });
+		const manifests = listed.objects
+			.filter((o) => o.key.endsWith("/manifest.json"))
+			.map((o) => ({ key: o.key, size: o.size, uploaded: o.uploaded.toISOString() }))
+			.sort((a, b) => b.key.localeCompare(a.key));
+		return json(200, { backups: manifests });
+	}
 	if (path === "/admin/invites" && request.method === "POST") {
 		const body = await bodyJson(request);
 		const days = body.days === undefined ? 7 : Number(body.days);
@@ -246,7 +283,7 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 			spaces: spacesEnabled(host.env) ? "alpha" : false,
 			publicRepository: true,
 			firehose: false,
-			passkeys: false,
+			passkeys: true,
 		});
 	if (path === "/.well-known/did.json")
 		return json(200, {
@@ -259,7 +296,7 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 	if (path === "/akun/baru" && method === "GET")
 		return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code: (url.searchParams.get("kode") ?? "").slice(0, 100) });
 	if (path === "/akun/baru" && method === "POST") return signupForm(host, request);
-	if (path.startsWith("/admin/")) return admin(host, request, path);
+	if (path.startsWith("/admin/")) return admin(host, request, path, ctx);
 
 	const oauth = await handleOAuth(host, request);
 	if (oauth) return oauth;
@@ -379,6 +416,101 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 	}
 	if (path.startsWith("/xrpc/com.atproto.space.") || path.startsWith("/xrpc/com.atproto.memberspace."))
 		return handleSpaces(host, request, ctx, (inner) => worker.fetch(inner, host.env, ctx));
+
+	// Passkeys (WebAuthn): <0.5 ms ECDSA sign-in avoiding ~21 ms PBKDF2 on Cloudflare Workers Free.
+	if (path.startsWith("/xrpc/space.etnos.passkey.")) {
+		if (path === "/xrpc/space.etnos.passkey.list" && method === "GET") {
+			const auth = await authenticate(host, request);
+			if (auth instanceof Response) return auth;
+			const rows = await host.account(auth.row).listPasskeys(auth.did);
+			return json(200, {
+				passkeys: rows.map((r) => ({ id: r.credential_id, label: r.label, created: r.created })),
+			});
+		}
+		if (path === "/xrpc/space.etnos.passkey.registerOptions" && method === "POST") {
+			const auth = await authenticate(host, request);
+			if (auth instanceof Response) return auth;
+			const account = host.account(auth.row);
+			const existing = await account.listPasskeys(auth.did);
+			const options = await createPasskeyRegistrationOptions({
+				rpName: host.displayName,
+				rpID: host.env.PDS_HOSTNAME,
+				did: auth.did,
+				handle: auth.row.handle,
+				existing,
+			});
+			await account.savePasskeyChallenge(auth.did, options.challenge, "register");
+			return json(200, { options });
+		}
+		if (path === "/xrpc/space.etnos.passkey.registerVerify" && method === "POST") {
+			const auth = await authenticate(host, request);
+			if (auth instanceof Response) return auth;
+			const body = await bodyJson(request);
+			const challenge = typeof body.challenge === "string" ? body.challenge : "";
+			const label = typeof body.label === "string" ? body.label.trim().slice(0, 80) : "Perangkat ini";
+			const account = host.account(auth.row);
+			if (!challenge || !(await account.consumePasskeyChallenge(auth.did, challenge, "register"))) {
+				return xerr(400, "InvalidChallenge", "Tantangan kunci sandi tidak berlaku atau kedaluwarsa");
+			}
+			const verified = await verifyPasskeyRegistration({
+				response: body.response as RegistrationResponseJSON,
+				expectedChallenge: challenge,
+				expectedOrigin: host.origin,
+				expectedRPID: host.env.PDS_HOSTNAME,
+			}).catch(() => null);
+			if (!verified) return xerr(400, "InvalidAttestation", "Kunci sandi tidak dapat diverifikasi");
+			await account.savePasskey(auth.did, { ...verified, label });
+			await host.dir.audit(auth.did, "passkey.add", verified.credentialId.slice(0, 32), Date.now());
+			return json(200, { id: verified.credentialId, label });
+		}
+		if (path === "/xrpc/space.etnos.passkey.delete" && method === "POST") {
+			const auth = await authenticate(host, request);
+			if (auth instanceof Response) return auth;
+			const body = await bodyJson(request);
+			const credentialId = typeof body.id === "string" ? body.id : "";
+			const deleted = credentialId ? await host.account(auth.row).deletePasskey(auth.did, credentialId) : false;
+			return json(deleted ? 200 : 404, { deleted });
+		}
+		if (path === "/xrpc/space.etnos.passkey.loginOptions" && method === "POST") {
+			if (!(await host.spend(request, "password", 30))) return xerr(429, "RateLimitExceeded", "Try again later");
+			const body = await bodyJson(request);
+			const identifier = typeof body.identifier === "string" ? body.identifier.trim().toLowerCase() : "";
+			const row = identifier ? await host.dir.resolve(identifier.startsWith("did:") ? String(body.identifier).trim() : identifier) : null;
+			if (!usable(row, true)) return json(200, { available: false });
+			const account = host.account(row);
+			const credentials = await account.listPasskeys(row.did!);
+			if (!credentials.length) return json(200, { available: false });
+			const options = await createPasskeyLoginOptions({ rpID: host.env.PDS_HOSTNAME, credentials });
+			await account.savePasskeyChallenge(row.did!, options.challenge, "login");
+			return json(200, { available: true, options });
+		}
+		if (path === "/xrpc/space.etnos.passkey.loginVerify" && method === "POST") {
+			if (!(await host.spend(request, "password", 30))) return xerr(429, "RateLimitExceeded", "Try again later");
+			const body = await bodyJson(request);
+			const identifier = typeof body.identifier === "string" ? body.identifier.trim().toLowerCase() : "";
+			const challenge = typeof body.challenge === "string" ? body.challenge : "";
+			const row = identifier ? await host.dir.resolve(identifier.startsWith("did:") ? String(body.identifier).trim() : identifier) : null;
+			if (!usable(row, true) || !challenge) return xerr(401, "AuthenticationRequired", "Invalid passkey login");
+			const account = host.account(row);
+			if (!(await account.consumePasskeyChallenge(row.did!, challenge, "login"))) {
+				return xerr(401, "AuthenticationRequired", "Passkey challenge expired");
+			}
+			const response = body.response as AuthenticationResponseJSON | undefined;
+			const credentials = await account.listPasskeys(row.did!);
+			const stored = response?.id ? credentials.find((c) => c.credential_id === response.id) : undefined;
+			if (!stored || !response) return xerr(401, "AuthenticationRequired", "Unknown passkey");
+			const verified = await verifyPasskeyLogin({
+				response,
+				expectedChallenge: challenge,
+				expectedOrigin: host.origin,
+				expectedRPID: host.env.PDS_HOSTNAME,
+				stored,
+			}).catch(() => null);
+			if (!verified) return xerr(401, "AuthenticationRequired", "Passkey verification failed");
+			await account.updatePasskeyCounter(row.did!, stored.credential_id, verified.newCounter);
+			return json(200, await sessionResponse(host, row));
+		}
+	}
 	return xerr(501, "MethodNotImplemented", "Not available on this host");
 }
 
