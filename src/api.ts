@@ -29,6 +29,7 @@ import type {Models} from './models.ts'
 import { Media } from './media.ts'
 import { Voice, type VoiceBucket } from './voice.ts'
 import { AtSpaces } from './spaces.ts'
+import { Captures3d } from './captures.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
 import {AgentAccess} from './agent-access.ts'
@@ -74,7 +75,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;voiceBucket?:VoiceBucket;transcribeVoice?:(bytes:Uint8Array,mime:string)=>Promise<string>;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;voiceBucket?:VoiceBucket;transcribeVoice?:(bytes:Uint8Array,mime:string)=>Promise<string>;splatWorkerUrl?:string;splatSecret?:string;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -82,6 +83,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const ask=new KamusAsk(store,kamus,kamusLexicon(),leipzigJakarta as ConceptList,viewerRecords)
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store),voice=new Voice(store,options.voiceBucket),spaces=new AtSpaces(store)
+  const captures=new Captures3d(store,{bucket:options.voiceBucket,workerUrl:options.splatWorkerUrl,workerSecret:options.splatSecret})
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
@@ -142,6 +144,10 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='desk')result=desk.list(authenticated(),parts[2])
         else if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
         else if(parts.length===3&&parts[1]==='voice')return await voice.response(actor?.id,parts[2],req.headers.get('range'))
+        else if(path==='/v1/captures')result={captures:captures.list(actor?.id,{communityId:url.searchParams.get('community')??undefined,entrySlug:url.searchParams.get('entry')??undefined})}
+        else if(parts.length===3&&parts[1]==='captures')result=captures.read(actor?.id,parts[2])
+        else if(parts.length===4&&parts[1]==='captures'&&parts[3]==='file')return await captures.fileResponse(actor?.id,parts[2])
+        else if(parts.length===4&&parts[1]==='viewer'&&parts[3]==='pins')result={pins:captures.pinsFor(actor?.id,decodeURIComponent(parts[2]))}
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth':'local-provisioned-credentials', enrollment:options.authMode==='atproto'?(options.enrollmentMode??'invite'):null, atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
@@ -277,10 +283,16 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         return json(200,result)
       }
       if (req.method !== 'POST') throw new Fault(405, 'Method not allowed')
+      // Signed webhook callback from packages/splat-worker (Modal GPU): verified by HMAC-SHA256, no browser session.
+      if (parts.length === 4 && parts[1] === 'captures' && parts[3] === 'callback') {
+        const rawText = await req.text()
+        if (rawText.length > 6_000_000) throw new Fault(413, 'Request too large')
+        return json(200, await captures.handleCallback(parts[2], rawText, req.headers.get('x-etnos-signature')))
+      }
       options.writeGuard?.(req)
       // A founding link is read before signing in: the token travels in the body, never in a URL.
       if (path === '/v1/founding/preview') return json(200, founding.preview((await body(req)).token, principal()?.id))
-      const caller = authenticated(), b = await body(req, path === '/v1/voice' ? 3000000 : MAX_BODY)
+      const caller = authenticated(), b = await body(req, path === '/v1/voice' ? 3000000 : path === '/v1/captures' ? 6000000 : MAX_BODY)
       const send=(x:Record<string,unknown>):{id:string}=>x.requestOf!==undefined?(()=>{throw new Fault(400,'Tag this post after sending it')})():x.agentMention===undefined&&typeof x.artinya==='string'&&x.artinya.trim()?store.tx(()=>{const {artinya,...rest}=x;const post=forum.create(caller,rest,groups);ask.setArtinya(caller,post.id,artinya);return post}):x.agentMention===undefined?forum.create(caller,x,groups):resident.createMentionPost(caller,x,groups)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
@@ -328,6 +340,11 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         result=textOut?voice.updateTranscript(caller,parts[2],textOut,b.language??'id'):{transcript:'',empty:true}
       }
       else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='voice')result=voice.attachToWord(caller,parts[2],string(b.word),string(b.clipId))
+      else if(path==='/v1/captures')result=await captures.upload(caller,{communityId:string(b.communityId),title:string(b.title),summary:b.summary,entrySlug:b.entrySlug,bytes:string(b.bytes),splatCount:b.splatCount})
+      else if(path==='/v1/captures/video')result=await captures.queueVideoJob(caller,{communityId:string(b.communityId),title:string(b.title),summary:b.summary,entrySlug:b.entrySlug,videoUrl:string(b.videoUrl),mode:b.mode})
+      else if(parts.length===4&&parts[1]==='captures'&&parts[3]==='withdraw')result=await captures.withdraw(caller,parts[2])
+      else if(parts.length===4&&parts[1]==='viewer'&&parts[3]==='pins')result=captures.addPin(caller,decodeURIComponent(parts[2]),{x:b.x,y:b.y,z:b.z,label:b.label,note:b.note,kamusWord:b.kamusWord,voiceClipId:b.voiceClipId,communityId:b.communityId})
+      else if(parts.length===5&&parts[1]==='viewer'&&parts[2]==='pins'&&parts[4]==='delete')result=captures.deletePin(caller,parts[3])
       else if (path === '/v1/communities' && b.forming === true) result = founding.found(caller,{title:string(b.title),description:string(b.description),visibility:string(b.visibility) as Community['visibility'],admission:b.admission === undefined ? undefined : string(b.admission) as Community['admission'],about:strings(b.about??[]),languages:strings(b.languages??[]),groupId:b.groupId===undefined||b.groupId===null?undefined:string(b.groupId)},groups)
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){

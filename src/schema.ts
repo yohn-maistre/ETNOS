@@ -562,6 +562,42 @@ CREATE TABLE community_at_space_members(
  PRIMARY KEY(community_id,actor_id)
 );
 CREATE INDEX community_at_space_members_did ON community_at_space_members(community_id,revoked);
+`,`
+CREATE TABLE captures_3d(
+ id TEXT PRIMARY KEY,
+ owner_id TEXT NOT NULL REFERENCES actors(id),
+ community_id TEXT NOT NULL REFERENCES communities(id),
+ entry_slug TEXT,
+ title TEXT NOT NULL,
+ summary TEXT NOT NULL DEFAULT '',
+ format TEXT NOT NULL CHECK(format IN ('spz','ply','glb','video-job')),
+ state TEXT NOT NULL CHECK(state IN ('queued','processing','ready','failed')),
+ splat_count INTEGER NOT NULL DEFAULT 0,
+ bytes BLOB,
+ r2_key TEXT,
+ size INTEGER NOT NULL DEFAULT 0,
+ source_video_url TEXT,
+ error TEXT,
+ created INTEGER NOT NULL,
+ updated INTEGER NOT NULL
+);
+CREATE INDEX captures_3d_community ON captures_3d(community_id,state,created DESC);
+CREATE INDEX captures_3d_entry ON captures_3d(entry_slug,state);
+CREATE TABLE capture_pins(
+ id TEXT PRIMARY KEY,
+ target_id TEXT NOT NULL,
+ community_id TEXT REFERENCES communities(id),
+ author_id TEXT NOT NULL REFERENCES actors(id),
+ x REAL NOT NULL,
+ y REAL NOT NULL,
+ z REAL NOT NULL,
+ label TEXT NOT NULL,
+ note TEXT NOT NULL DEFAULT '',
+ kamus_word TEXT NOT NULL DEFAULT '',
+ voice_clip_id TEXT REFERENCES voice_clips(id),
+ created INTEGER NOT NULL
+);
+CREATE INDEX capture_pins_target ON capture_pins(target_id,created ASC);
 `]
 
 export const schemaVersion=migrations.length

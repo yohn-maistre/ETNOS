@@ -61,6 +61,22 @@
     if (!all.length) return
     void (async () => {
       let found = all.find((o) => o.id === want) ?? null
+      if (!found && want.startsWith('cap-')) {
+        const cap = await fetch('/v1/captures/' + encodeURIComponent(want.slice(4)), { signal: abort.signal }).then((r) => (r.ok ? r.json() : null)).catch(() => null) as { id: string; title: string; summary: string; format: string; size: number; fileUrl: string | null; entrySlug: string | null; created: number } | null
+        if (cap && cap.fileUrl) {
+          found = {
+            id: want,
+            kind: 'model',
+            title: cap.title,
+            subtitle: cap.format === 'spz' || cap.format === 'ply' ? '3D Gaussian Splat komunitas' : 'Model 3D komunitas',
+            summary: cap.summary || 'Pemindaian 3D yang dibagikan anggota komunitas di ETNOS.',
+            about: cap.entrySlug ? [cap.entrySlug] : [],
+            checked: new Date(cap.created).toISOString().slice(0, 10),
+            model: { src: cap.fileUrl, bytes: cap.size },
+            sources: [{ title: cap.title, url: location.origin + '/wiki/lihat/' + want, publisher: 'Komunitas ETNOS' }],
+          }
+        }
+      }
       if (!found && want.startsWith('data-')) {
         // Any dataset of the catalogue opens here too, with its record as the panel and no table preview.
         const d = await readDataset(want.slice(5), abort.signal).catch(() => null)
