@@ -1370,7 +1370,7 @@
               <p class="cx-hint">
                 {community.visibility === 'public'
                   ? 'Isi dapat dibaca publik.'
-                  : 'Isi hanya tersedia bagi anggota saat ini.'}
+                  : 'Isi hanya tersedia bagi anggota saat ini (pengelola server masih dapat membaca isi ruang ini; gunakan Pesan langsung untuk percakapan terenkripsi ujung ke ujung).'}
                 {community.admission === 'approval'
                   ? 'Permintaan bergabung ditinjau pengelola.'
                   : community.admission === 'invite'
@@ -1391,7 +1391,7 @@
                 >
                   <Plus size={14} />Halaman baru
                 </Button>{/if}
-            </Card.Root>{:else}{#each posts.filter((p) => tab !== 'media' || p.media?.length || videoEmbed(p.content?.url ?? '') || directVideo(p.content?.url ?? '')) as p}<PostCard
+            </Card.Root>{:else}{#each posts.filter((p) => tab !== 'media' || p.media?.length || p.voice?.length || videoEmbed(p.content?.url ?? '') || directVideo(p.content?.url ?? '')) as p}<PostCard
                 post={p}
                 {community}
                 loggedIn={!!auth.actor}
@@ -1401,7 +1401,7 @@
                 <Button variant="outline" disabled={busy} onclick={more}>
                   Muat posting lain
                 </Button>
-              </div>{/if}{#if !posts.filter((p) => tab !== 'media' || p.media?.length || videoEmbed(p.content?.url ?? '') || directVideo(p.content?.url ?? '')).length && !loading}<div
+              </div>{/if}{#if !posts.filter((p) => tab !== 'media' || p.media?.length || p.voice?.length || videoEmbed(p.content?.url ?? '') || directVideo(p.content?.url ?? '')).length && !loading}<div
                 class="etnos-nodata"
               >
                 <MessageCircle size={26} />

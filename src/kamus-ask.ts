@@ -18,6 +18,7 @@ import {randomUUID} from 'node:crypto'
 import {EtnosCore,Fault} from './core.ts'
 import {Periksa,type Evidence} from './periksa.ts'
 import {Kamus,norm as kamusNorm,type KamusLexicon} from './kamus.ts'
+import {Voice} from './voice.ts'
 import {tokenize,matchWord,stripSuffix,chooseUnderlines,align,indonesianWords,guessClass,normWord,DEFAULT_SUFFIXES,WORD_CLASSES,CLASS_LABEL,type Token,type Candidate,type WordClass,type Pair} from '../apps/web/src/kamus-text.ts'
 import type {ViewerRecord} from './entri.ts'
 
@@ -257,6 +258,7 @@ export class KamusAsk{
    aligned:al?{indonesian:al.indonesian,wordClass:guessClass(al.indonesian),together:al.together}:null,
    uses:u?{uses:u.uses,speakers:u.authors.size}:null,
    mine:mine?{saved:!!mine.saved,gloss:mine.gloss,wordClass:mine.word_class}:null,
+   voices:new Voice(this.s).forWord(actor,communityId,word),
    canAnswer:member&&!!actor&&this.s.actor(actor).kind==='human',
    postId:postId??null,
   }

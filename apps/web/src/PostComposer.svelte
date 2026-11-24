@@ -18,7 +18,7 @@
     Code,
     Plus,
     ArrowUp,
-    AtSign, Bot,
+    AtSign, Bot, Mic,
   } from '@lucide/svelte'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import Choice from './Choice.svelte'
@@ -46,6 +46,8 @@
   import * as Dropdown from '$lib/components/ui/dropdown-menu/index.js'
   import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js'
   import { prepareImage, uploadImages, type ImageDraft } from './media'
+  import VoiceRecorder from './VoiceRecorder.svelte'
+  import { uploadVoiceDraft, consumeSharedVoice, prepareVoiceFile, type VoiceDraft } from './voice'
   import type DocumentEditor from './DocumentEditor.svelte'
   let documentEditor = $state<DocumentEditor | null>(null)
   async function insertImage(image: ImageDraft) {
@@ -112,6 +114,8 @@
       null,
     ),
     images = $state<ImageDraft[]>([]),
+    showVoice = $state(false),
+    voiceDraft = $state<VoiceDraft | null>(null),
     busy = $state(false),
     processing = $state(false),
     error = $state(''),
@@ -161,6 +165,21 @@
       .then((k) => { kamusCache.set(id, !!k.settings.language); if (communityId === id) kamusOn = !!k.settings.language })
       .catch(() => {})
   })
+  // PWA share_target ("Titip Suara"): if the user forwarded a WhatsApp voice note to ETNOS, load it directly.
+  $effect(() => {
+    if (parentId || compact || typeof window === 'undefined') return
+    void consumeSharedVoice().then(async (shared) => {
+      if (!shared) return
+      try {
+        voiceDraft = await prepareVoiceFile(shared.file)
+        showVoice = true
+        if (shared.text && !text.trim()) text = shared.text
+        if (shared.title && !title.trim()) { title = shared.title; showTitle = true }
+      } catch (e) {
+        error = e instanceof Error ? e.message : 'Rekaman yang dibagikan belum dapat dibaca.'
+      }
+    })
+  })
   let mentionChoices=$state<ResidentChoice[]>([]),mentionLoading=$state(false),mentionError=$state(''),selectedMention=$state<(ResidentChoice&{communityId:string})|null>(null)
   const mentionEligible=$derived(destination?.visibility==='public'&&destination?.publication==='local'&&actor.kind==='human'&&kind!=='offering'&&!warning.trim())
   const strayAksara=$derived(mentionEligible&&!selectedMention&&/@aksara/i.test(text))
@@ -173,7 +192,7 @@
   })
   $effect(()=>{if(selectedMention&&(!mentionEligible||selectedMention.communityId!==communityId||!text.includes('](/people/'+selectedMention.actor.id+')')))selectedMention=null})
   const hasContent = $derived(
-    !!(text.trim() || title.trim() || url.trim() || images.length || kind),
+    !!(text.trim() || title.trim() || url.trim() || images.length || voiceDraft || kind),
   )
   $effect(() => {
     onStateChange?.({
@@ -201,7 +220,10 @@
     lastCommunity = next
     return true
   }
-  onDestroy(() => images.forEach((image) => URL.revokeObjectURL(image.preview)))
+  onDestroy(() => {
+    images.forEach((image) => URL.revokeObjectURL(image.preview))
+    if (voiceDraft) URL.revokeObjectURL(voiceDraft.previewUrl)
+  })
   function remove(key: string) {
     const image = images.find((i) => i.key === key)
     if (image?.uploaded) documentEditor?.removeImage(image.uploaded.url)
@@ -263,6 +285,7 @@
       }
       if (!pending) {
         const mediaIds = await uploadImages(communityId, images)
+        const voiceIds = voiceDraft ? [(await uploadVoiceDraft(communityId, voiceDraft)).id] : []
         const inlineIds = mediaIds.filter((id) =>
           text.includes('/v1/media/' + id),
         )
@@ -275,6 +298,7 @@
             text,
             ...(parentId ? { parentId } : {}),
             mediaIds,
+            ...(voiceIds.length ? { voiceIds } : {}),
             content,
             ...(selectedMention?{agentMention:{actorId:selectedMention.actor.id,choiceKey:selectedMention.choiceKey}}:{}),
             ...(tentangOn&&tentangTags.length?{tentang:tentangTags.map(t=>t.slug)}:{}),
@@ -305,6 +329,9 @@
       artinyaOpen = false
       images.forEach((image) => URL.revokeObjectURL(image.preview))
       images = []
+      if (voiceDraft) URL.revokeObjectURL(voiceDraft.previewUrl)
+      voiceDraft = null
+      showVoice = false
       resize()
       await onPosted(post)
       if (ask) void askTandai(post.id)
@@ -529,6 +556,13 @@
                 />{/if}
             </div>{/each}
         </div>{/if}
+      {#if (showVoice || voiceDraft) && destination?.publication === 'local'}
+        <VoiceRecorder
+          bind:draft={voiceDraft}
+          allowProtocol={destination?.visibility === 'public'}
+          onError={(m) => (error = m)}
+        />
+      {/if}
       <div class="composer-tools">
         {#if format&&mentionEligible}<Button variant="ghost" size="icon" aria-label="Panggil Aksara" title="Panggil Aksara · atau ketik @aksara" disabled={busy||!!pending||!documentEditor} onclick={callAksara}><AtSign size={20}/><span class="composer-tool-label">Aksara</span></Button>{/if}
         {#if !compact && !parentId && destination?.publication === 'local'}<Button variant="ghost" size="icon" aria-label="Tambahkan penawaran" title="Penawaran atau kebutuhan" aria-pressed={kind==='offering'} disabled={busy||!!pending} onclick={()=>{kind=kind==='offering'?'':'offering';if(kind==='offering')showTitle=true}}><ShoppingBag size={20}/><span class="composer-tool-label">Penawaran</span></Button>{/if}
@@ -562,6 +596,17 @@
               class="animate-spin"
             />{:else}<ImagePlus size={20} />{/if}<span class="composer-tool-label">Media</span>
         </Button>
+        {#if destination?.publication === 'local'}<Button
+          variant="ghost"
+          size="icon"
+          aria-label="Rekam atau unggah suara"
+          title="Rekam atau unggah pesan suara"
+          aria-pressed={showVoice || !!voiceDraft}
+          disabled={busy || !!pending}
+          onclick={() => (showVoice = !showVoice)}
+        >
+          <Mic size={20} /><span class="composer-tool-label">Suara</span>
+        </Button>{/if}
         {#if !compact && destination?.publication === 'local'}<Button
             variant="ghost"
             size="icon"

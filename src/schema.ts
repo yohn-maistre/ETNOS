@@ -518,6 +518,29 @@ CREATE TABLE deployment_settings(key TEXT PRIMARY KEY,value TEXT NOT NULL,update
 ALTER TABLE resident_jobs ADD COLUMN program TEXT;
 CREATE TABLE aksara_research_log(community_id TEXT NOT NULL REFERENCES communities(id),target_slug TEXT NOT NULL,status TEXT NOT NULL,page_id TEXT REFERENCES wiki_pages(id),attempted INTEGER NOT NULL,PRIMARY KEY(community_id,target_slug));
 CREATE INDEX aksara_research_community ON aksara_research_log(community_id,attempted DESC);
+`,`
+CREATE TABLE voice_clips(
+ id TEXT PRIMARY KEY,
+ owner_id TEXT NOT NULL REFERENCES actors(id),
+ community_id TEXT NOT NULL REFERENCES communities(id),
+ post_id TEXT REFERENCES posts(id),
+ kamus_norm TEXT,
+ bytes BLOB,
+ r2_key TEXT,
+ mime TEXT NOT NULL,
+ size INTEGER NOT NULL,
+ duration_ms INTEGER NOT NULL,
+ peaks TEXT NOT NULL DEFAULT '[]',
+ speaker TEXT NOT NULL DEFAULT '',
+ language TEXT NOT NULL DEFAULT '',
+ transcript TEXT NOT NULL DEFAULT '',
+ consent_public INTEGER NOT NULL DEFAULT 0,
+ protocol TEXT NOT NULL DEFAULT 'community' CHECK(protocol IN ('community','public','restricted')),
+ created INTEGER NOT NULL
+);
+CREATE INDEX voice_clips_post ON voice_clips(post_id,created);
+CREATE INDEX voice_clips_kamus ON voice_clips(community_id,kamus_norm,created DESC);
+CREATE INDEX voice_clips_owner ON voice_clips(owner_id,created DESC);
 `]
 
 export const schemaVersion=migrations.length

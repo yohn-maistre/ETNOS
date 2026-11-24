@@ -12,6 +12,7 @@
   import { splitSources } from './sources'
   import { CARD_FENCE } from './cards/fence'
   import PostMedia from './PostMedia.svelte'
+  import VoicePlayer from './VoicePlayer.svelte'
   import VideoPreview from './VideoPreview.svelte'
   import LinkPreview from './LinkPreview.svelte'
   import { markdown, videoEmbed, directVideo } from './markdown'
@@ -121,6 +122,13 @@
           caption={post.text}
           author={post.author.name}
         />{/if}
+      {#if post.voice?.length}
+        <div class="post-voice-list">
+          {#each post.voice as clip (clip.id)}
+            <VoicePlayer {clip} canHelpWrite={canVote} />
+          {/each}
+        </div>
+      {/if}
       {#if post.content?.url}<div class="post-link-card">
           {#if embed}<VideoPreview url={post.content.url} />{/if}
           {#if !embed}<LinkPreview

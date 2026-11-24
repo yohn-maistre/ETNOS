@@ -2,6 +2,7 @@ import { randomBytes, randomUUID, createHash } from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import {offeringState,type OfferingRow,type OfferingView} from './offering-contract.ts'
 import { Media, type MediaView } from './media.ts'
+import { Voice } from './voice.ts'
 import {contentInput,contentOf,checkInlineMedia} from './post-content.ts'
 import {checkSeason} from './seasons.ts'
 import {agentLabels} from './agent-labels.ts'
@@ -287,10 +288,10 @@ export class EtnosCore {
       }
     }
   }
-  createPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string,options:{content?:unknown;mediaIds?:string[]}={}) {
-    return this.tx(() => {const p=this.insertPost(actorId, communityId, text, parentId, mandateId,undefined,options);new Media(this).attach(actorId,p.id,options.mediaIds??[]);checkInlineMedia(contentOf(p.content),options.mediaIds??[]);return this.view(p,actorId)})
+  createPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string,options:{content?:unknown;mediaIds?:string[];voiceIds?:string[]}={}) {
+    return this.tx(() => {const p=this.insertPost(actorId, communityId, text, parentId, mandateId,undefined,options);new Media(this).attach(actorId,p.id,options.mediaIds??[]);new Voice(this).attachToPost(actorId,p.id,options.voiceIds??[]);checkInlineMedia(contentOf(p.content),options.mediaIds??[]);return this.view(p,actorId)})
   }
-  private insertPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string, releaseId?: string,options:{content?:unknown;mediaIds?:string[]}={}) {
+  private insertPost(actorId: string, communityId: string, text: string, parentId?: string, mandateId?: string, releaseId?: string,options:{content?:unknown;mediaIds?:string[];voiceIds?:string[]}={}) {
     this.checkWrite(actorId, communityId, mandateId)
     const c = this.community(communityId),content=contentInput(options.content,this.clock())
     const parent = parentId ? this.get<Post>('SELECT * FROM posts WHERE id=? AND hidden=0', parentId) : undefined
@@ -301,9 +302,9 @@ export class EtnosCore {
     if(content.season)checkSeason(this,communityId,content.season)
     const pid = id(), actor = this.actor(actorId), created = this.clock()
     const uri = c.visibility === 'public' && c.publication==='atproto' ? `at://${actor.did}/${this.contract.collection}/${pid}` : null
-    if(uri&&(Object.keys(content).some(k=>k!=='format'&&k!=='answer'&&k!=='season')||(options.mediaIds?.length??0)>0||content.format==='markdown'))throw new Fault(409,'Rich AT publishing is not enabled')
+    if(uri&&(Object.keys(content).some(k=>k!=='format'&&k!=='answer'&&k!=='season')||(options.mediaIds?.length??0)>0||(options.voiceIds?.length??0)>0||content.format==='markdown'))throw new Fault(409,'Rich AT publishing is not enabled')
     if(typeof text!=='string'||text.length>(uri?6000:20000))throw new Fault(400,'Post text is too long')
-    if(!text.trim()&&!content.title&&!content.url&&!content.poll&&!content.event&&!options.mediaIds?.length)throw new Fault(400,'Add text, a link or media')
+    if(!text.trim()&&!content.title&&!content.url&&!content.poll&&!content.event&&!options.mediaIds?.length&&!options.voiceIds?.length)throw new Fault(400,'Add text, a link or media')
     this.run('INSERT INTO posts(id,author_id,community_id,parent_id,text,created,hidden,mandate_id,release_id,uri,root_id,content) VALUES(?,?,?,?,?,?,0,?,?,?,?,?)', pid, actorId, communityId, parentId ?? null, text.trim(), created, mandateId ?? null, releaseId ?? null, uri,parent?.root_id??pid,JSON.stringify(content))
     if (uri) {
       const record: PublicRecord = { $type: this.contract.collection, text: text.trim(), community: `${this.base}/v1/communities/${communityId}`, createdAt: new Date(created).toISOString(), actorKind:actor.kind, ...(parent?.uri ? { replyTo: parent.uri } : {}) }
@@ -332,6 +333,7 @@ export class EtnosCore {
     // Entries a post is about that are not contexts (a lake, a species): Percakapan, src/tentang.ts.
     const entries=this.all<{post_id:string;slug:string;title:string;label:string}>('SELECT post_id,slug,title,label FROM post_entries WHERE post_id IN(SELECT value FROM json_each(?)) ORDER BY created,slug',ids)
     const media=this.all<MediaView&{post_id:string}>('SELECT id,post_id,alt,width,height FROM media WHERE post_id IN(SELECT value FROM json_each(?)) ORDER BY position',ids)
+    const voices=new Voice(this).forPosts(viewer,posts.filter(p=>!p.deleted).map(p=>p.id),new Set(roles.keys()))
     const jobs=new Map(this.all<{post_id:string;state:string}>("SELECT post_id,state FROM outbox WHERE operation='put' AND post_id IN(SELECT value FROM json_each(?))",ids).map(j=>[j.post_id,j.state]))
     const pollVotes=this.all<{post_id:string;choice:number;n:number;mine:number}>('SELECT post_id,choice,COUNT(*) n,MAX(CASE WHEN actor_id=? THEN 1 ELSE 0 END) mine FROM poll_votes WHERE post_id IN(SELECT value FROM json_each(?)) GROUP BY post_id,choice',viewer??null,ids)
     const offerings=new Map(this.all<OfferingRow>('SELECT * FROM offerings WHERE post_id IN(SELECT value FROM json_each(?))',ids).map(o=>[o.post_id,o]))
@@ -354,6 +356,7 @@ export class EtnosCore {
         entries:p.deleted?[]:entries.filter(e=>e.post_id===p.id).map(({slug,title,label})=>({slug,title,label})),
         replies:rootCounts.get(p.root_id)??0,directReplies:directCounts.get(p.id)??0,
         media:p.deleted?[]:media.filter(m=>m.post_id===p.id).map(({id,alt,width,height})=>({id,alt,width,height,url:'/v1/media/'+id})),
+        voice:p.deleted?[]:voices.get(p.id)??[],
         publicationState:p.uri?jobs.get(p.id)??'unknown':policy.get(p.community_id)?.visibility==='public'?'local':'private',
         score:p.deleted?0:scores.get(p.id)?.score??0,myVote:p.deleted?0:scores.get(p.id)?.mine??0,bookmarked:!p.deleted&&bookmarks.has(p.id),
         poll:content.poll?pollView(content.poll,votes,this.clock()>=content.poll.closesAt||!!p.locked):null,

@@ -56,6 +56,12 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
       }
       const models=async()=>nodeModels((await this.modelState()).env)
       const autoDeps={models,newsFetcher,fetcher:fetch}
+      const voiceBucket=(rawEnv as unknown as {VOICE_BUCKET?:import('./voice.ts').VoiceBucket}).VOICE_BUCKET
+      const aiBinding=(rawEnv as unknown as {AI?:{run:(m:string,input:unknown)=>Promise<unknown>}}).AI
+      const transcribeVoice=aiBinding?async(bytes:Uint8Array)=>{
+        const res=await aiBinding.run('@cf/openai/whisper',{audio:[...bytes]}) as {text?:string}|null
+        return typeof res?.text==='string'?res.text.trim():''
+      }:undefined
       if(env.ETNOS_AUTH_MODE==='atproto'){
         if(!env.ETNOS_OAUTH_JWK || !env.ETNOS_AUTH_SEAL_KEY){
           const publicApi=api(core,{runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE,principal:()=>undefined,writeGuard:()=>{throw new Fault(503,'Enrollment unavailable')}})
@@ -73,10 +79,10 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
           this.operatorOf=r=>{const p=auth.principal(r);return !!p&&auth.operatorAllowed(p.id)}
           this.writeGuard=r=>auth.writeGuard(r)
-          const handler=api(core,{models,newsFetcher,researchFetcher:fetch,sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.ETNOS_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
+          const handler=api(core,{models,newsFetcher,researchFetcher:fetch,voiceBucket,transcribeVoice,sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.ETNOS_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
         }
-      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{models,newsFetcher,researchFetcher:fetch,sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE});this.resident=new Resident(core,access,residentProvider,undefined,autoDeps);this.resident.budget=budget;this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.writeGuard=()=>{};this.handle=async r=>(await routes(r))??handler(r)}
+      }else {const access=new AgentAccess(core),routes=agentRoutes(core,access),handler=api(core,{models,newsFetcher,researchFetcher:fetch,voiceBucket,transcribeVoice,sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE});this.resident=new Resident(core,access,residentProvider,undefined,autoDeps);this.resident.budget=budget;this.discovery=acquire?new Discovery(core,acquire):undefined;this.sourceOperatorAllowed=()=>true;this.operatorOf=()=>true;this.writeGuard=()=>{};this.handle=async r=>(await routes(r))??handler(r)}
     })
   }
   private alarmUpdates:Promise<void>=Promise.resolve()

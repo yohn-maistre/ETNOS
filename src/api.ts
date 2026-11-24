@@ -27,6 +27,7 @@ import {kamusCsv,kamusCldf} from './kamus-export.ts'
 import leipzigJakarta from '../seed/kamus/leipzig-jakarta-100.json' with { type: 'json' }
 import type {Models} from './models.ts'
 import { Media } from './media.ts'
+import { Voice, type VoiceBucket } from './voice.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
 import {AgentAccess} from './agent-access.ts'
@@ -72,14 +73,14 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;voiceBucket?:VoiceBucket;transcribeVoice?:(bytes:Uint8Array,mime:string)=>Promise<string>;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
   const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon(),{operator:id=>!!options.stewardDid&&store.actor(id).did===options.stewardDid})
   const ask=new KamusAsk(store,kamus,kamusLexicon(),leipzigJakarta as ConceptList,viewerRecords)
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
-  const media=new Media(store)
+  const media=new Media(store),voice=new Voice(store,options.voiceBucket)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
@@ -139,6 +140,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(path==='/v1/agents')result=agents.list(authenticated())
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='desk')result=desk.list(authenticated(),parts[2])
         else if(parts.length===3&&parts[1]==='media')return media.response(actor?.id,parts[2])
+        else if(parts.length===3&&parts[1]==='voice')return await voice.response(actor?.id,parts[2],req.headers.get('range'))
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth':'local-provisioned-credentials', enrollment:options.authMode==='atproto'?(options.enrollmentMode??'invite'):null, atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
@@ -224,6 +226,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         // Kamus in posts (src/kamus-ask.ts): underlines, the word card, the deck, Kata saya, Kata hari ini, export.
         else if(path==='/v1/kamus/annotate')result=ask.annotate(actor?.id,(url.searchParams.get('posts')??'').split(',').filter(Boolean))
         else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='word')result=ask.word(actor?.id,parts[2],url.searchParams.get('w')??'',url.searchParams.get('post')??undefined)
+        else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='voice')result={voices:voice.forWord(actor?.id,parts[2],url.searchParams.get('w')??'')}
         else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='questions')result=ask.questions(authenticated(),parts[2])
         else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='mine')result=ask.mine(authenticated(),parts[2])
         else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='today')result=ask.today(authenticated(),parts[2])
@@ -275,7 +278,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
       options.writeGuard?.(req)
       // A founding link is read before signing in: the token travels in the body, never in a URL.
       if (path === '/v1/founding/preview') return json(200, founding.preview((await body(req)).token, principal()?.id))
-      const caller = authenticated(), b = await body(req)
+      const caller = authenticated(), b = await body(req, path === '/v1/voice' ? 3000000 : MAX_BODY)
       const send=(x:Record<string,unknown>):{id:string}=>x.requestOf!==undefined?(()=>{throw new Fault(400,'Tag this post after sending it')})():x.agentMention===undefined&&typeof x.artinya==='string'&&x.artinya.trim()?store.tx(()=>{const {artinya,...rest}=x;const post=forum.create(caller,rest,groups);ask.setArtinya(caller,post.id,artinya);return post}):x.agentMention===undefined?forum.create(caller,x,groups):resident.createMentionPost(caller,x,groups)
       const current=principal() // Recheck after awaiting an untrusted body.
       if(current?.id!==caller)throw new Fault(401,'Authentication required')
@@ -311,6 +314,18 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='posts'&&parts[3]==='suggestions') result=await decisions.suggest(caller,parts[2],string(b.requestKey),()=>{if(principal()?.id!==caller)throw new Fault(401,'Authentication required');options.writeGuard?.(req)})
       else if(path==='/v1/profile')result=updateProfile(store,caller,b)
       else if(path==='/v1/media')result=media.upload(caller,string(b.communityId),string(b.bytes),string(b.alt??''))
+      else if(path==='/v1/voice')result=await voice.upload(caller,{communityId:string(b.communityId),bytes:string(b.bytes),durationMs:b.durationMs,peaks:b.peaks,speaker:b.speaker,language:b.language,transcript:b.transcript,consentPublic:b.consentPublic,protocol:b.protocol})
+      else if(parts.length===4&&parts[1]==='voice'&&parts[3]==='transcript')result=voice.updateTranscript(caller,parts[2],b.transcript,b.language)
+      else if(parts.length===4&&parts[1]==='voice'&&parts[3]==='withdraw')result=await voice.withdraw(caller,parts[2])
+      else if(parts.length===4&&parts[1]==='voice'&&parts[3]==='transcribe'){
+        if(!options.transcribeVoice)throw new Fault(503,'Transkrip otomatis belum aktif di simpul ini; gunakan Bantu tulis')
+        const {row,bytes}=await voice.readBytesForMember(caller,parts[2])
+        if(store.community(row.community_id).visibility!=='public'&&b.allowCloud!==true)throw new Fault(403,'Ruang privat membutuhkan persetujuan eksplisit sebelum mengirim audio ke layanan transkrip')
+        const textOut=await options.transcribeVoice(bytes,row.mime)
+        if(principal()?.id!==caller)throw new Fault(401,'Authentication required')
+        result=textOut?voice.updateTranscript(caller,parts[2],textOut,b.language??'id'):{transcript:'',empty:true}
+      }
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='voice')result=voice.attachToWord(caller,parts[2],string(b.word),string(b.clipId))
       else if (path === '/v1/communities' && b.forming === true) result = founding.found(caller,{title:string(b.title),description:string(b.description),visibility:string(b.visibility) as Community['visibility'],admission:b.admission === undefined ? undefined : string(b.admission) as Community['admission'],about:strings(b.about??[]),languages:strings(b.languages??[]),groupId:b.groupId===undefined||b.groupId===null?undefined:string(b.groupId)},groups)
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){

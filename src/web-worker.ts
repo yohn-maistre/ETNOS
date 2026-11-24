@@ -152,10 +152,10 @@ export default {
     if(request.method!=='GET'&&request.method!=='HEAD')return json(405,{error:'Method not allowed'})
     const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers)
     headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','no-referrer')
-    headers.set('permissions-policy','camera=(), microphone=(), geolocation=()')
+    headers.set('permissions-policy','camera=(), microphone=(self), geolocation=()')
     if(headers.get('content-type')?.includes('text/html')){
       headers.set('cache-control','no-store')
-      headers.set('content-security-policy',"default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; font-src 'self' data:; connect-src 'self' https://cloudflareinsights.com https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; worker-src 'self' blob:; frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com; media-src https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
+      headers.set('content-security-policy',"default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; font-src 'self' data:; connect-src 'self' https://cloudflareinsights.com https://tiles.maps.eox.at https://elevation-tiles-prod.s3.amazonaws.com; worker-src 'self' blob:; frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'")
       if(request.method==='GET'&&response.ok){
         // Deliberately construct new anonymous requests: even signed-in readers
         // receive the same public-only sharing projection as an external crawler.

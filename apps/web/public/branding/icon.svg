@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ETNOS">
+  <rect width="512" height="512" rx="112" fill="#12141a"/>
+  <rect x="44" y="44" width="424" height="424" rx="84" fill="none" stroke="#c86b3c" stroke-width="18"/>
+  <path d="M156 156h200v44H208v58h128v44H208v58h148v44H156V156z" fill="#f6f3ee"/>
+  <circle cx="356" cy="280" r="24" fill="#c86b3c"/>
+</svg>

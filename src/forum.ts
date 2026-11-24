@@ -14,7 +14,7 @@ export class Forum {
   if(typeof b.communityId!=='string'||typeof b.text!=='string')throw new Fault(400,'Community and text required')
   const community=b.communityId,text=b.text,key=b.requestKey
   if(key!==undefined&&(typeof key!=='string'||!/^[a-f0-9-]{36}$/.test(key)))throw new Fault(400,'Invalid request key')
-  const input:unknown[]=[community,text,b.parentId??null,b.mandateId??null,b.content??{},b.mediaIds??[],b.contextIds??[]]
+  const input:unknown[]=[community,text,b.parentId??null,b.mandateId??null,b.content??{},b.mediaIds??[],b.contextIds??[],...(b.voiceIds!==undefined?[['voice',b.voiceIds]]:[])]
   if(b.agentMention!==undefined){
    const mention=b.agentMention as Record<string,unknown>
    if(s.actor(actor).kind!=='human'||!key||!mention||typeof mention!=='object'||Array.isArray(mention)||Object.keys(mention).some(k=>!['actorId','choiceKey'].includes(k))||typeof mention.actorId!=='string'||mention.actorId.length>100||typeof mention.choiceKey!=='string'||!/^[a-f0-9]{64}$/.test(mention.choiceKey))throw new Fault(400,'Choose one available Aksara identity for this question')
@@ -28,7 +28,7 @@ export class Forum {
    if(key){const previous=s.get<{digest:string;post_id:string}>('SELECT digest,post_id FROM post_requests WHERE actor_id=? AND request_key=?',actor,key);if(previous){if(previous.digest!==digest)throw new Fault(409,'This request already contains a different post');return s.getPost(actor,previous.post_id)}}
    if(s.get<{n:number}>('SELECT COUNT(*) n FROM posts WHERE author_id=? AND created>?',actor,s.clock()-60000)!.n>=20)throw new Fault(429,'Please wait before posting again')
    for(const field of ['parentId','mandateId'])if(b[field]!==undefined&&typeof b[field]!=='string')throw new Fault(400,'Invalid post field')
-   const post=s.createPost(actor,community,text,b.parentId as string|undefined,b.mandateId as string|undefined,{content:b.content,mediaIds:strings(b.mediaIds??[])})
+   const post=s.createPost(actor,community,text,b.parentId as string|undefined,b.mandateId as string|undefined,{content:b.content,mediaIds:strings(b.mediaIds??[]),voiceIds:strings(b.voiceIds??[])})
    for(const id of strings(b.contextIds??[]))groups.attach(actor,'post',post.id,id)
    if(key)s.run('INSERT INTO post_requests VALUES(?,?,?,?)',actor,key,digest,post.id)
    return s.getPost(actor,post.id)
@@ -59,7 +59,7 @@ export class Forum {
    if(season&&season!==old.season)checkSeason(s,p.community_id,season)
    const c={...contentInput(patch,s.clock()),...(old.answer?{answer:old.answer}:{}),...(old.poll?{poll:old.poll}:{}),...(old.event?{event:old.event}:{}),...(season?{season}:{})}
    checkInlineMedia(c,s.all<{id:string}>('SELECT id FROM media WHERE post_id=?',id).map(m=>m.id))
-   if(!b.text.trim()&&!c.title&&!c.url&&!c.poll&&!c.event&&!s.get('SELECT 1 FROM media WHERE post_id=?',id))throw new Fault(400,'Add text, a link or media')
+   if(!b.text.trim()&&!c.title&&!c.url&&!c.poll&&!c.event&&!s.get('SELECT 1 FROM media WHERE post_id=?',id)&&!s.get('SELECT 1 FROM voice_clips WHERE post_id=?',id))throw new Fault(400,'Add text, a link or media')
    // An offer or request keeps to the Kios house rules after an edit too (src/kios-rules.ts).
    if(s.get('SELECT 1 FROM offerings WHERE post_id=?',id)&&brokenRule(activeRules(s),b.text,c.title))throw new Fault(422,'This listing breaks a Kios house rule')
    s.run('UPDATE posts SET text=?,content=?,revision=revision+1,updated=? WHERE id=?',b.text.trim(),JSON.stringify(c),s.clock(),id)
@@ -72,7 +72,7 @@ export class Forum {
   return s.tx(()=>{
    const p=this.editable(actor,id,revision)
    s.run("UPDATE posts SET text='',content='{}',deleted=1,pinned=0,revision=revision+1,updated=? WHERE id=?",s.clock(),id)
-   for(const table of ['media','poll_votes','event_responses','votes','bookmarks','post_confirmations'])s.run(`DELETE FROM ${table} WHERE post_id=?`,id)
+   for(const table of ['media','voice_clips','poll_votes','event_responses','votes','bookmarks','post_confirmations'])s.run(`DELETE FROM ${table} WHERE post_id=?`,id)
    s.run("DELETE FROM record_contexts WHERE record_kind='post' AND record_id=?",id)
    s.run('DELETE FROM post_entries WHERE post_id=?',id)
    s.invalidatePublicContext(p.community_id)

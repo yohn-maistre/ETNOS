@@ -54,6 +54,21 @@ export type MediaAttachment = {
   width: number
   height: number
 }
+export type VoiceAttachment = {
+  id: string
+  url: string
+  mime: string
+  size: number
+  durationMs: number
+  peaks: number[]
+  speaker: string
+  language: string
+  transcript: string
+  consentPublic: boolean
+  protocol: 'community' | 'public' | 'restricted'
+  created: number
+  canEdit: boolean
+}
 export type PostContent = {
   title?: string
   url?: string
@@ -106,6 +121,7 @@ export type Post = {
     myResponse: string | null
   } | null
   media?: MediaAttachment[]
+  voice?: VoiceAttachment[]
   directReplies?: number
   id: string
   author_id: string

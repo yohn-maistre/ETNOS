@@ -1,13 +1,15 @@
 <script lang="ts">
   // The word card: one solid card in the accent colour that opens on any word of a post in a Kamus community. It asks
-  // the open question about the word (Ya, Bukan, Tidak tahu), takes a word class and a written meaning, and saves the
-  // word to Kata saya. One answer never decides anything; the card says how many members agree so far.
-  // Voice answers are hidden until voice storage exists (docs/plan/one-page-system-2026-11-21.md §10, #69).
+  // the open question about the word (Ya, Bukan, Tidak tahu), takes a word class, written meaning, and voice
+  // pronunciation, and saves the word to Kata saya. One answer never decides anything.
   import { Dialog } from 'bits-ui'
-  import { X, Check, Bookmark, BookmarkCheck, PencilLine } from '@lucide/svelte'
-  import { request } from './api'
+  import { X, Check, Bookmark, BookmarkCheck, PencilLine, Mic } from '@lucide/svelte'
+  import { request, type VoiceAttachment } from './api'
   import { kamus, closeWord, refreshAnnotations } from './kamus-posts.svelte.ts'
   import { WORD_CLASSES, type WordClass } from './kamus-text.ts'
+  import VoicePlayer from './VoicePlayer.svelte'
+  import VoiceRecorder from './VoiceRecorder.svelte'
+  import { uploadVoiceDraft, type VoiceDraft } from './voice'
 
   type Claim = { id: string; state: string; yes: number; no: number; mine: string | null; proposedByMe: boolean }
   type Sense = { id: string; lemma: string; gloss: string; pos: string; dialect: string; variants: { form: string; dialect: string }[]; source: string; licence: string; page: number | null; state: string }
@@ -19,6 +21,7 @@
     aligned: { indonesian: string; wordClass: string; together: number } | null
     uses: { uses: number; speakers: number } | null
     mine: { saved: boolean; gloss: string; wordClass: string } | null
+    voices?: VoiceAttachment[]
     canAnswer: boolean
   }
   const CLASS: Record<WordClass, string> = { benda: 'Benda', kerja: 'Kerja', sifat: 'Sifat', lainnya: 'Lainnya' }
@@ -28,6 +31,8 @@
     failed = $state(''),
     busy = $state(''),
     writing = $state(false),
+    recordingVoice = $state(false),
+    voiceDraft = $state<VoiceDraft | null>(null),
     meaning = $state(''),
     note = $state(''),
     narrow = $state(false),
@@ -37,7 +42,7 @@
 
   $effect(() => {
     const c = kamus.card
-    word = null; failed = ''; writing = false; meaning = ''; note = ''
+    word = null; failed = ''; writing = false; recordingVoice = false; voiceDraft = null; meaning = ''; note = ''
     if (!c) return
     narrow = typeof matchMedia === 'function' && matchMedia('(max-width: 639px)').matches
     const p = new URLSearchParams({ w: c.form }); if (c.postId) p.set('post', c.postId)
@@ -80,6 +85,21 @@
     const key = word.question && word.question.kind !== 'frequent' ? word.question.key : 'new:' + word.norm
     if (await send({ key, answer: 'other', text: meaning.trim() }, 'meaning')) { writing = false; meaning = ''; note = 'Arti kamu menjadi usulan. Anggota lain akan memeriksanya.' }
   }
+  async function saveVoice() {
+    if (!card || !word || !voiceDraft || busy) return
+    busy = 'voice'; note = ''
+    try {
+      const uploaded = await uploadVoiceDraft(card.communityId, voiceDraft)
+      const attached = await request<VoiceAttachment>(base + '/voice', { word: word.form, clipId: uploaded.id })
+      word.voices = [attached, ...(word.voices ?? [])]
+      URL.revokeObjectURL(voiceDraft.previewUrl)
+      voiceDraft = null
+      recordingVoice = false
+      note = 'Pelafalan kamu tersimpan untuk kata ini.'
+    } catch (e) {
+      note = e instanceof Error ? e.message : 'Rekaman pelafalan belum tersimpan.'
+    } finally { busy = '' }
+  }
   async function toggleSave() {
     if (!card || !word || busy) return
     busy = 'save'
@@ -114,6 +134,13 @@
       {:else if !word}
         <p id="kw-question" class="kw-q kw-loading" role="status">Memuat kata…</p>
       {:else}
+        {#if word.voices?.length}
+          <div class="kw-voices">
+            {#each word.voices.slice(0, 3) as clip (clip.id)}
+              <VoicePlayer {clip} compact={true} />
+            {/each}
+          </div>
+        {/if}
         {#if word.state === 'checked' && checkedSense}
           <p id="kw-question" class="kw-q">Artinya <strong>{checkedSense.gloss}</strong>.</p>
           <p class="kw-sub">{word.stem && !word.senses.length ? `Bentuk dari ${word.stem.stem}. ` : ''}Sudah diperiksa anggota{word.wordClass ? `, ${CLASS_LONG[word.wordClass]}` : ''}.</p>
@@ -157,9 +184,20 @@
               <div><input id="kw-meaning" bind:this={field} bind:value={meaning} maxlength="160" autocomplete="off" /><button type="submit" class="kw-send" disabled={!!busy || !meaning.trim()}>Kirim</button></div>
             </form>
           {/if}
+          {#if recordingVoice}
+            <div class="kw-voice-box">
+              <VoiceRecorder bind:draft={voiceDraft} compact={true} allowProtocol={false} onError={(m) => (note = m)} />
+              {#if voiceDraft}
+                <button type="button" class="kw-send" disabled={!!busy} onclick={saveVoice}>
+                  {busy === 'voice' ? 'Mengunggah...' : 'Simpan pelafalan'}
+                </button>
+              {/if}
+            </div>
+          {/if}
           <div class="kw-tools">
             {#if !writing}<button type="button" onclick={startWriting}><PencilLine size={16} aria-hidden="true" />Tulis arti</button>{/if}
-            <button type="button" aria-pressed={!!word.mine?.saved} disabled={busy === 'save'} onclick={toggleSave}>{#if word.mine?.saved}<BookmarkCheck size={16} aria-hidden="true" />Tersimpan di Kata saya{:else}<Bookmark size={16} aria-hidden="true" />Simpan ke Kata saya{/if}</button>
+            <button type="button" aria-pressed={recordingVoice} onclick={() => (recordingVoice = !recordingVoice)}><Mic size={16} aria-hidden="true" />Ucapkan</button>
+            <button type="button" aria-pressed={!!word.mine?.saved} disabled={busy === 'save'} onclick={toggleSave}>{#if word.mine?.saved}<BookmarkCheck size={16} aria-hidden="true" />Tersimpan{:else}<Bookmark size={16} aria-hidden="true" />Simpan{/if}</button>
           </div>
         {:else}
           <p class="kw-sub">Bergabunglah dengan komunitas ini untuk menjawab dan menyimpan kata.</p>
@@ -221,5 +259,6 @@
   .kw-tools { display: flex; flex-wrap: wrap; gap: 8px; }
   .kw-tools button { flex: 1 1 auto; justify-content: flex-start; border-color: transparent; background: color-mix(in oklab, currentColor 10%, transparent); }
   .kw-tools button[aria-pressed='true'] { background: color-mix(in oklab, currentColor 20%, transparent); }
+  .kw-voices, .kw-voice-box { display: grid; gap: 6px; color: var(--ink); }
   .kw-source { margin: 2px 0 0; padding-top: 8px; border-top: 1px solid color-mix(in oklab, currentColor 22%, transparent); font-size: 12.5px; line-height: 1.4; opacity: 0.85; }
 </style>

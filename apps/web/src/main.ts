@@ -41,4 +41,7 @@ if (location.pathname === '/recover-messages') {
   // Text rendered by the server for crawlers and readers without JavaScript.
   document.querySelector('#app > [data-prerender]')?.remove()
   mount(App, { target: document.getElementById('app')! })
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    void navigator.serviceWorker.register('/sw.js').catch(() => {})
+  }
 }

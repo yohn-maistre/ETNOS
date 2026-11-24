@@ -73,7 +73,7 @@
     "binding": "ASSETS",
     // Static files are served without running the Worker, so they do not count
     // against the 100,000 requests a day on Workers Free. Pages still run it.
-    "run_worker_first": ["/*", "!/assets/*", "!/branding/*", "!/fonts/*", "!/img/*", "!/textures/*", "!/observatory/*", "!/share/*", "!/third-party-notices.txt"],
+    "run_worker_first": ["/*", "!/assets/*", "!/branding/*", "!/fonts/*", "!/img/*", "!/textures/*", "!/observatory/*", "!/share/*", "!/third-party-notices.txt", "!/manifest.webmanifest", "!/sw.js"],
     "not_found_handling": "single-page-application"
   },
   "ai": {
