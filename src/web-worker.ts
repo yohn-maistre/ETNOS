@@ -11,6 +11,7 @@ import {resolveShare,shareTags,articleHTML,articleLD,escapeMeta} from './share.t
 import {dispatchSubdomain} from './situs-dispatch.ts'
 import {SITUS_CSS,SITUS_STYLE_VERSION} from './situs-style.ts'
 import {SITUS_STYLE_PATH} from './situs-render.ts'
+import {cachedPublicApi} from './edge-cache.ts'
 export {StrataNode,ResidentAuthority,ModelGateway}
 type WebEnv=Cloudflare.Env & {ASSETS:Fetcher;WATCH_NEWS?:Fetcher;IDENTITY_HOST?:Fetcher;ETNOS_SITUS_SUBDOMAINS?:string;STRATA_SITUS_SUBDOMAINS?:string}
 const legacyOrigin='https://strata-preview.giyaibo.workers.dev'
@@ -148,7 +149,8 @@ export default {
       const r=await backend.fetch(new Request(config.ETNOS_ORIGIN+'/v1/situs/'+situsRoute[1]+'/page'+(draft?'?versi=draf':''),{headers}),env)
       return r.ok?situsHeaders(r):situsMissing()
     }
-    if(url.pathname==='/health'||/^\/(v1|auth|oauth)(\/|$)/.test(url.pathname))return backend.fetch(request,env)
+    if(url.pathname==='/health'||/^\/(auth|oauth)(\/|$)/.test(url.pathname))return backend.fetch(request,env)
+    if(/^\/v1(\/|$)/.test(url.pathname))return cachedPublicApi(request,edgeCache(),r=>backend.fetch(r,env))
     if(request.method!=='GET'&&request.method!=='HEAD')return json(405,{error:'Method not allowed'})
     const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers)
     headers.set('x-content-type-options','nosniff');headers.set('referrer-policy','no-referrer')

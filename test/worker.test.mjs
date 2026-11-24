@@ -88,8 +88,8 @@ test('actual workerd SQLite: access, admission, transaction rollback, bytes, out
     const governance=ns.getByName('governance-node')
     assert.deepEqual(JSON.parse(await governance.governanceContract()),{hiddenOmitted:true,separateAdmission:true,state:'completed',privateProposalOmitted:true,rolledBack:true,hiddenDraft:true,activityRead:true,activityPrivate:true,agentAuthor:'agent'})
     const forum=JSON.parse(await ns.getByName('forum-node').forumContract())
-    // Canonical offering and place projections add two batched reads, not one per post.
-    assert.equal(forum.voted,true);assert.equal(forum.lockDenied,true);assert.equal(forum.deleted,true);assert.equal(forum.roots,30);assert.equal(forum.queriesPerFeed,14);assert.equal(forum.queriesForSinglePost,forum.queriesPerFeed)
+    // Canonical offering, place, and voice-clip projections add batched reads, not one per post (O(1) per page).
+    assert.equal(forum.voted,true);assert.equal(forum.lockDenied,true);assert.equal(forum.deleted,true);assert.equal(forum.roots,30);assert.equal(forum.queriesPerFeed,16);assert.equal(forum.queriesForSinglePost,forum.queriesPerFeed)
     console.log('Synthetic local workerd feed benchmark:',JSON.stringify(forum))
     const oauth=ns.getByName('oauth-node')
     assert.deepEqual(JSON.parse(await oauth.authContract()),{start:200,callback:303,location:'/',hasCookie:true})

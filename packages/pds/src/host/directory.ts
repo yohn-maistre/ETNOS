@@ -115,4 +115,9 @@ export class Directory {
 	async audit(actor: string, action: string, subject: string | null, now: number): Promise<void> {
 		await this.db.prepare("INSERT INTO audit (at, actor, action, subject) VALUES (?,?,?,?)").bind(now, actor, action, subject).run();
 	}
+
+	async countSignupsSince(since: number): Promise<number> {
+		const row = await this.db.prepare("SELECT COUNT(*) AS n FROM accounts WHERE created >= ?").bind(since).first<{ n: number }>();
+		return Number(row?.n ?? 0);
+	}
 }

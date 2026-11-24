@@ -70,6 +70,14 @@ export class Host {
 			if (row.status !== "pending" || row.handle !== checked.handle)
 				return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
 		} else {
+			const rawCap = this.env.DAILY_SIGNUP_CAP;
+			const cap = rawCap === undefined || rawCap === "" ? 50 : Math.max(0, Number.parseInt(rawCap, 10) || 0);
+			if (cap > 0) {
+				const todayCount = await this.dir.countSignupsSince(now - 86_400_000);
+				if (todayCount >= cap) {
+					return fail(429, "DailySignupLimit", "Batas pendaftaran akun harian sudah tercapai. Coba lagi besok.");
+				}
+			}
 			const accountId = crypto.randomUUID();
 			const claim = await this.dir.claim(accountId, checked.handle, hash, now);
 			if (claim === "handle-taken") return fail(400, "HandleNotAvailable", "Nama ini sudah dipakai. Pilih nama lain.");

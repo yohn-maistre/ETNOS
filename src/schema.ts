@@ -622,6 +622,10 @@ CREATE TABLE museum_annotations(
 );
 CREATE INDEX museum_annotations_community ON museum_annotations(community_id,state,created DESC);
 CREATE INDEX museum_annotations_target ON museum_annotations(target_uri,state);
+`, `
+CREATE INDEX IF NOT EXISTS posts_community_visible_created ON posts(community_id,hidden,deleted,created DESC,id DESC);
+CREATE INDEX IF NOT EXISTS kamus_entries_public_lookup ON kamus_entries(community_id,sensitive,state,norm);
+CREATE INDEX IF NOT EXISTS voice_clips_kamus_lookup ON voice_clips(community_id,kamus_norm,protocol);
 `]
 
 export const schemaVersion=migrations.length

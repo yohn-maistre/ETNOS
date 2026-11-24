@@ -50,6 +50,8 @@ export interface HostEnv {
 	SPACES_INDEX?: DurableObjectNamespace<HostedSpaceIndexDurableObject>;
 	/** Seconds a space credential from another host's authority is accepted (default 300). */
 	SPACES_REMOTE_CREDENTIAL_MAX_AGE?: string;
+	/** Max brand-new accounts per 24h rolling window (default 50; set "0" to disable). */
+	DAILY_SIGNUP_CAP?: string;
 }
 
 export const PUBLIC_PLC = "https://plc.directory";
