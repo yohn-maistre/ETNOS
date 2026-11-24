@@ -11,6 +11,8 @@ const ok=async(url:string,headers:Record<string,string>,fetcher:typeof fetch)=>{
 export const SERVICES:Service[]=[
  {id:'openalex',label:'OpenAlex',use:'Daftar riset terbit di halaman wiki.',env:'OPENALEX_API_KEY',link:'https://openalex.org/settings/api',
   check:(key,f)=>ok('https://api.openalex.org/works?per-page=1&select=id',{authorization:'Bearer '+key},f)},
+ {id:'plantnet',label:'Pl@ntNet',use:'Usulan nama spesies tumbuhan dari foto publik komunitas (opsional).',env:'PLANTNET_API_KEY',link:'https://my.plantnet.org/',
+  check:(key,f)=>ok('https://my-api.plantnet.org/v2/projects?api-key='+encodeURIComponent(key),{},f)},
 ]
 
 export const service=(id:unknown)=>SERVICES.find(s=>s.id===id)??null

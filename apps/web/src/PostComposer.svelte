@@ -18,7 +18,7 @@
     Code,
     Plus,
     ArrowUp,
-    AtSign, Bot, Mic,
+    AtSign, Bot, Mic, Briefcase, Luggage,
   } from '@lucide/svelte'
   import * as Avatar from '$lib/components/ui/avatar/index.js'
   import Choice from './Choice.svelte'
@@ -110,6 +110,16 @@
     offerKind = $state('offer'),offerPrice = $state(''),offerUnit = $state(''),offerDays = $state('30'),
     eventTime = $state(''),
     eventLocation = $state(''),
+    peluangCat = $state<'beasiswa' | 'hibah' | 'kerja' | 'pelatihan'>('beasiswa'),
+    peluangOrg = $state(''),
+    peluangLoc = $state(''),
+    peluangDeadline = $state(''),
+    peluangUrl = $state(''),
+    bagasiKind = $state<'bawa' | 'titip'>('bawa'),
+    bagasiFrom = $state(''),
+    bagasiTo = $state(''),
+    bagasiDate = $state(''),
+    bagasiCap = $state(''),
     pending = $state<{ key: string; payload: Record<string, unknown> } | null>(
       null,
     ),
@@ -283,6 +293,26 @@
           location: eventLocation,
         }
       }
+      if (kind === 'peluang') {
+        if (!peluangOrg.trim()) throw Error('Tulis nama penyelenggara peluang.')
+        content.peluang = {
+          category: peluangCat,
+          organizer: peluangOrg.trim(),
+          location: peluangLoc.trim(),
+          ...(peluangDeadline ? { deadline: new Date(peluangDeadline + 'T23:59:00').getTime() } : {}),
+          ...(peluangUrl.trim() ? { applyUrl: peluangUrl.trim() } : {}),
+        }
+      }
+      if (kind === 'bagasi') {
+        if (!bagasiFrom.trim() || !bagasiTo.trim()) throw Error('Isi kota asal dan tujuan titip bagasi.')
+        content.bagasi = {
+          kind: bagasiKind,
+          from: bagasiFrom.trim(),
+          to: bagasiTo.trim(),
+          capacity: bagasiCap.trim(),
+          ...(bagasiDate ? { departAt: new Date(bagasiDate + 'T09:00:00').getTime() } : {}),
+        }
+      }
       if (!pending) {
         const mediaIds = await uploadImages(communityId, images)
         const voiceIds = voiceDraft ? [(await uploadVoiceDraft(communityId, voiceDraft)).id] : []
@@ -320,6 +350,8 @@
       season = ''
       kind = ''
       offerKind='offer';offerPrice='';offerUnit='';offerDays='30'
+      peluangOrg='';peluangLoc='';peluangDeadline='';peluangUrl=''
+      bagasiFrom='';bagasiTo='';bagasiDate='';bagasiCap=''
       pollOptions = ['', '']
       format = destination?.publication==='local'
       preview = false
@@ -514,6 +546,33 @@
           /><Button variant="ghost" size="sm" onclick={() => (kind = '')}>
             Hapus acara
           </Button>
+        </fieldset>{/if}
+      {#if kind === 'peluang'}<fieldset class="composer-extras" disabled={busy || !!pending}>
+          <legend>Peluang</legend>
+          <Choice aria-label="Jenis peluang" bind:value={peluangCat} items={[{ value: 'beasiswa', label: 'Beasiswa' }, { value: 'hibah', label: 'Hibah' }, { value: 'kerja', label: 'Lowongan kerja' }, { value: 'pelatihan', label: 'Pelatihan' }]} />
+          <div class="offering-form-pair">
+            <Input aria-label="Penyelenggara" placeholder="Penyelenggara / lembaga" bind:value={peluangOrg} maxlength={140} required />
+            <Input aria-label="Lokasi peluang" placeholder="Lokasi (opsional)" bind:value={peluangLoc} maxlength={140} />
+          </div>
+          <div class="offering-form-pair">
+            <Input aria-label="Batas pendaftaran" type="date" bind:value={peluangDeadline} />
+            <Input aria-label="Tautan pendaftaran" type="url" placeholder="https://… (opsional)" bind:value={peluangUrl} maxlength={2048} />
+          </div>
+          <Button variant="ghost" size="sm" onclick={() => (kind = '')}>Hapus peluang</Button>
+        </fieldset>{/if}
+      {#if kind === 'bagasi'}<fieldset class="composer-extras" disabled={busy || !!pending}>
+          <legend>Titip bagasi</legend>
+          <Choice aria-label="Jenis titip bagasi" bind:value={bagasiKind} items={[{ value: 'bawa', label: 'Bisa bawa titipan' }, { value: 'titip', label: 'Cari yang bisa bawa' }]} />
+          <div class="offering-form-pair">
+            <Input aria-label="Kota asal" placeholder="Dari (mis. Jayapura)" bind:value={bagasiFrom} maxlength={120} required />
+            <Input aria-label="Kota tujuan" placeholder="Ke (mis. Wamena / Nabire)" bind:value={bagasiTo} maxlength={120} required />
+          </div>
+          <div class="offering-form-pair">
+            <Input aria-label="Tanggal berangkat" type="date" bind:value={bagasiDate} />
+            <Input aria-label="Kapasitas atau barang" placeholder="Mis. 5 kg / obat-obatan" bind:value={bagasiCap} maxlength={100} />
+          </div>
+          <p class="cx-hint">Koordinasi dilakukan langsung antar anggota. Pastikan barang aman dan sesuai aturan maskapai atau kapal.</p>
+          <Button variant="ghost" size="sm" onclick={() => (kind = '')}>Hapus titip bagasi</Button>
         </fieldset>{/if}
       {#if images.length}<div class="composer-images">
           {#each images as image (image.key)}<div class="composer-image-draft">

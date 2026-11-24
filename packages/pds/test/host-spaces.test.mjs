@@ -67,7 +67,7 @@ test("spaces: members read with MACs, others cannot, and removal takes effect at
 	const dir = persistDir(), plc = new FakePlc(), mf = hostRuntime({ persist: dir, plc });
 	try {
 		await migrate(mf);
-		const lembaga = await signup(mf, "lembaga"), ana = await signup(mf, "ana"), budi = await signup(mf, "budi"), citra = await signup(mf, "citra");
+		const lembaga = await signup(mf, "komunitas1"), ana = await signup(mf, "ana"), budi = await signup(mf, "budi"), citra = await signup(mf, "citra");
 		assert.equal((await (await call(mf, "/health")).json()).spaces, "alpha");
 
 		// The lembaga's own account is the authority of a memberspace.

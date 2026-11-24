@@ -30,6 +30,8 @@ import { Media } from './media.ts'
 import { Voice, type VoiceBucket } from './voice.ts'
 import { AtSpaces } from './spaces.ts'
 import { Captures3d } from './captures.ts'
+import { Saluran } from './saluran.ts'
+import { PetaKata } from './peta-kata.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
 import {AgentAccess} from './agent-access.ts'
@@ -75,7 +77,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;voiceBucket?:VoiceBucket;transcribeVoice?:(bytes:Uint8Array,mime:string)=>Promise<string>;splatWorkerUrl?:string;splatSecret?:string;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;voiceBucket?:VoiceBucket;transcribeVoice?:(bytes:Uint8Array,mime:string)=>Promise<string>;splatWorkerUrl?:string;splatSecret?:string;plantNetKey?:()=>Promise<string|undefined>|string|undefined;saluranFetcher?:typeof fetch;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -84,6 +86,8 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store),voice=new Voice(store,options.voiceBucket),spaces=new AtSpaces(store)
   const captures=new Captures3d(store,{bucket:options.voiceBucket,workerUrl:options.splatWorkerUrl,workerSecret:options.splatSecret})
+  const saluran=new Saluran(store,{plantNetKey:options.plantNetKey,fetcher:options.saluranFetcher??options.researchFetcher,origin:store.base})
+  const petaKata=new PetaKata(store,kamusLexicon())
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
@@ -148,6 +152,11 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(parts.length===3&&parts[1]==='captures')result=captures.read(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='captures'&&parts[3]==='file')return await captures.fileResponse(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='viewer'&&parts[3]==='pins')result={pins:captures.pinsFor(actor?.id,decodeURIComponent(parts[2]))}
+        else if(path==='/v1/peta-kata/concepts')result=petaKata.concepts()
+        else if(path==='/v1/peta-kata')result=petaKata.lookup({concept:url.searchParams.get('concept')??undefined,q:url.searchParams.get('q')??undefined})
+        else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='saluran')result=saluran.settings(actor?.id,parts[2])
+        else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kurasi')result={annotations:saluran.listAnnotations(actor?.id,parts[2])}
+        else if(path==='/v1/kurasi/annotations.jsonld')return new Response(JSON.stringify(saluran.exportJsonLd(url.searchParams.get('target')??undefined)),{status:200,headers:{'content-type':'application/ld+json; charset=utf-8','cache-control':'public, max-age=60','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth':'local-provisioned-credentials', enrollment:options.authMode==='atproto'?(options.enrollmentMode??'invite'):null, atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
@@ -345,6 +354,12 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='captures'&&parts[3]==='withdraw')result=await captures.withdraw(caller,parts[2])
       else if(parts.length===4&&parts[1]==='viewer'&&parts[3]==='pins')result=captures.addPin(caller,decodeURIComponent(parts[2]),{x:b.x,y:b.y,z:b.z,label:b.label,note:b.note,kamusWord:b.kamusWord,voiceClipId:b.voiceClipId,communityId:b.communityId})
       else if(parts.length===5&&parts[1]==='viewer'&&parts[2]==='pins'&&parts[4]==='delete')result=captures.deletePin(caller,parts[3])
+      else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='saluran')result=saluran.setSettings(caller,parts[2],b)
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='saluran'&&parts[4]==='usulan')result=saluran.proposeUsulan(caller,parts[2],{jenis:string(b.jenis) as 'kata'|'tentang'|'entri-baru'|'nilai',subject:string(b.subject),statement:string(b.statement),source:string(b.source),postId:typeof b.postId==='string'?b.postId:undefined})
+      else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='saluran'&&parts[4]==='plant-id')result=await saluran.identifyPlant(caller,parts[2],b)
+      else if(path==='/v1/saluran/iiif-inspect')result=await saluran.inspectIiif(caller,b.manifestUrl)
+      else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kurasi')result=saluran.addAnnotation(caller,parts[2],b)
+      else if(parts.length===4&&parts[1]==='kurasi'&&parts[3]==='withdraw')result=saluran.withdrawAnnotation(caller,parts[2])
       else if (path === '/v1/communities' && b.forming === true) result = founding.found(caller,{title:string(b.title),description:string(b.description),visibility:string(b.visibility) as Community['visibility'],admission:b.admission === undefined ? undefined : string(b.admission) as Community['admission'],about:strings(b.about??[]),languages:strings(b.languages??[]),groupId:b.groupId===undefined||b.groupId===null?undefined:string(b.groupId)},groups)
       else if (path === '/v1/communities') result = store.createCommunity(caller,string(b.title),string(b.description),string(b.visibility) as Community['visibility'],b.automation === true,b.admission === undefined ? undefined : string(b.admission) as Community['admission'],b.publication===undefined?'local':string(b.publication) as Community['publication'])
       else if(path==='/v1/dm/device'){

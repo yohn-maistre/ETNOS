@@ -212,9 +212,89 @@
             {post.event.myResponse === 'going' ? 'Akan ikut' : 'Ikut'}
           </Button>
         </div>{/if}
+      {#if post.content?.peluang}
+        {@const pl = post.content.peluang}
+        <aside class="post-structured-card" aria-label="Peluang">
+          <div class="psc-head">
+            <span class="psc-badge">{pl.category === 'beasiswa' ? 'Beasiswa' : pl.category === 'hibah' ? 'Hibah' : pl.category === 'kerja' ? 'Lowongan kerja' : 'Pelatihan'}</span>
+            <strong>{pl.organizer}</strong>
+          </div>
+          <div class="psc-meta">
+            {#if pl.location}<span><MapPin size={13} />{pl.location}</span>{/if}
+            {#if pl.deadline}<span>Batas: {new Date(pl.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>{/if}
+          </div>
+          {#if pl.applyUrl}
+            <a class="psc-link" href={pl.applyUrl} target="_blank" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer">Buka tautan pendaftaran <ExternalLink size={13} /></a>
+          {/if}
+        </aside>
+      {/if}
+      {#if post.content?.bagasi}
+        {@const bg = post.content.bagasi}
+        <aside class="post-structured-card" aria-label="Titip bagasi">
+          <div class="psc-head">
+            <span class="psc-badge">{bg.kind === 'bawa' ? 'Bisa bawa titipan' : 'Cari titipan bagasi'}</span>
+            <strong>{bg.from} → {bg.to}</strong>
+          </div>
+          <div class="psc-meta">
+            {#if bg.departAt}<span>Berangkat: {new Date(bg.departAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>{/if}
+            {#if bg.capacity}<span>Muatan: {bg.capacity}</span>{/if}
+          </div>
+        </aside>
+      {/if}
     {/if}
     {#if post.locked}<small class="post-state">
         <LockKeyhole size={12} />Percakapan dikunci
       </small>{/if}
   {/if}
 </div>
+
+<style>
+  .post-structured-card {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface, var(--muted));
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .psc-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  .psc-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--brand) 14%, var(--background));
+    color: var(--brand);
+  }
+  .psc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12.5px;
+    color: var(--muted-foreground);
+  }
+  .psc-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .psc-link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brand);
+    text-decoration: none;
+  }
+  .psc-link:hover { text-decoration: underline; }
+</style>

@@ -338,6 +338,8 @@
         ? 'Suara komunitas'
         : parts[0] === 'jadwal' || parts[0] === 'aksara'
           ? 'Aksara'
+        : parts[0] === 'peta-kata'
+          ? 'Peta Kata'
         : parts[0] === 'news'
           ? 'Kabar'
           : path === '/'

@@ -598,6 +598,30 @@ CREATE TABLE capture_pins(
  created INTEGER NOT NULL
 );
 CREATE INDEX capture_pins_target ON capture_pins(target_id,created ASC);
+`, `
+CREATE TABLE saluran_settings(
+ community_id TEXT PRIMARY KEY REFERENCES communities(id),
+ plant_id INTEGER NOT NULL DEFAULT 0,
+ kurasi_balik INTEGER NOT NULL DEFAULT 0,
+ updated INTEGER NOT NULL,
+ updated_by TEXT NOT NULL REFERENCES actors(id)
+);
+CREATE TABLE museum_annotations(
+ id TEXT PRIMARY KEY,
+ community_id TEXT NOT NULL REFERENCES communities(id),
+ target_uri TEXT NOT NULL,
+ target_label TEXT NOT NULL,
+ author_id TEXT NOT NULL REFERENCES actors(id),
+ body TEXT NOT NULL,
+ local_name TEXT NOT NULL DEFAULT '',
+ language TEXT NOT NULL DEFAULT '',
+ licence TEXT NOT NULL DEFAULT 'CC BY 4.0',
+ state TEXT NOT NULL CHECK(state IN ('active','withdrawn')) DEFAULT 'active',
+ created INTEGER NOT NULL,
+ updated INTEGER NOT NULL
+);
+CREATE INDEX museum_annotations_community ON museum_annotations(community_id,state,created DESC);
+CREATE INDEX museum_annotations_target ON museum_annotations(target_uri,state);
 `]
 
 export const schemaVersion=migrations.length

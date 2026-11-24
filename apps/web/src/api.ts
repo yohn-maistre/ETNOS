@@ -69,6 +69,20 @@ export type VoiceAttachment = {
   created: number
   canEdit: boolean
 }
+export type PostPeluang = {
+  category: 'beasiswa' | 'hibah' | 'kerja' | 'pelatihan'
+  organizer: string
+  location: string
+  deadline?: number
+  applyUrl?: string
+}
+export type PostBagasi = {
+  kind: 'bawa' | 'titip'
+  from: string
+  to: string
+  departAt?: number
+  capacity: string
+}
 export type PostContent = {
   title?: string
   url?: string
@@ -77,6 +91,8 @@ export type PostContent = {
   inlineMedia?: { version: 1; ids: string[] }
   poll?: { options: string[]; closesAt: number }
   event?: { startsAt: number; endsAt?: number; location: string }
+  peluang?: PostPeluang
+  bagasi?: PostBagasi
   /** Marks a reply that answers a sourced post. */
   answer?: 'wrong' | 'more'
   /** Sources the author named, shown as written. */

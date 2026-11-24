@@ -143,6 +143,11 @@
                         <span>{label}</span>
                       </Sidebar.MenuSubButton>
                     </Sidebar.MenuSubItem>{/each}
+                  <Sidebar.MenuSubItem>
+                    <Sidebar.MenuSubButton href="/peta-kata" onclick={() => sidebar.setOpenMobile(false)}>
+                      <span>Peta Kata</span>
+                    </Sidebar.MenuSubButton>
+                  </Sidebar.MenuSubItem>
                 </Sidebar.MenuSub>{/if}
             </Sidebar.MenuItem>{/each}
         </Sidebar.Menu>
