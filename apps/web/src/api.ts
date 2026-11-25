@@ -336,7 +336,7 @@ export const relativeLong = (value: number) => {
 }
 export const initials = (name: string) =>
   name
-    .split(/[.\s-]/)
+    .split(/[.\s&-]+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((x) => x[0])
