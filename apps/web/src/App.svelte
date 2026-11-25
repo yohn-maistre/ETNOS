@@ -1055,7 +1055,7 @@
     searchDialogOpen = true
   }}
 >
-  {#if loading && !posts.length && !selectedPost && path !== '/' && path !== '/saved' && path !== '/find' && !['messages', 'notifications', 'groups', 'work', 'contexts', 'topics', 'explore', 'news', 'login', 'wiki', 'jadwal', 'aksara'].includes(parts[0])}<ContentSkeleton
+  {#if loading && !posts.length && !selectedPost && path !== '/' && path !== '/saved' && path !== '/find' && !['messages', 'notifications', 'groups', 'work', 'contexts', 'topics', 'explore', 'news', 'login', 'wiki', 'jadwal', 'aksara', 'peta-kata'].includes(parts[0])}<ContentSkeleton
     />
   {:else if path === '/recover-messages'}<VaultTransfer recovery />
   {:else if error && errorStatus === 404}<div class="page-missing" role="alert">
@@ -1079,6 +1079,7 @@
       </Button>
     </div>
   {:else if path === '/jadwal' || path === '/aksara'}{#await import('./JadwalPage.svelte') then module}<module.default />{/await}
+  {:else if path === '/peta-kata'}{#await import('./PetaKataPage.svelte') then module}<module.default />{/await}
   {:else if parts[0] === 'news' && parts[1]}{#await import('./NewsPage.svelte')}<ContentSkeleton
       />{:then { default: NewsPage }}<NewsPage
         id={parts[1]}
@@ -1765,7 +1766,7 @@
     {:else if parts[0] === 'groups' && parts[1]}<div class="cx-context-block"><KiosBlock owner={{ kind: 'group', id: parts[1] }} /></div>{/if}
     {#if parts[0] === 'wiki' && isEntrySegment(parts[1]) && entryRail.entry}<EntryRail entry={entryRail.entry} />
     {:else if parts[0] === 'wiki' && selectedPage?.revision}<WikiContents text={selectedPage.revision.text} pageId={selectedPage.id} /><WikiSourceNotes citations={selectedPage.revision.citations} variant="rail" />
-    {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts', 'gabung', 'jadwal', 'aksara'].includes(parts[0])}<NewsSection
+    {:else if !['explore', 'news', 'communities', 'people', 'wiki', 'contexts', 'gabung', 'jadwal', 'aksara', 'peta-kata'].includes(parts[0])}<NewsSection
         compact
       />
     {/if}
