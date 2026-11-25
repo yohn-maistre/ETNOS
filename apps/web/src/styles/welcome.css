@@ -184,9 +184,9 @@ body:has(.welcome-dialog[data-exiting='true']) [data-slot='dialog-overlay'] { op
 .cx-main[data-route^='/people/'] .profile-tabs button { flex: 0 0 auto; padding-inline: 0; }
 .cx-main[data-route^='/people/'] .profile-tabs [aria-pressed='true']::after { inset-inline: 0; }
 .community-profile { position: relative; isolation: isolate; background: none; }
-.community-profile:has(.community-cover) { padding-top: 152px; }
-.community-cover { position: absolute; z-index: -1; inset: 0 0 auto; height: 200px; pointer-events: none; mask-image: linear-gradient(#000 30%, transparent 100%); }
-.community-cover .landscape-print { width: 100%; height: 100%; object-fit: cover; object-position: 50% 48%; opacity: .7; }
+.community-profile:has(.community-cover) { padding-top: 148px; }
+.community-cover { position: absolute; z-index: -1; inset: 0 0 auto; height: 220px; pointer-events: none; mask-image: linear-gradient(to bottom, #000 18%, rgba(0, 0, 0, 0.55) 62%, transparent 100%); }
+.community-cover .landscape-print { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; opacity: .65; }
 .community-profile > p { margin-top: 10px; }
 .news-section .news-lead.news-photo { color: var(--image-ink); }
 .news-section .news-lead.news-photo .news-tile-copy :is(strong, .news-mark, span) { color: inherit; }

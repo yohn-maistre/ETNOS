@@ -167,7 +167,7 @@
   // A story started from a place lands in that place once published.
   // The entry a new post starts out about (Percakapan): an entry's address, or a context id, which is an alias of one.
   let composePlace = $state<{ id: string; title: string } | null>(null)
-  let communityAdmission = $state<'open' | 'approval'>('approval')
+  let communityAdmission = $state<'open' | 'approval'>('open')
   let communityKind = $state('')
   // The three optional creation fields (CommunityLabels.svelte): Tentang apa atau di mana, Bahasa yang dipakai, Dikelola oleh.
   let communityAbout = $state<LabelCtx[]>([]),
@@ -723,11 +723,12 @@
     composeUrl = ''
     composeKind = ''
     composePlace = null
-    communityAdmission = 'approval'
+    communityAdmission = 'open'
     communityKind = ''
     communityAbout = []
     communityLanguages = []
     communityGroup = ''
+    dismissNotifications()
     modal = kind
     wikiRequestKey = crypto.randomUUID()
     const contextual=kind==='compose'?(parts[0]==='communities'?community?.id:parts[0]==='square'?selectedPost?.community_id:undefined):undefined
@@ -1284,7 +1285,7 @@
                   ? 'Pemilik'
                   : 'Moderator'}
             </Badge>{:else if community.admission === 'open'}<Button
-              class="cx-button small"
+              class="cx-button primary small"
               disabled={busy}
               onclick={() =>
                 mutate(async () => {
@@ -1292,7 +1293,7 @@
                   await load()
                 })}
               type="button"
-              variant="outline"
+              variant="default"
             >
               Gabung
             </Button>{:else if community.admission === 'approval'}<Button
@@ -1425,6 +1426,7 @@
                       ? 'Mulai percakapan pertama.'
                       : 'Gabung komunitas untuk ikut berbicara.'}
                 </p>
+                {#if tab !== 'media' && currentMembership}<Button class="cx-button primary small" onclick={() => open('compose', community!.id)} type="button">Tulis percakapan</Button>{:else if tab !== 'media' && auth.actor && community.admission === 'open'}<Button class="cx-button primary small" disabled={busy} onclick={() => mutate(async () => { await request(`/v1/communities/${community!.id}/join`, {}); await load() })} type="button">Gabung sekarang</Button>{/if}
               </div>{/if}{/if}
         </Tabs.Content>
       </Tabs.Root>
@@ -2104,8 +2106,8 @@
                 bind:value={communityAdmission}
                 aria-label="Siapa yang dapat bergabung?"
                 items={[
-                  { value: 'approval', label: 'Dengan persetujuan pengelola' },
                   { value: 'open', label: 'Siapa saja langsung bergabung' },
+                  { value: 'approval', label: 'Dengan persetujuan pengelola' },
                 ]}
               />
             </Label>{/if}
@@ -2130,6 +2132,7 @@
             Pesan untuk pengelola<Textarea
               bind:value={text}
               maxlength={500}
+              placeholder="Perkenalkan diri singkat atau alasan ingin bergabung."
               required
               rows={5}
             />

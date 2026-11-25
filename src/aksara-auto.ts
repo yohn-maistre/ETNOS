@@ -523,8 +523,24 @@ async function runRisetEnsiklopedia(
       if (isLive && target.postingMandateId) {
         try {
           const link = `${store.base}/wiki/${ctx.slug}`
-          const announce = `Halaman awal untuk ${ctx.title} sudah terbit di Ensiklopedia dari sumber terbuka dan belum ditinjau manusia.\n\n${link}\n\nApakah keterangan di halaman ini sudah tepat menurut pengetahuan di tempatmu? Bantu periksa atau tambahkan versimu.`
-          const post = store.createPost(target.agentId, target.communityId, announce, undefined, target.postingMandateId)
+          const lead = (basis[0]?.text ?? '').replace(/\s+/g, ' ').trim()
+          const excerpt = lead.length > 220 ? lead.slice(0, 217) + '...' : lead
+          const announce = excerpt
+            ? `${excerpt}\n\nCatatan awal ${ctx.title} sudah masuk Ensiklopedia (belum ditinjau manusia): ${link}\n\nApakah keterangan ini sudah tepat menurut pengalaman di tempatmu?`
+            : `Catatan awal untuk ${ctx.title} sudah masuk Ensiklopedia dari sumber terbuka dan belum ditinjau manusia: ${link}\n\nApakah keterangan di halaman ini sudah tepat menurut pengetahuan di tempatmu?`
+          const sources = citations
+            .filter((url) => /^https?:\/\//.test(url))
+            .slice(0, 4)
+            .map((url, idx) => ({
+              title: `Sumber ${idx + 1} · ${ctx.title}`,
+              url,
+            }))
+          const post = store.createPost(target.agentId, target.communityId, announce, undefined, target.postingMandateId, {
+            content: {
+              title: `${ctx.title} di Ensiklopedia`,
+              ...(sources.length ? { sources } : {}),
+            },
+          })
           tagPostContexts(store, post.id, target.communityId, target.agentId, announce, [ctx.id])
         } catch {
           // Posting budget or mandate limit must not roll back a valid wiki entry.

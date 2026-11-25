@@ -133,8 +133,8 @@ export class EtnosCore {
     return true
   }
   listCommunities(actorId?: string) {
-    return this.all<Community>(`SELECT c.* FROM communities c WHERE visibility!='hidden-private'
-      OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1)`, actorId ?? null)
+    return this.all<Community>(`SELECT c.* FROM communities c WHERE COALESCE(c.archived,0)=0 AND (visibility!='hidden-private'
+      OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))`, actorId ?? null)
   }
   setMember(actorId: string, communityId: string, target: string, active: boolean, role: Membership['role'] = 'member') {
     return this.tx(() => {

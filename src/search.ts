@@ -26,7 +26,7 @@ export class Search {
       ORDER BY CASE WHEN lower(a.name)=lower(?) THEN 0 ELSE 1 END,CASE WHEN EXISTS(SELECT 1 FROM follows f WHERE f.actor_id=? AND f.target_id=a.id) THEN 0 ELSE 1 END,a.name,a.id LIMIT 6`,q,q,v,v,q,v)
     const posts=s.feedPage(viewer,{query:q,limit:10}).items.filter(p=>!p.deleted)
     const communities=s.all<{id:string;title:string;description:string;visibility:string}>(`SELECT c.id,c.title,c.description,c.visibility FROM communities c
-      WHERE (c.visibility!='hidden-private' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
+      WHERE COALESCE(c.archived,0)=0 AND (c.visibility!='hidden-private' OR EXISTS(SELECT 1 FROM memberships m WHERE m.community_id=c.id AND m.actor_id=? AND m.active=1))
       AND instr(lower(c.title||' '||c.description),lower(?))>0 ORDER BY c.title,c.id LIMIT 6`,v,q)
     const contexts=s.all<{id:string;slug:string;title:string;kind:string;description:string}>(`SELECT id,slug,title,kind,description FROM contexts WHERE active=1 AND instr(lower(title||' '||description||' '||aliases),lower(?))>0 ORDER BY title,id LIMIT 6`,q)
     const groups=s.all<{id:string;title:string;description:string;kind:string}>(`SELECT g.id,g.title,g.description,g.kind FROM groups g WHERE (g.visibility='public' OR EXISTS(SELECT 1 FROM group_members m WHERE m.group_id=g.id AND m.actor_id=? AND m.active=1)) AND instr(lower(g.title||' '||g.description),lower(?))>0 ORDER BY g.title,g.id LIMIT 6`,v,q)

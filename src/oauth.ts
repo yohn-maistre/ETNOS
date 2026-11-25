@@ -147,7 +147,9 @@ export class BrowserAuth {
         getRandomValues:length=>crypto.getRandomValues(new Uint8Array(length)),
         digest:async(bytes,algorithm)=>new Uint8Array(await crypto.subtle.digest(algorithm.name.replace('sha','SHA-'),bytes))},
     })
-    return new BrowserAuth(store,config,records,client)
+    const inst=new BrowserAuth(store,config,records,client)
+    inst.syncBootstrappedSpaces()
+    return inst
   }
   private allowed(did:string){return !!this.config.stewardDid && (did===this.config.stewardDid || !!this.store.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',did))}
   private enrollmentMode(){return this.config.enrollmentMode??'invite'}
@@ -314,6 +316,7 @@ export class BrowserAuth {
           this.records.del('session',session.did);throw error
         }
         if(actor.did===this.config.stewardDid)this.bootstrap(actor.id)
+        this.joinDefaultSquare(actor.id)
         const response=new Response(null,{status:303,headers:{location:returnPath(context.returnTo), 'cache-control':'no-store','referrer-policy':'no-referrer'}})
         response.headers.append('set-cookie',setCookie(SESSION_COOKIE,sid,86400));response.headers.append('set-cookie',setCookie(FLOW_COOKIE,'',0));return response
       }
@@ -364,12 +367,35 @@ export class BrowserAuth {
       return json(error instanceof Fault?error.status:400,{error:error instanceof Fault?error.message:'Sign-in could not be completed'})
     }
   }
+  private syncBootstrappedSpaces(){
+    const square=this.store.get<{community_id:string}>("SELECT community_id FROM starter_spaces WHERE slug='square'")
+    if(!square)return
+    const owner=this.store.get<{actor_id:string}>("SELECT actor_id FROM memberships WHERE community_id=? AND role='owner' AND active=1 LIMIT 1",square.community_id)
+    if(owner)this.bootstrap(owner.actor_id)
+  }
+  private joinDefaultSquare(actorId:string){
+    this.store.tx(()=>{
+      const square=this.store.get<{community_id:string}>("SELECT s.community_id FROM starter_spaces s JOIN communities c ON c.id=s.community_id WHERE s.slug='square' AND c.visibility='public' AND c.admission='open' AND COALESCE(c.archived,0)=0")
+      if(!square)return
+      if(this.store.get('SELECT 1 FROM memberships WHERE community_id=? AND actor_id=?',square.community_id,actorId))return
+      this.store.run("INSERT INTO memberships VALUES(?,?,'member',1)",square.community_id,actorId)
+      this.store.audit(actorId,'community.auto_join',square.community_id)
+    })
+  }
   private bootstrap(actorId:string){
-    const spaces=[['square','Beranda','Percakapan sehari-hari.'],['questions','Tanya & bantu','Pertanyaan dan saling membantu.'],['culture','Budaya & bahasa','Cerita, bahasa, seni dan pengetahuan.'],['notices','Kabar komunitas','Kegiatan dan informasi komunitas.']]
+    const spaces=[
+      ['square','Alun-Alun','Percakapan sehari-hari dan ruang umum untuk semua anggota.'],
+      ['questions','Tanya & Bantu','Pertanyaan umum, saling bantu, dan penjelasan sederhana untuk pemula.'],
+      ['ama','Tanya Langsung','Sesi tanya jawab langsung bersama narasumber, praktisi, dan tokoh lapangan.'],
+      ['opportunities','Peluang & Karier','Beasiswa, lowongan kerja, pelatihan, dan kesempatan kolaborasi.'],
+      ['creative','Karya & Kreatif','Musik, foto, tulisan, desain, dan proyek buatan anggota.'],
+      ['notices','Kabar & Diskusi','Berita daerah, kegiatan, dan diskusi isu terkini di Tanah Papua.'],
+      ['market','Pasar & Titip','Produk lokal, jasa, barang bekas, dan titip barang antarkota.'],
+    ]
     for(const[slug,title,description]of spaces)this.store.tx(()=>{
       if(this.store.get('SELECT 1 FROM starter_spaces WHERE slug=?',slug))return
       const id=crypto.randomUUID()
-      this.store.run("INSERT INTO communities(id,title,description,visibility,automation,admission,publication) VALUES(?,?,?,'public',0,'approval','local')",id,title,description)
+      this.store.run("INSERT INTO communities(id,title,description,visibility,automation,admission,publication) VALUES(?,?,?,'public',0,'open','local')",id,title,description)
       this.store.run("INSERT INTO memberships VALUES(?,?,'owner',1)",id,actorId)
       this.store.run('INSERT INTO starter_spaces VALUES(?,?)',slug,id);this.store.audit(actorId,'community.bootstrap',id)
     })

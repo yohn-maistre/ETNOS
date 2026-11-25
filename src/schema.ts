@@ -626,6 +626,18 @@ CREATE INDEX museum_annotations_target ON museum_annotations(target_uri,state);
 CREATE INDEX IF NOT EXISTS posts_community_visible_created ON posts(community_id,hidden,deleted,created DESC,id DESC);
 CREATE INDEX IF NOT EXISTS kamus_entries_public_lookup ON kamus_entries(community_id,sensitive,state,norm);
 CREATE INDEX IF NOT EXISTS voice_clips_kamus_lookup ON voice_clips(community_id,kamus_norm,protocol);
+`, `
+ALTER TABLE communities ADD COLUMN archived INTEGER NOT NULL DEFAULT 0;
+UPDATE communities SET title='Alun-Alun', description='Obrolan santai sehari-hari, cerita acak, dan sapaan warga Tanah Papua.', admission='open' WHERE id=(SELECT community_id FROM starter_spaces WHERE slug='square') AND visibility='public';
+UPDATE communities SET title='Tanya & Bantu', description='Tanya apa saja, minta tolong, jelaskan sederhana (ELI5), dan berbagi pengalaman.', admission='open' WHERE id=(SELECT community_id FROM starter_spaces WHERE slug='questions') AND visibility='public';
+UPDATE communities SET title='Kabar & Diskusi', description='Bahas berita hangat, kebijakan daerah, dan perkembangan terbaru di Tanah Papua.', admission='open' WHERE id=(SELECT community_id FROM starter_spaces WHERE slug='notices') AND visibility='public';
+UPDATE communities SET archived=1 WHERE id=(SELECT community_id FROM starter_spaces WHERE slug='culture');
+INSERT OR IGNORE INTO memberships(community_id,actor_id,role,active)
+ SELECT ss.community_id, a.id, 'member', 1
+ FROM starter_spaces ss
+ JOIN communities c ON c.id=ss.community_id AND c.visibility='public' AND c.admission='open'
+ CROSS JOIN actors a
+ WHERE ss.slug='square' AND a.kind='human';
 `]
 
 export const schemaVersion=migrations.length

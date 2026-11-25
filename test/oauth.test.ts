@@ -25,7 +25,7 @@ test('official OAuth: PKCE/PAR/DPoP, browser binding, verified enrollment, cooki
     const session=cookiePart(signed!,'__Host-strata')
     assert.match(signed!.headers.getSetCookie().find(x=>x.startsWith('__Host-strata='))!,/Secure; HttpOnly; SameSite=Lax/)
     const me=await(await auth.route(req('/auth/me',{cookie:session})))!.json() as {actor:{id:string;did:string};csrf:string}
-    assert.equal(me.actor.did,did);assert.equal(s.listCommunities().length,4)
+    assert.equal(me.actor.did,did);assert.equal(s.listCommunities().length,7)
     const database=JSON.stringify(s.all('SELECT * FROM oauth_records'))
     assert.equal(database.includes('fixture-access-token'),false);assert.equal(database.includes('fixture-refresh-token'),false)
     const handle=api(s,{principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
