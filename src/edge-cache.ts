@@ -17,6 +17,7 @@ const PUBLIC_GET_PATTERNS: Array<{ match: (path: string) => boolean; ttl: number
   { match: (p) => p === '/v1/aksara/jadwal', ttl: 60 },
   { match: (p) => p === '/v1/peta-kata' || p === '/v1/peta-kata/concepts', ttl: 90 },
   { match: (p) => p === '/v1/peta-kata/semantic', ttl: 120 },
+  { match: (p) => p === '/v1/search/semantic' || /^\/v1\/posts\/[0-9a-f-]{36}\/related-public$/.test(p), ttl: 30 },
   { match: (p) => p === '/v1/feed/page', ttl: 30 },
 ]
 

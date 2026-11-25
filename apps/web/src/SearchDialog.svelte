@@ -10,16 +10,30 @@
     Hash,
     Building2,
     BookOpen,
+    Sparkles,
   } from '@lucide/svelte'
   import * as Dialog from '$lib/components/ui/dialog/index.js'
   import { Button } from '$lib/components/ui/button/index.js'
-  import { request } from './api'
+  import { request, type Post } from './api'
   import {
     categories,
     resultGroups,
     type SearchResult,
     type SearchCategory,
   } from './search'
+
+  type SemanticHit = {
+    post: Post
+    communityTitle: string
+    score: number
+    topics: { slug: string; title: string; score: number }[]
+  }
+  type SemanticResponse = {
+    mode: 'bge-m3' | 'deterministic'
+    suggestedTopics: { slug: string; title: string; score: number }[]
+    results: SemanticHit[]
+  }
+
   let {
     open = $bindable(false),
     query = $bindable(''),
@@ -31,9 +45,15 @@
   } = $props()
   let category = $state<SearchCategory>('all'),
     data = $state<SearchResult | null>(null),
+    semantic = $state<SemanticResponse | null>(null),
     pending = $state(false),
     error = $state('')
   const groups = $derived(resultGroups(data, category))
+  const extraSemantic = $derived.by(() => {
+    if (!semantic || (category !== 'all' && category !== 'posts')) return []
+    const exactIds = new Set((data?.posts ?? []).map((p) => p.id))
+    return semantic.results.filter((r) => !exactIds.has(r.post.id)).slice(0, 5)
+  })
   const icons = {
     people: Users,
     posts: MessageCircle,
@@ -43,6 +63,7 @@
     groups: Building2,
     wiki: BookOpen,
   }
+  const compact = (value: string) => value.replace(/\s+/g, ' ').trim().slice(0, 130)
   function go(href: string) {
     open = false
     navigate(href)
@@ -50,22 +71,37 @@
   $effect(() => {
     if (!open) {
       data = null
+      semantic = null
       return
     }
     const q = query.trim(),
       controller = new AbortController()
     pending = true
     data = null
+    semantic = null
     error = ''
     const timer = setTimeout(
       async () => {
         try {
-          const response = await request<SearchResult>(
-            '/v1/search?q=' + encodeURIComponent(q),
-            undefined,
-            controller.signal,
-          )
-          if (!controller.signal.aborted) data = response
+          const [response, sem] = await Promise.all([
+            request<SearchResult>(
+              '/v1/search?q=' + encodeURIComponent(q),
+              undefined,
+              controller.signal,
+            ),
+            q.length >= 3
+              ? request<SemanticResponse>(
+                  '/v1/search/semantic?limit=6&q=' + encodeURIComponent(q),
+                  undefined,
+                  controller.signal,
+                  true,
+                ).catch(() => null)
+              : Promise.resolve(null),
+          ])
+          if (!controller.signal.aborted) {
+            data = response
+            semantic = sem
+          }
         } catch (e) {
           if (!controller.signal.aborted)
             error = e instanceof Error ? e.message : 'Pencarian belum tersedia'
@@ -100,7 +136,7 @@
         <Search size={20} /><Command.Input
           bind:value={query}
           maxlength={100}
-          placeholder="Cari ETNOS"
+          placeholder="Cari ETNOS (kata, topik, atau makna lintas komunitas)"
           aria-label="Cari ETNOS"
         /><Dialog.Close class="search-close" aria-label="Tutup pencarian">
           Esc
@@ -148,7 +184,26 @@
                   </Command.Item>{/each}
               </Command.GroupItems>
             </Command.Group>{/each}
-          {#if !groups.length}<div class="search-state">
+          {#if extraSemantic.length}<Command.Group value="semantic">
+              <Command.GroupHeading class="search-section-label">
+                Serupa lintas komunitas ({semantic?.mode === 'bge-m3' ? 'semantik' : 'topik'})
+              </Command.GroupHeading>
+              <Command.GroupItems>
+                {#each extraSemantic as item (item.post.id)}<Command.Item
+                    value={'semantic:' + item.post.id}
+                    onSelect={() => go('/square/' + item.post.id)}
+                    class="command-result"
+                  >
+                    <Sparkles size={17} />
+                    <span>
+                      <strong>{item.post.content?.title || compact(item.post.text)}</strong>
+                      <small>{item.communityTitle} · {item.post.author.name}{item.topics[0] ? ` · #${item.topics[0].title}` : ''}</small>
+                    </span>
+                    <ArrowUpRight size={15} />
+                  </Command.Item>{/each}
+              </Command.GroupItems>
+            </Command.Group>{/if}
+          {#if !groups.length && !extraSemantic.length}<div class="search-state">
               <strong>{query ? 'Belum ada hasil' : 'Mulai menjelajah'}</strong>
               <p>
                 {query

@@ -367,20 +367,19 @@ export function pca2d(vectors: ArrayLike<number>[]): Array<[number, number]> {
     return [x, y]
   })
 
-  // Normalize cleanly to [-0.92, 0.92] so nodes fit comfortably inside the SVG viewport.
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
-  for (const [x, y] of raw) {
-    if (x < minX) minX = x
-    if (x > maxX) maxX = x
-    if (y < minY) minY = y
-    if (y > maxY) maxY = y
-  }
+  // Percentile-clamped normalization (5th..95th) so 1-2 outlier embeddings never squash the rest into half the canvas.
+  const xs = raw.map((p) => p[0]).sort((a, b) => a - b)
+  const ys = raw.map((p) => p[1]).sort((a, b) => a - b)
+  const loIdx = Math.floor(xs.length * 0.05)
+  const hiIdx = Math.max(loIdx + 1, Math.min(xs.length - 1, Math.ceil(xs.length * 0.95) - 1))
+  const minX = xs[loIdx]!, maxX = xs[hiIdx]!, minY = ys[loIdx]!, maxY = ys[hiIdx]!
   const spanX = maxX - minX || 1
   const spanY = maxY - minY || 1
+  const clamp = (v: number) => Math.max(-0.92, Math.min(0.92, v))
 
   const coords: Array<[number, number]> = raw.map(([x, y]) => [
-    Math.round((((x - minX) / spanX) * 1.84 - 0.92) * 1000) / 1000,
-    Math.round((((y - minY) / spanY) * 1.84 - 0.92) * 1000) / 1000,
+    Math.round(clamp(((x - minX) / spanX) * 1.76 - 0.88) * 1000) / 1000,
+    Math.round(clamp(((y - minY) / spanY) * 1.76 - 0.88) * 1000) / 1000,
   ])
 
   // Gentle deterministic repulsion pass so two concepts never sit on top of each other.

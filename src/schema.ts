@@ -638,6 +638,17 @@ INSERT OR IGNORE INTO memberships(community_id,actor_id,role,active)
  JOIN communities c ON c.id=ss.community_id AND c.visibility='public' AND c.admission='open'
  CROSS JOIN actors a
  WHERE ss.slug='square' AND a.kind='human';
+`, `
+CREATE TABLE IF NOT EXISTS public_post_vectors(
+  post_id TEXT PRIMARY KEY REFERENCES posts(id),
+  community_id TEXT NOT NULL REFERENCES communities(id),
+  vector BLOB NOT NULL,
+  dims INTEGER NOT NULL,
+  mode TEXT NOT NULL,
+  topics TEXT NOT NULL DEFAULT '[]',
+  updated INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS public_post_vectors_community ON public_post_vectors(community_id, updated DESC);
 `]
 
 export const schemaVersion=migrations.length

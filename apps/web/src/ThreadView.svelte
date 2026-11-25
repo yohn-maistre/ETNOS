@@ -168,7 +168,10 @@
         Mulai percakapan
       </p>{/if}
   </section>
-  {#if community?.visibility === 'public'}<ThreadWork postId={post.id} />{/if}
+  {#if community?.visibility === 'public'}
+    <ThreadWork postId={post.id} />
+    {#await import('./RelatedPublicStrip.svelte') then module}<module.default postId={post.id} />{/await}
+  {/if}
   <ThreadEnd/>
 </div>
 

@@ -33,6 +33,7 @@ import { Captures3d } from './captures.ts'
 import { Saluran } from './saluran.ts'
 import { PetaKata } from './peta-kata.ts'
 import { SemanticMap, type Embedder } from './semantic-map.ts'
+import { TopicClassifier } from './topic-classifier.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
 import {AgentAccess} from './agent-access.ts'
@@ -90,6 +91,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const saluran=new Saluran(store,{plantNetKey:options.plantNetKey,fetcher:options.saluranFetcher??options.researchFetcher,origin:store.base})
   const petaKata=new PetaKata(store,kamusLexicon())
   const semanticMap=new SemanticMap(store,kamusLexicon(),options.embedTexts)
+  const topicClassifier=new TopicClassifier(store,options.embedTexts)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
@@ -162,6 +164,9 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(path==='/v1/kurasi/annotations.jsonld')return new Response(JSON.stringify(saluran.exportJsonLd(url.searchParams.get('target')??undefined)),{status:200,headers:{'content-type':'application/ld+json; charset=utf-8','cache-control':'public, max-age=60','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
         else if (path === '/health') result = { status:'ok', version:'0.1.0-alpha.0', auth:options.authMode==='atproto'?'atproto-oauth':'local-provisioned-credentials', enrollment:options.authMode==='atproto'?(options.enrollmentMode??'invite'):null, atproto:'draft-schema-and-sandbox-adapter', liveFederation:false, runtime:options.runtime ?? 'node', custodyFixture:options.custodyFixture === true }
         else if (path === '/v1/search') result=search.query(actor?.id,url.searchParams.get('q')??'')
+        else if (path === '/v1/search/semantic') result=await topicClassifier.searchSemantic({query:url.searchParams.get('q')??'',topic:url.searchParams.get('topic')??undefined,limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined})
+        else if (path === '/v1/topics/suggest') result=await topicClassifier.classifyText(url.searchParams.get('q')??'')
+        else if (parts.length===4 && parts[1]==='posts' && parts[3]==='related-public') result=await topicClassifier.relatedPublic(parts[2],url.searchParams.has('limit')?Number(url.searchParams.get('limit')):undefined)
         else if (path === '/v1/people') result=social.people(authenticated(),url.searchParams.get('q')??'')
         else if (path === '/v1/following') result=social.following(authenticated())
         else if (path === '/v1/me') result = store.actor(authenticated())
