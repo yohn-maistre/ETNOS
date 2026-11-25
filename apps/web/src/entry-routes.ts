@@ -10,7 +10,7 @@ export const ENTRY_TABS: [EntryTab, string][] = [
   ['riwayat', 'Riwayat'],
 ]
 /** Second segments under /wiki that are routes of their own, never entries. */
-export const RESERVED = new Set(['notes', 'data', 'peta', 'lihat', 'jenis'])
+export const RESERVED = new Set(['notes', 'data', 'peta', 'peta-kata', 'lihat', 'jenis'])
 
 /** The old tabs of a context page and where their content lives now. */
 const OLD_TAB: Record<string, EntryTab | ''> = {

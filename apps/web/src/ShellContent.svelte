@@ -144,7 +144,7 @@
                       </Sidebar.MenuSubButton>
                     </Sidebar.MenuSubItem>{/each}
                   <Sidebar.MenuSubItem>
-                    <Sidebar.MenuSubButton href="/peta-kata" onclick={() => sidebar.setOpenMobile(false)}>
+                    <Sidebar.MenuSubButton href="/wiki/peta-kata" onclick={() => sidebar.setOpenMobile(false)}>
                       <span>Peta Kata</span>
                     </Sidebar.MenuSubButton>
                   </Sidebar.MenuSubItem>

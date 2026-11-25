@@ -136,9 +136,9 @@
       }))
     const atlasSlide: CarouselSlide = {
       id: 'peta-kata-featured',
-      href: '/peta-kata',
-      title: 'Peta Kata Tanah Papua',
-      subtitle: '256 bahasa · dengar dan bandingkan 100 konsep dasar',
+      href: '/wiki/peta-kata',
+      title: 'Peta Kata & Semantik Papua',
+      subtitle: '256 bahasa · dengar kata dasar dan jejaring koleksifikasi makna',
       badge: 'Atlas bahasa',
       kind: 'atlas',
     }
@@ -334,11 +334,11 @@
       {/if}
 
       <div class="ef-tool-pair">
-        <a class="ef-tool-card teal" href="/peta-kata">
+        <a class="ef-tool-card teal" href="/wiki/peta-kata">
           <span class="ef-tool-icon"><Compass size={20} aria-hidden="true" /></span>
           <span class="ef-tool-body">
-            <strong>Peta Kata</strong>
-            <small>256 bahasa Papua · 100 konsep dasar & rekaman suara</small>
+            <strong>Peta Kata & Semantik</strong>
+            <small>256 bahasa Papua · 100 konsep dasar, suara & koleksifikasi</small>
           </span>
           <ArrowUpRight size={16} class="ef-tool-go" aria-hidden="true" />
         </a>
@@ -458,8 +458,9 @@
 </div>
 
 <style>
-  .ef { padding-bottom: 20px; }
+  .ef { padding-bottom: 20px; overflow-x: clip; }
   .ef-top { gap: 12px; padding-bottom: 10px; }
+  .ef-top > * { min-width: 0; }
   .ef-header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .ef-top h1 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.08; letter-spacing: -0.025em; }
   .ef-quick-actions { display: flex; align-items: center; gap: 6px; }
@@ -486,7 +487,7 @@
   .ef-results { display: grid; gap: 8px; }
   .ef-results .obs-rows { margin-top: 4px; }
 
-  .ef-region-wrap { position: relative; margin: 0 calc(var(--gutter) * -1); }
+  .ef-region-wrap { position: relative; min-width: 0; overflow: hidden; margin: 0 calc(var(--gutter) * -1); }
   .ef-region-wrap::after {
     content: '';
     position: absolute;
@@ -544,18 +545,19 @@
     list-style: none;
   }
   @media (min-width: 600px) {
-    .ef-bento-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .ef-bento-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
   }
   .ef-bento-tile {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 11px;
+    gap: 9px;
+    padding: 9px 10px;
     border: 1px solid var(--border);
     border-radius: 14px;
     background: var(--background);
     color: var(--foreground);
     text-decoration: none;
+    height: 100%;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
   .ef-bento-tile:hover {
@@ -566,15 +568,15 @@
     flex: none;
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 11px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     background: color-mix(in oklab, var(--tone) 13%, var(--background));
     color: var(--tone);
   }
   .ef-bento-text { display: grid; gap: 1px; min-width: 0; }
-  .ef-bento-text strong { font-size: 13.5px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ef-bento-text small { font-size: 12px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+  .ef-bento-text strong { font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .ef-bento-text small { font-size: 11.5px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
 
   .ef-more-bar { display: grid; gap: 8px; }
   .ef-more-toggle {

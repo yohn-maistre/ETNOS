@@ -6045,6 +6045,21 @@ THIS SOFTWARE.
 
 
 
+embla-carousel@8.6.0 — MIT
+
+git+https://github.com/davidjerleke/embla-carousel
+
+
+embla-carousel-reactive-utils@8.6.0 — MIT
+
+git+https://github.com/davidjerleke/embla-carousel
+
+
+embla-carousel-svelte@8.6.0 — MIT
+
+git+https://github.com/davidjerleke/embla-carousel
+
+
 enhanced-resolve@5.26.0 — MIT
 
 git+https://github.com/webpack/enhanced-resolve.git

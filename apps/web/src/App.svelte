@@ -1080,7 +1080,7 @@
       </Button>
     </div>
   {:else if path === '/jadwal' || path === '/aksara'}{#await import('./JadwalPage.svelte') then module}<module.default />{/await}
-  {:else if path === '/peta-kata'}{#await import('./PetaKataPage.svelte') then module}<module.default />{/await}
+  {:else if path === '/peta-kata' || path === '/wiki/peta-kata'}{#await import('./PetaKataPage.svelte') then module}<module.default />{/await}
   {:else if parts[0] === 'news' && parts[1]}{#await import('./NewsPage.svelte')}<ContentSkeleton
       />{:then { default: NewsPage }}<NewsPage
         id={parts[1]}

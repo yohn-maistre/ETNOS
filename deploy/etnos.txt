@@ -91,3 +91,4 @@
 2026-11-25a Fix /peta-kata SPA route mount in App.svelte
 2026-11-25b Alun-Alun default open community, 7 general starter spaces, archive Budaya & bahasa, Aksara sourced excerpts, and community UI polish
 2026-11-25c Redesign Ensiklopedia home with Embla visual carousel, 7 Wilayah Adat scope strip, progress bar, 4x2 category bento grid, Peta Kata & Katalog Data cards, and tabbed explorer
+2026-11-25d Fold Peta Kata into Ensiklopedia (/wiki/peta-kata), add Peta Semantik Papua (colexification graph + bge-m3/deterministic 2D PCA + Leiden clusters), and fix Ensiklopedia header overflow polish

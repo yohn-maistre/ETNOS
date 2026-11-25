@@ -31,7 +31,7 @@ test('entry tabs read from the address and write back to it', () => {
 })
 
 test('reserved segments under /wiki are routes, and page ids are recognised', () => {
-  for (const s of ['notes', 'data', 'peta', 'lihat', 'jenis']) assert.equal(isEntrySegment(s), false, s)
+  for (const s of ['notes', 'data', 'peta', 'peta-kata', 'lihat', 'jenis']) assert.equal(isEntrySegment(s), false, s)
   assert.equal(isEntrySegment(undefined), false)
   assert.equal(isEntrySegment('paniai'), true)
   assert.equal(isPageId('0b3c1f0e-1d2a-4c1b-9a6b-2a8d3e4f5a6b'), true)

@@ -10,13 +10,14 @@ const pages:Record<string,[string,string]>={
  '/news':['Kabar · ETNOS','Kabar terbaru dari Papua beserta sumber aslinya.'],'/communities':['Komunitas · ETNOS','Cari komunitas yang cocok, lalu ikut berdiskusi.'],
  '/groups':['Lembaga · ETNOS','Ruang, profil dan karya bersama dari lembaga.'],'/wiki':['Ensiklopedia · ETNOS','Apa yang sudah tercatat tentang Tanah Papua beserta sumbernya, dan apa yang belum diketahui.'],'/wiki/data':['Katalog data · ETNOS','Dataset publik tentang Tanah Papua beserta penerbit, lisensi dan cara mengutipnya.'],
  '/wiki/peta':['Peta Pengetahuan · ETNOS','Semua entri Ensiklopedia Tanah Papua ditata menurut ukuran dan rentang waktunya.'],
- '/peta-kata':['Peta Kata · ETNOS','Dengar dan bandingkan kata dasar di berbagai bahasa Tanah Papua.'],
+ '/wiki/peta-kata':['Peta Kata & Semantik · ETNOS','Dengar dan bandingkan kata dasar serta peta semantik bahasa Tanah Papua.'],
+ '/peta-kata':['Peta Kata · ETNOS','Dengar dan bandingkan kata dasar serta peta semantik bahasa Tanah Papua.'],
  '/voices':['Suara komunitas · ETNOS','Pertanyaan, jajak pendapat dan tindak lanjut komunitas.'],'/work':['Kerja publik · ETNOS','Karya, laporan dan tindak lanjut yang disponsori.'],'/board':['Lajur · ETNOS','Jelajahi percakapan dalam beberapa linimasa.'],
  '/aksara':['Aksara · ETNOS','Asisten AI di ETNOS. Lihat apa yang ditulisnya hari ini, lengkap dengan sumbernya.'],
  '/jadwal':['Aksara · ETNOS','Lihat jam berapa Aksara menulis setiap hari.'],
 }
 // Static preview cards made by apps/web/scripts/share-cards.mjs (1200 x 630).
-const sectionCard:Record<string,string>={'/explore':'explore','/news':'news','/communities':'communities','/groups':'communities','/wiki':'wiki','/wiki/data':'wiki','/wiki/peta':'wiki','/peta-kata':'wiki','/jadwal':'jadwal','/aksara':'jadwal'}
+const sectionCard:Record<string,string>={'/explore':'explore','/news':'news','/communities':'communities','/groups':'communities','/wiki':'wiki','/wiki/data':'wiki','/wiki/peta':'wiki','/wiki/peta-kata':'wiki','/peta-kata':'wiki','/jadwal':'jadwal','/aksara':'jadwal'}
 const regionCards=new Set(['ha-anim','saireri','meepago','bomberai','la-pago','mamta-tabi','domberai'])
 const card=(name:string)=>'/share/'+name+'.jpg'
 function videoCover(raw:unknown){try{const u=new URL(String(raw));if(u.protocol!=='https:'||u.username||u.password||u.port)return null;let id='';if(['youtube.com','www.youtube.com','m.youtube.com'].includes(u.hostname))id=u.searchParams.get('v')||u.pathname.match(/^\/(?:shorts|embed)\/([\w-]{11})$/)?.[1]||'';if(u.hostname==='youtu.be')id=u.pathname.slice(1);if(/^[\w-]{11}$/.test(id))return '/v1/video-preview/youtube/'+id+'/image';if(['vimeo.com','www.vimeo.com'].includes(u.hostname)&&/^\/\d{6,12}$/.test(u.pathname))return '/v1/video-preview/vimeo'+u.pathname+'/image'}catch{}return null}

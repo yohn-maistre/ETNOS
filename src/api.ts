@@ -32,6 +32,7 @@ import { AtSpaces } from './spaces.ts'
 import { Captures3d } from './captures.ts'
 import { Saluran } from './saluran.ts'
 import { PetaKata } from './peta-kata.ts'
+import { SemanticMap, type Embedder } from './semantic-map.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
 import {Desk} from './desk.ts'
 import {AgentAccess} from './agent-access.ts'
@@ -77,7 +78,7 @@ const string = (v: unknown) => { if (typeof v !== 'string') throw new Fault(400,
 export function json(code: number, data: unknown) {
   return Response.json(data,{status:code,headers:{'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
 }
-export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;voiceBucket?:VoiceBucket;transcribeVoice?:(bytes:Uint8Array,mime:string)=>Promise<string>;splatWorkerUrl?:string;splatSecret?:string;plantNetKey?:()=>Promise<string|undefined>|string|undefined;saluranFetcher?:typeof fetch;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
+export type ApiOptions={models?:()=>Promise<Models|undefined>;newsFetcher?:typeof fetch;researchFetcher?:typeof fetch;voiceBucket?:VoiceBucket;transcribeVoice?:(bytes:Uint8Array,mime:string)=>Promise<string>;embedTexts?:Embedder;splatWorkerUrl?:string;splatSecret?:string;plantNetKey?:()=>Promise<string|undefined>|string|undefined;saluranFetcher?:typeof fetch;sourceFetcher?:SourceFetcher;residentProvider?:ResidentProvider;residentBudget?:ResidentBudget;modelRoute?:{keyless:string|null;keyed:{host:string;fast:string;synthesis:string}|null};agentAccess?:AgentAccess;decisions?:DecisionProvider;custodyFixture?:boolean;sources?:string[];runtime?:string;stewardDid?:string;catalogue?:string;authMode?:'atproto'|'local';enrollmentMode?:'open'|'invite'|'closed';principal?:(request:Request)=>Actor|undefined;writeGuard?:(request:Request)=>void}
 export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
@@ -88,6 +89,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const captures=new Captures3d(store,{bucket:options.voiceBucket,workerUrl:options.splatWorkerUrl,workerSecret:options.splatSecret})
   const saluran=new Saluran(store,{plantNetKey:options.plantNetKey,fetcher:options.saluranFetcher??options.researchFetcher,origin:store.base})
   const petaKata=new PetaKata(store,kamusLexicon())
+  const semanticMap=new SemanticMap(store,kamusLexicon(),options.embedTexts)
   const dm=new DirectMessages(store)
   const activity=new Activity(store)
   const social=new Social(store),search=new Search(store)
@@ -153,6 +155,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='captures'&&parts[3]==='file')return await captures.fileResponse(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='viewer'&&parts[3]==='pins')result={pins:captures.pinsFor(actor?.id,decodeURIComponent(parts[2]))}
         else if(path==='/v1/peta-kata/concepts')result=petaKata.concepts()
+        else if(path==='/v1/peta-kata/semantic')result=await semanticMap.build()
         else if(path==='/v1/peta-kata')result=petaKata.lookup({concept:url.searchParams.get('concept')??undefined,q:url.searchParams.get('q')??undefined})
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='saluran')result=saluran.settings(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kurasi')result={annotations:saluran.listAnnotations(actor?.id,parts[2])}
