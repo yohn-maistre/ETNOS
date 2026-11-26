@@ -190,8 +190,8 @@
     } else {
       pos.forEach(add)
       for (const g of layoutOf(l).groups) {
-        add([g.center[0] - g.radius, g.center[1] - g.radius, 0])
-        add([g.center[0] + g.radius, g.center[1] + g.radius + 0.16, 0])
+        add([g.center[0] - g.radius, g.center[1] - g.radius - 0.14, 0])
+        add([g.center[0] + g.radius, g.center[1] + g.radius + 0.22, 0])
       }
     }
     if (!Number.isFinite(x0)) return { scale: 120, cx: 0, cy: 0 }
@@ -450,6 +450,45 @@
       }
     }
 
+    // 0. Subtle 3D cube guide in Ruang semantik 3D (matches MapStage architectural grammar)
+    if (wS > 0.01 && cam.persp > 0.08) {
+      const box = 1.08
+      const corners: Vec[] = [
+        [-box, -box, -box], [box, -box, -box], [box, box, -box], [-box, box, -box],
+        [-box, -box, box], [box, -box, box], [box, box, box], [-box, box, box],
+      ]
+      const edges: [number, number][] = [
+        [0, 1], [1, 2], [2, 3], [3, 0],
+        [4, 5], [5, 6], [6, 7], [7, 4],
+        [0, 4], [1, 5], [2, 6], [3, 7],
+      ]
+      const pc = corners.map((c) => P(c))
+      ctx.strokeStyle = fg
+      ctx.lineWidth = 1
+      ctx.globalAlpha = 0.085 * wS * cam.persp
+      ctx.beginPath()
+      for (const [a, b] of edges) {
+        ctx.moveTo(pc[a]![0], pc[a]![1])
+        ctx.lineTo(pc[b]![0], pc[b]![1])
+      }
+      ctx.stroke()
+      // Subtle 3-axis center crosshair
+      const axes: [Vec, Vec][] = [
+        [[-box, 0, 0], [box, 0, 0]],
+        [[0, -box, 0], [0, box, 0]],
+        [[0, 0, -box], [0, 0, box]],
+      ]
+      ctx.globalAlpha = 0.06 * wS * cam.persp
+      ctx.setLineDash([3, 4])
+      ctx.beginPath()
+      for (const [a, b] of axes) {
+        const pa = P(a), pb = P(b)
+        ctx.moveTo(pa[0], pa[1]); ctx.lineTo(pb[0], pb[1])
+      }
+      ctx.stroke()
+      ctx.setLineDash([])
+    }
+
     // 1. Cluster discs for Kelompok makna
     if (wK > 0.01) {
       drawGroups(ctx, semLayouts.kelompok.groups, wK, fg, muted, family, narrow)
@@ -464,9 +503,9 @@
       const hot = focusIdx >= 0 && (l.a === focusIdx || l.b === focusIdx)
       let alpha = 0
       if (hot && isColex) alpha = 0.95
-      else if (hot) alpha = 0.55 * Math.max(wS, 0.7)
-      else if (focusIdx >= 0) alpha = isColex ? 0.1 * Math.max(wS, 0.4) : 0.03 * wS
-      else alpha = isColex ? 0.62 * Math.max(wS, 0.25) : 0.14 * wS
+      else if (hot) alpha = 0.58 * Math.max(wS, 0.7)
+      else if (focusIdx >= 0) alpha = isColex ? 0.2 * Math.max(wS, 0.4) : 0.04 * wS
+      else alpha = isColex ? 0.68 * Math.max(wS, 0.28) : 0.16 * wS
       if (alpha < 0.01) continue
       ctx.globalAlpha = alpha
       ctx.strokeStyle = isColex ? '#14b8a6' : fg
@@ -501,7 +540,7 @@
         ctx.fillStyle = color
         ctx.beginPath(); ctx.arc(x, y, r + 6, 0, Math.PI * 2); ctx.fill()
       }
-      ctx.globalAlpha = quiet(i) && !big ? 0.14 : depthFade ? Math.max(0.52, Math.min(1, 0.88 - z * 0.25)) : 0.94
+      ctx.globalAlpha = quiet(i) && !big ? 0.28 : depthFade ? Math.max(0.55, Math.min(1, 0.9 - z * 0.24)) : 0.94
       ctx.fillStyle = color
       ctx.beginPath(); ctx.arc(x, y, Math.max(2, r), 0, Math.PI * 2); ctx.fill()
       ctx.lineWidth = big ? 2 : 1.3; ctx.strokeStyle = big ? fg : bg; ctx.stroke()

@@ -1001,10 +1001,9 @@
   .pk-found { margin: -4px 0 0; font-size: 13px; color: var(--muted-foreground); }
 
   .pk-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 38px; min-width: 0; }
-  .pk-region-wrap { position: relative; min-width: 0; max-width: 100%; overflow: hidden; }
-  .pk-region-wrap::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 26px; background: linear-gradient(to right, transparent, var(--background)); pointer-events: none; }
-  .pk-regions { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 1px 28px 1px 0; }
-  .pk-reg-pill { flex: none; min-height: 32px; padding: 0 11px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--muted-foreground); font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .pk-region-wrap { min-width: 0; max-width: 100%; }
+  .pk-regions { display: flex; flex-wrap: wrap; gap: 6px; padding: 1px 0; }
+  .pk-reg-pill { flex: none; min-height: 30px; padding: 0 10px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--muted-foreground); font: inherit; font-size: 12.5px; font-weight: 600; white-space: nowrap; cursor: pointer; }
   .pk-reg-pill:hover { color: var(--foreground); background: var(--row-hover); }
   .pk-reg-pill[aria-pressed='true'] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
   .pk-lang-select select { min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--background); color: var(--foreground); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
