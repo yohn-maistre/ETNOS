@@ -404,7 +404,11 @@
     void layouts
     const next = lens
     if (!layouts[next]) return
-    if (firstDraw || !W) { firstDraw = !W; arrange(next, true); return }
+    if (firstDraw || !W) {
+      if (W) firstDraw = false
+      arrange(next, true)
+      return
+    }
     if (next !== shown || goal !== layouts[next]!.pos) arrange(next, false)
   })
   $effect(() => { void threeD; if (shown === 'skala' && !firstDraw) arrange('skala', false) })
@@ -420,9 +424,19 @@
       const rect = canvas.getBoundingClientRect()
       dpr = Math.min(coarse ? 1.75 : 2, devicePixelRatio || 1)
       if (rect.width === W && rect.height === H) return
+      const hadSize = W > 0
       W = rect.width; H = rect.height; canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr)
       aspect = H ? W / H : 1.8
-      if (layouts[lens]) arrange(lens, true)
+      if (!hadSize || firstDraw) {
+        if (W > 0) firstDraw = false
+        if (layouts[lens]) arrange(lens, true)
+      } else if (tweening) {
+        // Keep the active 650ms lens transition running smoothly instead of teleporting on a minor toolbar height change.
+        if (layouts[shown]) goal = layouts[shown]!.pos
+        wake()
+      } else if (layouts[lens]) {
+        arrange(lens, true)
+      }
     })
     if (canvas) ro.observe(canvas)
     return () => { cancelAnimationFrame(raf); raf = 0; ro.disconnect() }

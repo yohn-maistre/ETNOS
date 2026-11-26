@@ -69,7 +69,13 @@
     { href: '/notifications', label: 'Aktivitas', icon: Bell },
     { href: '/saved', label: 'Tersimpan', icon: Bookmark },
   ]
-  const exploreSections = [['tempat', 'Tempat'], ['bahasa', 'Bahasa'], ['topik', 'Topik']]
+  const wikiSections: { href: string; label: string; match: (p: string) => boolean }[] = [
+    { href: '/wiki/jenis/tempat', label: 'Tempat', match: (p) => p === '/wiki/jenis/tempat' },
+    { href: '/wiki/jenis/bahasa', label: 'Bahasa', match: (p) => p === '/wiki/jenis/bahasa' || p === '/wiki/peta-kata' || p === '/peta-kata' },
+    { href: '/wiki/jenis/topik', label: 'Topik', match: (p) => p === '/wiki/jenis/topik' },
+    { href: '/wiki/peta', label: 'Peta Pengetahuan', match: (p) => p === '/wiki/peta' },
+    { href: '/wiki/data', label: 'Katalog Data', match: (p) => p.startsWith('/wiki/data') },
+  ]
   const navGroups = $derived(auth.actor ? [nav.slice(0, 4), nav.slice(4)] : [nav.slice(0, 4)])
   function active(href: string) {
     return href === '/'
@@ -78,7 +84,9 @@
         ? path.startsWith('/communities') || path.startsWith('/groups')
         : href === '/explore'
           ? path.startsWith('/explore') || path.startsWith('/contexts') || path.startsWith('/topics')
-          : path.startsWith(href)
+          : href === '/wiki'
+            ? path.startsWith('/wiki') || path === '/peta-kata'
+            : path.startsWith(href)
   }
   $effect(() => {
     void path
@@ -136,18 +144,17 @@
                       </span>{/if}
                   </a>{/snippet}
               </Sidebar.MenuButton>
-              {#if item.href === '/explore'}<!-- Places, languages and topics, one tap away for people who open the menu before Jelajah. -->
+              {#if item.href === '/wiki'}<!-- Places, languages, topics, knowledge map and open data under Ensiklopedia. -->
                 <Sidebar.MenuSub class="nav-sub">
-                  {#each exploreSections as [hash, label]}<Sidebar.MenuSubItem>
-                      <Sidebar.MenuSubButton href={'/explore#' + hash} onclick={() => sidebar.setOpenMobile(false)}>
-                        <span>{label}</span>
+                  {#each wikiSections as sub (sub.href)}<Sidebar.MenuSubItem>
+                      <Sidebar.MenuSubButton
+                        href={sub.href}
+                        isActive={sub.match(path)}
+                        onclick={() => sidebar.setOpenMobile(false)}
+                      >
+                        <span>{sub.label}</span>
                       </Sidebar.MenuSubButton>
                     </Sidebar.MenuSubItem>{/each}
-                  <Sidebar.MenuSubItem>
-                    <Sidebar.MenuSubButton href="/wiki/peta-kata" onclick={() => sidebar.setOpenMobile(false)}>
-                      <span>Peta Kata</span>
-                    </Sidebar.MenuSubButton>
-                  </Sidebar.MenuSubItem>
                 </Sidebar.MenuSub>{/if}
             </Sidebar.MenuItem>{/each}
         </Sidebar.Menu>

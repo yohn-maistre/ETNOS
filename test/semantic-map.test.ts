@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { Etnos } from '../src/store.ts'
 import { api } from '../src/api.ts'
 import { kamusLexicon } from '../src/kamus-data.ts'
-import { SemanticMap, pca2d } from '../src/semantic-map.ts'
+import { SemanticMap, pca2d, pca3d } from '../src/semantic-map.ts'
 
 test('SemanticMap extracts real Papuan colexifications, runs deterministic fallback, and honors privacy isolation', async () => {
   const s = new Etnos(':memory:', 'https://etnos.example')
@@ -65,11 +65,13 @@ test('SemanticMap extracts real Papuan colexifications, runs deterministic fallb
     assert.ok(out.stats.semanticEdges >= 40, 'Expected semantic nearest-neighbor edges')
     assert.ok(out.clusters.length >= 2 && out.clusters.length <= 20)
 
-    // Coordinates are finite and bounded in [-1, 1]
+    // Coordinates are finite and bounded in [-1, 1] across all 3 dimensions
     for (const n of out.nodes) {
       assert.ok(Number.isFinite(n.x) && n.x >= -1 && n.x <= 1)
       assert.ok(Number.isFinite(n.y) && n.y >= -1 && n.y <= 1)
+      assert.ok(Number.isFinite(n.z) && n.z >= -1 && n.z <= 1)
     }
+    assert.ok(out.languages.length >= 2)
 
     // Verify public Sentani colexification ("bu": air <-> hujan) is present
     const serialized = JSON.stringify(out)
@@ -95,14 +97,17 @@ test('SemanticMap extracts real Papuan colexifications, runs deterministic fallb
   }
 })
 
-test('pca2d is deterministic and produces finite bounded coordinates', () => {
+test('pca3d and pca2d are deterministic and produce finite bounded coordinates', () => {
   const vecs = Array.from({ length: 12 }, (_, i) => [Math.cos(i), Math.sin(i), (i % 3) * 0.5, i * 0.1])
-  const a = pca2d(vecs)
-  const b = pca2d(vecs)
-  assert.deepEqual(a, b)
-  assert.equal(a.length, 12)
-  for (const [x, y] of a) {
+  const a3 = pca3d(vecs)
+  const b3 = pca3d(vecs)
+  assert.deepEqual(a3, b3)
+  assert.equal(a3.length, 12)
+  for (const [x, y, z] of a3) {
     assert.ok(Number.isFinite(x) && x >= -1 && x <= 1)
     assert.ok(Number.isFinite(y) && y >= -1 && y <= 1)
+    assert.ok(Number.isFinite(z) && z >= -1 && z <= 1)
   }
+  const a2 = pca2d(vecs)
+  assert.equal(a2.length, 12)
 })

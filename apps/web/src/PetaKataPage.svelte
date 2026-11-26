@@ -1,20 +1,27 @@
 <script lang="ts">
+  // Peta Bahasa & Semantik Tanah Papua (/wiki/peta-kata, alias /peta-kata):
+  // Shares the exact interactive Canvas stage, 3D orbit controls, sunflower cluster discs, segmented lens bar,
+  // interactive bottom legend, and full-screen option of Peta Pengetahuan (KnowledgeExplorer / MapStage).
   import { onMount } from 'svelte'
   import {
-    Volume2,
-    Square,
-    Search,
-    BookOpen,
-    ChevronRight,
-    Map as MapIcon,
-    Network,
-    ChevronDown,
-    Sparkles,
     ArrowUpRight,
+    BookOpen,
+    ChevronDown,
+    ChevronRight,
+    Maximize2,
+    Search,
+    Sparkles,
+    Square,
+    Volume2,
+    X,
   } from '@lucide/svelte'
   import { request } from './api'
-  import * as Tabs from '$lib/components/ui/tabs'
+  import { loadIndex, type EntryIndex } from './entri'
+  import { fold, pathRings } from './stage-layouts.ts'
+  import { appearance } from './appearance.svelte'
+  import LanguageStage, { type AtlasPoint, type LangLens, type SemLink, type SemPoint } from './LanguageStage.svelte'
   import atlas from './papua-atlas.json'
+  import './styles/observatorium.css'
 
   type AtlasConcept = {
     n: number
@@ -55,6 +62,7 @@
     wordClass: string
     x: number
     y: number
+    z: number
     cluster: number
     domain: string
     wordsCount: number
@@ -94,45 +102,98 @@
       languagesUsed: number
       publicEntriesUsed: number
     }
+    languages: { code: string; name: string; entries: number }[]
     clusters: SemanticCluster[]
     nodes: SemanticNode[]
     edges: SemanticEdge[]
   }
 
-  const REGION_NAMES: Record<string, string> = {
-    domberai: 'Domberai',
-    bomberai: 'Bomberai',
-    saireri: 'Saireri',
-    'mamta-tabi': 'Mamta / Tabi',
-    meepago: 'Mee Pago',
-    'la-pago': 'La Pago',
-    'ha-anim': 'Ha Anim',
+  const LENS_TABS: { key: LangLens; label: string }[] = [
+    { key: 'peta', label: 'Peta bahasa' },
+    { key: 'rumpun', label: 'Rumpun bahasa' },
+    { key: 'semantik', label: 'Ruang semantik 3D' },
+    { key: 'kelompok', label: 'Kelompok makna' },
+  ]
+
+  const LENS_LEDE: Record<LangLens, string> = {
+    peta: '256 titik bahasa Tanah Papua dari Glottolog di atas tujuh wilayah adat. Pilih konsep dasar untuk melihat padanan kata dan rekaman suaranya.',
+    rumpun: 'Ke-256 bahasa yang sama dikelompokkan menurut rumpun bahasa Glottolog. Bahasa yang punya kata untuk konsep terpilih tetap menyala di dalam rumpunnya.',
+    semantik: '100 konsep dasar dalam ruang semantik 3D yang bisa diputar. Garis hijau solid adalah koleksifikasi nyata (satu kata Papua menyatukan dua makna), garis putus-putus adalah kedekatan semantik.',
+    kelompok: 'Konsep dasar yang sama ditata ke dalam kelompok makna Leiden. Ketuk satu titik untuk menyorot jembatan koleksifikasi antar kelompok.',
   }
 
-  let view = $state<'geografis' | 'semantik'>('geografis')
+  const REGIONS: { slug: string; label: string }[] = [
+    { slug: '', label: 'Semua Papua' },
+    { slug: 'domberai', label: 'Domberai' },
+    { slug: 'bomberai', label: 'Bomberai' },
+    { slug: 'saireri', label: 'Saireri' },
+    { slug: 'mamta-tabi', label: 'Mamta / Tabi' },
+    { slug: 'meepago', label: 'Mee Pago' },
+    { slug: 'la-pago', label: 'La Pago' },
+    { slug: 'ha-anim', label: 'Ha Anim' },
+  ]
+  const REGION_NAME = new Map(REGIONS.map((r) => [r.slug, r.label]))
+
+  const FAMILY_PALETTE_LIGHT = ['#0f766e', '#2563eb', '#b45309', '#9333ea', '#be123c', '#15803d', '#4f46e5', '#64748b']
+  const FAMILY_PALETTE_DARK = ['#2dd4bf', '#60a5fa', '#fbbf24', '#c084fc', '#fb7185', '#4ade80', '#818cf8', '#94a3b8']
+
+  let lens = $state<LangLens>('peta')
+  let fullScreen = $state(false)
+  let threeD = $state(true)
+  let region = $state('')
+  let filterQuery = $state('')
+  let hiddenFamilies = $state(new Set<string>())
+  let hiddenClusters = $state(new Set<string>())
+  let onlyWithWords = $state(false)
+  let colexOnly = $state(false)
+  let semLangCode = $state('')
+
+  let index = $state<EntryIndex | null>(null)
   let concepts = $state<AtlasConcept[]>([])
   let showAllConcepts = $state(false)
   let activeConcept = $state<AtlasConcept | null>(null)
-  let query = $state('')
+  let wordSearch = $state('')
   let words = $state<AtlasWord[]>([])
-  let selectedSlug = $state<string | null>(null)
-  let loading = $state(true)
-  let error = $state('')
-  let playingId = $state<string | null>(null)
-  let audioEl: HTMLAudioElement | null = null
+  let loadingWords = $state(true)
+  let wordsError = $state('')
 
-  // Semantic map state
+  let selectedAtlas = $state('')
+  let selectedSem = $state('')
+
   let semData = $state<SemanticMapData | null>(null)
   let semLoading = $state(false)
   let semError = $state('')
-  let semFilter = $state<'all' | 'colex'>('all')
-  let semCluster = $state<number | null>(null)
-  let semSelectedN = $state<number | null>(null)
-  let semHoveredN = $state<number | null>(null)
 
-  const atlasRegions = Object.entries(atlas.regions as Record<string, { d: string; x: number; y: number }>)
-  const atlasLangs = atlas.langs as [string, number, number, string][]
-  const viewBox = (atlas.box as number[]).join(' ')
+  let playingId = $state<string | null>(null)
+  let audioEl: HTMLAudioElement | null = null
+
+  const dark = $derived(appearance.theme === 'dark')
+  const isSemantic = $derived(lens === 'semantik' || lens === 'kelompok')
+
+  const atlasRegionsRaw = Object.entries(atlas.regions as Record<string, { d: string; x: number; y: number }>)
+  const atlasRings = atlasRegionsRaw.map(([key, r]) => ({
+    key,
+    label: REGION_NAME.get(key) ?? key,
+    x: r.x,
+    y: r.y,
+    rings: pathRings(r.d),
+  }))
+  const atlasBox = atlas.box as [number, number, number, number]
+  const atlasLangsRaw = atlas.langs as [string, number, number, string][]
+
+  const langEntryBySlug = $derived.by(() => {
+    const m = new Map<string, { title: string; familyKey: string; familyLabel: string; article: boolean }>()
+    for (const e of index?.entries ?? []) {
+      if (e.kind !== 'bahasa') continue
+      m.set(e.slug, {
+        title: e.title,
+        familyKey: e.subKey || 'lainnya',
+        familyLabel: e.sub || 'Lainnya & isolat',
+        article: e.article,
+      })
+    }
+    return m
+  })
 
   const wordsBySlug = $derived.by(() => {
     const m = new Map<string, AtlasWord[]>()
@@ -143,64 +204,127 @@
     return m
   })
 
-  // Deterministic simple vertical nudge so adjacent language callouts on the map never collide.
-  const mapHits = $derived.by(() => {
-    const raw: Array<{ slug: string; x: number; y: number; hits: AtlasWord[]; hasVoice: boolean; labelY: number }> = []
-    for (const [slug, x, y] of atlasLangs) {
-      const hits = wordsBySlug.get(slug)
-      if (!hits?.length) continue
-      raw.push({ slug, x, y, hits, hasVoice: hits.some((w) => !!w.voice), labelY: y })
+  // Top 6 families + "Lainnya & isolat" bucket so 256 languages stay crisp and legible in both map & sunflower discs.
+  const topFamilyKeys = $derived.by(() => {
+    const counts = new Map<string, { key: string; label: string; count: number }>()
+    for (const [slug] of atlasLangsRaw) {
+      const meta = langEntryBySlug.get(slug)
+      const k = meta?.familyKey || 'lainnya'
+      const l = meta?.familyLabel || 'Lainnya & isolat'
+      const prev = counts.get(k)
+      if (prev) prev.count++
+      else counts.set(k, { key: k, label: l, count: 1 })
     }
-    raw.sort((a, b) => a.y - b.y || a.x - b.x)
-    const placed: Array<{ x: number; y: number }> = []
-    for (const item of raw) {
-      let ly = item.y
-      for (let step = 0; step < 6; step++) {
-        const collides = placed.some((p) => Math.abs(p.x - item.x) < 72 && Math.abs(p.y - ly) < 18)
-        if (!collides) break
-        ly += step % 2 === 0 ? -18 : 20
-      }
-      item.labelY = ly
-      placed.push({ x: item.x, y: ly })
-    }
-    return raw
+    const sorted = [...counts.values()]
+      .filter((x) => x.key !== 'lainnya')
+      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'id'))
+    return sorted.slice(0, 6)
   })
 
-  const visibleWords = $derived(
-    selectedSlug ? words.filter((w) => w.languageSlug === selectedSlug) : words,
+  const topFamilySet = $derived(new Set(topFamilyKeys.map((f) => f.key)))
+
+  const atlasPoints = $derived.by<AtlasPoint[]>(() =>
+    atlasLangsRaw.map(([slug, x, y, reg]) => {
+      const meta = langEntryBySlug.get(slug)
+      const rawKey = meta?.familyKey || 'lainnya'
+      const bucketKey = topFamilySet.has(rawKey) ? rawKey : 'lainnya'
+      const bucketLabel = topFamilySet.has(rawKey) ? (meta?.familyLabel ?? 'Lainnya & isolat') : 'Lainnya & isolat'
+      const hits = wordsBySlug.get(slug)
+      return {
+        id: slug,
+        title: meta?.title ?? slug.replace(/^bahasa-/, '').replace(/-/g, ' '),
+        familyKey: bucketKey,
+        familyLabel: meta?.familyLabel ?? bucketLabel,
+        region: reg,
+        x,
+        y,
+        hasArticle: meta?.article ?? false,
+        word: hits?.[0]?.lemma,
+        hasVoice: hits?.some((w) => !!w.voice) ?? false,
+      }
+    }),
   )
 
-  const semByN = $derived(new Map((semData?.nodes ?? []).map((n) => [n.n, n])))
-  const clusterColor = $derived(new Map((semData?.clusters ?? []).map((c) => [c.id, c.color])))
-  const clusterLabel = $derived(new Map((semData?.clusters ?? []).map((c) => [c.id, c.label])))
-
-  const semSx = (v: number) => 420 + v * 365
-  const semSy = (v: number) => 270 + v * 222
-
-  const semFocusN = $derived(semHoveredN ?? semSelectedN)
-  const semSelectedNode = $derived(semSelectedN !== null ? semByN.get(semSelectedN) ?? null : null)
-
-  const semVisibleEdges = $derived.by(() => {
-    if (!semData) return []
-    return semData.edges.filter((e) => {
-      if (semFilter === 'colex' && e.kind !== 'colexification') return false
-      if (semCluster !== null) {
-        const a = semByN.get(e.source)
-        const b = semByN.get(e.target)
-        if (a?.cluster !== semCluster && b?.cluster !== semCluster) return false
-      }
-      return true
-    })
+  const atlasFamilies = $derived.by(() => {
+    const pal = dark ? FAMILY_PALETTE_DARK : FAMILY_PALETTE_LIGHT
+    const counts = new Map<string, number>()
+    for (const p of atlasPoints) counts.set(p.familyKey, (counts.get(p.familyKey) ?? 0) + 1)
+    const out = topFamilyKeys.map((f, idx) => ({
+      key: f.key,
+      label: f.label,
+      color: pal[idx % (pal.length - 1)]!,
+      count: counts.get(f.key) ?? 0,
+    }))
+    const otherCount = counts.get('lainnya') ?? 0
+    if (otherCount > 0) {
+      out.push({ key: 'lainnya', label: 'Lainnya & isolat', color: pal[pal.length - 1]!, count: otherCount })
+    }
+    return out
   })
 
-  const semNodeConnections = $derived.by(() => {
-    if (!semData || semSelectedN === null) return { colex: [] as Array<{ node: SemanticNode; edge: SemanticEdge }>, semantic: [] as Array<{ node: SemanticNode; edge: SemanticEdge }> }
-    const colex: Array<{ node: SemanticNode; edge: SemanticEdge }> = []
-    const semantic: Array<{ node: SemanticNode; edge: SemanticEdge }> = []
+  const atlasPointById = $derived(new Map(atlasPoints.map((p) => [p.id, p])))
+  const selectedAtlasPoint = $derived(selectedAtlas ? atlasPointById.get(selectedAtlas) ?? null : null)
+
+  // Semantic points & links (optionally filtered to a specific language)
+  const semNodesFiltered = $derived.by(() => {
+    if (!semData) return []
+    if (!semLangCode) return semData.nodes
+    return semData.nodes.map((n) => ({
+      ...n,
+      samples: n.samples.filter((s) => s.languageCode === semLangCode),
+    }))
+  })
+
+  const semByN = $derived(new Map(semNodesFiltered.map((n) => [n.n, n])))
+  const semById = $derived(new Map(semNodesFiltered.map((n) => [String(n.n), n])))
+  const semClusterColor = $derived(new Map((semData?.clusters ?? []).map((c) => [c.id, c.color])))
+  const semClusterLabel = $derived(new Map((semData?.clusters ?? []).map((c) => [c.id, c.label])))
+
+  const semPoints = $derived<SemPoint[]>(
+    semNodesFiltered.map((n) => ({
+      id: String(n.n),
+      n: n.n,
+      title: n.id,
+      english: n.english,
+      x: n.x,
+      y: n.y,
+      z: n.z ?? 0,
+      cluster: n.cluster,
+      colexDegree: n.colexDegree,
+      wordsCount: n.wordsCount,
+    })),
+  )
+
+  const semLinks = $derived.by<SemLink[]>(() => {
+    if (!semData) return []
+    const idxByN = new Map(semNodesFiltered.map((n, i) => [n.n, i]))
+    const out: SemLink[] = []
+    for (const e of semData.edges) {
+      if (semLangCode && e.kind === 'colexification' && !e.examples.some((ex) => ex.languageCode === semLangCode)) continue
+      const a = idxByN.get(e.source)
+      const b = idxByN.get(e.target)
+      if (a === undefined || b === undefined) continue
+      out.push({ a, b, kind: e.kind, weight: e.weight })
+    }
+    return out
+  })
+
+  const selectedSemNode = $derived(selectedSem ? semById.get(selectedSem) ?? null : null)
+
+  const semConnections = $derived.by(() => {
+    if (!semData || !selectedSemNode) {
+      return {
+        colex: [] as { node: SemanticNode; edge: SemanticEdge }[],
+        semantic: [] as { node: SemanticNode; edge: SemanticEdge }[],
+      }
+    }
+    const targetN = selectedSemNode.n
+    const colex: { node: SemanticNode; edge: SemanticEdge }[] = []
+    const semantic: { node: SemanticNode; edge: SemanticEdge }[] = []
     for (const edge of semData.edges) {
-      if (edge.source !== semSelectedN && edge.target !== semSelectedN) continue
-      const otherN = edge.source === semSelectedN ? edge.target : edge.source
-      const other = semByN.get(otherN)
+      if (edge.source !== targetN && edge.target !== targetN) continue
+      if (semLangCode && edge.kind === 'colexification' && !edge.examples.some((ex) => ex.languageCode === semLangCode)) continue
+      const other = semByN.get(edge.source === targetN ? edge.target : edge.source)
       if (!other) continue
       if (edge.kind === 'colexification') colex.push({ node: other, edge })
       else semantic.push({ node: other, edge })
@@ -210,34 +334,63 @@
     return { colex, semantic }
   })
 
-  const semFocusNeighbors = $derived.by(() => {
-    const s = new Set<number>()
-    if (semFocusN === null || !semData) return s
-    s.add(semFocusN)
-    for (const e of semVisibleEdges) {
-      if (e.source === semFocusN) s.add(e.target)
-      else if (e.target === semFocusN) s.add(e.source)
-    }
-    return s
-  })
-
   const topColexHighlights = $derived.by(() => {
     if (!semData) return []
     return semData.edges
-      .filter((e) => e.kind === 'colexification' && e.examples.length)
+      .filter((e) => e.kind === 'colexification' && e.examples.length && (!semLangCode || e.examples.some((ex) => ex.languageCode === semLangCode)))
       .slice(0, 8)
-      .map((e) => ({
-        edge: e,
-        a: semByN.get(e.source),
-        b: semByN.get(e.target),
-      }))
+      .map((e) => ({ edge: e, a: semByN.get(e.source), b: semByN.get(e.target) }))
       .filter((x): x is { edge: SemanticEdge; a: SemanticNode; b: SemanticNode } => !!x.a && !!x.b)
   })
 
+  // Live canvas search highlights
+  const matches = $derived.by(() => {
+    const q = fold(filterQuery.trim())
+    if (q.length < 2) return null
+    if (!isSemantic) {
+      return new Set(
+        atlasPoints
+          .filter((p) =>
+            fold(p.title).includes(q) ||
+            fold(p.familyLabel).includes(q) ||
+            fold(REGION_NAME.get(p.region) ?? p.region).includes(q) ||
+            (p.word && fold(p.word).includes(q)),
+          )
+          .map((p) => p.id),
+      )
+    }
+    return new Set(
+      semNodesFiltered
+        .filter((n) =>
+          fold(n.id).includes(q) ||
+          fold(n.english).includes(q) ||
+          n.samples.some((s) => fold(s.lemma).includes(q) || fold(s.languageName).includes(q)),
+        )
+        .map((n) => String(n.n)),
+    )
+  })
+
+  const visibleWords = $derived.by(() => {
+    let rows = words
+    if (selectedAtlas) rows = rows.filter((w) => w.languageSlug === selectedAtlas)
+    if (region) {
+      rows = rows.filter((w) => {
+        const pt = w.languageSlug ? atlasPointById.get(w.languageSlug) : undefined
+        return !pt || pt.region === region
+      })
+    }
+    if (hiddenFamilies.size) {
+      rows = rows.filter((w) => {
+        const pt = w.languageSlug ? atlasPointById.get(w.languageSlug) : undefined
+        return !pt || !hiddenFamilies.has(pt.familyKey)
+      })
+    }
+    return rows
+  })
+
   async function loadLookup(params: { concept?: string; q?: string }) {
-    loading = true
-    error = ''
-    selectedSlug = null
+    loadingWords = true
+    wordsError = ''
     try {
       const qs = new URLSearchParams()
       if (params.concept) qs.set('concept', params.concept)
@@ -251,9 +404,9 @@
       activeConcept = res.concept
       words = res.words
     } catch (e) {
-      error = e instanceof Error ? e.message : 'Peta kata belum dapat dimuat.'
+      wordsError = e instanceof Error ? e.message : 'Peta kata belum dapat dimuat.'
     } finally {
-      loading = false
+      loadingWords = false
     }
   }
 
@@ -264,9 +417,8 @@
     try {
       const data = await request<SemanticMapData>('/v1/peta-kata/semantic', undefined, undefined, true)
       semData = data
-      // Pre-select the most richly colexified concept so the inspector opens with real Papuan insight immediately.
       const richest = [...data.nodes].sort((a, b) => b.colexDegree - a.colexDegree || b.wordsCount - a.wordsCount)[0]
-      semSelectedN = richest?.n ?? data.nodes[0]?.n ?? null
+      if (!selectedSem && richest) selectedSem = String(richest.n)
     } catch (e) {
       semError = e instanceof Error ? e.message : 'Peta semantik belum dapat dimuat.'
     } finally {
@@ -281,223 +433,383 @@
       playingId = null
       return
     }
-    if (audioEl) {
-      audioEl.pause()
-      audioEl = null
-    }
+    if (audioEl) { audioEl.pause(); audioEl = null }
     const a = new Audio(w.voice.url)
     audioEl = a
     playingId = w.voice.id
-    a.onended = () => {
-      if (playingId === w.voice?.id) playingId = null
-    }
-    a.onerror = () => {
-      if (playingId === w.voice?.id) playingId = null
-    }
-    void a.play().catch(() => {
-      playingId = null
-    })
+    a.onended = () => { if (playingId === w.voice?.id) playingId = null }
+    a.onerror = () => { if (playingId === w.voice?.id) playingId = null }
+    void a.play().catch(() => { playingId = null })
   }
 
-  $effect(() => {
-    if (view === 'semantik' && !semData && !semLoading) {
-      void loadSemantic()
-    }
-  })
+  function chooseLens(next: LangLens) {
+    lens = next
+    try {
+      const url = new URL(location.href)
+      if (next === 'peta') url.searchParams.delete('tampilan')
+      else url.searchParams.set('tampilan', next)
+      history.replaceState(history.state, '', url)
+    } catch { /* convenience */ }
+  }
 
-  onMount(() => {
-    document.title = 'Peta Kata & Semantik · Ensiklopedia · ETNOS'
-    const sp = new URLSearchParams(location.search)
-    const initView = sp.get('tampilan') ?? sp.get('view') ?? ''
-    if (initView === 'semantik') view = 'semantik'
-    const initConcept = sp.get('concept') ?? ''
-    const initQ = sp.get('q') ?? ''
-    query = initQ
-    void request<{ concepts: AtlasConcept[] }>('/v1/peta-kata/concepts', undefined, undefined, true)
-      .then((r) => {
-        concepts = r.concepts
-      })
-      .catch(() => {})
-    void loadLookup(initQ ? { q: initQ } : { concept: initConcept || 'air' })
-    return () => {
-      audioEl?.pause()
+  function toggleLegend(key: string) {
+    if (!isSemantic) {
+      const next = new Set(hiddenFamilies)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      hiddenFamilies = next
+    } else {
+      const next = new Set(hiddenClusters)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      hiddenClusters = next
     }
-  })
+  }
 
-  function submitSearch(e: Event) {
-    e.preventDefault()
-    if (!query.trim()) return
-    view = 'geografis'
-    void loadLookup({ q: query.trim() })
+  function onFilterKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && filterQuery) {
+      e.preventDefault()
+      filterQuery = ''
+      return
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (matches?.size) {
+        const first = [...matches][0]!
+        if (isSemantic) selectedSem = first
+        else selectedAtlas = first
+      } else if (!isSemantic && filterQuery.trim()) {
+        wordSearch = filterQuery.trim()
+        void loadLookup({ q: wordSearch })
+      }
+    }
   }
 
   function pickConcept(c: AtlasConcept) {
-    query = ''
+    wordSearch = ''
+    selectedAtlas = ''
     void loadLookup({ concept: String(c.n) })
   }
 
-  function openInGeo(node: SemanticNode) {
-    query = ''
-    view = 'geografis'
+  function openConceptInAtlas(node: SemanticNode) {
+    wordSearch = ''
+    selectedAtlas = ''
+    chooseLens('peta')
     void loadLookup({ concept: String(node.n) })
   }
+
+  function portal(node: HTMLElement) {
+    document.body.appendChild(node)
+    return { destroy() { node.remove() } }
+  }
+
+  function onWindowKey(e: KeyboardEvent) {
+    if (e.key === 'Escape' && fullScreen) {
+      e.preventDefault()
+      fullScreen = false
+    }
+  }
+
+  $effect(() => {
+    if (isSemantic && !semData && !semLoading) void loadSemantic()
+  })
+
+  onMount(() => {
+    document.title = 'Peta Bahasa & Semantik · Ensiklopedia · ETNOS'
+    const sp = new URLSearchParams(location.search)
+    const rawView = sp.get('tampilan') ?? sp.get('view') ?? ''
+    if (rawView === 'rumpun' || rawView === 'semantik' || rawView === 'kelompok') lens = rawView
+    else if (rawView === 'koleksifikasi') { lens = 'semantik'; colexOnly = true }
+
+    const initRegion = sp.get('wilayah') ?? ''
+    if (REGIONS.some((r) => r.slug === initRegion)) region = initRegion
+
+    const initFamily = sp.get('rumpun') ?? ''
+    const initConcept = sp.get('concept') ?? ''
+    const initQ = sp.get('q') ?? ''
+    if (initQ) { filterQuery = initQ; wordSearch = initQ }
+
+    void loadIndex().then((i) => {
+      index = i
+      if (initFamily && topFamilySet.has(initFamily)) {
+        // Focus just the requested family by hiding the others
+        const others = new Set(atlasFamilies.map((f) => f.key).filter((k) => k !== initFamily))
+        if (others.size) hiddenFamilies = others
+      }
+    }).catch(() => {})
+
+    void request<{ concepts: AtlasConcept[] }>('/v1/peta-kata/concepts', undefined, undefined, true)
+      .then((r) => { concepts = r.concepts })
+      .catch(() => {})
+    void loadLookup(initQ ? { q: initQ } : { concept: initConcept || 'air' })
+    // Preload semantic data quietly so switching to Ruang semantik 3D is instant
+    void loadSemantic()
+
+    return () => { audioEl?.pause() }
+  })
 </script>
 
-<section class="peta-kata-page">
-  <nav class="pk-crumb" aria-label="Jejak halaman">
-    <a href="/wiki">Ensiklopedia</a>
-    <ChevronRight size={14} aria-hidden="true" />
-    <span>Peta Kata & Semantik</span>
-  </nav>
+<svelte:window onkeydown={onWindowKey} />
 
-  <header class="pk-head">
-    <div class="pk-title-block">
-      <h1>Peta Kata Tanah Papua</h1>
-      <p>
-        Bandingkan 100 konsep dasar Leipzig-Jakarta di 256 bahasa Tanah Papua, dengarkan pelafalannya, dan jelajahi bagaimana bahasa Papua menautkan makna melalui peta semantik serta koleksifikasi.
-      </p>
+<div class="obs pk-page">
+  <header class="obs-section obs-top pk-top">
+    <nav class="pk-crumb" aria-label="Jejak halaman">
+      <a href="/wiki">Ensiklopedia</a>
+      <ChevronRight size={14} aria-hidden="true" />
+      <a href="/wiki/jenis/bahasa">Bahasa</a>
+      <ChevronRight size={14} aria-hidden="true" />
+      <span>Peta Bahasa & Semantik</span>
+    </nav>
+
+    <div class="obs-head">
+      <h1>Peta Bahasa & Semantik</h1>
+      <button type="button" class="pk-full-btn" onclick={() => (fullScreen = true)}>
+        <Maximize2 size={15} aria-hidden="true" />
+        <span>Layar penuh</span>
+      </button>
     </div>
 
-    <form class="pk-search" onsubmit={submitSearch}>
-      <label class="sr-only" for="pk-search-input">Cari kata atau makna</label>
-      <Search size={17} aria-hidden="true" />
-      <input
-        id="pk-search-input"
-        type="search"
-        bind:value={query}
-        placeholder="Cari makna atau kata (mis. air, api, rumah, makan)…"
-      />
-      <button type="submit">Cari</button>
-    </form>
-  </header>
-
-  <Tabs.Root bind:value={view}>
-    <Tabs.List class="pk-tabs">
-      <Tabs.Trigger value="geografis">
-        <MapIcon size={15} aria-hidden="true" />
-        <span>Peta Geografis</span>
-      </Tabs.Trigger>
-      <Tabs.Trigger value="semantik">
-        <Network size={15} aria-hidden="true" />
-        <span>Peta Semantik Papua</span>
-      </Tabs.Trigger>
-    </Tabs.List>
-
-    <Tabs.Content value="geografis" class="pk-pane">
-      {#if concepts.length}
-        <div class="pk-chips-section">
-          <div class="pk-chips-wrap" class:expanded={showAllConcepts}>
-            <div class="pk-chips" class:expanded={showAllConcepts} role="list" aria-label="Konsep dasar Leipzig-Jakarta">
-              {#each (showAllConcepts ? concepts : concepts.slice(0, 24)) as c (c.n)}
-                <button
-                  type="button"
-                  class="pk-chip"
-                  class:active={activeConcept?.n === c.n && !query}
-                  class:has-data={c.count > 0}
-                  onclick={() => pickConcept(c)}
-                >
-                  <span>{c.id}</span>
-                  {#if c.count > 0}<small>{c.count}</small>{/if}
-                </button>
-              {/each}
-            </div>
-          </div>
+    <div class="pk-controls">
+      <div class="obs-pills pk-lenses" role="radiogroup" aria-label="Susunan peta bahasa">
+        {#each LENS_TABS as t (t.key)}
           <button
             type="button"
-            class="pk-expand-btn"
-            aria-expanded={showAllConcepts}
-            onclick={() => (showAllConcepts = !showAllConcepts)}
+            role="radio"
+            aria-checked={lens === t.key}
+            onclick={() => chooseLens(t.key)}
           >
-            <span>{showAllConcepts ? 'Ringkas daftar konsep' : `Semua ${concepts.length} konsep`}</span>
-            <ChevronDown size={14} class={showAllConcepts ? 'rot' : ''} aria-hidden="true" />
+            {t.label}
           </button>
+        {/each}
+      </div>
+
+      <label class="obs-search pk-search">
+        <Search size={16} aria-hidden="true" />
+        <input
+          type="search"
+          bind:value={filterQuery}
+          onkeydown={onFilterKeydown}
+          placeholder={isSemantic ? 'Cari konsep atau kata Papua…' : 'Cari bahasa, rumpun, wilayah, atau kata…'}
+          aria-label="Cari di peta bahasa"
+          autocomplete="off"
+        />
+        {#if filterQuery}
+          <button type="button" class="pk-clear-x" onclick={() => { filterQuery = ''; if (wordSearch) { wordSearch = ''; void loadLookup({ concept: String(activeConcept?.n ?? 'air') }) } }} aria-label="Hapus pencarian">
+            <X size={15} />
+          </button>
+        {/if}
+      </label>
+    </div>
+
+    <p class="obs-lede pk-lede">{LENS_LEDE[lens]}</p>
+    {#if matches}
+      <p class="pk-found" role="status">
+        {matches.size ? `${matches.size} titik cocok di peta. Tekan Enter untuk memilih.` : 'Tidak ada titik yang cocok; tekan Enter untuk mencari di daftar kata.'}
+      </p>
+    {/if}
+
+    <!-- Contextual filter tools -->
+    <div class="pk-tools">
+      {#if !isSemantic}
+        <div class="pk-region-wrap">
+          <div class="pk-regions" role="group" aria-label="Saring wilayah adat">
+            {#each REGIONS as r (r.slug)}
+              <button
+                type="button"
+                class="pk-reg-pill"
+                aria-pressed={region === r.slug}
+                onclick={() => (region = r.slug)}
+              >
+                {r.label}
+              </button>
+            {/each}
+          </div>
+        </div>
+        <button type="button" class="obs-toggle" aria-pressed={onlyWithWords} onclick={() => (onlyWithWords = !onlyWithWords)}>
+          Hanya yang punya kata ({words.length})
+        </button>
+      {:else}
+        <button type="button" class="obs-toggle" aria-pressed={colexOnly} onclick={() => (colexOnly = !colexOnly)}>
+          Hanya koleksifikasi Papua ({semData?.stats.colexificationEdges ?? 0})
+        </button>
+        {#if (semData?.languages.length ?? 0) > 1}
+          <label class="pk-lang-select">
+            <span class="sr-only">Saring bahasa</span>
+            <select bind:value={semLangCode}>
+              <option value="">Semua bahasa ({semData?.languages.length})</option>
+              {#each semData?.languages ?? [] as l (l.code)}
+                <option value={l.code}>{l.name} ({l.entries})</option>
+              {/each}
+            </select>
+          </label>
+        {/if}
+        {#if semData}
+          <span class="pk-mode-badge">
+            <Sparkles size={13} aria-hidden="true" />
+            <span>{semData.mode === 'bge-m3' ? 'Embedding multilingual (bge-m3)' : 'Proyeksi leksikal-struktural'}</span>
+          </span>
+        {/if}
+      {/if}
+    </div>
+
+    {#if !isSemantic && concepts.length}
+      <div class="pk-concepts">
+        <div class="pk-chips-wrap" class:expanded={showAllConcepts}>
+          <div class="pk-chips" class:expanded={showAllConcepts} role="list" aria-label="Konsep dasar Leipzig-Jakarta">
+            {#each (showAllConcepts ? concepts : concepts.slice(0, 22)) as c (c.n)}
+              <button
+                type="button"
+                class="pk-chip"
+                class:active={activeConcept?.n === c.n && !wordSearch}
+                class:has-data={c.count > 0}
+                onclick={() => pickConcept(c)}
+              >
+                <span>{c.id}</span>
+                {#if c.count > 0}<small>{c.count}</small>{/if}
+              </button>
+            {/each}
+          </div>
+        </div>
+        <button type="button" class="pk-expand-btn" aria-expanded={showAllConcepts} onclick={() => (showAllConcepts = !showAllConcepts)}>
+          <span>{showAllConcepts ? 'Ringkas konsep' : `Semua ${concepts.length} konsep`}</span>
+          <ChevronDown size={14} class={showAllConcepts ? 'rot' : ''} aria-hidden="true" />
+        </button>
+      </div>
+    {/if}
+  </header>
+
+  <!-- Main Stage (matches MapStage / KnowledgeExplorer) -->
+  <section class="pk-stage-section" aria-label="Kanvas interaktif peta bahasa">
+    {#if isSemantic && semError}
+      <p role="alert" class="pk-status">{semError}</p>
+    {:else if isSemantic && (semLoading || !semData)}
+      <div class="obs-skeleton pk-stage-hold" aria-hidden="true"></div>
+      <p class="pk-status">Menyusun ruang semantik 3D dan koleksifikasi bahasa Papua…</p>
+    {:else if !fullScreen}
+      <LanguageStage
+        {lens}
+        {atlasPoints}
+        {atlasFamilies}
+        {atlasRings}
+        {atlasBox}
+        {semPoints}
+        {semLinks}
+        semClusters={semData?.clusters ?? []}
+        selected={isSemantic ? selectedSem : selectedAtlas}
+        hidden={isSemantic ? hiddenClusters : hiddenFamilies}
+        {region}
+        {matches}
+        {colexOnly}
+        {onlyWithWords}
+        bind:threeD
+        label="Peta bahasa dan ruang semantik Tanah Papua"
+        onSelect={(id) => { if (isSemantic) selectedSem = id; else selectedAtlas = id }}
+      />
+    {/if}
+
+    <!-- Interactive Legend (identical grammar to KnowledgeExplorer) -->
+    {#if !isSemantic}
+      <ul class="obs-legend pk-legend" aria-label="Rumpun bahasa, menurut warna">
+        {#each atlasFamilies as f (f.key)}
+          <li>
+            <button
+              type="button"
+              aria-pressed={!hiddenFamilies.has(f.key)}
+              onclick={() => toggleLegend(f.key)}
+            >
+              <span class="dot" style:background={f.color}></span>
+              {f.label} <small>{f.count}</small>
+            </button>
+          </li>
+        {/each}
+      </ul>
+      <div class="pk-key-row">
+        <span><i class="key-dot match"></i>Ada kata untuk konsep terpilih</span>
+        <span><i class="key-dot voice"></i>Ada rekaman suara</span>
+        {#if selectedAtlas}
+          <button type="button" class="pk-reset-sel" onclick={() => (selectedAtlas = '')}>Tampilkan semua bahasa</button>
+        {/if}
+      </div>
+    {:else if semData}
+      <ul class="obs-legend pk-legend" aria-label="Kelompok makna Leiden">
+        {#each semData.clusters as c (c.id)}
+          <li>
+            <button
+              type="button"
+              aria-pressed={!hiddenClusters.has(String(c.id))}
+              onclick={() => toggleLegend(String(c.id))}
+            >
+              <span class="dot" style:background={c.color}></span>
+              {c.label} <small>{c.count}</small>
+            </button>
+          </li>
+        {/each}
+      </ul>
+      <div class="pk-key-row">
+        <span><i class="key-line colex"></i>Koleksifikasi nyata (kata Papua yang sama)</span>
+        <span><i class="key-line near"></i>Kedekatan semantik</span>
+      </div>
+    {/if}
+  </section>
+
+  <!-- Contextual Inspector & Detail Section -->
+  {#if !isSemantic}
+    <section class="obs-section pk-detail" aria-label="Daftar kata dan detail bahasa">
+      {#if selectedAtlasPoint}
+        <div class="pk-insp-card">
+          <div class="pk-insp-head">
+            <div>
+              <h2>{selectedAtlasPoint.title}</h2>
+              <p class="pk-insp-sub">
+                {selectedAtlasPoint.familyLabel} · {REGION_NAME.get(selectedAtlasPoint.region) ?? selectedAtlasPoint.region}
+              </p>
+            </div>
+            <div class="pk-insp-actions">
+              <a class="pk-insp-link" href={`/wiki/${selectedAtlasPoint.id}`}>
+                <span>Buka halaman bahasa</span>
+                <ArrowUpRight size={14} aria-hidden="true" />
+              </a>
+              <button type="button" class="pk-clear-x" onclick={() => (selectedAtlas = '')} aria-label="Tutup pilihan bahasa">
+                <X size={16} />
+              </button>
+            </div>
+          </div>
         </div>
       {/if}
 
-      <div class="pk-atlas-wrap">
-        <svg class="pk-atlas" {viewBox} role="img" aria-label="Peta sebaran bahasa Tanah Papua">
-          {#each atlasRegions as [slug, r] (slug)}
-            <path class="pk-region" d={r.d}>
-              <title>{REGION_NAMES[slug] ?? slug}</title>
-            </path>
-            <text class="pk-region-label" x={r.x} y={r.y}>{REGION_NAMES[slug] ?? slug}</text>
-          {/each}
-          {#each atlasLangs as [slug, x, y] (slug)}
-            {#if !wordsBySlug.has(slug)}
-              <circle cx={x} cy={y} r={2.2} class="pk-lang-dot" />
-            {/if}
-          {/each}
-          {#each mapHits as item (item.slug)}
-            {@const word = item.hits[0].lemma}
-            {@const pillW = Math.max(36, Math.min(110, word.length * 7.2 + 14))}
-            <g
-              class="pk-hit"
-              class:selected={selectedSlug === item.slug}
-              class:voiced={item.hasVoice}
-              role="button"
-              tabindex="0"
-              aria-label={`${item.hits[0].languageName}: ${word}`}
-              onclick={() => (selectedSlug = selectedSlug === item.slug ? null : item.slug)}
-              onkeydown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  selectedSlug = selectedSlug === item.slug ? null : item.slug
-                }
-              }}
-            >
-              <circle cx={item.x} cy={item.y} r={selectedSlug === item.slug ? 13 : 9} class="pk-hit-halo" />
-              <circle cx={item.x} cy={item.y} r={5} class="pk-hit-dot" />
-              {#if Math.abs(item.labelY - item.y) > 2}
-                <line x1={item.x} y1={item.y} x2={item.x + 8} y2={item.labelY} class="pk-hit-stem" />
-              {/if}
-              <rect x={item.x + 8} y={item.labelY - 10} width={pillW} height="19" rx="9.5" class="pk-hit-pill" />
-              <text x={item.x + 15} y={item.labelY + 3.5} class="pk-hit-word">{word}</text>
-            </g>
-          {/each}
-        </svg>
-        <div class="pk-legend">
-          <span><i class="dot plain"></i>256 titik bahasa (Glottolog)</span>
-          <span><i class="dot match"></i>Ada kata</span>
-          <span><i class="dot voiced"></i>Ada rekaman suara</span>
-          {#if selectedSlug}
-            <button type="button" class="pk-clear" onclick={() => (selectedSlug = null)}>Tampilkan semua bahasa</button>
-          {/if}
-        </div>
-      </div>
-
-      {#if error}
-        <p role="alert" class="pk-status">{error}</p>
-      {:else if loading}
+      {#if wordsError}
+        <p role="alert" class="pk-status">{wordsError}</p>
+      {:else if loadingWords}
         <p class="pk-status">Memuat kata dari Tanah Papua…</p>
       {:else if !visibleWords.length}
         <div class="pk-empty">
           <p>
-            Belum ada kata publik untuk <strong>{query || activeConcept?.id || 'pilihan ini'}</strong>.
+            Belum ada kata publik untuk <strong>{wordSearch || activeConcept?.id || 'pilihan ini'}</strong>{selectedAtlasPoint ? ` dalam bahasa ${selectedAtlasPoint.title}` : ''}.
             Komunitas bahasa dapat menambahkan kata dan rekaman suara lewat tab Kamus di ruang komunitasnya.
           </p>
         </div>
       {:else}
-        <div class="pk-results-head">
+        <div class="obs-head">
           <h2>
-            {#if activeConcept && !query}
+            {#if activeConcept && !wordSearch}
               “{activeConcept.id}” <small>({activeConcept.english})</small>
             {:else}
-              Hasil untuk “{query}”
+              Hasil untuk “{wordSearch}”
             {/if}
           </h2>
-          <span>{visibleWords.length} entri</span>
+          <span class="pk-count">{visibleWords.length} entri</span>
         </div>
-        <ul class="pk-list">
+        <ul class="pk-word-list">
           {#each visibleWords as w (w.id)}
-            <li class="pk-card">
-              <div class="pk-card-main">
-                <div class="pk-card-top">
+            <li class="pk-word-card">
+              <div class="pk-word-main">
+                <div class="pk-word-top">
                   <strong class="pk-lemma">{w.lemma}</strong>
-                  {#if w.pos}<span class="pk-pos">{w.pos}</span>{/if}
-                  <span class="pk-state">{w.origin === 'seed' ? 'Sumber tertulis' : w.state === 'checked' ? 'Diperiksa komunitas' : 'Usulan'}</span>
+                  {#if w.pos}<span class="pk-tag">{w.pos}</span>{/if}
+                  <span class="pk-tag">{w.origin === 'seed' ? 'Sumber tertulis' : w.state === 'checked' ? 'Diperiksa komunitas' : 'Usulan'}</span>
                 </div>
                 <p class="pk-gloss">{w.gloss}</p>
-                <div class="pk-meta">
+                <div class="pk-word-meta">
                   <span>
                     <BookOpen size={13} aria-hidden="true" />
                     {#if w.languageSlug}
@@ -534,943 +846,253 @@
           {/each}
         </ul>
       {/if}
-    </Tabs.Content>
-
-    <Tabs.Content value="semantik" class="pk-pane">
-      {#if semError}
-        <p role="alert" class="pk-status">{semError}</p>
-      {:else if semLoading || !semData}
-        <p class="pk-status">Menyusun peta semantik dan koleksifikasi bahasa Papua…</p>
-      {:else}
-        <div class="sem-toolbar">
-          <div class="sem-mode-pills" role="group" aria-label="Saring hubungan">
-            <button type="button" class="sem-pill" aria-pressed={semFilter === 'all'} onclick={() => (semFilter = 'all')}>
-              Semua hubungan
-            </button>
-            <button type="button" class="sem-pill" aria-pressed={semFilter === 'colex'} onclick={() => (semFilter = 'colex')}>
-              Hanya koleksifikasi Papua ({semData.stats.colexificationEdges})
-            </button>
-          </div>
-          <span class="sem-badge" title="Metode penempatan 2D">
-            <Sparkles size={13} aria-hidden="true" />
-            <span>{semData.mode === 'bge-m3' ? 'Embedding multilingual (bge-m3)' : 'Proyeksi leksikal-struktural'}</span>
-          </span>
-        </div>
-
-        <div class="sem-clusters" role="group" aria-label="Kelompok makna Leiden">
-          <button
-            type="button"
-            class="sem-cluster-pill"
-            aria-pressed={semCluster === null}
-            onclick={() => (semCluster = null)}
-          >
-            Semua kelompok ({semData.stats.concepts})
-          </button>
-          {#each semData.clusters as c (c.id)}
-            <button
-              type="button"
-              class="sem-cluster-pill"
-              aria-pressed={semCluster === c.id}
-              onclick={() => (semCluster = semCluster === c.id ? null : c.id)}
-            >
-              <i class="sem-dot" style={`background:${c.color}`}></i>
-              <span>{c.label}</span>
-              <small>{c.count}</small>
-            </button>
-          {/each}
-        </div>
-
-        <div class="sem-canvas-wrap">
-          <svg
-            class="sem-svg"
-            viewBox="0 0 840 540"
-            role="img"
-            aria-label="Peta semantik 100 konsep dasar dan koleksifikasi bahasa Papua"
-          >
-            <!-- Edges -->
-            {#each semVisibleEdges as e, idx (idx)}
-              {@const a = semByN.get(e.source)}
-              {@const b = semByN.get(e.target)}
-              {#if a && b}
-                {@const isFocused = semFocusN !== null && (e.source === semFocusN || e.target === semFocusN)}
-                {@const isDim = semFocusN !== null && !isFocused}
-                <line
-                  x1={semSx(a.x)}
-                  y1={semSy(a.y)}
-                  x2={semSx(b.x)}
-                  y2={semSy(b.y)}
-                  class="sem-edge"
-                  class:colex={e.kind === 'colexification'}
-                  class:focused={isFocused}
-                  class:dim={isDim}
-                />
+    </section>
+  {:else if semData}
+    <section class="obs-section pk-detail" aria-label="Detail konsep dan koleksifikasi">
+      {#if selectedSemNode}
+        <div class="pk-insp-card">
+          <div class="pk-insp-head">
+            <div>
+              <div class="pk-sem-title-row">
+                <h2 class="cap">{selectedSemNode.id}</h2>
+                <span class="pk-sem-en">{selectedSemNode.english}</span>
+                <span class="pk-sem-cluster" style={`--c:${semClusterColor.get(selectedSemNode.cluster) ?? '#14b8a6'}`}>
+                  {semClusterLabel.get(selectedSemNode.cluster) ?? 'Kelompok'}
+                </span>
+              </div>
+              {#if selectedSemNode.samples.length}
+                <p class="pk-insp-sub">
+                  Contoh kata:
+                  {#each selectedSemNode.samples.slice(0, 5) as s, i (s.languageCode + s.lemma)}
+                    {#if i > 0}, {/if}
+                    <strong>{s.lemma}</strong> ({s.languageName})
+                  {/each}
+                </p>
               {/if}
-            {/each}
+            </div>
+            <button type="button" class="pk-insp-link solid" onclick={() => openConceptInAtlas(selectedSemNode)}>
+              <span>Lihat di Peta bahasa</span>
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </button>
+          </div>
 
-            <!-- Nodes -->
-            {#each semData.nodes as node (node.n)}
-              {@const x = semSx(node.x)}
-              {@const y = semSy(node.y)}
-              {@const color = clusterColor.get(node.cluster) ?? '#0f766e'}
-              {@const inCluster = semCluster === null || node.cluster === semCluster}
-              {@const isSelected = semSelectedN === node.n}
-              {@const isFocus = semFocusN === null || semFocusNeighbors.has(node.n)}
-              {@const r = Math.min(11, 4.5 + node.colexDegree * 1.15)}
-              {@const showLabel = isSelected || semHoveredN === node.n || node.colexDegree >= 2 || (semCluster !== null && inCluster)}
-              <g
-                class="sem-node"
-                class:selected={isSelected}
-                class:dim={!inCluster || !isFocus}
-                role="button"
-                tabindex="0"
-                aria-label={`${node.id} (${node.english})`}
-                onmouseenter={() => (semHoveredN = node.n)}
-                onmouseleave={() => (semHoveredN = null)}
-                onclick={() => (semSelectedN = node.n)}
-                onkeydown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    semSelectedN = node.n
-                  }
-                }}
-              >
-                {#if isSelected}
-                  <circle cx={x} cy={y} r={r + 7} fill={color} opacity="0.24" />
-                {/if}
-                <circle
-                  cx={x}
-                  cy={y}
-                  {r}
-                  fill={color}
-                  stroke="var(--background)"
-                  stroke-width={node.colexDegree > 0 ? 1.8 : 1.1}
-                />
-                {#if showLabel}
-                  <text
-                    x={x}
-                    y={y - r - 5}
-                    text-anchor="middle"
-                    class="sem-label"
-                    class:strong={isSelected || semHoveredN === node.n}
-                  >
-                    {node.id}
-                  </text>
-                {/if}
-              </g>
-            {/each}
-          </svg>
+          <div class="pk-sem-cols">
+            <div class="pk-sem-col">
+              <h3>Koleksifikasi di bahasa Papua ({semConnections.colex.length})</h3>
+              {#if semConnections.colex.length}
+                <ul class="pk-bridge-list">
+                  {#each semConnections.colex as item (item.node.n)}
+                    <li>
+                      <button type="button" class="pk-bridge-card" onclick={() => (selectedSem = String(item.node.n))}>
+                        <span><strong>{selectedSemNode.id}</strong> ↔ <strong>{item.node.id}</strong></span>
+                        <small>
+                          {#each item.edge.examples.slice(0, 3) as ex, idx (ex.languageCode + ex.lemma)}
+                            {#if idx > 0} · {/if}
+                            <em>{ex.lemma}</em> ({ex.languageName})
+                          {/each}
+                        </small>
+                      </button>
+                    </li>
+                  {/each}
+                </ul>
+              {:else}
+                <p class="obs-note">Belum ada kata publik yang menautkan “{selectedSemNode.id}” dengan konsep dasar lain.</p>
+              {/if}
+            </div>
 
-          <div class="pk-legend">
-            <span><i class="sem-line colex"></i>Koleksifikasi nyata (kata Papua yang sama menyatukan dua makna)</span>
-            <span><i class="sem-line near"></i>Kedekatan semantik</span>
-            <span>Ukuran titik = jumlah jembatan koleksifikasi</span>
+            <div class="pk-sem-col">
+              <h3>Konsep terdekat secara semantik ({semConnections.semantic.length})</h3>
+              {#if semConnections.semantic.length}
+                <div class="pk-near-chips">
+                  {#each semConnections.semantic.slice(0, 10) as item (item.node.n)}
+                    <button type="button" class="pk-near-chip" onclick={() => (selectedSem = String(item.node.n))}>
+                      <span>{item.node.id}</span>
+                      <small>{Math.round(item.edge.weight * 100)}%</small>
+                    </button>
+                  {/each}
+                </div>
+              {:else}
+                <p class="obs-note">Ketuk konsep lain di ruang 3D untuk melihat tetangga maknanya.</p>
+              {/if}
+            </div>
           </div>
         </div>
-
-        {#if semSelectedNode}
-          <div class="sem-inspector">
-            <div class="sem-insp-head">
-              <div>
-                <div class="sem-insp-title-row">
-                  <h2>{semSelectedNode.id}</h2>
-                  <span class="sem-insp-en">{semSelectedNode.english}</span>
-                  <span
-                    class="sem-insp-cluster"
-                    style={`--c:${clusterColor.get(semSelectedNode.cluster) ?? '#0f766e'}`}
-                  >
-                    {clusterLabel.get(semSelectedNode.cluster) ?? 'Kelompok'}
-                  </span>
-                </div>
-                {#if semSelectedNode.samples.length}
-                  <p class="sem-insp-samples">
-                    Contoh kata:
-                    {#each semSelectedNode.samples.slice(0, 4) as s, i (s.languageCode + s.lemma)}
-                      {#if i > 0}, {/if}
-                      <strong>{s.lemma}</strong> ({s.languageName})
-                    {/each}
-                  </p>
-                {/if}
-              </div>
-              <button type="button" class="sem-geo-btn" onclick={() => openInGeo(semSelectedNode)}>
-                <span>Lihat di Peta Geografis</span>
-                <ArrowUpRight size={14} aria-hidden="true" />
-              </button>
-            </div>
-
-            <div class="sem-insp-cols">
-              <div class="sem-insp-col">
-                <h3>Koleksifikasi di bahasa Papua ({semNodeConnections.colex.length})</h3>
-                {#if semNodeConnections.colex.length}
-                  <ul class="sem-bridge-list">
-                    {#each semNodeConnections.colex as item (item.node.n)}
-                      <li>
-                        <button type="button" class="sem-bridge-card" onclick={() => (semSelectedN = item.node.n)}>
-                          <span class="sem-bridge-pair">
-                            <strong>{semSelectedNode.id}</strong> ↔ <strong>{item.node.id}</strong>
-                          </span>
-                          <span class="sem-bridge-words">
-                            {#each item.edge.examples.slice(0, 3) as ex, idx (ex.languageCode + ex.lemma)}
-                              {#if idx > 0} · {/if}
-                              <em>{ex.lemma}</em> ({ex.languageName})
-                            {/each}
-                          </span>
-                        </button>
-                      </li>
-                    {/each}
-                  </ul>
-                {:else}
-                  <p class="sem-empty-note">
-                    Belum ada kata publik yang menautkan “{semSelectedNode.id}” dengan konsep dasar lain. Ketika komunitas menambah entri Kamus publik, jembatan koleksifikasi muncul otomatis di sini.
-                  </p>
-                {/if}
-              </div>
-
-              <div class="sem-insp-col">
-                <h3>Konsep terdekat secara semantik ({semNodeConnections.semantic.length})</h3>
-                {#if semNodeConnections.semantic.length}
-                  <div class="sem-near-chips">
-                    {#each semNodeConnections.semantic.slice(0, 8) as item (item.node.n)}
-                      <button type="button" class="sem-near-chip" onclick={() => (semSelectedN = item.node.n)}>
-                        <span>{item.node.id}</span>
-                        <small>{Math.round(item.edge.weight * 100)}%</small>
-                      </button>
-                    {/each}
-                  </div>
-                {:else}
-                  <p class="sem-empty-note">Pilih konsep lain di peta untuk melihat tetangga maknanya.</p>
-                {/if}
-              </div>
-            </div>
-          </div>
-        {/if}
-
-        {#if topColexHighlights.length}
-          <div class="sem-highlights">
-            <h3>Contoh jembatan makna nyata di bahasa Papua</h3>
-            <div class="sem-hi-grid">
-              {#each topColexHighlights as hi (hi.a.n + '-' + hi.b.n)}
-                <button type="button" class="sem-hi-card" onclick={() => (semSelectedN = hi.a.n)}>
-                  <strong>{hi.a.id} ↔ {hi.b.id}</strong>
-                  <small>
-                    {hi.edge.examples.slice(0, 2).map((ex) => `${ex.lemma} (${ex.languageName})`).join(', ')}
-                  </small>
-                </button>
-              {/each}
-            </div>
-          </div>
-        {/if}
-
-        <p class="sem-footnote">
-          Dibangun dari {semData.stats.publicEntriesUsed.toLocaleString('id-ID')} entri kamus publik tidak sensitif & sumber tertulis berlisensi ({semData.stats.languagesUsed} bahasa) menggunakan daftar {semData.source} ({semData.licence}). Ruang komunitas privat dan kata sensitif tidak pernah masuk ke peta ini.
-        </p>
       {/if}
-    </Tabs.Content>
-  </Tabs.Root>
-</section>
+
+      {#if topColexHighlights.length}
+        <div class="pk-hi-block">
+          <h3>Contoh jembatan makna nyata di bahasa Papua</h3>
+          <div class="pk-hi-grid">
+            {#each topColexHighlights as hi (hi.a.n + '-' + hi.b.n)}
+              <button type="button" class="pk-hi-card" onclick={() => (selectedSem = String(hi.a.n))}>
+                <strong>{hi.a.id} ↔ {hi.b.id}</strong>
+                <small>{hi.edge.examples.slice(0, 2).map((ex) => `${ex.lemma} (${ex.languageName})`).join(', ')}</small>
+              </button>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <p class="obs-foot">
+        Dibangun dari {semData.stats.publicEntriesUsed.toLocaleString('id-ID')} entri kamus publik tidak sensitif & sumber tertulis berlisensi ({semData.stats.languagesUsed} bahasa) menggunakan daftar {semData.source} ({semData.licence}). Ruang komunitas privat dan kata sensitif tidak pernah masuk ke peta ini.
+      </p>
+    </section>
+  {/if}
+</div>
+
+<!-- Full-screen overlay (matches KnowledgeMapPage.svelte) -->
+{#if fullScreen}
+  <div class="pk-fs obs" use:portal role="dialog" aria-modal="true" aria-label="Peta Bahasa & Semantik layar penuh">
+    <header class="pk-fs-bar">
+      <button type="button" class="pk-fs-close" onclick={() => (fullScreen = false)}>
+        <X size={18} aria-hidden="true" />
+        <span>Tutup</span>
+      </button>
+      <h1>Peta Bahasa & Semantik</h1>
+      <div class="obs-pills pk-lenses" role="radiogroup" aria-label="Susunan peta bahasa">
+        {#each LENS_TABS as t (t.key)}
+          <button type="button" role="radio" aria-checked={lens === t.key} onclick={() => chooseLens(t.key)}>{t.label}</button>
+        {/each}
+      </div>
+    </header>
+    <div class="pk-fs-stage">
+      <LanguageStage
+        {lens}
+        {atlasPoints}
+        {atlasFamilies}
+        {atlasRings}
+        {atlasBox}
+        {semPoints}
+        {semLinks}
+        semClusters={semData?.clusters ?? []}
+        selected={isSemantic ? selectedSem : selectedAtlas}
+        hidden={isSemantic ? hiddenClusters : hiddenFamilies}
+        {region}
+        {matches}
+        {colexOnly}
+        {onlyWithWords}
+        bind:threeD
+        height="fill"
+        label="Peta bahasa dan ruang semantik Tanah Papua layar penuh"
+        onSelect={(id) => { if (isSemantic) selectedSem = id; else selectedAtlas = id }}
+      />
+    </div>
+  </div>
+{/if}
 
 <style>
-  .peta-kata-page {
-    display: grid;
-    gap: 16px;
-    padding: 18px 20px 44px;
-    min-width: 0;
-  }
-  .pk-crumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--muted-foreground);
-  }
-  .pk-crumb a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .pk-crumb a:hover {
-    color: var(--foreground);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .pk-head {
-    display: grid;
-    gap: 12px;
-  }
-  .pk-title-block h1 {
-    margin: 0;
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-  .pk-title-block p {
-    margin: 6px 0 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--muted-foreground);
-    max-width: 66ch;
-  }
-  .pk-search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 5px 6px 5px 14px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--muted-foreground);
-  }
-  .pk-search:focus-within {
-    border-color: var(--brand, var(--foreground));
-  }
-  .pk-search input {
-    border: 0;
-    background: transparent;
-    color: var(--foreground);
-    font: inherit;
-    font-size: 15px;
-    outline: none;
-    flex: 1;
-    min-width: 0;
-    min-height: 36px;
-  }
-  .pk-search button {
-    border: 0;
-    background: var(--foreground);
-    color: var(--background);
-    border-radius: 10px;
-    padding: 7px 14px;
-    font: inherit;
-    font-size: 13.5px;
-    font-weight: 650;
-    cursor: pointer;
-    flex: none;
-  }
+  .pk-page { padding-bottom: 24px; overflow-x: clip; }
+  .pk-top { gap: 12px; padding-bottom: 10px; }
+  .pk-top > * { min-width: 0; }
+  .pk-crumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted-foreground); }
+  .pk-crumb a { color: inherit; text-decoration: none; }
+  .pk-crumb a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
+  .pk-full-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 13px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+  .pk-full-btn:hover { background: var(--row-hover); }
 
-  .peta-kata-page :global(.pk-tabs) {
-    display: inline-flex;
-    width: fit-content;
-    max-width: 100%;
-    gap: 4px;
-    margin-bottom: 12px;
-  }
-  .peta-kata-page :global(.pk-tabs [data-slot='tabs-trigger']) {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .peta-kata-page :global(.pk-pane) {
-    display: grid;
-    gap: 14px;
-    min-width: 0;
-  }
+  .pk-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; min-width: 0; }
+  .pk-lenses { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+  .pk-lenses::-webkit-scrollbar { display: none; }
+  .pk-search { flex: 1 1 220px; border-radius: 999px; }
+  .pk-search input { min-height: 40px; font-size: 15px; }
+  .pk-clear-x { display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 999px; background: transparent; color: var(--muted-foreground); cursor: pointer; }
+  .pk-clear-x:hover { background: var(--row-hover); color: var(--foreground); }
+  .pk-lede { min-height: 2.8em; }
+  .pk-found { margin: -4px 0 0; font-size: 13px; color: var(--muted-foreground); }
 
-  .pk-chips-section {
-    display: grid;
-    gap: 8px;
-    min-width: 0;
-  }
-  .pk-chips-wrap {
-    position: relative;
-    min-width: 0;
-    overflow: hidden;
-  }
-  .pk-chips-wrap:not(.expanded)::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 34px;
-    background: linear-gradient(to right, transparent, var(--background));
-    pointer-events: none;
-  }
-  .pk-chips {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 2px 34px 2px 0;
-  }
-  .pk-chips.expanded {
-    flex-wrap: wrap;
-    overflow-x: visible;
-    padding-right: 0;
-  }
-  .pk-chip {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 11px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted-foreground);
-    font: inherit;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .pk-chip.has-data {
-    color: var(--foreground);
-  }
-  .pk-chip.active {
-    background: var(--foreground);
-    color: var(--background);
-    border-color: var(--foreground);
-  }
-  .pk-chip small {
-    font-size: 11px;
-    opacity: 0.72;
-  }
-  .pk-expand-btn {
-    justify-self: start;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 10px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--muted-foreground);
-    font: inherit;
-    font-size: 12.5px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .pk-expand-btn:hover {
-    color: var(--foreground);
-  }
-  .pk-expand-btn :global(svg.rot) {
-    transform: rotate(180deg);
-  }
+  .pk-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 38px; min-width: 0; }
+  .pk-region-wrap { position: relative; min-width: 0; max-width: 100%; overflow: hidden; }
+  .pk-region-wrap::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 26px; background: linear-gradient(to right, transparent, var(--background)); pointer-events: none; }
+  .pk-regions { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 1px 28px 1px 0; }
+  .pk-reg-pill { flex: none; min-height: 32px; padding: 0 11px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--muted-foreground); font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .pk-reg-pill:hover { color: var(--foreground); background: var(--row-hover); }
+  .pk-reg-pill[aria-pressed='true'] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+  .pk-lang-select select { min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--background); color: var(--foreground); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .pk-mode-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); font-size: 12.5px; color: var(--muted-foreground); }
 
-  .pk-atlas-wrap,
-  .sem-canvas-wrap {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: color-mix(in oklab, var(--foreground) 2.2%, var(--background));
-    padding: 12px;
-    display: grid;
-    gap: 10px;
-    min-width: 0;
-  }
-  .pk-atlas {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .pk-region {
-    fill: color-mix(in oklab, var(--foreground) 6%, var(--background));
-    stroke: var(--border);
-    stroke-width: 1.2;
-  }
-  .pk-region-label {
-    font-size: 11px;
-    fill: var(--muted-foreground);
-    text-anchor: middle;
-    pointer-events: none;
-    font-weight: 600;
-    opacity: 0.75;
-  }
-  .pk-lang-dot {
-    fill: color-mix(in oklab, var(--foreground) 28%, transparent);
-  }
-  .pk-hit {
-    cursor: pointer;
-  }
-  .pk-hit-halo {
-    fill: color-mix(in oklab, var(--brand, #0f766e) 22%, transparent);
-  }
-  .pk-hit-dot {
-    fill: var(--brand, #0f766e);
-    stroke: var(--background);
-    stroke-width: 1.5;
-  }
-  .pk-hit.voiced .pk-hit-dot {
-    fill: #d97706;
-  }
-  .pk-hit.voiced .pk-hit-halo {
-    fill: rgba(217, 119, 6, 0.25);
-  }
-  .pk-hit-stem {
-    stroke: var(--border);
-    stroke-width: 1;
-  }
-  .pk-hit-pill {
-    fill: color-mix(in oklab, var(--background) 92%, var(--foreground));
-    stroke: var(--border);
-    stroke-width: 1;
-  }
-  .pk-hit.selected .pk-hit-pill {
-    stroke: var(--brand, #0f766e);
-    stroke-width: 1.6;
-  }
-  .pk-hit-word {
-    font-size: 11.5px;
-    font-weight: 700;
-    fill: var(--foreground);
-  }
-  .pk-legend {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    font-size: 12px;
-    color: var(--muted-foreground);
-  }
-  .pk-legend .dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 5px;
-    vertical-align: middle;
-  }
-  .pk-legend .dot.plain {
-    background: color-mix(in oklab, var(--foreground) 32%, transparent);
-  }
-  .pk-legend .dot.match {
-    background: var(--brand, #0f766e);
-  }
-  .pk-legend .dot.voiced {
-    background: #d97706;
-  }
-  .pk-clear {
-    margin-left: auto;
-    border: 1px solid var(--border);
-    background: var(--background);
-    color: var(--foreground);
-    border-radius: 999px;
-    padding: 3px 10px;
-    font: inherit;
-    font-size: 12px;
-    cursor: pointer;
-  }
+  .pk-concepts { display: grid; gap: 6px; min-width: 0; }
+  .pk-chips-wrap { position: relative; min-width: 0; overflow: hidden; }
+  .pk-chips-wrap:not(.expanded)::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 32px; background: linear-gradient(to right, transparent, var(--background)); pointer-events: none; }
+  .pk-chips { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 32px 2px 0; }
+  .pk-chips.expanded { flex-wrap: wrap; overflow-x: visible; padding-right: 0; }
+  .pk-chip { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--muted-foreground); font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+  .pk-chip.has-data { color: var(--foreground); }
+  .pk-chip.active { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+  .pk-chip small { font-size: 11px; opacity: 0.72; }
+  .pk-expand-btn { justify-self: start; display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--muted-foreground); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+  .pk-expand-btn:hover { color: var(--foreground); }
+  .pk-expand-btn :global(svg.rot) { transform: rotate(180deg); }
 
-  .pk-results-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  .pk-results-head h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 750;
-  }
-  .pk-results-head small {
-    font-weight: 500;
-    color: var(--muted-foreground);
-  }
-  .pk-results-head span {
-    font-size: 13px;
-    color: var(--muted-foreground);
-  }
-  .pk-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 8px;
-  }
-  .pk-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: var(--card);
-  }
-  .pk-card-main {
-    display: grid;
-    gap: 4px;
-    min-width: 0;
-  }
-  .pk-card-top {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .pk-lemma {
-    font-size: 17px;
-    font-weight: 750;
-  }
-  .pk-pos,
-  .pk-state {
-    font-size: 11.5px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    color: var(--muted-foreground);
-  }
-  .pk-gloss {
-    margin: 0;
-    font-size: 14px;
-  }
-  .pk-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    font-size: 12.5px;
-    color: var(--muted-foreground);
-  }
-  .pk-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .pk-meta a {
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-  .pk-play {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--background);
-    color: var(--foreground);
-    font: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    flex: none;
-  }
-  .pk-play.playing {
-    background: var(--brand, #0f766e);
-    color: #fff;
-    border-color: var(--brand, #0f766e);
-  }
-  .pk-status,
-  .pk-empty {
-    margin: 0;
-    padding: 16px;
-    border: 1px dashed var(--border);
-    border-radius: 14px;
-    color: var(--muted-foreground);
-    font-size: 14px;
-  }
+  .pk-stage-section { display: grid; gap: 10px; padding: 6px var(--gutter) 18px; min-width: 0; }
+  .pk-stage-hold { height: 460px; }
+  .pk-legend { margin-top: 2px; }
+  .pk-key-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 12.5px; color: var(--muted-foreground); }
+  .key-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .key-dot.match { background: #14b8a6; }
+  .key-dot.voice { background: #d97706; }
+  .key-line { display: inline-block; width: 18px; height: 0; margin-right: 6px; vertical-align: middle; }
+  .key-line.colex { border-top: 2.5px solid #14b8a6; }
+  .key-line.near { border-top: 1.5px dashed color-mix(in oklab, var(--foreground) 45%, transparent); }
+  .pk-reset-sel { margin-left: auto; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--foreground); font: inherit; font-size: 12px; cursor: pointer; }
 
-  /* Peta Semantik styles */
-  .sem-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  .sem-mode-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .sem-pill {
-    padding: 5px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted-foreground);
-    font: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .sem-pill[aria-pressed='true'] {
-    background: var(--foreground);
-    color: var(--background);
-    border-color: var(--foreground);
-  }
-  .sem-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted-foreground);
-  }
-  .sem-clusters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .sem-cluster-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--foreground);
-    font: inherit;
-    font-size: 12.5px;
-    cursor: pointer;
-  }
-  .sem-cluster-pill[aria-pressed='true'] {
-    border-color: var(--foreground);
-    background: color-mix(in oklab, var(--foreground) 8%, transparent);
-    font-weight: 650;
-  }
-  .sem-cluster-pill small {
-    color: var(--muted-foreground);
-    font-size: 11px;
-  }
-  .sem-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex: none;
-  }
-  .sem-svg {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 12px;
-    background: color-mix(in oklab, var(--foreground) 2.5%, var(--background));
-  }
-  .sem-edge {
-    stroke: color-mix(in oklab, var(--foreground) 18%, transparent);
-    stroke-width: 1;
-    stroke-dasharray: 3 3;
-    transition: opacity 0.15s ease;
-  }
-  .sem-edge.colex {
-    stroke: #14b8a6;
-    stroke-width: 1.75;
-    stroke-dasharray: none;
-    opacity: 0.78;
-  }
-  .sem-edge.focused {
-    stroke-width: 2.3;
-    opacity: 1;
-  }
-  .sem-edge.dim {
-    opacity: 0.1;
-  }
-  .sem-node {
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-  }
-  .sem-node.dim {
-    opacity: 0.22;
-  }
-  .sem-label {
-    font-size: 11px;
-    font-weight: 600;
-    fill: var(--foreground);
-    pointer-events: none;
-    paint-order: stroke;
-    stroke: var(--background);
-    stroke-width: 3px;
-    stroke-linejoin: round;
-  }
-  .sem-label.strong {
-    font-size: 12.5px;
-    font-weight: 800;
-  }
-  .sem-line {
-    display: inline-block;
-    width: 18px;
-    height: 0;
-    margin-right: 6px;
-    vertical-align: middle;
-  }
-  .sem-line.colex {
-    border-top: 2.5px solid #14b8a6;
-  }
-  .sem-line.near {
-    border-top: 1.5px dashed color-mix(in oklab, var(--foreground) 45%, transparent);
-  }
+  .pk-detail { gap: 14px; }
+  .pk-detail h2 { font-size: 20px; }
+  .pk-detail h2 small { font-weight: 500; color: var(--muted-foreground); }
+  .pk-count { font-size: 13px; color: var(--muted-foreground); }
 
-  .sem-inspector {
-    display: grid;
-    gap: 14px;
-    padding: 16px;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: var(--card);
-  }
-  .sem-insp-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  .sem-insp-title-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .sem-insp-title-row h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 800;
-    text-transform: capitalize;
-  }
-  .sem-insp-en {
-    font-size: 14px;
-    color: var(--muted-foreground);
-  }
-  .sem-insp-cluster {
-    font-size: 12px;
-    font-weight: 650;
-    padding: 2px 9px;
-    border-radius: 999px;
-    background: color-mix(in oklab, var(--c) 16%, var(--background));
-    color: var(--c);
-  }
-  .sem-insp-samples {
-    margin: 6px 0 0;
-    font-size: 13.5px;
-    color: var(--muted-foreground);
-  }
-  .sem-geo-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 7px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--foreground);
-    color: var(--background);
-    font: inherit;
-    font-size: 13px;
-    font-weight: 650;
-    cursor: pointer;
-  }
-  .sem-insp-cols {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  @media (min-width: 640px) {
-    .sem-insp-cols {
-      grid-template-columns: 1.25fr 1fr;
-    }
-  }
-  .sem-insp-col {
-    display: grid;
-    gap: 8px;
-    align-content: start;
-  }
-  .sem-insp-col h3 {
-    margin: 0;
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--muted-foreground);
-  }
-  .sem-bridge-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 6px;
-  }
-  .sem-bridge-card {
-    width: 100%;
-    text-align: left;
-    display: grid;
-    gap: 2px;
-    padding: 9px 11px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--background);
-    color: var(--foreground);
-    font: inherit;
-    cursor: pointer;
-  }
-  .sem-bridge-card:hover {
-    border-color: #14b8a6;
-  }
-  .sem-bridge-pair {
-    font-size: 13.5px;
-  }
-  .sem-bridge-words {
-    font-size: 12.5px;
-    color: var(--muted-foreground);
-  }
-  .sem-near-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .sem-near-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--background);
-    color: var(--foreground);
-    font: inherit;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .sem-near-chip small {
-    color: var(--muted-foreground);
-    font-size: 11px;
-  }
-  .sem-empty-note {
-    margin: 0;
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--muted-foreground);
-  }
-  .sem-highlights {
-    display: grid;
-    gap: 8px;
-  }
-  .sem-highlights h3 {
-    margin: 0;
-    font-size: 14.5px;
-    font-weight: 750;
-  }
-  .sem-hi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 8px;
-  }
-  .sem-hi-card {
-    display: grid;
-    gap: 2px;
-    text-align: left;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--card);
-    color: var(--foreground);
-    font: inherit;
-    cursor: pointer;
-  }
-  .sem-hi-card:hover {
-    border-color: #14b8a6;
-  }
-  .sem-hi-card strong {
-    font-size: 13.5px;
-    font-weight: 700;
-  }
-  .sem-hi-card small {
-    font-size: 12px;
-    color: var(--muted-foreground);
-  }
-  .sem-footnote {
-    margin: 0;
-    font-size: 12.5px;
-    line-height: 1.5;
-    color: var(--muted-foreground);
-  }
+  .pk-insp-card { display: grid; gap: 14px; padding: 15px 16px; border: 1px solid var(--border); border-radius: 16px; background: color-mix(in oklab, var(--foreground) 2.2%, var(--background)); }
+  .pk-insp-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .pk-insp-head h2 { margin: 0; font-size: 19px; font-weight: 800; }
+  .pk-insp-head h2.cap { text-transform: capitalize; }
+  .pk-insp-sub { margin: 4px 0 0; font-size: 13.5px; color: var(--muted-foreground); }
+  .pk-insp-actions { display: flex; align-items: center; gap: 6px; }
+  .pk-insp-link { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--background); color: var(--foreground); font: inherit; font-size: 13px; font-weight: 650; text-decoration: none; cursor: pointer; }
+  .pk-insp-link.solid { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+  .pk-insp-link:hover { opacity: 0.9; }
+
+  .pk-word-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .pk-word-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--background); }
+  .pk-word-main { display: grid; gap: 4px; min-width: 0; }
+  .pk-word-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .pk-lemma { font-size: 17px; font-weight: 750; }
+  .pk-tag { font-size: 11.5px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted-foreground); }
+  .pk-gloss { margin: 0; font-size: 14px; }
+  .pk-word-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted-foreground); }
+  .pk-word-meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .pk-word-meta a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .pk-play { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--background); color: var(--foreground); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; flex: none; }
+  .pk-play.playing { background: var(--brand, #0f766e); color: #fff; border-color: var(--brand, #0f766e); }
+
+  .pk-sem-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .pk-sem-en { font-size: 14px; color: var(--muted-foreground); }
+  .pk-sem-cluster { font-size: 12px; font-weight: 650; padding: 2px 9px; border-radius: 999px; background: color-mix(in oklab, var(--c) 16%, var(--background)); color: var(--c); }
+  .pk-sem-cols { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 640px) { .pk-sem-cols { grid-template-columns: 1.25fr 1fr; } }
+  .pk-sem-col { display: grid; gap: 8px; align-content: start; }
+  .pk-sem-col h3 { margin: 0; font-size: 13.5px; font-weight: 700; color: var(--muted-foreground); }
+  .pk-bridge-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .pk-bridge-card { width: 100%; text-align: left; display: grid; gap: 2px; padding: 9px 11px; border: 1px solid var(--border); border-radius: 12px; background: var(--background); color: var(--foreground); font: inherit; font-size: 13.5px; cursor: pointer; }
+  .pk-bridge-card:hover { border-color: #14b8a6; }
+  .pk-bridge-card small { font-size: 12.5px; color: var(--muted-foreground); }
+  .pk-near-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pk-near-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--background); color: var(--foreground); font: inherit; font-size: 13px; cursor: pointer; }
+  .pk-near-chip small { color: var(--muted-foreground); font-size: 11px; }
+
+  .pk-hi-block { display: grid; gap: 8px; }
+  .pk-hi-block h3 { margin: 0; font-size: 14.5px; font-weight: 750; }
+  .pk-hi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; }
+  .pk-hi-card { display: grid; gap: 2px; text-align: left; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--background); color: var(--foreground); font: inherit; cursor: pointer; }
+  .pk-hi-card:hover { border-color: #14b8a6; }
+  .pk-hi-card strong { font-size: 13.5px; font-weight: 700; }
+  .pk-hi-card small { font-size: 12px; color: var(--muted-foreground); }
+
+  .pk-status, .pk-empty { margin: 0; padding: 14px 16px; border: 1px dashed var(--border); border-radius: 14px; color: var(--muted-foreground); font-size: 14px; }
+
+  /* Full-screen dialog */
+  .pk-fs { position: fixed; inset: 0; z-index: 45; display: flex; flex-direction: column; background: var(--background); color: var(--foreground); }
+  .pk-fs-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; min-height: 60px; padding: 8px var(--gutter); border-bottom: 1px solid var(--border); }
+  .pk-fs-bar h1 { margin: 0; font-size: 18px !important; margin-right: auto; }
+  .pk-fs-close { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 13px 0 10px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .pk-fs-close:hover { background: var(--row-hover); }
+  .pk-fs-stage { flex: 1; min-height: 0; }
 </style>

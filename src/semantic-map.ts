@@ -36,6 +36,7 @@ export type SemanticNode = {
   wordClass: string
   x: number
   y: number
+  z: number
   cluster: number
   domain: string
   wordsCount: number
@@ -67,6 +68,12 @@ export type SemanticCluster = {
   count: number
 }
 
+export type SemanticLanguageSummary = {
+  code: string
+  name: string
+  entries: number
+}
+
 export type SemanticMapResponse = {
   mode: 'bge-m3' | 'deterministic'
   source: string
@@ -79,6 +86,7 @@ export type SemanticMapResponse = {
     languagesUsed: number
     publicEntriesUsed: number
   }
+  languages: SemanticLanguageSummary[]
   clusters: SemanticCluster[]
   nodes: SemanticNode[]
   edges: SemanticEdge[]
@@ -294,8 +302,8 @@ function deterministicVectors(
   })
 }
 
-/** Deterministic 2D PCA via centered power iteration (2 principal components). Works cleanly for any vector dimensionality (96 or 1024). */
-export function pca2d(vectors: ArrayLike<number>[]): Array<[number, number]> {
+/** Deterministic 3D PCA via centered power iteration (3 principal components). Works cleanly for any vector dimensionality (96 or 1024). */
+export function pca3d(vectors: ArrayLike<number>[]): Array<[number, number, number]> {
   const n = vectors.length
   if (!n) return []
   const dims = vectors[0]!.length
@@ -312,24 +320,26 @@ export function pca2d(vectors: ArrayLike<number>[]): Array<[number, number]> {
     return row
   })
 
-  const powerComponent = (deflate?: Float64Array): Float64Array => {
+  const powerComponent = (deflates: Float64Array[], freq: number): Float64Array => {
     let u = new Float64Array(dims)
-    for (let d = 0; d < dims; d++) u[d] = Math.sin((d + 1) * (deflate ? 2.17 : 1.31)) + 0.15
+    for (let d = 0; d < dims; d++) u[d] = Math.sin((d + 1) * freq) + 0.15
     const normVec = (vec: Float64Array) => {
       let s = 0
       for (let d = 0; d < dims; d++) s += vec[d]! * vec[d]!
       const len = Math.sqrt(s) || 1
       for (let d = 0; d < dims; d++) vec[d] /= len
     }
-    if (deflate) {
-      let dot = 0
-      for (let d = 0; d < dims; d++) dot += u[d]! * deflate[d]!
-      for (let d = 0; d < dims; d++) u[d] -= dot * deflate[d]!
+    const orthogonalize = (vec: Float64Array) => {
+      for (const prev of deflates) {
+        let dot = 0
+        for (let d = 0; d < dims; d++) dot += vec[d]! * prev[d]!
+        for (let d = 0; d < dims; d++) vec[d] -= dot * prev[d]!
+      }
     }
+    orthogonalize(u)
     normVec(u)
 
     for (let iter = 0; iter < 32; iter++) {
-      // w = X^T (X u)
       const xu = new Float64Array(n)
       for (let i = 0; i < n; i++) {
         let s = 0
@@ -343,66 +353,75 @@ export function pca2d(vectors: ArrayLike<number>[]): Array<[number, number]> {
         const row = X[i]!
         for (let d = 0; d < dims; d++) w[d] += coeff * row[d]!
       }
-      if (deflate) {
-        let dot = 0
-        for (let d = 0; d < dims; d++) dot += w[d]! * deflate[d]!
-        for (let d = 0; d < dims; d++) w[d] -= dot * deflate[d]!
-      }
+      orthogonalize(w)
       normVec(w)
       u = w
     }
     return u
   }
 
-  const pc1 = powerComponent()
-  const pc2 = powerComponent(pc1)
+  const pc1 = powerComponent([], 1.31)
+  const pc2 = powerComponent([pc1], 2.17)
+  const pc3 = powerComponent([pc1, pc2], 3.43)
 
-  const raw: Array<[number, number]> = X.map((row) => {
-    let x = 0
-    let y = 0
+  const raw: Array<[number, number, number]> = X.map((row) => {
+    let x = 0, y = 0, z = 0
     for (let d = 0; d < dims; d++) {
       x += row[d]! * pc1[d]!
       y += row[d]! * pc2[d]!
+      z += row[d]! * pc3[d]!
     }
-    return [x, y]
+    return [x, y, z]
   })
 
-  // Percentile-clamped normalization (5th..95th) so 1-2 outlier embeddings never squash the rest into half the canvas.
-  const xs = raw.map((p) => p[0]).sort((a, b) => a - b)
-  const ys = raw.map((p) => p[1]).sort((a, b) => a - b)
-  const loIdx = Math.floor(xs.length * 0.05)
-  const hiIdx = Math.max(loIdx + 1, Math.min(xs.length - 1, Math.ceil(xs.length * 0.95) - 1))
-  const minX = xs[loIdx]!, maxX = xs[hiIdx]!, minY = ys[loIdx]!, maxY = ys[hiIdx]!
-  const spanX = maxX - minX || 1
-  const spanY = maxY - minY || 1
-  const clamp = (v: number) => Math.max(-0.92, Math.min(0.92, v))
+  // Percentile-clamped normalization (5th..95th) so outliers never squash the rest into one corner.
+  const normAxis = (vals: number[]) => {
+    const sorted = [...vals].sort((a, b) => a - b)
+    const loIdx = Math.floor(sorted.length * 0.05)
+    const hiIdx = Math.max(loIdx + 1, Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.95) - 1))
+    const lo = sorted[loIdx]!, hi = sorted[hiIdx]!, span = hi - lo || 1
+    return (v: number) => Math.max(-0.92, Math.min(0.92, ((v - lo) / span) * 1.76 - 0.88))
+  }
+  const nx = normAxis(raw.map((p) => p[0]))
+  const ny = normAxis(raw.map((p) => p[1]))
+  const nz = normAxis(raw.map((p) => p[2]))
 
-  const coords: Array<[number, number]> = raw.map(([x, y]) => [
-    Math.round(clamp(((x - minX) / spanX) * 1.76 - 0.88) * 1000) / 1000,
-    Math.round(clamp(((y - minY) / spanY) * 1.76 - 0.88) * 1000) / 1000,
-  ])
+  const coords: Array<[number, number, number]> = raw.map(([x, y, z]) => [nx(x), ny(y), nz(z)])
 
-  // Gentle deterministic repulsion pass so two concepts never sit on top of each other.
+  // Gentle deterministic 3D repulsion pass so concepts stay nicely legible when orbited.
   for (let pass = 0; pass < 14; pass++) {
     for (let i = 0; i < coords.length; i++) {
       for (let j = i + 1; j < coords.length; j++) {
         const dx = coords[j]![0] - coords[i]![0]
         const dy = coords[j]![1] - coords[i]![1]
-        const dist = Math.hypot(dx, dy)
-        const minDist = 0.115
+        const dz = coords[j]![2] - coords[i]![2]
+        const dist = Math.hypot(dx, dy, dz)
+        const minDist = 0.16
         if (dist < minDist) {
           const ux = dist > 1e-5 ? dx / dist : Math.cos((i * 7 + j * 13) % 360)
           const uy = dist > 1e-5 ? dy / dist : Math.sin((i * 7 + j * 13) % 360)
-          const push = (minDist - dist) * 0.42
+          const uz = dist > 1e-5 ? dz / dist : Math.cos((i * 11 + j * 5) % 360) * 0.5
+          const push = (minDist - dist) * 0.36
           coords[i]![0] = Math.max(-0.94, Math.min(0.94, coords[i]![0] - ux * push))
           coords[i]![1] = Math.max(-0.94, Math.min(0.94, coords[i]![1] - uy * push))
+          coords[i]![2] = Math.max(-0.94, Math.min(0.94, coords[i]![2] - uz * push))
           coords[j]![0] = Math.max(-0.94, Math.min(0.94, coords[j]![0] + ux * push))
           coords[j]![1] = Math.max(-0.94, Math.min(0.94, coords[j]![1] + uy * push))
+          coords[j]![2] = Math.max(-0.94, Math.min(0.94, coords[j]![2] + uz * push))
         }
       }
     }
   }
-  return coords.map(([x, y]) => [Math.round(x * 1000) / 1000, Math.round(y * 1000) / 1000])
+  return coords.map(([x, y, z]) => [
+    Math.round(x * 1000) / 1000,
+    Math.round(y * 1000) / 1000,
+    Math.round(z * 1000) / 1000,
+  ])
+}
+
+/** Deterministic 2D projection helper (wraps pca3d). */
+export function pca2d(vectors: ArrayLike<number>[]): Array<[number, number]> {
+  return pca3d(vectors).map(([x, y]) => [x, y])
 }
 
 export class SemanticMap {
@@ -484,6 +503,7 @@ export class SemanticMap {
     const conceptVoices = new Map<number, number>()
     const languagesUsed = new Set<string>()
     const colexMap = new Map<string, { a: number; b: number; examples: ColexExample[]; langs: Set<string> }>()
+    const langCounts = new Map<string, { code: string; name: string; entries: number }>()
 
     const recordItem = (item: {
       lemma: string
@@ -496,6 +516,9 @@ export class SemanticMap {
       hasVoice: boolean
     }) => {
       languagesUsed.add(item.languageCode)
+      const prevLang = langCounts.get(item.languageCode)
+      if (prevLang) prevLang.entries++
+      else langCounts.set(item.languageCode, { code: item.languageCode, name: item.languageName, entries: 1 })
       const combinedGloss = [item.glossId, item.glossEn ?? ''].filter(Boolean).join('; ')
       const strictSenses = [...primarySenses(item.glossId), ...primarySenses(item.glossEn)]
       const strictHits: number[] = []
@@ -688,8 +711,8 @@ export class SemanticMap {
     ]
     const clusterMap = leiden(ids, weightedEdges, { resolution: 1.05, seed: 7 })
 
-    // 6. Deterministic 2D PCA projection of concept embeddings.
-    const coords = pca2d(vectors)
+    // 6. Deterministic 3D PCA projection of concept embeddings.
+    const coords = pca3d(vectors)
 
     const nodes: SemanticNode[] = CONCEPTS.map((c, i) => ({
       n: c.n,
@@ -698,6 +721,7 @@ export class SemanticMap {
       wordClass: c.class,
       x: coords[i]![0],
       y: coords[i]![1],
+      z: coords[i]![2],
       cluster: clusterMap.get(String(c.n)) ?? 0,
       domain: domainOf(c.id, c.class),
       wordsCount: conceptLangs.get(c.n)?.size ?? 0,
@@ -741,6 +765,8 @@ export class SemanticMap {
         }
       })
 
+    const languages = [...langCounts.values()].sort((a, b) => b.entries - a.entries || a.name.localeCompare(b.name, 'id'))
+
     const value: SemanticMapResponse = {
       mode,
       source: conceptsFile.source,
@@ -753,6 +779,7 @@ export class SemanticMap {
         languagesUsed: languagesUsed.size,
         publicEntriesUsed: rows.length + seedCount,
       },
+      languages,
       clusters,
       nodes,
       edges: [...colexEdges, ...semanticEdges],

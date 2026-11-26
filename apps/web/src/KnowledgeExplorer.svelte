@@ -85,14 +85,23 @@
     return out
   })
   const PAPUA: [[number, number], [number, number]] = [[129.5, -9.3], [141.2, 0.2]]
+  let lastReadyLens = $state<Lens>(DEFAULT_LENS)
   $effect(() => {
-    if (lens !== 'peta' || places) return
+    if (lens !== 'peta' || coordReady) lastReadyLens = lens
+  })
+  let coordsRequested = false
+  function ensureCoords() {
+    if (coordsRequested) return
+    coordsRequested = true
     void fetch('/observatory/places.json').then((r) => (r.ok ? r.json() : null)).then((d) => (places = d?.places ?? {})).catch(() => (places = {}))
     void fetch('/observatory/landforms.json').then((r) => (r.ok ? r.json() : null)).then((d) => (landforms = d?.points ?? {})).catch(() => (landforms = {}))
     void loadAtlasLangs().then((l) => (langs = new Map(l.map((x) => [x[0], [x[1], x[2]] as [number, number]])))).catch(() => (langs = new Map()))
     void loadAtlas().then((a) => (rings = a ? Object.entries((a as unknown as { regions: Record<string, { d: string }> }).regions).map(([key, r]) => ({ key, rings: pathRings(r.d) })) : [])).catch(() => {})
+  }
+  $effect(() => {
+    if (lens === 'peta') ensureCoords()
   })
-  const stageLens = $derived(lens === 'peta' && !coordReady ? 'skala' : lens)
+  const stageLens = $derived(lens === 'peta' && !coordReady ? lastReadyLens : lens)
 
   function choose(next: Lens) {
     lens = next
@@ -124,6 +133,8 @@
     if (e.key === 'Escape' && query) { e.preventDefault(); e.stopPropagation(); query = '' }
   }
   onMount(() => {
+    // Preload map coordinates quietly so Hubungan -> Peta animates in one smooth flight with zero wait.
+    ensureCoords()
     if (full) return
     const asked = new URLSearchParams(location.search).get('lens')
     if (isLens(asked)) lens = asked
@@ -200,7 +211,7 @@
   .kx-clear:hover { background: var(--row-hover); color: var(--foreground); }
   .kx-lede { min-height: 3.1em; }
   .kx-found { margin: -6px 0 0; font-size: 13.5px; color: var(--muted-foreground); }
-  .kx-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .kx-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 44px; }
   .kx-tools :global(.obs-toggle:disabled) { opacity: 0.5; cursor: default; }
   .kx-stage { position: relative; min-width: 0; }
   .kx-full { display: flex; flex-direction: column; gap: 12px; height: 100%; min-height: 0; }

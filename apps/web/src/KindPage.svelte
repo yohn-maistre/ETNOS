@@ -10,6 +10,7 @@
   import { placeScope } from './place-scope.svelte'
   import { loadViewerObjects, viewerListHref, ENTRY_KIND_RECORDS, viewerList, type ViewerObject } from './viewer-data.ts'
   import { OBSERVATORY_NAME, VIEWER_NAME } from './observatory-name.ts'
+  import atlas from './papua-atlas.json'
   import './styles/observatorium.css'
 
   let { kind, search = '' }: { kind: string; search?: string } = $props()
@@ -51,6 +52,20 @@
   }
   const STATUS: [string, string][] = [['', 'Semua'], ['ditulis', 'Sudah ada tulisan'], ['belum', 'Belum ada tulisan'], ['diperiksa', 'Sudah diperiksa']]
   const meta = (e: IndexEntry) => [kind === 'semua' ? KIND_NAME[e.kind] : null, e.sub && e.sub !== KIND_NAME[e.kind] ? e.sub : null, e.article ? null : 'belum ada tulisan'].filter(Boolean).join(' · ')
+
+  // Mini atlas data for the Peta Bahasa & Semantik card folded inside /wiki/jenis/bahasa.
+  const atlasBox = (atlas.box as number[]).join(' ')
+  const atlasRegions = Object.entries(atlas.regions as Record<string, { d: string; x: number; y: number }>)
+  const atlasLangs = atlas.langs as [string, number, number, string][]
+  const activeLangSlugs = $derived(kind === 'bahasa' && sub ? new Set(list.map((e) => e.slug)) : null)
+  const langMapHref = (tampilan = '') => {
+    const p = new URLSearchParams()
+    if (tampilan) p.set('tampilan', tampilan)
+    if (sub) p.set('rumpun', sub)
+    if (di) p.set('wilayah', di)
+    const s = p.toString()
+    return '/wiki/peta-kata' + (s ? '?' + s : '')
+  }
 </script>
 
 <div class="obs kp">
@@ -79,6 +94,42 @@
           {#each subs as s (s.key)}<li><a href={href({ sub: s.key })} aria-current={sub === s.key ? 'page' : undefined}><span class="kp-circle">{shortCount(s.count)}</span><span>{s.label}</span></a></li>{/each}
         </ul>
       </nav>{/if}
+
+    {#if kind === 'bahasa'}
+      <section class="kp-lang-map" aria-labelledby="kp-lang-map-title">
+        <a class="kp-lang-map-main" href={langMapHref()}>
+          <svg viewBox={atlasBox} aria-hidden="true">
+            {#each atlasRegions as [slug, r] (slug)}
+              <path class="kp-atlas-region" d={r.d} />
+            {/each}
+            {#each atlasLangs as [slug, x, y] (slug)}
+              {@const lit = !activeLangSlugs || activeLangSlugs.has(slug)}
+              <circle
+                cx={x}
+                cy={y}
+                r={activeLangSlugs && lit ? 5.5 : 3.2}
+                class="kp-atlas-dot"
+                class:lit={lit}
+                class:dim={activeLangSlugs && !lit}
+              />
+            {/each}
+          </svg>
+          <span class="kp-lang-map-text">
+            <strong id="kp-lang-map-title">Peta Bahasa & Semantik</strong>
+            <small>256 titik bahasa, 100 konsep dasar, suara & ruang semantik 3D</small>
+          </span>
+          <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
+        <div class="kp-lenses-wrap">
+          <div class="kp-lenses" aria-label="Buka peta bahasa dengan susunan">
+            <a href={langMapHref()}>Peta bahasa</a>
+            <a href={langMapHref('rumpun')}>Rumpun bahasa</a>
+            <a href={langMapHref('semantik')}>Ruang semantik 3D</a>
+            <a href={langMapHref('kelompok')}>Kelompok makna</a>
+          </div>
+        </div>
+      </section>
+    {/if}
 
     {#if records.length}<section class="obs-section kp-records" aria-labelledby="kp-rec-title">
         <div class="obs-head"><h2 id="kp-rec-title">Di {VIEWER_NAME}</h2><a class="obs-more" href={viewerListHref(records[0].id, 'jenis-' + kind) + '&semua=1'}>Lihat semua</a></div>
@@ -119,6 +170,26 @@
   .kp-subs a[aria-current='page'] .kp-circle { background: var(--foreground); color: var(--background); }
   .kp-subs a:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; border-radius: 12px; }
   .kp-subs a > span:last-child { overflow-wrap: anywhere; }
+
+  /* Peta Bahasa & Semantik card folded inside /wiki/jenis/bahasa (matches Peta pengetahuan card on /wiki). */
+  .kp-lang-map { display: grid; gap: 10px; margin: 0 var(--gutter) 20px; padding: 12px; border: 1px solid var(--border); border-radius: 18px; min-width: 0; }
+  .kp-lang-map-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 8px; align-items: center; color: inherit; text-decoration: none; }
+  .kp-lang-map-main svg { grid-column: 1 / -1; width: 100%; height: auto; aspect-ratio: 10 / 4.2; border-radius: 12px; background: color-mix(in oklab, var(--foreground) 3%, var(--background)); }
+  .kp-atlas-region { fill: color-mix(in oklab, var(--foreground) 6%, var(--background)); stroke: var(--border); stroke-width: 2; }
+  .kp-atlas-dot { fill: #14b8a6; opacity: 0.72; }
+  .kp-atlas-dot.lit { opacity: 0.92; }
+  .kp-atlas-dot.dim { fill: var(--muted-foreground); opacity: 0.16; }
+  .kp-lang-map-text { display: grid; gap: 2px; padding-left: 4px; }
+  .kp-lang-map-text strong { font-size: 16.5px; font-weight: 750; letter-spacing: -0.012em; }
+  .kp-lang-map-text small { font-size: 13px; color: var(--muted-foreground); }
+  .kp-lang-map-main > :global(svg:last-child) { margin-right: 4px; color: var(--muted-foreground); }
+  .kp-lang-map-main:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+  .kp-lenses-wrap { position: relative; min-width: 0; overflow: hidden; }
+  .kp-lenses-wrap::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 32px; background: linear-gradient(to right, transparent, var(--background)); pointer-events: none; }
+  .kp-lenses { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 32px 2px 2px; }
+  .kp-lenses a { flex: none; display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); font-size: 13px; font-weight: 550; text-decoration: none; white-space: nowrap; }
+  .kp-lenses a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+
   .kp-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   .kp-filters .obs-chips a[aria-current='true'] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
   .kp-place { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 14px; border-radius: 999px; background: var(--foreground); color: var(--background); font-size: 14px; font-weight: 600; text-decoration: none; }
