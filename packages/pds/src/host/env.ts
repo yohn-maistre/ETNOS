@@ -57,6 +57,11 @@ export interface HostEnv {
 	NODE_LINK_KEY?: string;
 	/** Minimum age a person confirms at sign-up (default 18: UU PDP treats anyone under 18 as a child). */
 	MIN_AGE?: string;
+	/**
+	 * Only while accounts move to another host (transfer.ts): 32 random bytes, base64url, as a Workers
+	 * secret with the same value on both hosts. Export and import refuse to run without it.
+	 */
+	ACCOUNT_TRANSFER_KEY?: string;
 	/** Max brand-new accounts per 24h rolling window (default 50; set "0" to disable). */
 	DAILY_SIGNUP_CAP?: string;
 }

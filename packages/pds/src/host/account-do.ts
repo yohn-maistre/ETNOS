@@ -16,7 +16,8 @@ import { p256 } from "@noble/curves/p256";
 import { decapsulate } from "@atproto/space";
 import { AccountDurableObject } from "../upstream/account-do";
 import type { RepoFacet } from "../upstream/repo/facet";
-import type { AccountStore } from "../upstream/account/store";
+import { AccountStore } from "../upstream/account/store";
+import { SqliteRepoStorage } from "../upstream/repo/storage";
 import {
 	fromB64url,
 	hashPassword,
@@ -31,6 +32,7 @@ import {
 } from "./crypto.ts";
 import { didForGenesis, genesisOperation, operationCid, signOperation, withServiceEndpoint, withVerificationMethod, type SignedPlcOperation } from "./plc.ts";
 import type { HostEnv } from "./env.ts";
+import { ACCOUNT_COPY, ACCOUNT_SKIP, checkTables, dumpTables, loadTables, transferKey, unwrapFromTransfer, wrapForTransfer, type Tables } from "./transfer.ts";
 
 export interface ProvisionInput {
 	accountId: string;
@@ -495,6 +497,80 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 		this.signingKeyHex = null;
 		this.hostSchema();
 		this.ctx.storage.sql.exec("INSERT INTO host_tombstone VALUES (1, ?, ?)", expectedDid, Date.now());
+	}
+
+	/**
+	 * This object's tables for a move to another host (transfer.ts). The private keys are unwrapped
+	 * with the KEK and wrapped again under the transfer key; no plaintext key leaves the object.
+	 */
+	async exportForTransfer(expectedDid: string): Promise<Tables> {
+		const row = this.assertAccount(expectedDid);
+		const transfer = transferKey(this.hostEnv);
+		if (!transfer) throw new Error("TransferKeyMissing");
+		// One synchronous read, so the tables are one consistent snapshot.
+		const tables = dumpTables(this.ctx.storage.sql, ACCOUNT_COPY, ACCOUNT_SKIP);
+		const keys = tables.account_keys;
+		if (!keys?.rows.length) throw new Error("Account keys missing");
+		const col = (name: string) => keys.columns.indexOf(name);
+		const rows: Tables[string]["rows"] = [];
+		for (const r of keys.rows) {
+			const purpose = String(r[col("purpose")]), version = Number(r[col("kek_version")]);
+			const clear = await unwrapSecret(this.kek(version), row.did, purpose, { kekVersion: version, nonce: String(r[col("nonce")]), ciphertext: String(r[col("ciphertext")]) });
+			const wrapped = await wrapForTransfer(transfer, row.did, purpose, clear);
+			clear.fill(0);
+			rows.push([purpose, 0, wrapped.nonce, wrapped.ciphertext]);
+		}
+		tables.account_keys = { columns: ["purpose", "kek_version", "nonce", "ciphertext"], rows };
+		return tables;
+	}
+
+	/**
+	 * Load an exported account into this object (transfer.ts). The keys are unwrapped with the
+	 * transfer key, checked against the public keys in the identity row, and wrapped under this
+	 * host's current KEK. All rows are written in one transaction. An object that already holds
+	 * this same account (an interrupted earlier run) is replaced; any other account is refused.
+	 */
+	async importFromTransfer(input: { accountId: string; did: string; tables: Tables }): Promise<number> {
+		const transfer = transferKey(this.hostEnv);
+		if (!transfer) throw new Error("TransferKeyMissing");
+		this.hostSchema();
+		if (this.tombstoned()) throw new Error("Account was deleted");
+		const tables = checkTables(input.tables, ACCOUNT_COPY);
+		const identity = tables.host_identity, keys = tables.account_keys;
+		if (identity?.rows.length !== 1 || !keys?.rows.length) throw new Error("Identity or keys missing");
+		const field = (t: Tables[string], r: Tables[string]["rows"][number], name: string) => r[t.columns.indexOf(name)];
+		const id = identity.rows[0]!;
+		if (field(identity, id, "did") !== input.did || field(identity, id, "account_id") !== input.accountId) throw new AccountMismatchError();
+		const existing = this.identityRow();
+		if (existing && (existing.did !== input.did || existing.account_id !== input.accountId)) throw new AccountMismatchError();
+
+		const version = this.currentKekVersion();
+		const rows: Tables[string]["rows"] = [];
+		const seen = new Set<string>();
+		for (const r of keys.rows) {
+			const purpose = String(field(keys, r, "purpose"));
+			const clear = await unwrapFromTransfer(transfer, input.did, purpose, { nonce: String(field(keys, r, "nonce")), ciphertext: String(field(keys, r, "ciphertext")) });
+			try {
+				const publicKey =
+					purpose === "kem" ? (await P256Keypair.import(clear)).did() : (await Secp256k1Keypair.import(clear)).did();
+				const expected = purpose === "signing" ? field(identity, id, "signing_did_key") : purpose === "rotation" ? field(identity, id, "rotation_did_key") : publicKey;
+				if (publicKey !== expected) throw new Error(`The ${purpose} key does not match the identity`);
+				const wrapped = await wrapSecret(this.kek(version), version, input.did, purpose, clear);
+				rows.push([purpose, version, wrapped.nonce, wrapped.ciphertext]);
+				seen.add(purpose);
+			} finally {
+				clear.fill(0);
+			}
+		}
+		if (!seen.has("signing") || !seen.has("rotation")) throw new Error("Signing or rotation key missing");
+		tables.account_keys = { columns: ["purpose", "kek_version", "nonce", "ciphertext"], rows };
+
+		const sql = this.ctx.storage.sql;
+		new SqliteRepoStorage(sql, (fn) => this.ctx.storage.transactionSync(fn)).initSchema(true);
+		new AccountStore(sql).initSchema();
+		const written = this.ctx.storage.transactionSync(() => loadTables(sql, tables, ACCOUNT_COPY));
+		this.signingKeyHex = null;
+		return written;
 	}
 
 	override async alarm(): Promise<void> {

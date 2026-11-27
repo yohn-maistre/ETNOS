@@ -4,7 +4,7 @@
  * made-up DIDs and deleted accounts never reach a Durable Object.
  */
 import { sha256Hex } from "./crypto.ts";
-import type { SqlDatabase } from "./ports.ts";
+import type { SqlDatabase, SqlStatement } from "./ports.ts";
 
 export type AccountStatus = "pending" | "active" | "deactivated" | "takendown" | "deleting" | "deleted";
 
@@ -119,6 +119,35 @@ export class Directory {
 
 	async audit(actor: string, action: string, subject: string | null, now: number): Promise<void> {
 		await this.db.prepare("INSERT INTO audit (at, actor, action, subject) VALUES (?,?,?,?)").bind(now, actor, action, subject).run();
+	}
+
+	/** Every row of every directory table, for a move to another host (transfer.ts). */
+	async dumpAll(): Promise<Record<"accounts" | "invites" | "audit", Record<string, unknown>[]>> {
+		const [accounts, invites, audit] = await this.db.batch([
+			this.db.prepare("SELECT * FROM accounts ORDER BY created, account_id"),
+			this.db.prepare("SELECT * FROM invites ORDER BY created, hash"),
+			this.db.prepare("SELECT * FROM audit ORDER BY id"),
+		]);
+		return { accounts: accounts!.results, invites: invites!.results, audit: audit!.results };
+	}
+
+	async countAccounts(): Promise<number> {
+		const row = await this.db.prepare("SELECT COUNT(*) AS n FROM accounts").first<{ n: number }>();
+		return Number(row?.n ?? 0);
+	}
+
+	/**
+	 * Write exported rows in one batch (one transaction). Refused by the database, all or none, when
+	 * any row collides with one already here.
+	 */
+	async insertAll(tables: { name: "accounts" | "invites" | "audit"; columns: string[]; rows: unknown[][] }[]): Promise<number> {
+		const statements: SqlStatement[] = [];
+		for (const t of tables) {
+			const sql = `INSERT INTO ${t.name} (${t.columns.join(",")}) VALUES (${t.columns.map(() => "?").join(",")})`;
+			for (const row of t.rows) statements.push(this.db.prepare(sql).bind(...row));
+		}
+		if (statements.length) await this.db.batch(statements);
+		return statements.length;
 	}
 
 	async countSignupsSince(since: number): Promise<number> {

@@ -50,6 +50,7 @@ import type { HostEnv } from "./env.ts";
 import { provider } from "./oauth.ts";
 import { Host } from "./service.ts";
 import { ExpiredTokenError, verifySession } from "./session.ts";
+import { SPACES_COPY, SPACES_SKIP, checkTables, dumpTables, loadTables, type Tables } from "./transfer.ts";
 
 export const spacesEnabled = (env: HostEnv) => env.SPACES_ENABLED === "true" && !!env.SPACES;
 
@@ -523,6 +524,20 @@ export class HostedSpaceDurableObject extends DurableObject<HostEnv> {
 				...(r.set_hash ? { data: { $bytes: b64(RepoCommit.fromState(new Uint8Array(r.set_hash)).setHash.digest()) } } : {}),
 				...(r.space_rev ? { spaceRev: r.space_rev } : {}),
 			}));
+	}
+
+	/** This account's space tables for a move to another host (transfer.ts), or null when it has none. */
+	async rpcExportTables(): Promise<Tables | null> {
+		this.sql("SELECT 1");
+		const tables = dumpTables(this.ctx.storage.sql, SPACES_COPY, SPACES_SKIP);
+		return Object.values(tables).some((t) => t.rows.length) ? tables : null;
+	}
+
+	/** Load exported space tables in one transaction, replacing what an interrupted run wrote. */
+	async rpcImportTables(tables: Tables): Promise<number> {
+		this.sql("SELECT 1");
+		const checked = checkTables(tables, SPACES_COPY);
+		return this.ctx.storage.transactionSync(() => loadTables(this.ctx.storage.sql, checked, SPACES_COPY));
 	}
 
 	async rpcPurge(): Promise<void> {
@@ -1130,6 +1145,16 @@ async function route(s: Spaces, request: Request, url: URL, method: string): Pro
 	const { revoke } = await object.rpcRemoveMembers(ref, b.dids as string[]);
 	await s.revoke(ref, row, revoke);
 	return ok({});
+}
+
+/** For a move to another host (transfer.ts): the space tables of one hosted account. */
+export async function exportAccountSpaces(env: HostEnv, did: string): Promise<Tables | null> {
+	return env.SPACES ? objectFor(env, did).rpcExportTables() : null;
+}
+
+export async function importAccountSpaces(env: HostEnv, did: string, tables: Tables): Promise<number> {
+	if (!env.SPACES) throw new Error("The export holds spaces, and this host has no SPACES binding");
+	return objectFor(env, did).rpcImportTables(tables);
 }
 
 /** On account deletion: everything the account held in spaces, as repo host and as authority. */

@@ -21,6 +21,7 @@ import { b64url } from "./crypto.ts";
 import { readLast, submitUpdate } from "./plc.ts";
 import { READ_ROUTES, SYNC_ROUTES, WRITE_ROUTES, runScoped, scopedStub, type ScopedEnv } from "./repo-routes.ts";
 import { Host } from "./service.ts";
+import { exportAccounts, importAccounts } from "./transfer-routes.ts";
 import { ExpiredTokenError, claimedSubject, issueSession, serviceDid, verifySession } from "./session.ts";
 
 export { HostedAccountDurableObject } from "./account-do.ts";
@@ -219,6 +220,9 @@ async function admin(host: Host, request: Request, path: string, ctx: ExecutionC
 		await host.dir.audit("operator", "account.reset-link", row.did, now);
 		return json(200, { url: `${host.origin}/akun/pulihkan?tautan=${link}`, expires });
 	}
+	// Moving every account to another host (transfer.ts): needs ACCOUNT_TRANSFER_KEY on both hosts.
+	if (path === "/admin/accounts/export" && request.method === "POST") return exportAccounts(host);
+	if (path === "/admin/accounts/import" && request.method === "POST") return importAccounts(host, request);
 	if (path === "/admin/accounts" && request.method === "GET")
 		return json(200, {
 			accounts: (await host.dir.listAll(200)).map((r) => ({ handle: r.handle, did: r.did, status: r.status, created: r.created })),
