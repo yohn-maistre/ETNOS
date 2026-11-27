@@ -12,7 +12,6 @@
     MessagesSquare,
     Users,
     Bookmark,
-    BookOpen,
     Search,
     Settings2,
     Plus,
@@ -27,7 +26,6 @@
     RefreshCw,
   } from '@lucide/svelte'
   import { appearance } from './appearance.svelte'
-  import { OBSERVATORY_NAME } from './observatory-name.ts'
   import { initials, type Auth } from './api'
   let {
     children,
@@ -57,35 +55,40 @@
     onFeedChange: (mode: 'new' | 'mine' | 'following') => void
   } = $props()
   const sidebar = Sidebar.useSidebar()
+  // Pages inside another page get a back arrow; /wiki is a page of Jelajah, so it has one too.
+  const backable = $derived(/^\/(square|people|news|communities|wiki|contexts|groups|work)\/[^/]+/.test(path) || path === '/wiki')
   let contextScroll=$state<HTMLDivElement|null>(null)
   $effect(()=>{void path;if(contextScroll)contextScroll.scrollTop=0})
-  // Pesan, Aktivitas and Tersimpan belong to an account; visitors who are not signed in do not see them.
-  const nav = [
+  // The top group holds the places to go and the librarian; the bottom group belongs to the reader. Pesan,
+  // Aktivitas and Tersimpan need an account and Studio is for operators, so visitors see Pengaturan and Masuk there.
+  // The Ensiklopedia has no item of its own: it is a section of Jelajah, and Jelajah stays lit on every /wiki page.
+  type NavItem = { href: string; label: string; icon: typeof Home; note?: string }
+  const places: NavItem[] = [
     { href: '/', label: 'Beranda', icon: Home },
     { href: '/explore', label: 'Jelajah', icon: Compass },
     { href: '/communities', label: 'Komunitas', icon: Users },
-    { href: '/wiki', label: OBSERVATORY_NAME, icon: BookOpen },
-    { href: '/messages', label: 'Pesan', icon: MessagesSquare },
-    { href: '/notifications', label: 'Aktivitas', icon: Bell },
-    { href: '/saved', label: 'Tersimpan', icon: Bookmark },
+    { href: '/aksara', label: 'Pustakawan', icon: Sparkle, note: 'Aksara' },
   ]
-  const wikiSections: { href: string; label: string; match: (p: string) => boolean }[] = [
-    { href: '/wiki/jenis/tempat', label: 'Tempat', match: (p) => p === '/wiki/jenis/tempat' },
-    { href: '/wiki/jenis/bahasa', label: 'Bahasa', match: (p) => p === '/wiki/jenis/bahasa' || p === '/wiki/peta-kata' || p === '/peta-kata' },
-    { href: '/wiki/jenis/topik', label: 'Topik', match: (p) => p === '/wiki/jenis/topik' },
-    { href: '/wiki/peta', label: 'Peta Pengetahuan', match: (p) => p === '/wiki/peta' },
-    { href: '/wiki/data', label: 'Katalog Data', match: (p) => p.startsWith('/wiki/data') },
-  ]
-  const navGroups = $derived(auth.actor ? [nav.slice(0, 4), nav.slice(4)] : [nav.slice(0, 4)])
+  const personal = $derived<NavItem[]>([
+    ...(auth.actor
+      ? [
+          { href: '/messages', label: 'Pesan', icon: MessagesSquare },
+          { href: '/notifications', label: 'Aktivitas', icon: Bell },
+          { href: '/saved', label: 'Tersimpan', icon: Bookmark },
+        ]
+      : []),
+    ...(auth.steward ? [{ href: '/studio', label: 'Studio', icon: SlidersHorizontal }] : []),
+    { href: '/preferences', label: 'Pengaturan', icon: Settings2 },
+  ])
   function active(href: string) {
     return href === '/'
       ? path === '/'
       : href === '/communities'
         ? path.startsWith('/communities') || path.startsWith('/groups')
         : href === '/explore'
-          ? path.startsWith('/explore') || path.startsWith('/contexts') || path.startsWith('/topics')
-          : href === '/wiki'
-            ? path.startsWith('/wiki') || path === '/peta-kata'
+          ? path.startsWith('/explore') || path.startsWith('/contexts') || path.startsWith('/topics') || path.startsWith('/wiki') || path === '/peta-kata'
+          : href === '/aksara'
+            ? path.startsWith('/aksara') || path.startsWith('/jadwal')
             : path.startsWith(href)
   }
   $effect(() => {
@@ -97,6 +100,22 @@
     onCompose()
   }
 </script>
+
+{#snippet navItem(item: NavItem)}<Sidebar.MenuItem>
+    <Sidebar.MenuButton isActive={active(item.href)} onclick={() => sidebar.setOpenMobile(false)} class="nav-link">
+      {#snippet child({ props })}<a
+          {...props}
+          href={item.href}
+          aria-label={item.href === '/notifications' && unread ? `${item.label}, ${unread} belum dibaca` : item.note ? item.label + ' ' + item.note : item.label}
+          title={item.note ? item.label + ' ' + item.note : item.label}
+          aria-current={active(item.href) ? 'page' : undefined}
+        >
+          <item.icon size={20} strokeWidth={1.7} />
+          {#if item.note}<span class="nav-two"><span>{item.label}</span><small>{item.note}</small></span>{:else}<span>{item.label}</span>{/if}
+          {#if item.href === '/notifications' && unread}<span class="utility-unread notification-count" aria-hidden="true">{unread > 99 ? '99+' : unread}</span>{/if}
+        </a>{/snippet}
+    </Sidebar.MenuButton>
+  </Sidebar.MenuItem>{/snippet}
 
 <a class="cx-skip" href="#commons-main">Lewati navigasi</a>
 <Sidebar.Root class="etnos-sidebar">
@@ -119,93 +138,22 @@
     </div>
   </Sidebar.Header>
   <Sidebar.Content>
-    {#each navGroups as items, section}
-      <Sidebar.Group>
-        <Sidebar.Menu>
-          {#each items as item}<Sidebar.MenuItem>
-              <Sidebar.MenuButton
-                isActive={active(item.href)}
-                onclick={() => sidebar.setOpenMobile(false)}
-                class="nav-link"
-              >
-                {#snippet child({ props })}<a
-                    {...props}
-                    href={item.href}
-                    aria-label={item.href === '/notifications' && unread ? `${item.label}, ${unread} belum dibaca` : item.label}
-                    title={item.label}
-                    aria-current={active(item.href) ? 'page' : undefined}
-                  >
-                    <item.icon size={20} strokeWidth={1.7} />
-                    <span>{item.label}</span>
-                    {#if item.href === '/notifications' && unread}<span
-                        class="utility-unread notification-count" aria-hidden="true"
-                      >
-                        {unread>99?'99+':unread}
-                      </span>{/if}
-                  </a>{/snippet}
-              </Sidebar.MenuButton>
-              {#if item.href === '/wiki'}<!-- Places, languages, topics, knowledge map and open data under Ensiklopedia. -->
-                <Sidebar.MenuSub class="nav-sub">
-                  {#each wikiSections as sub (sub.href)}<Sidebar.MenuSubItem>
-                      <Sidebar.MenuSubButton
-                        href={sub.href}
-                        isActive={sub.match(path)}
-                        onclick={() => sidebar.setOpenMobile(false)}
-                      >
-                        <span>{sub.label}</span>
-                      </Sidebar.MenuSubButton>
-                    </Sidebar.MenuSubItem>{/each}
-                </Sidebar.MenuSub>{/if}
-            </Sidebar.MenuItem>{/each}
-        </Sidebar.Menu>
-      </Sidebar.Group>{#if section === 0 && auth.actor}
-        <div class="px-4 pt-2">
-          <Button
-            class="w-full sidebar-compose"
-            aria-label="Posting"
-            title="Posting"
-            onclick={compose}
-          >
-            <Plus size={18} />
-            <span>Posting</span>
-          </Button>
-        </div>
-      {/if}{/each}
+    <Sidebar.Group>
+      <Sidebar.Menu>
+        {#each places as item (item.href)}{@render navItem(item)}{/each}
+      </Sidebar.Menu>
+    </Sidebar.Group>
+    {#if auth.actor}<div class="px-4 pt-2">
+        <Button class="w-full sidebar-compose" aria-label="Posting" title="Posting" onclick={compose}>
+          <Plus size={18} />
+          <span>Posting</span>
+        </Button>
+      </div>{/if}
   </Sidebar.Content>
   <Sidebar.Footer class="p-4 gap-3">
-    <a
-      href="/aksara"
-      class="sidebar-aksara"
-      class:active={path.startsWith('/aksara') || path.startsWith('/jadwal')}
-      aria-current={path.startsWith('/aksara') || path.startsWith('/jadwal') ? 'page' : undefined}
-      title="Aksara, pustakawan AI di ETNOS"
-      onclick={() => sidebar.setOpenMobile(false)}
-    >
-      <Sparkle size={16} />
-      <span><strong>Aksara</strong><small>Pustakawan AI</small></span>
-    </a>
-    {#if auth.actor}<Button
-        href="/studio"
-        variant="ghost"
-        class="sidebar-settings"
-        aria-label="Studio"
-        title="Studio"
-        onclick={() => sidebar.setOpenMobile(false)}
-      >
-        <SlidersHorizontal size={18} />
-        <span>Studio</span>
-      </Button>{/if}
-    <Button
-      href="/preferences"
-      variant="ghost"
-      class="sidebar-settings"
-      aria-label="Pengaturan"
-      title="Pengaturan"
-      onclick={() => sidebar.setOpenMobile(false)}
-    >
-      <Settings2 size={18} />
-      <span>Pengaturan</span>
-    </Button>
+    <Sidebar.Menu class="nav-personal">
+      {#each personal as item (item.href)}{@render navItem(item)}{/each}
+    </Sidebar.Menu>
     {#if auth.actor}<a
         href={'/people/' + auth.actor.id}
         class="account-link"
@@ -223,6 +171,7 @@
       </a>{:else}<Button
         href="/login"
         variant="outline"
+        class="sidebar-login"
         onclick={() => sidebar.setOpenMobile(false)}
       >
         Masuk
@@ -240,11 +189,9 @@
       path,
     )}
     class:sidebar-collapsed={sidebar.state === 'collapsed'}
-    class:thread-topbar={/^\/(square|people|news|communities|wiki|contexts|groups|work)\/[^/]+/.test(
-      path,
-    )}
+    class:thread-topbar={backable}
   >
-    {#if /^\/(square|people|news|communities|wiki|contexts|groups|work)\/[^/]+/.test(path)}<Button
+    {#if backable}<Button
         onclick={onBack}
         variant="ghost"
         size="icon"
@@ -358,7 +305,7 @@
     <Home size={21} />
     <span aria-hidden="true">Beranda</span>
   </Button>
-  <Button href="/explore" variant="ghost" size="icon" aria-label="Jelajah">
+  <Button href="/explore" variant="ghost" size="icon" aria-label="Jelajah" aria-current={active('/explore') ? 'page' : undefined}>
     <Compass size={21} />
     <span aria-hidden="true">Jelajah</span>
   </Button>

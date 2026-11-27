@@ -417,7 +417,8 @@
   function goBack() {
     saveScroll()
     if (window.history.state?.etnosDepth > 0) window.history.back()
-    else navigate('/')
+    // Opened from outside: go one level up. The Ensiklopedia is a section of Jelajah.
+    else navigate(path === '/wiki' ? '/explore' : path.startsWith('/wiki/') ? '/wiki' : '/')
   }
   function navigate(href: string) {
     const u = new URL(href, location.origin)

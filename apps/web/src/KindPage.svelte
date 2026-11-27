@@ -14,6 +14,7 @@
   import { OBSERVATORY_NAME, VIEWER_NAME } from './observatory-name.ts'
   import BahasaIndex from './BahasaIndex.svelte'
   import './styles/observatorium.css'
+  import JelajahCrumbs from './JelajahCrumbs.svelte'
 
   let { kind, search = '' }: { kind: string; search?: string } = $props()
   let index = $state<EntryIndex | null>(null),
@@ -71,7 +72,7 @@
 {:else}
 <div class="obs kp">
   <header class="obs-section obs-top kp-top">
-    <p class="kp-crumb"><a href="/wiki">{OBSERVATORY_NAME}</a></p>
+    <JelajahCrumbs />
     <h1>{name}</h1>
     {#if index}<p class="obs-lede">{kind === 'lembaga' ? shortCount(index.lembaga.length) + ' lembaga publik' : shortCount(ofKind.length) + ' entri'}</p>{/if}
   </header>
@@ -119,9 +120,6 @@
 <style>
   .kp-top { gap: 6px; padding-bottom: 14px; }
   .kp-top h1 { margin: 0; font-size: 30px; font-weight: 800; line-height: 1.08; letter-spacing: -0.025em; }
-  .kp-crumb { margin: 0; font-size: 13.5px; color: var(--muted-foreground); }
-  .kp-crumb a { color: inherit; text-decoration: none; }
-  .kp-crumb a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
   .kp-pad { margin: 0 var(--gutter); }
 
 

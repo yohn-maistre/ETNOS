@@ -14,6 +14,7 @@
   import PetaKataMap, { type WordPoint } from './PetaKataMap.svelte'
   import atlas from './papua-atlas.json'
   import './styles/observatorium.css'
+  import JelajahCrumbs from './JelajahCrumbs.svelte'
 
   type Lang = { code: string; slug: string; name: string; family: string; concepts: number; community: { id: string; title: string } | null }
   let { index, failed = false, search = '', kamusFirst = false }: { index: EntryIndex | null; failed?: boolean; search?: string; kamusFirst?: boolean } = $props()
@@ -109,7 +110,7 @@
 
 <div class="obs kp bi">
   <header class="obs-section obs-top bi-top">
-    <p class="bi-crumb"><a href="/wiki">{OBSERVATORY_NAME}</a>{#if ada}<span class="bi-sep" aria-hidden="true">›</span><a href="/wiki/jenis/bahasa">Bahasa</a>{/if}</p>
+    <JelajahCrumbs trail={ada ? [{ title: 'Bahasa', href: '/wiki/jenis/bahasa' }] : []} />
     <h1>{ada ? 'Kamus' : 'Bahasa'}</h1>
     {#if index}<p class="obs-lede">{ada ? fmt(withWords) + ' bahasa punya kata di ETNOS. Kamus setiap bahasa ada di halaman bahasanya.' : fmt(ofKind.length) + ' bahasa di Tanah Papua, ' + fmt(withWords) + ' di antaranya punya kata di ETNOS.'}</p>{/if}
   </header>
@@ -190,10 +191,6 @@
 <style>
   .bi-top { gap: 6px; padding-bottom: 14px; }
   .bi-top h1 { margin: 0; font-size: 30px; font-weight: 800; line-height: 1.08; letter-spacing: -0.025em; }
-  .bi-crumb { margin: 0; font-size: 13.5px; color: var(--muted-foreground); }
-  .bi-crumb a { color: inherit; text-decoration: none; }
-  .bi-sep { margin: 0 6px; }
-  .bi-crumb a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
   .bi-pad { margin: 0 var(--gutter); }
   .bi-map { display: grid; gap: 12px; padding-top: 4px; min-width: 0; }
   .bi-stage { position: relative; min-width: 0; }

@@ -331,52 +331,13 @@
 }
 .directory-controls .directory-up { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--foreground); text-decoration: none; }
 .directory-controls .directory-up:hover { text-decoration: underline; text-underline-offset: 3px; }
-/* Aksara sits in the footer, apart from the main menu, so it reads as the AI helper and not as a word list. */
-.sidebar-aksara {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-  padding: 8px 10px;
-  border: 1px solid var(--commons-hairline, var(--border));
-  border-radius: 10px;
-  color: var(--foreground);
-  text-decoration: none;
-  transition: background-color 120ms ease;
-}
-.sidebar-aksara:hover,
-.sidebar-aksara.active {
-  background: var(--muted);
-}
-.sidebar-aksara > svg {
-  flex: none;
-  color: var(--muted-foreground);
-}
-.sidebar-aksara > span {
-  display: grid;
-  min-width: 0;
-  line-height: 1.2;
-}
-.sidebar-aksara strong {
-  font-size: 13px;
-  font-weight: 600;
-}
-.sidebar-aksara small {
-  font-size: 12px;
-  color: var(--muted-foreground);
-}
-.sidebar-aksara:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-@media (min-width: 768px) and (max-width: 1099px) {
-  .etnos-sidebar:not([data-mobile='true']) .sidebar-aksara {
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    justify-content: center;
-  }
-  .etnos-sidebar:not([data-mobile='true']) .sidebar-aksara > span {
-    display: none;
-  }
-}
+/* The librarian sits in the top group as Pustakawan, with Aksara as a quiet second line. */
+.etnos-sidebar .nav-two { display: grid; min-width: 0; line-height: 1.15; }
+.etnos-sidebar .nav-two small { font-size: 12px; font-weight: 500; color: var(--muted-foreground); }
+/* The reader's own items sit at the foot of the sidebar, a little quieter than the places above. */
+.etnos-sidebar .nav-personal { gap: 0; padding-inline: 5px; }
+.etnos-sidebar .nav-personal .nav-link { min-height: 40px !important; font-size: 14.5px !important; padding-block: 8px !important; }
+.etnos-sidebar .nav-personal .nav-link:not([data-active='true']) { color: color-mix(in oklab, var(--foreground) 78%, var(--background)); }
+.etnos-sidebar .nav-personal .nav-link svg { width: 18px !important; height: 18px !important; }
+.etnos-sidebar .sidebar-login { width: 100%; }
+

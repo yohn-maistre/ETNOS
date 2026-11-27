@@ -7,7 +7,7 @@
   // Papuan Voices forms are CC BY-NC 4.0: each one carries the visible label NC_LABEL wherever it is shown, and on
   // the map its word is set in italics with the same label in the legend.
   import { onMount, tick } from 'svelte'
-  import { ArrowUpRight, Check, ChevronDown, ChevronRight, Link2, Plus, Search, Square, Volume2, X } from '@lucide/svelte'
+  import { ArrowUpRight, Check, ChevronDown, Link2, Plus, Search, Square, Volume2, X } from '@lucide/svelte'
   import { request } from './api'
   import { fold } from './stage-layouts.ts'
   import PetaKataMap, { type WordPoint } from './PetaKataMap.svelte'
@@ -15,6 +15,7 @@
   import LocalContextsNotices from './LocalContextsNotices.svelte'
   import { licenceLabel } from './licence.ts'
   import './styles/observatorium.css'
+  import JelajahCrumbs from './JelajahCrumbs.svelte'
 
   type Concept = { key: string; id: string; english: string; concepticon: number; leipzigJakarta: number | null; count: number }
   type Lang = { code: string; slug: string; name: string; glottologName: string; family: string; concepts: number; community: { id: string; title: string } | null }
@@ -292,11 +293,7 @@
 
 <div class="obs pk">
   <header class="obs-section obs-top pk-top">
-    <nav class="pk-crumb" aria-label="Jejak halaman">
-      <a href="/wiki">Ensiklopedia</a>
-      <ChevronRight size={14} aria-hidden="true" />
-      <a href="/wiki/jenis/bahasa">Bahasa</a>
-    </nav>
+    <JelajahCrumbs trail={[{ title: 'Bahasa', href: '/wiki/jenis/bahasa' }]} />
     <h1>Peta Kata</h1>
     <p class="obs-lede">Kata dasar dalam bahasa-bahasa Tanah Papua, di titik setiap bahasa. Kata diambil dari daftar kata terbitan dan dari kamus komunitas, dan sumber setiap kata dicantumkan.</p>
     <div class="pk-toprow">
@@ -563,9 +560,6 @@
 <style>
   .pk { padding-bottom: 24px; overflow-x: clip; }
   .pk-top { gap: 12px; }
-  .pk-crumb { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--muted-foreground); }
-  .pk-crumb a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
-  .pk-crumb a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
   .pk-toprow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
   .pk-share { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 140px; justify-content: center; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
   .pk-share:hover { background: var(--row-hover); }

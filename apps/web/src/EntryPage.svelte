@@ -10,6 +10,7 @@
   import { ArrowUpRight, BookOpen, CheckCircle2, ChevronDown, Clock, Expand, Link2, MapPin, PenLine, RotateCcw, Tag, Users } from '@lucide/svelte'
   import { Switch } from '$lib/components/ui/switch/index.js'
   import LandscapePrint from './LandscapePrint.svelte'
+  import JelajahCrumbs from './JelajahCrumbs.svelte'
   import PlaceLocator from './PlaceLocator.svelte'
   import LanguageSpecimen, { type SpecimenGroup } from './LanguageSpecimen.svelte'
   import Literature from './Literature.svelte'
@@ -251,9 +252,7 @@
 {:else if entry}
   <article class="ep" aria-labelledby={uid + '-title'}>
     <header class="ep-head">
-      {#if entry.chain.length}<nav class="ep-crumbs" aria-label="Letak halaman">
-          {#each entry.chain as c, i (i)}{#if i}<span aria-hidden="true">›</span>{/if}{#if c.href}<a href={c.href}>{c.title}</a>{:else}<span>{c.title}</span>{/if}{/each}
-        </nav>{/if}
+      <JelajahCrumbs trail={entry.chain} />
       <h1 id={uid + '-title'}>{entry.title}</h1>
       <p class="ep-kind">{kindLine}{entry.aliases.length ? ' · ' + entry.aliases.slice(0, 2).join(', ') : ''}</p>
     </header>
@@ -402,9 +401,6 @@
   .ep { --gutter: 24px; }
   @media (max-width: 767px) { .ep { --gutter: 16px; } }
   .ep-head { display: grid; gap: 6px; padding: 26px var(--gutter) 14px; }
-  .ep-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 13.5px; color: var(--muted-foreground); }
-  .ep-crumbs a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
-  .ep-crumbs a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
   .ep-head h1 { margin: 0; font-size: clamp(28px, 5.2vw, 36px); font-weight: 800; line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance; overflow-wrap: anywhere; }
   .ep-kind { margin: 0; font-size: 14px; color: var(--muted-foreground); }
   .ep-hero { position: relative; display: block; margin: 0 var(--gutter); border-radius: 16px; overflow: hidden; background: var(--secondary); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent); }
