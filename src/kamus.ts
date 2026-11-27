@@ -58,7 +58,9 @@ export class Kamus{
   const label=this.labelledLanguage(communityId),override=r?.language??''
   const code=override||label?.code||''
   const name=this.lexicon.seeds[code]?.language.name??(code===label?.code?label.name:this.languageName(code))??code
-  return {machineReading:!!r?.machine_reading,language:code,languageName:code?name:'',languageSource:(override?'operator':label?'label':'') as ''|'label'|'operator',seeded:!!this.lexicon.seeds[code]}
+  // The language's entry page is the home of its Kamus (/wiki/<slug>?tab=kamus); the community's tab links there.
+  const languageSlug=code?this.store.get<{slug:string}>("SELECT slug FROM contexts WHERE kind='language' AND active=1 AND aliases LIKE ?",`%"glottocode:${code}"%`)?.slug??'':''
+  return {machineReading:!!r?.machine_reading,language:code,languageName:code?name:'',languageSlug,languageSource:(override?'operator':label?'label':'') as ''|'label'|'operator',seeded:!!this.lexicon.seeds[code]}
  }
  private labelledLanguage(communityId:string){
   // Only "Bahasa yang dipakai" counts (role 'language'), not a community about a language; Indonesian and

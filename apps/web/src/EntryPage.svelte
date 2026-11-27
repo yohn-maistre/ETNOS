@@ -30,7 +30,8 @@
   import { request, relativeDate, ApiError, type Auth, type Community, type Post } from './api'
   import { loadEntry, type Entry } from './entri'
   import { entryRail } from './entry-rail.svelte'
-  import { ENTRY_TABS, tabHref, type EntryTab } from './entry-routes.ts'
+  import { tabsFor, tabHref, type EntryTab } from './entry-routes.ts'
+  import LanguageKamus from './LanguageKamus.svelte'
   import { loadViewerObjects, viewerHref, KIND_LABEL as RECORD_KIND, type ViewerObject } from './viewer-data.ts'
   import { OBSERVATORY_NAME } from './observatory-name.ts'
 
@@ -103,11 +104,14 @@
     // The tab is part of the address so it can be shared, without adding a step to Back.
     if (entry) history.replaceState(history.state, '', tabHref(entry.slug, next, location.search))
   }
+  const tabs = $derived(tabsFor(entry?.kind))
+  // Only a language has a Kamus tab; an old link with ?tab=kamus to any other entry opens Tentang.
+  const shownTab = $derived<EntryTab>(tabs.some(([t]) => t === tab) ? tab : 'tentang')
   function keys(e: KeyboardEvent) {
-    const i = ENTRY_TABS.findIndex(([t]) => t === tab), step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
+    const i = tabs.findIndex(([t]) => t === shownTab), step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
     if (!step) return
     e.preventDefault()
-    const next = ENTRY_TABS[(i + step + ENTRY_TABS.length) % ENTRY_TABS.length][0]
+    const next = tabs[(i + step + tabs.length) % tabs.length][0]
     choose(next)
     document.getElementById(uid + '-tab-' + next)?.focus()
   }
@@ -134,6 +138,7 @@
       })
       .catch(() => { basic = null })
   })
+  const kamusBooks = $derived((entry?.kamus ?? []).filter((k) => k.entries > 0))
   const viewerLink = (id: string) => viewerHref(id) + '?daftar=' + encodeURIComponent(listKey)
 
   // Media from the Penampil: the first photo of the entry's records as its picture, every record as a card.
@@ -229,7 +234,7 @@
   const showBlurb = $derived(!!entry?.description && !(entry.kind === 'bahasa' && /^Rumpun .+ menurut Glottolog/.test(entry.description)) && entry.kind !== 'halaman')
   const kindLine = $derived(entry ? [entry.kindLabel, entry.sub && entry.sub.label !== entry.kindLabel ? entry.sub.label : ''].filter(Boolean).join(' · ') : '')
   const childHeading = $derived(entry?.kind === 'topik' ? 'Cabang' : entry?.children.every((c) => c.kind === 'tempat') ? 'Kabupaten dan kota' : 'Di dalamnya')
-  const counts = $derived<Record<EntryTab, number>>({ tentang: 0, percakapan: total, riset: entry?.research.datasets.length ?? 0, riwayat: entry?.history?.revisions ?? 0 })
+  const counts = $derived<Record<EntryTab, number>>({ tentang: 0, kamus: 0, percakapan: total, riset: entry?.research.datasets.length ?? 0, riwayat: entry?.history?.revisions ?? 0 })
   const chips = $derived(entry ? [...entry.overlay.map((o) => ({ ...o, label: 'Wilayah adat ' + o.title })), ...entry.related.slice(0, 6).map((r) => ({ ...r, label: r.title }))] : [])
 </script>
 
@@ -270,11 +275,13 @@
     {#if railOpen}<div id={uid + '-rail'} class="ep-inline-rail"><EntryRail {entry} inline /></div>{/if}
 
     <div class="ep-tabs section-tab-scroll" role="tablist" aria-label={'Tentang ' + entry.title} tabindex="-1" onkeydown={keys}>
-      {#each ENTRY_TABS as [value, label] (value)}<button role="tab" id={uid + '-tab-' + value} aria-selected={tab === value} aria-controls={uid + '-panel'} tabindex={tab === value ? 0 : -1} onclick={() => choose(value)}>{label}{#if counts[value]}<span>{counts[value]}</span>{/if}</button>{/each}
+      {#each tabs as [value, label] (value)}<button role="tab" id={uid + '-tab-' + value} aria-selected={shownTab === value} aria-controls={uid + '-panel'} tabindex={shownTab === value ? 0 : -1} onclick={() => choose(value)}>{label}{#if counts[value]}<span>{counts[value]}</span>{/if}</button>{/each}
     </div>
 
-    <div class="ep-panel" id={uid + '-panel'} role="tabpanel" aria-labelledby={uid + '-tab-' + tab}>
-      {#if tab === 'tentang'}
+    <div class="ep-panel" id={uid + '-panel'} role="tabpanel" aria-labelledby={uid + '-tab-' + shownTab}>
+      {#if shownTab === 'kamus' && glottocode}
+        <LanguageKamus code={glottocode} name={entry.title} kamus={entry.kamus} />
+      {:else if shownTab === 'tentang'}
         {#if showBlurb}<p class="ep-blurb">{entry.description}</p>{/if}
         {#if entry.facts.length || entry.localNames?.length}<dl class="ep-facts">
             {#each entry.localNames ?? [] as n (n.community.id + n.name)}<div><dt>Nama lokal</dt><dd><strong>{n.name}</strong> dalam bahasa {n.language}, menurut anggota <a href={'/communities/' + n.community.id}>{n.community.title}</a></dd></div>{/each}
@@ -325,23 +332,17 @@
 
         {#if entry.kios?.length}<div class="ep-section ep-kios"><KiosPlace items={entry.kios} place={entry.title} /></div>{/if}
 
-        {#if basic && basic.count}<section class="ep-section" aria-labelledby={uid + '-basic'}>
-            <div class="ep-section-head"><h2 id={uid + '-basic'}>Kata dasar</h2><a class="ep-more" href={'/wiki/peta-kata?bahasa=' + basic.code}>Buka Peta Kata</a></div>
-            {#if basic.words.length}<dl class="ep-words">{#each basic.words as w (w.concept)}<div><dt class:ep-nc={w.nc}>{w.form.replace(/_/g, ' ')}</dt><dd>{w.concept}</dd></div>{/each}</dl>{/if}
-            <p class="ep-note">Bahasa ini punya {basic.count} dari 100 kata dasar dalam daftar kata terbitan. Kata ini belum diperiksa penutur, dan sumber setiap kata ada di Peta Kata.</p>
-            {#if basic.words.some((w) => w.nc)}<p class="ep-note"><span class="ep-nc">Kata miring</span> berasal dari Papuan Voices, CC BY-NC 4.0 · tidak untuk penggunaan komersial.</p>{/if}
+        {#if (basic && basic.count) || kamusBooks.length}<section class="ep-section" aria-labelledby={uid + '-basic'}>
+            <div class="ep-section-head"><h2 id={uid + '-basic'}>Kamus</h2><button type="button" class="ep-more" onclick={() => { choose('kamus'); document.getElementById(uid + '-tab-kamus')?.scrollIntoView({ block: 'nearest' }) }}>Buka kamus</button></div>
+            {#if basic?.words.length}<dl class="ep-words">{#each basic.words as w (w.concept)}<div><dt class:ep-nc={w.nc}>{w.form.replace(/_/g, ' ')}</dt><dd>{w.concept}</dd></div>{/each}</dl>{/if}
+            <p class="ep-note">{basic?.count ? 'Bahasa ini punya ' + basic.count + ' dari 100 kata dasar dalam daftar kata terbitan, yang belum diperiksa penutur.' : ''}{kamusBooks.length ? ' Kamus komunitas ' + kamusBooks.map((k) => k.title).join(', ') + ' memuat ' + kamusBooks.reduce((n, k) => n + k.entries, 0).toLocaleString('id-ID') + ' kata.' : ''} Semua kata dan sumbernya ada di tab Kamus.</p>
+            {#if basic?.words.some((w) => w.nc)}<p class="ep-note"><span class="ep-nc">Kata miring</span> berasal dari Papuan Voices, CC BY-NC 4.0 · tidak untuk penggunaan komersial.</p>{/if}
           </section>{/if}
 
         {#if group && group.languages.length > 1}<section class="ep-section ep-specimen" aria-labelledby={uid + '-langs'}>
             <h2 id={uid + '-langs'}>Bahasa lain dengan titik acuan di {group.title}</h2>
             <LanguageSpecimen groups={[group]} total={group.languages.length} current={ctx?.slug} open={group.languages.findIndex((l) => l.slug === ctx?.slug) >= 8} />
           </section>{/if}
-
-        {#each entry.kamus.filter((k) => k.entries) as k (k.communityId)}<section class="ep-section" aria-labelledby={uid + '-kamus-' + k.communityId}>
-            <div class="ep-section-head"><h2 id={uid + '-kamus-' + k.communityId}>Kamus {k.languageName}</h2><a class="ep-more" href={'/communities/' + k.communityId}>Buka kamus</a></div>
-            <p class="ep-note">Kamus ini disusun di komunitas {k.title} dan memuat {k.entries.toLocaleString('id-ID')} kata.</p>
-            {#if k.words.length}<dl class="ep-words">{#each k.words as w (w.lemma)}<div><dt>{w.lemma}</dt><dd>{w.gloss}</dd></div>{/each}</dl>{/if}
-          </section>{/each}
 
         {#if entry.children.length}<section class="ep-section ep-children" aria-labelledby={uid + '-children'}>
             <h2 id={uid + '-children'}>{childHeading} <span class="ep-count">{entry.childCount}</span></h2>
@@ -357,7 +358,7 @@
               <li><a href="/tentang#about-basis">Semua dasar label di ETNOS</a></li>
             </ul>
           </section>{/if}
-      {:else if tab === 'percakapan'}
+      {:else if shownTab === 'percakapan'}
         {#if total || insideCount}<div class="ep-convo-bar">
             {#if items.length && auth.actor && onCompose}<button type="button" class="ep-action" onclick={compose}><PenLine size={15} aria-hidden="true" />Tulis tentang {entry.title}</button>
             {:else if items.length && !auth.actor}<a class="ep-action" href="/login"><PenLine size={15} aria-hidden="true" />Masuk untuk menulis</a>{:else}<span></span>{/if}
@@ -377,7 +378,7 @@
             {#if auth.actor && onCompose}<button type="button" class="ep-action" onclick={compose}><PenLine size={15} aria-hidden="true" />Tulis tentang {entry.title}</button>
             {:else if !auth.actor}<a class="ep-action" href="/login"><PenLine size={15} aria-hidden="true" />Masuk untuk menulis</a>{/if}
           </div>{/if}
-      {:else if tab === 'riset'}
+      {:else if shownTab === 'riset'}
         {#if entry.research.literature}<Literature slug={entry.research.literature} title={entry.title} />{/if}
         {#if ctx || entry.source.things.length}<ThingData slug={ctx?.slug ?? ''} thing={ctx ? '' : entry.source.things[0]} title={entry.title} />
         {:else}<p class="ep-note ep-pad">Belum ada riset atau dataset tentang {entry.title} di katalog. <a href="/wiki/data">Lihat katalog data</a></p>{/if}
@@ -521,6 +522,8 @@
   .ep-convo-empty { margin-top: 0; border-top: 0; padding-top: 28px; }
   .ep-convo-empty p { max-width: 56ch; line-height: 1.5; }
   .ep-convo-empty .ep-empty-title { font-size: 17px; font-weight: 700; color: var(--foreground); letter-spacing: -0.01em; }
+  button.ep-more { border: 0; background: transparent; font-family: inherit; cursor: pointer; }
+  .ep-more:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
   .ep-note { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--muted-foreground); }
   .ep-pad { padding: 28px var(--gutter); }
   .ep-revs { margin: 0; padding: 0; list-style: none; display: grid; }

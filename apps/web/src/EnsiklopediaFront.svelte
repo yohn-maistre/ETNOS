@@ -94,7 +94,8 @@
 
   const dark = $derived(appearance.theme === 'dark')
   const band = (key: string) => { const b = BANDS.find((x) => x.key === key); return b ? (dark ? b.dark : b.light) : 'var(--muted-foreground)' }
-  const count = (k: string) => (k === 'kamus' ? (index?.kamus ?? []).reduce((n, x) => n + x.entries, 0) : index?.counts[k] ?? 0)
+  // The Kamus tile counts languages with words; each language's Kamus lives on its page (?tab=kamus).
+  const count = (k: string) => (k === 'kamus' ? index?.kamusLanguages ?? 0 : index?.counts[k] ?? 0)
   const TILES = [
     { kind: 'tempat', icon: MapPin, band: 'masyarakat-aturan' },
     { kind: 'bahasa', icon: Languages, band: 'bahasa-ritus' },
@@ -138,7 +139,7 @@
       id: 'peta-kata-featured',
       href: '/wiki/peta-kata',
       title: 'Peta Kata',
-      subtitle: '100 kata dasar dalam 187 bahasa Tanah Papua, beserta sumbernya',
+      subtitle: '100 kata dasar dalam 188 bahasa Tanah Papua, beserta sumbernya',
       badge: 'Peta Kata',
       kind: 'atlas',
     }
@@ -280,7 +281,7 @@
               <span class="ef-bento-icon"><t.icon size={20} aria-hidden="true" /></span>
               <span class="ef-bento-text">
                 <strong>{KIND_NAME[t.kind]}</strong>
-                <small>{n ? shortCount(n) + ' entri' : 'Buka'}</small>
+                <small>{n ? shortCount(n) + (t.kind === 'kamus' ? ' bahasa' : ' entri') : 'Buka'}</small>
               </span>
             </a>
           </li>
@@ -338,7 +339,7 @@
           <span class="ef-tool-icon"><Compass size={20} aria-hidden="true" /></span>
           <span class="ef-tool-body">
             <strong>Peta Kata</strong>
-            <small>100 kata dasar dalam 187 bahasa Tanah Papua</small>
+            <small>100 kata dasar dalam 188 bahasa Tanah Papua</small>
           </span>
           <ArrowUpRight size={16} class="ef-tool-go" aria-hidden="true" />
         </a>
@@ -419,7 +420,7 @@
               <ul class="obs-rows">
                 {#each words.slice(0, 6) as w (w.communityId + w.lemma)}
                   <li>
-                    <a class="obs-row" href={'/communities/' + w.communityId + '?tab=kamus'}>
+                    <a class="obs-row" href={w.languageSlug ? '/wiki/' + w.languageSlug + '?tab=kamus' : '/communities/' + w.communityId + '?tab=kamus'}>
                       <span class="obs-row-main">
                         <span class="obs-row-title">{w.lemma}</span>
                         <span class="obs-row-meta">{w.gloss} · {w.languageName}</span>
@@ -429,7 +430,7 @@
                   </li>
                 {/each}
               </ul>
-              <p class="ef-tab-foot"><a href="/wiki/jenis/kamus">Buka semua kamus komunitas</a></p>
+              <p class="ef-tab-foot"><a href="/wiki/jenis/kamus">Buka kamus semua bahasa</a></p>
             </Tabs.Content>
           {/if}
 

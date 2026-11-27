@@ -63,6 +63,7 @@ The plan of record, the framing for the proposal, and the notes that guide the n
 | [direction-2026-11-16.md](plan/direction-2026-11-16.md) | The longer direction: Cerita, language spaces, Aksara by place, wiki seed, labels and groups, order of work. | current; older than the showcase plan, which wins where they differ |
 | [status.md](plan/status.md) | What the engine does today, by area. Most entries date from 1 to 15 November. | partly out of date; later receipts are in history/ |
 | [lessons-2026-11-20.md](plan/lessons-2026-11-20.md) | Short notes for whoever works next: design register, appearance defaults, identity host, invites, deploys, shared tree. | current |
+| [bahasa-consolidation-2026-11-28.md](plan/bahasa-consolidation-2026-11-28.md) | The language page as the home of its Kamus, one map-first Bahasa index, and which old addresses land where. | current |
 
 ## decisions/: accepted decisions
 
@@ -76,6 +77,7 @@ Architecture and product decisions that other documents must respect.
 | [decision-004-at-account-hosting.md](decisions/decision-004-at-account-hosting.md) | Full AT accounts, hosted separately, with the options researched. | current |
 | [decision-005-node-account-data-planes.md](decisions/decision-005-node-account-data-planes.md) | One node experience with explicit data boundaries and deployment profiles. | current |
 | [decision-pilot-2026-11-03.md](decisions/decision-pilot-2026-11-03.md) | The public decision-model pilot: a steward button that triages a public post. | current for the pilot |
+| [local-contexts-2026-11-28.md](decisions/local-contexts-2026-11-28.md) | Local Contexts: communities apply Labels on the Hub, ETNOS applies only Notices and stores a Hub project ID. | current |
 
 ## product/: product and design documents
 

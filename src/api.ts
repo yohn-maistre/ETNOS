@@ -166,7 +166,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(path==='/v1/peta-kata/concepts')result=petaKata.concepts()
         else if(path==='/v1/peta-kata/semantic')result=await semanticMap.build()
         else if(path==='/v1/peta-kata')result=petaKata.lookup({concept:url.searchParams.get('concept')??undefined,q:url.searchParams.get('q')??undefined})
-        else if(parts.length===5&&parts[1]==='peta-kata'&&parts[2]==='bahasa'&&parts[4]==='sumber'){const r=seedSource(kamusLexicon(),decodeURIComponent(parts[3]),{q:url.searchParams.get('q')??undefined,offset:Number(url.searchParams.get('offset')??0)});if(!r)throw new Fault(404,'Not found');result=r}
+        else if(parts.length===5&&parts[1]==='peta-kata'&&parts[2]==='bahasa'&&parts[4]==='sumber'){const r=seedSource(kamusLexicon(),decodeURIComponent(parts[3]),{q:url.searchParams.get('q')??undefined,offset:Number(url.searchParams.get('offset')??0),limit:Number(url.searchParams.get('limit')??50)});if(!r)throw new Fault(404,'Not found');result=r}
         else if(parts.length===4&&parts[1]==='peta-kata'&&parts[2]==='bahasa'){const r=petaKata.languageWords(decodeURIComponent(parts[3]));if(!r)throw new Fault(404,'Not found');result=r}
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='saluran')result=saluran.settings(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kurasi')result={annotations:saluran.listAnnotations(actor?.id,parts[2])}

@@ -12,6 +12,8 @@
   import { fold } from './stage-layouts.ts'
   import PetaKataMap, { type WordPoint } from './PetaKataMap.svelte'
   import atlas from './papua-atlas.json'
+  import LocalContextsNotices from './LocalContextsNotices.svelte'
+  import { licenceLabel } from './licence.ts'
   import './styles/observatorium.css'
 
   type Concept = { key: string; id: string; english: string; concepticon: number; leipzigJakarta: number | null; count: number }
@@ -424,7 +426,7 @@
               <button type="button" class="pk-btn" aria-pressed={compare.includes(selectedLang.code)} disabled={!compare.includes(selectedLang.code) && compare.length >= 3} onclick={() => toggleCompare(selectedLang.code)}>
                 {compare.includes(selectedLang.code) ? 'Dibandingkan' : compare.length >= 3 ? 'Sudah tiga bahasa' : 'Bandingkan'}
               </button>
-              {#if selectedLang.slug}<a class="pk-link" href={'/wiki/' + selectedLang.slug}>Halaman bahasa <ArrowUpRight size={15} aria-hidden="true" /></a>{/if}
+              {#if selectedLang.slug}<a class="pk-link" href={'/wiki/' + selectedLang.slug + '?tab=kamus'}>Kamus {selectedLang.name} <ArrowUpRight size={15} aria-hidden="true" /></a>{/if}
               {#if selectedLang.community}<a class="pk-link" href={'/communities/' + selectedLang.community.id}>{selectedLang.community.title} <ArrowUpRight size={15} aria-hidden="true" /></a>{/if}
             </div>
             {#if pub.length && selectedLang.community}
@@ -550,16 +552,16 @@
       <h2 id="pk-sources-title" class="pk-h3">Sumber</h2>
       <p class="obs-foot">Kata dari daftar kata terbitan disalin seperti tertulis di sumbernya dan belum diperiksa penutur. Kata dari kamus komunitas hanya diambil dari komunitas publik, tanpa kata yang ditandai jangan disebarkan. Nama konsep dalam bahasa Indonesia ditulis untuk ETNOS.</p>
       <ul class="pk-cites">
-        {#each datasets as d (d.key)}<li><a href={d.url} target="_blank" rel="noopener">{d.citation}</a> Lisensi {d.licence}.</li>{/each}
+        {#each datasets as d (d.key)}<li><a href={d.url} target="_blank" rel="noopener">{d.citation}</a> Lisensi {licenceLabel(d.licence)}.</li>{/each}
         <li>Titik bahasa dari Glottolog 5.4 (CC BY 4.0). Titik itu menandai letak acuan, bukan batas wilayah bahasa.</li>
       </ul>
+      <div class="pk-lc"><LocalContextsNotices keys={['etnos', ...datasets.map((d) => d.key)]} /></div>
     </footer>
   {/if}
 </div>
 
 <style>
-  .pk { padding-bottom: 24px; overflow-x: clip; --pk-f1: #257de0; --pk-f2: #f47230; --pk-f3: #00b894; --pk-other: color-mix(in oklab, var(--foreground) 52%, var(--background)); }
-  :global(.dark) .pk { --pk-f1: #338ced; --pk-f2: #e76624; --pk-f3: #00a888; }
+  .pk { padding-bottom: 24px; overflow-x: clip; }
   .pk-top { gap: 12px; }
   .pk-crumb { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--muted-foreground); }
   .pk-crumb a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
@@ -620,6 +622,7 @@
   .pk-forms li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
   .pk-form { font-size: 24px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; overflow-wrap: anywhere; }
   .pk-tag { display: inline-flex; align-items: center; min-height: 24px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--border); font-size: 12.5px; color: var(--muted-foreground); }
+  .pk-lc { margin-top: 18px; }
   .pk-nc { color: var(--foreground); border-style: dashed; }
   .pk-nc-form { font-style: italic; }
   .pk-legend .pk-nc-form { font-weight: 600; }

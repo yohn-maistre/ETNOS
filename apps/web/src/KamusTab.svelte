@@ -14,7 +14,7 @@
   type Example = { postId: string; text: string }
   type Entry = { id: string; lemma: string; gloss: string; pos: string; context: string; source: string; licence: string; page: number | null; state: string; uses: number; speakers: number; examples: Example[]; claimId: string | null; variants?: { form: string; dialect: string }[]; dialect?: string; sensitive?: boolean }
   type Language = { id: string; name: string; sources: Record<string, { citation: string; licence: string; url: string | null }> }
-  type View = { settings: { machineReading: boolean; language: string; languageName: string; languageSource: '' | 'label' | 'operator'; seeded: boolean }; contexts: string[]; languages: Language[]; counts: Record<string, number>; entries: Entry[] }
+  type View = { settings: { machineReading: boolean; language: string; languageName: string; languageSlug?: string; languageSource: '' | 'label' | 'operator'; seeded: boolean }; contexts: string[]; languages: Language[]; counts: Record<string, number>; entries: Entry[] }
   let { communityId, title = '', steward = false, operator = false, member = false, visibility = 'public', onChanged }: { communityId: string; title?: string; steward?: boolean; operator?: boolean; member?: boolean; visibility?: string; onChanged?: () => void } = $props()
   // Kata saya (a member's own words), Cetak kamus and, for stewards, the suffix list and the export.
   let mode = $state<'kamus' | 'mine'>('kamus'),
@@ -116,6 +116,7 @@
             Kamus ini mengumpulkan kata yang dipakai anggota, lalu anggota memeriksa artinya bersama.
           {/if}
         </p>
+        {#if view.settings.languageName}<p class="kamus-home">Kamus ini untuk bahasa {view.settings.languageName}. {#if view.settings.languageSlug}Semua kata bahasa ini, dari daftar terbitan dan dari kamus komunitas publik, ada di <a href={'/wiki/' + view.settings.languageSlug + '?tab=kamus'}>halaman bahasa {view.settings.languageName}</a>.{/if}</p>{/if}
       </div>
       {#if steward || operator}
         <Button variant="outline" size="sm" type="button" aria-expanded={settingsOpen} onclick={() => (settingsOpen = !settingsOpen)}>
@@ -262,6 +263,8 @@
   .kamus-suffixes div { display: flex; gap: 8px; }
   .kamus { display: grid; gap: 18px; padding: 12px 20px 28px; }
   @media (max-width: 560px) { .kamus { padding-inline: 16px; } }
+  .kamus-home { margin: 6px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted-foreground); }
+  .kamus-home a { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, currentColor 35%, transparent); }
   .kamus-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
   .kamus-head h2 { margin: 0; font-family: var(--cx-serif); font-size: 1.45rem; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
   .kamus-sum { margin: 6px 0 0; color: var(--muted-foreground); font-size: 0.92rem; max-width: 62ch; font-variant-numeric: tabular-nums; }

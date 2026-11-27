@@ -163,7 +163,7 @@
     history = $state<
       { id: string; created: number; perspective: string; language: string }[]
     >([])
-  let tab = $state('discussion'),
+  let tab = $state(linkedTab(location.pathname, location.search) ?? 'discussion'),
     feedTab = $state<'new' | 'mine' | 'following'>('new'),
     handle = $state(''),
     publishingConsent = $state(false),
@@ -396,6 +396,12 @@
   function fail(value: unknown) {
     notifyError(value)
   }
+  // A link such as /communities/<id>?tab=kamus (from a language's Kamus) opens that tab of the community.
+  function linkedTab(pathname: string, query: string) {
+    if (!pathname.startsWith('/communities/')) return null
+    const t = new URLSearchParams(query).get('tab')
+    return t && ['discussion', 'wiki', 'kamus', 'media', 'voices', 'offers', 'about'].includes(t) ? t : null
+  }
   function saveScroll() {
     window.history.replaceState(
       {
@@ -480,7 +486,7 @@
     )
     path = u.pathname
     search = u.search
-    tab = 'discussion'
+    tab = linkedTab(u.pathname, u.search) ?? 'discussion'
     profileTab = 'posts'
     pulse()
     void load()
@@ -518,7 +524,7 @@
     if(canonicalPath!==location.pathname)window.history.replaceState(window.history.state,'',canonicalPath+location.search)
     path = canonicalPath
     search = location.search
-    tab = window.history.state?.etnosTab ?? 'discussion'
+    tab = window.history.state?.etnosTab ?? linkedTab(canonicalPath, location.search) ?? 'discussion'
     profileTab = window.history.state?.etnosProfileTab ?? 'posts'
     feedTab = window.history.state?.etnosFeed ?? 'new'
     await load()

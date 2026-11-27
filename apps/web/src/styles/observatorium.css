@@ -3,6 +3,10 @@
    and 24px below each section, the same gutter for every block inside it (24px, 16px on phones), heavy headings
    with more room above them than below. Loaded with the wiki chunk only. */
 .obs { --gutter: 24px; --row-hover: color-mix(in oklab, var(--foreground) 4%, transparent); }
+/* Language family colours of the language map (Peta Kata and the Bahasa index): the three largest families get
+   one each, every other family shares the neutral. Light and dark sets. */
+.obs { --pk-f1: #257de0; --pk-f2: #f47230; --pk-f3: #00b894; --pk-other: color-mix(in oklab, var(--foreground) 52%, var(--background)); }
+.dark .obs { --pk-f1: #338ced; --pk-f2: #e76624; --pk-f3: #00a888; }
 @media (max-width: 640px) { .obs { --gutter: 16px; } }
 .obs-section { display: grid; gap: 14px; padding: 28px var(--gutter) 24px; border-top: 1px solid var(--border); min-width: 0; }
 .obs-section:first-child, .obs > .obs-section.obs-top { border-top: 0; }
@@ -77,3 +81,20 @@
 /* Wiki front pieces inside the observatory. */
 .obs-chips small { font-size: 12.5px; color: inherit; opacity: 0.7; font-variant-numeric: tabular-nums; }
 .obs-inline { border: 0; background: none; padding: 0; color: var(--foreground); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* Kind pages (KindPage.svelte, BahasaIndex.svelte): sub-kind circles, filters and the more button. */
+.kp-subs { padding: 4px 0 18px; }
+.kp-subs ul { display: flex; gap: 6px; margin: 0; padding: 2px var(--gutter); overflow-x: auto; scrollbar-width: none; list-style: none; }
+.kp-subs li { flex: none; }
+.kp-subs a { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 84px; padding: 4px 0; color: var(--foreground); text-decoration: none; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.25; }
+.kp-circle { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 999px; background: color-mix(in oklab, var(--foreground) 6%, var(--background)); font-size: 15px; font-weight: 750; font-variant-numeric: tabular-nums; }
+.kp-subs a:hover .kp-circle { background: color-mix(in oklab, var(--foreground) 10%, var(--background)); }
+.kp-subs a[aria-current='page'] .kp-circle { background: var(--foreground); color: var(--background); }
+.kp-subs a:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; border-radius: 12px; }
+.kp-subs a > span:last-child { overflow-wrap: anywhere; }
+.kp-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.kp-filters .obs-chips a[aria-current='true'] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.kp-place { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 14px; border-radius: 999px; background: var(--foreground); color: var(--background); font-size: 14px; font-weight: 600; text-decoration: none; }
+.kp-place.off { background: transparent; color: var(--foreground); border: 1px dashed var(--border); }
+.kp-more { justify-self: start; min-height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.kp-more:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }

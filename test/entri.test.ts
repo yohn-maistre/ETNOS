@@ -187,3 +187,18 @@ test('a node that has not imported the knowledge seed reads the seed as its publ
     assert.equal(after.entries.some((x) => x.slug === 'suku-uji'), false)
   } finally { w.s.close() }
 })
+
+test('the index lists a community Kamus only once it has words, names its language page, and never lists a private one', async () => {
+  const w = world()
+  try {
+    const word = (community: string, lemma: string) => w.s.run("INSERT INTO kamus_entries(id,community_id,lemma,norm,gloss,pos,context,source,licence,page,state,claim_id,uses,speakers,examples,created,updated) VALUES(?,?,?,?,?,'','','anggota','',NULL,'proposed',NULL,1,1,'[]',?,?)", crypto.randomUUID(), community, lemma, lemma, 'air', w.s.clock(), w.s.clock())
+    assert.deepEqual((await entryIndex(w.source())).kamus, [], 'an empty Kamus is not a dictionary')
+    word(w.open, 'uwo')
+    const priv = w.s.createCommunity(w.owner, 'Ruang privat uji', 'Synthetic', 'listed-private')
+    w.groups.labelCommunity(w.owner, priv.id, w.language.id)
+    word(priv.id, 'rahasia')
+    const index = await entryIndex(w.source())
+    assert.deepEqual(index.kamus.map((k) => [k.title, k.languageSlug, k.entries]), [['Petani uji', 'bahasa-uji', 1]])
+    assert.ok(index.kamusLanguages >= 1)
+  } finally { w.s.close() }
+})

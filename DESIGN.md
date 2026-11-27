@@ -212,9 +212,10 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 
 ### Kind page (`KindPage.svelte`, `/wiki/jenis/:kind`)
 - **Character:** a crumb, heavy title and count, then sub-kind circles (60px, 6% tint, the count inside, the label under, the current one filled in the foreground colour) that scroll sideways, a row of viewer thumbnails for kinds with records, status pills and a place pill, then rows. Filters are links, so the address carries them.
+- **Bahasa (`BahasaIndex.svelte`, `/wiki/jenis/bahasa`, and `/wiki/jenis/kamus` as `?ada=kamus`):** map first. Peta Kata's map with every language at its point (filled in the family colour where it has words, a faint ring where it has none) and a card on tap, then three lens cards (Peta Kata, Ruang makna, Kamus), the family circles, the filters and the rows.
 
 ### Entry page (`EntryPage.svelte`, `EntryRail.svelte`, `/wiki/:slug`)
-- **Character:** crumb chain, heavy title, a muted kind line, then the picture (a photo that opens the viewer, or the landscape print for places). Four tabs at most in the sticky section tab bar; kind modules sit inside *Tentang* after the article and the fact list, and *Dasar label* is a small block at the foot.
+- **Character:** crumb chain, heavy title, a muted kind line, then the picture (a photo that opens the viewer, or the landscape print for places). Four tabs at most in the sticky section tab bar, except a language entry, which adds *Kamus* after *Tentang* (`LanguageKamus.svelte`, docs/plan/bahasa-consolidation-2026-11-28.md); kind modules sit inside *Tentang* after the article and the fact list, and *Dasar label* is a small block at the foot.
 - **Letak rail:** in the shell's side rail from 1200px (220px wide between 1200 and 1359px, sticky): an indented tree of the chain with hairline elbows and the current entry in bold with its children, the wilayah adat as an overlay line, then *Komunitas di sini* (avatar rows), *Lembaga terkait* and *Terkait* (hairline rows with the sub-kind on the right). Below 1200px it is a row of chips under the picture, and the *Letak* chip opens the same rail inline.
 
 ### Knowledge map (`KnowledgeExplorer.svelte`, `MapStage.svelte`, `stage-layouts.ts`)

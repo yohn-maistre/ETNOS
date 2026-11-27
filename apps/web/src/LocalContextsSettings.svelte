@@ -56,7 +56,7 @@
           <form class="lcs-form" onsubmit={(e) => { e.preventDefault(); void save(c) }}>
             <label for={'lcs-' + c.key}>ID proyek di Local Contexts Hub</label>
             <div class="lcs-field">
-              <input id={'lcs-' + c.key} bind:value={ids[c.key]} placeholder="8-4-4-4-12 karakter, misalnya 3fa85f64-…" autocomplete="off" autocapitalize="off" spellcheck="false" />
+              <input id={'lcs-' + c.key} bind:value={ids[c.key]} placeholder="misalnya 3fa85f64-5717-…" autocomplete="off" autocapitalize="off" spellcheck="false" />
               <button type="submit" class="lcs-save" disabled={!!busy || (ids[c.key] ?? '').trim() === (c.hub?.projectId ?? '')}>{busy === c.key ? 'Menyimpan…' : 'Simpan'}</button>
             </div>
             {#if c.hub}<small><a href={c.hub.url} target="_blank" rel="noopener">Buka proyek di Hub<ArrowUpRight size={12} aria-hidden="true" /></a> Kosongkan kolom lalu simpan untuk melepas tautannya.</small>{/if}
@@ -70,8 +70,8 @@
 </section>
 
 <style>
-  .lcs { display: grid; gap: 10px; margin-top: 28px; }
-  .lcs h2 { margin: 0; font-size: 18px; font-weight: 750; }
+  .lcs { display: grid; gap: 12px; max-width: 880px; padding: 20px var(--studio-gutter, 24px) 8px; }
+  .lcs h2 { margin: 0; font-size: 1.05rem; font-weight: 650; }
   .lcs p { margin: 0; }
   .lcs a { color: var(--foreground); text-underline-offset: 3px; }
   .lcs ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
@@ -89,4 +89,6 @@
   .lcs-field input { flex: 1; min-width: 0; min-height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--foreground); font-size: 14px; font-variant-numeric: tabular-nums; }
   .lcs-save { min-height: 40px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--foreground); color: var(--background); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
   .lcs-save:disabled { opacity: 0.5; cursor: default; }
+  .lcs a:focus-visible, .lcs-save:focus-visible, .lcs input:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
+  @media (max-width: 767px) { .lcs { padding-inline: 16px; } }
 </style>

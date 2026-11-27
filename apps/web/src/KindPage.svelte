@@ -4,13 +4,15 @@
   // danau and gunung under Bentang alam, rumpun under Bahasa), and filters for writing status and place. `semua`
   // lists every kind, which is where the front's Lihat semua links land. Filters live in the address (`?sub=`,
   // `?status=belum|ditulis|diperiksa`, `?di=<slug>`), so a filtered list can be shared and Back works.
+  // Bahasa has its own map-first index (BahasaIndex.svelte); /wiki/jenis/kamus is that index with the languages
+  // that have words, and its address becomes /wiki/jenis/bahasa?ada=kamus (docs/plan/bahasa-consolidation-2026-11-28.md).
   import { onMount } from 'svelte'
   import { ArrowUpRight, X } from '@lucide/svelte'
   import { KIND_NAME, inScope, loadIndex, shortCount, type EntryIndex, type IndexEntry } from './entri'
   import { placeScope } from './place-scope.svelte'
   import { loadViewerObjects, viewerListHref, ENTRY_KIND_RECORDS, viewerList, type ViewerObject } from './viewer-data.ts'
   import { OBSERVATORY_NAME, VIEWER_NAME } from './observatory-name.ts'
-  import atlas from './papua-atlas.json'
+  import BahasaIndex from './BahasaIndex.svelte'
   import './styles/observatorium.css'
 
   let { kind, search = '' }: { kind: string; search?: string } = $props()
@@ -29,7 +31,7 @@
   const di = $derived(q.get('di') ?? '')
   $effect(() => { void kind; void search; shown = 60 })
   const name = $derived(KIND_NAME[kind] ?? 'Entri')
-  $effect(() => { document.title = name + ' · ' + OBSERVATORY_NAME + ' · ETNOS' })
+  $effect(() => { if (kind !== 'bahasa' && kind !== 'kamus') document.title = name + ' · ' + OBSERVATORY_NAME + ' · ETNOS' })
 
   const ofKind = $derived((index?.entries ?? []).filter((e) => kind === 'semua' || e.kind === kind))
   const subs = $derived(kind === 'semua' ? [] : (index?.subs[kind] ?? []))
@@ -51,27 +53,27 @@
     return '/wiki/jenis/' + kind + (s ? '?' + s : '')
   }
   const STATUS: [string, string][] = [['', 'Semua'], ['ditulis', 'Sudah ada tulisan'], ['belum', 'Belum ada tulisan'], ['diperiksa', 'Sudah diperiksa']]
-  const meta = (e: IndexEntry) => [kind === 'semua' ? KIND_NAME[e.kind] : null, e.sub && e.sub !== KIND_NAME[e.kind] ? e.sub : null, e.article ? null : 'belum ada tulisan'].filter(Boolean).join(' · ')
+  // A people's row names the nearest place it is listed under (a regency or a province), as its entry does.
+  const titles = $derived(kind === 'suku' ? new Map((index?.entries ?? []).filter((e) => e.kind === 'tempat').map((e) => [e.slug, e.title])) : null)
+  const meta = (e: IndexEntry) => [kind === 'semua' ? KIND_NAME[e.kind] : null, e.sub && e.sub !== KIND_NAME[e.kind] ? e.sub : null, titles && e.within[0] ? titles.get(e.within[0]) ?? null : null, e.article ? null : 'belum ada tulisan'].filter(Boolean).join(' · ')
 
-  // Mini atlas data for the Peta Kata card folded inside /wiki/jenis/bahasa.
-  const atlasBox = (atlas.box as number[]).join(' ')
-  const atlasRegions = Object.entries(atlas.regions as Record<string, { d: string; x: number; y: number }>)
-  const atlasLangs = atlas.langs as [string, number, number, string][]
-  const activeLangSlugs = $derived(kind === 'bahasa' && sub ? new Set(list.map((e) => e.slug)) : null)
-  const langMapHref = (tampilan = '') => {
-    const p = new URLSearchParams()
-    if (tampilan) p.set('tampilan', tampilan)
-    if (di) p.set('wilayah', di)
-    const s = p.toString()
-    return '/wiki/peta-kata' + (s ? '?' + s : '')
-  }
+  const bahasa = $derived(kind === 'bahasa' || kind === 'kamus')
+  $effect(() => {
+    if (kind !== 'kamus') return
+    const p = new URLSearchParams(search)
+    p.set('ada', 'kamus')
+    history.replaceState(history.state, '', '/wiki/jenis/bahasa?' + p.toString())
+  })
 </script>
 
+{#if bahasa}
+  <BahasaIndex {index} {failed} {search} kamusFirst={kind === 'kamus'} />
+{:else}
 <div class="obs kp">
   <header class="obs-section obs-top kp-top">
     <p class="kp-crumb"><a href="/wiki">{OBSERVATORY_NAME}</a></p>
     <h1>{name}</h1>
-    {#if index}<p class="obs-lede">{kind === 'lembaga' ? shortCount(index.lembaga.length) + ' lembaga publik' : kind === 'kamus' ? shortCount(index.kamus.length) + ' kamus komunitas' : shortCount(ofKind.length) + ' entri'}</p>{/if}
+    {#if index}<p class="obs-lede">{kind === 'lembaga' ? shortCount(index.lembaga.length) + ' lembaga publik' : shortCount(ofKind.length) + ' entri'}</p>{/if}
   </header>
 
   {#if failed}<p class="obs-note kp-pad">Daftar ini belum dapat dimuat. Coba muat ulang halaman.</p>
@@ -81,11 +83,6 @@
         {#each index.lembaga as g (g.id)}<li><a class="obs-row" href={g.href}><span class="obs-row-main"><span class="obs-row-title">{g.title}</span><span class="obs-row-meta">Lembaga</span></span><ArrowUpRight size={16} aria-hidden="true" /></a></li>
         {:else}<li><p class="obs-note">Belum ada lembaga publik.</p></li>{/each}
       </ul></section>
-  {:else if kind === 'kamus'}
-    <section class="obs-section"><ul class="obs-rows">
-        {#each index.kamus as k (k.communityId)}<li><a class="obs-row" href={'/communities/' + k.communityId + '?tab=kamus'}><span class="obs-row-main"><span class="obs-row-title">Kamus {k.languageName}</span><span class="obs-row-meta">{k.title} · {k.entries ? shortCount(k.entries) + ' kata' : 'belum ada kata'}</span></span><ArrowUpRight size={16} aria-hidden="true" /></a></li>
-        {:else}<li><p class="obs-note">Belum ada kamus komunitas yang publik.</p></li>{/each}
-      </ul></section>
   {:else}
     {#if subs.length > 1}<nav class="kp-subs" aria-label={'Jenis ' + name.toLowerCase()}>
         <ul>
@@ -94,39 +91,6 @@
         </ul>
       </nav>{/if}
 
-    {#if kind === 'bahasa'}
-      <section class="kp-lang-map" aria-labelledby="kp-lang-map-title">
-        <a class="kp-lang-map-main" href={langMapHref()}>
-          <svg viewBox={atlasBox} aria-hidden="true">
-            {#each atlasRegions as [slug, r] (slug)}
-              <path class="kp-atlas-region" d={r.d} />
-            {/each}
-            {#each atlasLangs as [slug, x, y] (slug)}
-              {@const lit = !activeLangSlugs || activeLangSlugs.has(slug)}
-              <circle
-                cx={x}
-                cy={y}
-                r={activeLangSlugs && lit ? 5.5 : 3.2}
-                class="kp-atlas-dot"
-                class:lit={lit}
-                class:dim={activeLangSlugs && !lit}
-              />
-            {/each}
-          </svg>
-          <span class="kp-lang-map-text">
-            <strong id="kp-lang-map-title">Peta Kata</strong>
-            <small>100 kata dasar dalam 188 bahasa, di titik setiap bahasa</small>
-          </span>
-          <ArrowUpRight size={18} aria-hidden="true" />
-        </a>
-        <div class="kp-lenses-wrap">
-          <div class="kp-lenses" aria-label="Buka Peta Kata">
-            <a href={langMapHref()}>Peta kata</a>
-            <a href={langMapHref('makna')}>Ruang makna</a>
-          </div>
-        </div>
-      </section>
-    {/if}
 
     {#if records.length}<section class="obs-section kp-records" aria-labelledby="kp-rec-title">
         <div class="obs-head"><h2 id="kp-rec-title">Di {VIEWER_NAME}</h2><a class="obs-more" href={viewerListHref(records[0].id, 'jenis-' + kind) + '&semua=1'}>Lihat semua</a></div>
@@ -150,6 +114,7 @@
     </section>
   {/if}
 </div>
+{/if}
 
 <style>
   .kp-top { gap: 6px; padding-bottom: 14px; }
@@ -158,44 +123,11 @@
   .kp-crumb a { color: inherit; text-decoration: none; }
   .kp-crumb a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
   .kp-pad { margin: 0 var(--gutter); }
-  .kp-subs { padding: 4px 0 18px; }
-  .kp-subs ul { display: flex; gap: 6px; margin: 0; padding: 2px var(--gutter); overflow-x: auto; scrollbar-width: none; list-style: none; }
-  .kp-subs li { flex: none; }
-  .kp-subs a { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 84px; padding: 4px 0; color: var(--foreground); text-decoration: none; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.25; }
-  .kp-circle { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 999px; background: color-mix(in oklab, var(--foreground) 6%, var(--background)); font-size: 15px; font-weight: 750; font-variant-numeric: tabular-nums; }
-  .kp-subs a:hover .kp-circle { background: color-mix(in oklab, var(--foreground) 10%, var(--background)); }
-  .kp-subs a[aria-current='page'] .kp-circle { background: var(--foreground); color: var(--background); }
-  .kp-subs a:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; border-radius: 12px; }
-  .kp-subs a > span:last-child { overflow-wrap: anywhere; }
 
-  /* Peta Kata card folded inside /wiki/jenis/bahasa (matches Peta pengetahuan card on /wiki). */
-  .kp-lang-map { display: grid; gap: 10px; margin: 0 var(--gutter) 20px; padding: 12px; border: 1px solid var(--border); border-radius: 18px; min-width: 0; }
-  .kp-lang-map-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 8px; align-items: center; color: inherit; text-decoration: none; }
-  .kp-lang-map-main svg { grid-column: 1 / -1; width: 100%; height: auto; aspect-ratio: 10 / 4.2; border-radius: 12px; background: color-mix(in oklab, var(--foreground) 3%, var(--background)); }
-  .kp-atlas-region { fill: color-mix(in oklab, var(--foreground) 6%, var(--background)); stroke: var(--border); stroke-width: 2; }
-  .kp-atlas-dot { fill: #14b8a6; opacity: 0.72; }
-  .kp-atlas-dot.lit { opacity: 0.92; }
-  .kp-atlas-dot.dim { fill: var(--muted-foreground); opacity: 0.16; }
-  .kp-lang-map-text { display: grid; gap: 2px; padding-left: 4px; }
-  .kp-lang-map-text strong { font-size: 16.5px; font-weight: 750; letter-spacing: -0.012em; }
-  .kp-lang-map-text small { font-size: 13px; color: var(--muted-foreground); }
-  .kp-lang-map-main > :global(svg:last-child) { margin-right: 4px; color: var(--muted-foreground); }
-  .kp-lang-map-main:hover strong { text-decoration: underline; text-underline-offset: 3px; }
-  .kp-lenses-wrap { position: relative; min-width: 0; overflow: hidden; }
-  .kp-lenses-wrap::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 32px; background: linear-gradient(to right, transparent, var(--background)); pointer-events: none; }
-  .kp-lenses { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 32px 2px 2px; }
-  .kp-lenses a { flex: none; display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); font-size: 13px; font-weight: 550; text-decoration: none; white-space: nowrap; }
-  .kp-lenses a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
 
-  .kp-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .kp-filters .obs-chips a[aria-current='true'] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
-  .kp-place { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 14px; border-radius: 999px; background: var(--foreground); color: var(--background); font-size: 14px; font-weight: 600; text-decoration: none; }
-  .kp-place.off { background: transparent; color: var(--foreground); border: 1px dashed var(--border); }
   .kp-thumb { flex: none; width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: var(--secondary); }
   .kp-thumbs { display: flex; gap: 10px; margin: 0 calc(var(--gutter) * -1); padding: 2px var(--gutter); overflow-x: auto; scrollbar-width: none; list-style: none; }
   .kp-thumbs a { display: grid; gap: 6px; width: 104px; color: inherit; text-decoration: none; font-size: 13.5px; font-weight: 600; line-height: 1.25; }
   .kp-thumbs img { width: 104px; height: 104px; border-radius: 14px; object-fit: cover; background: var(--secondary); }
   .kp-thumbs a:hover span { text-decoration: underline; text-underline-offset: 3px; }
-  .kp-more { justify-self: start; min-height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
-  .kp-more:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
 </style>

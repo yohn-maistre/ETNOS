@@ -2,13 +2,16 @@
 // older /contexts/<slug> addresses, with any ?tab=, open the same entry with the matching tab. Kept free of Svelte so
 // the web tests can run it directly.
 
-export type EntryTab = 'tentang' | 'percakapan' | 'riset' | 'riwayat'
+export type EntryTab = 'tentang' | 'kamus' | 'percakapan' | 'riset' | 'riwayat'
 export const ENTRY_TABS: [EntryTab, string][] = [
   ['tentang', 'Tentang'],
   ['percakapan', 'Percakapan'],
   ['riset', 'Riset dan data'],
   ['riwayat', 'Riwayat'],
 ]
+/** A language entry is the home of that language's Kamus, so it has a fifth tab (owner, 27 November 2026). */
+export const LANGUAGE_TABS: [EntryTab, string][] = [ENTRY_TABS[0], ['kamus', 'Kamus'], ...ENTRY_TABS.slice(1)]
+export const tabsFor = (kind: string | undefined) => (kind === 'bahasa' ? LANGUAGE_TABS : ENTRY_TABS)
 /** Second segments under /wiki that are routes of their own, never entries. */
 export const RESERVED = new Set(['notes', 'data', 'peta', 'peta-kata', 'lihat', 'jenis'])
 
@@ -23,6 +26,7 @@ const OLD_TAB: Record<string, EntryTab | ''> = {
   kabar: 'riwayat',
   lapisan: 'riwayat',
   riwayat: 'riwayat',
+  kamus: 'kamus',
   // Communities moved to the Letak rail, which shows beside every tab.
   komunitas: '',
 }

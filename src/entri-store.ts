@@ -86,7 +86,7 @@ export function storeSource(o: { store: EtnosCore; groups: Groups; wiki: Wiki; m
         if (!set.language) continue
         const entries = s.get<{ n: number }>('SELECT count(*) n FROM kamus_entries WHERE community_id=?', c.id)!.n
         const words = entries ? o.kamus.list(undefined, c.id, { state: 'checked', limit: 40 }).entries.map((e) => ({ lemma: e.lemma, gloss: e.gloss, updated: e.updated })) : []
-        out.push({ communityId: c.id, title: c.title, language: set.language, languageName: set.languageName, entries, words })
+        out.push({ communityId: c.id, title: c.title, language: set.language, languageName: set.languageName, languageSlug: set.languageSlug, entries, words })
       }
       return out
     },

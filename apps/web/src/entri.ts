@@ -48,8 +48,10 @@ export type EntryIndex = {
   subs: Record<string, { key: string; label: string; count: number }[]>
   lembaga: { id: string; title: string; href: string }[]
   datasets: number
-  kamus: { communityId: string; title: string; language: string; languageName: string; entries: number }[]
-  words: { lemma: string; gloss: string; updated: number; languageName: string; communityId: string }[]
+  kamus: { communityId: string; title: string; language: string; languageName: string; languageSlug?: string; entries: number }[]
+  words: { lemma: string; gloss: string; updated: number; languageName: string; languageSlug?: string; communityId: string }[]
+  /** Languages with words: a published wordlist or a public community Kamus. The Kamus tile counts these. */
+  kamusLanguages?: number
 }
 
 /** Plural names of the kinds as the Ensiklopedia lists them. */

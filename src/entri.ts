@@ -20,6 +20,7 @@
  */
 import viewerIndexJson from './catalogues/tanah-papua-viewer-index.json' with { type: 'json' }
 import { SUKU, SUKU_BY_LANGUAGE, SUKU_SOURCE, sukuWhere } from './suku.ts'
+import { WORDLIST_CODES } from './peta-kata.ts'
 import { indonesianOnly } from './aksara-voice.ts'
 
 export type EntryKind = 'tempat' | 'bentang-alam' | 'bahasa' | 'suku' | 'makhluk' | 'benda' | 'lembaga' | 'topik' | 'peristiwa' | 'gagasan' | 'praktik' | 'orang' | 'musim' | 'cerita' | 'halaman'
@@ -66,7 +67,7 @@ export type PageFull = { id: string; title: string; community_id: string; revisi
 export type CommonsEntity = { slug: string; class: string; title: string; description: string; aliases: string[]; context: string | null; place?: string | null; sub?: { key: string; label: string } | null }
 export type Commons = { entities: CommonsEntity[]; statements: { subject: string; predicate: string; object: string }[]; comentions: { a: string; b: string; weight: number }[] }
 export type DatasetRef = { id: string; title: string; kind: string; publisher: string; licence: string }
-export type KamusRef = { communityId: string; title: string; language: string; languageName: string; entries: number; words: { lemma: string; gloss: string; updated: number }[] }
+export type KamusRef = { communityId: string; title: string; language: string; languageName: string; languageSlug?: string; entries: number; words: { lemma: string; gloss: string; updated: number }[] }
 export type ViewerRecord = { id: string; kind: string; title: string; subtitle: string | null; summary: string; thumb: string | null; entry: { slug: string; class?: string; title?: string; scientificName?: string; landform?: boolean } | null; taxonomy: { rank: string; name: string }[] | null; facts: { label: string; value: string }[] }
 
 /** Every read the adapter needs, all public. The server answers from its tables; a preview can answer over HTTP. */
@@ -277,9 +278,12 @@ export async function entryIndex(source: EntrySource) {
     subs,
     lembaga,
     datasets: datasets.length,
-    kamus: kamus.map((k) => ({ communityId: k.communityId, title: k.title, language: k.language, languageName: k.languageName, entries: k.entries })),
+    // A community Kamus without words is not listed as a dictionary; the language page is the home of its words.
+    kamus: kamus.filter((k) => k.entries > 0).map((k) => ({ communityId: k.communityId, title: k.title, language: k.language, languageName: k.languageName, languageSlug: k.languageSlug ?? '', entries: k.entries })),
+    /** Languages that have words here: a published wordlist or a public community Kamus with entries. */
+    kamusLanguages: new Set([...WORDLIST_CODES, ...kamus.filter((k) => k.entries > 0).map((k) => k.language)]).size,
     /** Checked words of public Kamus, newest first: the front shows them only when there are any this week. */
-    words: kamus.flatMap((k) => k.words.filter((w) => w.updated >= week).map((w) => ({ ...w, languageName: k.languageName, communityId: k.communityId }))).sort((a, b) => b.updated - a.updated).slice(0, 12),
+    words: kamus.flatMap((k) => k.words.filter((w) => w.updated >= week).map((w) => ({ ...w, languageName: k.languageName, languageSlug: k.languageSlug ?? '', communityId: k.communityId }))).sort((a, b) => b.updated - a.updated).slice(0, 12),
   }
 }
 
