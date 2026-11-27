@@ -95,3 +95,4 @@
 2026-11-25e Add cross-community topic classification and semantic search (bge-m3 + IVF k-means++ + deterministic fallback), related public conversations on threads, and full-canvas Peta Semantik PCA scaling
 2026-11-26a Move sidebar submenus under Ensiklopedia, fold Peta Bahasa & Semantik card into /wiki/jenis/bahasa, fix Knowledge Map lens transitions (skala->tingkat & hubungan->peta), and elevate Peta Bahasa onto rotatable 3D Canvas LanguageStage
 2026-11-26b
+2026-11-27a
