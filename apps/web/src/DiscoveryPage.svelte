@@ -1,16 +1,16 @@
 <script lang="ts">
-  // Jelajah, in the register of the Threads and X explore pages: today's news first, then what people are
-  // talking about, topics, communities and organisations, places and languages. Each section has its own
-  // component (washed news cards and rows with thumbnails, a talked-about list, topic pills, community rows with
-  // avatars, a place scroller, language chips) inside one rhythm of headings, rows and hover fills.
-  // Every section follows the place chosen in the switcher.
+  // Jelajah, in the register of the Threads and X explore pages, and the one door to the Ensiklopedia (owner,
+  // 28 November 2026). The top moves fast: today's news, what people are talking about, communities and
+  // organisations. Below them the Ensiklopedia is one section (JelajahEnsiklopedia.svelte): places, languages,
+  // the other kinds, topics and the knowledge map, with the full index at /wiki. Each section has its own
+  // component inside one rhythm of headings, rows and hover fills, and follows the place chosen in the switcher.
   import { onMount } from 'svelte'
-  import { ArrowUpRight } from '@lucide/svelte'
   import ExploreTile from './ExploreTile.svelte'
   import ExploreRow from './ExploreRow.svelte'
   import ExploreTalked from './ExploreTalked.svelte'
-  import RegionArt, { type Atlas } from './RegionArt.svelte'
+  import type { Atlas } from './RegionArt.svelte'
   import LandscapePrint from './LandscapePrint.svelte'
+  import JelajahEnsiklopedia from './JelajahEnsiklopedia.svelte'
   import { request, type Auth, type Community } from './api'
   import { beginRequest } from './network.svelte'
   import { loadMap, type MapData } from './observatory'
@@ -81,38 +81,9 @@
   const first = <T extends { slug: string }>(list: T[]) => (focus ? [...list.filter((x) => x.slug === focus), ...list.filter((x) => x.slug !== focus)] : list)
   const regionLayers = $derived(first(buildRegionLayers(contexts, langs, map)))
 
-  const languageTotal = $derived(contexts.filter((c) => c.kind === 'language').length)
-  const languageGroups = $derived(
-    regionLayers
-      .map((s) => ({
-        slug: s.slug,
-        title: s.title,
-        languages: langs
-          .filter((l) => l[3] === s.slug)
-          .map((l) => bySlug.get(l[0]))
-          .filter((c): c is Ctx => !!c)
-          .sort((a, b) => a.title.localeCompare(b.title, 'id'))
-          .map((c) => ({ slug: c.slug, title: c.title })),
-      }))
-      .filter((g) => g.languages.length),
-  )
-  let openLanguages = $state('')
-  const shownLanguages = $derived(languageGroups.find((g) => g.slug === (openLanguages || focus)) ?? null)
-  const languageGroup = $derived(shownLanguages ?? languageGroups[0] ?? null)
-  let allLanguages = $state(false)
-
-  const TOPICS_FIRST = 12
-  // A topic without branches shows the words of its own description, so the tile does not repeat its name.
-  const describe = (slug: string) => {
-    const d = (bySlug.get(slug)?.description ?? '').replace(/\.$/, '')
-    const parts = d.split(/,\s*|\s+dan\s+/).map((x) => x.trim()).filter(Boolean)
-    return parts.length ? parts.slice(0, 6) : [bySlug.get(slug)?.title ?? '']
-  }
   const topics = $derived(topicTiles(contexts))
-  let allTopics = $state(false)
 
   const ROOMS_SHOWN = 6
-  const LANGS_FIRST = 18
   // A community without a picture gets its initials on a tone of its own, stable for its id.
   const TONES = ['#1f4e8c', '#3d6a3f', '#9a6b1f', '#5b4b8a', '#1e6a72', '#b7775c']
   const toneOf = (id: string) => TONES[[...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % TONES.length]
@@ -140,10 +111,8 @@
   const anchors = [
     ['kabar', 'Kabar'],
     ['dibicarakan', 'Dibicarakan'],
-    ['topik', 'Topik'],
     ['komunitas', 'Komunitas'],
-    ['tempat', 'Tempat'],
-    ['bahasa', 'Bahasa'],
+    ['ensiklopedia', 'Ensiklopedia'],
   ]
   // The section bar scrolls inside the page: no navigation, no reload. The address keeps the section in its
   // hash through replaceState, so a shared link still lands in the right place and Back leaves Jelajah in one step.
@@ -177,7 +146,6 @@
     }
   })
   const fallbackPrint = siteBranding.welcomeArtworks[0] ?? null
-  const TEMPAT_BLURB = 'Tujuh wilayah adat dan kabupaten serta kota di dalamnya.'
 </script>
 
 <div class="jelajah">
@@ -223,17 +191,6 @@
     <ExploreTalked recorded={contexts} {within} {communities} />
   </section>
 
-  <section id="topik" class="jelajah-section" aria-labelledby="topik-title">
-    <div class="jelajah-head"><h2 id="topik-title">Topik</h2></div>
-    {#if topics.length}
-      <p class="jelajah-lede">Label pada posting dan halaman wiki.</p>
-      <ul class="pill-set">
-        {#each allTopics ? topics : topics.slice(0, TOPICS_FIRST) as t (t.slug)}<li><a class="pill" href={'/wiki/' + t.slug} title={(t.children.length ? t.children.slice(0, 6).map((c) => c.title) : describe(t.slug)).join(', ')}>{t.title}</a></li>{/each}
-        {#if topics.length > TOPICS_FIRST}<li><button type="button" class="pill ghost" aria-expanded={allTopics} onclick={() => (allTopics = !allTopics)}>{allTopics ? 'Lebih sedikit' : 'Semua ' + topics.length + ' topik'}</button></li>{/if}
-      </ul>
-    {:else if !failed}<p class="jelajah-note" role="status">Memuat…</p>{/if}
-  </section>
-
   <section id="komunitas" class="jelajah-section" aria-labelledby="komunitas-title">
     <div class="jelajah-head">
       <h2 id="komunitas-title">Komunitas dan lembaga</h2>
@@ -261,41 +218,7 @@
     </ul>
   </section>
 
-  <section id="tempat" class="jelajah-section" aria-labelledby="tempat-title">
-    <div class="jelajah-head">
-      <h2 id="tempat-title">Tempat</h2>
-      <a href="/wiki#wp-places">Peta wilayah</a>
-    </div>
-    <p class="jelajah-lede">{TEMPAT_BLURB}</p>
-    {#if regionLayers.length}<ul class="place-scroll" aria-label="Wilayah adat">
-        {#each regionLayers as s (s.slug)}<li>
-            <a href={s.href}>
-              <span class="place-map" aria-hidden="true">{#if atlas}<RegionArt {atlas} lit={[s.slug]} terrain />{/if}</span>
-              <strong>{s.title}</strong>
-              <span class="place-meta">{s.places.length} kabupaten dan kota · {s.languages} bahasa</span>
-            </a>
-          </li>{/each}
-      </ul>
-      <p class="jelajah-foot">Wilayah adat di sini dipakai sebagai acuan dan tidak menunjukkan batas tanah adat.</p>
-    {:else if !failed}<p class="jelajah-note" role="status">Memuat…</p>{/if}
-  </section>
-
-  <section id="bahasa" class="jelajah-section" aria-labelledby="bahasa-title">
-    <div class="jelajah-head"><h2 id="bahasa-title">Bahasa</h2></div>
-    {#if languageGroup}
-      <p class="jelajah-lede">{languageTotal} bahasa, dikelompokkan menurut wilayah titik acuannya di Glottolog.</p>
-      <div class="segmented" role="group" aria-label="Pilih wilayah">
-        {#each languageGroups as g (g.slug)}<button type="button" aria-pressed={languageGroup.slug === g.slug} onclick={() => { openLanguages = g.slug; allLanguages = false }}>{g.title}<span>{g.languages.length}</span></button>{/each}
-      </div>
-      <ul class="lang-list" aria-label={'Bahasa dengan titik acuan di ' + languageGroup.title}>
-        {#each allLanguages ? languageGroup.languages : languageGroup.languages.slice(0, LANGS_FIRST) as l (l.slug)}<li><a href={'/wiki/' + l.slug}>{l.title}</a></li>{/each}
-      </ul>
-      {#if languageGroup.languages.length > LANGS_FIRST}<button type="button" class="pill ghost more" aria-expanded={allLanguages} onclick={() => (allLanguages = !allLanguages)}>
-          {allLanguages ? 'Lebih sedikit' : 'Semua ' + languageGroup.languages.length + ' bahasa di ' + languageGroup.title}
-        </button>{/if}
-      <p class="jelajah-foot">Nama dan titik acuan dari <a href="https://glottolog.org" rel="noreferrer" target="_blank">Glottolog</a> (CC BY 4.0). Titik acuan tidak menunjukkan batas wilayah bahasa.</p>
-    {:else if !failed}<p class="jelajah-note" role="status">Memuat…</p>{/if}
-  </section>
+  <JelajahEnsiklopedia {regionLayers} {atlas} {topics} {failed} />
 </div>
 
 <style>
@@ -319,17 +242,17 @@
   .jelajah-tabs a:focus-visible { outline: 2px solid var(--ring, var(--foreground)); outline-offset: -2px; }
 
   /* One rhythm: a hairline between sections, a heavy heading, the section's own component. */
-  .jelajah-section { padding: 28px var(--gutter) 24px; border-bottom: 1px solid var(--border); scroll-margin-top: 108px; }
-  .jelajah-section:last-child { border-bottom: 0; }
-  .jelajah-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-  .jelajah-head h2 { margin: 0; font-size: 22px; font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; text-wrap: balance; }
-  .jelajah-head a { flex: none; display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; margin-right: -12px; border-radius: 999px; font-size: 14.5px; font-weight: 600; color: var(--brand, var(--foreground)); text-decoration: none; }
-  .jelajah-head a:hover { background: var(--row-hover); }
-  .jelajah-lede { margin: -6px 0 16px; font-size: 15px; line-height: 1.45; color: var(--muted-foreground); max-width: 60ch; }
-  .jelajah-note { margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted-foreground); }
-  .jelajah-note.pad { padding: 16px var(--gutter) 0; }
-  .jelajah-note a, .jelajah-foot a { color: inherit; text-underline-offset: 3px; }
-  .jelajah-foot { margin: 16px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); max-width: 62ch; }
+  .jelajah :global(.jelajah-section) { padding: 28px var(--gutter) 24px; border-bottom: 1px solid var(--border); scroll-margin-top: 108px; }
+  .jelajah :global(.jelajah-section:last-child) { border-bottom: 0; }
+  .jelajah :global(.jelajah-head) { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .jelajah :global(.jelajah-head h2) { margin: 0; font-size: 22px; font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; text-wrap: balance; }
+  .jelajah :global(.jelajah-head a) { flex: none; display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; margin-right: -12px; border-radius: 999px; font-size: 14.5px; font-weight: 600; color: var(--brand, var(--foreground)); text-decoration: none; }
+  .jelajah :global(.jelajah-head a:hover) { background: var(--row-hover); }
+  .jelajah :global(.jelajah-lede) { margin: -6px 0 16px; font-size: 15px; line-height: 1.45; color: var(--muted-foreground); max-width: 60ch; }
+  .jelajah :global(.jelajah-note) { margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted-foreground); }
+  .jelajah :global(.jelajah-note.pad) { padding: 16px var(--gutter) 0; }
+  .jelajah :global(.jelajah-note a), .jelajah :global(.jelajah-foot a) { color: inherit; text-underline-offset: 3px; }
+  .jelajah :global(.jelajah-foot) { margin: 16px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); max-width: 62ch; }
   :global(.open-list) { list-style: none; margin: 6px 0 0; padding: 0; }
 
   /* Kabar: a large washed lead, two smaller ones beside it, then rows with thumbnails. */
@@ -343,67 +266,45 @@
   .news-skeleton span:first-child { height: 300px; }
   @keyframes pulse { 50% { opacity: 0.55; } }
 
-  /* Pills: topics, quiet links and "more" buttons. */
-  .pill-set { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; }
-  .pill-set.quiet { margin-top: 16px; }
-  .pill { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid transparent; border-radius: 999px; background: var(--secondary); color: var(--foreground); font: inherit; font-size: 15px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-  .pill:hover { background: color-mix(in oklab, var(--foreground) 10%, var(--secondary)); }
-  .pill.ghost { background: transparent; border-color: var(--border); }
-  .pill.ghost:hover { background: var(--row-hover); border-color: color-mix(in oklab, var(--foreground) 22%, var(--border)); }
-  .pill.small { min-height: 34px; padding: 0 16px; font-size: 14px; font-weight: 650; background: transparent; border-color: color-mix(in oklab, var(--foreground) 18%, var(--border)); }
-  .pill.more { margin-top: 14px; }
+  .jelajah :global(.pill-set) { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; }
+  .jelajah :global(.pill-set.quiet) { margin-top: 16px; }
+  .jelajah :global(.pill) { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid transparent; border-radius: 999px; background: var(--secondary); color: var(--foreground); font: inherit; font-size: 15px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+  .jelajah :global(.pill:hover) { background: color-mix(in oklab, var(--foreground) 10%, var(--secondary)); }
+  .jelajah :global(.pill.ghost) { background: transparent; border-color: var(--border); }
+  .jelajah :global(.pill.ghost:hover) { background: var(--row-hover); border-color: color-mix(in oklab, var(--foreground) 22%, var(--border)); }
+  .jelajah :global(.pill.small) { min-height: 34px; padding: 0 16px; font-size: 14px; font-weight: 650; background: transparent; border-color: color-mix(in oklab, var(--foreground) 18%, var(--border)); }
+  .jelajah :global(.pill.more) { margin-top: 14px; }
 
   /* Komunitas dan lembaga: rows like follow suggestions, an avatar, name and a Lihat pill. */
   .people-list { list-style: none; margin: 0; padding: 0; }
   .people-list a { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: start; gap: 12px; margin: 0 calc(var(--gutter) * -1); padding: 12px var(--gutter); color: inherit; text-decoration: none; transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
   .people-list a:hover { background: var(--row-hover); }
-  .people-list a:hover .pill.small { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+  .people-list a:hover :global(.pill.small) { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
   .avatar { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: color-mix(in oklab, var(--tone) 18%, var(--background)); color: color-mix(in oklab, var(--tone) 80%, var(--foreground)); font-size: 15px; font-weight: 750; letter-spacing: -0.02em; }
   :global(.dark) .avatar { background: color-mix(in oklab, var(--tone) 32%, var(--background)); color: color-mix(in oklab, var(--tone) 30%, white); }
   .who { display: grid; gap: 1px; min-width: 0; }
   .who strong { font-size: 16px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
   .who .meta { font-size: 14px; color: var(--muted-foreground); }
   .who .bio { margin-top: 4px; font-size: 15px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .people-list .pill.small { align-self: center; }
+  .people-list :global(.pill.small) { align-self: center; }
 
-  /* Tempat: regions to swipe through, each with its own map tile. */
-  .place-scroll { list-style: none; display: flex; gap: 12px; margin: 0 calc(var(--gutter) * -1); padding: 2px var(--gutter) 6px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter); scrollbar-width: none; overscroll-behavior-x: contain; mask-image: linear-gradient(to right, black calc(100% - 40px), transparent); }
-  .place-scroll::-webkit-scrollbar { display: none; }
-  .place-scroll li { flex: none; width: 168px; scroll-snap-align: start; --ink: var(--tone-place); }
-  .place-scroll a { display: grid; gap: 2px; color: inherit; text-decoration: none; border-radius: 16px; }
-  .place-map { position: relative; display: block; aspect-ratio: 1; border-radius: 16px; overflow: hidden; background: color-mix(in oklab, var(--tone-place) 9%, var(--secondary)); margin-bottom: 8px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 7%, transparent); transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-  .place-scroll a:hover .place-map { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 22%, transparent); }
-  .place-scroll strong { font-size: 16px; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
-  .place-meta { font-size: 13.5px; line-height: 1.4; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
 
-  /* Bahasa: a segmented row of regions, then the names in columns. */
-  .segmented { display: flex; gap: 6px; margin: 0 calc(var(--gutter) * -1) 14px; padding: 0 var(--gutter); overflow-x: auto; scrollbar-width: none; }
-  .segmented::-webkit-scrollbar { display: none; }
-  .segmented button { flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
-  .segmented button span { font-size: 12.5px; font-weight: 500; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
-  .segmented button:hover { background: var(--row-hover); }
-  .segmented button[aria-pressed='true'] { background: var(--foreground); border-color: var(--foreground); color: var(--background); }
-  .segmented button[aria-pressed='true'] span { color: color-mix(in oklab, var(--background) 70%, transparent); }
-  .lang-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
-  .lang-list a { display: block; padding: 9px 0; font-size: 15.5px; font-weight: 550; color: inherit; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-bottom: 1px solid color-mix(in oklab, var(--border) 70%, transparent); }
-  .lang-list a:hover { color: var(--brand, var(--foreground)); }
 
-  .jelajah a:focus-visible, .jelajah button:focus-visible { outline: 2px solid var(--ring, var(--foreground)); outline-offset: 2px; }
+  .jelajah a:focus-visible, .jelajah :global(button:focus-visible) { outline: 2px solid var(--ring, var(--foreground)); outline-offset: 2px; }
 
   @media (min-width: 640px) {
     .jelajah { --gutter: 20px; }
     .news-top:not(.solo) { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
     .news-top > :global(.cover-wash) { --wash-min: 380px; --wash-title-max: 38px; }
     .news-side { grid-template-columns: minmax(0, 1fr); }
-    .lang-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   @media (min-width: 768px) {
     .jelajah-tabs { top: 72px; }
-    .jelajah-section { scroll-margin-top: 128px; padding-top: 32px; }
-    .jelajah-head h2 { font-size: 26px; }
+    .jelajah :global(.jelajah-section) { scroll-margin-top: 128px; padding-top: 32px; }
+    .jelajah :global(.jelajah-head h2) { font-size: 26px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .jelajah-tabs a, .pill, .people-list a, .place-map { transition: none; }
+    .jelajah-tabs a, .jelajah :global(.pill), .people-list a { transition: none; }
     .news-skeleton span { animation: none; }
   }
 </style>

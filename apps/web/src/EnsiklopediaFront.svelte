@@ -1,43 +1,26 @@
 <script lang="ts">
-  // Ensiklopedia home at /wiki: search + 7 Wilayah Adat scope strip, editorial Embla visual carousel
-  // (3D models, species, photos, Peta Kata), live completion progress bar, spacious 4x2 category bento grid,
-  // Peta Pengetahuan + Peta Kata + Katalog Data discovery cards, and tabbed bottom explorer.
+  // The full Ensiklopedia index at /wiki, a page under Jelajah (owner, 28 November 2026): the crumb back to Jelajah,
+  // search and the wilayah adat strip, the Embla carousel of 3D objects, species and Peta Kata, the progress line,
+  // the kinds as cards with real glimpses (EnsiklopediaKinds.svelte), the Peta pengetahuan card, the tabbed rows,
+  // and Katalog Data as a quiet link at the foot.
   import { onMount } from 'svelte'
-  import {
-    Amphora,
-    ArrowUpRight,
-    BookA,
-    CalendarDays,
-    ChevronDown,
-    ChevronRight,
-    Clock,
-    Compass,
-    Database,
-    FileText,
-    Landmark,
-    Languages,
-    MapPin,
-    MessageCircleQuestionMark,
-    Mountain,
-    Network,
-    PawPrint,
-    Plus,
-    Search,
-    Tags,
-    UsersRound,
-  } from '@lucide/svelte'
+  import { ArrowUpRight, ChevronRight, Clock, Database, FileText, MessageCircleQuestionMark, Plus, Search } from '@lucide/svelte'
   import type { Auth, Community, Membership } from './api'
   import { request } from './api'
   import { KIND_NAME, inScope, loadIndex, shortCount, type EntryIndex, type IndexEntry } from './entri'
   import { placeScope, setPlaceScope } from './place-scope.svelte'
-  import { appearance } from './appearance.svelte'
-  import { BANDS } from './world-scale.ts'
-  import { LENSES, LENS_LABEL } from './stage-layouts.ts'
   import { KIND_LABEL, SHOWCASE, loadViewerObjects, viewerHref, viewerListHref, type ViewerObject } from './viewer-data.ts'
   import { MAP_NAME, OBSERVATORY_NAME, VIEWER_NAME } from './observatory-name.ts'
   import { Progress } from '$lib/components/ui/progress'
   import * as Tabs from '$lib/components/ui/tabs'
   import { ShowcaseCarousel, type CarouselSlide } from '$lib/components/ui/carousel'
+  import JelajahCrumbs from './JelajahCrumbs.svelte'
+  import EnsiklopediaKinds from './EnsiklopediaKinds.svelte'
+  import KnowledgeMapCard from './KnowledgeMapCard.svelte'
+  import { loadGlimpse } from './glimpse-data.ts'
+  import type { Glimpse } from './ensiklopedia-glimpse.ts'
+  import { loadAtlas } from './explore-data'
+  import type { Atlas } from './RegionArt.svelte'
   import './styles/observatorium.css'
 
   let { auth, memberships = [], communities = [] }: { auth: Auth; memberships?: Membership[]; communities?: Community[] } = $props()
@@ -61,8 +44,9 @@
     objects = $state<ViewerObject[]>([]),
     waiting = $state<{ id: string; title: string; n: number }[] | null>(null),
     query = $state(''),
-    more = $state(false),
-    feedTab = $state<'gaps' | 'checked' | 'words' | 'near'>('gaps')
+    feedTab = $state<'gaps' | 'checked' | 'words' | 'near'>('gaps'),
+    glimpse = $state<Glimpse | null>(null),
+    atlas = $state<Atlas | null>(null)
 
   onMount(() => {
     document.title = OBSERVATORY_NAME + ' · ETNOS'
@@ -70,6 +54,8 @@
     loadIndex().then((i) => (index = i)).catch(() => (failed = true))
     fetch('/observatory/knowledge/graph.json', { signal: abort.signal }).then((r) => (r.ok ? r.json() : null)).then((g) => (graph = g)).catch(() => {})
     void loadViewerObjects().then((o) => (objects = o))
+    void loadGlimpse().then((g) => (glimpse = g))
+    void loadAtlas().then((a) => (atlas = a))
     return () => abort.abort()
   })
 
@@ -91,26 +77,6 @@
   const bySlug = $derived(new Map((index?.entries ?? []).map((e) => [e.slug, e])))
   const questions = $derived((graph?.questions ?? []).filter((q) => { const a = bySlug.get(q.a), b = bySlug.get(q.b); return !scope || (a && inScope(a, scope)) || (b && inScope(b, scope)) }))
   const waitingTotal = $derived((waiting ?? []).reduce((n, w) => n + w.n, 0))
-
-  const dark = $derived(appearance.theme === 'dark')
-  const band = (key: string) => { const b = BANDS.find((x) => x.key === key); return b ? (dark ? b.dark : b.light) : 'var(--muted-foreground)' }
-  // The Kamus tile counts languages with words; each language's Kamus lives on its page (?tab=kamus).
-  const count = (k: string) => (k === 'kamus' ? index?.kamusLanguages ?? 0 : index?.counts[k] ?? 0)
-  const TILES = [
-    { kind: 'tempat', icon: MapPin, band: 'masyarakat-aturan' },
-    { kind: 'bahasa', icon: Languages, band: 'bahasa-ritus' },
-    { kind: 'suku', icon: UsersRound, band: 'masyarakat-aturan' },
-    { kind: 'makhluk', icon: PawPrint, band: 'makhluk-hidup' },
-    { kind: 'bentang-alam', icon: Mountain, band: 'batuan-bumi' },
-    { kind: 'benda', icon: Amphora, band: 'buatan-pengetahuan' },
-    { kind: 'lembaga', icon: Landmark, band: 'masyarakat-aturan' },
-    { kind: 'kamus', icon: BookA, band: 'bahasa-ritus' },
-  ]
-  const others = $derived([
-    { href: '/wiki/jenis/topik', label: KIND_NAME.topik, icon: Tags, n: count('topik') },
-    ...(count('peristiwa') ? [{ href: '/wiki/jenis/peristiwa', label: KIND_NAME.peristiwa, icon: CalendarDays, n: count('peristiwa') }] : []),
-    ...(count('halaman') ? [{ href: '/wiki/jenis/halaman', label: KIND_NAME.halaman, icon: FileText, n: count('halaman') }] : []),
-  ])
 
   const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const results = $derived.by(() => {
@@ -155,10 +121,6 @@
   const when = (ms: number) => new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
   const sub = (e: IndexEntry) => e.sub ?? KIND_NAME[e.kind] ?? ''
 
-  const px = (v: number) => 12 + ((v + 1) / 2) * 376, py = (v: number) => 10 + ((v + 1) / 2) * 100
-  const pts = $derived((graph?.nodes ?? []).map((n) => ({ x: px(n.x), y: py(n.y), c: band(n.world?.level?.band ?? '') })))
-  const at = $derived(new Map((graph?.nodes ?? []).map((n) => [n.id, n])))
-
   $effect(() => {
     if (feedTab === 'near' && !near.length) feedTab = 'gaps'
   })
@@ -166,6 +128,7 @@
 
 <div class="obs ef">
   <header class="obs-section obs-top ef-top">
+    <JelajahCrumbs home />
     <div class="ef-header-row">
       <h1>{OBSERVATORY_NAME}</h1>
       <div class="ef-quick-actions">
@@ -272,86 +235,13 @@
       {/if}
     </section>
 
-    <nav class="ef-bento" aria-label="Kategori Ensiklopedia">
-      <ul class="ef-bento-grid">
-        {#each TILES as t (t.kind)}
-          {@const n = count(t.kind)}
-          <li>
-            <a class="ef-bento-tile" href={'/wiki/jenis/' + t.kind} style={`--tone:${band(t.band)}`}>
-              <span class="ef-bento-icon"><t.icon size={20} aria-hidden="true" /></span>
-              <span class="ef-bento-text">
-                <strong>{KIND_NAME[t.kind]}</strong>
-                <small>{n ? shortCount(n) + (t.kind === 'kamus' ? ' bahasa' : ' entri') : 'Buka'}</small>
-              </span>
-            </a>
-          </li>
-        {/each}
-      </ul>
-      {#if others.length}
-        <div class="ef-more-bar">
-          <button type="button" class="ef-more-toggle" aria-expanded={more} aria-controls="ef-more" onclick={() => (more = !more)}>
-            <span>Kategori lain ({others.length})</span>
-            <ChevronDown size={15} class={more ? 'rot' : ''} aria-hidden="true" />
-          </button>
-          {#if more}
-            <ul class="ef-more" id="ef-more">
-              {#each others as o (o.href)}
-                <li>
-                  <a href={o.href}>
-                    <o.icon size={16} aria-hidden="true" />
-                    <span>{o.label}</span>
-                    {#if o.n}<small>{shortCount(o.n)}</small>{/if}
-                  </a>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      {/if}
-    </nav>
+    <section class="ef-kinds" aria-labelledby="ef-kinds-title">
+      <h2 id="ef-kinds-title" class="sr-only">Isi {OBSERVATORY_NAME}</h2>
+      <EnsiklopediaKinds {index} {glimpse} {objects} {atlas} set="semua" />
+    </section>
 
-    <section class="ef-tools" aria-label="Peta dan katalog terbuka">
-      {#if graph}
-        <div class="ef-map">
-          <a class="ef-map-main" href="/wiki/peta">
-            <svg viewBox="0 0 400 120" aria-hidden="true">
-              {#each graph.statements as s, i (i)}{@const a = at.get(s.source)}{@const b = at.get(s.target)}{#if a && b}<line x1={px(a.x)} y1={py(a.y)} x2={px(b.x)} y2={py(b.y)} />{/if}{/each}
-              {#each pts as p, i (i)}<circle cx={p.x} cy={p.y} r="2.6" fill={p.c} />{/each}
-            </svg>
-            <span class="ef-map-text">
-              <strong id="ef-map-title">{MAP_NAME}</strong>
-              <small>{graph.counts.entities} hal dan {graph.counts.statements} hubungan yang bersumber</small>
-            </span>
-            <ArrowUpRight size={18} aria-hidden="true" />
-          </a>
-          <div class="ef-lenses-wrap">
-            <div class="ef-lenses" aria-label="Buka peta dengan lensa">
-              {#each LENSES as l (l)}
-                <a href={'/wiki/peta?lens=' + l}>{LENS_LABEL[l]}</a>
-              {/each}
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      <div class="ef-tool-pair">
-        <a class="ef-tool-card teal" href="/wiki/peta-kata">
-          <span class="ef-tool-icon"><Compass size={20} aria-hidden="true" /></span>
-          <span class="ef-tool-body">
-            <strong>Peta Kata</strong>
-            <small>100 kata dasar dalam 188 bahasa Tanah Papua</small>
-          </span>
-          <ArrowUpRight size={16} class="ef-tool-go" aria-hidden="true" />
-        </a>
-        <a class="ef-tool-card slate" href="/wiki/data">
-          <span class="ef-tool-icon"><Database size={20} aria-hidden="true" /></span>
-          <span class="ef-tool-body">
-            <strong>Katalog Data</strong>
-            <small>{index?.datasets ? `${shortCount(index.datasets)} dataset terbuka` : 'Dataset terbuka'} · tabel, sumber & lisensi</small>
-          </span>
-          <ArrowUpRight size={16} class="ef-tool-go" aria-hidden="true" />
-        </a>
-      </div>
+    <section class="ef-tools" aria-label={MAP_NAME}>
+      <KnowledgeMapCard />
     </section>
 
     {#if gaps.length || questions.length || checked.length || words.length || near.length}
@@ -455,6 +345,7 @@
         </Tabs.Root>
       </section>
     {/if}
+    <p class="ef-foot"><a href="/wiki/data"><Database size={15} aria-hidden="true" />Katalog Data{index?.datasets ? ' · ' + shortCount(index.datasets) + ' dataset terbuka' : ''}</a></p>
   {/if}
 </div>
 
@@ -536,137 +427,12 @@
   .ef-progress-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12.5px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
   .ef-figures-hold { height: 44px; border-radius: 10px; background: color-mix(in oklab, var(--foreground) 5%, transparent); }
 
-  .ef-bento { display: grid; gap: 10px; padding: 0 var(--gutter) 18px; }
-  .ef-bento-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  @media (min-width: 600px) {
-    .ef-bento-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
-  }
-  .ef-bento-tile {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 9px 10px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: var(--background);
-    color: var(--foreground);
-    text-decoration: none;
-    height: 100%;
-    transition: background 0.15s ease, border-color 0.15s ease;
-  }
-  .ef-bento-tile:hover {
-    background: color-mix(in oklab, var(--tone) 7%, var(--background));
-    border-color: color-mix(in oklab, var(--tone) 32%, var(--border));
-  }
-  .ef-bento-icon {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: color-mix(in oklab, var(--tone) 13%, var(--background));
-    color: var(--tone);
-  }
-  .ef-bento-text { display: grid; gap: 1px; min-width: 0; }
-  .ef-bento-text strong { font-size: 13px; font-weight: 700; line-height: 1.2; }
-  .ef-bento-text small { font-size: 11.5px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
-
-  .ef-more-bar { display: grid; gap: 8px; }
-  .ef-more-toggle {
-    justify-self: start;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    min-height: 32px;
-    padding: 0 10px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--muted-foreground);
-    font: inherit;
-    font-size: 12.5px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .ef-more-toggle:hover { color: var(--foreground); background: color-mix(in oklab, var(--foreground) 4%, transparent); }
-  .ef-more-toggle :global(svg.rot) { transform: rotate(180deg); }
-  .ef-more { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .ef-more a { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 11px; color: var(--foreground); font-size: 13.5px; font-weight: 600; text-decoration: none; }
-  .ef-more a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
-  .ef-more small { font-size: 12px; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
-
-  .ef-tools { display: grid; gap: 10px; padding: 0 var(--gutter) 18px; min-width: 0; }
-  .ef-map { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 18px; min-width: 0; }
-  .ef-map-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 8px; align-items: center; color: inherit; text-decoration: none; }
-  .ef-map-main svg { grid-column: 1 / -1; width: 100%; height: auto; aspect-ratio: 10 / 3; border-radius: 12px; background: color-mix(in oklab, var(--foreground) 3%, var(--background)); }
-  .ef-map-main line { stroke: color-mix(in oklab, var(--foreground) 22%, transparent); stroke-width: 0.6; vector-effect: non-scaling-stroke; }
-  .ef-map-text { display: grid; gap: 2px; padding-left: 4px; }
-  .ef-map-text strong { font-size: 16.5px; font-weight: 750; letter-spacing: -0.012em; }
-  .ef-map-text small { font-size: 13px; color: var(--muted-foreground); }
-  .ef-map-main > :global(svg:last-child) { margin-right: 4px; color: var(--muted-foreground); }
-  .ef-map-main:hover strong { text-decoration: underline; text-underline-offset: 3px; }
-
-  .ef-lenses-wrap { position: relative; min-width: 0; overflow: hidden; }
-  .ef-lenses-wrap::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 34px;
-    background: linear-gradient(to right, transparent, var(--background));
-    pointer-events: none;
-  }
-  .ef-lenses { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 34px 2px 2px; }
-  .ef-lenses a { flex: none; display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); font-size: 13px; font-weight: 550; text-decoration: none; white-space: nowrap; }
-  .ef-lenses a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
-
-  .ef-tool-pair { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  @media (min-width: 560px) {
-    .ef-tool-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-  .ef-tool-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 14px;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    color: var(--foreground);
-    text-decoration: none;
-    background: var(--background);
-    transition: background 0.15s ease, border-color 0.15s ease;
-  }
-  .ef-tool-card.teal { --accent: #0f766e; }
-  .ef-tool-card.slate { --accent: #475569; }
-  :global(.dark) .ef-tool-card.teal { --accent: #2dd4bf; }
-  :global(.dark) .ef-tool-card.slate { --accent: #94a3b8; }
-  .ef-tool-card:hover {
-    background: color-mix(in oklab, var(--accent) 6%, var(--background));
-    border-color: color-mix(in oklab, var(--accent) 32%, var(--border));
-  }
-  .ef-tool-icon {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: color-mix(in oklab, var(--accent) 13%, var(--background));
-    color: var(--accent);
-  }
-  .ef-tool-body { display: grid; gap: 2px; flex: 1; min-width: 0; }
-  .ef-tool-body strong { font-size: 15px; font-weight: 750; line-height: 1.25; }
-  .ef-tool-body small { font-size: 12.5px; line-height: 1.35; color: var(--muted-foreground); }
-  .ef-tool-card :global(.ef-tool-go) { flex: none; color: var(--muted-foreground); }
+  .ef-kinds { padding: 4px var(--gutter) 20px; min-width: 0; }
+  .ef-tools { padding: 0 var(--gutter) 18px; min-width: 0; }
+  .ef-foot { margin: 0; padding: 18px var(--gutter) 0; border-top: 1px solid var(--border); }
+  .ef-foot a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-size: 14px; font-weight: 600; color: var(--muted-foreground); text-decoration: none; }
+  .ef-foot a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
+  .ef-foot a:focus-visible { outline: 2px solid var(--ring, var(--foreground)); outline-offset: 2px; border-radius: 6px; }
 
   .ef-explorer { padding-top: 20px; }
   .ef-explorer :global(.ef-tabs-list) {

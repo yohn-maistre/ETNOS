@@ -11,13 +11,13 @@ Scope: /explore (DiscoveryPage.svelte and its Explore* components). Visitor mode
 
 ## Direction contract
 
-THESIS: Jelajah is an Explore page in the Threads and X register, ordered Kabar, Sedang dibicarakan, Topik, Komunitas dan lembaga, Tempat, Bahasa. It refuses the editorial broadsheet arrangement (heavy rules, serif specimens, open hairline lists) that made it read like an old blog.
+THESIS: Jelajah is an Explore page in the Threads and X register, ordered Kabar, Sedang dibicarakan, Komunitas dan lembaga, then one Ensiklopedia section (Tempat, Bahasa, kind cards, Topik, Peta pengetahuan) with the full index at /wiki (owner, 28 November 2026). It refuses the editorial broadsheet arrangement (heavy rules, serif specimens, open hairline lists) that made it read like an old blog.
 
 OWN-WORLD: Grafit neutrals, Geist throughout at heavier weights (titles 650 to 800), 15 to 17px rows with 16px vertical padding, full-bleed hover fills, 12 to 16px radii, thumbnails on the right, pill controls, avatars for communities. The ink-print landscapes stay the only imagery besides news photos.
 
-STORY: The reader sees today's news first, then what people are talking about, then can pick a topic, join a community, or open a place or language.
+STORY: The reader sees today's news first, then what people are talking about, then can join a community, then opens the Ensiklopedia by a place, a language, a kind or a topic.
 
-FIRST VIEWPORT: Sticky tab bar (Kabar, Dibicarakan, Topik, Komunitas, Tempat, Bahasa) with a rounded 4px indicator. "Kabar hari ini" heading, the washed lead card, then news rows with 80px thumbnails right.
+FIRST VIEWPORT: Sticky tab bar (Kabar, Dibicarakan, Komunitas, Ensiklopedia) with a rounded 4px indicator. "Kabar hari ini" heading, the washed lead card, then news rows with 80px thumbnails right.
 
 FORM: varied components per section: news rows with thumbnails, a ranked trending list, topic pills, community rows with avatar and a Lihat pill, a place scroller with map tiles, language chips. seed: none (pinned) "let's just get as close as we can to how threads does it, but of course with our information hierarchy"
 

@@ -163,7 +163,7 @@ The palette is graphite neutrals plus one accent the reader can change.
 
 ## Layout
 
-One column inside the shell card, with the sidebar on the left on desktop and the dock at the bottom on phones. Sections run full width inside the card with padding 28px on top and 24px on the sides and bottom (16px on phones), separated by a hairline. Rows bleed to the column edges with `margin: 0 calc(var(--gutter) * -1)` so their hover fill reaches the card edges. Horizontal scrollers (places) fade out on the right with a mask. Section order on Jelajah: Kabar hari ini, Sedang dibicarakan, Topik, Komunitas dan lembaga, Tempat, Bahasa.
+One column inside the shell card, with the sidebar on the left on desktop and the dock at the bottom on phones. Sections run full width inside the card with padding 28px on top and 24px on the sides and bottom (16px on phones), separated by a hairline. Rows bleed to the column edges with `margin: 0 calc(var(--gutter) * -1)` so their hover fill reaches the card edges. Horizontal scrollers (places) fade out on the right with a mask. Section order on Jelajah: Kabar hari ini, Sedang dibicarakan, Komunitas dan lembaga, then one Ensiklopedia section (Tempat rail, Bahasa block, kind cards, Kategori lain, Topik, Peta pengetahuan, and a link to the full index at `/wiki`). Jelajah is the one door to the Ensiklopedia (owner, 28 November 2026); `/wiki` is a page under it.
 
 ## Elevation & Depth
 
@@ -197,7 +197,7 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 - **Secondary:** shadcn `secondary` and `ghost` variants from `$lib/components/ui/button`.
 
 ### Navigation
-- **Desktop:** shadcn sidebar that stays put (no collapse toggle).
+- **Desktop:** shadcn sidebar that stays put (no collapse toggle). The top group is Beranda, Jelajah, Komunitas and *Pustakawan* (the sparkle, with *Aksara* as a 12px muted second line), then the *Posting* button. The reader's own group sits at the foot: Pesan, Aktivitas, Tersimpan, Studio (operators only), Pengaturan, then the account row, or Pengaturan and *Masuk* for visitors. The Ensiklopedia has no item: Jelajah stays lit on `/wiki` and every `/wiki/*` page, and their crumbs read *Jelajah › Ensiklopedia › …* (`JelajahCrumbs.svelte`).
 - **Phones:** a floating dock (Beranda, Jelajah, Masuk or the reader's own items, Menu).
 - **Section tabs:** a sticky rail with the current tab in bold and a 4px rounded bar in the accent.
 
@@ -205,8 +205,10 @@ Rounded, soft corners at three sizes: 14px for thumbnails, 16px for cards and ma
 - **Character:** a shadcn Sheet, right side on desktop (up to 460px), bottom on phones (up to 86% of the screen, 18px top radius). Sections divided by hairlines with 13px muted headings.
 
 ### Ensiklopedia front (`EnsiklopediaFront.svelte`, `styles/observatorium.css`, `/wiki`)
-- **Character:** the information hierarchy of a superapp on the Jelajah rhythm (one gutter, 24px and 16px on phones; heavy section titles; rows that run to the card edges). Top to bottom: title and search; a state card (a 2.5% tinted panel with 18px radius) holding up to three large numbers and either three round quick actions (*Jawab*, *Tambah*, *Riwayat*) or the *Masuk untuk membantu* pill; the kind grid; the map card; rows with *Lihat semua*.
-- **Kind tiles:** a lucide icon on a 56px square with 16px radius (50px and 14px in the single row from 600px), tinted 13% with the level band colour that the kind's entries carry on the knowledge map, so the colour means the same thing in both places. *Lainnya* stays neutral and opens a list of pills under the grid. The badge is a small dark pill on the corner with a real count, and it is left out when there is no number. Three rows of three on phones, one row of nine from 600px.
+- **Character:** the information hierarchy of a superapp on the Jelajah rhythm (one gutter, 24px and 16px on phones; heavy section titles; rows that run to the card edges). Top to bottom: the crumb to Jelajah, title and search; the showcase carousel; the progress line; the kind cards; the map card (`KnowledgeMapCard.svelte`); the tabbed rows; the Katalog Data link.
+- **Kind cards (`EnsiklopediaKinds.svelte`, also on Jelajah):** each kind shows a real glimpse of what it holds, never an icon. Cards come in trios, one large beside two stacked small ones from 600px (the second trio mirrored), and one large over two side by side on phones; 18px radius. Tempat is a cover card over the terrain map of Tanah Papua, Makhluk hidup a cover card with a species photo (the tree kangaroo first), Bentang alam a cover card over a hillshade crop of Puncak Jaya pressed to graphite. Bahasa is a plate (3.5% tint) with every language as a dot from Peta Kata, Kamus a plate with one concept in four languages from the published wordlists, Suku a plate with real names. Titles are 800 (24 to 28px large, 19px small) with an honest count under them. A kind with fewer than three entries gets no card and is listed under *Kategori lain* as a hairline row with its count, a few names and a thumbnail where one exists. A foot line names the photo's maker and licence and the basemap.
+- **Bahasa block (Jelajah):** a plate with Peta Kata's map as a still picture (`PetaKataGlimpse.svelte`), five languages labelled with their word for *air*, one line of counts, and links to the Bahasa index and Peta Kata.
+- **Foot:** *Katalog Data* is a quiet muted link at the end of `/wiki`.
 - **Map card:** every point of the public graph in its default layout on a 3% ground, at a fixed 10 by 3 aspect, with the title, a count line and the lens pills that open `/wiki/peta?lens=`.
 - **Card row:** 148px square images with 16px radius that scroll sideways, title and kind under each.
 

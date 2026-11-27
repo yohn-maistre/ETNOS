@@ -40,7 +40,7 @@
     return () => { abort.abort(); audio?.pause() }
   })
   function loadSeed(c: string, q: string, offset: number, signal?: AbortSignal) {
-    request<Seed>(`/v1/peta-kata/bahasa/${c}/sumber?` + new URLSearchParams({ ...(q ? { q } : {}), ...(offset ? { offset: String(offset) } : { limit: '20' }) }), undefined, signal, true)
+    request<Seed>(`/v1/peta-kata/bahasa/${c}/sumber?` + new URLSearchParams({ ...(q ? { q } : {}), ...(offset ? { offset: String(offset) } : { limit: '12' }) }), undefined, signal, true)
       .then((r) => { if (signal?.aborted) return; seed = offset && seed ? { ...r, entries: [...seed.entries, ...r.entries] } : r; seedMore = false })
       .catch(() => { seedMore = false })
   }

@@ -23,8 +23,8 @@ So the published wordlist, the community Kamus and the Steltenpool seed for Ekar
 
 1. A count line and one search box over every part below.
 2. *Dari kamus komunitas*: entries from the Kamus of every public community whose language is this one, each with the community's name and its review state. Entries that a community imported from the shipped seed (source `seed:…`) are left out here, because the seed itself is shown below, so a word does not show twice. Private communities never appear: the entry index checks visibility when it is read.
-3. *Kata dasar dari daftar terbitan*: the basic words from the published wordlists, marked *belum diperiksa penutur*, with Papuan Voices forms in italics under the CC BY-NC 4.0 label, and a link to the language in Peta Kata.
-4. For Ekari, the Steltenpool 1969 seed, 20 entries first and then 50 at a time, searched and paged on the server (`GET /v1/peta-kata/bahasa/<code>/sumber`), with its CC BY-NC licence label.
+3. *Kata dasar dari daftar terbitan*: the basic words from the published wordlists (12 concepts first, then *Tampilkan semua*, so the tab stays short on a phone; a search shows every match), marked *belum diperiksa penutur*, with Papuan Voices forms in italics under the CC BY-NC 4.0 label, and a link to the language in Peta Kata.
+4. For Ekari, the Steltenpool 1969 seed, 12 entries first and then 50 at a time, searched and paged on the server (`GET /v1/peta-kata/bahasa/<code>/sumber`), with its CC BY-NC licence label.
 5. *Kamus komunitas dalam bahasa ini*: links to each community's own Kamus tab.
 6. The Local Contexts Notices of the datasets shown (see [decisions/local-contexts-2026-11-28.md](../decisions/local-contexts-2026-11-28.md)).
 
