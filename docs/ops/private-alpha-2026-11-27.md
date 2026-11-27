@@ -80,3 +80,13 @@ People can turn on notifications for one device in *Pengaturan* (*Notifikasi di 
 On iPhone and iPad, web push works only after ETNOS is added to the Home Screen and opened from there (iOS 16.4 and later); Pengaturan says this when the browser lacks push.
 
 Tests: `test/web-push.test.ts` (the RFC 8291 test vector, the VAPID signature and claims, the endpoint allowlist, queueing only for subscribers and only for replies, mentions and member Kamus questions, the message decrypted on a fake device with no post text in it, access checked again at sending, at-most-once, unsubscribe, expiry, 410, the device cap, and a device moving between accounts) and `test/invite-gate.test.ts` (a request's subscription, the one approval message, nothing kept after a decline).
+
+## 5. First run
+
+After a first sign-in, a new account lands on `/mulai`: one screen to pick places (the customary regions and provinces as buttons, regencies, cities and any language through search) and languages, with matching communities below. A match is a public community labelled with the chosen place, a place under the chosen region, or the chosen language (`community_contexts`, the labels set when a community is made or in its settings); private communities are never suggested. When nothing matches yet, which is the case on etnos.space today because no community carries a place or language label, the screen says so and lists the open communities for everyone. Alun-Alun is already joined at enrolment and shows as *Sudah bergabung*. *Gabung* joins an open community at once.
+
+*Selesai* and *Lewati* both close it for good. *Selesai* also makes the first chosen place the Beranda place on this device. The node keeps only that the screen was shown (`first_run_done`), never the choice. Accounts that existed before this change are marked as done by the migration, so they never see it. The suggestions come from `GET /v1/communities/suggest?contexts=…` (`src/first-run.ts`).
+
+Nothing must be created for this section. Labelling the starter communities with places and languages in their settings makes the suggestions useful.
+
+Tests: `test/first-run.test.ts` (offered once, needs the session confirmation to dismiss, never to agents; a region covers its regencies; languages match; hidden and listed private communities never appear; joined ones are marked).

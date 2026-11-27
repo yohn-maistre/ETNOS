@@ -701,6 +701,10 @@ CREATE TRIGGER IF NOT EXISTS push_kamus AFTER INSERT ON claims WHEN NEW.origin='
  WHERE p.id=json_extract(NEW.evidence,'$[0].postId') AND p.author_id<>NEW.proposer_id
   AND EXISTS(SELECT 1 FROM push_subscriptions s WHERE s.actor_id=p.author_id);
 END;
+`, `
+-- First-run screen (W1, src/first-run.ts): shown once per account. People who joined before it never see it.
+CREATE TABLE IF NOT EXISTS first_run_done(actor_id TEXT PRIMARY KEY REFERENCES actors(id), done INTEGER NOT NULL);
+INSERT OR IGNORE INTO first_run_done(actor_id,done) SELECT id,0 FROM actors WHERE kind='human';
 `]
 
 export const schemaVersion=migrations.length

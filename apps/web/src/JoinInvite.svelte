@@ -54,7 +54,7 @@
         mode: 'signup',
         invitation: code,
         ...(provider === 'host' ? { provider: 'host' } : handle.trim() ? { handle: handle.trim() } : {}),
-        returnTo: '/communities?welcome=1',
+        returnTo: '/mulai',
       })
       location.assign(result.authorizationUrl)
     } catch (e) {

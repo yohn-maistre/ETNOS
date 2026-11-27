@@ -51,7 +51,8 @@
   import PushPreference from './PushPreference.svelte'
   import { disablePush, renewPush } from './push'
   /** The node's copy of this device's push subscription is renewed once per visit. */
-  let pushRenewed = false
+  let pushRenewed = false,
+    firstRunShown = false
   import WelcomeDialog from './WelcomeDialog.svelte'
   import CommunityPlaces from './CommunityPlaces.svelte'
   import KiosBlock from './KiosBlock.svelte'
@@ -574,6 +575,12 @@
         rememberWelcome()
       }
       setCsrf(identity.csrf)
+      // The first-run screen, once per account (src/first-run.ts). Skipping it is one tap.
+      if (identity.firstRun && path !== '/mulai' && !firstRunShown) {
+        firstRunShown = true
+        navigate('/mulai')
+        return
+      }
       if (identity.actor && !pushRenewed) {
         pushRenewed = true
         void renewPush().catch(() => {})
@@ -907,7 +914,7 @@
             : { handle: handle.trim(), publishing: publishingConsent }),
           returnTo:
             new SvelteURLSearchParams(authSearch).get('returnTo') ||
-            (mode === 'signup' ? '/communities?welcome=1' : '/'),
+            (mode === 'signup' ? '/mulai' : '/'),
         },
       )
       location.assign(result.authorizationUrl)
@@ -1136,6 +1143,8 @@
     {#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} onCreate={()=>startOffering()}/>{/await}
   {:else if path === '/studio'}
     {#await import('./StudioPage.svelte') then module}<module.default {auth}/>{/await}
+  {:else if path === '/mulai'}
+    {#await import('./FirstRun.svelte')}<ContentSkeleton />{:then module}<module.default {auth} {navigate} onDone={() => (auth = { ...auth, firstRun: false })} />{/await}
   {:else if path === '/studio/undangan'}
     {#await import('./StudioInvites.svelte')}<ContentSkeleton />{:then module}<module.default {auth}/>{/await}
   {:else if path === '/studio/pengaturan'}

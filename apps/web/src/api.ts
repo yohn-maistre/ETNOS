@@ -213,6 +213,8 @@ export type Auth = {
   csrf: string | null
   steward: boolean
   expires?: number
+  /** A new account that has not seen the first-run screen yet. */
+  firstRun?: boolean
 }
 export type Capabilities = {
   auth: { atOAuth: boolean }

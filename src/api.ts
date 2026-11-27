@@ -14,6 +14,7 @@ import {renderSitus} from './situs-render.ts'
 import {SITUS_STYLE_VERSION} from './situs-style.ts'
 import {updateProfile} from './profile.ts'
 import {Groups,strings,type Group,type Context,type SeedLabels} from './groups.ts'
+import {suggestCommunities} from './first-run.ts'
 import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
@@ -236,6 +237,8 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
           result=search.profile(actor?.id,parts[2])
         }
         else if (path === '/v1/communities') result = store.listCommunities(actor?.id)
+        // The first-run screen: public communities labelled with the places and languages someone picked.
+        else if (path === '/v1/communities/suggest') result = suggestCommunities(store,groups,actor?.id,url.searchParams.get('contexts'))
         else if (path === '/v1/topics') result=social.topics()
         else if (path === '/v1/wiki') result=wiki.all(actor?.id)
         else if (path === '/v1/wiki/discover') result=wiki.discover()

@@ -323,7 +323,14 @@ export class BrowserAuth {
       }
       if(path==='/auth/me' && request.method==='GET'){
         const current=this.session(request)
-        return json(200,current?{actor:{id:current.actor.id,did:current.actor.did,name:current.actor.name,kind:current.actor.kind},csrf:current.session.csrf,expires:current.session.expires,steward:current.actor.did===this.config.stewardDid}:{actor:null,csrf:null,steward:false})
+        const firstRun=!!current&&current.actor.kind==='human'&&!this.store.get('SELECT 1 FROM first_run_done WHERE actor_id=?',current.actor.id)
+        return json(200,current?{actor:{id:current.actor.id,did:current.actor.did,name:current.actor.name,kind:current.actor.kind},csrf:current.session.csrf,expires:current.session.expires,steward:current.actor.did===this.config.stewardDid,firstRun}:{actor:null,csrf:null,steward:false})
+      }
+      // The first-run screen was shown (finished or skipped); it does not come back for this account.
+      if(path==='/auth/first-run' && request.method==='POST'){
+        this.writeGuard(request);const current=this.session(request)!
+        this.store.run('INSERT OR IGNORE INTO first_run_done(actor_id,done) VALUES(?,?)',current.actor.id,this.store.clock())
+        return json(200,{firstRun:false})
       }
       if(path==='/auth/start' && request.method==='POST'){
         if(request.headers.get('origin')!==this.config.origin)throw new Fault(403,'Origin not allowed')
