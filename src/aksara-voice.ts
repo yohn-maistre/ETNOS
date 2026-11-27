@@ -112,5 +112,22 @@ export function sourceLabel(url: string): string {
   }
 }
 
+const ENGLISH = /\b(the|is|are|was|were|of|and|in|on|located|which|with|from|its|between|lies|known|by|an|to)\b/gi
+const INDONESIAN = /\b(yang|dan|di|ke|dari|adalah|dengan|untuk|ini|itu|pada|sebagai|terletak|oleh|atau|dalam)\b/gi
+
+/** True when a paragraph reads as English rather than Indonesian (counted by common function words). */
+export function looksEnglish(text: string): boolean {
+  const en = text.match(ENGLISH)?.length ?? 0
+  const id = text.match(INDONESIAN)?.length ?? 0
+  return en >= 3 && en > id * 1.5
+}
+
+/** Drops English paragraphs from text that Aksara wrote. Returns the text and whether anything was dropped. */
+export function indonesianOnly(text: string): { text: string; dropped: boolean } {
+  const parts = text.split(/\n\s*\n/)
+  const kept = parts.filter((p) => !looksEnglish(p))
+  return { text: kept.join('\n\n').trim(), dropped: kept.length < parts.length }
+}
+
 /** Most autonomous posts Aksara writes in one community per day. */
 export const DAILY_POSTS = 4

@@ -19,6 +19,7 @@
  * record, a public page with exactly its title. Contexts choose first, in slug order, so one page has one entry.
  */
 import viewerIndexJson from './catalogues/tanah-papua-viewer-index.json' with { type: 'json' }
+import { indonesianOnly } from './aksara-voice.ts'
 
 export type EntryKind = 'tempat' | 'bentang-alam' | 'bahasa' | 'suku' | 'makhluk' | 'benda' | 'lembaga' | 'topik' | 'peristiwa' | 'gagasan' | 'praktik' | 'orang' | 'musim' | 'cerita' | 'halaman'
 export const KIND_LABEL: Record<EntryKind, string> = {
@@ -52,6 +53,13 @@ export type CtxDetail = {
   family: { title: string; basis: string; sources: { title: string; url: string }[] } | null
 }
 export type PageRef = { id: string; title: string; community_id: string; updated: number; excerpt: string; reviewer: { name: string; kind?: string } | null; review: string }
+/** An unreviewed draft by an agent shows only its Indonesian paragraphs; earlier drafts copied English sources as they were. */
+function withoutEnglishDraft<R extends { text: string; review: string; author: { kind: string } | null }>(r: R): R & { untranslated?: boolean } {
+  if (r.author?.kind !== 'agent' || r.review === 'reviewed') return r
+  const { text, dropped } = indonesianOnly(r.text)
+  return dropped && text ? { ...r, text, untranslated: true } : r
+}
+
 export type PageFull = { id: string; title: string; community_id: string; revision: { id: string; text: string; citations: string[]; created: number; review: string; language: string; perspective: string; author: { id: string; name: string; kind: string } | null; reviewer: { id: string; name: string; kind: string } | null } | null }
 /** `place` and `sub` are set only by lembaga listings (src/lembaga.ts): the context slug it sits in, and its jenis. */
 export type CommonsEntity = { slug: string; class: string; title: string; description: string; aliases: string[]; context: string | null; place?: string | null; sub?: { key: string; label: string } | null }
@@ -371,7 +379,7 @@ export async function readEntry(source: EntrySource, asked: string) {
     overlay,
     children,
     childCount: Math.max(children.length, detail?.childCount ?? 0),
-    article: article?.revision ? { pageId: article.id, title: article.title, ...article.revision } : null,
+    article: article?.revision ? { pageId: article.id, title: article.title, ...withoutEnglishDraft(article.revision) } : null,
     facts,
     media: n.media.map((m) => ({ id: m.id, kind: m.kind, title: m.title, subtitle: m.subtitle, thumb: m.thumb })),
     relations,

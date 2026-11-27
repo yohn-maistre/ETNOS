@@ -284,7 +284,7 @@
         {#if entry.article}<section class="ep-article" aria-label={'Halaman ' + entry.article.title}>
             {#if entry.article.review === 'unreviewed'}
               <div class="ep-review-bar" data-state="unreviewed" role="status">
-                <span class="ep-review-text"><Clock size={15} aria-hidden="true" /><span><strong>Belum ditinjau manusia.</strong> {entry.article.author?.kind === 'agent' ? 'Ditulis oleh Aksara (AI) dari sumber terbuka.' : 'Terbit langsung sebelum ditinjau.'}</span></span>
+                <span class="ep-review-text"><Clock size={15} aria-hidden="true" /><span><strong>Belum ditinjau manusia.</strong> {entry.article.author?.kind === 'agent' ? 'Ditulis oleh Aksara (AI) dari sumber terbuka.' : 'Terbit langsung sebelum ditinjau.'}{entry.article.untranslated ? ' Bagian dari sumber berbahasa Inggris belum diterjemahkan.' : ''}</span></span>
                 {#if auth.steward}<span class="ep-review-actions">
                     <button type="button" class="ep-review-ok" disabled={reviewBusy} onclick={() => void reviewArticle(true)}>Tandai sudah ditinjau</button>
                     <button type="button" class="ep-review-undo" disabled={reviewBusy} onclick={() => void reviewArticle(false)}><RotateCcw size={13} aria-hidden="true" />Kembalikan</button>

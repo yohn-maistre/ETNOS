@@ -19,7 +19,7 @@ import { publicNews, type NewsFeed, type NewsItem } from './news.ts'
 import { redactPublicModelText } from './redaction.ts'
 import type { Models } from './models.ts'
 import type { AutonomousSkill } from './resident-contract.ts'
-import { AKSARA_VOICE, SENSITIVE_RULE, DAILY_POSTS, gateAksaraPost, isSensitive, sourceLabel, tidyPost } from './aksara-voice.ts'
+import { AKSARA_VOICE, SENSITIVE_RULE, DAILY_POSTS, gateAksaraPost, indonesianOnly, isSensitive, looksEnglish, sourceLabel, tidyPost } from './aksara-voice.ts'
 import concepts from '../seed/kamus/leipzig-jakarta-100.json' with { type: 'json' }
 
 export const AUTONOMOUS_SKILLS: readonly AutonomousSkill[] = [
@@ -478,7 +478,7 @@ async function runRisetEnsiklopedia(
     outputTokens += reply.outputTokens
     const candidate = cleanProse(reply.text).replace(/https?:\/\/\S+/g, '').trim()
     const check = checkPage(candidate, basis, citations.length, citations)
-    if (check.ok && candidate.length >= 120) {
+    if (check.ok && candidate.length >= 120 && !indonesianOnly(candidate).dropped) {
       articleText = candidate
     } else {
       // Retry once with exact checkPage feedback.
@@ -494,7 +494,7 @@ async function runRisetEnsiklopedia(
       outputTokens += retry.outputTokens
       const candidate2 = cleanProse(retry.text).replace(/https?:\/\/\S+/g, '').trim()
       const check2 = checkPage(candidate2, basis, citations.length, citations)
-      if (check2.ok && candidate2.length >= 120) {
+      if (check2.ok && candidate2.length >= 120 && !indonesianOnly(candidate2).dropped) {
         articleText = candidate2
       }
     }
@@ -502,9 +502,22 @@ async function runRisetEnsiklopedia(
 
   // Deterministic verbatim fallback if model-free or if verification rejected model prose.
   if (!articleText) {
-    const grouped = sources.map((src, idx) => `${src.sentences.slice(0, 3).join(' ')} [${idx + 1}]`)
+    // Only Indonesian sources are copied as they are; an English source needs a model to write Indonesian.
+    const grouped = sources
+      .map((src, idx) => ({ src, idx }))
+      .filter(({ src }) => !src.url.includes('://en.wikipedia.org/') && !looksEnglish(src.sentences.slice(0, 3).join(' ')))
+      .map(({ src, idx }) => `${src.sentences.slice(0, 3).join(' ')} [${idx + 1}]`)
     articleText = grouped.join('\n\n')
     usedModel = models ? `${usedModel}:verbatim-fallback` : 'model-free:verbatim-seed'
+  }
+  if (!articleText) {
+    store.tx(() => {
+      store.run(
+        'INSERT INTO aksara_research_log(community_id,target_slug,status,page_id,attempted) VALUES(?,?,?,NULL,?) ON CONFLICT(community_id,target_slug) DO UPDATE SET status=excluded.status,attempted=excluded.attempted',
+        target.communityId, ctx.slug, 'no-indonesian-text', store.clock(),
+      )
+    })
+    throw new Fault(422, `Sumber untuk ${ctx.title} hanya berbahasa Inggris, dan belum ada model untuk menulisnya dalam bahasa Indonesia`)
   }
 
   const wiki = new Wiki(store)

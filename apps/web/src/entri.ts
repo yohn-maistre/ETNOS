@@ -21,7 +21,7 @@ export type Entry = {
   overlay: Ref[]
   children: Ref[]
   childCount: number
-  article: { pageId: string; title: string; id: string; text: string; citations: string[]; created: number; review: string; language: string; perspective: string; author: Person | null; reviewer: Person | null } | null
+  article: { pageId: string; title: string; id: string; text: string; citations: string[]; created: number; review: string; language: string; perspective: string; untranslated?: boolean; author: Person | null; reviewer: Person | null } | null
   facts: { label: string; value: string; href?: string }[]
   /** Checked local names from public communities' Kamus (picture questions, src/kamus-ask.ts). */
   localNames?: { name: string; language: string; community: { id: string; title: string } }[]
