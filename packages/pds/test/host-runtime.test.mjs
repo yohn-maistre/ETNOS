@@ -48,6 +48,17 @@ test("accounts are created by invite, resolve by handle and carry the right PLC 
 		assert.deepEqual(described.availableUserDomains, ["." + domain]);
 		assert.equal(described.did, "did:web:pds.test");
 
+		// Browser clients (bsky.app and other AT Protocol apps) send a CORS preflight before each XRPC call.
+		const preflight = await call(mf, "/xrpc/com.atproto.server.createSession", {
+			method: "OPTIONS",
+			headers: { origin: "https://bsky.app", "access-control-request-method": "POST", "access-control-request-headers": "content-type,authorization,atproto-accept-labelers" },
+		});
+		assert.equal(preflight.status, 204);
+		assert.equal(preflight.headers.get("access-control-allow-origin"), "*");
+		assert.match(preflight.headers.get("access-control-allow-methods") ?? "", /POST/);
+		assert.match(preflight.headers.get("access-control-allow-headers") ?? "", /authorization/);
+		assert.equal((await call(mf, "/akun/baru", { method: "OPTIONS" })).status, 404);
+
 		// The HTML sign-up page creates an account too, and refuses bad input plainly.
 		const code = await invite(mf);
 		const page = await call(mf, "/akun/baru?kode=" + code);

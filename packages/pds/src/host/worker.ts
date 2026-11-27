@@ -302,6 +302,17 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 	if (oauth) return oauth;
 
 	if (!path.startsWith("/xrpc/")) return xerr(404, "NotFound", "Not found");
+	// CORS preflight for browser clients. XRPC carries bearer tokens, never cookies, so any origin may ask.
+	if (method === "OPTIONS")
+		return new Response(null, {
+			status: 204,
+			headers: {
+				"access-control-allow-origin": "*",
+				"access-control-allow-methods": "GET, POST, OPTIONS",
+				"access-control-allow-headers": (request.headers.get("access-control-request-headers") ?? "content-type, authorization").slice(0, 512),
+				"access-control-max-age": "86400",
+			},
+		});
 	if (request.headers.has("atproto-proxy")) return xerr(400, "InvalidRequest", "Service proxy is not enabled");
 
 	if (path === "/xrpc/_health") return json(200, { version: "etnos-identity-host" });
