@@ -1,0 +1,5648 @@
+{
+ "title": "Suku-suku di Tanah Papua",
+ "about": "Names of the peoples of Tanah Papua as listed on Wikipedia bahasa Indonesia, built by scripts/suku/build-suku.py. Only names, links and the province or regency that the list gives were taken; no article text was copied.",
+ "built": "2026-11-27",
+ "source": {
+  "title": "Daftar suku bangsa di Papua",
+  "url": "https://id.wikipedia.org/wiki/Daftar_suku_bangsa_di_Papua",
+  "revision": "29395555",
+  "revisionUrl": "https://id.wikipedia.org/w/index.php?oldid=29395555",
+  "publisher": "Wikipedia bahasa Indonesia",
+  "licence": "CC BY-SA 4.0",
+  "sections": [
+   "Provinsi Papua Barat",
+   "Provinsi Papua Barat Daya",
+   "Provinsi Papua",
+   "Provinsi Papua Pegunungan",
+   "Provinsi Papua Selatan",
+   "Provinsi Papua Tengah"
+  ]
+ },
+ "format": "peoples[].title is the title that the list links. wikipedia is the article that the link lands on (after a redirect), or null when the article does not exist yet or the link lands on an article that is not about a people. names are other names that the list gives for the same link. listed are the labels as the list shows them. provinces and regencies are catalogue slugs of the section and the regency row the name is listed under. language is set only when exactly one catalogue language has the same name. existing marks the peoples that were already in the knowledge seed.",
+ "peoples": [
+  {
+   "slug": "suku-abun",
+   "title": "Suku Abun",
+   "names": [],
+   "listed": [
+    "Abun"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Abun",
+    "url": "https://id.wikipedia.org/wiki/Suku_Abun"
+   },
+   "language": {
+    "glottocode": "abun1252",
+    "slug": "bahasa-abun",
+    "title": "Abun"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-aghu",
+   "title": "Suku Aghu",
+   "names": [],
+   "listed": [
+    "Aghu"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Aghu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Aghu"
+   },
+   "language": {
+    "glottocode": "aghu1255",
+    "slug": "bahasa-aghu",
+    "title": "Aghu"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-aikwakai",
+   "title": "Suku Aikwakai",
+   "names": [],
+   "listed": [
+    "Aikwakai"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Aikwakai",
+    "url": "https://id.wikipedia.org/wiki/Suku_Aikwakai"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-airoran",
+   "title": "Suku Airoran",
+   "names": [],
+   "listed": [
+    "Airoran"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "airo1242",
+    "slug": "bahasa-airoran",
+    "title": "Airoran"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-aitinyo",
+   "title": "Suku Aitinyo",
+   "names": [],
+   "listed": [
+    "Aitinyo"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Maybrat",
+    "url": "https://id.wikipedia.org/wiki/Suku_Maybrat"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ambai",
+   "title": "Suku Ambai",
+   "names": [
+    "Ampari"
+   ],
+   "listed": [
+    "Ampari"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": {
+    "title": "Orang Ambai",
+    "url": "https://id.wikipedia.org/wiki/Orang_Ambai"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ambel-waren",
+   "title": "Suku Ambel Waren",
+   "names": [],
+   "listed": [
+    "Ambel Waren"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Ambel Waren",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ambel_Waren"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-amungme",
+   "title": "Suku Amungme",
+   "names": [],
+   "listed": [
+    "Amungme"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "mimika",
+    "puncak"
+   ],
+   "wikipedia": {
+    "title": "Suku Amungme",
+    "url": "https://id.wikipedia.org/wiki/Suku_Amungme"
+   },
+   "language": null,
+   "existing": true
+  },
+  {
+   "slug": "suku-ansudu",
+   "title": "Suku Ansudu",
+   "names": [
+    "Kwinsu"
+   ],
+   "listed": [
+    "Ansudu/Kwinsu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kwin1242",
+    "slug": "bahasa-kwinsu",
+    "title": "Kwinsu"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-anus",
+   "title": "Suku Anus",
+   "names": [],
+   "listed": [
+    "Anus"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-are",
+   "title": "Suku Are",
+   "names": [],
+   "listed": [
+    "Are"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-arfak",
+   "title": "Suku Arfak",
+   "names": [],
+   "listed": [
+    "Arfak"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Arfak",
+    "url": "https://id.wikipedia.org/wiki/Suku_Arfak"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-arintap",
+   "title": "Suku Arintap",
+   "names": [],
+   "listed": [
+    "Arintap"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-armati",
+   "title": "Suku Armati",
+   "names": [],
+   "listed": [
+    "Armati"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-asmat",
+   "title": "Suku Asmat",
+   "names": [],
+   "listed": [
+    "Asmat"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "asmat"
+   ],
+   "wikipedia": {
+    "title": "Suku Asmat",
+    "url": "https://id.wikipedia.org/wiki/Suku_Asmat"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-auye",
+   "title": "Suku Auye",
+   "names": [
+    "Dao",
+    "Napan"
+   ],
+   "listed": [
+    "Dao (Auye)",
+    "Napan (Auye)"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "intan-jaya",
+    "nabire",
+    "paniai"
+   ],
+   "wikipedia": {
+    "title": "Suku Waropen",
+    "url": "https://id.wikipedia.org/wiki/Suku_Waropen"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-awban",
+   "title": "Suku Awban",
+   "names": [],
+   "listed": [
+    "Awban (Bese)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-awe",
+   "title": "Suku Awe",
+   "names": [],
+   "listed": [
+    "Awe"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Awe",
+    "url": "https://id.wikipedia.org/wiki/Suku_Awe"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-awyi",
+   "title": "Suku Awyi",
+   "names": [],
+   "listed": [
+    "Awyi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": {
+    "title": "Suku Awyi",
+    "url": "https://id.wikipedia.org/wiki/Suku_Awyi"
+   },
+   "language": {
+    "glottocode": "awyi1241",
+    "slug": "bahasa-awyi",
+    "title": "Awyi"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-awyu",
+   "title": "Suku Awyu",
+   "names": [
+    "Pisa",
+    "Siagha",
+    "Yenimu",
+    "Airo-Sumaghaghe",
+    "Yair"
+   ],
+   "listed": [
+    "Pisa (Awyu Barat)",
+    "Awyu",
+    "Siagha",
+    "Yenimu",
+    "Airo-Sumaghaghe (Airo-Sumaxage)",
+    "Yair (Awyu Tenggara)"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "asmat",
+    "mappi",
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Awyu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Awyu"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ayamaru",
+   "title": "Suku Ayamaru",
+   "names": [],
+   "listed": [
+    "Ayamaru"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Ayamaru",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ayamaru"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ayfat",
+   "title": "Suku Ayfat",
+   "names": [
+    "Aifat"
+   ],
+   "listed": [
+    "Aifat"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Aifat",
+    "url": "https://id.wikipedia.org/wiki/Suku_Aifat"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-babe",
+   "title": "Suku Babe",
+   "names": [],
+   "listed": [
+    "Babe"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-baburiwa",
+   "title": "Suku Baburiwa",
+   "names": [],
+   "listed": [
+    "Baburiwa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Baburua",
+    "url": "https://id.wikipedia.org/wiki/Suku_Baburua"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-bagusa",
+   "title": "Suku Bagusa",
+   "names": [],
+   "listed": [
+    "Bagusa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "bagu1251",
+    "slug": "bahasa-bagusa",
+    "title": "Bagusa"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-banlol",
+   "title": "Suku Banlol",
+   "names": [
+    "Butlih"
+   ],
+   "listed": [
+    "Butlih"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Banlol",
+    "url": "https://id.wikipedia.org/wiki/Suku_Banlol"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-bapu",
+   "title": "Suku Bapu",
+   "names": [],
+   "listed": [
+    "Bapu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-baso",
+   "title": "Suku Baso",
+   "names": [],
+   "listed": [
+    "Baso"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-batanta",
+   "title": "Suku Batanta",
+   "names": [],
+   "listed": [
+    "Batanta"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "bata1295",
+    "slug": "bahasa-batanta",
+    "title": "Batanta"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-bauzi",
+   "title": "Suku Bauzi",
+   "names": [],
+   "listed": [
+    "Bauzi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Bauzi",
+    "url": "https://id.wikipedia.org/wiki/Suku_Bauzi"
+   },
+   "language": {
+    "glottocode": "bauz1241",
+    "slug": "bahasa-bauzi",
+    "title": "Bauzi"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-beneraf",
+   "title": "Suku Beneraf",
+   "names": [],
+   "listed": [
+    "Beneraf"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-berbai",
+   "title": "Suku Berbai",
+   "names": [],
+   "listed": [
+    "Berbai"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-berik",
+   "title": "Suku Berik",
+   "names": [],
+   "listed": [
+    "Berik"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Berik",
+    "url": "https://id.wikipedia.org/wiki/Suku_Berik"
+   },
+   "language": {
+    "glottocode": "beri1254",
+    "slug": "bahasa-berik",
+    "title": "Berik"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-betaf",
+   "title": "Suku Betaf",
+   "names": [],
+   "listed": [
+    "Betaf"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-biak",
+   "title": "Suku Biak",
+   "names": [],
+   "listed": [
+    "Biak"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "biak-numfor",
+    "supiori"
+   ],
+   "wikipedia": {
+    "title": "Suku Biak",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biak"
+   },
+   "language": {
+    "glottocode": "biak1248",
+    "slug": "bahasa-biak",
+    "title": "Biak"
+   },
+   "existing": true
+  },
+  {
+   "slug": "suku-biak-aimando",
+   "title": "Suku Biak Aimando",
+   "names": [
+    "Aimando"
+   ],
+   "listed": [
+    "Biak Aimando",
+    "Aimando"
+   ],
+   "provinces": [
+    "papua-barat-daya",
+    "papua"
+   ],
+   "regencies": [
+    "biak-numfor"
+   ],
+   "wikipedia": {
+    "title": "Suku Biak Aimando",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biak_Aimando"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-biak-betew",
+   "title": "Suku Biak Betew",
+   "names": [
+    "Beser"
+   ],
+   "listed": [
+    "Biak Betew/Beser"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Biak Beser",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biak_Beser"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-biak-kafdaron",
+   "title": "Suku Biak Kafdaron",
+   "names": [],
+   "listed": [
+    "Biak Kafdaron"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Biak Kafdaron",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biak_Kafdaron"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-biak-karon",
+   "title": "Suku Biak Karon",
+   "names": [],
+   "listed": [
+    "Biak Karon (Bikar)"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Biak Karon",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biak_Karon"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-biak-usba",
+   "title": "Suku Biak Usba",
+   "names": [],
+   "listed": [
+    "Biak Usba"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Biak Usba",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biak_Usba"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-biak-wardo",
+   "title": "Suku Biak Wardo",
+   "names": [],
+   "listed": [
+    "Biak Wardo"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Biak Wardo",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biak_Wardo"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-biga",
+   "title": "Suku Biga",
+   "names": [],
+   "listed": [
+    "Biga"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "biga1238",
+    "slug": "bahasa-biga",
+    "title": "Biga"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-biksi",
+   "title": "Suku Biksi",
+   "names": [],
+   "listed": [
+    "Biksi"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": {
+    "title": "Suku Biksi",
+    "url": "https://id.wikipedia.org/wiki/Suku_Biksi"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-bipim",
+   "title": "Suku Bipim",
+   "names": [],
+   "listed": [
+    "Bipim"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "asmat"
+   ],
+   "wikipedia": {
+    "title": "Suku Bipim",
+    "url": "https://id.wikipedia.org/wiki/Suku_Bipim"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-bira",
+   "title": "Suku Bira",
+   "names": [],
+   "listed": [
+    "Bira"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Inanwatan",
+    "url": "https://id.wikipedia.org/wiki/Suku_Inanwatan"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-bonefa",
+   "title": "Suku Bonefa",
+   "names": [],
+   "listed": [
+    "Bonefa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-bonerif",
+   "title": "Suku Bonerif",
+   "names": [],
+   "listed": [
+    "Bonerif"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-bonggo",
+   "title": "Suku Bonggo",
+   "names": [],
+   "listed": [
+    "Bonggo"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "bong1287",
+    "slug": "bahasa-bonggo",
+    "title": "Bonggo"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-borai",
+   "title": "Suku Borai",
+   "names": [],
+   "listed": [
+    "Borai"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-borapasi",
+   "title": "Suku Borapasi",
+   "names": [],
+   "listed": [
+    "Borapasi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-borto",
+   "title": "Suku Borto",
+   "names": [],
+   "listed": [
+    "Borto"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Borto",
+    "url": "https://id.wikipedia.org/wiki/Suku_Borto"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-burate",
+   "title": "Suku Burate",
+   "names": [],
+   "listed": [
+    "Burate"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "bura1276",
+    "slug": "bahasa-burate",
+    "title": "Burate"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-busami",
+   "title": "Suku Busami",
+   "names": [],
+   "listed": [
+    "Busami"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": {
+    "title": "Suku Busami",
+    "url": "https://id.wikipedia.org/wiki/Suku_Busami"
+   },
+   "language": {
+    "glottocode": "busa1254",
+    "slug": "bahasa-busami",
+    "title": "Busami"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-citak",
+   "title": "Suku Citak",
+   "names": [
+    "Tamnim-Citak"
+   ],
+   "listed": [
+    "Citak",
+    "Tamnim-Citak"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "asmat"
+   ],
+   "wikipedia": {
+    "title": "Suku Citak",
+    "url": "https://id.wikipedia.org/wiki/Suku_Citak"
+   },
+   "language": {
+    "glottocode": "cita1245",
+    "slug": "bahasa-citak",
+    "title": "Citak"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-dabe",
+   "title": "Suku Dabe",
+   "names": [],
+   "listed": [
+    "Dabe"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-dabra",
+   "title": "Suku Dabra",
+   "names": [],
+   "listed": [
+    "Dabra"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-damal",
+   "title": "Suku Damal",
+   "names": [],
+   "listed": [
+    "Damal"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "mimika",
+    "puncak"
+   ],
+   "wikipedia": {
+    "title": "Suku Damal",
+    "url": "https://id.wikipedia.org/wiki/Suku_Damal"
+   },
+   "language": {
+    "glottocode": "dama1272",
+    "slug": "bahasa-damal",
+    "title": "Damal"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-dani",
+   "title": "Suku Dani",
+   "names": [
+    "Dani Atas"
+   ],
+   "listed": [
+    "Dani (Hugula, Hubula, Huwula/Huwulra, Hubla)",
+    "Dani Atas"
+   ],
+   "provinces": [
+    "papua-pegunungan",
+    "papua-tengah"
+   ],
+   "regencies": [
+    "jayawijaya",
+    "puncak",
+    "puncak-jaya"
+   ],
+   "wikipedia": {
+    "title": "Suku Dani",
+    "url": "https://id.wikipedia.org/wiki/Suku_Dani"
+   },
+   "language": null,
+   "existing": true
+  },
+  {
+   "slug": "suku-dem",
+   "title": "Suku Dem",
+   "names": [],
+   "listed": [
+    "Dem"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak",
+    "puncak-jaya"
+   ],
+   "wikipedia": {
+    "title": "Suku Dem",
+    "url": "https://id.wikipedia.org/wiki/Suku_Dem"
+   },
+   "language": {
+    "glottocode": "demm1245",
+    "slug": "bahasa-dem",
+    "title": "Dem"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-demba",
+   "title": "Suku Demba",
+   "names": [],
+   "listed": [
+    "Demba"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-demisa",
+   "title": "Suku Demisa",
+   "names": [],
+   "listed": [
+    "Demisa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "demi1242",
+    "slug": "bahasa-demisa",
+    "title": "Demisa"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-demta",
+   "title": "Suku Demta",
+   "names": [
+    "Jouw-Warry"
+   ],
+   "listed": [
+    "Jouw-Warry"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Demta",
+    "url": "https://id.wikipedia.org/wiki/Suku_Demta"
+   },
+   "language": {
+    "glottocode": "demt1241",
+    "slug": "bahasa-demta",
+    "title": "Demta"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-demutru",
+   "title": "Suku Demutru",
+   "names": [],
+   "listed": [
+    "Demutru"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-dera",
+   "title": "Suku Dera",
+   "names": [],
+   "listed": [
+    "Dera"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": {
+    "title": "Suku Dera",
+    "url": "https://id.wikipedia.org/wiki/Suku_Dera"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-domu",
+   "title": "Suku Domu",
+   "names": [],
+   "listed": [
+    "Domu"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-doreri",
+   "title": "Suku Doreri",
+   "names": [],
+   "listed": [
+    "Doreri"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-doutai",
+   "title": "Suku Doutai",
+   "names": [],
+   "listed": [
+    "Doutai (Taori-So)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "tolikara"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "dout1240",
+    "slug": "bahasa-doutai",
+    "title": "Doutai"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-dubu",
+   "title": "Suku Dubu",
+   "names": [
+    "Tebi"
+   ],
+   "listed": [
+    "Dubu/Tebi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "dubu1240",
+    "slug": "bahasa-dubu",
+    "title": "Dubu"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-duriankari",
+   "title": "Suku Duriankari",
+   "names": [],
+   "listed": [
+    "Duriankari"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Duriankari",
+    "url": "https://id.wikipedia.org/wiki/Suku_Duriankari"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-duvle",
+   "title": "Suku Duvle",
+   "names": [],
+   "listed": [
+    "Duvle"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak-jaya"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "duvl1242",
+    "slug": "bahasa-duvle",
+    "title": "Duvle"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-edopi",
+   "title": "Suku Edopi",
+   "names": [
+    "Dou"
+   ],
+   "listed": [
+    "Dou (Edopi)"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "edop1238",
+    "slug": "bahasa-edopi",
+    "title": "Edopi"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-eipomek",
+   "title": "Suku Eipomek",
+   "names": [],
+   "listed": [
+    "Eipomek"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": {
+    "title": "Suku Eipo",
+    "url": "https://id.wikipedia.org/wiki/Suku_Eipo"
+   },
+   "language": {
+    "glottocode": "eipo1242",
+    "slug": "bahasa-eipomek",
+    "title": "Eipomek"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-elseng",
+   "title": "Suku Elseng",
+   "names": [
+    "Morwap",
+    "Tabu",
+    "Janggu"
+   ],
+   "listed": [
+    "Elseng",
+    "Morwap/Elseng/Tabu/Janggu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura",
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "else1239",
+    "slug": "bahasa-elseng",
+    "title": "Elseng"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-emem",
+   "title": "Suku Emem",
+   "names": [],
+   "listed": [
+    "Emem"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": {
+    "title": "Suku Emem",
+    "url": "https://id.wikipedia.org/wiki/Suku_Emem"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-emeyode",
+   "title": "Suku Emeyode",
+   "names": [],
+   "listed": [
+    "Emeyode"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Kokoda",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kokoda"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-enggros",
+   "title": "Suku Enggros",
+   "names": [],
+   "listed": [
+    "Enggros"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kota-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Enggros",
+    "url": "https://id.wikipedia.org/wiki/Suku_Enggros"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-fayu",
+   "title": "Suku Fayu",
+   "names": [],
+   "listed": [
+    "Fayu"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak"
+   ],
+   "wikipedia": {
+    "title": "Suku Fayu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Fayu"
+   },
+   "language": {
+    "glottocode": "fayu1238",
+    "slug": "bahasa-fayu",
+    "title": "Fayu"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-fermanggem",
+   "title": "Suku Fermanggem",
+   "names": [],
+   "listed": [
+    "Fermanggem"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": {
+    "title": "Suku Fermanggem",
+    "url": "https://id.wikipedia.org/wiki/Suku_Fermanggem"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-fiawat",
+   "title": "Suku Fiawat",
+   "names": [],
+   "listed": [
+    "Fiawat"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Banlol",
+    "url": "https://id.wikipedia.org/wiki/Suku_Banlol"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-find",
+   "title": "Suku Find",
+   "names": [
+    "Senggi"
+   ],
+   "listed": [
+    "Find/Senggi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "seng1285",
+    "slug": "bahasa-senggi",
+    "title": "Senggi"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-foau",
+   "title": "Suku Foau",
+   "names": [],
+   "listed": [
+    "Foau"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-foya",
+   "title": "Suku Foya",
+   "names": [],
+   "listed": [
+    "Foya"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-gebe",
+   "title": "Suku Gebe",
+   "names": [],
+   "listed": [
+    "Gebe"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Gebe",
+    "url": "https://id.wikipedia.org/wiki/Suku_Gebe"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-gresi",
+   "title": "Suku Gresi",
+   "names": [
+    "Klesi",
+    "Yansu"
+   ],
+   "listed": [
+    "Gresi/Klesi/Yansu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "gres1240",
+    "slug": "bahasa-gresi",
+    "title": "Gresi"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-gwoa",
+   "title": "Suku Gwoa",
+   "names": [],
+   "listed": [
+    "Gwoa"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "nabire"
+   ],
+   "wikipedia": {
+    "title": "Suku Yerisiam",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yerisiam"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-hatam",
+   "title": "Suku Hatam",
+   "names": [],
+   "listed": [
+    "Hatam"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Hatam",
+    "url": "https://id.wikipedia.org/wiki/Suku_Hatam"
+   },
+   "language": {
+    "glottocode": "hata1243",
+    "slug": "bahasa-hatam",
+    "title": "Hatam"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-hupla",
+   "title": "Suku Hupla",
+   "names": [],
+   "listed": [
+    "Hupla (Soba)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": {
+    "title": "Suku Hubla",
+    "url": "https://id.wikipedia.org/wiki/Suku_Hubla"
+   },
+   "language": {
+    "glottocode": "hupl1238",
+    "slug": "bahasa-hupla",
+    "title": "Hupla"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-iha",
+   "title": "Suku Iha",
+   "names": [],
+   "listed": [
+    "Iha"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Mbaham–Matta",
+    "url": "https://id.wikipedia.org/wiki/Suku_Mbaham%E2%80%93Matta"
+   },
+   "language": {
+    "glottocode": "ihaa1241",
+    "slug": "bahasa-iha",
+    "title": "Iha"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-irarutu",
+   "title": "Suku Irarutu",
+   "names": [],
+   "listed": [
+    "Irarutu (Kaimana)",
+    "Irarutu (Teluk Bintuni)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [
+    "kaimana",
+    "teluk-bintuni"
+   ],
+   "wikipedia": {
+    "title": "Suku Irarutu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Irarutu"
+   },
+   "language": {
+    "glottocode": "irar1238",
+    "slug": "bahasa-irarutu",
+    "title": "Irarutu"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-irires",
+   "title": "Suku Irires",
+   "names": [],
+   "listed": [
+    "Irires"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-iwaro",
+   "title": "Suku Iwaro",
+   "names": [],
+   "listed": [
+    "Iwaro (Matemani)"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kais",
+   "title": "Suku Kais",
+   "names": [],
+   "listed": [
+    "Kais"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Kais",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kais"
+   },
+   "language": {
+    "glottocode": "kais1235",
+    "slug": "bahasa-kais",
+    "title": "Kais"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kakaib",
+   "title": "Suku Kakaib",
+   "names": [],
+   "listed": [
+    "Kakaib"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kamindip",
+   "title": "Suku Kamindip",
+   "names": [],
+   "listed": [
+    "Kamindip"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kamoro",
+   "title": "Suku Kamoro",
+   "names": [],
+   "listed": [
+    "Kamoro"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "deiyai",
+    "mimika"
+   ],
+   "wikipedia": {
+    "title": "Suku Kamoro",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kamoro"
+   },
+   "language": {
+    "glottocode": "kamo1255",
+    "slug": "bahasa-kamoro",
+    "title": "Kamoro"
+   },
+   "existing": true
+  },
+  {
+   "slug": "suku-kanum",
+   "title": "Suku Kanum",
+   "names": [],
+   "listed": [
+    "Kanum"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": {
+    "title": "Suku Kanum",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kanum"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kapitiauw",
+   "title": "Suku Kapitiauw",
+   "names": [],
+   "listed": [
+    "Kapitiauw"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kapori",
+   "title": "Suku Kapori",
+   "names": [],
+   "listed": [
+    "Kapori"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kapo1250",
+    "slug": "bahasa-kapori",
+    "title": "Kapori"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-karas",
+   "title": "Suku Karas",
+   "names": [
+    "Kalamang",
+    "Uruangnirin"
+   ],
+   "listed": [
+    "Kalamang (Karas Laut)",
+    "Uruangnirin (Karas Darat)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kasaut",
+   "title": "Suku Kasaut",
+   "names": [],
+   "listed": [
+    "Kasaut"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kaureh",
+   "title": "Suku Kaureh",
+   "names": [],
+   "listed": [
+    "Kaureh"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Kaureh",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kaureh"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kauwol",
+   "title": "Suku Kauwol",
+   "names": [],
+   "listed": [
+    "Kauwol"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kawe",
+   "title": "Suku Kawe",
+   "names": [],
+   "listed": [
+    "Kawe"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Ma'ya",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ma'ya"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kawera",
+   "title": "Suku Kawera",
+   "names": [
+    "Kauwera"
+   ],
+   "listed": [
+    "Kauwera"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kauw1242",
+    "slug": "bahasa-kauwera",
+    "title": "Kauwera"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kawiyet",
+   "title": "Suku Kawiyet",
+   "names": [],
+   "listed": [
+    "Kawiyet"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kayagar",
+   "title": "Suku Kayagar",
+   "names": [],
+   "listed": [
+    "Kayagar"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "mappi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kaya1328",
+    "slug": "bahasa-kayagar",
+    "title": "Kayagar"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kayu-pulau",
+   "title": "Suku Kayu Pulau",
+   "names": [
+    "Kayu Batu"
+   ],
+   "listed": [
+    "Kayu Pulau/Kayu Batu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kota-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Kayu Pulau",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kayu_Pulau"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-keder",
+   "title": "Suku Keder",
+   "names": [],
+   "listed": [
+    "Keder"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kemtuk",
+   "title": "Suku Kemtuk",
+   "names": [
+    "Kwansu"
+   ],
+   "listed": [
+    "Kemtuk/Kwansu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ketengban",
+   "title": "Suku Ketengban",
+   "names": [],
+   "listed": [
+    "Ketengban"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": {
+    "title": "Suku Ketengban",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ketengban"
+   },
+   "language": {
+    "glottocode": "kete1254",
+    "slug": "bahasa-ketengban",
+    "title": "Ketengban"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kimaam",
+   "title": "Suku Kimaam",
+   "names": [],
+   "listed": [
+    "Kimaam"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": {
+    "title": "Suku Kimaam",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kimaam"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kimki",
+   "title": "Suku Kimki",
+   "names": [],
+   "listed": [
+    "Kimki"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": {
+    "title": "Suku Kimki",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kimki"
+   },
+   "language": {
+    "glottocode": "kimk1238",
+    "slug": "bahasa-kimki",
+    "title": "Kimki"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kimyal",
+   "title": "Suku Kimyal",
+   "names": [],
+   "listed": [
+    "Kimyal (Korupun-Sela)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": {
+    "title": "Suku Kimyal",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kimyal"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kirikiri",
+   "title": "Suku Kirikiri",
+   "names": [
+    "Kiri-kiri"
+   ],
+   "listed": [
+    "Kiri-kiri"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kiri1256",
+    "slug": "bahasa-kirikiri",
+    "title": "Kirikiri"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kofei",
+   "title": "Suku Kofei",
+   "names": [],
+   "listed": [
+    "Kofei"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kofe1239",
+    "slug": "bahasa-kofei",
+    "title": "Kofei"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-koiwai",
+   "title": "Suku Koiwai",
+   "names": [],
+   "listed": [
+    "Koiwai"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kombai",
+   "title": "Suku Kombai",
+   "names": [],
+   "listed": [
+    "Kombai"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Kombai",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kombai"
+   },
+   "language": {
+    "glottocode": "komb1274",
+    "slug": "bahasa-kombai",
+    "title": "Kombai"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-konda",
+   "title": "Suku Konda",
+   "names": [
+    "Yaben Konda"
+   ],
+   "listed": [
+    "Yaben Konda"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kopkaka",
+   "title": "Suku Kopkaka",
+   "names": [],
+   "listed": [
+    "Kopkaka (Seredala, Kwer, Tokuni/Dajub, Burumakok)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kopk1238",
+    "slug": "bahasa-kopkaka",
+    "title": "Kopkaka"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-korowai",
+   "title": "Suku Korowai",
+   "names": [],
+   "listed": [
+    "Korowai (Arubkor, Klufo)",
+    "Korowai"
+   ],
+   "provinces": [
+    "papua-pegunungan",
+    "papua-selatan"
+   ],
+   "regencies": [
+    "yahukimo",
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Korowai",
+    "url": "https://id.wikipedia.org/wiki/Suku_Korowai"
+   },
+   "language": {
+    "glottocode": "koro1312",
+    "slug": "bahasa-korowai",
+    "title": "Korowai"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kotogut",
+   "title": "Suku Kotogut",
+   "names": [],
+   "listed": [
+    "Kotogut (Tsakwambo)"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kuri",
+   "title": "Suku Kuri",
+   "names": [],
+   "listed": [
+    "Kuri (Kaimana)",
+    "Kuri (Teluk Bintuni)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [
+    "kaimana",
+    "teluk-bintuni"
+   ],
+   "wikipedia": {
+    "title": "Suku Kuri",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kuri"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kurudu",
+   "title": "Suku Kurudu",
+   "names": [],
+   "listed": [
+    "Kurudu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": {
+    "title": "Suku Kurudu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kurudu"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kwabaki",
+   "title": "Suku Kwabaki",
+   "names": [],
+   "listed": [
+    "Kwabaki"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "tolikara"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-kwerisa",
+   "title": "Suku Kwerisa",
+   "names": [],
+   "listed": [
+    "Kwerisa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Kwerisa",
+    "url": "https://id.wikipedia.org/wiki/Suku_Kwerisa"
+   },
+   "language": {
+    "glottocode": "kwer1264",
+    "slug": "bahasa-kwerisa",
+    "title": "Kwerisa"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kwesten",
+   "title": "Suku Kwesten",
+   "names": [],
+   "listed": [
+    "Kwesten"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "kwes1245",
+    "slug": "bahasa-kwesten",
+    "title": "Kwesten"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-kwiyon",
+   "title": "Suku Kwiyon",
+   "names": [],
+   "listed": [
+    "Kwiyon"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "tolikara"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-laganyan",
+   "title": "Suku Laganyan",
+   "names": [],
+   "listed": [
+    "Laganyan"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Laganyan",
+    "url": "https://id.wikipedia.org/wiki/Suku_Laganyan"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-lairawa",
+   "title": "Suku Lairawa",
+   "names": [],
+   "listed": [
+    "Lairawa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-lani",
+   "title": "Suku Lani",
+   "names": [],
+   "listed": [
+    "Lani"
+   ],
+   "provinces": [
+    "papua-pegunungan",
+    "papua-tengah"
+   ],
+   "regencies": [
+    "tolikara",
+    "puncak",
+    "puncak-jaya"
+   ],
+   "wikipedia": {
+    "title": "Suku Lani",
+    "url": "https://id.wikipedia.org/wiki/Suku_Lani"
+   },
+   "language": {
+    "glottocode": "west2594",
+    "slug": "bahasa-western-dani",
+    "title": "Lani"
+   },
+   "existing": true
+  },
+  {
+   "slug": "suku-lepki",
+   "title": "Suku Lepki",
+   "names": [],
+   "listed": [
+    "Lepki"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": {
+    "title": "Suku Lepki",
+    "url": "https://id.wikipedia.org/wiki/Suku_Lepki"
+   },
+   "language": {
+    "glottocode": "lepk1238",
+    "slug": "bahasa-lepki",
+    "title": "Lepki"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-liki",
+   "title": "Suku Liki",
+   "names": [],
+   "listed": [
+    "Liki"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-madewana",
+   "title": "Suku Madewana",
+   "names": [],
+   "listed": [
+    "Madewana"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Madewana",
+    "url": "https://id.wikipedia.org/wiki/Suku_Madewana"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-mairasi",
+   "title": "Suku Mairasi",
+   "names": [],
+   "listed": [
+    "Mairasi (Kaimana)",
+    "Mairasi (Teluk Wondama)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [
+    "kaimana",
+    "teluk-wondama"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "nucl1594",
+    "slug": "bahasa-mairasi",
+    "title": "Mairasi"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-maklew",
+   "title": "Suku Maklew",
+   "names": [],
+   "listed": [
+    "Maklew"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "makl1246",
+    "slug": "bahasa-maklew",
+    "title": "Maklew"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-mander",
+   "title": "Suku Mander",
+   "names": [],
+   "listed": [
+    "Mander"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Mander",
+    "url": "https://id.wikipedia.org/wiki/Suku_Mander"
+   },
+   "language": {
+    "glottocode": "mand1443",
+    "slug": "bahasa-mander",
+    "title": "Mander"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-mandobo",
+   "title": "Suku Mandobo",
+   "names": [
+    "Kaeti"
+   ],
+   "listed": [
+    "Kaeti (Mandobo)"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": {
+    "title": "Suku Wambon",
+    "url": "https://id.wikipedia.org/wiki/Suku_Wambon"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-manem",
+   "title": "Suku Manem",
+   "names": [],
+   "listed": [
+    "Manem"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-manirem",
+   "title": "Suku Manirem",
+   "names": [],
+   "listed": [
+    "Manirem"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-maniwak",
+   "title": "Suku Maniwak",
+   "names": [],
+   "listed": [
+    "Maniwak"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Maniwak",
+    "url": "https://id.wikipedia.org/wiki/Suku_Maniwak"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-mapia",
+   "title": "Suku Mapia",
+   "names": [],
+   "listed": [
+    "Mapia"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "supiori"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-marau",
+   "title": "Suku Marau",
+   "names": [],
+   "listed": [
+    "Marau"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "mara1397",
+    "slug": "bahasa-marau",
+    "title": "Marau"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-marembori",
+   "title": "Suku Marembori",
+   "names": [],
+   "listed": [
+    "Marembori"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-maremgi",
+   "title": "Suku Maremgi",
+   "names": [],
+   "listed": [
+    "Maremgi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-marind",
+   "title": "Suku Marind",
+   "names": [],
+   "listed": [
+    "Marind (Bian Marind, Marind Deg, Marind Laut)"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": {
+    "title": "Suku Marind",
+    "url": "https://id.wikipedia.org/wiki/Suku_Marind"
+   },
+   "language": {
+    "glottocode": "nucl1622",
+    "slug": "bahasa-marind",
+    "title": "Marind"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-marori",
+   "title": "Suku Marori",
+   "names": [
+    "Maraori"
+   ],
+   "listed": [
+    "Maraori"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": {
+    "title": "Suku Marori",
+    "url": "https://id.wikipedia.org/wiki/Suku_Marori"
+   },
+   "language": {
+    "glottocode": "moro1289",
+    "slug": "bahasa-marori",
+    "title": "Marori"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-masimasi",
+   "title": "Suku Masimasi",
+   "names": [],
+   "listed": [
+    "Masimasi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-massep",
+   "title": "Suku Massep",
+   "names": [],
+   "listed": [
+    "Massep"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "mass1263",
+    "slug": "bahasa-massep",
+    "title": "Massep"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-matbat",
+   "title": "Suku Matbat",
+   "names": [],
+   "listed": [
+    "Matbat"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Matbat",
+    "url": "https://id.wikipedia.org/wiki/Suku_Matbat"
+   },
+   "language": {
+    "glottocode": "matb1237",
+    "slug": "bahasa-matbat",
+    "title": "Matbat"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-matlow",
+   "title": "Suku Matlow",
+   "names": [],
+   "listed": [
+    "Matlow"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Matlow",
+    "url": "https://id.wikipedia.org/wiki/Suku_Matlow"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-matta",
+   "title": "Suku Matta",
+   "names": [],
+   "listed": [
+    "Matta"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Mbaham–Matta",
+    "url": "https://id.wikipedia.org/wiki/Suku_Mbaham%E2%80%93Matta"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-maybrat",
+   "title": "Suku Maybrat",
+   "names": [],
+   "listed": [
+    "Maybrat"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Maybrat",
+    "url": "https://id.wikipedia.org/wiki/Suku_Maybrat"
+   },
+   "language": {
+    "glottocode": "maib1239",
+    "slug": "bahasa-maybrat",
+    "title": "Maybrat"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-mbaham",
+   "title": "Suku Mbaham",
+   "names": [],
+   "listed": [
+    "Mbaham"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Mbaham–Matta",
+    "url": "https://id.wikipedia.org/wiki/Suku_Mbaham%E2%80%93Matta"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-mee",
+   "title": "Suku Mee",
+   "names": [],
+   "listed": [
+    "Mee"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "deiyai",
+    "dogiyai",
+    "nabire",
+    "paniai"
+   ],
+   "wikipedia": {
+    "title": "Suku Mee",
+    "url": "https://id.wikipedia.org/wiki/Suku_Mee"
+   },
+   "language": null,
+   "existing": true
+  },
+  {
+   "slug": "suku-mek",
+   "title": "Suku Mek",
+   "names": [],
+   "listed": [
+    "Mek (Nalca/Hmanggona, Nipsan, Kosarek)",
+    "Mek"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo",
+    "pegunungan-bintang"
+   ],
+   "wikipedia": {
+    "title": "Suku Mek",
+    "url": "https://id.wikipedia.org/wiki/Suku_Mek"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-mekwei",
+   "title": "Suku Mekwei",
+   "names": [
+    "Mooi",
+    "Kendate"
+   ],
+   "listed": [
+    "Mekwei/Mooi/Kendate"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "mekw1241",
+    "slug": "bahasa-mekwei",
+    "title": "Mekwei"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-meyah",
+   "title": "Suku Meyah",
+   "names": [],
+   "listed": [
+    "Meyah (Pegunungan Arfak)",
+    "Meyah (Manokwari)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [
+    "pegunungan-arfak",
+    "manokwari"
+   ],
+   "wikipedia": {
+    "title": "Suku Meyah",
+    "url": "https://id.wikipedia.org/wiki/Suku_Meyah"
+   },
+   "language": {
+    "glottocode": "meya1236",
+    "slug": "bahasa-meyah",
+    "title": "Meyah"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-miere",
+   "title": "Suku Miere",
+   "names": [],
+   "listed": [
+    "Miere (Kaimana)",
+    "Miere (Teluk Wondama)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [
+    "kaimana",
+    "teluk-wondama"
+   ],
+   "wikipedia": {
+    "title": "Suku Miere",
+    "url": "https://id.wikipedia.org/wiki/Suku_Miere"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-miyah",
+   "title": "Suku Miyah",
+   "names": [],
+   "listed": [
+    "Miyah"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Karon",
+    "url": "https://id.wikipedia.org/wiki/Suku_Karon"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-moi",
+   "title": "Suku Moi",
+   "names": [],
+   "listed": [
+    "Moi"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Moi",
+    "url": "https://id.wikipedia.org/wiki/Suku_Moi"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-moire",
+   "title": "Suku Moire",
+   "names": [],
+   "listed": [
+    "Moire (Pegunungan Arfak)",
+    "Moire (Manokwari)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [
+    "pegunungan-arfak",
+    "manokwari"
+   ],
+   "wikipedia": {
+    "title": "Suku Moile",
+    "url": "https://id.wikipedia.org/wiki/Suku_Moile"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-molof",
+   "title": "Suku Molof",
+   "names": [
+    "Poule"
+   ],
+   "listed": [
+    "Molof/Poule"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "molo1262",
+    "slug": "bahasa-molof",
+    "title": "Molof"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-mombum",
+   "title": "Suku Mombum",
+   "names": [],
+   "listed": [
+    "Mombum"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "nucl1452",
+    "slug": "bahasa-mombum",
+    "title": "Mombum"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-momuna",
+   "title": "Suku Momuna",
+   "names": [],
+   "listed": [
+    "Momuna (Samboga, Intamaja)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "momu1241",
+    "slug": "bahasa-momuna",
+    "title": "Momuna"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-moni",
+   "title": "Suku Moni",
+   "names": [],
+   "listed": [
+    "Moni"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "intan-jaya",
+    "paniai"
+   ],
+   "wikipedia": {
+    "title": "Suku Moni",
+    "url": "https://id.wikipedia.org/wiki/Suku_Moni"
+   },
+   "language": {
+    "glottocode": "moni1261",
+    "slug": "bahasa-moni",
+    "title": "Moni"
+   },
+   "existing": true
+  },
+  {
+   "slug": "suku-moor",
+   "title": "Suku Moor",
+   "names": [
+    "Mora"
+   ],
+   "listed": [
+    "Mora"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "nabire"
+   ],
+   "wikipedia": {
+    "title": "Suku Moor",
+    "url": "https://id.wikipedia.org/wiki/Suku_Moor"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-moru",
+   "title": "Suku Moru",
+   "names": [],
+   "listed": [
+    "Moru"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-moskona",
+   "title": "Suku Moskona",
+   "names": [],
+   "listed": [
+    "Moskona"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Moskona",
+    "url": "https://id.wikipedia.org/wiki/Suku_Moskona"
+   },
+   "language": {
+    "glottocode": "mosk1236",
+    "slug": "bahasa-moskona",
+    "title": "Moskona"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-mpur",
+   "title": "Suku Mpur",
+   "names": [],
+   "listed": [
+    "Mpur"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Mpur",
+    "url": "https://id.wikipedia.org/wiki/Suku_Mpur"
+   },
+   "language": {
+    "glottocode": "mpur1239",
+    "slug": "bahasa-mpur",
+    "title": "Mpur"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-munggui",
+   "title": "Suku Munggui",
+   "names": [],
+   "listed": [
+    "Munggui"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "mung1269",
+    "slug": "bahasa-munggui",
+    "title": "Munggui"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-murop",
+   "title": "Suku Murop",
+   "names": [
+    "Iwur"
+   ],
+   "listed": [
+    "Murop",
+    "Iwur (Murop)"
+   ],
+   "provinces": [
+    "papua-pegunungan",
+    "papua-selatan"
+   ],
+   "regencies": [
+    "pegunungan-bintang",
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-muyu",
+   "title": "Suku Muyu",
+   "names": [],
+   "listed": [
+    "Muyu"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "mappi",
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Muyu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Muyu"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-nafri",
+   "title": "Suku Nafri",
+   "names": [],
+   "listed": [
+    "Nafri"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kota-jayapura"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "nafr1241",
+    "slug": "bahasa-nafri",
+    "title": "Nafri"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-nakabui",
+   "title": "Suku Nakabui",
+   "names": [],
+   "listed": [
+    "Nakabui"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-namblong",
+   "title": "Suku Namblong",
+   "names": [
+    "Nimboran"
+   ],
+   "listed": [
+    "Namblong/Nimboran"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Namblong",
+    "url": "https://id.wikipedia.org/wiki/Suku_Namblong"
+   },
+   "language": {
+    "glottocode": "nucl1633",
+    "slug": "bahasa-nimboran",
+    "title": "Nimboran"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-namla",
+   "title": "Suku Namla",
+   "names": [],
+   "listed": [
+    "Namla"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "naml1240",
+    "slug": "bahasa-namla",
+    "title": "Namla"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-napiti",
+   "title": "Suku Napiti",
+   "names": [],
+   "listed": [
+    "Napiti"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-narau",
+   "title": "Suku Narau",
+   "names": [],
+   "listed": [
+    "Narau"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "nara1265",
+    "slug": "bahasa-narau",
+    "title": "Narau"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-nduga",
+   "title": "Suku Nduga",
+   "names": [],
+   "listed": [
+    "Nduga"
+   ],
+   "provinces": [
+    "papua-pegunungan",
+    "papua-tengah"
+   ],
+   "regencies": [
+    "jayawijaya",
+    "intan-jaya",
+    "puncak",
+    "puncak-jaya"
+   ],
+   "wikipedia": {
+    "title": "Suku Nduga",
+    "url": "https://id.wikipedia.org/wiki/Suku_Nduga"
+   },
+   "language": {
+    "glottocode": "ndug1245",
+    "slug": "bahasa-nduga",
+    "title": "Nduga"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-nerigo",
+   "title": "Suku Nerigo",
+   "names": [
+    "Yaben Nerigo"
+   ],
+   "listed": [
+    "Nerigo (Mugim)",
+    "Yaben Nerigo (Yahadian)"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ngalik",
+   "title": "Suku Ngalik",
+   "names": [],
+   "listed": [
+    "Ngalik (Silimo)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": {
+    "title": "Suku Ngalik",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ngalik"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ngalum",
+   "title": "Suku Ngalum",
+   "names": [],
+   "listed": [
+    "Ngalum"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": {
+    "title": "Suku Ngalum",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ngalum"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-nggem",
+   "title": "Suku Nggem",
+   "names": [],
+   "listed": [
+    "Nggem"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "tolikara"
+   ],
+   "wikipedia": {
+    "title": "Suku Nggem",
+    "url": "https://id.wikipedia.org/wiki/Suku_Nggem"
+   },
+   "language": {
+    "glottocode": "ngge1241",
+    "slug": "bahasa-nggem",
+    "title": "Nggem"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-ningrum",
+   "title": "Suku Ningrum",
+   "names": [],
+   "listed": [
+    "Ningrum"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-nisa",
+   "title": "Suku Nisa",
+   "names": [],
+   "listed": [
+    "Nisa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-nopuk",
+   "title": "Suku Nopuk",
+   "names": [],
+   "listed": [
+    "Nopuk"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Nopuk",
+    "url": "https://id.wikipedia.org/wiki/Suku_Nopuk"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-obini",
+   "title": "Suku Obini",
+   "names": [],
+   "listed": [
+    "Obini"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-obokuitai",
+   "title": "Suku Obokuitai",
+   "names": [],
+   "listed": [
+    "Obokuitai"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "obok1239",
+    "slug": "bahasa-obokuitai",
+    "title": "Obokuitai"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-obukain",
+   "title": "Suku Obukain",
+   "names": [],
+   "listed": [
+    "Obukain (Diuwe)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": {
+    "title": "Suku Diuwe",
+    "url": "https://id.wikipedia.org/wiki/Suku_Diuwe"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-oburauw",
+   "title": "Suku Oburauw",
+   "names": [],
+   "listed": [
+    "Oburauw"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-okpari",
+   "title": "Suku Okpari",
+   "names": [],
+   "listed": [
+    "Okpari"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-onate",
+   "title": "Suku Onate",
+   "names": [
+    "Yawa Unat"
+   ],
+   "listed": [
+    "Yawa Unat"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": {
+    "title": "Suku Onate",
+    "url": "https://id.wikipedia.org/wiki/Suku_Onate"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-ormu",
+   "title": "Suku Ormu",
+   "names": [],
+   "listed": [
+    "Ormu"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Ormu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ormu"
+   },
+   "language": {
+    "glottocode": "ormu1248",
+    "slug": "bahasa-ormu",
+    "title": "Ormu"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-orya",
+   "title": "Suku Orya",
+   "names": [],
+   "listed": [
+    "Orya"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Orya",
+    "url": "https://id.wikipedia.org/wiki/Suku_Orya"
+   },
+   "language": {
+    "glottocode": "orya1242",
+    "slug": "bahasa-orya",
+    "title": "Orya"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-otodemo",
+   "title": "Suku Otodemo",
+   "names": [],
+   "listed": [
+    "Otodemo"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-paito",
+   "title": "Suku Paito",
+   "names": [
+    "Bosumbaso"
+   ],
+   "listed": [
+    "Paito",
+    "Bosumbaso"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Paito",
+    "url": "https://id.wikipedia.org/wiki/Suku_Paito"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-papasena",
+   "title": "Suku Papasena",
+   "names": [],
+   "listed": [
+    "Papasena"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Papasena",
+    "url": "https://id.wikipedia.org/wiki/Suku_Papasena"
+   },
+   "language": {
+    "glottocode": "papa1269",
+    "slug": "bahasa-papasena",
+    "title": "Papasena"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-papuma",
+   "title": "Suku Papuma",
+   "names": [],
+   "listed": [
+    "Papuma"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "papu1251",
+    "slug": "bahasa-papuma",
+    "title": "Papuma"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-podena",
+   "title": "Suku Podena",
+   "names": [],
+   "listed": [
+    "Podena"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-pombawo",
+   "title": "Suku Pombawo",
+   "names": [],
+   "listed": [
+    "Pombawo (Pom)"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-roon",
+   "title": "Suku Roon",
+   "names": [],
+   "listed": [
+    "Roon"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Roon",
+    "url": "https://id.wikipedia.org/wiki/Suku_Roon"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-roswar",
+   "title": "Suku Roswar",
+   "names": [],
+   "listed": [
+    "Roswar"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-samarokena",
+   "title": "Suku Samarokena",
+   "names": [],
+   "listed": [
+    "Samarokena"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "sama1240",
+    "slug": "bahasa-samarokena",
+    "title": "Samarokena"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-sauri",
+   "title": "Suku Sauri",
+   "names": [],
+   "listed": [
+    "Sauri"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "saur1251",
+    "slug": "bahasa-sauri",
+    "title": "Sauri"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-sause",
+   "title": "Suku Sause",
+   "names": [
+    "Sauso"
+   ],
+   "listed": [
+    "Sause/Sauso"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "saus1247",
+    "slug": "bahasa-sause",
+    "title": "Sause"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-sawi",
+   "title": "Suku Sawi",
+   "names": [],
+   "listed": [
+    "Sawi"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "asmat"
+   ],
+   "wikipedia": {
+    "title": "Suku Sawi",
+    "url": "https://id.wikipedia.org/wiki/Suku_Sawi"
+   },
+   "language": {
+    "glottocode": "sawi1257",
+    "slug": "bahasa-sawi",
+    "title": "Sawi"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-sebyar",
+   "title": "Suku Sebyar",
+   "names": [],
+   "listed": [
+    "Sebyar (Kemberan)",
+    "Sebyar (Damban)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Sebyar",
+    "url": "https://id.wikipedia.org/wiki/Suku_Sebyar"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-sedasi",
+   "title": "Suku Sedasi",
+   "names": [],
+   "listed": [
+    "Sedasi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-sempan",
+   "title": "Suku Sempan",
+   "names": [],
+   "listed": [
+    "Sempan"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "mimika"
+   ],
+   "wikipedia": {
+    "title": "Suku Sempan",
+    "url": "https://id.wikipedia.org/wiki/Suku_Sempan"
+   },
+   "language": {
+    "glottocode": "semp1241",
+    "slug": "bahasa-sempan",
+    "title": "Sempan"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-sentani",
+   "title": "Suku Sentani",
+   "names": [
+    "Bhuyaka"
+   ],
+   "listed": [
+    "Sentani",
+    "Sentani/Bhuyaka (Ralibhu, Nolobhu, Waibu)"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kota-jayapura",
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Sentani",
+    "url": "https://id.wikipedia.org/wiki/Suku_Sentani"
+   },
+   "language": {
+    "glottocode": "nucl1632",
+    "slug": "bahasa-sentani",
+    "title": "Sentani"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-serui",
+   "title": "Suku Serui",
+   "names": [
+    "Arui Sai"
+   ],
+   "listed": [
+    "Arui Sai"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": {
+    "title": "Suku Serui",
+    "url": "https://id.wikipedia.org/wiki/Suku_Serui"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-siromi",
+   "title": "Suku Siromi",
+   "names": [],
+   "listed": [
+    "Siromi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-skouw",
+   "title": "Suku Skouw",
+   "names": [],
+   "listed": [
+    "Skouw"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kota-jayapura"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-sobei",
+   "title": "Suku Sobei",
+   "names": [],
+   "listed": [
+    "Sobei"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Sobey",
+    "url": "https://id.wikipedia.org/wiki/Suku_Sobey"
+   },
+   "language": {
+    "glottocode": "sobe1238",
+    "slug": "bahasa-sobei",
+    "title": "Sobei"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-sougb",
+   "title": "Suku Sougb",
+   "names": [
+    "Sougb Bohon",
+    "Sougb Raw",
+    "Sougb Wepu"
+   ],
+   "listed": [
+    "Sougb (Pegunungan Arfak)",
+    "Sougb (Manokwari)",
+    "Sougb (Manokwari Selatan)",
+    "Sougb Bohon",
+    "Sougb Raw",
+    "Sougb Wepu"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [
+    "pegunungan-arfak",
+    "manokwari",
+    "manokwari-selatan"
+   ],
+   "wikipedia": {
+    "title": "Suku Souk",
+    "url": "https://id.wikipedia.org/wiki/Suku_Souk"
+   },
+   "language": {
+    "glottocode": "mani1235",
+    "slug": "bahasa-sougb",
+    "title": "Sougb"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-soviar",
+   "title": "Suku Soviar",
+   "names": [],
+   "listed": [
+    "Soviar"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-sumuri",
+   "title": "Suku Sumuri",
+   "names": [],
+   "listed": [
+    "Sumuri"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-tabla",
+   "title": "Suku Tabla",
+   "names": [],
+   "listed": [
+    "Tabla"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Tabla",
+    "url": "https://id.wikipedia.org/wiki/Suku_Tabla"
+   },
+   "language": {
+    "glottocode": "tabl1243",
+    "slug": "bahasa-tabla",
+    "title": "Tabla"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-tafaro",
+   "title": "Suku Tafaro",
+   "names": [],
+   "listed": [
+    "Tafaro"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-tagusom",
+   "title": "Suku Tagusom",
+   "names": [],
+   "listed": [
+    "Tagusom"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-taikat",
+   "title": "Suku Taikat",
+   "names": [
+    "Abrab"
+   ],
+   "listed": [
+    "Abrab/Taikat"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": {
+    "title": "Suku Taikat",
+    "url": "https://id.wikipedia.org/wiki/Suku_Taikat"
+   },
+   "language": {
+    "glottocode": "taik1255",
+    "slug": "bahasa-taikat",
+    "title": "Taikat"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-tamagario",
+   "title": "Suku Tamagario",
+   "names": [],
+   "listed": [
+    "Tamagario"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "mappi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "tama1336",
+    "slug": "bahasa-tamagario",
+    "title": "Tamagario"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-tarpia",
+   "title": "Suku Tarpia",
+   "names": [],
+   "listed": [
+    "Tarpia"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Demta",
+    "url": "https://id.wikipedia.org/wiki/Suku_Demta"
+   },
+   "language": {
+    "glottocode": "tarp1240",
+    "slug": "bahasa-tarpia",
+    "title": "Tarpia"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-tauraf",
+   "title": "Suku Tauraf",
+   "names": [],
+   "listed": [
+    "Tauraf"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-tause",
+   "title": "Suku Tause",
+   "names": [],
+   "listed": [
+    "Tause"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "taus1252",
+    "slug": "bahasa-tause",
+    "title": "Tause"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-tehit",
+   "title": "Suku Tehit",
+   "names": [],
+   "listed": [
+    "Tehit"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Tehit",
+    "url": "https://id.wikipedia.org/wiki/Suku_Tehit"
+   },
+   "language": {
+    "glottocode": "tehi1237",
+    "slug": "bahasa-tehit",
+    "title": "Tehit"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-tepin",
+   "title": "Suku Tepin",
+   "names": [],
+   "listed": [
+    "Tepin"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Banlol",
+    "url": "https://id.wikipedia.org/wiki/Suku_Banlol"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-tobati",
+   "title": "Suku Tobati",
+   "names": [],
+   "listed": [
+    "Tobati"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kota-jayapura"
+   ],
+   "wikipedia": {
+    "title": "Suku Tobati",
+    "url": "https://id.wikipedia.org/wiki/Suku_Tobati"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-tofanma",
+   "title": "Suku Tofanma",
+   "names": [],
+   "listed": [
+    "Tofanma"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "tofa1246",
+    "slug": "bahasa-tofanma",
+    "title": "Tofanma"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-torweja",
+   "title": "Suku Torweja",
+   "names": [
+    "Taorikei"
+   ],
+   "listed": [
+    "Taorikei/Torweja"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": {
+    "title": "Suku Torweja",
+    "url": "https://id.wikipedia.org/wiki/Suku_Torweja"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-towe",
+   "title": "Suku Towe",
+   "names": [],
+   "listed": [
+    "Towe"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-trimuris",
+   "title": "Suku Trimuris",
+   "names": [],
+   "listed": [
+    "Trimuris"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "trim1239",
+    "slug": "bahasa-trimuris",
+    "title": "Trimuris"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-turu",
+   "title": "Suku Turu",
+   "names": [],
+   "listed": [
+    "Turu"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak",
+    "puncak-jaya"
+   ],
+   "wikipedia": {
+    "title": "Suku Turu",
+    "url": "https://id.wikipedia.org/wiki/Suku_Turu"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-umari",
+   "title": "Suku Umari",
+   "names": [
+    "Teluk Umar"
+   ],
+   "listed": [
+    "Teluk Umar"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "nabire"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-una",
+   "title": "Suku Una",
+   "names": [],
+   "listed": [
+    "Una"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "unaa1239",
+    "slug": "bahasa-una",
+    "title": "Una"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-una-ukam",
+   "title": "Suku Una Ukam",
+   "names": [],
+   "listed": [
+    "Una Ukam"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-usku",
+   "title": "Suku Usku",
+   "names": [],
+   "listed": [
+    "Usku"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "usku1243",
+    "slug": "bahasa-usku",
+    "title": "Usku"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-vitou",
+   "title": "Suku Vitou",
+   "names": [
+    "Takar"
+   ],
+   "listed": [
+    "Takar/Vitou"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "vito1235",
+    "slug": "bahasa-vitou",
+    "title": "Vitou"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-waili",
+   "title": "Suku Waili",
+   "names": [],
+   "listed": [
+    "Waili"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Banlol",
+    "url": "https://id.wikipedia.org/wiki/Suku_Banlol"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-waina",
+   "title": "Suku Waina",
+   "names": [],
+   "listed": [
+    "Waina"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wairata",
+   "title": "Suku Wairata",
+   "names": [],
+   "listed": [
+    "Wairata"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wakde",
+   "title": "Suku Wakde",
+   "names": [],
+   "listed": [
+    "Wakde"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-walak",
+   "title": "Suku Walak",
+   "names": [],
+   "listed": [
+    "Walak"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "jayawijaya"
+   ],
+   "wikipedia": {
+    "title": "Suku Walak",
+    "url": "https://id.wikipedia.org/wiki/Suku_Walak"
+   },
+   "language": {
+    "glottocode": "wala1269",
+    "slug": "bahasa-walak",
+    "title": "Walak"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-walsa",
+   "title": "Suku Walsa",
+   "names": [],
+   "listed": [
+    "Walsa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wambon",
+   "title": "Suku Wambon",
+   "names": [
+    "Mandobo"
+   ],
+   "listed": [
+    "Wambon / Mandobo"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Wambon",
+    "url": "https://id.wikipedia.org/wiki/Suku_Wambon"
+   },
+   "language": {
+    "glottocode": "wamb1259",
+    "slug": "bahasa-wambon",
+    "title": "Wambon"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-wamesa",
+   "title": "Suku Wamesa",
+   "names": [],
+   "listed": [
+    "Wamesa (Bintuni)",
+    "Wamesa (Wondama)"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Wamesa",
+    "url": "https://id.wikipedia.org/wiki/Suku_Wamesa"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wanggom",
+   "title": "Suku Wanggom",
+   "names": [],
+   "listed": [
+    "Wanggom"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Wanggom",
+    "url": "https://id.wikipedia.org/wiki/Suku_Wanggom"
+   },
+   "language": {
+    "glottocode": "wang1299",
+    "slug": "bahasa-wanggom",
+    "title": "Wanggom"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-wano",
+   "title": "Suku Wano",
+   "names": [],
+   "listed": [
+    "Wano"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "puncak",
+    "puncak-jaya"
+   ],
+   "wikipedia": {
+    "title": "Suku Wano",
+    "url": "https://id.wikipedia.org/wiki/Suku_Wano"
+   },
+   "language": {
+    "glottocode": "wano1243",
+    "slug": "bahasa-wano",
+    "title": "Wano"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-wares",
+   "title": "Suku Wares",
+   "names": [],
+   "listed": [
+    "Wares"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "ware1254",
+    "slug": "bahasa-wares",
+    "title": "Wares"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-waris",
+   "title": "Suku Waris",
+   "names": [],
+   "listed": [
+    "Waris"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "wari1266",
+    "slug": "bahasa-waris",
+    "title": "Waris"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-warkai",
+   "title": "Suku Warkai",
+   "names": [],
+   "listed": [
+    "Warkai"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "asmat"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-waropen",
+   "title": "Suku Waropen",
+   "names": [],
+   "listed": [
+    "Waropen"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "waropen"
+   ],
+   "wikipedia": {
+    "title": "Suku Waropen",
+    "url": "https://id.wikipedia.org/wiki/Suku_Waropen"
+   },
+   "language": {
+    "glottocode": "waro1242",
+    "slug": "bahasa-waropen",
+    "title": "Waropen"
+   },
+   "existing": true
+  },
+  {
+   "slug": "suku-warotai",
+   "title": "Suku Warotai",
+   "names": [],
+   "listed": [
+    "Warotai"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-warumba",
+   "title": "Suku Warumba",
+   "names": [],
+   "listed": [
+    "Warumba"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-waruri",
+   "title": "Suku Waruri",
+   "names": [],
+   "listed": [
+    "Waruri"
+   ],
+   "provinces": [
+    "papua-barat"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Waropen",
+    "url": "https://id.wikipedia.org/wiki/Suku_Waropen"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wate",
+   "title": "Suku Wate",
+   "names": [],
+   "listed": [
+    "Wate"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "nabire"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wawiyai",
+   "title": "Suku Wawiyai",
+   "names": [],
+   "listed": [
+    "Wawiyai"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Ma'ya",
+    "url": "https://id.wikipedia.org/wiki/Suku_Ma'ya"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wayer",
+   "title": "Suku Wayer",
+   "names": [],
+   "listed": [
+    "Wayer"
+   ],
+   "provinces": [
+    "papua-barat-daya"
+   ],
+   "regencies": [],
+   "wikipedia": {
+    "title": "Suku Wayer",
+    "url": "https://id.wikipedia.org/wiki/Suku_Wayer"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wekerig",
+   "title": "Suku Wekerig",
+   "names": [],
+   "listed": [
+    "Wekerig"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wikaya",
+   "title": "Suku Wikaya",
+   "names": [
+    "Wie-khaya"
+   ],
+   "listed": [
+    "Wie-khaya"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wolani",
+   "title": "Suku Wolani",
+   "names": [],
+   "listed": [
+    "Wolani"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "intan-jaya",
+    "paniai"
+   ],
+   "wikipedia": {
+    "title": "Suku Wolani",
+    "url": "https://id.wikipedia.org/wiki/Suku_Wolani"
+   },
+   "language": {
+    "glottocode": "wola1243",
+    "slug": "bahasa-wolani",
+    "title": "Wolani"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-wonawa",
+   "title": "Suku Wonawa",
+   "names": [],
+   "listed": [
+    "Wonawa"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wondau",
+   "title": "Suku Wondau",
+   "names": [],
+   "listed": [
+    "Wondau"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-wondei",
+   "title": "Suku Wondei",
+   "names": [],
+   "listed": [
+    "Wondei"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yab",
+   "title": "Suku Yab",
+   "names": [],
+   "listed": [
+    "Yab (Yelmek)"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yabanda",
+   "title": "Suku Yabanda",
+   "names": [],
+   "listed": [
+    "Yabanda"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yaffi",
+   "title": "Suku Yaffi",
+   "names": [
+    "Warlef",
+    "Jorop"
+   ],
+   "listed": [
+    "Warlef/Jorop/Yaffi"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "keerom"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yaghay",
+   "title": "Suku Yaghay",
+   "names": [],
+   "listed": [
+    "Yaghay"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "mappi"
+   ],
+   "wikipedia": {
+    "title": "Suku Yaghai",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yaghai"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yali",
+   "title": "Suku Yali",
+   "names": [],
+   "listed": [
+    "Yali (Yalimek/Inlom, Angguruk, Ninia)",
+    "Yali (Apahapsili, Abenaho, Gilika)"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "yahukimo",
+    "yalimo"
+   ],
+   "wikipedia": {
+    "title": "Suku Yali",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yali"
+   },
+   "language": null,
+   "existing": true
+  },
+  {
+   "slug": "suku-yamna",
+   "title": "Suku Yamna",
+   "names": [],
+   "listed": [
+    "Yamna"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yapen",
+   "title": "Suku Yapen",
+   "names": [],
+   "listed": [
+    "Yapen"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kepulauan-yapen"
+   ],
+   "wikipedia": {
+    "title": "Suku Yapen",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yapen"
+   },
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yarsun",
+   "title": "Suku Yarsun",
+   "names": [],
+   "listed": [
+    "Yarsun"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "sarmi"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yaur",
+   "title": "Suku Yaur",
+   "names": [],
+   "listed": [
+    "Yaur"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "nabire"
+   ],
+   "wikipedia": {
+    "title": "Suku Yaur",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yaur"
+   },
+   "language": {
+    "glottocode": "yaur1239",
+    "slug": "bahasa-yaur",
+    "title": "Yaur"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-yei",
+   "title": "Suku Yei",
+   "names": [],
+   "listed": [
+    "Yei"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "merauke"
+   ],
+   "wikipedia": {
+    "title": "Suku Yei",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yei"
+   },
+   "language": {
+    "glottocode": "yeii1239",
+    "slug": "bahasa-yei",
+    "title": "Yei"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-yerisiam",
+   "title": "Suku Yerisiam",
+   "names": [],
+   "listed": [
+    "Yerisiam"
+   ],
+   "provinces": [
+    "papua-tengah"
+   ],
+   "regencies": [
+    "nabire"
+   ],
+   "wikipedia": {
+    "title": "Suku Yerisiam",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yerisiam"
+   },
+   "language": {
+    "glottocode": "ires1239",
+    "slug": "bahasa-yerisiam",
+    "title": "Yerisiam"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-yetfa",
+   "title": "Suku Yetfa",
+   "names": [],
+   "listed": [
+    "Yetfa"
+   ],
+   "provinces": [
+    "papua-pegunungan"
+   ],
+   "regencies": [
+    "pegunungan-bintang"
+   ],
+   "wikipedia": null,
+   "language": {
+    "glottocode": "yetf1238",
+    "slug": "bahasa-yetfa",
+    "title": "Yetfa"
+   },
+   "existing": false
+  },
+  {
+   "slug": "suku-yokari",
+   "title": "Suku Yokari",
+   "names": [],
+   "listed": [
+    "Yokari"
+   ],
+   "provinces": [
+    "papua"
+   ],
+   "regencies": [
+    "kabupaten-jayapura"
+   ],
+   "wikipedia": null,
+   "language": null,
+   "existing": false
+  },
+  {
+   "slug": "suku-yonggom",
+   "title": "Suku Yonggom",
+   "names": [],
+   "listed": [
+    "Yonggom"
+   ],
+   "provinces": [
+    "papua-selatan"
+   ],
+   "regencies": [
+    "boven-digoel"
+   ],
+   "wikipedia": {
+    "title": "Suku Yonggom",
+    "url": "https://id.wikipedia.org/wiki/Suku_Yonggom"
+   },
+   "language": null,
+   "existing": false
+  }
+ ]
+}

@@ -56,7 +56,7 @@ type WitnessRow={id:string;key:string;kind:string;title:string;url:string|null;p
 type AssertionRow={id:string;subject:string;predicate:string;object:string|null;value:string|null;qualifiers:string;layer:string;status:'proposed'|'accepted'|'rejected'|'withdrawn';logical:string;rank:string;visibility:'public'|'community';train:number;community_id:string|null;origin:string;proposer_id:string|null;reviewer_id:string|null;review_note:string|null;digest:string;revision:number;created:number;updated:number}
 type CoordinateRow={slug:string;size_lo:number|null;size_hi:number|null;size_basis:string|null;size_note:string|null;pace_lo:number|null;pace_hi:number|null;pace_basis:string|null;pace_note:string|null;level:string|null;level_basis:string|null;level_note:string|null;actor_id:string|null;revision:number;updated:number}
 type ExcerptView={id:string;digest:string;text:string;section:string;witness:{id:string;key:string;kind:string;title:string;url:string|null;publisher:string;licence:string|null;year:number|null;voice:string;communityId:string|null}}
-export type KnowledgeSeed={version:number;entities:{slug:string;class:string;title:string;description:string;aliases:string[];context:string|null;origin:string}[];witnesses:{key:string;kind:string;title:string;url:string;publisher:string;licence:string|null;year:number|null;language:string|null;voice:string;excerpts:{digest:string;text:string;section:string}[]}[];mentions:{entity:string;witness:string;excerpt:string;surface:string}[];assertions:{subject:string;predicate:string;object:string;status:'accepted'|'proposed';origin:string;support:{witness:string;excerpt:string}[]}[]}
+export type KnowledgeSeed={version:number;entities:{slug:string;class:string;title:string;description:string;aliases:string[];context:string|null;origin:string;previous?:string[]}[];witnesses:{key:string;kind:string;title:string;url:string;publisher:string;licence:string|null;year:number|null;language:string|null;voice:string;excerpts:{digest:string;text:string;section:string}[]}[];mentions:{entity:string;witness:string;excerpt:string;surface:string}[];assertions:{subject:string;predicate:string;object:string;status:'accepted'|'proposed';origin:string;support:{witness:string;excerpt:string}[]}[]}
 
 const slugOf=(v:unknown)=>{const s=text(v,80);if(!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(s))throw new Fault(400,'Invalid entity slug');return s}
 const oneOf=<T extends string>(v:unknown,list:readonly T[],what:string):T=>{if(!list.includes(v as T))throw new Fault(400,`Invalid ${what}`);return v as T}
@@ -186,7 +186,12 @@ export class KnowledgeModel{
    const now=s.clock(),count={entities:0,witnesses:0,excerpts:0,mentions:0,assertions:0,present:0,skipped:0}
    for(const e of seed.entities){
     const slug=slugOf(e.slug),cls=oneOf(e.class,classes,'entity class')
-    if(s.get('SELECT 1 FROM km_entities WHERE slug=?',slug)){count.present++;continue}
+    const had=s.get<{description:string}>('SELECT description FROM km_entities WHERE slug=?',slug)
+    if(had){
+     // A data fix replaces a description only while the row still holds one that the seed shipped earlier.
+     if(Array.isArray(e.previous)&&e.previous.includes(had.description)&&had.description!==e.description)s.run('UPDATE km_entities SET description=?,updated=? WHERE slug=? AND description=?',text(e.description??'',1000,true),now,slug,had.description)
+     count.present++;continue
+    }
     s.run("INSERT INTO km_entities VALUES(?,?,?,?,?,?,NULL,'accepted',NULL,?,NULL,?,1,?,?)",slug,cls,text(e.title,200),text(e.description??'',1000,true),JSON.stringify((e.aliases??[]).slice(0,20).map(a=>text(a,200))),e.context?slugOf(e.context):null,'seed:'+text(e.origin,40),actorId,now,now)
     count.entities++
    }

@@ -34,6 +34,7 @@ import { AtSpaces } from './spaces.ts'
 import { Captures3d } from './captures.ts'
 import { Saluran } from './saluran.ts'
 import { PetaKata } from './peta-kata.ts'
+import { withSuku } from './suku.ts'
 import { SemanticMap, type Embedder } from './semantic-map.ts'
 import { TopicClassifier } from './topic-classifier.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
@@ -104,7 +105,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const requests=new AksaraRequests(store,groups)
   const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups),situs=new Situs(store,groups,lembaga,kios)
   const tentang=new Tentang(store),entryCat=()=>entryCatalogue(entrySource())
-  const entrySource=()=>storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id),lembaga,kios})
+  const entrySource=()=>storeSource({store,groups,wiki,model,datasets,kamus,seed:withSuku(knowledgeSeed as KnowledgeSeed),catalogue:options.catalogue,localNames:id=>ask.localNames(id),lembaga,kios})
   const operatorReports=new OperatorReports(store,groups)
   const deployment=new Deployment(store,groups,()=>({origin:store.base,catalogue:options.catalogue,enrollment:options.enrollmentMode,sources:options.sources,stewardDid:options.stewardDid,model:options.modelRoute?.keyed??null}))
   const siteName=()=>deployment.name()
@@ -439,7 +440,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='retire'){if(typeof b.retired!=='boolean')throw new Fault(400,'Boolean required');result=groups.retireContext(caller,parts[2],b.retired)}
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='aliases')result=groups.setContextAliases(caller,parts[2],b.aliases)
       else if(path==='/v1/contexts/seed-labels')result=groups.applySeedLabels(caller,seedLabels as SeedLabels)
-      else if(path==='/v1/knowledge-model/seed')result=model.importSeed(caller,knowledgeSeed as KnowledgeSeed)
+      else if(path==='/v1/knowledge-model/seed')result=model.importSeed(caller,withSuku(knowledgeSeed as KnowledgeSeed))
       else if(path==='/v1/knowledge-model/entities')result=model.proposeEntity(caller,b)
       else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='entities'&&parts[4]==='coordinates')result=model.setCoordinates(caller,parts[3],b)
       else if(path==='/v1/datasets/seed')result=datasets.importSeed(caller,datasetSeed as DatasetSeed)

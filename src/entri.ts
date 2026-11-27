@@ -19,6 +19,7 @@
  * record, a public page with exactly its title. Contexts choose first, in slug order, so one page has one entry.
  */
 import viewerIndexJson from './catalogues/tanah-papua-viewer-index.json' with { type: 'json' }
+import { SUKU, SUKU_BY_LANGUAGE, SUKU_SOURCE, sukuWhere } from './suku.ts'
 import { indonesianOnly } from './aksara-voice.ts'
 
 export type EntryKind = 'tempat' | 'bentang-alam' | 'bahasa' | 'suku' | 'makhluk' | 'benda' | 'lembaga' | 'topik' | 'peristiwa' | 'gagasan' | 'praktik' | 'orang' | 'musim' | 'cerita' | 'halaman'
@@ -338,6 +339,12 @@ export async function readEntry(source: EntrySource, asked: string) {
     const label = PREDICATE_LABEL[s.predicate] ?? [s.predicate.replace(/-/g, ' '), 'Terhubung dengan']
     relations.push({ predicate: s.predicate, label: mine ? label[0] : label[1], entry: refOf(other) })
   }
+  // A people and its language from Wikipedia's list (src/suku.ts), both ways.
+  const people = n.kind === 'suku' ? SUKU.get(n.slug) ?? SUKU.get(n.things[0] ?? '') : undefined
+  const peopleLang = people?.language ? cat.nodes.get(people.language.slug) : undefined
+  if (peopleLang) relations.push({ predicate: 'dituturkan-oleh', label: 'Bahasa yang dipakai', entry: refOf(peopleLang) })
+  const speakers = c?.kind === 'language' ? (SUKU_BY_LANGUAGE.get(c.slug) ?? []).map((p) => cat.nodes.get(p.slug)).filter((x): x is Node => !!x) : []
+  for (const x of speakers) relations.push({ predicate: 'dituturkan-oleh', label: 'Dituturkan oleh', entry: refOf(x) })
   const near = new Map<string, number>()
   for (const m of cat.commons.comentions) {
     const other = n.things.includes(m.a) ? m.b : n.things.includes(m.b) ? m.a : ''
@@ -359,6 +366,16 @@ export async function readEntry(source: EntrySource, asked: string) {
   if (n.record?.entry?.scientificName) facts.push({ label: 'Nama ilmiah', value: n.record.entry.scientificName })
   else if (n.media.find((m) => m.kind === 'audio')?.subtitle && n.kind === 'makhluk' && !n.record) facts.push({ label: 'Nama ilmiah', value: n.media.find((m) => m.kind === 'audio')!.subtitle! })
   for (const f of primary?.facts ?? []) if (!['Model', 'Koordinat'].includes(f.label)) facts.push({ label: f.label, value: f.value })
+  // Peoples from Wikipedia's list (src/suku.ts): where the list puts them, their language and the source link.
+  if (people) {
+    facts.push({ label: 'Tercantum di', value: sukuWhere(people) })
+    const lang = peopleLang
+    if (lang) facts.push({ label: 'Bahasa', value: lang.title, href: hrefOf(lang.slug) })
+    facts.push(people.wikipedia ? { label: 'Sumber', value: 'Wikipedia, ' + people.wikipedia.title, href: people.wikipedia.url } : { label: 'Sumber', value: 'Wikipedia, ' + SUKU_SOURCE.title + ' (artikelnya belum ada)', href: SUKU_SOURCE.url })
+  }
+  if (speakers.length) {
+    if (speakers.length) facts.push({ label: 'Suku', value: speakers.map((x) => x.title).join(', '), ...(speakers.length === 1 ? { href: hrefOf(speakers[0]!.slug) } : {}) })
+  }
 
   const communities = (detail ?? placeDetail)?.communities ?? []
   const glotto = c?.aliases.find((a) => a.startsWith('glottocode:'))?.slice(11)
