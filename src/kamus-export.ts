@@ -1,8 +1,18 @@
 /** Export of a community's checked Kamus: one CSV, or a CLDF Dictionary (https://cldf.clld.org) in a zip with
- * entries, senses and examples. Every row keeps its source and licence. Rows from Steltenpool 1969 are CC BY-NC,
- * so the README in the zip says that the export may not be used in anything paid while those rows are in it. */
+ * entries, senses and examples. Every row keeps its source and licence. Rows under a NonCommercial licence
+ * (Steltenpool 1969, Papuan Voices) may be in a free export, and the README in the zip says that the export may
+ * not be used in anything paid while those rows are in it. An export that is offered for sale goes through
+ * `forSale`, which leaves those rows out (src/licence.ts). */
+import {forPaidOutput,assertPaidSafe,isNonCommercial} from './licence.ts'
 type Row={id:string;headword:string;variants:string[];forms:string[];gloss:string;definition:string;wordClass:string;domain:string;dialect:string;examples:{postId:string;text:string}[];source:string;licence:string;status:string;sensitive:boolean}
-export type KamusExport={language:string;languageName:string;community:string;rows:Row[]}
+export type KamusExport={language:string;languageName:string;community:string;rows:Row[];forSale?:boolean}
+
+/** The export as it may be offered for sale: only rows with a known licence that allows commercial use. */
+export function forSale(x:KamusExport):KamusExport{
+ const rows=forPaidOutput(x.rows)
+ assertPaidSafe('ekspor-dijual',rows)
+ return {...x,rows,forSale:true}
+}
 
 const cell=(v:unknown)=>{const t=String(v??'');return /[",\n\r]/.test(t)?'"'+t.replace(/"/g,'""')+'"':t}
 const csv=(head:string[],rows:unknown[][])=>[head,...rows].map(r=>r.map(cell).join(',')).join('\r\n')+'\r\n'
@@ -46,7 +56,8 @@ export function kamusCldf(x:KamusExport,base:string,today:string){
   },null,1),
   'README.txt':[`Kamus ${x.languageName}, ${x.community}. Exported ${today}.`,'',
    'These are the checked entries of a community dictionary. Each sense keeps its source and licence in the Source and Licence columns.',
-   'Senses from Steltenpool (1969) are licensed CC BY-NC 3.0. While they are in this export, it may not be used in anything paid.',
+   ...(x.forSale?['This copy is meant to be offered for sale, so it leaves out every sense under a NonCommercial licence and every sense without a known licence.']
+    :x.rows.some(r=>isNonCommercial(r.licence))?[`Some senses are under a NonCommercial licence (${[...new Set(x.rows.map(r=>r.licence).filter(isNonCommercial))].join(', ')}). While they are in this export, it may not be used in anything paid.`]:[]),
    'Senses written by members belong to the community that wrote them. Ask its stewards before reusing them elsewhere.',
    'Rows marked Sensitive were marked "Jangan disebarkan" by a steward. Keep them within the community.',''].join('\r\n'),
  }

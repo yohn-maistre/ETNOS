@@ -4,6 +4,8 @@
   // not yet checked by speakers) and from public community Kamus entries. Languages without data stay on the map
   // as faint rings, and nothing is filled in for them. A tap opens the language; up to three languages can be
   // compared side by side. Data loads per concept and per language, so a phone fetches only what it shows.
+  // Papuan Voices forms are CC BY-NC 4.0: each one carries the visible label NC_LABEL wherever it is shown, and on
+  // the map its word is set in italics with the same label in the legend.
   import { onMount, tick } from 'svelte'
   import { ArrowUpRight, Check, ChevronDown, ChevronRight, Link2, Plus, Search, Square, Volume2, X } from '@lucide/svelte'
   import { request } from './api'
@@ -14,8 +16,9 @@
 
   type Concept = { key: string; id: string; english: string; concepticon: number; leipzigJakarta: number | null; count: number }
   type Lang = { code: string; slug: string; name: string; glottologName: string; family: string; concepts: number; community: { id: string; title: string } | null }
-  type Dataset = { key: string; name: string; citation: string; url: string; licence: string }
-  type Word = { lang: string; concept: string; form: string; value?: string; dataset: string; ref: number; variety?: string; param: string; row: string }
+  type Dataset = { key: string; name: string; citation: string; url: string; licence: string; nonCommercial?: boolean }
+  type Word = { lang: string; concept: string; form: string; value?: string; dataset: string; licence?: string; nc?: true; ref: number; variety?: string; param: string; row: string }
+  const NC_LABEL = 'CC BY-NC 4.0 · tidak untuk penggunaan komersial'
   type CommunityWord = { id: string; lang: string; communityId: string; communityTitle: string; lemma: string; gloss: string; pos: string; state: 'checked' | 'seed' | 'proposed'; voice: { id: string; url: string; durationMs: number; speaker: string } | null }
   type Lookup = { concept: { key: string; id: string; english: string } | null; refs: string[]; words: Word[]; community: CommunityWord[] }
   type LangData = { language: Lang; refs: string[]; words: Word[]; community: CommunityWord[] }
@@ -80,8 +83,9 @@
     languages.flatMap((l) => {
       const at = POINT_BY_SLUG.get(l.slug)
       if (!at) return []
-      const form = communityByLang.get(l.code)?.[0]?.lemma ?? show(wordsByLang.get(l.code)?.[0]?.form ?? '')
-      return [{ code: l.code, name: l.name, x: at.x, y: at.y, region: at.region, slot: familySlots.get(l.family) ?? 0, form, richness: l.concepts }]
+      const com = communityByLang.get(l.code)?.[0], pub = wordsByLang.get(l.code)?.[0]
+      const form = com?.lemma ?? show(pub?.form ?? '')
+      return [{ code: l.code, name: l.name, x: at.x, y: at.y, region: at.region, slot: familySlots.get(l.family) ?? 0, form, richness: l.concepts, nc: !com && !!pub?.nc }]
     }),
   )
   const withWord = $derived(points.filter((p) => p.form).length)
@@ -129,11 +133,11 @@
     const ready = compare.map((c) => langData[c]).filter((d): d is LangData => !!d)
     if (!ready.length) return []
     const byLang = ready.map((d) => {
-      const m = new Map<string, string[]>()
-      for (const w of d.words) m.set(w.concept, [...(m.get(w.concept) ?? []), show(w.form)])
+      const m = new Map<string, { text: string; nc: boolean }[]>()
+      for (const w of d.words) m.set(w.concept, [...(m.get(w.concept) ?? []), { text: show(w.form), nc: !!w.nc }])
       for (const w of d.community) {
         const c = concepts.find((x) => fold(w.gloss).startsWith(fold(x.id)))
-        if (c) m.set(c.key, [w.lemma, ...(m.get(c.key) ?? [])])
+        if (c) m.set(c.key, [{ text: w.lemma, nc: false }, ...(m.get(c.key) ?? [])])
       }
       return m
     })
@@ -371,6 +375,7 @@
       <ul class="pk-legend" aria-label="Arti warna titik">
         {#each legend.rows.filter((r) => r.count) as r (r.slot)}<li><i class="pk-dot f{r.slot}" aria-hidden="true"></i>{r.label} <small>{fmt(r.count)}</small></li>{/each}
         <li><i class="pk-ring" aria-hidden="true"></i>Belum ada data <small>{fmt(legend.none)}</small></li>
+        {#if inRegion.some((p) => p.nc && p.form)}<li><span class="pk-nc-form">kata miring</span>Papuan Voices, {NC_LABEL}</li>{/if}
       </ul>
 
       <div class="pk-card-slot" bind:this={card}>
@@ -403,6 +408,7 @@
                   <li>
                     <span class="pk-form">{show(w.form)}</span>
                     <span class="pk-tag">Belum diperiksa penutur</span>
+                    {#if w.nc}<span class="pk-tag pk-nc">{NC_LABEL}</span>{/if}
                     <p class="pk-src">{detailLine(w, lookup?.refs ?? [])}</p>
                   </li>
                 {/each}
@@ -433,11 +439,12 @@
                   {#each concepts as c (c.key)}
                     {@const ws = selectedData.words.filter((w) => w.concept === c.key)}
                     {#if ws.length}
-                      <li><button type="button" class:on={c.key === conceptKey} onclick={() => pickConcept(c.key)}>{c.id}</button><span>{ws.map((w) => show(w.form)).join(', ')}</span></li>
+                      <li><button type="button" class:on={c.key === conceptKey} onclick={() => pickConcept(c.key)}>{c.id}</button><span>{#each ws as w, i (w.row)}{i ? ', ' : ''}<span class:pk-nc-form={w.nc}>{show(w.form)}</span>{/each}</span></li>
                     {/if}
                   {/each}
                 </ul>
                 <p class="obs-foot">Semua kata ini dari daftar kata terbitan dan belum diperiksa penutur. Sumbernya {[...new Set(selectedData.words.map((w) => datasetByKey.get(w.dataset)?.name ?? w.dataset))].join(', ')}.</p>
+                {#if selectedData.words.some((w) => w.nc)}<p class="obs-foot"><span class="pk-nc-form">Kata miring</span> berasal dari Papuan Voices, {NC_LABEL}.</p>{/if}
               {:else if langError}
                 <p class="obs-note" role="alert">{langError}</p>
               {:else}
@@ -491,7 +498,7 @@
                 {#each visibleRows as r (r.concept.key)}
                   <tr class:on={r.concept.key === conceptKey}>
                     <th scope="row"><button type="button" class="pk-rowbtn" onclick={() => pickConcept(r.concept.key)}>{r.concept.id}</button></th>
-                    {#each r.cells as cell, i (compare[i])}<td>{#if cell.length}{cell.join(', ')}{:else}<span class="pk-none">belum ada</span>{/if}</td>{/each}
+                    {#each r.cells as cell, i (compare[i])}<td>{#if cell.length}{#each cell as f, j (j)}{j ? ', ' : ''}<span class:pk-nc-form={f.nc}>{f.text}</span>{/each}{:else}<span class="pk-none">belum ada</span>{/if}</td>{/each}
                   </tr>
                 {/each}
               </tbody>
@@ -501,6 +508,7 @@
             <button type="button" class="pk-btn pk-more" onclick={() => (showAllRows = !showAllRows)}>{showAllRows ? 'Tampilkan 20 kata saja' : `Tampilkan semua ${compareRows.length} kata`}</button>
           {/if}
           <p class="obs-foot">Kata dari daftar kata terbitan, belum diperiksa penutur. Ketuk nama bahasa di kepala tabel untuk melihat sumber setiap kata.</p>
+          {#if compareRows.some((r) => r.cells.some((c) => c.some((f) => f.nc)))}<p class="obs-foot"><span class="pk-nc-form">Kata miring</span> berasal dari Papuan Voices, {NC_LABEL}.</p>{/if}
         {:else}
           <p class="obs-note">Bahasa yang dipilih belum punya kata dasar dalam data.</p>
         {/if}
@@ -524,8 +532,8 @@
             <li>
               <button type="button" class="obs-row pk-row" class:sel={r.code === selected} onclick={() => pickLanguage(r.code, true)}>
                 <span class="obs-row-main">
-                  <span class="pk-row-top"><span class="obs-row-title">{r.lang?.name ?? r.code}</span><span class="pk-row-forms">{[...r.community.map((w) => w.lemma), ...r.words.map((w) => show(w.form))].join(', ')}</span></span>
-                  <span class="obs-row-meta">{familyLine(r.lang, r.code)} · {r.community.length ? 'Kamus komunitas' : (datasetByKey.get(r.words[0]?.dataset ?? '')?.name ?? '')}</span>
+                  <span class="pk-row-top"><span class="obs-row-title">{r.lang?.name ?? r.code}</span><span class="pk-row-forms">{#each [...r.community.map((w) => ({ key: w.id, text: w.lemma, nc: false })), ...r.words.map((w) => ({ key: w.row, text: show(w.form), nc: !!w.nc }))] as f, i (f.key)}{i ? ', ' : ''}<span class:pk-nc-form={f.nc}>{f.text}</span>{/each}</span></span>
+                  <span class="obs-row-meta">{familyLine(r.lang, r.code)} · {r.community.length ? 'Kamus komunitas' : [...new Set(r.words.map((w) => datasetByKey.get(w.dataset)?.name ?? w.dataset))].join(', ')}{#if r.words.some((w) => w.nc)} · {NC_LABEL}{/if}</span>
                 </span>
                 <i class="pk-dot f{familySlots.get(r.lang?.family ?? '') ?? 0}" aria-hidden="true"></i>
               </button>
@@ -612,6 +620,9 @@
   .pk-forms li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
   .pk-form { font-size: 24px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; overflow-wrap: anywhere; }
   .pk-tag { display: inline-flex; align-items: center; min-height: 24px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--border); font-size: 12.5px; color: var(--muted-foreground); }
+  .pk-nc { color: var(--foreground); border-style: dashed; }
+  .pk-nc-form { font-style: italic; }
+  .pk-legend .pk-nc-form { font-weight: 600; }
   .pk-tag[data-state='checked'] { border-color: transparent; background: color-mix(in oklab, var(--brand, var(--foreground)) 12%, var(--background)); color: var(--foreground); }
   .pk-src { flex-basis: 100%; margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--muted-foreground); }
   .pk-src a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }

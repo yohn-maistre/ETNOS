@@ -2,8 +2,9 @@
  *
  * Two kinds of words, always kept apart:
  * - Published wordlists (seed/kamus/tanah-papua-wordlists.json, built by scripts/kamus/build-wordlists.py from
- *   TransNewGuinea.org, ABVD and Berry & Berry 1987, all CC BY 4.0). Each form keeps its dataset, original
- *   publication, variety and dataset row. None of them has been checked by speakers yet.
+ *   TransNewGuinea.org, ABVD and Berry & Berry 1987, all CC BY 4.0, and Papuan Voices, CC BY-NC 4.0). Each form
+ *   keeps its dataset, licence, original publication, variety and dataset row. None of them has been checked by
+ *   speakers yet. Papuan Voices forms carry `nc: true` and stay out of anything paid (src/licence.ts).
  * - Public, non-sensitive community Kamus entries (never private communities, never sensitive words), with their
  *   public voice clips. Their state comes from Periksa.
  *
@@ -15,13 +16,13 @@ import {norm,type KamusLexicon} from './kamus.ts'
 
 type WordlistConcept={key:string;concepticon:number;id:string;english:string;leipzigJakarta:number|null}
 type WordlistLanguage={slug:string;name:string;forms:(string|number)[][]}
-type WordlistFile={datasets:{key:string;name:string;citation:string;url:string;licence:string}[];concepts:WordlistConcept[];refs:string[];varieties:string[];params:string[];languages:Record<string,WordlistLanguage>}
+type WordlistFile={datasets:{key:string;name:string;citation:string;url:string;licence:string;nonCommercial?:boolean}[];concepts:WordlistConcept[];refs:string[];varieties:string[];params:string[];languages:Record<string,WordlistLanguage>}
 const WL=wordlists as unknown as WordlistFile
 
 export type PetaConcept={key:string;id:string;english:string;concepticon:number;leipzigJakarta:number|null;count:number}
 export type PetaLanguage={code:string;slug:string;name:string;glottologName:string;family:string;concepts:number;community:{id:string;title:string}|null}
 /** One published form. `ref` indexes the response's refs table. */
-export type PublishedWord={lang:string;concept:string;form:string;value?:string;dataset:string;ref:number;variety?:string;param:string;row:string}
+export type PublishedWord={lang:string;concept:string;form:string;value?:string;dataset:string;licence:string;nc?:true;ref:number;variety?:string;param:string;row:string}
 export type CommunityWord={id:string;lang:string;communityId:string;communityTitle:string;lemma:string;gloss:string;pos:string;state:'checked'|'seed'|'proposed';source:string;licence:string;voice:{id:string;url:string;durationMs:number;speaker:string}|null}
 
 /** Glottolog's English name for languages that the catalogue lists by their own name. The catalogue calls
@@ -51,8 +52,9 @@ function indexes(){
   const list:PublishedWord[]=[]
   for(const f of l.forms){
    const [ci,form,di,ri,vi,pi,row,value]=f as [number,string,number,number,number,number,string,string|undefined]
-   const c=CONCEPTS[ci]!
-   const w:PublishedWord={lang:code,concept:c.key,form,dataset:DATASETS[di]!.key,ref:ri,param:WL.params[pi]!,row}
+   const c=CONCEPTS[ci]!,d=DATASETS[di]!
+   const w:PublishedWord={lang:code,concept:c.key,form,dataset:d.key,licence:d.licence,ref:ri,param:WL.params[pi]!,row}
+   if(d.nonCommercial)w.nc=true
    if(value)w.value=value
    const v=WL.varieties[vi];if(v)w.variety=v
    list.push(w)

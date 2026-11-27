@@ -191,7 +191,7 @@ test('Peta Kata: joins public non-sensitive Kamus + voice clips and isolates pri
 
   const lookupRes=await handler(jsonReq('GET','/v1/peta-kata?concept=air'))
   assert.equal(lookupRes.status,200)
-  const lookup=await lookupRes.json() as {community:{lemma:string;lang:string;voice:{id:string}|null}[];words:{lang:string;form:string;dataset:string;ref:number}[];refs:string[]}
+  const lookup=await lookupRes.json() as {community:{lemma:string;lang:string;voice:{id:string}|null}[];words:{lang:string;form:string;dataset:string;ref:number;licence:string}[];refs:string[]}
   const uwo=lookup.community.find(w=>w.lemma==='uwo')
   assert.ok(uwo,'public word uwo should appear')
   assert.equal(uwo.lang,'ekar1243')
@@ -201,7 +201,7 @@ test('Peta Kata: joins public non-sensitive Kamus + voice clips and isolates pri
   assert.ok(!lookup.words.some(w=>w.form==='sakralair'||w.form==='warprivat'))
   // Published forms carry their dataset and original publication.
   assert.ok(lookup.words.length>100)
-  for(const w of lookup.words){assert.ok(['tng','abvd','berry1987'].includes(w.dataset));assert.equal(typeof lookup.refs[w.ref],'string')}
+  for(const w of lookup.words){assert.ok(['tng','abvd','berry1987','papuanvoices'].includes(w.dataset));assert.equal(typeof lookup.refs[w.ref],'string');assert.equal(w.licence,w.dataset==='papuanvoices'?'CC BY-NC 4.0':'CC BY 4.0')}
  }finally{store.close()}
 })
 
@@ -210,7 +210,9 @@ test('Peta Kata: published wordlists by concept and language, honest coverage, l
  try{
   const handler=api(store)
   const concepts=await (await handler(jsonReq('GET','/v1/peta-kata/concepts'))).json() as {datasets:{key:string;licence:string}[];concepts:{key:string;count:number}[];languages:{code:string;name:string;glottologName:string;concepts:number}[]}
-  assert.deepEqual(concepts.datasets.map(d=>d.licence),['CC BY 4.0','CC BY 4.0','CC BY 4.0'])
+  // Papuan Voices is the one NonCommercial dataset, and it says so (src/licence.ts keeps it out of anything paid).
+  assert.deepEqual(concepts.datasets.map(d=>d.licence),['CC BY 4.0','CC BY 4.0','CC BY 4.0','CC BY-NC 4.0'])
+  assert.deepEqual(concepts.datasets.filter(d=>(d as {nonCommercial?:boolean}).nonCommercial).map(d=>d.key),['papuanvoices'])
   assert.equal(concepts.languages.length,256)
   const empty=concepts.languages.filter(l=>l.concepts===0)
   assert.ok(empty.length>0&&empty.length<256,'languages without data stay listed with zero concepts')

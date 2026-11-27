@@ -2,6 +2,7 @@
   // Kamus komunitas: the words a community uses, from written sources and from its own conversations. Words found
   // in conversation become Periksa cards once Aksara suggests a meaning; members decide, and the entry follows the
   // card. Stewards turn machine reading on, pick the language and start each step by hand.
+  import { licenceLabel } from './licence.ts'
   import { Search, BookOpen, ChevronDown } from '@lucide/svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
@@ -233,7 +234,7 @@
         <footer class="kamus-sources">
           <BookOpen size={14} aria-hidden="true" />
           <div>
-            {#each Object.entries(language.sources) as [k, s] (k)}<p>{#if s.url}<a href={s.url} target="_blank" rel="noopener">{s.citation}</a>{:else}{s.citation}{/if} Lisensi {s.licence}.</p>{/each}
+            {#each Object.entries(language.sources) as [k, s] (k)}<p>{#if s.url}<a href={s.url} target="_blank" rel="noopener">{s.citation}</a>{:else}{s.citation}{/if} Lisensi {licenceLabel(s.licence)}.</p>{/each}
             {#if language.sources.steltenpool1969}<p>Arti dari Steltenpool 1969 ditulis dengan ejaan lama dan disalin dari hasil pindai, jadi sebagian bisa keliru.</p>
             {:else}<p>Kata dari sumber tertulis berasal dari daftar kata terbitan dan belum diperiksa penutur. Artinya diambil dari nama konsep dalam daftar itu.</p>{/if}
             <p>Kata yang ditemukan di percakapan tidak dikirim ke sumber mana pun.</p>

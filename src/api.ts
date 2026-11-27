@@ -25,7 +25,7 @@ import {Periksa} from './periksa.ts'
 import {Kamus,glossPrompt,parseGlosses} from './kamus.ts'
 import {kamusLexicon} from './kamus-data.ts'
 import {KamusAsk,type ConceptList} from './kamus-ask.ts'
-import {kamusCsv,kamusCldf} from './kamus-export.ts'
+import {kamusCsv,kamusCldf,forSale} from './kamus-export.ts'
 import leipzigJakarta from '../seed/kamus/leipzig-jakarta-100.json' with { type: 'json' }
 import type {Models} from './models.ts'
 import { Media } from './media.ts'
@@ -266,7 +266,8 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='today')result=ask.today(authenticated(),parts[2])
         else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='suffixes'){store.requireSteward(authenticated(),parts[2]);result=ask.suffixes(parts[2])}
         else if(parts.length===5&&parts[1]==='communities'&&parts[3]==='kamus'&&parts[4]==='export'){
-          const x=ask.exportRows(authenticated(),parts[2]),day=new Date(store.clock()).toISOString().slice(0,10),name='kamus-'+(x.languageName||'komunitas').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+day
+          // ?dijual=1 is the copy that may be offered for sale: NonCommercial rows are left out (src/licence.ts).
+          const all=ask.exportRows(authenticated(),parts[2]),x=url.searchParams.get('dijual')==='1'?forSale(all):all,day=new Date(store.clock()).toISOString().slice(0,10),name='kamus-'+(x.languageName||'komunitas').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+day
           const cldf=url.searchParams.get('format')==='cldf'
           return new Response(cldf?kamusCldf(x,store.base,day):kamusCsv(x,store.base),{status:200,headers:{'content-type':cldf?'application/zip':'text/csv; charset=utf-8','content-disposition':`attachment; filename="${name}${cldf?'-cldf.zip':'.csv'}"`,'cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})
         }

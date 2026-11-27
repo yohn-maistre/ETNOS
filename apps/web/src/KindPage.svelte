@@ -115,7 +115,7 @@
           </svg>
           <span class="kp-lang-map-text">
             <strong id="kp-lang-map-title">Peta Kata</strong>
-            <small>100 kata dasar dalam 187 bahasa, di titik setiap bahasa</small>
+            <small>100 kata dasar dalam 188 bahasa, di titik setiap bahasa</small>
           </span>
           <ArrowUpRight size={18} aria-hidden="true" />
         </a>

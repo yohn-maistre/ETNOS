@@ -60,7 +60,7 @@ Making a launch video, a deck or other media? Read [docs/launch/video-brief.md](
 
 - Do not copy AGPL donor implementations until licensing is settled, and record attribution for any reuse.
 - React Bits, Animate UI and Aceternity components are not ported. Copy nothing from dusk.bot, optmem or rust-pds-cloudflare. The identity host is a fork of Cirrus (MIT, attributed in `packages/pds/LICENSE.cirrus`). Photon (AGPL) lineage is noted in `apps/web/public/third-party-notices.txt`.
-- CC BY-NC sources (Steltenpool 1969, D-PLACE, BirdNET model weights) stay out of anything paid.
+- CC BY-NC sources (Steltenpool 1969, Papuan Voices, D-PLACE, BirdNET model weights) stay out of anything paid. Paid outputs take their rows through `src/licence.ts`.
 - The ink-print landscapes in `apps/web/public/branding/` are AI-generated illustrations made from owner-supplied references (see `artwork-manifest.json`). Do not present them as photographs or as traditional art.
 
 ### Engineering boundaries (kept from the first version of this file)

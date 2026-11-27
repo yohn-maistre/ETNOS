@@ -1,6 +1,7 @@
 <script lang="ts">
   // Cetak kamus & Lembar Ajar: the community's checked Kamus as a printable page or QR school worksheet,
   // for schools and kampung with poor signal. Every sense keeps its source and licence.
+  import { isNonCommercial } from './licence.ts'
   import { onMount } from 'svelte'
   import { Printer, X, QrCode, BookOpen } from '@lucide/svelte'
   import { Portal } from 'bits-ui'
@@ -85,7 +86,7 @@
         {/each}
       </div>
       <footer>
-        <p>{entries.length} kata. {#if licences.length}Lisensi sumber tertulis: {licences.join(', ')}. Kata dari Steltenpool 1969 berlisensi CC BY-NC, jadi cetakan ini tidak boleh dijual.{/if} Kata yang ditulis anggota adalah milik komunitas {title}.</p>
+        <p>{entries.length} kata. {#if licences.length}Lisensi sumber tertulis: {licences.join(', ')}. {#if licences.some(isNonCommercial)}Sebagian kata berlisensi {licences.filter(isNonCommercial).join(', ')}, jadi cetakan ini tidak boleh dijual.{/if}{/if} Kata yang ditulis anggota adalah milik komunitas {title}.</p>
       </footer>
     {/if}
   </article>

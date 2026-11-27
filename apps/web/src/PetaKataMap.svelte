@@ -11,6 +11,8 @@
     form: string
     /** Concepts this language has in the lists; 0 means no data at all. */
     richness: number
+    /** The form shown comes from a NonCommercial dataset (Papuan Voices); its label is set in italics. */
+    nc?: boolean
   }
 </script>
 
@@ -103,7 +105,7 @@
   const labels = $derived.by(() => {
     const fs = width < 520 ? 12 : 13
     const placed: { x: number; y: number; w: number; h: number }[] = []
-    const out: { code: string; text: string; x: number; y: number; anchor: 'start' | 'end'; strong: boolean }[] = []
+    const out: { code: string; text: string; x: number; y: number; anchor: 'start' | 'end'; strong: boolean; nc: boolean }[] = []
     const [vx, vy, vw, vh] = view
     const visible = points.filter((p) => p.form && p.x >= vx && p.x <= vx + vw && p.y >= vy && p.y <= vy + vh)
     const rank = (p: WordPoint) => (p.code === selected ? 0 : compareSet.has(p.code) ? 1 : 2)
@@ -121,7 +123,7 @@
         const hitsDot = dots.some((d) => d.x > box.x - 2 && d.x < box.x + box.w + 2 && d.y > box.y && d.y < box.y + box.h)
         if (hitsLabel || (hitsDot && rank(p) === 2)) continue
         placed.push(box)
-        out.push({ code: p.code, text, x: side === 'start' ? p.x + u(7) : p.x - u(7), y: p.y, anchor: side, strong: rank(p) < 2 })
+        out.push({ code: p.code, text, x: side === 'start' ? p.x + u(7) : p.x - u(7), y: p.y, anchor: side, strong: rank(p) < 2, nc: !!p.nc })
         break
       }
     }
@@ -167,7 +169,7 @@
       {/each}
     </g>
     <g class="labels" style:font-size={u(labels.fs) + 'px'} style:stroke-width={u(3.5) + 'px'}>
-      {#each labels.list as l (l.code)}<text x={l.x} y={l.y} text-anchor={l.anchor} dominant-baseline="central" class:strong={l.strong}>{l.text}</text>{/each}
+      {#each labels.list as l (l.code)}<text x={l.x} y={l.y} text-anchor={l.anchor} dominant-baseline="central" class:strong={l.strong} class:nc={l.nc}>{l.text}</text>{/each}
     </g>
   </svg>
 </div>
@@ -188,5 +190,6 @@
   .ring.sel { stroke: var(--foreground); }
   .labels text { fill: var(--foreground); font-weight: 560; paint-order: stroke; stroke: color-mix(in oklab, var(--foreground) 3%, var(--background)); stroke-linejoin: round; pointer-events: none; }
   .labels text.strong { font-weight: 750; }
+  .labels text.nc { font-style: italic; }
   @media (prefers-reduced-motion: reduce) { .land path { transition: none; } }
 </style>

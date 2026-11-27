@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Build the basic wordlists of Tanah Papua languages for Peta Kata and the Kamus seeds.
 
-Reads three Lexibank CLDF datasets (all CC BY 4.0) and writes seed/kamus/tanah-papua-wordlists.json:
+Reads four Lexibank CLDF datasets and writes seed/kamus/tanah-papua-wordlists.json. Three are CC BY 4.0
+(TransNewGuinea.org, ABVD, Berry & Berry 1987). Papuan Voices is CC BY-NC 4.0: its forms are marked
+non-commercial through their dataset, are capped on their own so the CC BY forms stay as they were, and must
+stay out of anything paid (src/licence.ts). The output holds
 one entry per language of the Tanah Papua catalogue (src/catalogues/tanah-papua.json, matched by Glottocode)
 and per concept of a basic list of about 100 concepts. Every form keeps its dataset, the form exactly as the
 dataset gives it, the value as given when it differs, the variety and the original publication.
@@ -10,7 +13,7 @@ Deterministic, no model, no network. Fetch the datasets first (see seed/kamus/RE
 
     python3 -I scripts/kamus/build-wordlists.py /tmp/etnos-src seed/kamus/tanah-papua-wordlists.json
 
-where /tmp/etnos-src holds tng/, abvd/ and berrywestpapuan/, each with the CLDF files languages.csv,
+where /tmp/etnos-src holds tng/, abvd/, berrywestpapuan/ and papuanvoices/, each with the CLDF files languages.csv,
 parameters.csv, forms.csv and sources.bib (abvd also contributions.csv).
 
 Licences of datasets that were checked and left out are listed in docs/research/peta-kata-sources-2026-11-27.md.
@@ -45,6 +48,14 @@ DATASETS = {
         'citation': 'Berry, Christine and Berry, Keith (1987): A survey of some West Papuan Phylum languages. Workpapers in Indonesian Languages and Cultures 4: 25-80. Lexibank CLDF release (lexibank/berrywestpapuan).',
         'url': 'https://github.com/lexibank/berrywestpapuan',
         'licence': 'CC BY 4.0',
+    },
+    'papuanvoices': {
+        'dir': 'papuanvoices',
+        'name': 'Papuan Voices',
+        'citation': 'Sawaki, Yusuf; Lekeneny, Jeanete; Arilaha, Apriani; Kirihio, Jimmi; Tutorop, Emanuel; Wabia, Boas; Mayor, Infak; Tabuni, Simon; Karesina, Stevani; Heggarty, Paul; Dërmaku-Appelganz, Darja (2020). Papuan Voices. https://papuanvoices.clld.org. Lexibank CLDF release (lexibank/papuanvoices).',
+        'url': 'https://github.com/lexibank/papuanvoices',
+        'licence': 'CC BY-NC 4.0',
+        'nonCommercial': True,
     },
 }
 
@@ -198,24 +209,29 @@ def main(src, dest):
             rows = forms[code][ci]
             # The main variety first (the one named as in Glottolog), then by dataset order; one row per spelling.
             rows.sort(key=lambda r: (r['variety'] != '', order.index(r['dataset'])))
-            seen = set()
-            for r in rows:
-                k = r['form'].lower()
-                if k in seen:
-                    continue
-                seen.add(k)
-                entry = [ci, r['form'], order.index(r['dataset']), at('refs', r['ref']), at('varieties', r['variety']), at('params', r['param']), r['dataId']]
-                if r['value']:
-                    entry.append(r['value'])
-                entries.append(entry)
-                if len(seen) >= MAX_FORMS:
-                    break
+            # Non-commercial datasets are capped on their own, after the open ones, so adding one never pushes
+            # an open form out of the list.
+            for nc in (False, True):
+                seen = set()
+                for r in rows:
+                    if bool(DATASETS[r['dataset']].get('nonCommercial')) != nc:
+                        continue
+                    k = r['form'].lower()
+                    if k in seen:
+                        continue
+                    seen.add(k)
+                    entry = [ci, r['form'], order.index(r['dataset']), at('refs', r['ref']), at('varieties', r['variety']), at('params', r['param']), r['dataId']]
+                    if r['value']:
+                        entry.append(r['value'])
+                    entries.append(entry)
+                    if len(seen) >= MAX_FORMS:
+                        break
         total += len(entries)
         out_langs[code] = {**languages[code], 'forms': entries}
 
     out = {
         'title': 'Daftar kata dasar bahasa-bahasa Tanah Papua',
-        'about': 'Basic wordlists of Tanah Papua languages from published CC BY 4.0 datasets, built by scripts/kamus/build-wordlists.py. Words are as published and have not been checked by speakers.',
+        'about': 'Basic wordlists of Tanah Papua languages from published datasets, built by scripts/kamus/build-wordlists.py. Three datasets are CC BY 4.0; Papuan Voices is CC BY-NC 4.0 and its forms must stay out of anything paid. Words are as published and have not been checked by speakers.',
         'built': '2026-11-27',
         'note': 'Indonesian concept labels come from the Leipzig-Jakarta list prompts where the concept is on that list; the others were written for ETNOS on 27 November 2026. Forms are copied as the datasets give them.',
         'format': 'languages[glottocode].forms holds [concept index, form, dataset index, refs index, varieties index, params index, dataset row id, value as given (only when it differs from the form)]. Empty strings in refs and varieties mean none.',

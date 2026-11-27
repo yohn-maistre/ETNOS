@@ -117,7 +117,7 @@
   const listKey = $derived(entry ? 'entri-' + entry.slug : '')
 
   // A language entry shows a few of its basic words from Peta Kata (published wordlists, not yet checked by speakers).
-  type BasicWord = { concept: string; form: string; dataset: string }
+  type BasicWord = { concept: string; form: string; dataset: string; nc?: true }
   const glottocode = $derived(ctx?.kind === 'language' ? (ctx.aliases.find((a) => a.startsWith('glottocode:'))?.slice(11) ?? '') : '')
   let basic = $state<{ code: string; words: BasicWord[]; count: number } | null>(null)
   const BASIC_SHOWN = ['air', 'api', 'rumah', 'babi', 'matahari', 'batu', 'makan', 'satu']
@@ -327,8 +327,9 @@
 
         {#if basic && basic.count}<section class="ep-section" aria-labelledby={uid + '-basic'}>
             <div class="ep-section-head"><h2 id={uid + '-basic'}>Kata dasar</h2><a class="ep-more" href={'/wiki/peta-kata?bahasa=' + basic.code}>Buka Peta Kata</a></div>
-            {#if basic.words.length}<dl class="ep-words">{#each basic.words as w (w.concept)}<div><dt>{w.form.replace(/_/g, ' ')}</dt><dd>{w.concept}</dd></div>{/each}</dl>{/if}
+            {#if basic.words.length}<dl class="ep-words">{#each basic.words as w (w.concept)}<div><dt class:ep-nc={w.nc}>{w.form.replace(/_/g, ' ')}</dt><dd>{w.concept}</dd></div>{/each}</dl>{/if}
             <p class="ep-note">Bahasa ini punya {basic.count} dari 100 kata dasar dalam daftar kata terbitan. Kata ini belum diperiksa penutur, dan sumber setiap kata ada di Peta Kata.</p>
+            {#if basic.words.some((w) => w.nc)}<p class="ep-note"><span class="ep-nc">Kata miring</span> berasal dari Papuan Voices, CC BY-NC 4.0 · tidak untuk penggunaan komersial.</p>{/if}
           </section>{/if}
 
         {#if group && group.languages.length > 1}<section class="ep-section ep-specimen" aria-labelledby={uid + '-langs'}>
@@ -541,4 +542,5 @@
     .ep-tabs button { flex: 1 0 auto; justify-content: center; padding: 0 6px; font-size: 14px; }
   }
   @media (prefers-reduced-motion: no-preference) { .ep-chip-main :global(svg:last-child) { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); } }
+  .ep-nc { font-style: italic; }
 </style>

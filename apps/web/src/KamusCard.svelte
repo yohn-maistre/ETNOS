@@ -2,6 +2,7 @@
   // The word card: one solid card in the accent colour that opens on any word of a post in a Kamus community. It asks
   // the open question about the word (Ya, Bukan, Tidak tahu), takes a word class, written meaning, and voice
   // pronunciation, and saves the word to Kata saya. One answer never decides anything.
+  import { licenceLabel } from './licence.ts'
   import { Dialog } from 'bits-ui'
   import { X, Check, Bookmark, BookmarkCheck, PencilLine, Mic } from '@lucide/svelte'
   import { request, type VoiceAttachment } from './api'
@@ -111,7 +112,7 @@
     } catch (e) { note = e instanceof Error ? e.message : 'Belum tersimpan.' } finally { busy = '' }
   }
   async function startWriting() { writing = true; await Promise.resolve(); field?.focus() }
-  const sourceLine = (s: { source: string; licence: string; page?: number | null }) => [s.source + (s.page ? ', hlm. ' + s.page : ''), s.licence].filter(Boolean).join(', ')
+  const sourceLine = (s: { source: string; licence: string; page?: number | null }) => [s.source + (s.page ? ', hlm. ' + s.page : ''), licenceLabel(s.licence)].filter(Boolean).join(', ')
   const checkedSense = $derived(word?.senses.find((s) => s.state === 'checked') ?? word?.stem?.senses.find((s) => s.state === 'checked') ?? null)
   const q = $derived(word?.question ?? null)
   const progress = $derived(q?.claim ? `${q.claim.yes} dari ${word?.quorum ?? 2} anggota menjawab ya` : '')
