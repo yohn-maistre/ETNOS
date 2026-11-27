@@ -162,6 +162,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(path==='/v1/peta-kata/concepts')result=petaKata.concepts()
         else if(path==='/v1/peta-kata/semantic')result=await semanticMap.build()
         else if(path==='/v1/peta-kata')result=petaKata.lookup({concept:url.searchParams.get('concept')??undefined,q:url.searchParams.get('q')??undefined})
+        else if(parts.length===4&&parts[1]==='peta-kata'&&parts[2]==='bahasa'){const r=petaKata.languageWords(decodeURIComponent(parts[3]));if(!r)throw new Fault(404,'Not found');result=r}
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='saluran')result=saluran.settings(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kurasi')result={annotations:saluran.listAnnotations(actor?.id,parts[2])}
         else if(path==='/v1/kurasi/annotations.jsonld')return new Response(JSON.stringify(saluran.exportJsonLd(url.searchParams.get('target')??undefined)),{status:200,headers:{'content-type':'application/ld+json; charset=utf-8','cache-control':'public, max-age=60','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}})

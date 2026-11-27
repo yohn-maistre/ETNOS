@@ -5,6 +5,7 @@ import {Etnos} from '../src/store.ts'
 import {api} from '../src/api.ts'
 import {contentInput} from '../src/post-content.ts'
 import {safeExternalHttpsUrl} from '../src/saluran.ts'
+import {kamusLexicon} from '../src/kamus-data.ts'
 import {image as TINY_WEBP} from './media-fixture.ts'
 
 const ORIGIN='https://etnos.test'
@@ -190,14 +191,51 @@ test('Peta Kata: joins public non-sensitive Kamus + voice clips and isolates pri
 
   const lookupRes=await handler(jsonReq('GET','/v1/peta-kata?concept=air'))
   assert.equal(lookupRes.status,200)
-  const lookup=await lookupRes.json() as {words:{lemma:string;languageCode:string;voice:{id:string}|null}[]}
-  const uwo=lookup.words.find(w=>w.lemma==='uwo')
+  const lookup=await lookupRes.json() as {community:{lemma:string;lang:string;voice:{id:string}|null}[];words:{lang:string;form:string;dataset:string;ref:number}[];refs:string[]}
+  const uwo=lookup.community.find(w=>w.lemma==='uwo')
   assert.ok(uwo,'public word uwo should appear')
-  assert.equal(uwo.languageCode,'ekar1243')
+  assert.equal(uwo.lang,'ekar1243')
   assert.equal(uwo.voice?.id,clip.id)
-  assert.ok(!lookup.words.some(w=>w.lemma==='sakralair'),'sensitive word must never appear in Peta Kata')
-  assert.ok(!lookup.words.some(w=>w.lemma==='warprivat'),'private community word must never appear in Peta Kata')
+  assert.ok(!lookup.community.some(w=>w.lemma==='sakralair'),'sensitive word must never appear in Peta Kata')
+  assert.ok(!lookup.community.some(w=>w.lemma==='warprivat'),'private community word must never appear in Peta Kata')
+  assert.ok(!lookup.words.some(w=>w.form==='sakralair'||w.form==='warprivat'))
+  // Published forms carry their dataset and original publication.
+  assert.ok(lookup.words.length>100)
+  for(const w of lookup.words){assert.ok(['tng','abvd','berry1987'].includes(w.dataset));assert.equal(typeof lookup.refs[w.ref],'string')}
  }finally{store.close()}
+})
+
+test('Peta Kata: published wordlists by concept and language, honest coverage, licensed datasets only',async()=>{
+ const store=new Etnos(':memory:',ORIGIN)
+ try{
+  const handler=api(store)
+  const concepts=await (await handler(jsonReq('GET','/v1/peta-kata/concepts'))).json() as {datasets:{key:string;licence:string}[];concepts:{key:string;count:number}[];languages:{code:string;name:string;glottologName:string;concepts:number}[]}
+  assert.deepEqual(concepts.datasets.map(d=>d.licence),['CC BY 4.0','CC BY 4.0','CC BY 4.0'])
+  assert.equal(concepts.languages.length,256)
+  const empty=concepts.languages.filter(l=>l.concepts===0)
+  assert.ok(empty.length>0&&empty.length<256,'languages without data stay listed with zero concepts')
+  assert.equal(concepts.languages.find(l=>l.code==='west2594')?.name,'Lani')
+  assert.equal(concepts.languages.find(l=>l.code==='west2594')?.glottologName,'Western Dani')
+  const babi=await (await handler(jsonReq('GET','/v1/peta-kata?concept=babi'))).json() as {concept:{key:string};words:{lang:string}[]}
+  assert.equal(babi.concept.key,'babi')
+  const langs=new Set(babi.words.map(w=>w.lang))
+  for(const l of empty)assert.ok(!langs.has(l.code),'no word is shown for a language without data')
+  // Old links with a Leipzig-Jakarta number still work.
+  assert.equal(((await (await handler(jsonReq('GET','/v1/peta-kata?concept=4'))).json()) as {concept:{key:string}}).concept.key,'air')
+  const lani=await (await handler(jsonReq('GET','/v1/peta-kata/bahasa/west2594'))).json() as {language:{name:string};words:{concept:string;form:string}[]}
+  assert.ok(lani.words.some(w=>w.concept==='air'))
+  assert.equal((await handler(jsonReq('GET','/v1/peta-kata/bahasa/abcd1234'))).status,404)
+ }finally{store.close()}
+})
+
+test('Kamus seeds include the published wordlists, marked as not yet checked by speakers',()=>{
+ const seeds=kamusLexicon().seeds
+ assert.ok(Object.keys(seeds).length>150)
+ const lani=seeds.west2594!
+ assert.ok(lani.entries.some(e=>e.gloss_id==='air'&&e.source==='tng'))
+ assert.equal(lani.sources.tng?.licence,'CC BY 4.0')
+ assert.match(lani.sources.tng?.note??'',/belum diperiksa penutur/)
+ assert.ok(seeds.ekar1243!.sources.steltenpool1969,'Ekari keeps its own seed')
 })
 
 test('PostContent: validates peluang and bagasi fields and enforces mutual exclusivity',()=>{

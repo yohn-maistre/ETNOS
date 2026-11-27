@@ -76,6 +76,8 @@ test('edge cache: non-allowlisted routes, POSTs, errors, and Set-Cookie response
  assert.equal(publicCacheTtl(new Request(ORIGIN+'/v1/dm/threads')),null)
  assert.equal(publicCacheTtl(new Request(ORIGIN+'/v1/communities/abc/posts')),null)
  assert.equal(publicCacheTtl(new Request(ORIGIN+'/v1/entri',{method:'POST'})),null)
+ assert.equal(publicCacheTtl(new Request(ORIGIN+'/v1/peta-kata/bahasa/west2594')),90)
+ assert.equal(publicCacheTtl(new Request(ORIGIN+'/v1/peta-kata/bahasa/../me')),null)
 
  const errRes=await cachedPublicApi(new Request(ORIGIN+'/v1/aksara/jadwal'),cache,async()=>new Response('err',{status:500}))
  assert.equal(errRes.status,500)

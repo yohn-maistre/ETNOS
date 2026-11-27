@@ -53,7 +53,7 @@
   const STATUS: [string, string][] = [['', 'Semua'], ['ditulis', 'Sudah ada tulisan'], ['belum', 'Belum ada tulisan'], ['diperiksa', 'Sudah diperiksa']]
   const meta = (e: IndexEntry) => [kind === 'semua' ? KIND_NAME[e.kind] : null, e.sub && e.sub !== KIND_NAME[e.kind] ? e.sub : null, e.article ? null : 'belum ada tulisan'].filter(Boolean).join(' · ')
 
-  // Mini atlas data for the Peta Bahasa & Semantik card folded inside /wiki/jenis/bahasa.
+  // Mini atlas data for the Peta Kata card folded inside /wiki/jenis/bahasa.
   const atlasBox = (atlas.box as number[]).join(' ')
   const atlasRegions = Object.entries(atlas.regions as Record<string, { d: string; x: number; y: number }>)
   const atlasLangs = atlas.langs as [string, number, number, string][]
@@ -61,7 +61,6 @@
   const langMapHref = (tampilan = '') => {
     const p = new URLSearchParams()
     if (tampilan) p.set('tampilan', tampilan)
-    if (sub) p.set('rumpun', sub)
     if (di) p.set('wilayah', di)
     const s = p.toString()
     return '/wiki/peta-kata' + (s ? '?' + s : '')
@@ -115,17 +114,15 @@
             {/each}
           </svg>
           <span class="kp-lang-map-text">
-            <strong id="kp-lang-map-title">Peta Bahasa & Semantik</strong>
-            <small>256 titik bahasa, 100 konsep dasar, suara & ruang semantik 3D</small>
+            <strong id="kp-lang-map-title">Peta Kata</strong>
+            <small>100 kata dasar dalam 187 bahasa, di titik setiap bahasa</small>
           </span>
           <ArrowUpRight size={18} aria-hidden="true" />
         </a>
         <div class="kp-lenses-wrap">
-          <div class="kp-lenses" aria-label="Buka peta bahasa dengan susunan">
-            <a href={langMapHref()}>Peta bahasa</a>
-            <a href={langMapHref('rumpun')}>Rumpun bahasa</a>
-            <a href={langMapHref('semantik')}>Ruang semantik 3D</a>
-            <a href={langMapHref('kelompok')}>Kelompok makna</a>
+          <div class="kp-lenses" aria-label="Buka Peta Kata">
+            <a href={langMapHref()}>Peta kata</a>
+            <a href={langMapHref('makna')}>Ruang makna</a>
           </div>
         </div>
       </section>
@@ -171,7 +168,7 @@
   .kp-subs a:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; border-radius: 12px; }
   .kp-subs a > span:last-child { overflow-wrap: anywhere; }
 
-  /* Peta Bahasa & Semantik card folded inside /wiki/jenis/bahasa (matches Peta pengetahuan card on /wiki). */
+  /* Peta Kata card folded inside /wiki/jenis/bahasa (matches Peta pengetahuan card on /wiki). */
   .kp-lang-map { display: grid; gap: 10px; margin: 0 var(--gutter) 20px; padding: 12px; border: 1px solid var(--border); border-radius: 18px; min-width: 0; }
   .kp-lang-map-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 8px; align-items: center; color: inherit; text-decoration: none; }
   .kp-lang-map-main svg { grid-column: 1 / -1; width: 100%; height: auto; aspect-ratio: 10 / 4.2; border-radius: 12px; background: color-mix(in oklab, var(--foreground) 3%, var(--background)); }

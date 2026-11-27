@@ -7,7 +7,7 @@
     'Posting mendukung teks, gambar, pesan suara, jajak pendapat, acara, penawaran Kios, kartu Peluang (beasiswa, hibah, kerja, pelatihan), dan Titip bagasi.',
     'Pesan suara mendukung rekaman langsung di peramban, pemutaran kecepatan 0,75x untuk belajar, Bantu tulis transkrip oleh komunitas, serta pembagian audio dari WhatsApp melalui PWA.',
     'Kamus komunitas menggarisbawahi kata bahasa daerah di dalam posting, menyediakan rekaman pelafalan, Mode belajar, Kata hari ini, ekspor CSV atau CLDF, dan cetakan Lembar Ajar ber-QR.',
-    'Peta Kata di /peta-kata menampilkan padanan kata dasar dari daftar Leipzig-Jakarta di atas peta 256 bahasa Tanah Papua beserta pelafalannya.',
+    'Peta Kata menampilkan 100 kata dasar dalam 187 dari 256 bahasa Tanah Papua di titik setiap bahasa, dari daftar kata terbitan dan kamus komunitas, beserta sumber dan pelafalannya.',
     'Ensiklopedia memuat halaman untuk tempat, bahasa, suku, spesies, bentang alam dan lembaga, lengkap dengan riwayat tinjauan, Peta Pengetahuan, katalog data dan sumber rujukan.',
     'Penampil layar penuh membuka foto spesimen, rekaman suara dan model 3D berformat .glb, .spz dan .ply dengan pin spasial 3D yang bisa diklik.',
     'Periksa memungkinkan anggota memeriksa klaim satu per satu dengan kartu geser sebelum hasil yang disepakati masuk ke Kamus atau Ensiklopedia.',

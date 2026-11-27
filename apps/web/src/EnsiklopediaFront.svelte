@@ -137,9 +137,9 @@
     const atlasSlide: CarouselSlide = {
       id: 'peta-kata-featured',
       href: '/wiki/peta-kata',
-      title: 'Peta Kata & Semantik Papua',
-      subtitle: '256 bahasa · dengar kata dasar dan jejaring koleksifikasi makna',
-      badge: 'Atlas bahasa',
+      title: 'Peta Kata',
+      subtitle: '100 kata dasar dalam 187 bahasa Tanah Papua, beserta sumbernya',
+      badge: 'Peta Kata',
       kind: 'atlas',
     }
     if (!visual.length) return [atlasSlide]
@@ -337,8 +337,8 @@
         <a class="ef-tool-card teal" href="/wiki/peta-kata">
           <span class="ef-tool-icon"><Compass size={20} aria-hidden="true" /></span>
           <span class="ef-tool-body">
-            <strong>Peta Kata & Semantik</strong>
-            <small>256 bahasa Papua · 100 konsep dasar, suara & koleksifikasi</small>
+            <strong>Peta Kata</strong>
+            <small>100 kata dasar dalam 187 bahasa Tanah Papua</small>
           </span>
           <ArrowUpRight size={16} class="ef-tool-go" aria-hidden="true" />
         </a>

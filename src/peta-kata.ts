@@ -1,65 +1,86 @@
-/** Peta Kata: Live Spoken Word Atlas across Tanah Papua.
+/** Peta Kata: the words for one basic concept across the languages of Tanah Papua, on a map.
  *
- * Joins the 100 Leipzig-Jakarta core concepts (Tadmor 2009, Concepticon CC BY 4.0) with:
- * - Public, non-sensitive community Kamus entries (never private communities, never sensitive words)
- * - Public, non-restricted voice clip pronunciations attached to those Kamus headwords
- * - Published seed wordlists (clearly labelled with their written source & licence)
- * - Tanah Papua Glottolog language metadata (slug, glottocode, family) for atlas plotting. */
-import conceptsFile from '../seed/kamus/leipzig-jakarta-100.json' with {type:'json'}
+ * Two kinds of words, always kept apart:
+ * - Published wordlists (seed/kamus/tanah-papua-wordlists.json, built by scripts/kamus/build-wordlists.py from
+ *   TransNewGuinea.org, ABVD and Berry & Berry 1987, all CC BY 4.0). Each form keeps its dataset, original
+ *   publication, variety and dataset row. None of them has been checked by speakers yet.
+ * - Public, non-sensitive community Kamus entries (never private communities, never sensitive words), with their
+ *   public voice clips. Their state comes from Periksa.
+ *
+ * Languages without data stay on the map as faint points; nothing is filled in for them. */
+import wordlists from '../seed/kamus/tanah-papua-wordlists.json' with {type:'json'}
 import tanahPapua from './catalogues/tanah-papua.json' with {type:'json'}
 import {EtnosCore} from './core.ts'
 import {norm,type KamusLexicon} from './kamus.ts'
 
-export type AtlasConcept={
- n:number
- concepticon:number
- gloss:string
- english:string
- id:string
- wordClass:string
- count:number
- voiceCount:number
-}
+type WordlistConcept={key:string;concepticon:number;id:string;english:string;leipzigJakarta:number|null}
+type WordlistLanguage={slug:string;name:string;forms:(string|number)[][]}
+type WordlistFile={datasets:{key:string;name:string;citation:string;url:string;licence:string}[];concepts:WordlistConcept[];refs:string[];varieties:string[];params:string[];languages:Record<string,WordlistLanguage>}
+const WL=wordlists as unknown as WordlistFile
 
-export type AtlasWord={
- id:string
- languageCode:string
- languageSlug:string|null
- languageName:string
- communityId:string|null
- communityTitle:string
- lemma:string
- gloss:string
- pos:string
- state:'checked'|'seed'|'proposed'
- source:string
- licence:string
- origin:'community'|'seed'
- voice:{id:string;url:string;durationMs:number;speaker:string}|null
-}
+export type PetaConcept={key:string;id:string;english:string;concepticon:number;leipzigJakarta:number|null;count:number}
+export type PetaLanguage={code:string;slug:string;name:string;glottologName:string;family:string;concepts:number;community:{id:string;title:string}|null}
+/** One published form. `ref` indexes the response's refs table. */
+export type PublishedWord={lang:string;concept:string;form:string;value?:string;dataset:string;ref:number;variety?:string;param:string;row:string}
+export type CommunityWord={id:string;lang:string;communityId:string;communityTitle:string;lemma:string;gloss:string;pos:string;state:'checked'|'seed'|'proposed';source:string;licence:string;voice:{id:string;url:string;durationMs:number;speaker:string}|null}
 
-type LangMeta={slug:string;title:string;glottocode:string;description:string}
+/** Local names the data holds for languages that Glottolog lists under an English name. Lani is the name of
+ * the people and language (seed wiki page "Bahasa Lani", from id.wikipedia; seed labels note that Lani is
+ * Western Dani). Add a name here only with such a source. */
+const LOCAL_NAMES:Record<string,string>={west2594:'Lani'}
 
-const LANG_BY_CODE=new Map<string,LangMeta>()
+type Meta={slug:string;title:string;family:string}
+const META=new Map<string,Meta>()
 for(const e of (tanahPapua.entries as Array<{slug:string;title:string;kind:string;description?:string;aliases?:string[]}>)){
  if(e.kind!=='language')continue
- const alias=(e.aliases??[]).find(a=>a.startsWith('glottocode:'))
- if(!alias)continue
- const code=alias.slice(11)
- LANG_BY_CODE.set(code,{slug:e.slug,title:e.title,glottocode:code,description:e.description??''})
+ const code=(e.aliases??[]).find(a=>a.startsWith('glottocode:'))?.slice(11)
+ if(!code)continue
+ const family=/^Rumpun (.+?) menurut Glottolog/.exec(e.description??'')?.[1]??''
+ META.set(code,{slug:e.slug,title:e.title,family})
 }
 
-const CONCEPTS=(conceptsFile.concepts as Array<{n:number;concepticon:number;gloss:string;english:string;id:string;class:string}>)
+const CONCEPTS=WL.concepts
+const CONCEPT_BY_KEY=new Map(CONCEPTS.map(c=>[c.key,c]))
+const DATASETS=WL.datasets
 
-function glossMatches(gloss:string,terms:string[]):boolean{
- const g=gloss.toLowerCase()
- for(const t of terms){
-  if(!t)continue
-  // Match whole word or phrase boundary in gloss so "api" does not match "sapi" or "tapi"
-  const escaped=t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')
-  if(new RegExp(`(^|[^\\p{L}])${escaped}($|[^\\p{L}])`,'iu').test(g))return true
+// Indexes built once per isolate: forms by concept and by language.
+let byConcept:Map<string,PublishedWord[]>|undefined,byLanguage:Map<string,PublishedWord[]>|undefined
+function indexes(){
+ if(byConcept&&byLanguage)return {byConcept,byLanguage}
+ byConcept=new Map();byLanguage=new Map()
+ for(const [code,l] of Object.entries(WL.languages)){
+  const list:PublishedWord[]=[]
+  for(const f of l.forms){
+   const [ci,form,di,ri,vi,pi,row,value]=f as [number,string,number,number,number,number,string,string|undefined]
+   const c=CONCEPTS[ci]!
+   const w:PublishedWord={lang:code,concept:c.key,form,dataset:DATASETS[di]!.key,ref:ri,param:WL.params[pi]!,row}
+   if(value)w.value=value
+   const v=WL.varieties[vi];if(v)w.variety=v
+   list.push(w)
+   const arr=byConcept.get(c.key)??[];arr.push(w);byConcept.set(c.key,arr)
+  }
+  byLanguage.set(code,list)
  }
- return false
+ return {byConcept,byLanguage}
+}
+
+/** Find a concept by its key ("air"), its Indonesian label, its Concepticon ID or its Leipzig-Jakarta number
+ * (older links use ?concept=4). */
+export function findConcept(raw:string):WordlistConcept|null{
+ const v=raw.trim().toLowerCase()
+ if(!v)return null
+ const direct=CONCEPT_BY_KEY.get(v)??CONCEPTS.find(c=>c.id.toLowerCase()===v||c.english.toLowerCase()===v)
+ if(direct)return direct
+ const n=Number(v)
+ if(Number.isInteger(n))return CONCEPTS.find(c=>c.leipzigJakarta===n)??CONCEPTS.find(c=>c.concepticon===n)??null
+ return null
+}
+
+/** Refs used by a set of words, renumbered so a response carries only its own. */
+function withRefs(words:PublishedWord[]){
+ const refs:string[]=[],at=new Map<number,number>()
+ const out=words.map(w=>{let i=at.get(w.ref);if(i===undefined){i=refs.length;refs.push(WL.refs[w.ref]??'');at.set(w.ref,i)}return {...w,ref:i}})
+ return {refs,words:out}
 }
 
 export class PetaKata{
@@ -70,17 +91,14 @@ export class PetaKata{
   this.lexicon=lexicon
  }
 
- private publicEntries(){
+ /** Public, non-sensitive community entries with a language, newest first. */
+ private communityEntries(){
   const rows=this.store.all<{
    id:string;community_id:string;community_title:string;lemma:string;norm:string;gloss:string
    pos:string;state:string;source:string;licence:string;language:string|null
   }>(`
    SELECT e.id,e.community_id,c.title community_title,e.lemma,e.norm,e.gloss,e.pos,
-    CASE
-     WHEN cl.state='checked' THEN 'checked'
-     WHEN cl.state IN ('rejected','split','withdrawn') THEN cl.state
-     ELSE e.state
-    END state,
+    CASE WHEN cl.state='checked' THEN 'checked' ELSE e.state END state,
     e.source,e.licence,
     COALESCE(NULLIF(ks.language,''), (
      SELECT substr(a.value,12) FROM community_contexts cc
@@ -92,140 +110,128 @@ export class PetaKata{
    JOIN communities c ON c.id=e.community_id
    LEFT JOIN kamus_settings ks ON ks.community_id=c.id
    LEFT JOIN claims cl ON cl.id=e.claim_id
-   WHERE c.visibility='public'
+   WHERE c.visibility='public' AND COALESCE(c.archived,0)=0
     AND e.sensitive=0
     AND e.gloss<>''
     AND (cl.state IS NULL OR cl.state IN ('open','checked'))
     AND e.state IN ('seed','proposed')
-   ORDER BY CASE WHEN cl.state='checked' THEN 0 WHEN e.state='proposed' THEN 1 ELSE 2 END, e.updated DESC
+    AND e.source NOT LIKE 'seed:%'
+   ORDER BY CASE WHEN cl.state='checked' THEN 0 ELSE 1 END, e.updated DESC
    LIMIT 2000
   `)
-  // Map public, non-restricted voice pronunciations keyed by (community_id + ":" + kamus_norm)
   const voices=this.store.all<{id:string;community_id:string;kamus_norm:string;duration_ms:number;speaker:string}>(`
    SELECT v.id,v.community_id,v.kamus_norm,v.duration_ms,v.speaker
    FROM voice_clips v
    JOIN communities c ON c.id=v.community_id
-   WHERE c.visibility='public'
+   WHERE c.visibility='public' AND COALESCE(c.archived,0)=0
     AND v.kamus_norm IS NOT NULL AND v.kamus_norm<>''
     AND v.protocol<>'restricted'
    ORDER BY v.created DESC
   `)
-  const voiceMap=new Map<string,{id:string;url:string;durationMs:number;speaker:string}>()
+  const voiceMap=new Map<string,CommunityWord['voice']>()
   for(const v of voices){
    const k=`${v.community_id}:${v.kamus_norm}`
    if(!voiceMap.has(k))voiceMap.set(k,{id:v.id,url:`/v1/voice/${v.id}`,durationMs:v.duration_ms,speaker:v.speaker})
   }
-  return {rows,voiceMap}
+  return rows.filter(r=>!!r.language).map(r=>({
+   id:r.id,lang:r.language!,norm:r.norm,communityId:r.community_id,communityTitle:r.community_title,lemma:r.lemma,gloss:r.gloss,pos:r.pos,
+   state:(r.state==='checked'?'checked':r.state==='proposed'?'proposed':'seed') as CommunityWord['state'],
+   source:r.source,licence:r.licence,voice:voiceMap.get(`${r.community_id}:${r.norm}`)??null,
+  }))
  }
 
- concepts():{list:string;title:string;source:string;licence:string;concepts:AtlasConcept[]}{
-  const {rows,voiceMap}=this.publicEntries()
-  const list=CONCEPTS.map(c=>{
-   const terms=[c.id.toLowerCase(),c.english.toLowerCase().replace(/^to\s+/,'')]
-   const seenLang=new Set<string>()
-   let voiceCount=0
-   for(const r of rows){
-    if(!r.language||!glossMatches(r.gloss,terms))continue
-    seenLang.add(r.language)
-    if(voiceMap.has(`${r.community_id}:${r.norm}`))voiceCount++
-   }
-   for(const [code,seed] of Object.entries(this.lexicon.seeds)){
-    if(seenLang.has(code))continue
-    if(seed.entries.some(e=>glossMatches(e.gloss_id||e.gloss_en||'',terms)))seenLang.add(code)
-   }
-   return {n:c.n,concepticon:c.concepticon,gloss:c.gloss,english:c.english,id:c.id,wordClass:c.class,count:seenLang.size,voiceCount}
-  })
-  return {list:conceptsFile.list,title:conceptsFile.title,source:conceptsFile.source,licence:conceptsFile.licence,concepts:list}
+ /** Public communities per language: the first one that writes in it, else the first one about it. */
+ private communities(){
+  const rows=this.store.all<{id:string;title:string;code:string;role:string}>(`
+   SELECT c.id,c.title,substr(a.value,12) code,cc.role
+   FROM community_contexts cc
+   JOIN communities c ON c.id=cc.community_id
+   JOIN contexts ctx ON ctx.id=cc.context_id, json_each(ctx.aliases) a
+   WHERE c.visibility='public' AND COALESCE(c.archived,0)=0 AND ctx.kind='language' AND ctx.active=1
+    AND a.value LIKE 'glottocode:%'
+   ORDER BY CASE cc.role WHEN 'language' THEN 0 ELSE 1 END, cc.created
+  `)
+  const out=new Map<string,{id:string;title:string}>()
+  for(const r of rows)if(!out.has(r.code))out.set(r.code,{id:r.id,title:r.title})
+  return out
  }
 
- lookup(opts:{concept?:string;q?:string}):{concept:AtlasConcept|null;query:string;words:AtlasWord[]}{
-  const rawConcept=(opts.concept??'').trim()
-  const rawQuery=(opts.q??'').trim()
-  let chosen:typeof CONCEPTS[number]|null=null
-  if(rawConcept){
-   const num=Number(rawConcept)
-   chosen=CONCEPTS.find(c=>c.n===num||c.id.toLowerCase()===rawConcept.toLowerCase()||c.gloss.toLowerCase()===rawConcept.toLowerCase())??null
-  }
-  const terms=chosen
-   ?[chosen.id.toLowerCase(),chosen.english.toLowerCase().replace(/^to\s+/,'')]
-   :rawQuery?[rawQuery.toLowerCase()]:['air','water']
-  if(!chosen&&!rawQuery)chosen=CONCEPTS.find(c=>c.id==='air')??CONCEPTS[0]
+ private language(code:string,communities:Map<string,{id:string;title:string}>,count:number):PetaLanguage{
+  const m=META.get(code)
+  const glottologName=m?.title??WL.languages[code]?.name??this.lexicon.seeds[code]?.language.name??code
+  return {code,slug:m?.slug??'',name:LOCAL_NAMES[code]??glottologName,glottologName,family:m?.family??'',concepts:count,community:communities.get(code)??null}
+ }
 
-  const {rows,voiceMap}=this.publicEntries()
-  const out:AtlasWord[]=[]
-  const seenKey=new Set<string>()
-
-  for(const r of rows){
-   if(!r.language)continue
-   const hit=glossMatches(r.gloss,terms)||(rawQuery&&r.norm.includes(norm(rawQuery)))
-   if(!hit)continue
-   const dedupe=`${r.language}:${r.norm}`
-   if(seenKey.has(dedupe))continue
-   seenKey.add(dedupe)
-   const meta=LANG_BY_CODE.get(r.language)
-   out.push({
-    id:r.id,
-    languageCode:r.language,
-    languageSlug:meta?.slug??null,
-    languageName:meta?.title??this.lexicon.seeds[r.language]?.language.name??r.language,
-    communityId:r.community_id,
-    communityTitle:r.community_title,
-    lemma:r.lemma,
-    gloss:r.gloss,
-    pos:r.pos,
-    state:r.state as 'checked'|'seed'|'proposed',
-    source:r.source,
-    licence:r.licence,
-    origin:'community',
-    voice:voiceMap.get(`${r.community_id}:${r.norm}`)??null,
-   })
-  }
-
-  // Fill with published seed entries for languages not yet represented by community entries for this concept
-  for(const [code,seed] of Object.entries(this.lexicon.seeds)){
-   const meta=LANG_BY_CODE.get(code)
-   let addedForLang=0
-   for(const e of seed.entries){
-    if(addedForLang>=2)break
-    const lemma=(e.modern||e.lemma||'').trim()
-    const gloss=(e.gloss_id||e.gloss_en||e.gloss_nl||'').trim()
-    if(!lemma||!gloss)continue
-    const n=norm(lemma)
-    const hit=glossMatches(gloss,terms)||(rawQuery&&n.includes(norm(rawQuery)))
-    if(!hit)continue
-    const dedupe=`${code}:${n}`
-    if(seenKey.has(dedupe))continue
-    seenKey.add(dedupe)
-    addedForLang++
-    out.push({
-     id:`seed:${code}:${n}`,
-     languageCode:code,
-     languageSlug:meta?.slug??null,
-     languageName:meta?.title??seed.language.name,
-     communityId:null,
-     communityTitle:'Sumber tertulis',
-     lemma,
-     gloss,
-     pos:e.pos??'',
-     state:'seed',
-     source:'seed:'+e.source,
-     licence:seed.sources[e.source]?.licence??'',
-     origin:'seed',
-     voice:null,
-    })
+ /** The concept list with counts, every Tanah Papua language with how many concepts it has, and the datasets. */
+ concepts(){
+  const {byConcept,byLanguage}=indexes()
+  const community=this.communityEntries()
+  const communities=this.communities()
+  const conceptLangs=new Map<string,Set<string>>()
+  for(const [key,ws] of byConcept)conceptLangs.set(key,new Set(ws.map(w=>w.lang)))
+  const langConcepts=new Map<string,Set<string>>()
+  for(const [code,ws] of byLanguage)langConcepts.set(code,new Set(ws.map(w=>w.concept)))
+  for(const e of community){
+   for(const c of CONCEPTS){
+    if(!glossMatches(e.gloss,[c.id,c.english]))continue
+    const set=conceptLangs.get(c.key)??new Set();set.add(e.lang);conceptLangs.set(c.key,set)
+    const ls=langConcepts.get(e.lang)??new Set();ls.add(c.key);langConcepts.set(e.lang,ls)
    }
   }
-
-  // Sort: community entries with voice first, then checked community, then seed
-  out.sort((a,b)=>{
-   const score=(w:AtlasWord)=>(w.voice?0:2)+(w.origin==='community'?0:1)+(w.state==='checked'?0:0.5)
-   return score(a)-score(b)||a.languageName.localeCompare(b.languageName,'id')
-  })
-
+  const codes=new Set([...META.keys(),...langConcepts.keys()])
   return {
-   concept:chosen?{n:chosen.n,concepticon:chosen.concepticon,gloss:chosen.gloss,english:chosen.english,id:chosen.id,wordClass:chosen.class,count:out.length,voiceCount:out.filter(w=>w.voice).length}:null,
-   query:rawQuery||(chosen?.id??''),
-   words:out.slice(0,120),
+   title:'Daftar kata dasar bahasa-bahasa Tanah Papua',
+   datasets:DATASETS,
+   concepts:CONCEPTS.map(c=>({key:c.key,id:c.id,english:c.english,concepticon:c.concepticon,leipzigJakarta:c.leipzigJakarta,count:conceptLangs.get(c.key)?.size??0})),
+   languages:[...codes].map(code=>this.language(code,communities,langConcepts.get(code)?.size??0)).sort((a,b)=>a.name.localeCompare(b.name,'id')),
   }
  }
+
+ /** Words for one concept, or forms that start with a search text. */
+ lookup(opts:{concept?:string;q?:string}){
+  const {byConcept,byLanguage}=indexes()
+  const q=norm((opts.q??'').trim()).slice(0,40)
+  const concept=q?null:findConcept(opts.concept??'')??CONCEPT_BY_KEY.get('air')!
+  let published:PublishedWord[]
+  let community:(CommunityWord&{norm:string})[]
+  const all=this.communityEntries()
+  if(concept){
+   published=byConcept.get(concept.key)??[]
+   community=all.filter(e=>glossMatches(e.gloss,[concept.id,concept.english]))
+  }else{
+   published=[...byLanguage.values()].flat().filter(w=>norm(w.form).startsWith(q)).slice(0,200)
+   community=all.filter(e=>e.norm.startsWith(q)||e.gloss.toLowerCase().includes(q)).slice(0,100)
+  }
+  const {refs,words}=withRefs(published)
+  return {
+   concept:concept?{key:concept.key,id:concept.id,english:concept.english,concepticon:concept.concepticon,leipzigJakarta:concept.leipzigJakarta}:null,
+   query:q,
+   refs,
+   words,
+   community:community.map(({norm:_n,...rest})=>rest),
+  }
+ }
+
+ /** Everything one language has: published forms for every concept, and its public community entries. */
+ languageWords(code:string){
+  const {byLanguage}=indexes()
+  if(!META.has(code)&&!byLanguage.has(code))return null
+  const published=byLanguage.get(code)??[]
+  const community=this.communityEntries().filter(e=>e.lang===code).slice(0,200)
+  const {refs,words}=withRefs(published)
+  return {language:this.language(code,this.communities(),new Set(published.map(w=>w.concept)).size),refs,words,community:community.map(({norm:_n,...rest})=>rest)}
+ }
+}
+
+/** Whole-word match, so "api" does not match "sapi" and "air" does not match "darat (lawan air)" by accident
+ * of a longer phrase: the gloss must be the term itself or start with it before a comma or bracket. */
+function glossMatches(gloss:string,terms:string[]):boolean{
+ const g=gloss.toLowerCase().trim()
+ for(const raw of terms){
+  const t=raw.toLowerCase().replace(/^to\s+/,'').trim()
+  if(!t)continue
+  if(g===t)return true
+  if(g.startsWith(t)&&/^[\s,;(]/.test(g.slice(t.length)))return true
+ }
+ return false
 }
