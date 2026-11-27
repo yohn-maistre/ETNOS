@@ -16,10 +16,10 @@
     failed = $state(false)
   const does: Record<string, string> = {
     'source-digest': 'Merangkum kabar terbaru dari sumber yang dipantau.',
-    'kabar-harian': 'Merangkum kabar terbaru dari penerbit lokal beserta sumbernya, ditambah satu pertanyaan untuk anggota.',
+    'kabar-harian': 'Menulis tentang satu kabar terbaru dari penerbit lokal, dengan tautan beritanya.',
     'research-question': 'Mengajukan satu pertanyaan yang bisa dijawab dengan sumber.',
-    'pertanyaan-harian': 'Mengajukan satu pertanyaan harian dari kabar terbaru atau celah Ensiklopedia.',
-    'riset-ensiklopedia': 'Meneliti entri Ensiklopedia yang belum terisi dari sumber terbuka dan menerbitkan draf awalnya.',
+    'pertanyaan-harian': 'Menanyakan satu hal yang belum tercatat di Ensiklopedia kepada orang yang tahu.',
+    'riset-ensiklopedia': 'Menulis draf awal untuk entri Ensiklopedia yang masih kosong, dari sumber terbuka.',
     'usulan-periksa': 'Menyiapkan kartu klaim dan kosakata baru di antrean Periksa untuk diperiksa bersama.',
     'knowledge-draft': 'Menulis catatan Ensiklopedia dari sumber referensi yang menunggu tinjauan orang.',
   }

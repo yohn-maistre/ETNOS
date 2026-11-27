@@ -219,6 +219,10 @@
   .external-preview p {
     display: none;
   }
+  /* An Ensiklopedia card keeps its one-line description: it is the reason to open the entry. */
+  .external-preview.entry-card p {
+    display: -webkit-box;
+  }
   .external-preview > svg {
     width: 14px;
   }

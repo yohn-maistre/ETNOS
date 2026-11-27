@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ExternalLink } from '@lucide/svelte'
   import { localNewsPath, newsHeadline, newsStoryId } from './wiki-sources'
+  import { loadEntry } from './entri'
   let {
     url,
     title = '',
@@ -21,12 +22,38 @@
     'jubi.id',
     'westpapua.watch',
   ])
+  // An Ensiklopedia link on this site shows as an entry card, read from the public entry API.
+  function entryPath(u: string): string | null {
+    try {
+      const x = new URL(u, location.origin)
+      const own = x.host === location.host || x.hostname === 'etnos.space'
+      return own && /^\/wiki\/[^/]+$/.test(x.pathname) && x.pathname !== '/wiki/peta' && x.pathname !== '/wiki/peta-kata' ? x.pathname : null
+    } catch {
+      return null
+    }
+  }
+  const entry = $derived(entryPath(url))
   // Upstream news-desk links open as ETNOS story pages, titled from our own copy of the story.
-  const local = $derived(localNewsPath(url))
+  const local = $derived(entry ?? localNewsPath(url))
   $effect(() => {
     const target = url,
       abort = new AbortController()
     preview = null
+    if (entry) {
+      void loadEntry(decodeURIComponent(entry.slice(6)), abort.signal)
+        .then((e) => {
+          if (abort.signal.aborted || !e) return
+          const lead = (e.description || e.article?.text || '').replace(/\[[\d,\s]+\]/g, '').replace(/\s+/g, ' ').trim()
+          preview = {
+            title: e.title,
+            description: lead.split(/(?<=[.!?])\s/)[0] ?? '',
+            site: e.kindLabel + (e.article?.review === 'unreviewed' ? ' · Belum diperiksa' : ''),
+            image: e.media.find((m) => m.thumb)?.thumb ?? null,
+          }
+        })
+        .catch(() => {})
+      return () => abort.abort()
+    }
     if (local) {
       const id = newsStoryId(target)
       if (id) void newsHeadline(id).then((h) => { if (!abort.signal.aborted && h) preview = { title: h.title, description: '', site: 'Kabar', image: null } })
@@ -59,6 +86,7 @@
 
 <a
   class="external-preview"
+  class:entry-card={!!entry}
   href={local ?? url}
   target={local ? undefined : '_blank'}
   rel={local ? undefined : 'noopener noreferrer nofollow'}
@@ -72,8 +100,8 @@
       onerror={(e) => e.currentTarget.setAttribute('hidden', '')}
     />{/if}
   <div>
-    <small>{preview?.site ?? (local ? 'Kabar' : new URL(url).hostname)}</small>
-    <strong>{preview?.title || title || url}</strong>
+    <small>{preview?.site ?? (entry ? 'Ensiklopedia' : local ? 'Kabar' : new URL(url).hostname)}</small>
+    <strong>{preview?.title || title || (entry ? decodeURIComponent(entry.slice(6)).replace(/-/g, ' ') : url)}</strong>
     {#if preview?.description}<p>{preview.description}</p>{/if}
   </div>
   {#if !local}<ExternalLink size={16} />{/if}

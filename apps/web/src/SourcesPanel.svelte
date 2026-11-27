@@ -39,7 +39,8 @@
   const replies = $derived((answers?.wrong ?? 0) + (answers?.more ?? 0))
   const summary = $derived(
     [
-      count ? count + ' sumber' : hasSources ? 'Sumber' : 'Belum ada sumber',
+      // A post whose link card is the source (a news story, an entry) does not claim to have none.
+      count ? count + ' sumber' : hasSources ? 'Sumber' : post.content?.url ? 'Periksa' : 'Belum ada sumber',
       answers?.right ? answers.right + ' membenarkan' : '',
       replies ? replies + ' tanggapan' : '',
     ]

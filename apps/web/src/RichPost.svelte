@@ -114,7 +114,6 @@
         </button>{/if}
       {#if words}<KamusArtinya postId={post.id} count={words.a} member={canVote} viewer={kamus.viewer} />{/if}
       {#if card}{#await import('./cards/OpenCard.svelte') then m}<m.default source={card} />{/await}{/if}
-      {#if post.content?.sources?.length || folded || post.answers}<SourcesPanel {post} tail={folded?.tail ?? ''} open={detail} {loggedIn} canAnswer={canVote} {onError} {onAnswered} />{/if}
       {#if post.media?.length}<PostMedia
           bind:this={mediaViewer}
           images={post.media}
@@ -149,6 +148,8 @@
               <ExternalLink size={16} />
             </a>{/if}
         </div>{/if}
+      <!-- The source panel sits under the card, so a post reads text, card, then where it came from. -->
+      {#if post.content?.sources?.length || folded || post.answers}<SourcesPanel {post} tail={folded?.tail ?? ''} open={detail} {loggedIn} canAnswer={canVote} {onError} {onAnswered} />{/if}
       {#if post.poll}<div class="post-poll" aria-label="Jajak pendapat">
           {#each post.poll.options as option, i}<button
               class:chosen={post.poll.myVote === i}
