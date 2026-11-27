@@ -33,7 +33,7 @@
 > [!NOTE]
 > Siapa pun dapat membaca ETNOS secara terbuka di [etnos.space](https://etnos.space). Orang bergabung memakai akun ETNOS di `etnos.space` (dengan kata sandi atau Passkey WebAuthn) atau memakai akun Bluesky yang sudah ada. Layar yang bertanda *(data uji)* di bawah berasal dari uji coba lokal dengan nama rekaan, tidak berasal dari orang sungguhan.
 
-**ETNOS** adalah perangkat lunak komunitas bersumber terbuka, dan [etnos.space](https://etnos.space) adalah penerapan pertamanya untuk Tanah Papua. Warga berbincang, mengirim pesan suara, berdagang lewat Kios, berbagi peluang, serta menyusun kamus dan ensiklopedia yang tetap berada di tangan komunitas.
+**ETNOS** adalah perangkat lunak komunitas bersumber terbuka, dan [etnos.space](https://etnos.space) adalah penerapan pertamanya untuk Tanah Papua. Di sini orang berbincang, mengirim pesan suara, berdagang lewat Kios, berbagi peluang, serta menyusun kamus dan ensiklopedia yang tetap berada di tangan komunitas.
 
 ## Mengapa ETNOS ada
 

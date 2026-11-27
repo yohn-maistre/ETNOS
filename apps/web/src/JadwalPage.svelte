@@ -1,7 +1,7 @@
 <script lang="ts">
   // Aksara's own page: who it is, what it did today, and what it posted. Public data only:
   // /v1/aksara/jadwal (today's slots) and the public feed filtered to Aksara.
-  import { Bot, ArrowUpRight } from '@lucide/svelte'
+  import { Sparkle, ArrowUpRight } from '@lucide/svelte'
   import { request, relativeDate } from './api'
   import { setHomeFilter } from './home-filter.svelte'
   import ContentSkeleton from './ContentSkeleton.svelte'
@@ -16,7 +16,7 @@
     failed = $state(false)
   const does: Record<string, string> = {
     'source-digest': 'Merangkum kabar terbaru dari sumber yang dipantau.',
-    'kabar-harian': 'Merangkum kabar terbaru dari penerbit lokal beserta sumber dan pertanyaan untuk warga.',
+    'kabar-harian': 'Merangkum kabar terbaru dari penerbit lokal beserta sumbernya, ditambah satu pertanyaan untuk anggota.',
     'research-question': 'Mengajukan satu pertanyaan yang bisa dijawab dengan sumber.',
     'pertanyaan-harian': 'Mengajukan satu pertanyaan harian dari kabar terbaru atau celah Ensiklopedia.',
     'riset-ensiklopedia': 'Meneliti entri Ensiklopedia yang belum terisi dari sumber terbuka dan menerbitkan draf awalnya.',
@@ -49,7 +49,7 @@
 <div class="aksara-page">
   <div class="cx-page-head"><h1>Aksara</h1></div>
   <section class="aksara-who">
-    <span class="aksara-mark" aria-hidden="true"><Bot size={22} /></span>
+    <span class="aksara-mark" aria-hidden="true"><Sparkle size={20} /></span>
     <div>
       <p>Aksara adalah asisten AI di ETNOS. Aksara merangkum kabar, mengajukan pertanyaan dan menulis draf, selalu dengan sumbernya. Anggota yang memeriksa dan memutuskan apa yang diterbitkan.</p>
       <p class="aksara-meta">Setiap tulisan Aksara diberi tanda AI. Pengelola komunitas mengatur batasnya dan bisa mematikannya kapan saja.{operator ? ' Diawasi oleh ' + operator + '.' : ''}</p>

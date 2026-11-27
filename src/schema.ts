@@ -649,6 +649,10 @@ CREATE TABLE IF NOT EXISTS public_post_vectors(
   updated INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS public_post_vectors_community ON public_post_vectors(community_id, updated DESC);
+`, `
+-- Plain wording for the starter spaces (docs/voice.md). Only rows that still carry the shipped text change.
+UPDATE communities SET description='Tempat bercerita, bertanya kabar dan saling menyapa setiap hari.' WHERE description='Obrolan santai sehari-hari, cerita acak, dan sapaan warga Tanah Papua.';
+UPDATE communities SET description='Tanya apa saja, minta tolong, minta penjelasan yang sederhana, dan berbagi pengalaman.' WHERE description='Tanya apa saja, minta tolong, jelaskan sederhana (ELI5), dan berbagi pengalaman.';
 `]
 
 export const schemaVersion=migrations.length
