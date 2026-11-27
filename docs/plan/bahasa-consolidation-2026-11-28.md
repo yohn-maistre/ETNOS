@@ -52,7 +52,7 @@ The *Tentang* tab no longer carries the *Kata dasar* section and the per-communi
 
 ## Counts that differ
 
-The Bahasa index counts 258 language entries, and Peta Kata counts 256 languages. The two extra entries are *Bahasa-bahasa Yapen* and *Rumpun bahasa Dani*, which the knowledge seed files as languages although they are groups of languages. They have no Glottocode of their own, so they have no point on the map. This is left as it is for now.
+The Bahasa index counted 258 language entries while Peta Kata counted 256 languages. The two extra entries were *Bahasa-bahasa Yapen* and *Rumpun bahasa Dani*, which the knowledge seed files with the class *bahasa* although they are groups of languages, with no Glottocode and no point on the map. Since 28 November the entry catalogue (`src/entri.ts`) files a *bahasa* thing whose name starts with *Rumpun bahasa*, *Bahasa-bahasa* or *Kelompok bahasa* as a *Kelompok bahasa*: its page stays at the same address, but the index counts it under `kelompok-bahasa`, it is left out of the families, and the Bahasa index links it in a line under the list. Both counts are now 256. No stored row changed, because the class *bahasa* is still right for these things.
 
 ## Not done
 

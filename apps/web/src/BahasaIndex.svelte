@@ -42,7 +42,9 @@
   })
   const hasWords = (slug: string) => (bySlug.get(slug)?.concepts ?? 0) > 0 || books.has(slug)
 
-  const ofKind = $derived((index?.entries ?? []).filter((e) => e.kind === 'bahasa'))
+  // A group of languages (Rumpun bahasa Dani, Bahasa-bahasa Yapen) is not one language: it is linked under the list.
+  const ofKind = $derived((index?.entries ?? []).filter((e) => e.kind === 'bahasa' && e.subKey !== 'kelompok'))
+  const groups = $derived((index?.entries ?? []).filter((e) => e.kind === 'bahasa' && e.subKey === 'kelompok').sort((a, b) => a.title.localeCompare(b.title, 'id')))
   const subs = $derived(index?.subs.bahasa ?? [])
   const where = $derived(di ? index?.entries.find((e) => e.slug === di) ?? null : null)
   const list = $derived.by(() => {
@@ -179,6 +181,7 @@
         </ul>
         {#if list.length > shown}<button type="button" class="kp-more" onclick={() => (shown += 120)}>Tampilkan {Math.min(120, list.length - shown)} lagi dari {shortCount(list.length - shown)}</button>{/if}
       {:else}<p class="obs-note">Tidak ada bahasa yang cocok dengan saringan ini.</p>{/if}
+      {#if groups.length && !ada}<p class="obs-foot">Ada juga halaman tentang kelompok bahasa, yaitu {#each groups as g, i (g.slug)}{i ? (i === groups.length - 1 ? ' dan ' : ', ') : ''}<a href={g.href}>{g.title}</a>{/each}. Kelompok ini tidak dihitung sebagai satu bahasa.</p>{/if}
       <p class="obs-foot">Titik bahasa dari Glottolog 5.4 (CC BY 4.0). Titik itu menandai letak acuan, bukan batas wilayah bahasa. Kata dasar dari daftar kata terbitan dan dari kamus komunitas publik.</p>
     </section>
   {/if}

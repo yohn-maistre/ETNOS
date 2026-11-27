@@ -19,6 +19,7 @@ const seed: KnowledgeSeed = {
     { slug: 'danau-uji', class: 'tempat', title: 'Danau Uji', description: 'Danau sintetis.', aliases: [], context: null, origin: 'catalogue' },
     { slug: 'gunung-uji', class: 'tempat', title: 'Gunung Uji', description: 'Gunung sintetis.', aliases: [], context: null, origin: 'catalogue' },
     { slug: 'suku-uji', class: 'kelompok', title: 'Suku Uji', description: 'Kelompok sintetis.', aliases: [], context: null, origin: 'catalogue' },
+    { slug: 'rumpun-bahasa-uji', class: 'bahasa', title: 'Rumpun bahasa Uji', description: 'Kelompok bahasa sintetis.', aliases: [], context: null, origin: 'page' },
   ],
   witnesses: [], mentions: [], assertions: [],
 }
@@ -153,6 +154,11 @@ test('the index counts real entries per kind and lists sub-kinds only where they
     assert.deepEqual(index.subs['bentang-alam'].map((s) => s.key).sort(), ['danau', 'gunung'])
     assert.deepEqual(index.subs.makhluk.map((s) => s.key), ['burung'])
     assert.equal(index.subs.suku, undefined)
+    // A group of languages keeps its entry but is not counted as one language or as a family.
+    assert.equal(index.counts.bahasa, 1)
+    assert.equal(index.counts['kelompok-bahasa'], 1)
+    assert.equal(index.entries.find((x) => x.slug === 'rumpun-bahasa-uji')?.subKey, 'kelompok')
+    assert.ok(!(index.subs.bahasa ?? []).some((s) => s.key === 'kelompok'))
     const lake = index.entries.find((x) => x.slug === 'danau-uji--tempat')!
     assert.deepEqual(lake.within.sort(), ['provinsi-uji', 'tanjung-uji', 'wilayah-uji'])
     assert.equal(lake.article, true)

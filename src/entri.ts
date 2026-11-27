@@ -36,6 +36,11 @@ export const RESERVED = new Set(['notes', 'data', 'peta', 'lihat', 'jenis'])
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 /** A landform by the first word of its name: the rule is written down here so the kind can be checked. */
 const LANDFORM = /^(Danau|Gunung|Puncak|Lembah|Teluk|Sungai|Pulau|Tanjung|Pegunungan|Bukit)\s/
+/** A thing of class bahasa whose name says that it is a group of languages ("Rumpun bahasa Dani", "Bahasa-bahasa
+ * Yapen") is filed as a Kelompok bahasa: it stays a Bahasa entry at the same address, but it is not counted or
+ * listed as one language. Languages themselves come from the catalogue, one per Glottocode. */
+const LANGUAGE_GROUP = /^(Rumpun bahasa|Bahasa-bahasa|Kelompok bahasa)\s/i
+export const LANGUAGE_GROUP_SUB = { key: 'kelompok', label: 'Kelompok bahasa' }
 const LANDFORM_SUB: Record<string, [string, string]> = { Danau: ['danau', 'Danau'], Gunung: ['gunung', 'Gunung'], Puncak: ['gunung', 'Gunung'], Lembah: ['lembah', 'Lembah'], Teluk: ['teluk', 'Teluk'], Sungai: ['sungai', 'Sungai'], Pulau: ['pulau', 'Pulau'], Tanjung: ['tanjung', 'Tanjung'], Pegunungan: ['pegunungan', 'Pegunungan'], Bukit: ['bukit', 'Bukit'] }
 /** Sub-kinds of living things from the GBIF taxonomy of their record. Most specific rank first. */
 const TAXON_SUB: [string, string, string, string][] = [['order', 'Lepidoptera', 'kupu-kupu', 'Kupu-kupu'], ['class', 'Aves', 'burung', 'Burung'], ['class', 'Mammalia', 'mamalia', 'Mamalia'], ['class', 'Reptilia', 'reptil', 'Reptil'], ['class', 'Amphibia', 'amfibi', 'Amfibi'], ['class', 'Insecta', 'serangga', 'Serangga'], ['class', 'Actinopterygii', 'ikan', 'Ikan'], ['kingdom', 'Plantae', 'tumbuhan', 'Tumbuhan']]
@@ -158,6 +163,7 @@ export async function catalogue(source: EntrySource) {
     let kind = CLASS_KIND[e.class] ?? 'gagasan', sub: Node['sub'] = e.sub ?? null
     const word = e.title.match(LANDFORM)?.[1]
     if (kind === 'tempat' && (word || landformRecord.has(e.slug))) { kind = 'bentang-alam'; const s = word ? LANDFORM_SUB[word] : null; sub = s ? { key: s[0], label: s[1] } : null }
+    if (kind === 'bahasa' && LANGUAGE_GROUP.test(e.title)) sub = { ...LANGUAGE_GROUP_SUB }
     nodes.set(slug, { slug, kind, sub, title: e.title, description: e.description, aliases: e.aliases ?? [], ctx: null, entity: e, record: null, page: null, things: [e.slug], media: [] })
     thingEntry.set(e.slug, slug)
     if (slug !== e.slug) alias.set(e.slug, slug)
@@ -261,11 +267,13 @@ export async function entryIndex(source: EntrySource) {
   }))
   // A lembaga that runs an account on the site is listed with its own page; it is an akun, not an entry.
   const lembaga = groups.filter((g) => g.kind === 'institution').map((g) => ({ id: g.id, title: g.title, href: '/groups/' + g.id }))
+  // A group of languages is not one language: it has its own count and stays out of the Bahasa count and families.
+  const group = (kind: string, sub: string | null | undefined) => kind === 'bahasa' && sub === LANGUAGE_GROUP_SUB.key
   const counts: Record<string, number> = {}
-  for (const e of entries) counts[e.kind] = (counts[e.kind] ?? 0) + 1
+  for (const e of entries) { const k = group(e.kind, e.subKey) ? 'kelompok-bahasa' : e.kind; counts[k] = (counts[k] ?? 0) + 1 }
   counts.lembaga = (counts.lembaga ?? 0) + lembaga.length
   const subs: Record<string, { key: string; label: string; count: number }[]> = {}
-  for (const n of cat.nodes.values()) if (n.sub) {
+  for (const n of cat.nodes.values()) if (n.sub && !group(n.kind, n.sub.key)) {
     const list = (subs[n.kind] ??= []), at = list.find((s) => s.key === n.sub!.key)
     if (at) at.count++
     else list.push({ ...n.sub, count: 1 })

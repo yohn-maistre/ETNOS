@@ -25,6 +25,9 @@
   let data = $state<LangData | null>(null), failed = $state(false)
   let seed = $state<Seed | null>(null), seedMore = $state(false)
   let query = $state(''), seedQuery = $state('')
+  // The published wordlist folds after a dozen concepts, so the page stays short on a phone; a search shows every match.
+  const WORDS_FIRST = 12
+  let allWords = $state(false)
   let playing = $state<string | null>(null)
   let audio: HTMLAudioElement | null = null
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -123,13 +126,14 @@
         <p class="lk-note">Kata ini disalin seperti tertulis di sumbernya dan belum diperiksa penutur.</p>
         {#if rows.length}
           <dl class="lk-list">
-            {#each rows as r (r.concept.key)}
+            {#each q || allWords ? rows : rows.slice(0, WORDS_FIRST) as r (r.concept.key)}
               <div>
                 <dt>{r.concept.id}</dt>
                 <dd>{#each r.words as w, i (w.row)}{i ? ', ' : ''}<span class:lk-nc={w.nc} title={(datasetBy.get(w.dataset)?.name ?? w.dataset) + (w.variety ? ', ' + w.variety : '')}>{show(w.form)}</span>{/each}</dd>
               </div>
             {/each}
           </dl>
+          {#if !q && rows.length > WORDS_FIRST}<button type="button" class="lk-btn" aria-expanded={allWords} onclick={() => (allWords = !allWords)}>{allWords ? 'Tampilkan lebih sedikit' : 'Tampilkan semua ' + fmt(rows.length) + ' kata dasar'}</button>{/if}
         {:else}<p class="lk-note">Tidak ada kata dasar yang cocok dengan “{query.trim()}”.</p>{/if}
         <ul class="lk-cites">
           {#each data.datasets as d (d.key)}<li><a href={d.url} target="_blank" rel="noopener">{d.name}</a>, {licenceLabel(d.licence)}</li>{/each}
