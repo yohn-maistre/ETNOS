@@ -29,7 +29,7 @@ test('open provider-started signup: no handle, real SDK PAR/PKCE/DPoP, verified 
  try{
   const hidden=s.createCommunity(f.owner.actor.id,'Protected language','Never discoverable','hidden-private')
   const secret=s.createPost(f.owner.actor.id,hidden.id,'Private language data')
-  const start=(await auth.route(req('/auth/start',{mode:'signup',returnTo:'/communities?welcome=1'})))!
+  const start=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,returnTo:'/communities?welcome=1'})))!
   assert.equal(start.status,200,await start.clone().text())
   assert.equal(f.parameters().has('login_hint'),false)
   assert.equal(f.parameters().get('scope'),'atproto')
@@ -59,16 +59,16 @@ test('signup binds browser and issuer, rejects open redirects and cancellation w
  const f=await setup(),{s,auth}=f
  try{
   for(const returnTo of ['//evil.example','https://evil.example','/\\evil.example','/auth/callback','/login','/x\nlocation']){
-   assert.equal((await auth.route(req('/auth/start',{mode:'signup',returnTo})))?.status,400)
+   assert.equal((await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,returnTo})))?.status,400)
   }
-  const start=(await auth.route(req('/auth/start',{mode:'signup'})))!
+  const start=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true})))!
   assert.equal(start.status,200)
   await auth.route(req(callback(f.state()),undefined,'__Host-strata_flow=wrong'))
   assert.equal(f.exchanges(),0)
   const denied=await auth.route(req('/auth/callback?state='+f.state()+'&error=access_denied&iss='+encodeURIComponent(issuer),undefined,cookiePart(start)))
   assert.equal(denied?.headers.get('location'),'/login?error=authentication_failed')
   assert.equal(f.exchanges(),0);assert.equal(s.get('SELECT 1 FROM actors WHERE did=?',newcomer),undefined)
-  const next=(await auth.route(req('/auth/start',{mode:'signup'})))!
+  const next=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true})))!
   await auth.route(req(callback(f.state()).replace(encodeURIComponent(issuer),encodeURIComponent('https://evil.example')),undefined,cookiePart(next)))
   assert.equal(f.exchanges(),0)
  }finally{s.close()}
@@ -78,7 +78,7 @@ test('enrollment closure and service-actor identity are rechecked before local g
  for(const service of [false,true]){
   const f=await setup(),{s,auth}=f
   try{
-   const start=(await auth.route(req('/auth/start',{mode:'signup'})))!
+   const start=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true})))!
    if(service){const p=s.provision(newcomer,'Service',f.owner.actor.id);assert.equal(p.actor.kind,'agent')}
    else f.config.enrollmentMode='closed'
    const response=await auth.route(req(callback(f.state()),undefined,cookiePart(start)))
@@ -93,24 +93,24 @@ test('enrollment closure and service-actor identity are rechecked before local g
 test('one-use invite: hash-only storage, competing flows, revocation/expiry and steward-only creation',async()=>{
  const f=await setup('invite'),{s,auth}=f
  try{
-  assert.equal((await auth.route(req('/auth/start',{mode:'signup'})))?.status,403)
+  assert.equal((await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true})))?.status,403)
   assert.equal((await auth.route(req('/auth/enrollment-invites',{})))?.status,401)
   const code=await f.invite()
   assert.equal(JSON.stringify(s.all('SELECT * FROM enrollment_invitations')).includes(code.invitation),false)
   const secondDid='did:plc:yyyyyyyyyyyyyyyyyyyyyyyy'
   const second=await fixture(s,{...f.config},secondDid,'second.bsky.social',secondDid)
-  const a=(await auth.route(req('/auth/start',{mode:'signup',invitation:code.invitation})))!,stateA=f.state()
-  const b=(await second.auth.route(req('/auth/start',{mode:'signup',invitation:code.invitation})))!,stateB=second.state()
+  const a=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:code.invitation})))!,stateA=f.state()
+  const b=(await second.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:code.invitation})))!,stateB=second.state()
   const results=await Promise.all([auth.route(req(callback(stateA),undefined,cookiePart(a))),second.auth.route(req(callback(stateB),undefined,cookiePart(b)))])
   assert.equal(results.filter(r=>r?.headers.get('location')==='/').length,1)
   assert.equal(s.all('SELECT * FROM actors WHERE did!=?',did).length,1)
   assert.equal(s.all('SELECT * FROM enrollment_invitations WHERE used_by IS NOT NULL').length,1)
-  assert.equal((await auth.route(req('/auth/start',{mode:'signup',invitation:code.invitation})))?.status,403)
-  const revoked=await f.invite(),start=(await auth.route(req('/auth/start',{mode:'signup',invitation:revoked.invitation})))!
+  assert.equal((await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:code.invitation})))?.status,403)
+  const revoked=await f.invite(),start=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:revoked.invitation})))!
   assert.equal((await auth.route(req('/auth/enrollment-invites/'+revoked.id+'/revoke',{},f.stewardCookie,f.csrf)))?.status,200)
   assert.equal((await auth.route(req(callback(f.state()),undefined,cookiePart(start))))?.headers.get('location'),'/login?error=authentication_failed')
   const expired=await f.invite();s.run('UPDATE enrollment_invitations SET expires=? WHERE id=?',s.clock()-1,expired.id)
-  assert.equal((await auth.route(req('/auth/start',{mode:'signup',invitation:expired.invitation})))?.status,403)
+  assert.equal((await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:expired.invitation})))?.status,403)
   const list=(await auth.route(req('/auth/enrollment-invites',undefined,f.stewardCookie,f.csrf)))!
   const text=await list.text();assert.equal(text.includes('hash'),false);assert.equal(text.includes(code.invitation),false)
  }finally{s.close()}
@@ -119,7 +119,7 @@ test('one-use invite: hash-only storage, competing flows, revocation/expiry and 
 test('local enrollment/session failure rolls back grants and leaves an invitation redeemable',async()=>{
  const f=await setup('invite'),{s,auth}=f
  try{
-  const code=await f.invite(),start=(await auth.route(req('/auth/start',{mode:'signup',invitation:code.invitation})))!
+  const code=await f.invite(),start=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:code.invitation})))!
   s.db.exec("CREATE TRIGGER reject_signup BEFORE INSERT ON browser_sessions BEGIN SELECT RAISE(ABORT,'synthetic storage failure'); END")
   const r=await auth.route(req(callback(f.state()),undefined,cookiePart(start)))
   assert.equal(r?.headers.get('location'),'/login?error=authentication_failed')
@@ -132,11 +132,11 @@ test('local enrollment/session failure rolls back grants and leaves an invitatio
 test('open signup cannot restore a removed enrollment or widen the initial OAuth scope',async()=>{
  const f=await setup(),{s,auth}=f
  try{
-  const start=(await auth.route(req('/auth/start',{mode:'signup',publishing:true})))!
+  const start=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,publishing:true})))!
   assert.equal(f.parameters().get('scope'),'atproto')
   await auth.route(req(callback(f.state()),undefined,cookiePart(start)))
   s.run('DELETE FROM enrollment_allowlist WHERE did=?',newcomer)
-  const again=(await auth.route(req('/auth/start',{mode:'signup'})))!
+  const again=(await auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true})))!
   const rejected=await auth.route(req(callback(f.state()),undefined,cookiePart(again)))
   assert.equal(rejected?.headers.get('location'),'/login?error=authentication_failed')
   assert.equal(s.get('SELECT 1 FROM enrollment_allowlist WHERE did=?',newcomer),undefined)
@@ -149,15 +149,15 @@ test('signup can target an existing handle or the configured account host, never
  try{
   const options=await(await f.auth.route(req('/auth/options')))!.json() as {accountHost:string|null}
   assert.equal(options.accountHost,pds)
-  const byHandle=(await f.auth.route(req('/auth/start',{mode:'signup',handle:'friend.bsky.social'})))!
+  const byHandle=(await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,handle:'friend.bsky.social'})))!
   assert.equal(byHandle.status,200,await byHandle.clone().text())
   assert.equal(f.parameters().get('login_hint'),'friend.bsky.social')
   assert.equal(JSON.parse((await f.auth.records.get<{appState:string}>('state',f.state()))!.appState).did,newcomer)
-  const byHost=(await f.auth.route(req('/auth/start',{mode:'signup',provider:'host',handle:''})))!
+  const byHost=(await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,provider:'host',handle:''})))!
   assert.equal(byHost.status,200,await byHost.clone().text())
   assert.equal(f.parameters().has('login_hint'),false)
   const none=await fixture(s,{enrollmentMode:'open'},newcomer,'friend.bsky.social',newcomer)
-  assert.equal((await none.auth.route(req('/auth/start',{mode:'signup',provider:'host'})))!.status,400)
+  assert.equal((await none.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,provider:'host'})))!.status,400)
   const bad=await fixture(s,{enrollmentMode:'open',accountHost:'https://not-allowed.example'},newcomer,'friend.bsky.social',newcomer)
   assert.equal((await bad.auth.route(req('/auth/options')))!.status,503)
  }finally{s.close()}

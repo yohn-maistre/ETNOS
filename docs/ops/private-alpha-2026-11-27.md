@@ -90,3 +90,26 @@ After a first sign-in, a new account lands on `/mulai`: one screen to pick place
 Nothing must be created for this section. Labelling the starter communities with places and languages in their settings makes the suggestions useful.
 
 Tests: `test/first-run.test.ts` (offered once, needs the session confirmation to dismiss, never to agents; a region covers its regencies; languages match; hidden and listed private communities never appear; joined ones are marked).
+
+## 6. Basics before inviting people
+
+**Age.** Joining now needs a ticked *Usiaku 18 tahun atau lebih* on `/gabung` and in the sign-up form, and `/auth/start` refuses a sign-up without `ageConfirmed: true`. The age is a setting in etnos.yaml, applied from Studio, *Pengaturan*:
+
+```yaml
+signup:
+  minimumAge: 18   # 13 to 99; 18 when left out
+```
+
+`/auth/options` returns it, so both forms show the number set there. The identity host checks its own `MIN_AGE` (section 3) on its sign-up form; set both to the same number.
+
+**Privacy page.** `/privasi` explains in plain language what is stored, who sees it, notifications, backups, what stays on the device and how to ask for removal. The operator's contact comes from `operator.name`, `operator.email` and `operator.url` in etnos.yaml (`GET /v1/privasi`); when none is set, the page points to the report buttons. **The owner should set `operator.email` (or `operator.url`) in etnos.yaml before inviting anyone.**
+
+**Reports.** Before this change only posts could be reported, and only a community's own moderators saw the report. Now:
+
+- posts are reported as before (*Laporkan posting*), to the community's moderators, and the report also appears in the operator's queue;
+- profiles (*Laporkan profil*, the flag on a profile) and communities (*Laporkan komunitas*, under the description) are reported to the operator only (`operator_reports`); a hidden community can only be reported by its members;
+- the operator's queue is Studio, *Laporan* (`/studio/laporan`, `GET /v1/operator/reports`), node steward only, with *Sudah ditangani* and *Abaikan*; a decision on a post report closes it for the community's moderators too. Reporters are not named in the queue. One person can have 30 open reports at most and can report the same thing once.
+
+**Label.** The sidebar footer now reads *Alpha privat · Privasi*, linking to `/tentang` and `/privasi`.
+
+Tests: `test/invite-gate.test.ts` (sign-up refused without the age; the age from etnos.yaml, applied through Studio's check, with 13 as the floor) and `test/reports.test.ts` (all three kinds reach the queue; refusals; only the operator reads and decides; reporters not named; nothing on public paths).

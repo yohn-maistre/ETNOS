@@ -1,12 +1,13 @@
 <script lang="ts">
   // Studio is where stewards and operators work: one place, two tabs, and a third for the operator.
-  let { current, operator = false }: { current: 'community' | 'agents' | 'invites' | 'settings'; operator?: boolean } = $props()
+  let { current, operator = false }: { current: 'community' | 'agents' | 'invites' | 'reports' | 'settings'; operator?: boolean } = $props()
 </script>
 
 <nav class="studio-tabs" aria-label="Studio">
   <a href="/studio" aria-current={current === 'community' ? 'page' : undefined}>Komunitas</a>
   <a href="/agents" aria-current={current === 'agents' ? 'page' : undefined}>Agen & koneksi</a>
   {#if operator || current === 'invites'}<a href="/studio/undangan" aria-current={current === 'invites' ? 'page' : undefined}>Undangan</a>{/if}
+  {#if operator || current === 'reports'}<a href="/studio/laporan" aria-current={current === 'reports' ? 'page' : undefined}>Laporan</a>{/if}
   {#if operator || current === 'settings'}<a href="/studio/pengaturan" aria-current={current === 'settings' ? 'page' : undefined}>Pengaturan</a>{/if}
 </nav>
 

@@ -4,7 +4,8 @@
  * the safe part. The file never holds a key, token or password; a copy that seems to is refused whole.
  *
  * Each setting is one of three kinds:
- * - applied here: name, description, root place, region languages, operator contact and the Kios house rules.
+ * - applied here: name, description, root place, region languages, operator contact, the age to confirm at sign-up
+ *   and the Kios house rules.
  *   These live in the `deployment_settings` table and take effect at once.
  * - set at deploy: origin, catalogue, enrollment, news sources and the operator DID. These are Worker settings
  *   (wrangler.jsonc vars, deploy/*.txt); the file shows them so an operator sees the whole deployment, and a
@@ -17,6 +18,14 @@ import { check } from './schema-check.ts'
 import { parse, stringify, YamlError } from './yaml.ts'
 import { DEFAULT_KIOS_RULES, type KiosRuleWords } from './kios-rules.ts'
 import etnosSchema from '../schemas/etnos.schema.json' with { type: 'json' }
+
+/** The age a new person confirms when joining (signup.minimumAge in etnos.yaml). */
+export const DEFAULT_MINIMUM_AGE = 18
+export function signupMinimumAge(s: EtnosCore): number {
+  const row = s.get<{ value: string }>("SELECT value FROM deployment_settings WHERE key='signup.minimumAge'")
+  const n = row ? Number(JSON.parse(row.value)) : NaN
+  return Number.isInteger(n) && n >= 13 && n <= 99 ? n : DEFAULT_MINIMUM_AGE
+}
 
 export type EtnosFile = {
   version: 1
@@ -31,6 +40,7 @@ export type EtnosFile = {
   news?: { sources?: string[] }
   model?: { provider?: string; fast?: string | null; synthesis?: string | null }
   operator?: { name?: string; email?: string; url?: string; did?: string }
+  signup?: { minimumAge?: number }
   kios?: { rules?: KiosRuleWords[] }
 }
 /** What the Worker knows that this file shows but does not change. */
@@ -46,10 +56,10 @@ export type How = 'apply' | 'deploy' | 'model' | 'fixed'
 export type Change = { path: string; from: unknown; to: unknown; how: How }
 export type CheckResult = { ok: boolean; errors: { path: string; message: string }[]; secret: string | null; changes: Change[] }
 
-const APPLIED = ['name', 'description', 'rootPlace', 'regionLanguages', 'operator', 'kios.rules'] as const
+const APPLIED = ['name', 'description', 'rootPlace', 'regionLanguages', 'operator', 'signup.minimumAge', 'kios.rules'] as const
 const how = (path: string): How =>
   path === 'operator.did' ? 'deploy'
-  : /^(name|description|rootPlace|regionLanguages|operator\.|kios\.rules)/.test(path) ? 'apply'
+  : /^(name|description|rootPlace|regionLanguages|operator\.|signup\.minimumAge|kios\.rules)/.test(path) ? 'apply'
   : /^(origin|catalogue|enrollment|news)/.test(path) ? 'deploy'
   : path.startsWith('model') ? 'model'
   : 'fixed'
@@ -114,6 +124,12 @@ export class Deployment {
     return v ? (JSON.parse(v.value) as string) : 'ETNOS'
   }
 
+  /** For the public privacy page: the name, the operator's contact as set in etnos.yaml, and the sign-up age. */
+  publicInfo() {
+    const f = this.current()
+    return { name: f.name, operator: { name: f.operator?.name ?? '', email: f.operator?.email ?? '', url: f.operator?.url ?? '' }, minimumAge: signupMinimumAge(this.s) }
+  }
+
   current(): EtnosFile {
     const st = this.stored(), i = this.info()
     const operator = (st.get('operator') as EtnosFile['operator']) ?? {}
@@ -130,6 +146,7 @@ export class Deployment {
       news: { sources: i.sources ?? [] },
       model: { provider: i.model?.host ?? 'workers-ai', fast: i.model?.fast ?? null, synthesis: i.model?.synthesis ?? null },
       operator: { name: operator.name ?? '', email: operator.email ?? '', url: operator.url ?? '', did: i.stewardDid ?? '' },
+      signup: { minimumAge: (st.get('signup.minimumAge') as number) ?? DEFAULT_MINIMUM_AGE },
       kios: { rules: (st.get('kios.rules') as KiosRuleWords[]) ?? DEFAULT_KIOS_RULES },
     }
     return file
@@ -196,6 +213,7 @@ export class Deployment {
             const o = { ...(this.current().operator ?? {}), ...(file.operator ?? {}) }
             put('operator', { name: o.name ?? '', email: o.email ?? '', url: o.url ?? '' })
           } else if (key === 'kios.rules') put(key, file.kios?.rules ?? DEFAULT_KIOS_RULES)
+          else if (key === 'signup.minimumAge') put(key, file.signup?.minimumAge ?? DEFAULT_MINIMUM_AGE)
           else put(key, (file as Record<string, unknown>)[key])
         }
         this.s.audit(actorId, 'deployment.settings', [...touched].join(','))

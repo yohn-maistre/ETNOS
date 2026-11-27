@@ -51,7 +51,7 @@ test('steward bootstrap creates 7 open general starter spaces and auto-joins hum
 
     // 2. Newcomer signs up -> automatically becomes a member of Alun-Alun only.
     const userFlow = await fixture(s, { enrollmentMode: 'open' }, newcomer, 'warga.bsky.social', newcomer)
-    const startUser = (await userFlow.auth.route(req('/auth/start', { mode: 'signup' })))!
+    const startUser = (await userFlow.auth.route(req('/auth/start', { mode: 'signup', ageConfirmed: true })))!
     assert.equal(startUser.status, 200)
     const signedUser = (await userFlow.auth.route(req(callback(userFlow.state()), undefined, cookiePart(startUser))))!
     assert.equal(signedUser.status, 303)

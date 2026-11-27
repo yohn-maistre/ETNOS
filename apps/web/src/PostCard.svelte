@@ -410,7 +410,7 @@
   <Dialog.Content class="platform-dialog">
     <Dialog.Header>
       <Dialog.Title>Laporkan posting</Dialog.Title><Dialog.Description>
-        Laporan hanya terlihat oleh moderator komunitas.
+        Laporan hanya terlihat oleh moderator komunitas dan pengelola ETNOS.
       </Dialog.Description>
     </Dialog.Header>
     <form

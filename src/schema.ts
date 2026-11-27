@@ -705,6 +705,15 @@ END;
 -- First-run screen (W1, src/first-run.ts): shown once per account. People who joined before it never see it.
 CREATE TABLE IF NOT EXISTS first_run_done(actor_id TEXT PRIMARY KEY REFERENCES actors(id), done INTEGER NOT NULL);
 INSERT OR IGNORE INTO first_run_done(actor_id,done) SELECT id,0 FROM actors WHERE kind='human';
+`, `
+-- Reports of profiles and communities for the node operator (W1, src/reports.ts). Post reports stay in reports.
+CREATE TABLE IF NOT EXISTS operator_reports(
+ id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK(kind IN ('profile','community')), target_id TEXT NOT NULL,
+ reporter_id TEXT NOT NULL REFERENCES actors(id), reason TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('open','resolved','dismissed')), decision TEXT, reviewer_id TEXT REFERENCES actors(id),
+ created INTEGER NOT NULL, UNIQUE(kind,target_id,reporter_id)
+);
+CREATE INDEX IF NOT EXISTS operator_reports_state ON operator_reports(state, created DESC);
 `]
 
 export const schemaVersion=migrations.length

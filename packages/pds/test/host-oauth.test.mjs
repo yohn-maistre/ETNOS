@@ -154,12 +154,12 @@ test("ETNOS signs in two hosted accounts through OAuth with an account step; nei
 		const third = await bobSession.agent.com.atproto.repo.createRecord({ repo: bob.did, collection: "org.example.strata.post", rkey: "three", validate: false, record: { $type: "org.example.strata.post", text: "still works" } });
 		assert.ok(third.data.cid);
 		// A new person: an ETNOS invitation plus an account on the host, in one sign-up flow with no handle typed into ETNOS.
-		assert.deepEqual(await (await auth.route(new Request(clientOrigin + "/auth/options"))).json(), { provider: "bluesky", enrollment: "invite", accountHost: origin, hostInvites: false });
+		assert.deepEqual(await (await auth.route(new Request(clientOrigin + "/auth/options"))).json(), { provider: "bluesky", enrollment: "invite", accountHost: origin, hostInvites: false, minimumAge: 18 });
 		// The steward's account was deleted above, so the invitation row is written as the steward's Studio would write it.
 		const enrollment = s.get("SELECT id FROM actors WHERE did = ?", alice.did);
 		const invitation = randomBytes(32).toString("base64url");
 		s.run("INSERT INTO enrollment_invitations(id,hash,issuer_id,created,expires) VALUES(?,?,?,?,?)", crypto.randomUUID(), createHash("sha256").update(invitation).digest("hex"), enrollment.id, s.clock(), s.clock() + 86400000);
-		const started = await auth.route(new Request(clientOrigin + "/auth/start", { method: "POST", headers: { origin: clientOrigin, "content-type": "application/json" }, body: JSON.stringify({ mode: "signup", invitation, provider: "host" }) }));
+		const started = await auth.route(new Request(clientOrigin + "/auth/start", { method: "POST", headers: { origin: clientOrigin, "content-type": "application/json" }, body: JSON.stringify({ mode: "signup", ageConfirmed: true, invitation, provider: "host" }) }));
 		assert.equal(started.status, 200, await started.clone().text());
 		const c = { flow: cookieOf(started, "__Host-strata_flow"), url: new URL((await started.json()).authorizationUrl) };
 		assert.equal(c.url.origin, origin);

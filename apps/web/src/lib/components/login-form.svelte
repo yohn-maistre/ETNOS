@@ -35,12 +35,14 @@
     initialMode?: 'login' | 'signup'
     embedded?: boolean
     onbrowse?: () => void
-    onsubmit: (mode: 'login' | 'signup', invitation: string, provider?: 'host' | 'bluesky') => void
+    onsubmit: (mode: 'login' | 'signup', invitation: string, provider?: 'host' | 'bluesky', ageConfirmed?: boolean) => void
   } = $props()
   let signup = $state(
     untrack(() => initialMode ? initialMode === 'signup' : new URLSearchParams(location.search).get('mode') === 'signup'),
   )
-  let invitation = $state('')
+  let invitation = $state(''),
+    ageConfirmed = $state(false),
+    minimumAge = $state(18)
   // In invite mode a visitor without a code asks for one here instead.
   let requesting = $state(false)
   let enrollment = $state<'open' | 'invite' | 'closed' | null>(null)
@@ -55,8 +57,10 @@
       const result = await request<{
         enrollment: 'open' | 'invite' | 'closed'
         accountHost?: string | null
+        minimumAge?: number
       }>('/auth/options')
       enrollment = result.enrollment
+      minimumAge = result.minimumAge ?? 18
       accountHost = result.accountHost ?? null
     } catch {
       optionsError = true
@@ -88,7 +92,7 @@
       onsubmit={(e) => {
         e.preventDefault()
         if (!signup || enrollment === 'open' || enrollment === 'invite')
-          onsubmit(signup ? 'signup' : 'login', invitation.trim(), signup ? (hosted ? 'host' : 'bluesky') : undefined)
+          onsubmit(signup ? 'signup' : 'login', invitation.trim(), signup ? (hosted ? 'host' : 'bluesky') : undefined, signup && ageConfirmed)
       }}
     >
       <FieldGroup>
@@ -136,6 +140,11 @@
               Coba lagi
             </Button>{/if}
         {/if}
+        {#if signup && (enrollment === 'open' || enrollment === 'invite') && !requesting}<Field orientation="horizontal">
+            <Checkbox id="signup-age" bind:checked={ageConfirmed} /><FieldLabel for="signup-age">
+              Usiaku {minimumAge} tahun atau lebih
+            </FieldLabel>
+          </Field>{/if}
         {#if livePublishing && !signup}<Field orientation="horizontal">
             <Checkbox
               id="publishing-consent"
@@ -151,7 +160,7 @@
         <Button
           type="submit"
           disabled={busy ||
-            (signup && (!enrollment || enrollment === 'closed'))}
+            (signup && (!enrollment || enrollment === 'closed' || !ageConfirmed))}
           class="w-full"
         >
           {#if busy}<LoaderCircle class="animate-spin" />{/if}{signup

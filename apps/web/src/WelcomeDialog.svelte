@@ -24,7 +24,7 @@
     busy?: boolean
     failed?: boolean
     submitError?: string
-    onsubmit: (mode: 'login' | 'signup', invitation: string, provider?: 'host' | 'bluesky') => void
+    onsubmit: (mode: 'login' | 'signup', invitation: string, provider?: 'host' | 'bluesky', ageConfirmed?: boolean) => void
     onclose: () => void
     artwork?: WelcomeArtwork | null
   } = $props()

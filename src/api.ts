@@ -15,6 +15,7 @@ import {SITUS_STYLE_VERSION} from './situs-style.ts'
 import {updateProfile} from './profile.ts'
 import {Groups,strings,type Group,type Context,type SeedLabels} from './groups.ts'
 import {suggestCommunities} from './first-run.ts'
+import {OperatorReports} from './reports.ts'
 import {DirectMessages} from './dm.ts'
 import {Activity} from './activity.ts'
 import {PublicWork} from './public-work.ts'
@@ -104,6 +105,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const lembaga=new Lembaga(store,groups),kios=new Kios(store,groups),situs=new Situs(store,groups,lembaga,kios)
   const tentang=new Tentang(store),entryCat=()=>entryCatalogue(entrySource())
   const entrySource=()=>storeSource({store,groups,wiki,model,datasets,kamus,seed:knowledgeSeed as KnowledgeSeed,catalogue:options.catalogue,localNames:id=>ask.localNames(id),lembaga,kios})
+  const operatorReports=new OperatorReports(store,groups)
   const deployment=new Deployment(store,groups,()=>({origin:store.base,catalogue:options.catalogue,enrollment:options.enrollmentMode,sources:options.sources,stewardDid:options.stewardDid,model:options.modelRoute?.keyed??null}))
   const siteName=()=>deployment.name()
   const programSkill=(id:string|null)=>{if(id===null)return undefined;const slot=resident.slots.jadwal.slots.find(x=>x.id===id);if(!slot)throw new Fault(400,'Unknown program');return slot.skill}
@@ -192,6 +194,10 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(parts.length===4&&parts[1]==='kios'&&['actor','group'].includes(parts[2]))result={kios:kios.view({kind:parts[2] as KiosOwner['kind'],id:parts[3]},actor?.id)}
         // etnos.yaml (src/deployment.ts), for the node operator in Studio.
         else if(path==='/v1/deployment/etnos-yaml')result=deployment.view(authenticated())
+        // The privacy page (/privasi): the operator contact the operator chose to publish in etnos.yaml.
+        else if(path==='/v1/privasi')result=deployment.publicInfo()
+        // The node operator's report queue (src/reports.ts).
+        else if(path==='/v1/operator/reports')result={reports:operatorReports.queue(authenticated())}
         // Situs (docs/plan/one-page-system-2026-11-21.md §8). The page itself is HTML; the web Worker serves it at /situs/<name>.
         else if(parts.length===4&&parts[1]==='groups'&&parts[3]==='situs')result=situs.info(actor?.id,parts[2])
         else if(parts.length===5&&parts[1]==='groups'&&parts[3]==='situs'&&parts[4]==='state')result=situs.state(authenticated(),parts[2])
@@ -532,6 +538,8 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         result=social.bookmark(caller,parts[2],b.save)
       }
       else if (parts.length === 4 && parts[1] === 'posts' && parts[3] === 'report') result=social.report(caller,parts[2],string(b.reason))
+      else if (path === '/v1/reports') result=operatorReports.report(caller,b.kind,b.target,b.reason)
+      else if (parts.length === 5 && parts[1] === 'operator' && parts[2] === 'reports' && parts[4] === 'decide') result=operatorReports.decide(caller,parts[3],b.source,b.state,b.decision)
       else if (parts.length === 4 && parts[1] === 'reports' && parts[3] === 'decide') result=social.decideReport(caller,parts[2],string(b.state) as 'resolved'|'dismissed',string(b.decision))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'topics') result=social.addTopic(caller,parts[2],string(b.title))
       else if (parts.length === 4 && parts[1] === 'communities' && parts[3] === 'seasons') result=seasons.add(caller,parts[2],b)

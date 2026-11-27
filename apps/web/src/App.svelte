@@ -25,6 +25,7 @@
     LogOut,
     MapPin,
     Link,
+    Flag,
   } from '@lucide/svelte'
   import DiscoveryPage from './DiscoveryPage.svelte'
   import CommunityDirectory from './CommunityDirectory.svelte'
@@ -49,8 +50,11 @@
   import ActivityPage from './ActivityPage.svelte'
   import AppearancePanel from './AppearancePanel.svelte'
   import PushPreference from './PushPreference.svelte'
+  import ReportDialog from './ReportDialog.svelte'
   import { disablePush, renewPush } from './push'
   /** The node's copy of this device's push subscription is renewed once per visit. */
+  let reportProfile = $state(false),
+    reportCommunity = $state(false)
   let pushRenewed = false,
     firstRunShown = false
   import WelcomeDialog from './WelcomeDialog.svelte'
@@ -337,6 +341,10 @@
         ? 'Tentang ETNOS'
       : parts[0] === 'gabung'
         ? 'Undangan'
+      : parts[0] === 'privasi'
+        ? 'Privasi'
+      : parts[0] === 'mulai'
+        ? 'Mulai'
       : parts[0] === 'lini-masa'
         ? 'Lini masa'
       : parts[0] === 'voices'
@@ -901,7 +909,7 @@
       busy = false
     }
   }
-  async function login(mode: 'login' | 'signup' = 'login', invitation = '', provider?: 'host' | 'bluesky') {
+  async function login(mode: 'login' | 'signup' = 'login', invitation = '', provider?: 'host' | 'bluesky', ageConfirmed = false) {
     authDialogError = ''
     await mutate(async () => {
       try {
@@ -910,7 +918,7 @@
         {
           mode,
           ...(mode === 'signup'
-            ? { invitation, ...(provider === 'host' ? { provider: 'host' } : {}) }
+            ? { invitation, ageConfirmed, ...(provider === 'host' ? { provider: 'host' } : {}) }
             : { handle: handle.trim(), publishing: publishingConsent }),
           returnTo:
             new SvelteURLSearchParams(authSearch).get('returnTo') ||
@@ -1123,6 +1131,7 @@
           composeKind = 'poll'
         }}
       />{/await}
+  {:else if path === '/privasi'}{#await import('./PrivacyPage.svelte') then module}<module.default />{/await}
   {:else if path === '/tentang'}{#await import('./AboutPage.svelte') then module}<module.default />{/await}
   {:else if path === '/lini-masa'}{#await import('./Timeline.svelte') then module}<module.default />{/await}
   {:else if path === '/news'}{#await import('./NewsIndex.svelte') then module}<module.default
@@ -1147,6 +1156,8 @@
     {#await import('./FirstRun.svelte')}<ContentSkeleton />{:then module}<module.default {auth} {navigate} onDone={() => (auth = { ...auth, firstRun: false })} />{/await}
   {:else if path === '/studio/undangan'}
     {#await import('./StudioInvites.svelte')}<ContentSkeleton />{:then module}<module.default {auth}/>{/await}
+  {:else if path === '/studio/laporan'}
+    {#await import('./StudioReports.svelte')}<ContentSkeleton />{:then module}<module.default {auth}/>{/await}
   {:else if path === '/studio/pengaturan'}
     {#await import('./DeploymentSettings.svelte')}<ContentSkeleton />{:then module}<module.default {auth}/>{/await}
   {:else if path === '/agents'}
@@ -1337,6 +1348,8 @@
         </div>
         <h1>{community.title}</h1>
         <p>{community.description}</p>
+        {#if auth.actor}<div class="community-report"><Button variant="link" size="sm" class="text-muted-foreground px-0 h-8 font-normal" onclick={() => (reportCommunity = true)}><Flag size={14} />Laporkan komunitas</Button></div>
+          <ReportDialog bind:open={reportCommunity} kind="community" target={community.id} />{/if}
         {#if community.forming_until != null && currentMembership}<FoundingRoom {community} onChanged={() => load(true)} />{/if}
         <CommunityPlaces communityId={community.id} steward={isSteward(community.id)} hidden={community.visibility === 'hidden-private'} tick={labelsTick} onEdit={() => open('manage', community!.id)} />
         <div class="etnos-caption">
@@ -1572,6 +1585,8 @@
               >
                 <Share2 size={18} />
               </Button>
+              {#if auth.actor && auth.actor.id !== actor.id}<Button variant="ghost" size="icon" aria-label="Laporkan profil" title="Laporkan profil" onclick={() => (reportProfile = true)}><Flag size={18} /></Button>
+                <ReportDialog bind:open={reportProfile} kind="profile" target={actor.id} />{/if}
               {#if auth.actor?.id === actor.id && actor.kind === 'human'}{#await import('./ProfileEdit.svelte') then module}<module.default
                     {actor}
                     onSaved={(fields) => {

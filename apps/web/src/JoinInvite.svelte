@@ -7,6 +7,7 @@
   import { Button } from '$lib/components/ui/button/index.js'
   import { Input } from '$lib/components/ui/input/index.js'
   import { Field, FieldLabel, FieldDescription } from '$lib/components/ui/field/index.js'
+  import { Checkbox } from '$lib/components/ui/checkbox/index.js'
   import { ApiError, request, type Actor } from './api'
   import InviteRequestForm from './InviteRequestForm.svelte'
 
@@ -18,7 +19,9 @@
     hostInvites = $state(false),
     handle = $state(''),
     busy = $state<'' | 'host' | 'bluesky'>(''),
-    error = $state('')
+    error = $state(''),
+    minimumAge = $state(18),
+    ageConfirmed = $state(false)
 
   onMount(() => {
     const fromQuery = new URLSearchParams(location.search).get('kode') ?? ''
@@ -34,10 +37,11 @@
     if (!code) return void (phase = 'none')
     Promise.all([
       request<{ valid: boolean; expires?: number }>('/auth/invite-check', { invitation: code }, undefined, true),
-      request<{ hostInvites?: boolean }>('/auth/options', undefined, undefined, true).catch(() => ({ hostInvites: false })),
+      request<{ hostInvites?: boolean; minimumAge?: number }>('/auth/options', undefined, undefined, true).catch(() => ({ hostInvites: false, minimumAge: 18 })),
     ])
       .then(([check, options]) => {
         hostInvites = !!options.hostInvites
+        minimumAge = options.minimumAge ?? 18
         expires = check.expires ?? 0
         phase = check.valid ? 'valid' : 'invalid'
       })
@@ -52,6 +56,7 @@
     try {
       const result = await request<{ authorizationUrl: string }>('/auth/start', {
         mode: 'signup',
+        ageConfirmed,
         invitation: code,
         ...(provider === 'host' ? { provider: 'host' } : handle.trim() ? { handle: handle.trim() } : {}),
         returnTo: '/mulai',
@@ -80,12 +85,13 @@
     <span class="join-mark" aria-hidden="true"><MailOpen size={20} /></span>
     <h1 id="join-invite-title">Kamu diundang ke ETNOS</h1>
     <p>ETNOS sedang diuji oleh kelompok kecil. Undangan ini berlaku sampai {until}. Pilih cara bergabung.</p>
+    <label class="join-age"><Checkbox bind:checked={ageConfirmed} /><span>Usiaku {minimumAge} tahun atau lebih</span></label>
     <div class="join-ways">
       {#if hostInvites}
         <article class="join-way">
           <h2>Buat akun ETNOS</h2>
           <p>Nama akunmu akan berakhiran .etnos.space. Akun ini juga dapat dipakai di aplikasi AT Protocol lain.</p>
-          <Button class="w-full" disabled={!!busy} onclick={() => start('host')}>
+          <Button class="w-full" disabled={!!busy || !ageConfirmed} onclick={() => start('host')}>
             {#if busy === 'host'}<LoaderCircle class="animate-spin" />{/if}Buat akun ETNOS<ArrowUpRight size={16} />
           </Button>
         </article>
@@ -98,7 +104,7 @@
             <Input id="join-handle" bind:value={handle} placeholder="nama.bsky.social" autocomplete="username" autocapitalize="none" spellcheck={false} />
             <FieldDescription>Belum punya akun Bluesky? Kosongkan kolom ini untuk membuat akun di Bluesky.</FieldDescription>
           </Field>
-          <Button type="submit" variant={hostInvites ? 'outline' : 'default'} class="w-full" disabled={!!busy}>
+          <Button type="submit" variant={hostInvites ? 'outline' : 'default'} class="w-full" disabled={!!busy || !ageConfirmed}>
             {#if busy === 'bluesky'}<LoaderCircle class="animate-spin" />{/if}Lanjutkan dengan Bluesky<ArrowUpRight size={16} />
           </Button>
         </form>
@@ -130,6 +136,7 @@
   .join-way > p { flex: 1; font-size: 14px; color: var(--muted-foreground); }
   .join-way form { display: grid; gap: 12px; }
   .join-request { width: 100%; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+  .join-age { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; }
   .join-note { font-size: 14px; color: var(--muted-foreground); }
   .join-error { font-size: 14px; color: var(--destructive); }
   @media (min-width: 760px) { .join-ways:has(.join-way + .join-way) { grid-template-columns: 1fr 1fr; } }

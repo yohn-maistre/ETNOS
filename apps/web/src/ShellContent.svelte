@@ -227,7 +227,9 @@
       >
         Masuk
       </Button>{/if}
-    <a class="preview-label" href="/tentang" onclick={() => sidebar.setOpenMobile(false)}>Tentang ETNOS · Alpha</a>
+    <nav class="preview-label" aria-label="Tentang ETNOS">
+      <span aria-hidden="true"></span><a href="/tentang" onclick={() => sidebar.setOpenMobile(false)}>Alpha privat</a>·<a href="/privasi" onclick={() => sidebar.setOpenMobile(false)}>Privasi</a>
+    </nav>
   </Sidebar.Footer>
 </Sidebar.Root>
 <Sidebar.Inset class="platform-inset">

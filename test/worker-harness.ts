@@ -193,7 +193,7 @@ export class TestNode extends StrataNode {
     const s=this.core(),owner=s.provision(did,'Fixture steward'),newcomer='did:plc:zzzzzzzzzzzzzzzzzzzzzzzz'
     const hidden=s.createCommunity(owner.actor.id,'Protected language','Private','hidden-private')
     const {auth,state,parameters}=await fixture(s,{enrollmentMode:'open'},newcomer,'new.bsky.social',newcomer)
-    const start=(await auth.route(new Request(this.config.ETNOS_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.config.ETNOS_ORIGIN,'content-type':'application/json'},body:JSON.stringify({mode:'signup',returnTo:'/communities?welcome=1'})})))!
+    const start=(await auth.route(new Request(this.config.ETNOS_ORIGIN+'/auth/start',{method:'POST',headers:{origin:this.config.ETNOS_ORIGIN,'content-type':'application/json'},body:JSON.stringify({mode:'signup',ageConfirmed:true,returnTo:'/communities?welcome=1'})})))!
     if(start.status!==200)return JSON.stringify({start:start.status})
     const flow=start.headers.getSetCookie().find(x=>x.startsWith('__Host-strata_flow='))!.split(';')[0]
     const callback=(await auth.route(new Request(this.config.ETNOS_ORIGIN+'/auth/callback?state='+state()+'&code=fixture&iss='+encodeURIComponent(issuer),{headers:{cookie:flow}})))!

@@ -7,6 +7,7 @@ import {EtnosCore,Fault,type Actor} from './core.ts'
 import {json,body as readBody} from './api.ts'
 import {signGrant,linkKeyBytes} from '../packages/pds/src/host/link-grant.ts'
 import {PushCenter,pushInput,type PushInput} from './push.ts'
+import {signupMinimumAge} from './deployment.ts'
 
 const SESSION_COOKIE='__Host-strata',FLOW_COOKIE='__Host-strata_flow'
 const token=()=>randomBytes(32).toString('base64url')
@@ -269,7 +270,7 @@ export class BrowserAuth {
     if(path==='/oauth/jwks.json' && request.method==='GET')return json(200,this.client.jwks)
     if(!path.startsWith('/auth/'))return undefined
     try{
-      if(path==='/auth/options' && request.method==='GET')return json(200,{provider:'bluesky',enrollment:this.config.stewardDid?this.enrollmentMode():'closed',accountHost:this.accountHost()??null,hostInvites:this.hostLinks()})
+      if(path==='/auth/options' && request.method==='GET')return json(200,{provider:'bluesky',enrollment:this.config.stewardDid?this.enrollmentMode():'closed',accountHost:this.accountHost()??null,hostInvites:this.hostLinks(),minimumAge:signupMinimumAge(this.store)})
       // The /gabung page asks whether its link still works before showing the ways to join. Nothing else is told.
       if(path==='/auth/invite-check' && request.method==='POST'){
         if(request.headers.get('origin')!==this.config.origin)throw new Fault(403,'Origin not allowed')
@@ -350,6 +351,8 @@ export class BrowserAuth {
             if(this.enrollmentMode()!=='open')throw new Fault(403,'An ETNOS invitation code is required')
             context.enroll='open'
           }
+          // Joining needs the age set in etnos.yaml (signup.minimumAge, 18 by default), confirmed by the person.
+          if(body.ageConfirmed!==true)throw new Fault(400,'Konfirmasi dulu bahwa usiamu paling sedikit '+signupMinimumAge(this.store)+' tahun.')
           if(typeof body.handle==='string' && body.handle){
             // An account that already exists (for example one just created on the
             // node's own identity host) enrolls with this invitation.

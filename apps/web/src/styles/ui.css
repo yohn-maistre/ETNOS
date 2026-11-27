@@ -274,6 +274,18 @@
   color: var(--muted-foreground);
   padding: 0 8px;
 }
+.preview-label a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: inherit;
+  text-decoration: none;
+}
+.preview-label a:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .preview-label > span {
   width: 5px;
   height: 5px;

@@ -30,7 +30,7 @@ async function setup(extra:Record<string,unknown>={}){
 test('invite mode: an outsider without a code cannot enrol through Bluesky, an existing handle or the identity host',async()=>{
  const f=await setup({accountHost:pds,hostLinkKey:linkKey})
  try{
-  for(const body of [{mode:'signup'},{mode:'signup',handle:'friend.bsky.social'},{mode:'signup',provider:'host'},{mode:'signup',invitation:'x'.repeat(43)},{mode:'signup',invitation:'short'}]){
+  for(const body of [{mode:'signup',ageConfirmed:true},{mode:'signup',ageConfirmed:true,handle:'friend.bsky.social'},{mode:'signup',ageConfirmed:true,provider:'host'},{mode:'signup',ageConfirmed:true,invitation:'x'.repeat(43)},{mode:'signup',ageConfirmed:true,invitation:'short'}]){
    const r=(await f.auth.route(req('/auth/start',body)))!
    assert.equal(r.status,403,JSON.stringify(body))
   }
@@ -52,7 +52,7 @@ test('one link, n uses: each use enrols one person, then the link stops; expired
   const results:string[]=[]
   for(const person of people){
    const g=await fixture(f.s,{...f.config},person,'p.bsky.social',person)
-   const start=(await g.auth.route(req('/auth/start',{mode:'signup',invitation:link.invitation})))!
+   const start=(await g.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:link.invitation})))!
    if(start.status!==200){results.push('refused '+start.status);continue}
    const signed=(await g.auth.route(req(callback(g.state()),undefined,cookiePart(start))))!
    results.push(signed.headers.get('location')!)
@@ -64,11 +64,11 @@ test('one link, n uses: each use enrols one person, then the link stops; expired
   for(const uses of [0,21,1.5])assert.equal((await f.auth.route(req('/auth/enrollment-invites',{days:7,uses},f.steward,f.csrf)))!.status,400)
   const expired=await f.invite();f.s.run('UPDATE enrollment_invitations SET expires=? WHERE id=?',f.s.clock()-1,expired.id)
   assert.equal((await check(expired.invitation)).valid,false)
-  assert.equal((await f.auth.route(req('/auth/start',{mode:'signup',invitation:expired.invitation})))!.status,403)
+  assert.equal((await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:expired.invitation})))!.status,403)
   const revoked=await f.invite()
   assert.equal((await check(revoked.invitation)).valid,true)
   assert.equal((await f.auth.route(req('/auth/enrollment-invites/'+revoked.id+'/revoke',{},f.steward,f.csrf)))!.status,200)
-  assert.equal((await f.auth.route(req('/auth/start',{mode:'signup',invitation:revoked.invitation})))!.status,403)
+  assert.equal((await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:revoked.invitation})))!.status,403)
   const listed=await(await f.auth.route(req('/auth/enrollment-invites',undefined,f.steward,f.csrf)))!.text()
   assert.equal(listed.includes('hash'),false);assert.equal(listed.includes(link.invitation),false)
   assert.match(listed,/"uses":2,"maxUses":2/)
@@ -81,7 +81,7 @@ test('the identity host path receives a signed grant for the same link, bound to
   const options=await(await f.auth.route(req('/auth/options')))!.json() as {hostInvites:boolean;enrollment:string}
   assert.equal(options.hostInvites,true);assert.equal(options.enrollment,'invite')
   const link=await f.invite({days:3,uses:4})
-  const start=(await f.auth.route(req('/auth/start',{mode:'signup',provider:'host',invitation:link.invitation})))!
+  const start=(await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,provider:'host',invitation:link.invitation})))!
   assert.equal(start.status,200,await start.clone().text())
   const {authorizationUrl}=await start.json() as {authorizationUrl:string}
   assert.equal(f.parameters().get('prompt'),'create')
@@ -93,12 +93,12 @@ test('the identity host path receives a signed grant for the same link, bound to
   // A grant from another key is not one the host accepts.
   assert.equal(await readGrant(Buffer.alloc(32,1).toString('base64url'),new URL(authorizationUrl).searchParams.get('kode'),Date.now()),null)
   // Bluesky path with the same link: no grant goes to bsky.social.
-  const bsky=(await f.auth.route(req('/auth/start',{mode:'signup',invitation:link.invitation})))!
+  const bsky=(await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:link.invitation})))!
   assert.equal(new URL((await bsky.json() as {authorizationUrl:string}).authorizationUrl).searchParams.has('kode'),false)
   // Without the shared key, the host path still works with a code made on the host, and no grant is made.
   const plain=await fixture(f.s,{enrollmentMode:'invite',accountHost:pds},newcomer,'friend.bsky.social',newcomer)
   assert.equal((await(await plain.auth.route(req('/auth/options')))!.json() as {hostInvites:boolean}).hostInvites,false)
-  const started=(await plain.auth.route(req('/auth/start',{mode:'signup',provider:'host',invitation:link.invitation})))!
+  const started=(await plain.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,provider:'host',invitation:link.invitation})))!
   assert.equal(new URL((await started.json() as {authorizationUrl:string}).authorizationUrl).searchParams.has('kode'),false)
  }finally{f.s.close()}
 })
@@ -139,7 +139,7 @@ test('invitation requests: rate limited, operator-only, never on a public path; 
   const made=await approved.json() as {url:string;invitation:string;maxUses:number}
   assert.equal(made.maxUses,1);assert.ok(made.url.includes('/gabung?kode='))
   assert.equal((await f.auth.route(req('/auth/invite-requests/'+target.id+'/approve',{},f.steward,f.csrf)))!.status,409)
-  const start=(await f.auth.route(req('/auth/start',{mode:'signup',invitation:made.invitation})))!
+  const start=(await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true,invitation:made.invitation})))!
   assert.equal(start.status,200)
   const other=queue.requests.find(r=>r.name==='Kedua (fixture)')!
   assert.equal((await f.auth.route(req('/auth/invite-requests/'+other.id+'/decline',{},f.steward,f.csrf)))!.status,200)
@@ -202,5 +202,30 @@ test('a request may ask to hear back by notification: one generic message on app
   // A request that is gone is never announced.
   f.s.run('DELETE FROM invite_requests WHERE id=?',rows[0].id)
   assert.equal(new PushCenter(f.s,()=>null).message(queued[0]),null)
+ }finally{f.s.close()}
+})
+
+test('joining needs the age confirmed; the age comes from etnos.yaml (signup.minimumAge) and is 18 by default',async()=>{
+ const {Deployment}=await import('../src/deployment.ts'),{Groups}=await import('../src/groups.ts')
+ const f=await setup({enrollmentMode:'open'})
+ try{
+  const options=async()=>(await(await f.auth.route(req('/auth/options')))!.json() as {minimumAge:number}).minimumAge
+  assert.equal(await options(),18)
+  for(const body of [{mode:'signup'},{mode:'signup',ageConfirmed:'yes'},{mode:'signup',ageConfirmed:false}]){
+   const r=(await f.auth.route(req('/auth/start',body)))!
+   assert.equal(r.status,400,JSON.stringify(body));assert.match((await r.json() as {error:string}).error,/18 tahun/)
+  }
+  assert.equal((await f.auth.route(req('/auth/start',{mode:'signup',ageConfirmed:true})))!.status,200)
+  // The operator changes it in etnos.yaml, applied from Studio.
+  const deployment=new Deployment(f.s,new Groups(f.s,{stewardDid:did}),()=>({origin}))
+  const text=deployment.text()
+  assert.match(text,/minimumAge: 18/)
+  assert.equal(deployment.check(f.owner.actor.id,text.replace('minimumAge: 18','minimumAge: 12')).ok,false,'below 13 is refused')
+  assert.deepEqual(deployment.apply(f.owner.actor.id,text.replace('minimumAge: 18','minimumAge: 16')).applied.map(c=>c.path),['signup.minimumAge'])
+  assert.equal(await options(),16)
+  assert.match((await (await f.auth.route(req('/auth/start',{mode:'signup'})))!.json() as {error:string}).error,/16 tahun/)
+  // An out-of-range stored value falls back to 18.
+  f.s.run("UPDATE deployment_settings SET value='7' WHERE key='signup.minimumAge'")
+  assert.equal(await options(),18)
  }finally{f.s.close()}
 })
