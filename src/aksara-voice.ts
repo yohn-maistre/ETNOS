@@ -73,6 +73,7 @@ export function gateAksaraPost(text: string, basis: string, recent: string[], ma
   if (/\[\d[\d,\s]*\]/.test(t)) reasons.push('ada nomor rujukan')
   if (/\bwarga\b/i.test(t)) reasons.push('memakai kata warga')
   if (SLANG.test(t)) reasons.push('memakai bahasa gaul')
+  if (looksEnglish(t)) reasons.push('berbahasa Inggris')
   if (OPENERS.test(t)) reasons.push('dibuka seperti pengumuman')
   if (t.split(/(?<=[.!?])\s+/).filter(Boolean).length > 4) reasons.push('lebih dari 4 kalimat')
   const missing = ungrounded(t, basis)
