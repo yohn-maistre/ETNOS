@@ -69,6 +69,9 @@
       .finally(done)
     return () => abort.abort()
   })
+  // News pictures that fail to load fall back to the landscape print instead of a broken-image icon.
+  let brokenImages = $state(new Set<string>())
+  const imageFailed = (id: string) => { brokenImages = new Set([...brokenImages, id]) }
   const newsDate = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '')
   const newsMeta = (i: NewsItem) => [newsDate(i.publishedAt), i.sourceCount ? i.sourceCount + ' sumber' : ''].filter(Boolean).join(' · ')
 
@@ -195,14 +198,14 @@
       <div class="news-top" class:solo={rest.length < 2}>
         <ExploreTile tone="news" href={'/news/' + lead.id} title={lead.title} text={lead.summary ?? ''} meta={newsMeta(lead)}>
           {#snippet art()}
-            {#if lead.image}<img src={lead.image} alt="" loading="lazy" decoding="async" />
+            {#if lead.image && !brokenImages.has(lead.id)}<img src={lead.image} alt="" loading="lazy" decoding="async" onerror={() => imageFailed(lead.id)} />
             {:else if fallbackPrint}<LandscapePrint artwork={fallbackPrint} decorative />{/if}
           {/snippet}
         </ExploreTile>
         {#if rest.length >= 2}<div class="news-side">
             {#each rest.slice(0, 2) as item (item.id)}<ExploreTile tone="news" href={'/news/' + item.id} title={item.title} meta={newsMeta(item)}>
                 {#snippet art()}
-                  {#if item.image}<img src={item.image} alt="" loading="lazy" decoding="async" />
+                  {#if item.image && !brokenImages.has(item.id)}<img src={item.image} alt="" loading="lazy" decoding="async" onerror={() => imageFailed(item.id)} />
                   {:else if fallbackPrint}<LandscapePrint artwork={fallbackPrint} decorative />{/if}
                 {/snippet}
               </ExploreTile>{/each}

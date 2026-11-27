@@ -720,6 +720,7 @@
         type="button"
         class="ls-3d"
         aria-pressed={threeD}
+        aria-label={threeD ? 'Tampilkan datar' : 'Putar 3D'}
         onclick={() => (threeD = !threeD)}
         title={threeD ? 'Tampilkan datar' : 'Putar 3D'}
       >
@@ -760,6 +761,7 @@
   .ls-tools .ls-3d[aria-pressed='true']:hover { background: color-mix(in oklab, var(--foreground) 88%, var(--background)); }
   .ls-tools button:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
   @media (pointer: coarse) { .ls-tools button { min-width: 44px; height: 44px; } .ls-tools { gap: 4px; } }
+  @media (max-width: 559px) { .ls-tools .ls-3d { padding: 0; } .ls-tools .ls-3d span { display: none; } }
   .ls-tip { position: absolute; left: 12px; bottom: 10px; max-width: calc(100% - 24px); margin: 0; padding: 6px 10px; border-radius: 8px; background: var(--background); border: 1px solid var(--border); font-size: 13px; pointer-events: none; }
   @media (max-width: 640px) { canvas { height: 420px; } .fill canvas { height: 100%; } }
 </style>

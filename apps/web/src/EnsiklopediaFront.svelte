@@ -194,7 +194,7 @@
     <form class="ef-search" role="search" onsubmit={(e) => { e.preventDefault(); if (results[0]) location.assign(results[0].href) }}>
       <label class="obs-search">
         <Search size={18} aria-hidden="true" />
-        <input bind:value={query} type="search" aria-label={'Cari di ' + OBSERVATORY_NAME} placeholder="Cari tempat, bahasa, suku, spesies, atau topik" autocomplete="off" />
+        <input bind:value={query} type="search" aria-label={'Cari di ' + OBSERVATORY_NAME} placeholder="Cari tempat, bahasa atau suku" autocomplete="off" />
       </label>
     </form>
 
@@ -677,6 +677,11 @@
     gap: 4px;
     margin-bottom: 10px;
   }
+  /* Tabs read as one Grafit pill group (DESIGN.md, Pills): hairline outline, the chosen one in ink. */
+  .ef-explorer :global(.ef-tabs-list) { padding: 3px; border: 1px solid var(--border); border-radius: 999px; background: transparent; }
+  .ef-explorer :global(.ef-tabs-list [role='tab']) { min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; box-shadow: none; color: var(--muted-foreground); font-size: 13.5px; font-weight: 550; }
+  .ef-explorer :global(.ef-tabs-list [role='tab']:hover) { color: var(--foreground); }
+  .ef-explorer :global(.ef-tabs-list [role='tab'][data-state='active']) { background: var(--foreground); color: var(--background); }
   .ef-explorer :global(.ef-tab-pane) { display: grid; gap: 10px; }
   .ef-tab-foot { margin: 2px 0 0; font-size: 13.5px; }
   .ef-tab-foot a { color: var(--brand, var(--foreground)); font-weight: 600; text-decoration: none; }

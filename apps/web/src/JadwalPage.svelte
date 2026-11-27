@@ -4,7 +4,6 @@
   import { Sparkle, ArrowUpRight } from '@lucide/svelte'
   import { request, relativeDate } from './api'
   import { setHomeFilter } from './home-filter.svelte'
-  import ContentSkeleton from './ContentSkeleton.svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   type Program = { id: string; label: string; at: string; skill: string; days: number[] | null; latest: { id: string; path: string; created: number } | null }
   type Slot = { id: string; label: string; at: string; state: 'menunggu' | 'berjalan' | 'selesai' | 'diam' | 'dilewati'; post: { id: string; path?: string } | null }
@@ -60,7 +59,7 @@
     </div>
   </section>
 
-  {#if loading}<ContentSkeleton />
+  {#if loading}<div class="aksara-skel" aria-hidden="true">{#each Array(4) as _, i (i)}<span></span>{/each}</div><p class="sr-only" role="status">Memuat jadwal Aksara</p>
   {:else if failed}<div class="etnos-nodata"><h2>Halaman ini belum bisa dimuat</h2><p>Coba muat ulang sebentar lagi.</p></div>
   {:else}
     {#if slots.length}<section class="aksara-block">
@@ -91,27 +90,36 @@
 </div>
 
 <style>
-  .aksara-page { padding-inline: 16px; padding-bottom: 32px; max-width: 720px; }
-  .aksara-page :global(.cx-page-head) { padding-inline: 0; }
-  .aksara-who { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding-bottom: 20px; }
+  .aksara-page { --gutter: 16px; padding-inline: var(--gutter); padding-bottom: 32px; max-width: 720px; }
+  @media (min-width: 768px) { .aksara-page { --gutter: 24px; } }
+  .aksara-page :global(.cx-page-head) { padding-inline: 0; padding-top: 26px; }
+  .aksara-page :global(.cx-page-head h1) { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+  @media (max-width: 767px) { .aksara-page :global(.cx-page-head h1) { font-size: 22px; } }
+  .aksara-who { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding-bottom: 24px; }
   .aksara-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--muted); color: var(--foreground); }
   .aksara-who p { margin: 0; font-size: 16px; line-height: 1.55; max-width: 60ch; }
-  .aksara-who .aksara-meta { margin-top: 8px; font-size: 14px; color: var(--muted-foreground); }
-  .aksara-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-  .aksara-block { border-top: 1px solid var(--commons-hairline, var(--border)); padding-top: 18px; margin-top: 4px; margin-bottom: 20px; }
-  .aksara-block h2 { margin: 0; font-size: 18px; font-weight: 700; }
-  .aksara-note { margin: 4px 0 0; font-size: 13px; color: var(--muted-foreground); }
-  .aksara-slots, .aksara-posts { list-style: none; margin: 10px 0 0; padding: 0; }
-  .aksara-slots li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--commons-hairline, var(--border)); }
+  .aksara-who .aksara-meta { margin-top: 8px; font-size: 14.5px; line-height: 1.5; color: var(--muted-foreground); }
+  .aksara-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  @media (max-width: 767px) { .aksara-actions :global(a) { min-height: 44px; } }
+  .aksara-block { margin: 0 calc(var(--gutter) * -1); padding: 28px var(--gutter) 8px; border-top: 1px solid var(--border); }
+  .aksara-block h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.015em; }
+  .aksara-note { margin: 6px 0 0; font-size: 13.5px; color: var(--muted-foreground); }
+  .aksara-slots, .aksara-posts { list-style: none; margin: 12px 0 0; padding: 0; }
+  .aksara-slots li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-top: 1px solid var(--border); }
   .aksara-time { font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.3; }
-  .aksara-label { display: block; font-weight: 600; font-size: 15px; }
-  .aksara-does { display: block; font-size: 14px; color: var(--muted-foreground); line-height: 1.45; }
-  .aksara-state { grid-column: 2; font-size: 13px; color: var(--muted-foreground); }
+  .aksara-label { display: block; font-weight: 700; font-size: 16px; letter-spacing: -0.012em; }
+  .aksara-does { display: block; margin-top: 2px; font-size: 14.5px; color: var(--muted-foreground); line-height: 1.45; }
+  .aksara-state { grid-column: 2; font-size: 13.5px; color: var(--muted-foreground); }
   .aksara-state[data-state='selesai'], .aksara-state[data-state='berjalan'] { color: var(--foreground); font-weight: 600; }
-  .aksara-state a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-  .aksara-posts li { border-bottom: 1px solid var(--commons-hairline, var(--border)); }
-  .aksara-posts a { display: grid; gap: 4px; padding: 12px 0; color: inherit; text-decoration: none; }
-  .aksara-posts a:hover .aksara-text { text-decoration: underline; text-underline-offset: 3px; }
+  .aksara-state a { display: inline-flex; align-items: center; min-height: 44px; margin-block: -12px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .aksara-posts li { border-top: 1px solid var(--border); }
+  .aksara-posts a { display: grid; gap: 4px; margin: 0 calc(var(--gutter) * -1); padding: 14px var(--gutter); color: inherit; text-decoration: none; transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+  .aksara-posts a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+  .aksara-posts a:focus-visible, .aksara-state a:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: -2px; }
   .aksara-text { font-size: 15px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .aksara-posts small { font-size: 13px; color: var(--muted-foreground); }
+  .aksara-posts small { font-size: 13.5px; color: var(--muted-foreground); }
+  .aksara-skel { display: grid; gap: 0; margin: 0 calc(var(--gutter) * -1); padding: 28px var(--gutter); border-top: 1px solid var(--border); }
+  .aksara-skel span { height: 64px; margin-top: 12px; border-radius: 12px; background: color-mix(in oklab, var(--foreground) 5%, var(--background)); }
+  @keyframes aksara-pulse { to { opacity: 0.55; } }
+  @media (prefers-reduced-motion: no-preference) { .aksara-skel span { animation: aksara-pulse 1.4s ease-in-out infinite alternate; } }
 </style>

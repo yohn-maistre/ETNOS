@@ -115,6 +115,25 @@
   const ctx = $derived(entry?.source.context ?? null)
   const isPlaceCtx = $derived(!!ctx && (ctx.kind === 'place' || ctx.kind === 'region'))
   const listKey = $derived(entry ? 'entri-' + entry.slug : '')
+
+  // A language entry shows a few of its basic words from Peta Kata (published wordlists, not yet checked by speakers).
+  type BasicWord = { concept: string; form: string; dataset: string }
+  const glottocode = $derived(ctx?.kind === 'language' ? (ctx.aliases.find((a) => a.startsWith('glottocode:'))?.slice(11) ?? '') : '')
+  let basic = $state<{ code: string; words: BasicWord[]; count: number } | null>(null)
+  const BASIC_SHOWN = ['air', 'api', 'rumah', 'babi', 'matahari', 'batu', 'makan', 'satu']
+  $effect(() => {
+    const code = glottocode
+    basic = null
+    if (!/^[a-z0-9]{8}$/.test(code)) return
+    request<{ words: BasicWord[] }>('/v1/peta-kata/bahasa/' + code, undefined, undefined, true)
+      .then((r) => {
+        if (glottocode !== code) return
+        const first = new Map<string, BasicWord>()
+        for (const w of r.words) if (!first.has(w.concept)) first.set(w.concept, w)
+        basic = { code, count: first.size, words: BASIC_SHOWN.map((k) => first.get(k)).filter((w): w is BasicWord => !!w) }
+      })
+      .catch(() => { basic = null })
+  })
   const viewerLink = (id: string) => viewerHref(id) + '?daftar=' + encodeURIComponent(listKey)
 
   // Media from the Penampil: the first photo of the entry's records as its picture, every record as a card.
@@ -306,6 +325,12 @@
 
         {#if entry.kios?.length}<div class="ep-section ep-kios"><KiosPlace items={entry.kios} place={entry.title} /></div>{/if}
 
+        {#if basic && basic.count}<section class="ep-section" aria-labelledby={uid + '-basic'}>
+            <div class="ep-section-head"><h2 id={uid + '-basic'}>Kata dasar</h2><a class="ep-more" href={'/wiki/peta-kata?bahasa=' + basic.code}>Buka Peta Kata</a></div>
+            {#if basic.words.length}<dl class="ep-words">{#each basic.words as w (w.concept)}<div><dt>{w.form.replace(/_/g, ' ')}</dt><dd>{w.concept}</dd></div>{/each}</dl>{/if}
+            <p class="ep-note">Bahasa ini punya {basic.count} dari 100 kata dasar dalam daftar kata terbitan. Kata ini belum diperiksa penutur, dan sumber setiap kata ada di Peta Kata.</p>
+          </section>{/if}
+
         {#if group && group.languages.length > 1}<section class="ep-section ep-specimen" aria-labelledby={uid + '-langs'}>
             <h2 id={uid + '-langs'}>Bahasa lain dengan titik acuan di {group.title}</h2>
             <LanguageSpecimen groups={[group]} total={group.languages.length} current={ctx?.slug} open={group.languages.findIndex((l) => l.slug === ctx?.slug) >= 8} />
@@ -453,7 +478,7 @@
   .ep-chiplist a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border); color: var(--foreground); text-decoration: none; font-size: 14px; }
   .ep-chiplist a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
   .ep-article { margin-top: 18px; border-top: 1px solid var(--border); }
-  .ep-review-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; margin: 16px 28px 0; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); font-size: 13.5px; line-height: 1.45; }
+  .ep-review-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; margin: 16px var(--gutter) 0; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); font-size: 13.5px; line-height: 1.45; }
   .ep-review-bar[data-state='unreviewed'] { background: color-mix(in oklab, var(--brand) 9%, var(--background)); border-color: color-mix(in oklab, var(--brand) 32%, var(--border)); }
   .ep-review-bar[data-state='reviewed'] { background: color-mix(in oklab, var(--foreground) 3%, var(--background)); color: var(--muted-foreground); }
   .ep-review-text { display: inline-flex; align-items: center; gap: 8px; }
@@ -463,9 +488,14 @@
   .ep-review-ok { border: 0; background: var(--foreground); color: var(--background); }
   .ep-review-undo { border: 1px solid var(--border); background: var(--background); color: var(--foreground); }
   .ep-review-ok:disabled, .ep-review-undo:disabled { opacity: 0.55; cursor: default; }
-  .ep-byline { margin: 0; padding: 12px 28px 0; font-size: 13.5px; color: var(--muted-foreground); }
-  .ep-article .wiki-body { padding: 0 28px; }
-  .ep-article-foot { margin: 0; padding: 4px 28px 8px; }
+  .ep-byline { margin: 0; padding: 12px var(--gutter) 0; font-size: 13.5px; color: var(--muted-foreground); }
+  /* The article reads in Grafit's one family (DESIGN.md, One Family Rule): Geist body at 16px, heavy subheads. */
+  .ep-article .wiki-body { max-width: none; margin: 0; padding: 0 var(--gutter); font-family: inherit; font-size: 16px; line-height: 1.65; }
+  .ep-article .wiki-body :global(:is(p, li)) { max-width: 68ch; font-family: inherit; font-size: 16px; line-height: 1.65; }
+  .ep-article .wiki-body :global(:is(h2, h3, h4)) { max-width: 68ch; margin: 28px 0 8px; padding-top: 0; border-top: 0; font-family: inherit; font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; }
+  .ep-article .wiki-body :global(h2) { font-size: 20px; }
+  .ep-article .wiki-body :global(:is(h3, h4)) { font-size: 17px; font-weight: 700; }
+  .ep-article-foot { margin: 0; padding: 4px var(--gutter) 8px; }
   .ep-inline { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; color: var(--muted-foreground); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
   .ep-inline:hover { color: var(--foreground); }
   .ep-empty { display: grid; justify-items: start; gap: 12px; margin-top: 18px; padding: 22px var(--gutter); border-top: 1px solid var(--border); }
@@ -508,7 +538,6 @@
   .ep a:focus-visible, .ep button:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
   @media (max-width: 767px) {
     .ep-head { padding-top: 18px; }
-    .ep-byline, .ep-article .wiki-body, .ep-article-foot { padding-inline: 20px; }
     .ep-tabs button { flex: 1 0 auto; justify-content: center; padding: 0 6px; font-size: 14px; }
   }
   @media (prefers-reduced-motion: no-preference) { .ep-chip-main :global(svg:last-child) { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); } }

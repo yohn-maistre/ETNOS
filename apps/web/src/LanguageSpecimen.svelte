@@ -1,6 +1,6 @@
 <script lang="ts" module>
-  // Languages as a type specimen: names set in the editorial serif, grouped by the region of their Glottolog
-  // reference point. A few names per group show first; the rest open in place. Typed props for reuse.
+  // Languages grouped by the region of their Glottolog reference point, as Grafit pills (DESIGN.md: no serif
+  // word specimens). A few names per group show first; the rest open in place. Typed props for reuse.
   export type SpecimenGroup = { slug: string; title: string; languages: { slug: string; title: string }[] }
 </script>
 
@@ -27,36 +27,20 @@
 </div>
 
 <style>
-  .specimen { --ink: oklch(0.5 0.13 42); display: grid; gap: 22px; padding: 4px 16px 8px; }
-  .specimen-group h3 { margin: 0 0 6px; font-size: 13px; font-weight: 600; color: var(--muted-foreground); display: flex; gap: 8px; align-items: baseline; }
-  .specimen-group h3 a { color: inherit; text-decoration: none; }
+  .specimen { display: grid; gap: 20px; padding: 4px 16px 8px; }
+  .specimen-group h3 { margin: 0 0 8px; font-size: 13.5px; font-weight: 600; color: var(--muted-foreground); display: flex; gap: 8px; align-items: baseline; }
+  .specimen-group h3 a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
   .specimen-group h3 a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
   .specimen-group h3 span { font-variant-numeric: tabular-nums; font-weight: 400; }
-  .specimen-names { list-style: none; margin: 0; padding: 0; max-width: 70ch; display: flex; flex-wrap: wrap; align-items: baseline; row-gap: 2px; font-family: var(--font-editorial, inherit); font-size: clamp(19px, 3.2vw, 23px); line-height: 1.45; color: var(--ink); }
-  .specimen-names li { white-space: nowrap; overflow-wrap: normal; word-break: normal; }
-  .specimen-names li:not(:last-child):not(.specimen-more)::after { content: '·'; padding: 0 0.42em; color: color-mix(in oklab, var(--ink) 45%, transparent); }
-  .specimen-names a { color: inherit; text-decoration: none; padding-block: 4px; }
-  .specimen-names a.here { color: var(--foreground); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: var(--ink); }
-  .specimen-names a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
-  .specimen-names a:focus-visible, .specimen-group h3 a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
-  .specimen-more { margin-left: 2px; align-self: center; font-family: var(--font-sans, inherit); font-size: 13px; color: var(--muted-foreground); white-space: nowrap; }
-  .specimen-toggle {
-    justify-self: start;
-    min-height: 44px;
-    padding: 0 16px;
-    border: 1px solid color-mix(in oklab, var(--ink) 40%, var(--border));
-    border-radius: 999px;
-    background: color-mix(in oklab, var(--ink) 6%, var(--background));
-    color: var(--ink);
-    font: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .specimen-toggle:hover { background: color-mix(in oklab, var(--ink) 12%, var(--background)); }
-  .specimen-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  .specimen-credit { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted-foreground); max-width: 66ch; }
+  .specimen-names { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .specimen-names a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); font-size: 14px; font-weight: 550; text-decoration: none; white-space: nowrap; }
+  .specimen-names a:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+  .specimen-names a.here { background: var(--foreground); border-color: var(--foreground); color: var(--background); }
+  .specimen-names a:focus-visible, .specimen-group h3 a:focus-visible, .specimen-toggle:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
+  .specimen-more { padding: 0 4px; font-size: 13.5px; color: var(--muted-foreground); white-space: nowrap; }
+  .specimen-toggle { justify-self: start; min-height: 44px; padding: 0 16px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .specimen-toggle:hover { background: color-mix(in oklab, var(--foreground) 4%, transparent); }
+  .specimen-credit { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); max-width: 66ch; }
   .specimen-credit a { color: inherit; text-underline-offset: 3px; }
   @media (min-width: 768px) { .specimen { padding-inline: 24px; } }
-  :global(.dark) .specimen { --ink: oklch(0.78 0.11 55); }
 </style>

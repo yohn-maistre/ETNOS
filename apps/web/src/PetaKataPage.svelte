@@ -5,7 +5,7 @@
   // as faint rings, and nothing is filled in for them. A tap opens the language; up to three languages can be
   // compared side by side. Data loads per concept and per language, so a phone fetches only what it shows.
   import { onMount, tick } from 'svelte'
-  import { ArrowUpRight, ChevronDown, ChevronRight, Plus, Search, Square, Volume2, X } from '@lucide/svelte'
+  import { ArrowUpRight, Check, ChevronDown, ChevronRight, Link2, Plus, Search, Square, Volume2, X } from '@lucide/svelte'
   import { request } from './api'
   import { fold } from './stage-layouts.ts'
   import PetaKataMap, { type WordPoint } from './PetaKataMap.svelte'
@@ -238,6 +238,18 @@
     scrollTo({ top: 0, behavior: 'auto' })
   }
 
+  // The address keeps the concept, language, comparison and region, so a copied link opens the same view.
+  let shared = $state(false)
+  let sharedTimer: ReturnType<typeof setTimeout> | undefined
+  async function share() {
+    try {
+      await navigator.clipboard.writeText(location.href)
+      shared = true
+      clearTimeout(sharedTimer)
+      sharedTimer = setTimeout(() => (shared = false), 2400)
+    } catch { /* clipboard refused: the address bar still holds the link */ }
+  }
+
   function play(w: CommunityWord) {
     if (!w.voice) return
     if (playingId === w.voice.id && audio) { audio.pause(); playingId = null; return }
@@ -280,10 +292,14 @@
       <a href="/wiki/jenis/bahasa">Bahasa</a>
     </nav>
     <h1>Peta Kata</h1>
-    <p class="obs-lede">Kata dasar dalam bahasa-bahasa Tanah Papua, di titik setiap bahasa. Kata diambil dari daftar kata terbitan dan dari kamus komunitas, dan setiap kata membawa sumbernya.</p>
-    <div class="obs-pills" role="radiogroup" aria-label="Tampilan">
-      <button type="button" role="radio" aria-checked={view === 'peta'} onclick={() => setView('peta')}>Peta kata</button>
-      <button type="button" role="radio" aria-checked={view === 'makna'} onclick={() => setView('makna')}>Ruang makna</button>
+    <p class="obs-lede">Kata dasar dalam bahasa-bahasa Tanah Papua, di titik setiap bahasa. Kata diambil dari daftar kata terbitan dan dari kamus komunitas, dan sumber setiap kata dicantumkan.</p>
+    <div class="pk-toprow">
+      <div class="obs-pills" role="radiogroup" aria-label="Tampilan">
+        <button type="button" role="radio" aria-checked={view === 'peta'} onclick={() => setView('peta')}>Peta kata</button>
+        <button type="button" role="radio" aria-checked={view === 'makna'} onclick={() => setView('makna')}>Ruang makna</button>
+      </div>
+      <button type="button" class="pk-share" onclick={share} aria-label={shared ? 'Tautan disalin' : 'Salin tautan'}>{#if shared}<Check size={15} aria-hidden="true" />{:else}<Link2 size={15} aria-hidden="true" />{/if}<span class="pk-share-text">{shared ? 'Tautan disalin' : 'Salin tautan'}</span></button>
+      <span class="sr-only" role="status">{shared ? 'Tautan halaman ini sudah disalin.' : ''}</span>
     </div>
   </header>
 
@@ -348,7 +364,7 @@
       </div>
 
       <div class="pk-map" aria-busy={!lookup}>
-        <PetaKataMap {atlas} {points} focus={region} {selected} {compare} regionNames={REGION_NAME} onpick={(c) => pickLanguage(c)} />
+        <PetaKataMap {atlas} {points} focus={region} {selected} {compare} onpick={(c) => pickLanguage(c)} />
         {#if indexError || lookupError}<p class="pk-map-note" role="alert">{indexError || lookupError}</p>{/if}
       </div>
 
@@ -540,7 +556,10 @@
   .pk-crumb { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--muted-foreground); }
   .pk-crumb a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
   .pk-crumb a:hover { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
-  .pk-top .obs-pills { justify-self: start; }
+  .pk-toprow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+  .pk-share { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 140px; justify-content: center; padding: 0 14px; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--foreground); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+  .pk-share:hover { background: var(--row-hover); }
+  @media (max-width: 420px) { .pk-share { min-width: 44px; width: 44px; padding: 0; } .pk-share-text { display: none; } }
 
   .pk-concept { gap: 16px; }
   .pk-picker { display: flex; align-items: center; gap: 8px; min-width: 0; }

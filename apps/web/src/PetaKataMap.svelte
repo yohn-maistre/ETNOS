@@ -15,7 +15,7 @@
 </script>
 
 <script lang="ts">
-  // Peta Kata's map: every Tanah Papua language as a point at its Glottolog location, over the seven wilayah adat.
+  // Peta Kata's map: every Tanah Papua language as a point at its Glottolog location, over the seven wilayah adat (named in the region pills above the map).
   // A language with a form for the chosen concept is a filled point in its family colour with the form beside it;
   // a language without one is a faint ring. Labels are placed greedily and skipped where they would overlap, so
   // the list below the map stays the full and accessible view. Taps pick the nearest point within 22px.
@@ -28,7 +28,6 @@
     focus = '',
     selected = '',
     compare = [],
-    regionNames,
     onpick,
   }: {
     atlas: Atlas
@@ -36,7 +35,6 @@
     focus?: string
     selected?: string
     compare?: string[]
-    regionNames: Record<string, string>
     onpick: (code: string) => void
   } = $props()
 
@@ -158,11 +156,6 @@
       {#each Object.entries(atlas.regions) as [slug, r] (slug)}<path d={r.d} class:dim={!!focus && focus !== slug} />{/each}
       {#each atlas.contested ?? [] as c (c.slug)}<path d={c.d} class:dim={!!focus} />{/each}
     </g>
-    {#if !focus && width >= 520}
-      <g class="region-names" style:font-size={u(width < 520 ? 11 : 12) + 'px'}>
-        {#each Object.entries(atlas.regions) as [slug, r] (slug)}<text x={r.x} y={r.y}>{regionNames[slug] ?? slug}</text>{/each}
-      </g>
-    {/if}
     <g class="pts">
       {#each ordered as p (p.code)}
         {@const big = p.code === selected || compareSet.has(p.code)}
@@ -184,7 +177,6 @@
   svg { display: block; width: 100%; height: 100%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .land path { fill: color-mix(in oklab, var(--foreground) 5%, var(--background)); stroke: color-mix(in oklab, var(--foreground) 22%, transparent); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
   .land path.dim { opacity: 0.45; }
-  .region-names text { fill: var(--muted-foreground); text-anchor: middle; font-weight: 600; opacity: 0.55; pointer-events: none; }
   .dot { stroke: var(--background); }
   .dot.f0 { fill: var(--pk-other); }
   .dot.f1 { fill: var(--pk-f1); }

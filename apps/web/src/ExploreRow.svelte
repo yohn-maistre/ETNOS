@@ -4,6 +4,8 @@
   // Put rows inside a `ul.open-list`.
   import type { Snippet } from 'svelte'
   let { title, meta = '', text = '', href, image = null, art }: { title: string; meta?: string; text?: string; href: string; image?: string | null; art?: Snippet } = $props()
+  // A picture that fails to load leaves the plain thumbnail box, never the browser's broken-image icon.
+  let failed = $state(false)
 </script>
 
 <li class="row">
@@ -13,7 +15,7 @@
       {#if text}<span class="text">{text}</span>{/if}
       {#if meta}<span class="meta">{meta}</span>{/if}
     </span>
-    {#if image}<span class="art" aria-hidden="true"><img src={image} alt="" loading="lazy" decoding="async" /></span>
+    {#if image}<span class="art" aria-hidden="true">{#if !failed}<img src={image} alt="" loading="lazy" decoding="async" onerror={() => (failed = true)} />{/if}</span>
     {:else if art}<span class="art" aria-hidden="true">{@render art()}</span>{/if}
   </a>
 </li>

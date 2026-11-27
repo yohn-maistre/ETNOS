@@ -496,7 +496,7 @@
     <button type="button" onclick={() => zoomBy(1.25)} aria-label="Perbesar" title="Perbesar"><Plus size={16} /></button>
     <button type="button" onclick={() => zoomBy(1 / 1.25)} aria-label="Perkecil" title="Perkecil"><Minus size={16} /></button>
     <button type="button" onclick={reset} aria-label="Atur ulang tampilan" title="Atur ulang tampilan"><RotateCcw size={15} /></button>
-    {#if lens === 'skala'}<button type="button" class="ms-3d" aria-pressed={threeD} onclick={() => (threeD = !threeD)} title={threeD ? 'Tampilkan datar' : 'Putar 3D'}><Box size={15} aria-hidden="true" /><span>{threeD ? 'Datar' : 'Putar 3D'}</span></button>{/if}
+    {#if lens === 'skala'}<button type="button" class="ms-3d" aria-pressed={threeD} aria-label={threeD ? 'Tampilkan datar' : 'Putar 3D'} onclick={() => (threeD = !threeD)} title={threeD ? 'Tampilkan datar' : 'Putar 3D'}><Box size={15} aria-hidden="true" /><span>{threeD ? 'Datar' : 'Putar 3D'}</span></button>{/if}
   </div>
   {#if tip}<p class="ms-tip" aria-hidden="true"><strong>{tip.title}</strong>{#if lens === 'skala' && tip.world?.size} · {rangeWords(tip.world.size, sizeWords)}{/if}{#if lens === 'skala' && tip.world?.pace} · berubah dalam {rangeWords(tip.world.pace, paceWords)}{/if}{#if lens !== 'skala'} · {tip.witnesses} sumber{/if}</p>{/if}
 </div>
@@ -519,6 +519,8 @@
   .ms-tools .ms-3d[aria-pressed='true']:hover { background: color-mix(in oklab, var(--foreground) 88%, var(--background)); }
   .ms-tools button:focus-visible { outline: 2px solid var(--ring, var(--brand)); outline-offset: 2px; }
   @media (pointer: coarse) { .ms-tools button { min-width: 44px; height: 44px; } .ms-tools { gap: 4px; } }
+  /* On a phone the 3D switch is a round icon like the other tools, so it stays inside the right margin. */
+  @media (max-width: 559px) { .ms-tools .ms-3d { padding: 0; } .ms-tools .ms-3d span { display: none; } }
   .ms-tip { position: absolute; left: 12px; bottom: 10px; max-width: calc(100% - 24px); margin: 0; padding: 6px 10px; border-radius: 8px; background: var(--background); border: 1px solid var(--border); font-size: 13px; pointer-events: none; }
   @media (max-width: 640px) { canvas { height: 460px; } .fill canvas { height: 100%; } }
 </style>
