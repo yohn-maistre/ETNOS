@@ -183,6 +183,31 @@ async function admin(host: Host, request: Request, path: string, ctx: ExecutionC
 		await host.dir.audit("operator", "account.kem", row.did, now);
 		return json(200, { published: true });
 	}
+	// After the host moves to a name of its own (docs/ops/fresh-cloudflare-migration.md §6): point each active
+	// account's DID document at this host's current name. One account with {did}, or every active account.
+	// Idempotent: an account already pointing here is left alone.
+	if (path === "/admin/accounts/service-endpoint" && request.method === "POST") {
+		const body = await bodyJson(request);
+		const rows = typeof body.did === "string" ? [await host.dir.byDid(body.did)].filter((r) => r?.status === "active") : await host.dir.listActive(200);
+		if (typeof body.did === "string" && !rows.length) return xerr(404, "AccountNotFound", "No such account");
+		const results: { did: string; result: string }[] = [];
+		for (const row of rows) {
+			if (!row?.did) continue;
+			const did = row.did;
+			try {
+				const last = await readLast(host.env.PLC_URL, did);
+				if (last.state !== "present") { results.push({ did, result: "unreadable" }); continue; }
+				const op = await host.account(row).servicePlcUpdate(did, last.op, host.origin);
+				if (!op) { results.push({ did, result: "already" }); continue; }
+				const outcome = await submitUpdate(host.env.PLC_URL, did, op);
+				results.push({ did, result: outcome.state === "registered" ? "updated" : "failed: " + outcome.reason });
+				if (outcome.state === "registered") await host.dir.audit("operator", "account.service-endpoint", did, now);
+			} catch (error) {
+				results.push({ did, result: "failed: " + (error instanceof Error ? error.message : "error") });
+			}
+		}
+		return json(200, { endpoint: host.origin, results });
+	}
 	// A one-time reset link for someone who lost the recovery code. Valid for 24 hours; the operator sends it.
 	if (path === "/admin/accounts/reset-link" && request.method === "POST") {
 		const body = await bodyJson(request);

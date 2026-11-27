@@ -105,6 +105,12 @@ export function withVerificationMethod(last: SignedPlcOperation, prev: string, i
 	return { ...rest, verificationMethods: { ...last.verificationMethods, [id]: didKey }, prev };
 }
 
+/** An update that keeps everything in `last` and points the account's PDS service at `endpoint`. */
+export function withServiceEndpoint(last: SignedPlcOperation, prev: string, endpoint: string): UnsignedPlcOperation {
+	const { sig: _sig, ...rest } = last;
+	return { ...rest, services: { ...last.services, atproto_pds: { type: "AtprotoPersonalDataServer", endpoint } }, prev };
+}
+
 /**
  * Submit a non-genesis operation. Reads the log first and refuses when the
  * operation's `prev` is no longer the newest entry; after an unknown outcome it

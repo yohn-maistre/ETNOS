@@ -86,13 +86,13 @@ Daily backups run on the node's alarm once the bucket is bound: one object per d
 
 In `yohn-maistre/etnos` → **Settings → Secrets and variables → Actions**:
 - **Secrets:** update `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the new account.
-- **Variables:** set `STRATA_ACCOUNT_HOST` (`https://pds.etnos.space` or your new `workers.dev` URL), `STRATA_PDS_HOSTNAME`, and optionally `STRATA_MODEL_FAST` / `STRATA_MODEL_BASE_URL`.
+- **Variables:** set `STRATA_ACCOUNT_HOST` (`https://akun.etnos.space` once §6 is done, or the new `workers.dev` URL until then), `STRATA_PDS_HOSTNAME` (`akun.etnos.space`, §6), and optionally `STRATA_MODEL_FAST` / `STRATA_MODEL_BASE_URL`.
 
 ### 4. DNS cutover
 
 Move or point `etnos.space` DNS on the new Cloudflare account:
 - Attach Workers Custom Domains / Routes for `etnos.space/*` and `*.etnos.space/*` to `strata-preview`.
-- Attach `pds.etnos.space/*` to `etnos-identity-host`.
+- Attach `akun.etnos.space/*` to `etnos-identity-host` as a route (§6 explains why a route and not a Custom Domain).
 
 ### 5. Post-cutover verification
 
@@ -100,5 +100,31 @@ Move or point `etnos.space` DNS on the new Cloudflare account:
 curl -fsS https://etnos.space/health | jq .
 curl -fsS -D - -o /dev/null https://etnos.space/v1/aksara/jadwal | grep -i x-etnos-edge-cache
 curl -fsS https://etnos.space/v1/peta-kata/concepts | jq '.concepts | length'
-curl -fsS https://pds.etnos.space/health | jq .
+curl -fsS https://akun.etnos.space/xrpc/com.atproto.server.describeServer | jq .did   # "did:web:akun.etnos.space"
 ```
+
+### 6. The identity host on its own name (`akun.etnos.space`)
+
+Until now the identity host answers on `etnos-identity-host.<subdomain>.workers.dev` and every account's DID document names that address. The host can run on `akun.etnos.space` instead; handles stay `<name>.etnos.space`. `packages/pds/test/host-custom-name.test.mjs` runs both cases below against the real host code.
+
+**Why this name is safe.** `akun` is already in the shared reserved list (`RESERVED_LABELS` in `packages/pds/src/host/handles.ts`), which the host's sign-up and the Situs addresses both read, so nobody can hold the handle `akun.etnos.space` or a Situs at that address. The host serves its service only on the exact `PDS_HOSTNAME` and answers handle names only at `/.well-known/atproto-did`.
+
+**Why a route and not a Custom Domain.** The web Worker holds the route `*.etnos.space/*` for Situs addresses, and a route wins over a Custom Domain on the same hostname, so a Custom Domain on `akun.etnos.space` would never be reached. A more specific route wins over the wildcard. The proxied wildcard record `*.etnos.space AAAA 100::` and Universal SSL already cover the name, so no DNS change is needed.
+
+Steps, in one sitting, best right after the move to the new account:
+
+1. In the zone `etnos.space`, add the Worker route `akun.etnos.space/*` → `etnos-identity-host`.
+2. Set the GitHub variable `STRATA_PDS_HOSTNAME` to `akun.etnos.space` and run the identity host deploy job. From this moment the host answers on the new name only; the `workers.dev` name answers *Unexpected host*.
+3. Point every account's DID document at the new name, signed with each account's host rotation key (the handle and keys stay as they are; an account already pointing there is skipped, so the call can be repeated):
+
+   ```bash
+   curl -fsS -X POST https://akun.etnos.space/admin/accounts/service-endpoint \
+     -H "Authorization: Bearer $OPERATOR_TOKEN" -H 'content-type: application/json' -d '{}' | jq .
+   ```
+
+   Every result should read `updated` or `already`. Run it again for any `failed`; `{"did": "did:plc:…"}` does one account.
+4. Set the GitHub variable `STRATA_ACCOUNT_HOST` to `https://akun.etnos.space` and run the ETNOS deploy job; the workflow adds the host to the node's OAuth host list.
+5. Check: `curl -fsS https://akun.etnos.space/xrpc/com.atproto.server.describeServer` shows `did:web:akun.etnos.space`, `https://<handle>.etnos.space/.well-known/atproto-did` still gives the DID, and a test account can sign in to etnos.space.
+
+What people notice: everyone signs in again, because sessions and OAuth grants were issued by the old name. Passwords and recovery codes keep working. **Passkeys are tied to the host name, so passkeys made on the `workers.dev` name stop working**; people sign in with their password and add a new passkey. Tell the alpha group before step 2. If the host had asked a relay to crawl it, ask again for the new name.
+

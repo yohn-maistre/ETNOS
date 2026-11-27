@@ -29,7 +29,7 @@ import {
 	wrapSecret,
 	type WrappedSecret,
 } from "./crypto.ts";
-import { didForGenesis, genesisOperation, operationCid, signOperation, withVerificationMethod, type SignedPlcOperation } from "./plc.ts";
+import { didForGenesis, genesisOperation, operationCid, signOperation, withServiceEndpoint, withVerificationMethod, type SignedPlcOperation } from "./plc.ts";
 import type { HostEnv } from "./env.ts";
 
 export interface ProvisionInput {
@@ -444,6 +444,15 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 		if (!last.rotationKeys.includes(row.rotation_did_key)) throw new Error("The host rotation key is no longer listed");
 		const rotation = await Secp256k1Keypair.import(await this.loadKey(row.did, "rotation"));
 		return signOperation(withVerificationMethod(last, await operationCid(last), "atproto_kem", did), rotation);
+	}
+
+	/** Move to a new host name: the same DID document with the PDS service at `endpoint`, signed by the host's rotation key. */
+	async servicePlcUpdate(expectedDid: string, last: SignedPlcOperation, endpoint: string): Promise<SignedPlcOperation | null> {
+		const row = this.assertAccount(expectedDid);
+		if (last.services?.atproto_pds?.endpoint === endpoint) return null;
+		if (!last.rotationKeys.includes(row.rotation_did_key)) throw new Error("The host rotation key is no longer listed");
+		const rotation = await Secp256k1Keypair.import(await this.loadKey(row.did, "rotation"));
+		return signOperation(withServiceEndpoint(last, await operationCid(last), endpoint), rotation);
 	}
 
 	private async kemKeypair(did: string): Promise<{ did: string; privateKey: Uint8Array }> {

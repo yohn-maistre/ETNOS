@@ -113,3 +113,9 @@ signup:
 **Label.** The sidebar footer now reads *Alpha privat · Privasi*, linking to `/tentang` and `/privasi`.
 
 Tests: `test/invite-gate.test.ts` (sign-up refused without the age; the age from etnos.yaml, applied through Studio's check, with 13 as the floor) and `test/reports.test.ts` (all three kinds reach the queue; refusals; only the operator reads and decides; reporters not named; nothing on public paths).
+
+## 7. Identity host on its own name
+
+The identity host can run on `akun.etnos.space` with handles staying `<name>.etnos.space`; `akun` was already on the shared reserved list, so it cannot become a handle or a Situs address. A new operator route, `POST /admin/accounts/service-endpoint`, points each account's DID document at the host's current name, signed with the account's host rotation key and safe to repeat. The steps (a Worker route, one GitHub variable, the operator call, then `STRATA_ACCOUNT_HOST`) and what people notice (one new sign-in, passkeys to be added again) are in [fresh-cloudflare-migration.md](fresh-cloudflare-migration.md) §6. Nothing was changed in DNS, routes or accounts.
+
+Tests: `packages/pds/test/host-custom-name.test.mjs` (service, DID document and handle routing on the new name; the reserved name refused; existing accounts repointed once with handle and keys unchanged; the operator token required; passwords keep working).
