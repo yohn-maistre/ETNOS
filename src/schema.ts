@@ -670,6 +670,37 @@ CREATE TABLE IF NOT EXISTS invite_requests(
 );
 CREATE INDEX IF NOT EXISTS invite_requests_state ON invite_requests(state, created DESC);
 CREATE TABLE IF NOT EXISTS invite_request_buckets(key TEXT PRIMARY KEY, window INTEGER NOT NULL, count INTEGER NOT NULL);
+`, `
+-- Push notifications (W1, src/push.ts). A subscription belongs to a person or to an invitation request. The
+-- triggers only queue a row for someone who has a subscription; the alarm checks access again before sending.
+CREATE TABLE IF NOT EXISTS push_subscriptions(
+ id TEXT PRIMARY KEY, actor_id TEXT REFERENCES actors(id), request_id TEXT,
+ endpoint TEXT NOT NULL UNIQUE, p256dh TEXT NOT NULL, auth TEXT NOT NULL, created INTEGER NOT NULL, expires INTEGER NOT NULL,
+ CHECK((actor_id IS NULL)<>(request_id IS NULL))
+);
+CREATE INDEX IF NOT EXISTS push_subscriptions_actor ON push_subscriptions(actor_id);
+CREATE INDEX IF NOT EXISTS push_subscriptions_request ON push_subscriptions(request_id);
+CREATE TABLE IF NOT EXISTS push_outbox(
+ id INTEGER PRIMARY KEY AUTOINCREMENT, actor_id TEXT, request_id TEXT, kind TEXT NOT NULL, target TEXT NOT NULL, created INTEGER NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS push_outbox_once ON push_outbox(COALESCE(actor_id,''),COALESCE(request_id,''),kind,target);
+CREATE TRIGGER IF NOT EXISTS push_reply AFTER INSERT ON posts WHEN NEW.parent_id IS NOT NULL BEGIN
+ INSERT OR IGNORE INTO push_outbox(actor_id,kind,target,created)
+ SELECT p.author_id,'reply',NEW.id,NEW.created FROM posts p
+ WHERE p.id=NEW.parent_id AND p.author_id<>NEW.author_id AND EXISTS(SELECT 1 FROM push_subscriptions s WHERE s.actor_id=p.author_id);
+END;
+CREATE TRIGGER IF NOT EXISTS push_mention AFTER INSERT ON posts WHEN instr(NEW.text,'](/people/')>0 BEGIN
+ INSERT OR IGNORE INTO push_outbox(actor_id,kind,target,created)
+ SELECT DISTINCT s.actor_id,'mention',NEW.id,NEW.created FROM push_subscriptions s
+ WHERE s.actor_id IS NOT NULL AND s.actor_id<>NEW.author_id AND instr(NEW.text,'](/people/'||s.actor_id||')')>0
+  AND NOT EXISTS(SELECT 1 FROM posts p WHERE p.id=NEW.parent_id AND p.author_id=s.actor_id);
+END;
+CREATE TRIGGER IF NOT EXISTS push_kamus AFTER INSERT ON claims WHEN NEW.origin='member' AND json_valid(NEW.evidence) BEGIN
+ INSERT OR IGNORE INTO push_outbox(actor_id,kind,target,created)
+ SELECT p.author_id,'kamus',p.id,NEW.created FROM posts p
+ WHERE p.id=json_extract(NEW.evidence,'$[0].postId') AND p.author_id<>NEW.proposer_id
+  AND EXISTS(SELECT 1 FROM push_subscriptions s WHERE s.actor_id=p.author_id);
+END;
 `]
 
 export const schemaVersion=migrations.length

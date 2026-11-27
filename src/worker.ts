@@ -13,10 +13,12 @@ import {piResidentProvider} from './resident-provider.ts'
 import {defaultModel,effectiveEnv,keyedProvider,listingEnv,modelGateway,modelRoute,nodeModels,providerModels,validKeyInput,validModelChoice,type ModelChoice,type ModelEnv,type StoredKey} from './models.ts'
 import {etnosEnv,type EtnosEnv} from './env.ts'
 import {SERVICES,service,serviceStatus,storageName,validServiceKey,effectiveServiceKey,type ServiceKey} from './service-keys.ts'
+import {PushCenter} from './push.ts'
+import {vapidKeys} from './web-push.ts'
 import {BACKUP_EVERY_MS,BACKUP_KEEP_DAYS,backupFileName,backupId,backupKey,backupRows,decodeBackup,encodeBackup,exportNode,importNode,nodeIsEmpty} from './node-backup.ts'
 
 /** Settings by their ETNOS_ names (env.ts), plus the optional ones the generated Env type does not list. */
-type Settings=EtnosEnv<Cloudflare.Env>&{ETNOS_ACCOUNT_HOST?:string;ETNOS_RESIDENT_DAILY_CALLS?:string;ETNOS_MODEL_KEY?:string;ETNOS_RESTORE_TOKEN?:string;NODE_BACKUPS?:R2Bucket}
+type Settings=EtnosEnv<Cloudflare.Env>&{ETNOS_VAPID_PUBLIC_KEY?:string;ETNOS_VAPID_PRIVATE_KEY?:string;ETNOS_VAPID_SUBJECT?:string;ETNOS_ACCOUNT_HOST?:string;ETNOS_RESIDENT_DAILY_CALLS?:string;ETNOS_MODEL_KEY?:string;ETNOS_RESTORE_TOKEN?:string;NODE_BACKUPS?:R2Bucket}
 type BackupInfo={id:string;size:number;created:number;rows:number}
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
@@ -32,6 +34,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private meter:Meter
   protected database:CloudflareDatabase
   private nodeCore?:EtnosCore
+  private push?:PushCenter
+  private principalOf:(request:Request)=>{id:string}|undefined=()=>undefined
   constructor(ctx: DurableObjectState, rawEnv: Cloudflare.Env) {
     super(ctx,rawEnv)
     const env=this.config=etnosEnv(rawEnv) as Settings
@@ -39,6 +43,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
     this.meter=new Meter(database.usage,ctx.storage.kv,()=>Date.now())
     ctx.blockConcurrencyWhile(async()=>{
       const core=this.nodeCore=new EtnosCore(database,env.ETNOS_ORIGIN,()=>Date.now(),{collection:env.ETNOS_COLLECTION})
+      this.push=new PushCenter(core,()=>vapidKeys(env))
       const sourceOrigins=(env.ETNOS_SOURCE_ORIGINS??'').split(',').map(x=>x.trim()).filter(Boolean)
       const acquire=sourceOrigins.length?sourceFetcher(sourceOrigins):undefined
       const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI,env.ETNOS_RESIDENT_RESEARCH==='on'):undefined
@@ -87,13 +92,14 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
             stewardDid:env.ETNOS_STEWARD_DID,allowedHosts:env.ETNOS_OAUTH_HOSTS.split(',').map(x=>x.trim()).filter(Boolean),
             collection:env.ETNOS_COLLECTION,publishingEnabled:env.ETNOS_PUBLISHING_ENABLED==='true',
             enrollmentMode,clientName:env.ETNOS_CLIENT_NAME,accountHost:(env as {ETNOS_ACCOUNT_HOST?:string}).ETNOS_ACCOUNT_HOST||undefined,
-            hostLinkKey:(env as {ETNOS_IDENTITY_HOST_LINK_KEY?:string}).ETNOS_IDENTITY_HOST_LINK_KEY||undefined})
+            hostLinkKey:(env as {ETNOS_IDENTITY_HOST_LINK_KEY?:string}).ETNOS_IDENTITY_HOST_LINK_KEY||undefined,pushEnabled:!!vapidKeys(env)})
           const access=new AgentAccess(core,{stewardDid:env.ETNOS_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access,{desk:workerDesk(env)})
           this.resident=new Resident(core,access,residentProvider,undefined,autoDeps);this.resident.budget=budget
           this.discovery=acquire?new Discovery(core,acquire):undefined
           this.sourceOperatorAllowed=id=>auth.operatorAllowed(id)
           this.operatorOf=r=>{const p=auth.principal(r);return !!p&&auth.operatorAllowed(p.id)}
           this.writeGuard=r=>auth.writeGuard(r)
+          this.principalOf=r=>auth.principal(r)
           const plantNetKey=()=>this.serviceKey('plantnet')
           const handler=api(core,{models,newsFetcher,researchFetcher:fetch,voiceBucket,transcribeVoice,embedTexts,splatWorkerUrl,splatSecret,plantNetKey,sourceFetcher:acquire,residentProvider,residentBudget:budget,modelRoute:modelRoute(env as unknown as ModelEnv),sources:sourceOrigins,agentAccess:access,decisions:workerDecisions(env),runtime:'cloudflare-durable-object',catalogue:env.ETNOS_CATALOGUE,authMode:'atproto',enrollmentMode,stewardDid:env.ETNOS_STEWARD_DID,principal:r=>auth.principal(r),writeGuard:r=>auth.writeGuard(r)})
           this.handle=async request=>(await routes(request))??(await auth.route(request))??handler(request)
@@ -107,7 +113,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private armed:number|null|undefined
   private arm(){
     const update=this.alarmUpdates.then(async()=>{
-      const candidates=[this.resident?.nextWake(),this.discovery?.nextWake(),this.nextBackup()].filter((n):n is number=>typeof n==='number')
+      const candidates=[this.resident?.nextWake(),this.discovery?.nextWake(),this.nextBackup(),this.push?.pending()?Date.now()+1000:undefined].filter((n):n is number=>typeof n==='number')
       const next=candidates.length?Math.min(...candidates):null
       if(next===null){if(this.armed!==null){await this.ctx.storage.deleteAlarm();this.armed=null}return}
       const at=Math.max(Date.now()+1000,next)
@@ -205,6 +211,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
     const url=new URL(request.url)
     const backupResponse=await this.backupRoute(request,url)
     if(backupResponse)return backupResponse
+    const pushResponse=await this.push?.route(request,url,r=>this.principalOf(r),r=>this.writeGuard(r))
+    if(pushResponse)return pushResponse
     if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,{...this.meter.report(),models:modelRoute((await this.modelState()).env)}):json(404,{error:'Not found'})
     // The operator picks the keyed provider's model from its own list. Stored in this node's storage, not in a deploy.
     if(url.pathname==='/v1/ops/models'&&request.method==='GET'){
@@ -285,6 +293,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
         // A failed backup is reported in Studio and tried again an hour later; it never blocks the rest of the alarm.
         try{await this.backup()}catch(error){this.ctx.storage.kv.put('backup-error',error instanceof Fault?error.message:'Cadangan harian belum berhasil.');this.ctx.storage.kv.put('backup-next',Date.now()+3600000)}
       }
+      // Notifications go first: they are small and waiting for them is what people notice.
+      try{await this.push?.flush()}catch{/* The queue is at-most-once; a failure here never blocks the rest. */}
       await this.discovery?.tick(this.sourceOperatorAllowed);await this.resident?.tick()
     }finally{this.meter.finish(mark,'ALARM','alarm',200);await this.arm()}
   }

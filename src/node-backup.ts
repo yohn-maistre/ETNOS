@@ -16,8 +16,9 @@ import {schemaVersion} from './schema.ts'
 import type {Binding} from './database.ts'
 
 export const BACKUP_FORMAT='etnos-node-backup'
-/** Tables never copied: sessions and tokens are tied to this deployment's keys, and buckets are throwaway counters. */
-export const SKIPPED_TABLES=new Set(['oauth_records','browser_sessions','auth_buckets','invite_request_buckets'])
+/** Tables never copied: sessions and tokens are tied to this deployment's keys, buckets are throwaway counters, and
+ * push subscriptions are bound to this deployment's VAPID key (a device subscribes again after a move). */
+export const SKIPPED_TABLES=new Set(['oauth_records','browser_sessions','auth_buckets','invite_request_buckets','push_subscriptions','push_outbox'])
 /** Studio-held secrets in the node's key-value storage. Never exported; the operator adds them again. */
 export const secretKv=(key:string)=>key==='model-key'||key.startsWith('service-key:')
 

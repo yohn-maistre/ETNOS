@@ -57,3 +57,26 @@ The age to confirm on the host's sign-up form is now a setting, `MIN_AGE` on `et
 Nothing new must be created for this section beyond the shared link key from section 1, which only the Studio route needs.
 
 Tests: `packages/pds/test/host-recovery.test.mjs` (the code is shown and never stored; wrong, foreign, used and mismatched input refused; sessions end; per-account lock and per-address budget; operator links need the token, work once, expire and cannot be altered; node-signed links work with the shared key; an invite grant is not a reset link) and `test/invite-gate.test.ts` (the Studio route is steward only and needs the shared key).
+
+## 4. Web push
+
+People can turn on notifications for one device in *Pengaturan* (*Notifikasi di perangkat ini*). Nothing is sent until they do. A notification goes out for a reply to one's post, a mention (`[Nama](/people/<id>)` in a post), and a member's Kamus question whose first piece of evidence is one's post. Someone who asks for an invitation may tick *Kabari aku lewat notifikasi di perangkat ini saat permintaanku disetujui*; that device then hears once, when the operator approves, and the operator still sends the link through the contact given.
+
+**How it works.** SQLite triggers on `posts` and `claims` (`src/schema.ts`) put a row in `push_outbox` only for people who have a subscription, so the triggers cost nothing for everyone else and cannot fail a post. The node's alarm sends the queue within a few seconds (`src/push.ts`), encrypting each message to the device (RFC 8291, aes128gcm) and signing for the push service with VAPID (RFC 8292), with WebCrypto only (`src/web-push.ts`). The browser's own push service carries it (Google, Mozilla, Apple, Microsoft), at no cost; no paid push service is used.
+
+**Privacy.** The message holds one fixed line and a link inside ETNOS, such as *Ada balasan baru untuk postinganmu.* and `/square/<id>`; never post text, a name or a community, and the push service sees only ciphertext. Before sending, the node checks again that the post and its thread are neither hidden nor deleted and that the reader may still read the community; otherwise the row is dropped. A row leaves the queue before it is sent, so a message is sent at most once, and rows older than a day are dropped. Subscriptions only go to the four push services above (`pushEndpointAllowed`), so a stored subscription cannot make the node call anything else. Subscriptions and the queue are never exported in a backup.
+
+**Unsubscribe and expiry.** Turning it off in Pengaturan removes the node's copy and the browser's subscription; signing out does the same for that device. A subscription lasts 60 days and the app renews it each time it starts, so a device left unused stops on its own. A browser's own expiry wins when it is earlier, a push service answer of 404 or 410 removes the subscription, and each person keeps at most ten devices. A device that signs in to another account and turns notifications on moves to that account. A request's subscription goes when the request is declined, after its one message, or after 30 days.
+
+**What the owner must create.** Two Worker secrets on `strata-preview`, made with `node scripts/vapid-keys.mjs`, which prints the pair once to the terminal:
+
+| Secret | Value |
+| --- | --- |
+| `ETNOS_VAPID_PUBLIC_KEY` | the public key, 87 characters of base64url |
+| `ETNOS_VAPID_PRIVATE_KEY` | the private key, 43 characters of base64url |
+
+`ETNOS_VAPID_SUBJECT` is optional (a `mailto:` or `https:` contact for push services); it defaults to the node's origin. Without both keys push stays off and Pengaturan says so. Changing the keys later makes every device subscribe again; the app does this by itself the next time it starts on a device that had notifications on. The move to a new Cloudflare account can keep the same pair.
+
+On iPhone and iPad, web push works only after ETNOS is added to the Home Screen and opened from there (iOS 16.4 and later); Pengaturan says this when the browser lacks push.
+
+Tests: `test/web-push.test.ts` (the RFC 8291 test vector, the VAPID signature and claims, the endpoint allowlist, queueing only for subscribers and only for replies, mentions and member Kamus questions, the message decrypted on a fake device with no post text in it, access checked again at sending, at-most-once, unsubscribe, expiry, 410, the device cap, and a device moving between accounts) and `test/invite-gate.test.ts` (a request's subscription, the one approval message, nothing kept after a decline).

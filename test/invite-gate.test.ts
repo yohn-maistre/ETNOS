@@ -170,3 +170,37 @@ test('operator reset links for the identity host: steward only, signed for one h
   assert.equal((await plain.auth.route(req('/auth/host-reset-links',{handle:'dewi.etnos.example'},f.steward,f.csrf)))!.status,409)
  }finally{f.s.close()}
 })
+
+test('a request may ask to hear back by notification: one generic message on approval, nothing kept after a decline',async()=>{
+ const {PushCenter}=await import('../src/push.ts')
+ const sub=(id:string)=>({endpoint:'https://fcm.googleapis.com/fcm/send/request-'+id,expirationTime:null,keys:{p256dh:'BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4',auth:'BTBZMqHH6r4Tts7J_aSIgg'}})
+ const off=await setup()
+ try{
+  const r=(await off.auth.route(req('/auth/invite-requests',{name:'Tanpa notifikasi (data uji)',contact:'kontak uji',reason:'',push:sub('off')},'','','203.0.113.80')))!
+  assert.deepEqual(await r.json(),{ok:true,notify:false})
+  assert.equal(off.s.all('SELECT 1 FROM push_subscriptions').length,0,'no push without keys on the node')
+ }finally{off.s.close()}
+ const f=await setup({pushEnabled:true})
+ try{
+  for(const [i,name] of ['Dina (data uji)','Eli (data uji)'].entries()){
+   const r=(await f.auth.route(req('/auth/invite-requests',{name,contact:'kontak uji '+i,reason:'',push:sub(String(i))},'','','203.0.113.8'+i)))!
+   assert.deepEqual(await r.json(),{ok:true,notify:true})
+  }
+  const bad=(await f.auth.route(req('/auth/invite-requests',{name:'Fani (data uji)',contact:'kontak uji',reason:'',push:{endpoint:'https://evil.example/x'}},'','','203.0.113.90')))!
+  assert.deepEqual(await bad.json(),{ok:true,notify:false},'a bad subscription is ignored, the request still counts')
+  const rows=f.s.all<{id:string;name:string}>('SELECT id,name FROM invite_requests ORDER BY name')
+  assert.equal(f.s.all('SELECT 1 FROM push_subscriptions WHERE request_id IS NOT NULL').length,2)
+  const approve=(await f.auth.route(req('/auth/invite-requests/'+rows[0].id+'/approve',{},f.steward,f.csrf)))!
+  assert.equal(approve.status,200)
+  const queued=f.s.all<{id:number;actor_id:null;request_id:string;kind:string;target:string}>('SELECT * FROM push_outbox')
+  assert.deepEqual(queued.map(q=>[q.kind,q.request_id]),[['invite',rows[0].id]])
+  const message=new PushCenter(f.s,()=>null).message(queued[0])!
+  assert.equal(message.url,'/gabung');assert.equal(JSON.stringify(message).includes('Dina'),false);assert.equal(JSON.stringify(message).includes('kontak uji'),false)
+  // Declining removes the request's subscription with it.
+  assert.equal((await f.auth.route(req('/auth/invite-requests/'+rows[1].id+'/decline',{},f.steward,f.csrf)))!.status,200)
+  assert.equal(f.s.all('SELECT 1 FROM push_subscriptions WHERE request_id=?',rows[1].id).length,0)
+  // A request that is gone is never announced.
+  f.s.run('DELETE FROM invite_requests WHERE id=?',rows[0].id)
+  assert.equal(new PushCenter(f.s,()=>null).message(queued[0]),null)
+ }finally{f.s.close()}
+})

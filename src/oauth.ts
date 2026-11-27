@@ -6,6 +6,7 @@ import {DidResolverCommon,DidPlcMethod,DidWebMethod} from '@atproto-labs/did-res
 import {EtnosCore,Fault,type Actor} from './core.ts'
 import {json,body as readBody} from './api.ts'
 import {signGrant,linkKeyBytes} from '../packages/pds/src/host/link-grant.ts'
+import {PushCenter,pushInput,type PushInput} from './push.ts'
 
 const SESSION_COOKIE='__Host-strata',FLOW_COOKIE='__Host-strata_flow'
 const token=()=>randomBytes(32).toString('base64url')
@@ -20,7 +21,9 @@ type Saved={sealed:string;expires:number}
 type BrowserSession={hash:string;actor_id:string;csrf:string;created:number;expires:number;revoked:number}
 export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean;enrollmentMode?:'open'|'invite'|'closed';clientName?:string;accountHost?:string
   /** Shared with the identity host (its NODE_LINK_KEY): lets one invitation link also make a host account. */
-  hostLinkKey?:string}
+  hostLinkKey?:string
+  /** Web push is configured: someone asking for an invitation may ask to hear back by notification. */
+  pushEnabled?:boolean}
 type EnrollmentInvite={id:string;hash:string;issuer_id:string;created:number;expires:number;revoked:number;used_by:string|null;used_at:number|null;uses:number;max_uses:number}
 type InviteRequest={id:string;name:string;contact:string;reason:string;created:number;state:'pending'|'approved';decided:number|null;invitation_id:string|null}
 /** Free text from a visitor: no control characters, trimmed, bounded. */
@@ -127,7 +130,9 @@ export class BrowserAuth {
   private config:OAuthConfiguration
   readonly records:OAuthRecords
   readonly client:NodeOAuthClient
-  private constructor(store:EtnosCore,config:OAuthConfiguration,records:OAuthRecords,client:NodeOAuthClient){this.store=store;this.config=config;this.records=records;this.client=client}
+  /** Request-side push only (subscribe, forget, queue); the node's PushCenter sends. */
+  private push:PushCenter
+  private constructor(store:EtnosCore,config:OAuthConfiguration,records:OAuthRecords,client:NodeOAuthClient){this.store=store;this.config=config;this.records=records;this.client=client;this.push=new PushCenter(store,()=>null)}
   static async create(store:EtnosCore,config:OAuthConfiguration,fetcher?:Fetch){
     if(new URL(config.origin).protocol!=='https:' || new URL(config.origin).origin!==store.base)throw Error('OAuth requires the canonical HTTPS origin')
     const records=new OAuthRecords(store,config.sealKey),key=await JoseKey.fromJWK(config.privateJwk,'strata-signing-1')
@@ -280,17 +285,22 @@ export class BrowserAuth {
         const body=await readBody(request,4000)
         const name=plain(body.name,80),contact=plain(body.contact,160),reason=plain(body.reason,600)
         if(!name||!contact)throw new Fault(400,'Isi nama dan cara menghubungimu.')
+        // An optional browser subscription, used once to say that the request was approved.
+        let push:PushInput|undefined
+        if(this.config.pushEnabled&&body.push!==undefined){try{push=pushInput(body.push)}catch{push=undefined}}
         const id=crypto.randomUUID()
         this.store.tx(()=>{
           this.requestLimit(request)
           this.store.run('INSERT INTO invite_requests(id,name,contact,reason,created) VALUES(?,?,?,?,?)',id,name,contact,reason,this.store.clock())
         })
-        return json(200,{ok:true})
+        if(push)this.push.subscribe({requestId:id},push)
+        return json(200,{ok:true,notify:!!push})
       }
       if(path==='/auth/invite-requests' && request.method==='GET'){
         this.readSteward(request)
         // Decided requests leave the queue after 30 days.
         this.store.run("DELETE FROM invite_requests WHERE state='approved' AND decided<?",this.store.clock()-30*86400000)
+        this.store.run('DELETE FROM push_subscriptions WHERE request_id IS NOT NULL AND request_id NOT IN (SELECT id FROM invite_requests)')
         return json(200,{requests:this.store.all<InviteRequest>("SELECT id,name,contact,reason,created,state,decided,invitation_id FROM invite_requests ORDER BY state='approved',created DESC LIMIT 200")})
       }
       const decide=/^\/auth\/invite-requests\/([0-9a-f-]{36})\/(approve|decline)$/.exec(path)
@@ -299,7 +309,7 @@ export class BrowserAuth {
         const row=this.store.get<InviteRequest>('SELECT * FROM invite_requests WHERE id=?',id)
         if(!row)throw new Fault(404,'Permintaan tidak ditemukan.')
         if(action==='decline'){
-          this.store.tx(()=>{this.store.run('DELETE FROM invite_requests WHERE id=?',id);this.store.audit(current.actor.id,'enrollment.request.decline',id)})
+          this.store.tx(()=>{this.push.forgetRequest(id);this.store.run('DELETE FROM invite_requests WHERE id=?',id);this.store.audit(current.actor.id,'enrollment.request.decline',id)})
           return json(200,{removed:true})
         }
         if(row.state!=='pending')throw new Fault(409,'Permintaan ini sudah disetujui.')
@@ -307,6 +317,7 @@ export class BrowserAuth {
         this.store.tx(()=>{
           this.store.run("UPDATE invite_requests SET state='approved',decided=?,invitation_id=? WHERE id=? AND state='pending'",this.store.clock(),made.id,id)
           this.store.audit(current.actor.id,'enrollment.request.approve',id)
+          this.push.queueInviteApproved(id)
         })
         return json(200,made)
       }

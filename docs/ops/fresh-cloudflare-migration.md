@@ -79,6 +79,8 @@ Daily backups run on the node's alarm once the bucket is bound: one object per d
 - `OPENALEX_API_KEY` (optional literature citations; also settable in `/studio`)
 - `PLANTNET_API_KEY` (optional opt-in public plant identification; also settable in `/studio`)
 - `ETNOS_SPLAT_WORKER_URL` + `ETNOS_SPLAT_SECRET` (optional Modal.com free-tier GPU worker from `packages/splat-worker/`)
+- `ETNOS_VAPID_PUBLIC_KEY` + `ETNOS_VAPID_PRIVATE_KEY` (web push; copy the same pair from the old account so devices keep their subscriptions, or make a new pair with `node scripts/vapid-keys.mjs`; see [private-alpha-2026-11-27.md](private-alpha-2026-11-27.md) §4)
+- `ETNOS_IDENTITY_HOST_LINK_KEY` on `strata-preview` and `NODE_LINK_KEY` on `etnos-identity-host`, the same value on both (one invitation link for both ways in, and reset links from Studio; §1 and §3 of the same page)
 
 ### 3. Update GitHub Actions for automatic deploys
 

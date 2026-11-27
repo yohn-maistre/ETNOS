@@ -105,3 +105,40 @@ self.addEventListener('fetch', (event) => {
     )
   }
 })
+
+// Web push (src/push.ts on the node). The message holds one fixed line and a link inside ETNOS, never post text.
+self.addEventListener('push', (event) => {
+  let data = {}
+  try {
+    data = event.data ? event.data.json() : {}
+  } catch {
+    data = {}
+  }
+  const url = typeof data.url === 'string' && data.url.startsWith('/') && !data.url.startsWith('//') ? data.url : '/activity'
+  const body = typeof data.body === 'string' ? data.body.slice(0, 200) : 'Ada kabar baru untukmu di ETNOS.'
+  event.waitUntil(
+    self.registration.showNotification(typeof data.title === 'string' ? data.title.slice(0, 60) : 'ETNOS', {
+      body,
+      tag: typeof data.tag === 'string' ? data.tag.slice(0, 120) : undefined,
+      icon: '/branding/icon.svg',
+      badge: '/branding/icon.svg',
+      data: { url },
+    }),
+  )
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const url = new URL(event.notification.data?.url || '/activity', self.location.origin)
+  if (url.origin !== self.location.origin) return
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      for (const client of list) {
+        if (new URL(client.url).origin === url.origin && 'focus' in client) {
+          return client.focus().then((c) => (c && 'navigate' in c ? c.navigate(url.href) : undefined)).catch(() => self.clients.openWindow(url.href))
+        }
+      }
+      return self.clients.openWindow(url.href)
+    }),
+  )
+})

@@ -48,6 +48,10 @@
   import SpacesLab from './SpacesLab.svelte'
   import ActivityPage from './ActivityPage.svelte'
   import AppearancePanel from './AppearancePanel.svelte'
+  import PushPreference from './PushPreference.svelte'
+  import { disablePush, renewPush } from './push'
+  /** The node's copy of this device's push subscription is renewed once per visit. */
+  let pushRenewed = false
   import WelcomeDialog from './WelcomeDialog.svelte'
   import CommunityPlaces from './CommunityPlaces.svelte'
   import KiosBlock from './KiosBlock.svelte'
@@ -570,6 +574,10 @@
         rememberWelcome()
       }
       setCsrf(identity.csrf)
+      if (identity.actor && !pushRenewed) {
+        pushRenewed = true
+        void renewPush().catch(() => {})
+      }
       profile = null
       const filters = new SvelteURLSearchParams({ roots: 'true', limit: '30' })
       if (parts[0] === 'communities' && parts[1])
@@ -927,6 +935,8 @@
       proposals = []
       replies = []
       selectedPost = null
+      // This device stops hearing about the account that signs out.
+      await disablePush().catch(() => {})
       await request('/auth/logout', {})
       auth = { actor: null, csrf: null, steward: false }
       dismissNotifications()
@@ -1137,6 +1147,7 @@
   {:else if path === '/preferences'}
     <div class="cx-page-head"><h1>Pengaturan</h1></div>
     <Card.Root class="etnos-card etnos-preferences">
+      {#if auth.actor}<PushPreference />{/if}
       <AppearancePanel />
       <a class="cx-list-row" href="/studio">Studio: komunitas, agen & koneksi <ChevronRight size={16}/></a>
       <VaultTransfer actorId={auth.actor?.id} />
