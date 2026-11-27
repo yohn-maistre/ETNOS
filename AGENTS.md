@@ -128,7 +128,7 @@ cd apps/web && npm test && npx svelte-check --threshold warning && npx vite buil
 cd packages/pds && npm test
 ```
 
-All of them must pass (on 27 November: 396 root tests with 1 skipped, 38 web tests, 25 identity host tests, svelte-check 0/0). Known failures that predate the current work are `npm run test:worker` at `test/worker.test.mjs:92`, block 614 of `scripts/check-foundation.py` and the old browser suite in `apps/web/tests/browser`. If `svelte-check` or the build fails after a pull, run `npm ci --ignore-scripts` in `apps/web` first, because new dependencies are the usual cause. Set `DO_NOT_TRACK=1` for npm installs.
+All of them must pass (on 27 November: 420 root tests with 1 skipped, 38 web tests, 33 identity host tests, svelte-check 0/0). Known failures that predate the current work are `npm run test:worker` at `test/worker.test.mjs:92`, block 614 of `scripts/check-foundation.py` and the old browser suite in `apps/web/tests/browser`. If `svelte-check` or the build fails after a pull, run `npm ci --ignore-scripts` in `apps/web` first, because new dependencies are the usual cause. Set `DO_NOT_TRACK=1` for npm installs.
 
 ### Gotchas
 
@@ -156,7 +156,7 @@ All of them must pass (on 27 November: 396 root tests with 1 skipped, 38 web tes
 | `*.etnos.space/.well-known/atproto-did` | Identity host `etnos-identity-host`, which resolves handles like `name.etnos.space` |
 | `etnos-identity-host.giyaibo.workers.dev` | The identity host (PDS) itself |
 
-Models: the operator picks a keyed provider in Studio (Gemini through Google AI Studio's OpenAI-compatible endpoint, with OpenRouter as fallback). Workers AI Gemma runs without a key. Workers AI `bge-m3` makes embeddings of public posts. Service keys (Pl@ntNet and others) are stored in Studio, not in the repository. Moving to a new Cloudflare account is described in [docs/ops/fresh-cloudflare-migration.md](docs/ops/fresh-cloudflare-migration.md); A node moves with its backup: Studio → Pengaturan downloads it and `POST /v1/ops/restore` loads it into an empty node (§1b of that guide). Identity host accounts move by re-pointing their DID documents (§6).
+Models: the operator picks a keyed provider in Studio (Gemini through Google AI Studio's OpenAI-compatible endpoint, with OpenRouter as fallback). Workers AI Gemma runs without a key. Workers AI `bge-m3` makes embeddings of public posts. Service keys (Pl@ntNet and others) are stored in Studio, not in the repository. Moving to a new Cloudflare account is described in [docs/ops/fresh-cloudflare-migration.md](docs/ops/fresh-cloudflare-migration.md). A node moves with its backup: Studio → Pengaturan downloads it and `POST /v1/ops/restore` loads it into an empty node (§1b of that guide). Identity host accounts move by re-pointing their DID documents (§6).
 
 ## 8. Where things stand (27 November 2026)
 
