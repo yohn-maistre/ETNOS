@@ -102,7 +102,7 @@ Where ETNOS fits in the wider Abstraksi system. Direction, not the plan of recor
 
 | Document | What it holds | Status |
 | --- | --- | --- |
-| [2026-11-27_conversable-situated-systems.md](vision/2026-11-27_conversable-situated-systems.md) | The four-layer loop across aksara-core and ETNOS, three sovereignty rings on AT Protocol spaces and `ts-mls`, edge sensor pods, five research tracks, and the universal substrate versus bioregional packs. | current vision |
+| [2026-11-27_conversable-situated-systems.md](vision/2026-11-27_conversable-situated-systems.md) | The four-layer loop across aksara-core and ETNOS, three sovereignty rings on AT Protocol spaces and `ts-mls`, sensor pods and room hardware, offline links, seven research tracks, bioregional packs and the open design constraints. | current vision |
 
 ## observatory/: the observatory redesign
 
