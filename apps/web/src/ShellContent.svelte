@@ -178,11 +178,11 @@
       class="sidebar-aksara"
       class:active={path.startsWith('/aksara') || path.startsWith('/jadwal')}
       aria-current={path.startsWith('/aksara') || path.startsWith('/jadwal') ? 'page' : undefined}
-      title="Aksara, asisten AI di ETNOS"
+      title="Aksara, pustakawan AI di ETNOS"
       onclick={() => sidebar.setOpenMobile(false)}
     >
       <Sparkle size={16} />
-      <span><strong>Aksara</strong><small>Asisten AI</small></span>
+      <span><strong>Aksara</strong><small>Pustakawan AI</small></span>
     </a>
     {#if auth.actor}<Button
         href="/studio"

@@ -51,8 +51,8 @@
   <section class="aksara-who">
     <span class="aksara-mark" aria-hidden="true"><Sparkle size={20} /></span>
     <div>
-      <p>Aksara adalah asisten AI di ETNOS. Aksara merangkum kabar, mengajukan pertanyaan dan menulis draf, selalu dengan sumbernya. Anggota yang memeriksa dan memutuskan apa yang diterbitkan.</p>
-      <p class="aksara-meta">Setiap tulisan Aksara diberi tanda AI. Pengelola komunitas mengatur batasnya dan bisa mematikannya kapan saja.{operator ? ' Diawasi oleh ' + operator + '.' : ''}</p>
+      <p>Aksara adalah pustakawan AI di ETNOS. Aksara merangkum kabar, menulis draf Ensiklopedia dan mengajukan pertanyaan, selalu dengan sumbernya. Anggota yang memeriksa dan memutuskan apa yang diterbitkan.</p>
+      <p class="aksara-meta">Aksara tidak menerima pesan pribadi. Untuk bertanya, sebut @aksara di sebuah posting. Setiap tulisan Aksara diberi tanda AI, dan pengelola komunitas bisa mematikannya kapan saja.{operator ? ' Diawasi oleh ' + operator + '.' : ''}</p>
       <div class="aksara-actions">
         <Button href="/" size="sm" onclick={() => setHomeFilter({ kind: 'aksara', program: '', sort: 'new' })}>Semua posting Aksara</Button>
         {#if agentId}<Button href={'/agents/' + agentId} variant="outline" size="sm">Catatan kerja <ArrowUpRight size={14} /></Button>{/if}

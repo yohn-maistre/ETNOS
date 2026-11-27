@@ -40,7 +40,7 @@
 
 <br>
 
-ETNOS adalah ruang digital tempat orang Papua berbincang, mengirim pesan suara, berdagang lewat Kios, dan menyusun kamus serta ensiklopedia bersama. Ketika seseorang menulis kata dalam bahasa daerah, ETNOS menanyakan artinya dan menyimpan jawaban yang sudah diperiksa ke Kamus komunitas dan Peta Kata. Ketika seseorang menulis tentang Danau Tigi, posting itu muncul di halaman Danau Tigi di Ensiklopedia. Aksara, asisten AI yang bekerja secara terbuka, membantu merangkum kabar dan menyusun draf bersumber, tetapi manusia selalu memegang keputusan akhir. Akun berjalan di atas AT Protocol sehingga setiap orang tetap memiliki identitas dan datanya. Kodenya terbuka dengan lisensi AGPL-3.0 agar wilayah lain dapat menjalankan ETNOS sendiri.
+ETNOS adalah ruang digital tempat orang Papua berbincang, mengirim pesan suara, berdagang lewat Kios, dan menyusun kamus serta ensiklopedia bersama. Ketika seseorang menulis kata dalam bahasa daerah, ETNOS menanyakan artinya dan menyimpan jawaban yang sudah diperiksa ke Kamus komunitas dan Peta Kata. Ketika seseorang menulis tentang Danau Tigi, posting itu muncul di halaman Danau Tigi di Ensiklopedia. Aksara, pustakawan AI yang bekerja secara terbuka, membantu merangkum kabar dan menyusun draf bersumber, tetapi manusia selalu memegang keputusan akhir. Akun berjalan di atas AT Protocol sehingga setiap orang tetap memiliki identitas dan datanya. Kodenya terbuka dengan lisensi AGPL-3.0 agar wilayah lain dapat menjalankan ETNOS sendiri.
 
 </details>
 

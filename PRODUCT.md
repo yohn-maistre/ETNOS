@@ -22,7 +22,7 @@ The main measure of success is the share of the record written by people of the 
 
 ## Positioning
 
-Conversation and knowledge in one place, owned by the community. Aksara, an AI assistant, proposes words, meanings and claims from the talk; members check them one card at a time (Periksa); the community decides what is published. Accounts use the AT Protocol, so people can take their account and data elsewhere.
+Conversation and knowledge in one place, owned by the community. Aksara, an AI librarian (*pustakawan AI*), proposes words, meanings and claims from the talk; members check them one card at a time (Periksa); the community decides what is published. Accounts use the AT Protocol, so people can take their account and data elsewhere.
 
 ## Operating Context
 

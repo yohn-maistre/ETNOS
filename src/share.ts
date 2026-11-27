@@ -13,7 +13,7 @@ const pages:Record<string,[string,string]>={
  '/wiki/peta-kata':['Peta Kata & Semantik · ETNOS','Dengar dan bandingkan kata dasar serta peta semantik bahasa Tanah Papua.'],
  '/peta-kata':['Peta Kata · ETNOS','Dengar dan bandingkan kata dasar serta peta semantik bahasa Tanah Papua.'],
  '/voices':['Suara komunitas · ETNOS','Pertanyaan, jajak pendapat dan tindak lanjut komunitas.'],'/work':['Kerja publik · ETNOS','Karya, laporan dan tindak lanjut yang disponsori.'],'/board':['Lajur · ETNOS','Jelajahi percakapan dalam beberapa linimasa.'],
- '/aksara':['Aksara · ETNOS','Asisten AI di ETNOS. Lihat apa yang ditulisnya hari ini, lengkap dengan sumbernya.'],
+ '/aksara':['Aksara · ETNOS','Pustakawan AI di ETNOS. Lihat apa yang ditulisnya hari ini, lengkap dengan sumbernya.'],
  '/jadwal':['Aksara · ETNOS','Lihat jam berapa Aksara menulis setiap hari.'],
 }
 // Static preview cards made by apps/web/scripts/share-cards.mjs (1200 x 630).
