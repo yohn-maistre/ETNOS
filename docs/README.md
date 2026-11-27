@@ -96,6 +96,14 @@ How the product is shaped, organised and designed.
 | [ranking-and-steward-demo-2026-11-12.md](product/ranking-and-steward-demo-2026-11-12.md) | Ranking from public signals only. | history; built |
 | [piefed-parity.md](product/piefed-parity.md) | Forum behaviour borrowed from PieFed, as a delivery ledger. | current ledger |
 
+## vision/: the long-horizon vision
+
+Where ETNOS fits in the wider Abstraksi system. Direction, not the plan of record.
+
+| Document | What it holds | Status |
+| --- | --- | --- |
+| [2026-11-27_conversable-situated-systems.md](vision/2026-11-27_conversable-situated-systems.md) | The four-layer loop across aksara-core and ETNOS, three sovereignty rings on AT Protocol spaces and `ts-mls`, edge sensor pods, five research tracks, and the universal substrate versus bioregional packs. | current vision |
+
 ## observatory/: the observatory redesign
 
 The design of the observatory from 20 November: the model of a people's world, the starter dataset, the catalogue of datasets and artifacts, viewers, access and deployment.
