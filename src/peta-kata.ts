@@ -24,10 +24,9 @@ export type PetaLanguage={code:string;slug:string;name:string;glottologName:stri
 export type PublishedWord={lang:string;concept:string;form:string;value?:string;dataset:string;ref:number;variety?:string;param:string;row:string}
 export type CommunityWord={id:string;lang:string;communityId:string;communityTitle:string;lemma:string;gloss:string;pos:string;state:'checked'|'seed'|'proposed';source:string;licence:string;voice:{id:string;url:string;durationMs:number;speaker:string}|null}
 
-/** Local names the data holds for languages that Glottolog lists under an English name. Lani is the name of
- * the people and language (seed wiki page "Bahasa Lani", from id.wikipedia; seed labels note that Lani is
- * Western Dani). Add a name here only with such a source. */
-const LOCAL_NAMES:Record<string,string>={west2594:'Lani'}
+/** Glottolog's English name for languages that the catalogue lists by their own name. The catalogue calls
+ * west2594 Lani (seed wiki page "Bahasa Lani", from id.wikipedia), which Glottolog lists as Western Dani. */
+const GLOTTOLOG_NAMES:Record<string,string>={west2594:'Western Dani'}
 
 type Meta={slug:string;title:string;family:string}
 const META=new Map<string,Meta>()
@@ -158,8 +157,8 @@ export class PetaKata{
 
  private language(code:string,communities:Map<string,{id:string;title:string}>,count:number):PetaLanguage{
   const m=META.get(code)
-  const glottologName=m?.title??WL.languages[code]?.name??this.lexicon.seeds[code]?.language.name??code
-  return {code,slug:m?.slug??'',name:LOCAL_NAMES[code]??glottologName,glottologName,family:m?.family??'',concepts:count,community:communities.get(code)??null}
+  const name=m?.title??WL.languages[code]?.name??this.lexicon.seeds[code]?.language.name??code
+  return {code,slug:m?.slug??'',name,glottologName:GLOTTOLOG_NAMES[code]??name,family:m?.family??'',concepts:count,community:communities.get(code)??null}
  }
 
  /** The concept list with counts, every Tanah Papua language with how many concepts it has, and the datasets. */
