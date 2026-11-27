@@ -13,9 +13,11 @@ import {piResidentProvider} from './resident-provider.ts'
 import {defaultModel,effectiveEnv,keyedProvider,listingEnv,modelGateway,modelRoute,nodeModels,providerModels,validKeyInput,validModelChoice,type ModelChoice,type ModelEnv,type StoredKey} from './models.ts'
 import {etnosEnv,type EtnosEnv} from './env.ts'
 import {SERVICES,service,serviceStatus,storageName,validServiceKey,effectiveServiceKey,type ServiceKey} from './service-keys.ts'
+import {BACKUP_EVERY_MS,BACKUP_KEEP_DAYS,backupFileName,backupId,backupKey,backupRows,decodeBackup,encodeBackup,exportNode,importNode,nodeIsEmpty} from './node-backup.ts'
 
 /** Settings by their ETNOS_ names (env.ts), plus the optional ones the generated Env type does not list. */
-type Settings=EtnosEnv<Cloudflare.Env>&{ETNOS_ACCOUNT_HOST?:string;ETNOS_RESIDENT_DAILY_CALLS?:string;ETNOS_MODEL_KEY?:string}
+type Settings=EtnosEnv<Cloudflare.Env>&{ETNOS_ACCOUNT_HOST?:string;ETNOS_RESIDENT_DAILY_CALLS?:string;ETNOS_MODEL_KEY?:string;ETNOS_RESTORE_TOKEN?:string;NODE_BACKUPS?:R2Bucket}
+type BackupInfo={id:string;size:number;created:number;rows:number}
 
 export class StrataNode extends DurableObject<Cloudflare.Env> {
   protected config:Settings
@@ -29,13 +31,14 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private budget={modelCalls:10,toolCalls:60}
   private meter:Meter
   protected database:CloudflareDatabase
+  private nodeCore?:EtnosCore
   constructor(ctx: DurableObjectState, rawEnv: Cloudflare.Env) {
     super(ctx,rawEnv)
     const env=this.config=etnosEnv(rawEnv) as Settings
     const database=this.database=new CloudflareDatabase(ctx.storage)
     this.meter=new Meter(database.usage,ctx.storage.kv,()=>Date.now())
     ctx.blockConcurrencyWhile(async()=>{
-      const core=new EtnosCore(database,env.ETNOS_ORIGIN,()=>Date.now(),{collection:env.ETNOS_COLLECTION})
+      const core=this.nodeCore=new EtnosCore(database,env.ETNOS_ORIGIN,()=>Date.now(),{collection:env.ETNOS_COLLECTION})
       const sourceOrigins=(env.ETNOS_SOURCE_ORIGINS??'').split(',').map(x=>x.trim()).filter(Boolean)
       const acquire=sourceOrigins.length?sourceFetcher(sourceOrigins):undefined
       const residentProvider=env.RESIDENT_PI?piResidentProvider(env.RESIDENT_PI,env.ETNOS_RESIDENT_RESEARCH==='on'):undefined
@@ -104,7 +107,7 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private armed:number|null|undefined
   private arm(){
     const update=this.alarmUpdates.then(async()=>{
-      const candidates=[this.resident?.nextWake(),this.discovery?.nextWake()].filter((n):n is number=>typeof n==='number')
+      const candidates=[this.resident?.nextWake(),this.discovery?.nextWake(),this.nextBackup()].filter((n):n is number=>typeof n==='number')
       const next=candidates.length?Math.min(...candidates):null
       if(next===null){if(this.armed!==null){await this.ctx.storage.deleteAlarm();this.armed=null}return}
       const at=Math.max(Date.now()+1000,next)
@@ -115,6 +118,82 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
     this.alarmUpdates=update.catch(()=>{})
     return update
   }
+  /** The daily backup: due a day after the last one, or five minutes after start when none exists yet. */
+  private nextBackup(){
+    if(!this.config.NODE_BACKUPS)return undefined
+    const next=this.ctx.storage.kv.get<number>('backup-next')
+    if(typeof next==='number')return next
+    const last=this.ctx.storage.kv.get<BackupInfo>('backup-last')
+    return last?last.created+BACKUP_EVERY_MS:Date.now()+300000
+  }
+  /** Export the node in one synchronous snapshot, compress it, and keep it in the private bucket for 14 days. */
+  private async backup():Promise<BackupInfo>{
+    const bucket=this.config.NODE_BACKUPS
+    if(!bucket||!this.nodeCore)throw new Fault(503,'Penyimpanan cadangan belum dipasang.')
+    const created=Date.now(),snapshot=exportNode(this.nodeCore,created,this.ctx.storage.kv.list())
+    const bytes=await encodeBackup(snapshot),key=backupKey(created),rows=backupRows(snapshot)
+    await bucket.put(key,bytes,{httpMetadata:{contentType:'application/gzip'},customMetadata:{rows:String(rows),schema:String(snapshot.schemaVersion)}})
+    const info={id:backupId(key)!,size:bytes.byteLength,created,rows}
+    this.ctx.storage.kv.put('backup-last',info);this.ctx.storage.kv.put('backup-next',created+BACKUP_EVERY_MS);this.ctx.storage.kv.delete('backup-error')
+    const cutoff=created-BACKUP_KEEP_DAYS*86400000,old:string[]=[]
+    let cursor:string|undefined
+    do{const listed=await bucket.list({prefix:'node/',cursor});for(const o of listed.objects)if(o.uploaded.getTime()<cutoff)old.push(o.key);cursor=listed.truncated?listed.cursor:undefined}while(cursor)
+    if(old.length)await bucket.delete(old)
+    return info
+  }
+  private async backups(){
+    const bucket=this.config.NODE_BACKUPS
+    if(!bucket)return []
+    const listed=await bucket.list({prefix:'node/',limit:100,include:['customMetadata']})
+    return listed.objects.map(o=>({id:backupId(o.key),size:o.size,created:o.uploaded.getTime(),rows:Number(o.customMetadata?.rows??0)})).filter(o=>o.id).sort((a,b)=>b.created-a.created)
+  }
+  /** Operator routes for backups. Never public: each answers 404 to anyone else. */
+  private async backupRoute(request:Request,url:URL):Promise<Response|undefined>{
+    const path=url.pathname
+    if(path!=='/v1/ops/restore'&&!path.startsWith('/v1/ops/backups'))return undefined
+    let operator=false
+    try{operator=this.operatorOf(request)}catch{/* A bearer header is not a session: not the operator. */}
+    if(path==='/v1/ops/restore'&&request.method==='POST'){
+      // A fresh node has no operator session yet, so the move to a new account uses a one-time restore token.
+      const token=this.config.ETNOS_RESTORE_TOKEN,header=request.headers.get('authorization')??''
+      const byToken=!!token&&token.length>=32&&header==='Bearer '+token
+      if(!byToken){
+        if(!operator)return json(404,{error:'Not found'})
+        try{this.writeGuard(request)}catch(error){return json(error instanceof Fault?error.status:403,{error:error instanceof Fault?error.message:'Not allowed'})}
+      }
+      if(!this.nodeCore)return json(503,{error:'Node unavailable'})
+      if(!nodeIsEmpty(this.nodeCore))return json(409,{error:'Node ini sudah berisi. Pemulihan hanya untuk node yang masih kosong.'})
+      try{
+        const result=importNode(this.nodeCore,await decodeBackup(new Uint8Array(await request.arrayBuffer())))
+        // Start again from the restored rows: in-memory state built from the empty node is dropped.
+        setTimeout(()=>this.ctx.abort('restored from backup'),50)
+        return json(200,{restored:true,...result})
+      }catch(error){return json(error instanceof Fault?error.status:400,{error:error instanceof Fault?error.message:'Pemulihan belum berhasil.'})}
+    }
+    if(!path.startsWith('/v1/ops/backups'))return undefined
+    if(!operator)return json(404,{error:'Not found'})
+    if(path==='/v1/ops/backups'&&request.method==='GET')
+      return json(200,{configured:!!this.config.NODE_BACKUPS,keepDays:BACKUP_KEEP_DAYS,last:this.ctx.storage.kv.get<BackupInfo>('backup-last')??null,error:this.ctx.storage.kv.get<string>('backup-error')??null,backups:await this.backups()})
+    if(path==='/v1/ops/backups'&&request.method==='POST'){
+      try{this.writeGuard(request)}catch(error){return json(error instanceof Fault?error.status:403,{error:error instanceof Fault?error.message:'Not allowed'})}
+      try{return json(200,await this.backup())}catch(error){return json(error instanceof Fault?error.status:500,{error:error instanceof Fault?error.message:'Cadangan belum berhasil dibuat.'})}
+    }
+    if(path==='/v1/ops/backups/download'&&request.method==='GET'){
+      const id=url.searchParams.get('id')??''
+      const headers=(name:string)=>({'content-type':'application/gzip','content-disposition':'attachment; filename="'+name+'"','cache-control':'no-store','x-content-type-options':'nosniff'})
+      // "now": a fresh export straight to the operator, also where no bucket is bound.
+      if(id==='now'){
+        if(!this.nodeCore)return json(503,{error:'Node unavailable'})
+        const created=Date.now(),bytes=await encodeBackup(exportNode(this.nodeCore,created,this.ctx.storage.kv.list()))
+        return new Response(bytes,{headers:headers(backupFileName(backupId(backupKey(created))!))})
+      }
+      if(!/^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z$/.test(id)||!this.config.NODE_BACKUPS)return json(404,{error:'Not found'})
+      const object=await this.config.NODE_BACKUPS.get('node/'+id+'.json.gz')
+      if(!object)return json(404,{error:'Not found'})
+      return new Response(object.body,{headers:headers(backupFileName(id))})
+    }
+    return json(404,{error:'Not found'})
+  }
   /** The operator's model choice, read by the model gateway before each call. */
   /** Binding-only: the key a service call uses. Never reachable over HTTP. */
   async serviceKey(id:string):Promise<string|undefined>{const s=service(id);return s?effectiveServiceKey(s,await this.ctx.storage.get<ServiceKey>(storageName(s.id)),this.config as unknown as Record<string,unknown>):undefined}
@@ -124,6 +203,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
   private async modelState(){const {stored,choice}=await this.modelSettings();return {stored,choice,env:effectiveEnv(this.config as unknown as ModelEnv,stored,choice)}}
   async request(request: Request): Promise<Response> {
     const url=new URL(request.url)
+    const backupResponse=await this.backupRoute(request,url)
+    if(backupResponse)return backupResponse
     if(url.pathname==='/v1/ops/usage'&&request.method==='GET')return this.operatorOf(request)?json(200,{...this.meter.report(),models:modelRoute((await this.modelState()).env)}):json(404,{error:'Not found'})
     // The operator picks the keyed provider's model from its own list. Stored in this node's storage, not in a deploy.
     if(url.pathname==='/v1/ops/models'&&request.method==='GET'){
@@ -198,7 +279,14 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
     this.armed=Date.now()+60000
     await this.ctx.storage.setAlarm(this.armed)
     const mark=this.meter.start()
-    try{await this.discovery?.tick(this.sourceOperatorAllowed);await this.resident?.tick()}finally{this.meter.finish(mark,'ALARM','alarm',200);await this.arm()}
+    try{
+      const due=this.nextBackup()
+      if(due!==undefined&&due<=Date.now()){
+        // A failed backup is reported in Studio and tried again an hour later; it never blocks the rest of the alarm.
+        try{await this.backup()}catch(error){this.ctx.storage.kv.put('backup-error',error instanceof Fault?error.message:'Cadangan harian belum berhasil.');this.ctx.storage.kv.put('backup-next',Date.now()+3600000)}
+      }
+      await this.discovery?.tick(this.sourceOperatorAllowed);await this.resident?.tick()
+    }finally{this.meter.finish(mark,'ALARM','alarm',200);await this.arm()}
   }
 }
 

@@ -78,5 +78,13 @@
   },
   "ai": {
     "binding": "AI"
-  }
+  },
+  // Daily node backups (src/node-backup.ts): a private bucket with no public access and no custom domain.
+  // Objects are named by time only. Create it once per account: npx wrangler r2 bucket create etnos-node-backups
+  "r2_buckets": [
+    {
+      "binding": "NODE_BACKUPS",
+      "bucket_name": "etnos-node-backups"
+    }
+  ]
 }

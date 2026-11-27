@@ -25,3 +25,20 @@ Neither path is weaker than before. The node still consumes its invitation once 
 Make the value with `node -e 'console.log(require("crypto").randomBytes(32).toString("base64url"))'` and set it with `npx wrangler secret put … --config <config>`. Without the secret the invite gate still works: `/gabung` then offers the Bluesky way only, and the host's sign-up form needs a code from `POST /admin/invites` as before.
 
 Tests: `test/invite-gate.test.ts` (outsiders refused on every path, use counts, expiry, revocation, the grant, and requests absent from public paths) and `packages/pds/test/host-links.test.mjs` (grant slots, forged, expired and reset grants, and a host without the key).
+
+## 2. Node backups and restore
+
+The node now backs itself up once a day on its Durable Object alarm (`src/node-backup.ts`). The export reads every table with plain `SELECT` statements inside one synchronous call. A Durable Object runs one request at a time and nothing awaits between the reads, so the result is a consistent snapshot without `VACUUM INTO` or an export API. The JSON dump is compressed with gzip and written to the private R2 bucket `etnos-node-backups` as `node/<time>.json.gz`; objects older than 14 days are deleted after each run. Sign-in state (sessions, sealed OAuth records, rate-limit counters) and the keys added in Studio are never exported.
+
+Studio, *Pengaturan*, shows the time and size of the last backup and the list of stored ones. The operator can start a backup and download any of them; *Unduh salinan sekarang* streams a fresh export even where no bucket is bound. Every backup route answers 404 to anyone but the operator, and file names carry the time only.
+
+An import restores a backup into an empty node of the same schema version, in one transaction with foreign keys checked at the end: `POST /v1/ops/restore`, with the operator's session or the one-time `ETNOS_RESTORE_TOKEN`. The move to a new account uses it; the steps are in [fresh-cloudflare-migration.md](fresh-cloudflare-migration.md) §1b.
+
+**What the owner must create.**
+
+| What | Name | When |
+| --- | --- | --- |
+| R2 bucket, private | `etnos-node-backups` (binding `NODE_BACKUPS` in `wrangler.web.jsonc`) | Before the next deploy of `strata-preview`, in every account that runs it: `npx wrangler r2 bucket create etnos-node-backups`. Without it `wrangler deploy` fails. |
+| Worker secret on `strata-preview` | `ETNOS_RESTORE_TOKEN` | Only for a restore by command line; delete it afterwards. |
+
+Tests: `test/node-backup.test.ts` exports a populated node, imports it into a fresh one and compares every table's row count, known rows, a BLOB column and the private community's visibility; it also checks the refusals (a node with data, another schema version, an unknown table, a broken file, a failure halfway).

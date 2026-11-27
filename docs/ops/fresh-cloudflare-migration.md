@@ -41,6 +41,38 @@ The script:
 - Uploads required Worker secrets to both `strata-preview` and `etnos-identity-host`.
 - Builds the web UI and deploys both Workers.
 
+### 1b. Move the node's data with export and import
+
+A Durable Object's storage cannot be moved between Cloudflare accounts, so the node (`StrataNode`: communities, posts, Ensiklopedia, Kamus, members, invitation links and requests) moves as a backup file instead (`src/node-backup.ts`). The file is one consistent snapshot of every table, compressed with gzip. It leaves out sign-in state, so everyone signs in again after the move, and it leaves out the model and service keys that were added in Studio, so add those again in Studio. The file holds private data: keep it off shared drives and delete it once the move is checked.
+
+1. **Use the same release on both sides.** A backup restores only into a node with the same schema version. Deploy the new account from the same commit as the old one, restore, and only then deploy newer code.
+2. **Make the backup on the old account.** In Studio, open *Pengaturan* and then *Cadangan node*. Press *Buat cadangan sekarang*, then *Unduh* on the newest row (or *Unduh salinan sekarang*, which needs no bucket). Do this last, right before the DNS change, and pause writing (for example, tell the alpha group) so nothing is written after the backup.
+3. **Create the backup bucket in the new account** before the first deploy, because `wrangler.web.jsonc` binds it as `NODE_BACKUPS`:
+   ```bash
+   npx wrangler r2 bucket create etnos-node-backups
+   ```
+   Leave it private: no public access and no custom domain.
+4. **Set a one-time restore token on the new `strata-preview`** (at least 32 characters):
+   ```bash
+   node -e 'console.log(require("crypto").randomBytes(32).toString("base64url"))' | npx wrangler secret put ETNOS_RESTORE_TOKEN --config wrangler.web.jsonc
+   ```
+5. **Restore before anyone signs in**, on the Worker's own workers.dev name, before the DNS change:
+   ```bash
+   curl -fsS -X POST "https://strata-preview.<new-subdomain>.workers.dev/v1/ops/restore" \
+     -H "Authorization: Bearer $ETNOS_RESTORE_TOKEN" \
+     --data-binary @etnos-node-<time>.json.gz
+   ```
+   The answer lists the tables and rows restored. The node refuses a backup when it already holds posts or more than one person, when the schema version differs, or when the file is not an ETNOS backup; a refused or failed restore changes nothing.
+6. **Remove the token** once the restore has succeeded:
+   ```bash
+   npx wrangler secret delete ETNOS_RESTORE_TOKEN --config wrangler.web.jsonc
+   ```
+7. **Check** after the DNS change that `/v1/communities` lists the old communities, then sign in as the operator and open Studio.
+
+The identity host is separate: its accounts move with the R2 CAR backups above and their PLC records, as described in the steps for the identity host.
+
+Daily backups run on the node's alarm once the bucket is bound: one object per day under `node/<time>.json.gz`, kept 14 days, visible and downloadable only in Studio, *Pengaturan*. A failed run is shown there and tried again an hour later.
+
 ### 2. Optional service secrets (set via Studio or `wrangler secret put`)
 
 - `STRATA_MODEL_KEY` (Google AI Studio or OpenRouter API key; can also be pasted in `/studio` -> Aksara)

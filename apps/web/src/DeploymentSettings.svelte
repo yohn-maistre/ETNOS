@@ -6,6 +6,7 @@
   import { Textarea } from '$lib/components/ui/textarea/index.js'
   import StudioTabs from './StudioTabs.svelte'
   import ContentSkeleton from './ContentSkeleton.svelte'
+  import NodeBackups from './NodeBackups.svelte'
   import { request, type Auth } from './api'
   import { notify } from './notifications.svelte'
 
@@ -163,6 +164,7 @@
         </div>
       {/if}
     </section>
+    <NodeBackups />
   {/if}
 </div>
 

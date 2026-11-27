@@ -35,6 +35,10 @@ const situsStyle=()=>situsHeaders(new Response(SITUS_CSS,{headers:{'content-type
 export default {
   async fetch(request:Request,env:WebEnv):Promise<Response>{
     const url=new URL(request.url),config=etnosEnv(env)
+    // Moving to a new Cloudflare account: the node is restored before DNS points at it, so the restore call may
+    // arrive on the Worker's workers.dev name. It carries the one-time restore token, which the node checks.
+    if(url.pathname==='/v1/ops/restore'&&request.method==='POST'&&request.headers.get('authorization')?.startsWith('Bearer ')&&url.origin!==config.ETNOS_ORIGIN&&url.hostname.endsWith('.workers.dev'))
+      return backend.fetch(new Request(config.ETNOS_ORIGIN+'/v1/ops/restore',request),env)
     // <name>.etnos.space for Situs and handles: off unless the owner sets ETNOS_SITUS_SUBDOMAINS=on and adds the route.
     if(url.origin!==config.ETNOS_ORIGIN){
       const anonymous=(path:string)=>backend.fetch(new Request(config.ETNOS_ORIGIN+path),env)
