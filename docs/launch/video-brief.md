@@ -1,17 +1,33 @@
 # Launch video brief
 
-*27 November 2026. For any agent or person who makes the ETNOS launch video, a teaser or a deck. Read [AGENTS.md](../../AGENTS.md) sections 1 to 5 first. Everything here must hold up in front of Papuan communities, partners and the BUDAYA GO! jury.*
+*27 November 2026. For any agent or person who makes the Abstraksi launch reel, a teaser or a deck about ETNOS. Read [AGENTS.md](../../AGENTS.md) sections 1 to 5 first. Everything here must hold up in front of Papuan communities and partners. ETNOS was not entered in BUDAYA GO! 2026, so no cut mentions it.*
 
 ## 1. Purpose and audience
 
-The video invites the first people into etnos.space and shows partners what ETNOS does. The main viewers are Papuan communities and lembaga adat, students and teachers, campus and language partners (Balai Bahasa Papua, UNCEN and others), and the BUDAYA GO! 2026 jury.
-
-Deliver two cuts:
+The first cut is the launch reel for Abstraksi's Instagram account. It introduces Abstraksi and its vision in a few seconds, then shows ETNOS as its first project. It is a launch film, not a product demo. The viewers are Papuan communities and lembaga adat, students and teachers, campus and language partners, and people who follow Abstraksi.
 
 | Cut | Length | Format | Use |
 | --- | --- | --- | --- |
-| Main | 60 to 90 seconds | 9:16 portrait, plus 16:9 landscape | WhatsApp, Instagram, TikTok, the site |
-| Walkthrough | 2 to 3 minutes | 16:9 | Partners, the jury, the README |
+| Launch reel | 30 to 45 seconds | 9:16 for Reels, plus a 4:5 feed version | Instagram first, then WhatsApp and the site |
+| Walkthrough | 2 to 3 minutes | 16:9 | Partners and the README, later |
+
+The reel must work with the sound off, so every spoken line is also burned in as a caption.
+
+### The owner's opening idea for the reel
+
+1. A fast collage of cultural artefacts and spoken words, stacked on top of each other. It shows knowledge that sits in many separate places.
+2. The pieces break into points of light and come together into one clean digital monolith.
+3. ETNOS runs through all of them as a fast thread that ties them together.
+4. It ends on a clean Abstraksi wordmark. The style is minimal and clean, in the Grafit palette.
+
+### Inputs from the code, so the picture is true
+
+- **The points** can be real ETNOS data: the 256 Glottolog language points in `src/catalogues/tanah-papua.json` and the nodes of the knowledge map in `apps/web/public/observatory/knowledge/`, coloured as the map colours them. The monolith that forms is then made of ETNOS's own data. The three.js scenes in `apps/web/src/LanguageStage.svelte` and `MapStage.svelte` can be reused for the renders.
+- **The thread** can follow the real loop: a post, then a question about a word in it, then a check by members, then an Ensiklopedia entry.
+- **The collage** uses CC0 museum images (the Penampil already credits Naturalis and others) and only consented recordings. The scattered places are shown as abstract stand-ins (chat bubbles, PDF pages, museum drawers), never as real brand logos.
+- **Tools.** Remotion is free for organisations of up to three people; Motion Canvas is MIT. Either can render 9:16 and 4:5 from one source.
+- **The wordmark.** No Abstraksi wordmark file exists in this repository yet. It comes from the owner's Abstraksi vision document.
+- **Vision features** that are not built yet are labelled *rencana* on screen.
 
 ## 2. The message
 
