@@ -98,3 +98,4 @@
 2026-11-27a
 2026-11-27b
 2026-11-27c
+2026-11-27d: private alpha (invite gate, backups, recovery codes, web push, first run, privacy and reports) and Aksara's reply voice
