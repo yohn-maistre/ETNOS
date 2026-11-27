@@ -2,7 +2,7 @@
 
 > **Observatory redesign, phase 1 built (20 November 2026).** Read [observatory/](observatory/README.md) first if you work on the wiki, the knowledge map, the knowledge model, datasets or deployment setup. Its [build status](observatory/README.md#build-status) lists what phase 1 built (the observatory front, the size and pace chart, the data catalogue, the *Data* tab and place locator maps) and what phase 2 still has to build (the starter-data build, crosswalks, embeddings and access tiers beyond the open tier). Where these documents disagree with older knowledge-map documents, they win. Remove this notice when phase 2 is built.
 
-This folder holds the plans, decisions, research and release records for ETNOS. The [project README](../README.md) is the shortest way in. Documents sit in folders by subject, and a date in a file name shows when it was written. Read the "Which document wins" table before you trust an older plan.
+This folder holds the plans, decisions, research and release records for ETNOS. Agents and new contributors start with [AGENTS.md](../AGENTS.md), which covers the rules, the way of working with the owner and where everything lives. The [project README](../README.md) is the shortest way in for everyone else. A brief for the launch video and other media is in [launch/video-brief.md](launch/video-brief.md). Documents sit in folders by subject, and a date in a file name shows when it was written. Read the "Which document wins" table before you trust an older plan.
 
 ## Start here
 
