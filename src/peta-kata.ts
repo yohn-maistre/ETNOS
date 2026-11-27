@@ -40,6 +40,8 @@ for(const e of (tanahPapua.entries as Array<{slug:string;title:string;kind:strin
 }
 
 const CONCEPTS=WL.concepts
+/** Glottocodes of the languages that have at least one published form. */
+export const WORDLIST_CODES=Object.entries(WL.languages).filter(([,l])=>l.forms.length).map(([code])=>code)
 const CONCEPT_BY_KEY=new Map(CONCEPTS.map(c=>[c.key,c]))
 const DATASETS=WL.datasets
 
@@ -220,7 +222,31 @@ export class PetaKata{
   const published=byLanguage.get(code)??[]
   const community=this.communityEntries().filter(e=>e.lang===code).slice(0,200)
   const {refs,words}=withRefs(published)
-  return {language:this.language(code,this.communities(),new Set(published.map(w=>w.concept)).size),refs,words,community:community.map(({norm:_n,...rest})=>rest)}
+  const have=new Set(published.map(w=>w.concept)),used=new Set(published.map(w=>w.dataset))
+  return {language:this.language(code,this.communities(),have.size),
+   // The concepts this language has, in the picker's order, and the datasets its forms come from.
+   concepts:CONCEPTS.filter(c=>have.has(c.key)).map(c=>({key:c.key,id:c.id,english:c.english})),
+   datasets:DATASETS.filter(d=>used.has(d.key)),
+   refs,words,community:community.map(({norm:_n,...rest})=>rest)}
+ }
+}
+
+/** Written sources of a language's Kamus seed other than the published wordlists (today Steltenpool 1969 for
+ * Ekari), searchable and paged, each entry with its source, page and licence. The wordlist entries of a seed are
+ * left out here because they are the published forms that Peta Kata already shows. */
+export function seedSource(lexicon:KamusLexicon,code:string,opts:{q?:string;offset?:number;limit?:number}={}){
+ const set=lexicon.seeds[code]
+ if(!set&&!META.has(code))return null
+ const listed=new Set(DATASETS.map(d=>d.key))
+ const keys=Object.keys(set?.sources??{}).filter(k=>!listed.has(k))
+ const q=norm((opts.q??'').trim()).slice(0,40)
+ const all=(set?.entries??[]).filter(e=>!listed.has(e.source)).map(e=>({lemma:(e.modern||e.lemma).trim(),old:e.modern&&e.modern!==e.lemma?e.lemma:undefined,gloss:(e.gloss_id||e.gloss_en||e.gloss_nl||e.gloss_raw||'').trim(),glossEn:e.gloss_en,pos:e.pos??'',page:e.page??null,source:e.source,licence:set!.sources[e.source]?.licence??''})).filter(e=>e.lemma&&e.gloss)
+ const hits=q?all.filter(e=>norm(e.lemma).startsWith(q)||(e.old&&norm(e.old).startsWith(q))||e.gloss.toLowerCase().includes(q)||(e.glossEn??'').toLowerCase().includes(q)):all
+ const offset=Math.max(0,Math.min(Number(opts.offset)||0,hits.length)),limit=Math.max(1,Math.min(Number(opts.limit)||50,100))
+ return {
+  sources:keys.map(k=>({key:k,citation:set!.sources[k]!.citation??k,url:set!.sources[k]!.url??null,licence:set!.sources[k]!.licence})),
+  total:all.length,matches:hits.length,offset,query:q,
+  entries:hits.slice(offset,offset+limit),
  }
 }
 

@@ -7,6 +7,7 @@
   import StudioTabs from './StudioTabs.svelte'
   import ContentSkeleton from './ContentSkeleton.svelte'
   import NodeBackups from './NodeBackups.svelte'
+  import LocalContextsSettings from './LocalContextsSettings.svelte'
   import { request, type Auth } from './api'
   import { notify } from './notifications.svelte'
 
@@ -165,6 +166,7 @@
       {/if}
     </section>
     <NodeBackups />
+    <LocalContextsSettings />
   {/if}
 </div>
 

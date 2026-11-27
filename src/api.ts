@@ -33,8 +33,9 @@ import { Voice, type VoiceBucket } from './voice.ts'
 import { AtSpaces } from './spaces.ts'
 import { Captures3d } from './captures.ts'
 import { Saluran } from './saluran.ts'
-import { PetaKata } from './peta-kata.ts'
+import { PetaKata, seedSource } from './peta-kata.ts'
 import { withSuku } from './suku.ts'
+import { LocalContexts } from './local-contexts.ts'
 import { SemanticMap, type Embedder } from './semantic-map.ts'
 import { TopicClassifier } from './topic-classifier.ts'
 import {Decisions,type DecisionProvider} from './decisions.ts'
@@ -87,6 +88,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
   const agents=options.agentAccess??new AgentAccess(store,{stewardDid:options.stewardDid})
   const forum=new Forum(store)
   const periksa=new Periksa(store),kamus=new Kamus(store,kamusLexicon(),{operator:id=>!!options.stewardDid&&store.actor(id).did===options.stewardDid})
+  const localContexts=new LocalContexts(store,{operator:id=>!!options.stewardDid&&store.actor(id).did===options.stewardDid})
   const ask=new KamusAsk(store,kamus,kamusLexicon(),leipzigJakarta as ConceptList,viewerRecords)
   const decisions=new Decisions(store,options.decisions),desk=new Desk(store)
   const media=new Media(store),voice=new Voice(store,options.voiceBucket),spaces=new AtSpaces(store)
@@ -160,9 +162,11 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
         else if(parts.length===3&&parts[1]==='captures')result=captures.read(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='captures'&&parts[3]==='file')return await captures.fileResponse(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='viewer'&&parts[3]==='pins')result={pins:captures.pinsFor(actor?.id,decodeURIComponent(parts[2]))}
+        else if(path==='/v1/local-contexts')result=localContexts.list()
         else if(path==='/v1/peta-kata/concepts')result=petaKata.concepts()
         else if(path==='/v1/peta-kata/semantic')result=await semanticMap.build()
         else if(path==='/v1/peta-kata')result=petaKata.lookup({concept:url.searchParams.get('concept')??undefined,q:url.searchParams.get('q')??undefined})
+        else if(parts.length===5&&parts[1]==='peta-kata'&&parts[2]==='bahasa'&&parts[4]==='sumber'){const r=seedSource(kamusLexicon(),decodeURIComponent(parts[3]),{q:url.searchParams.get('q')??undefined,offset:Number(url.searchParams.get('offset')??0)});if(!r)throw new Fault(404,'Not found');result=r}
         else if(parts.length===4&&parts[1]==='peta-kata'&&parts[2]==='bahasa'){const r=petaKata.languageWords(decodeURIComponent(parts[3]));if(!r)throw new Fault(404,'Not found');result=r}
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='saluran')result=saluran.settings(actor?.id,parts[2])
         else if(parts.length===4&&parts[1]==='communities'&&parts[3]==='kurasi')result={annotations:saluran.listAnnotations(actor?.id,parts[2])}
@@ -441,6 +445,7 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='contexts'&&parts[3]==='aliases')result=groups.setContextAliases(caller,parts[2],b.aliases)
       else if(path==='/v1/contexts/seed-labels')result=groups.applySeedLabels(caller,seedLabels as SeedLabels)
       else if(path==='/v1/knowledge-model/seed')result=model.importSeed(caller,withSuku(knowledgeSeed as KnowledgeSeed))
+      else if(parts.length===3&&parts[1]==='local-contexts')result=localContexts.set(caller,decodeURIComponent(parts[2]),b)
       else if(path==='/v1/knowledge-model/entities')result=model.proposeEntity(caller,b)
       else if(parts.length===5&&parts[1]==='knowledge-model'&&parts[2]==='entities'&&parts[4]==='coordinates')result=model.setCoordinates(caller,parts[3],b)
       else if(path==='/v1/datasets/seed')result=datasets.importSeed(caller,datasetSeed as DatasetSeed)

@@ -714,6 +714,13 @@ CREATE TABLE IF NOT EXISTS operator_reports(
  created INTEGER NOT NULL, UNIQUE(kind,target_id,reporter_id)
 );
 CREATE INDEX IF NOT EXISTS operator_reports_state ON operator_reports(state, created DESC);
+`, `
+-- Local Contexts (src/local-contexts.ts): per shipped collection, a Local Contexts Hub project ID that the operator
+-- links (communities apply their Labels there) and the Notices that the operator adds beside the shipped ones.
+CREATE TABLE IF NOT EXISTS local_contexts_collections(
+ collection TEXT PRIMARY KEY, project_id TEXT NOT NULL DEFAULT '', notices TEXT NOT NULL DEFAULT '[]',
+ updated INTEGER NOT NULL, updated_by TEXT NOT NULL REFERENCES actors(id)
+);
 `]
 
 export const schemaVersion=migrations.length
