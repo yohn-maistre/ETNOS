@@ -99,7 +99,7 @@
       <span class="je-bahasa-text">
         {#if glimpse}
           <strong>Kata untuk <em>{glimpse.concept.id}</em> di {fmt(glimpse.forms.size)} bahasa</strong>
-          <small>{fmt(glimpse.languages.length)} bahasa Tanah Papua di peta, {fmt(glimpse.languages.filter((l) => l.concepts > 0).length)} di antaranya punya kata dasar. Buka Peta Kata untuk kata lain.</small>
+          <small>{fmt(glimpse.languages.length)} bahasa Tanah Papua di peta, {fmt(glimpse.languages.filter((l) => l.concepts > 0).length)} di antaranya punya kata dasar.</small>
         {:else}<strong>Peta Kata</strong><small>Kata dasar dalam bahasa-bahasa Tanah Papua, di titik setiap bahasa.</small>{/if}
       </span>
     </a>

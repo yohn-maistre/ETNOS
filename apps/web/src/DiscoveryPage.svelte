@@ -292,6 +292,10 @@
 
   .jelajah a:focus-visible, .jelajah :global(button:focus-visible) { outline: 2px solid var(--ring, var(--foreground)); outline-offset: 2px; }
 
+  /* Four tabs fit a 360px phone without scrolling. */
+  @media (max-width: 439px) {
+    .jelajah-tabs a { padding: 0 8px; font-size: 14.5px; }
+  }
   @media (min-width: 640px) {
     .jelajah { --gutter: 20px; }
     .news-top:not(.solo) { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }

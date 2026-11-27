@@ -24,6 +24,7 @@
     ArrowLeft,
     ChevronDown,
     RefreshCw,
+    Info,
   } from '@lucide/svelte'
   import { appearance } from './appearance.svelte'
   import { initials, type Auth } from './api'
@@ -78,6 +79,8 @@
         ]
       : []),
     ...(auth.steward ? [{ href: '/studio', label: 'Studio', icon: SlidersHorizontal }] : []),
+    // Visitors get the page that says what ETNOS is, so the foot of the menu is not only a button.
+    ...(auth.actor ? [] : [{ href: '/tentang', label: 'Tentang ETNOS', icon: Info }]),
     { href: '/preferences', label: 'Pengaturan', icon: Settings2 },
   ])
   function active(href: string) {
@@ -168,7 +171,7 @@
           <strong>{auth.actor.name}</strong>
           <small>Akun AT terhubung</small>
         </span>
-      </a>{:else}<Button
+      </a>{:else}<p class="sidebar-login-hint">Masuk untuk menulis, bergabung dengan komunitas dan menyimpan.</p><Button
         href="/login"
         variant="outline"
         class="sidebar-login"

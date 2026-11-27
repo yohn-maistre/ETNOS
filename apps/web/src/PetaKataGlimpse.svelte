@@ -45,7 +45,8 @@
   svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
   path { fill: color-mix(in oklab, var(--foreground) 6%, transparent); stroke: color-mix(in oklab, var(--foreground) 14%, transparent); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
   circle { fill: none; stroke: color-mix(in oklab, var(--foreground) 24%, transparent); stroke-width: 1; vector-effect: non-scaling-stroke; }
-  circle.on { fill: color-mix(in oklab, var(--foreground) 46%, transparent); stroke: none; }
+  circle.on { fill: color-mix(in oklab, var(--foreground) 52%, transparent); stroke: none; }
+  :global(.dark) circle.on { fill: color-mix(in oklab, var(--foreground) 66%, transparent); }
   circle.mark { fill: var(--foreground); stroke: var(--glimpse-ground, var(--background)); stroke-width: 2; }
   .pkg-label { position: absolute; display: grid; transform: translate(10px, -50%); padding: 1px 6px 2px; border-radius: 7px; background: color-mix(in oklab, var(--glimpse-ground, var(--background)) 86%, transparent); line-height: 1.1; white-space: nowrap; pointer-events: none; }
   .pkg-label.flip { transform: translate(calc(-100% - 10px), -50%); text-align: right; }
