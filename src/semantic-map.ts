@@ -15,6 +15,7 @@
 
 import conceptsFile from '../seed/kamus/leipzig-jakarta-100.json' with { type: 'json' }
 import tanahPapua from './catalogues/tanah-papua.json' with { type: 'json' }
+import wordlists from '../seed/kamus/tanah-papua-wordlists.json' with { type: 'json' }
 import { EtnosCore } from './core.ts'
 import { norm, type KamusLexicon } from './kamus.ts'
 import { leiden, type WeightedEdge } from './knowledge-graph.ts'
@@ -102,6 +103,14 @@ type ConceptRow = {
 }
 
 const CONCEPTS = conceptsFile.concepts as ConceptRow[]
+
+// Wordlist concept keys (seed/kamus/tanah-papua-wordlists.json) that are on the Leipzig-Jakarta list, by number.
+// Seed entries with such a key are placed by the key itself, with no gloss matching.
+const WORDLIST_LJ = new Map<string, number>()
+for (const c of (wordlists as unknown as { concepts: { key: string; leipzigJakarta: number | null }[] }).concepts) {
+  if (c.leipzigJakarta) WORDLIST_LJ.set(c.key, c.leipzigJakarta)
+}
+const WORDLIST_KEYS = new Set((wordlists as unknown as { concepts: { key: string }[] }).concepts.map((c) => c.key))
 
 const LANG_NAME_BY_CODE = new Map<string, string>()
 for (const e of tanahPapua.entries as Array<{ slug: string; title: string; kind: string; aliases?: string[] }>) {
@@ -607,7 +616,48 @@ export class SemanticMap {
     let seedCount = 0
     for (const [code, seed] of Object.entries(this.lexicon.seeds)) {
       const languageName = LANG_NAME_BY_CODE.get(code) ?? seed.language.name
+      // Wordlist forms: one concept each, so a form shared by two concepts in one language is a colexification.
+      const byForm = new Map<string, { lemma: string; concepts: Set<number> }>()
       for (const e of seed.entries) {
+        if (!e.concept || !WORDLIST_KEYS.has(e.concept)) continue
+        const n = WORDLIST_LJ.get(e.concept)
+        if (!n) continue
+        const lemma = (e.lemma || '').trim()
+        if (!lemma) continue
+        seedCount++
+        languagesUsed.add(code)
+        const prevLang = langCounts.get(code)
+        if (prevLang) prevLang.entries++
+        else langCounts.set(code, { code, name: languageName, entries: 1 })
+        let lset = conceptLangs.get(n)
+        if (!lset) conceptLangs.set(n, (lset = new Set()))
+        if (!lset.has(code)) {
+          lset.add(code)
+          const list = conceptSamples.get(n) ?? []
+          if (list.length < 8) list.push({ lemma, languageCode: code, languageName, origin: 'seed' })
+          conceptSamples.set(n, list)
+        }
+        const key = norm(lemma)
+        const f = byForm.get(key) ?? { lemma, concepts: new Set<number>() }
+        f.concepts.add(n)
+        byForm.set(key, f)
+      }
+      for (const f of byForm.values()) {
+        const ns = [...f.concepts].sort((a, b) => a - b)
+        if (ns.length < 2 || ns.length > 5) continue
+        for (let i = 0; i < ns.length; i++) for (let j = i + 1; j < ns.length; j++) {
+          const k = `${ns[i]}:${ns[j]}`
+          let bucket = colexMap.get(k)
+          if (!bucket) colexMap.set(k, (bucket = { a: ns[i]!, b: ns[j]!, examples: [], langs: new Set() }))
+          bucket.langs.add(code)
+          if (bucket.examples.length < 6) {
+            const gloss = ns.map((x) => CONCEPTS.find((c) => c.n === x)?.id ?? '').filter(Boolean).join(', ')
+            bucket.examples.push({ lemma: f.lemma, languageCode: code, languageName, gloss, origin: 'seed' })
+          }
+        }
+      }
+      for (const e of seed.entries) {
+        if (e.concept && WORDLIST_KEYS.has(e.concept)) continue
         const lemma = (e.modern || e.lemma || '').trim()
         const glossId = (e.gloss_id || '').trim()
         const glossEn = (e.gloss_en || '').trim()

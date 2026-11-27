@@ -7,6 +7,7 @@ Seed data for the community dictionary (Kamus komunitas). Data only; no app code
 | File | What it holds |
 | --- | --- |
 | `ekari.json` | Published Ekari (Mee language, Glottocode `ekar1243`, ISO 639-3 `ekg`) entries from two sources. 2,905 entries. |
+| `tanah-papua-wordlists.json` | Basic wordlists (100 concepts) for 187 Tanah Papua languages from TransNewGuinea.org, ABVD and Berry & Berry 1987, all CC BY 4.0. 13,801 forms. Used by Peta Kata and as Kamus seeds for every language except Ekari. Built by `scripts/kamus/build-wordlists.py`; sources, licences and what was left out are in `docs/research/peta-kata-sources-2026-11-27.md`. None of these words has been checked by speakers. |
 | `leipzig-jakarta-100.json` | The 100 concepts of the Leipzig-Jakarta list (Concepticon list `Tadmor-2009-100`), with an Indonesian prompt and a word class for each. *Kata hari ini* asks for the local word for one concept a day. |
 | `id-words.json` | Indonesian word forms (2,794) and Papuan Malay function words (30), so a word finder can tell Indonesian words from local-language words. |
 

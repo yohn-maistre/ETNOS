@@ -35,7 +35,7 @@ type Light={claims:Map<string,string>;answered:Set<string>;skipped:Set<string>;b
 
 const DAY=86400000,TTL=60000
 const ENGLISH=new Set(['the','and','for','with','that','this','from','you','are','was','not','but','have','has','will','can','what','when','where','how','why','who','all','one','our','your','their','they','them','there','here','about','into','out','just','like','yes','okay'])
-const SOURCE_LABEL:Record<string,string>={steltenpool1969:'Steltenpool 1969',tng:'TransNewGuinea.org',room:'Ditulis anggota',concept:'Jawaban anggota'}
+const SOURCE_LABEL:Record<string,string>={steltenpool1969:'Steltenpool 1969',tng:'TransNewGuinea.org',abvd:'ABVD',berry1987:'Berry & Berry 1987',room:'Ditulis anggota',concept:'Jawaban anggota'}
 const clean=(v:unknown,max:number)=>typeof v==='string'?v.replace(/\s+/g,' ').trim().slice(0,max):''
 const sentencesOf=(t:string)=>t.replace(/\s+/g,' ').split(/(?<=[.!?…])\s+|\n+/).map(s=>s.trim()).filter(Boolean)
 export const sourceLabel=(source:string)=>{const k=source.replace(/^seed:/,'');return SOURCE_LABEL[k]??k}

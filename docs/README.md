@@ -222,6 +222,7 @@ Notes that back the plans. Most are proposals with sources, and a few record wha
 | Document | What it holds | Status |
 | --- | --- | --- |
 | [community-dictionary-2026-11-19.md](research/community-dictionary-2026-11-19.md) | The northstar: a dictionary and grammar that grow from how people talk, seeded from published sources, owned by the community. Pipeline, models, privacy, build plan and open questions. | current |
+| [peta-kata-sources-2026-11-27.md](research/peta-kata-sources-2026-11-27.md) | The published wordlists behind Peta Kata: three CC BY 4.0 datasets, 187 languages by 100 concepts, how each form keeps its source, and the datasets that were checked and left out with their licences. | current; built |
 | [epistemic-multiplex-2026-11-19.md](research/epistemic-multiplex-2026-11-19.md) | The knowledge model of Entity, Assertion and Witness, with its research programme and flagships. | current |
 | [knowledge-model-build-2026-11-19.md](research/knowledge-model-build-2026-11-19.md) | What was built for the knowledge model: tables, rules, API, seed, graph measures and static observatory files. | current; built |
 | [pds-multi-identity-build-2026-11-19.md](research/pds-multi-identity-build-2026-11-19.md) | What was built for the multi-account identity host, with tests, measurements, licences, spaces and self-hosting. | current; built |

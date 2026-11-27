@@ -56,7 +56,7 @@
   function sourceLabel(e: Entry) {
     if (e.source === 'room') return 'Ditemukan di percakapan'
     const key = e.source.replace(/^seed:/, '')
-    const short = key === 'steltenpool1969' ? 'Steltenpool 1969' : key === 'tng' ? 'TransNewGuinea.org' : key
+    const short = key === 'steltenpool1969' ? 'Steltenpool 1969' : key === 'tng' ? 'TransNewGuinea.org' : key === 'abvd' ? 'ABVD' : key === 'berry1987' ? 'Berry & Berry 1987' : key
     return e.page ? `${short}, hlm. ${e.page}` : short
   }
 
@@ -234,7 +234,9 @@
           <BookOpen size={14} aria-hidden="true" />
           <div>
             {#each Object.entries(language.sources) as [k, s] (k)}<p>{#if s.url}<a href={s.url} target="_blank" rel="noopener">{s.citation}</a>{:else}{s.citation}{/if} Lisensi {s.licence}.</p>{/each}
-            <p>Arti dari Steltenpool 1969 ditulis dengan ejaan lama dan disalin dari hasil pindai, jadi sebagian bisa keliru. Kata yang ditemukan di percakapan tidak dikirim ke sumber mana pun.</p>
+            {#if language.sources.steltenpool1969}<p>Arti dari Steltenpool 1969 ditulis dengan ejaan lama dan disalin dari hasil pindai, jadi sebagian bisa keliru.</p>
+            {:else}<p>Kata dari sumber tertulis berasal dari daftar kata terbitan dan belum diperiksa penutur. Artinya diambil dari nama konsep dalam daftar itu.</p>{/if}
+            <p>Kata yang ditemukan di percakapan tidak dikirim ke sumber mana pun.</p>
           </div>
         </footer>
       {/if}
