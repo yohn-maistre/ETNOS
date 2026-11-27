@@ -8,8 +8,11 @@ export function workerDecisions(env:EtnosEnv<Cloudflare.Env>):DecisionProvider|u
  if(env.ETNOS_DECISIONS_ENABLED!=='true'||!env.AI)return undefined
  return {
   async news(){
-   if(!env.WATCH_NEWS)throw Error('Public news unavailable')
-   const upstream:typeof fetch=async(input,options)=>{const target=new URL(String(input));return env.WATCH_NEWS.fetch(new Request('https://watch.internal'+target.pathname.replace(/^\/api/,'')+target.search,{headers:{accept:'application/json'},signal:options?.signal}))}
+   // The news Worker binding when the account has it (WATCH_NEWS), otherwise the fixed public read.
+   const upstream:typeof fetch=async(input,options)=>{
+    if(env.WATCH_NEWS){const target=new URL(String(input));try{const r=await env.WATCH_NEWS.fetch(new Request('https://watch.internal'+target.pathname.replace(/^\/api/,'')+target.search,{headers:{accept:'application/json'},signal:options?.signal}));if(r.ok)return r}catch{ /* public fallback */ }}
+    return fetch(input,options)
+   }
    const result=await publicNews(upstream,new URLSearchParams({limit:'20',desk:'focus'}))
    if(!result.ok)throw Error('Public news unavailable')
    return ((await result.json()) as NewsFeed).items.map(({id,title,publishedAt})=>({id,title,publishedAt}))

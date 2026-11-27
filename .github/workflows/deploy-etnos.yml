@@ -29,8 +29,14 @@ jobs:
       # Model settings come from repository variables (Settings → Secrets and variables → Actions → Variables):
       # STRATA_MODEL_FAST is the model name, e.g. a Gemini model from Google AI Studio. Without it the node stays on
       # keyless Workers AI. The base URL defaults to Google AI Studio's OpenAI-compatible endpoint.
+      # wrangler deploy fails when a service binding names a Worker that the account lacks, and a fresh account
+      # lacks westpapua-watch-engine (WATCH_NEWS) and, until the owner deploys it, strata-resident-pi (RESIDENT_PI).
+      # The repository variable ETNOS_OMIT_SERVICES lists bindings to leave out, e.g. "WATCH_NEWS"; news is then
+      # read from the public site. Unset, the deploy uses wrangler.web.jsonc as it is.
       - run: |
-          set -- --config wrangler.web.jsonc
+          config=wrangler.web.jsonc
+          if [ -n "$ETNOS_OMIT_SERVICES" ]; then node scripts/web-deploy-config.mjs "$ETNOS_OMIT_SERVICES"; config=wrangler.web.deploy.jsonc; fi
+          set -- --config "$config"
           if [ -n "$STRATA_MODEL_FAST" ]; then
             set -- "$@" --var "STRATA_MODEL_FAST:$STRATA_MODEL_FAST" --var "STRATA_MODEL_BASE_URL:${STRATA_MODEL_BASE_URL:-https://generativelanguage.googleapis.com/v1beta/openai}"
             if [ -n "$STRATA_MODEL_SYNTHESIS" ]; then set -- "$@" --var "STRATA_MODEL_SYNTHESIS:$STRATA_MODEL_SYNTHESIS"; fi
@@ -46,6 +52,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          ETNOS_OMIT_SERVICES: ${{ vars.ETNOS_OMIT_SERVICES }}
           STRATA_MODEL_FAST: ${{ vars.STRATA_MODEL_FAST }}
           STRATA_MODEL_SYNTHESIS: ${{ vars.STRATA_MODEL_SYNTHESIS }}
           STRATA_MODEL_BASE_URL: ${{ vars.STRATA_MODEL_BASE_URL }}
