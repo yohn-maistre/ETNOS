@@ -75,6 +75,8 @@ button.link:focus-visible{box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50
 .box li+li{margin-top:.25rem}
 .stack{display:flex;flex-direction:column;gap:.5rem;margin:0}
 .stack.form{gap:1.25rem}
+.btn.wrap{white-space:normal;height:auto;min-height:2.25rem;padding-block:.5rem}
+.code{margin:0;font:600 1.05rem/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em;overflow-wrap:anywhere;user-select:all}
 .foot{padding-bottom:2.5rem;color:var(--muted-foreground);font-size:.8125rem;line-height:1.5}
 `;
 
@@ -112,6 +114,7 @@ export function homePage(name: string, domain: string): Response {
 }
 
 export interface SignupValues {
+	minAge?: number;
 	code?: string;
 	label?: string;
 	error?: string;
@@ -144,7 +147,7 @@ ${
 <p class="desc">Minimal 8 karakter.</p></div>
 <div class="field"><label class="label" for="password2">Ulangi kata sandi</label>
 <input class="input" id="password2" name="password2" type="password" autocomplete="new-password" required minlength="8" maxlength="256"></div>
-<div class="field row"><input class="check" id="age" type="checkbox" name="age" value="16" required><label class="label" for="age">Saya berusia 16 tahun atau lebih.</label></div>
+<div class="field row"><input class="check" id="age" type="checkbox" name="age" value="${values.minAge ?? 18}" required><label class="label" for="age">Saya berusia ${values.minAge ?? 18} tahun atau lebih.</label></div>
 <button type="submit">Buat akun</button>
 </form>`,
 			flow ? `<p>Sudah punya akun? <a href="${esc(flowLink(flow, "masuk=1"))}">Masuk</a></p>` : "",
@@ -153,15 +156,104 @@ ${
 	);
 }
 
-export function signupDonePage(name: string, handle: string, signinUrl: string | null): Response {
-	const link = signinUrl ? `<a class="btn" href="${esc(signinUrl)}">Masuk ke ${esc(name)}</a>` : "";
+/** The one-time recovery code, shown once after sign-up or after a password is reset. */
+function recoveryBox(code: string): string {
+	return `<div class="box"><p><strong>Kode pemulihan</strong></p><p class="code">${esc(code)}</p>
+<p class="desc">Catat kode ini di kertas atau simpan di tempat yang aman. Kode ini hanya ditampilkan sekali. Jika kamu lupa kata sandi, nama akun dan kode ini dipakai untuk membuat kata sandi baru.</p></div>`;
+}
+
+export function signupDonePage(name: string, handle: string, signinUrl: string | null, code: string): Response {
+	const link = signinUrl ? `<a class="btn wrap" href="${esc(signinUrl)}">Saya sudah menyimpan kode ini, masuk ke ${esc(name)}</a>` : "";
 	return page(
 		"Akun sudah dibuat",
 		card(
 			"Akunmu sudah dibuat",
 			"",
 			`<p>Nama akunmu <strong>${esc(handle)}</strong>.</p>
+${recoveryBox(code)}
 <p class="desc">Simpan kata sandimu di tempat yang aman. Pengurus tidak bisa melihat kata sandimu.</p>
+${link}`,
+		),
+	);
+}
+
+/** After sign-up inside an app's sign-in: the code first, then on to consent. */
+export function signupRecoveryPage(handle: string, code: string, continueHref: string, cookie: string): Response {
+	const response = page(
+		"Akun sudah dibuat",
+		card(
+			"Akunmu sudah dibuat",
+			"",
+			`<p>Nama akunmu <strong>${esc(handle)}</strong>.</p>
+${recoveryBox(code)}
+<a class="btn wrap" href="${esc(continueHref)}">Saya sudah menyimpan kode ini, lanjutkan</a>`,
+		),
+	);
+	response.headers.append("set-cookie", cookie);
+	return response;
+}
+
+export interface RecoverValues {
+	handle?: string;
+	error?: string;
+}
+
+const newPasswordFields = `<div class="field"><label class="label" for="password">Kata sandi baru</label>
+<input class="input" id="password" name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="256">
+<p class="desc">Minimal 8 karakter.</p></div>
+<div class="field"><label class="label" for="password2">Ulangi kata sandi baru</label>
+<input class="input" id="password2" name="password2" type="password" autocomplete="new-password" required minlength="8" maxlength="256"></div>`;
+
+/** Reset a forgotten password with the account name and the recovery code. */
+export function recoverPage(name: string, domain: string, values: RecoverValues, status = 200): Response {
+	return page(
+		`Pulihkan akun ${name}`,
+		card(
+			"Pulihkan akun",
+			`Tulis nama akun dan kode pemulihan yang kamu simpan saat membuat akun, lalu buat kata sandi baru.`,
+			`${errorBox(values.error)}
+<form class="stack form" method="post" action="/akun/pulihkan">
+<div class="field"><label class="label" for="handle">Nama akun</label>
+<input class="input" id="handle" name="handle" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required maxlength="253" placeholder="nama.${esc(domain)}" value="${esc(values.handle)}"></div>
+<div class="field"><label class="label" for="code">Kode pemulihan</label>
+<input class="input" id="code" name="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" required maxlength="64" placeholder="XXXXX-XXXXX-XXXXX-XXXXX"></div>
+${newPasswordFields}
+<button type="submit">Simpan kata sandi baru</button>
+</form>`,
+			`<p>Tidak punya kode pemulihan? Minta tautan pemulihan kepada pengelola ${esc(name)}.</p>`,
+		),
+		status,
+	);
+}
+
+/** Reset with a link that the operator made for one account. */
+export function resetLinkPage(name: string, handle: string, link: string, error?: string, status = 200): Response {
+	return page(
+		`Pulihkan akun ${name}`,
+		card(
+			"Buat kata sandi baru",
+			`Untuk akun <strong>${esc(handle)}</strong>. Tautan ini hanya dapat dipakai sekali.`,
+			`${errorBox(error)}
+<form class="stack form" method="post" action="/akun/pulihkan">
+<input type="hidden" name="tautan" value="${esc(link)}">
+${newPasswordFields}
+<button type="submit">Simpan kata sandi baru</button>
+</form>`,
+		),
+		status,
+	);
+}
+
+export function recoveredPage(name: string, handle: string, code: string, signinUrl: string | null): Response {
+	const link = signinUrl ? `<a class="btn wrap" href="${esc(signinUrl)}">Saya sudah menyimpan kode ini, masuk ke ${esc(name)}</a>` : "";
+	return page(
+		"Kata sandi baru disimpan",
+		card(
+			"Kata sandi baru sudah disimpan",
+			"",
+			`<p>Akun <strong>${esc(handle)}</strong> sekarang memakai kata sandi baru. Semua sesi lama sudah keluar.</p>
+${recoveryBox(code)}
+<p class="desc">Kode pemulihan yang lama tidak berlaku lagi.</p>
 ${link}`,
 		),
 	);
@@ -236,7 +328,7 @@ ${errorBox(error)}
 <button type="submit">Izinkan</button>
 </form>
 <form method="post" action="/oauth/authorize">${hidden(ctx)}<input type="hidden" name="action" value="deny"><button class="outline" type="submit">Tolak</button></form>`,
-			`<form method="post" action="/oauth/select">${hidden(ctx)}<input type="hidden" name="other" value="1"><button class="link" type="submit">Pakai akun lain</button></form>`,
+			`<form method="post" action="/oauth/select">${hidden(ctx)}<input type="hidden" name="other" value="1"><button class="link" type="submit">Pakai akun lain</button></form><p>Lupa kata sandi? <a href="/akun/pulihkan">Pulihkan akun</a></p>`,
 		),
 		status,
 	);

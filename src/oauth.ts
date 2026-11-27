@@ -444,6 +444,19 @@ export class BrowserAuth {
         this.store.tx(()=>{this.store.run('INSERT OR IGNORE INTO enrollment_allowlist VALUES(?,?)',identity.did,current.actor.id);this.store.audit(current.actor.id,'enrollment.invite',identity.did)})
         return json(200,{handle:identity.handle,did:identity.did})
       }
+      // A one-time password reset link for a person on the node's own identity host who lost the recovery code.
+      // The host checks the signature, the account and that the link is used once (packages/pds link-grant.ts).
+      if(path==='/auth/host-reset-links' && request.method==='POST'){
+        const current=this.steward(request)
+        if(!this.hostLinks())throw new Fault(409,'Tautan pemulihan memerlukan kunci bersama dengan server akun.')
+        const body=await readBody(request,1000)
+        const handle=typeof body.handle==='string'?body.handle.trim().toLowerCase().replace(/^@/,''):''
+        if(!/^[a-z0-9.-]{3,253}$/.test(handle)||!handle.includes('.'))throw new Fault(400,'Tulis nama akun lengkap, misalnya nama.etnos.space.')
+        const id=crypto.randomUUID(),expires=this.store.clock()+86400000
+        const grant=await signGrant(this.config.hostLinkKey!,{kind:'reset',id,handle,expires})
+        this.store.audit(current.actor.id,'account.reset-link',handle)
+        return json(200,{url:this.accountHost()+'/akun/pulihkan?tautan='+grant,expires,handle})
+      }
       if(path==='/auth/enrollment-invites' || /^\/auth\/enrollment-invites\/[0-9a-f-]{36}\/revoke$/.test(path)){
         const current=request.method==='GET'?this.readSteward(request):this.steward(request)
         if(path==='/auth/enrollment-invites' && request.method==='GET')return json(200,{invitations:this.store.all('SELECT id,created,expires,revoked,used_at,uses,max_uses AS maxUses FROM enrollment_invitations ORDER BY created DESC,id DESC LIMIT 50')})

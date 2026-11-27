@@ -102,7 +102,8 @@
               spellcheck={false}
               required
             /><FieldDescription>
-              Kata sandi tetap di penyedia akunmu.
+              Kata sandi tetap di penyedia akunmu.{#if accountHost}
+                Lupa kata sandi akun ETNOS? <a class="cx-text-link" href={accountHost + '/akun/pulihkan'}>Pulihkan akun</a>{/if}
             </FieldDescription>
           </Field>{:else}
           <p class="text-sm text-muted-foreground">

@@ -64,16 +64,21 @@ test("accounts are created by invite, resolve by handle and carry the right PLC 
 		const page = await call(mf, "/akun/baru?kode=" + code);
 		// Pages keep Origin on their own form posts (no-referrer would make the browser send "Origin: null").
 		assert.equal(page.headers.get("referrer-policy"), "same-origin");
-		assert.equal((await call(mf, "/akun/baru", { form: { code, label: "bob", password: "x", password2: "x", age: "16" }, headers: { origin: "null" } })).status, 403);
+		assert.equal((await call(mf, "/akun/baru", { form: { code, label: "bob", password: "x", password2: "x", age: "18" }, headers: { origin: "null" } })).status, 403);
 		assert.equal(page.status, 200);
 		assert.match(page.headers.get("content-security-policy"), /frame-ancestors 'none'/);
 		assert.match(await page.text(), /Kode undangan/);
-		const mismatch = await call(mf, "/akun/baru", { form: { code, label: "bob", password: "synthetic-pw-1", password2: "other-pw-1", age: "16" }, headers: { origin } });
+		const mismatch = await call(mf, "/akun/baru", { form: { code, label: "bob", password: "synthetic-pw-1", password2: "other-pw-1", age: "18" }, headers: { origin } });
 		assert.equal(mismatch.status, 400);
 		assert.match(await mismatch.text(), /Kedua kata sandi tidak sama/);
-		const reserved = await call(mf, "/akun/baru", { form: { code, label: "admin", password: "synthetic-pw-1", password2: "synthetic-pw-1", age: "16" }, headers: { origin } });
+		// The age to confirm is 18 by default (MIN_AGE); an older form that confirmed 16 is refused.
+		assert.match(await (await call(mf, "/akun/baru?kode=" + code)).clone().text(), /18 tahun atau lebih/);
+		const young = await call(mf, "/akun/baru", { form: { code, label: "bob", password: "synthetic-pw-1", password2: "synthetic-pw-1", age: "16" }, headers: { origin } });
+		assert.equal(young.status, 400);
+		assert.match(await young.text(), /berusia 18 tahun/);
+		const reserved = await call(mf, "/akun/baru", { form: { code, label: "admin", password: "synthetic-pw-1", password2: "synthetic-pw-1", age: "18" }, headers: { origin } });
 		assert.match(await reserved.text(), /dipakai oleh sistem/);
-		const done = await call(mf, "/akun/baru", { form: { code, label: "bob", password: "synthetic-pw-1", password2: "synthetic-pw-1", age: "16" }, headers: { origin } });
+		const done = await call(mf, "/akun/baru", { form: { code, label: "bob", password: "synthetic-pw-1", password2: "synthetic-pw-1", age: "18" }, headers: { origin } });
 		const html = await done.text();
 		assert.equal(done.status, 200, html);
 		assert.match(html, /bob\.people\.test/);

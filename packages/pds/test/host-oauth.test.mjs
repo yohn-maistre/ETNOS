@@ -169,12 +169,16 @@ test("ETNOS signs in two hosted accounts through OAuth with an account step; nei
 		assert.ok(landing.includes(`name="request_uri" value="${c.url.searchParams.get("request_uri")}"`), "the form carries the pending sign-in");
 		assert.match(await (await mf.dispatchFetch(c.url.href + "&masuk=1")).text(), /Pilih akun/, "an existing account can still sign in");
 		const citra = { password: "synthetic-password-citra" };
-		const madeAccount = await mf.dispatchFetch(origin + "/akun/baru", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, "cf-connecting-ip": "198.51.100.7" }, body: form(c.url, { code: await invite(mf), label: "citra", password: citra.password, password2: citra.password, age: "16" }), redirect: "manual" });
-		assert.equal(madeAccount.status, 303, await madeAccount.clone().text());
-		assert.ok(madeAccount.headers.get("location").startsWith("/oauth/authorize?"), "a new account continues to consent");
+		const madeAccount = await mf.dispatchFetch(origin + "/akun/baru", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, "cf-connecting-ip": "198.51.100.7" }, body: form(c.url, { code: await invite(mf), label: "citra", password: citra.password, password2: citra.password, age: "18" }), redirect: "manual" });
+		// The recovery code is shown once, then the new account continues to consent.
+		const madePage = await madeAccount.clone().text();
+		assert.equal(madeAccount.status, 200, madePage);
+		assert.match(madePage, /Kode pemulihan/);
+		const next = /href="(\/oauth\/authorize\?[^"]+)"/.exec(madePage)?.[1]?.replace(/&amp;/g, "&");
+		assert.ok(next, "a new account continues to consent");
 		const chosen = cookieOf(madeAccount, "__Host-strata_oauth_account");
 		assert.ok(chosen, "the new account is chosen for this sign-in");
-		assert.match(await (await mf.dispatchFetch(origin + madeAccount.headers.get("location"), { headers: { cookie: chosen } })).text(), /citra\./, "consent names the new account");
+		assert.match(await (await mf.dispatchFetch(origin + next, { headers: { cookie: chosen } })).text(), /citra\./, "consent names the new account");
 		const wrongPassword = await mf.dispatchFetch(origin + "/oauth/authorize", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, cookie: chosen }, body: form(c.url, { action: "approve", password: "not-the-password" }), redirect: "manual" });
 		assert.notEqual(wrongPassword.status, 302, "consent still asks for the new account's password");
 		const citraApproved = await mf.dispatchFetch(origin + "/oauth/authorize", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", origin, cookie: chosen }, body: form(c.url, { action: "approve", password: citra.password }), redirect: "manual" });

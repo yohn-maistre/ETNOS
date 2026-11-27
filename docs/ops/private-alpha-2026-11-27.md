@@ -42,3 +42,18 @@ An import restores a backup into an empty node of the same schema version, in on
 | Worker secret on `strata-preview` | `ETNOS_RESTORE_TOKEN` | Only for a restore by command line; delete it afterwards. |
 
 Tests: `test/node-backup.test.ts` exports a populated node, imports it into a fresh one and compares every table's row count, known rows, a BLOB column and the private community's visibility; it also checks the refusals (a node with data, another schema version, an unknown table, a broken file, a failure halfway).
+
+## 3. Account recovery on the identity host
+
+Accounts on the identity host carry no email, so recovery works without one.
+
+- **A one-time recovery code** is made at sign-up and shown once: on the page after the sign-up form, on the page between sign-up and consent when the sign-up started from ETNOS, and as `etnosRecoveryCode` in the `createAccount` XRPC answer (other clients ignore the field). It is 20 characters from a 32-letter alphabet without look-alikes (100 bits), in groups of five. The account object keeps only `SHA-256("recovery:" + DID + ":" + code)`.
+- **Password reset with the handle and the code** at `/akun/pulihkan`. Each network address has ten tries per ten minutes, and five wrong codes lock this path for that account for the rest of the window. Every refusal reads the same (*Nama akun atau kode pemulihan salah.*), so the page does not tell whether an account exists. A success sets the new password, ends every session (session epoch, OAuth grants and refresh sessions), uses up the code and shows a new one.
+- **A one-time reset link from the operator** for someone who lost the code: in Studio, *Undangan*, *Pemulihan akun* (signed by the node with the shared link key from section 1), or with the host's operator token at `POST /admin/accounts/reset-link` with `{"handle": "…"}` (signed with a key the host derives from its KEK). A link names one handle, lasts 24 hours and works once; the host records each used link in the account object. The operator should check who is asking before sending one.
+- **Passkeys** are unchanged. The sign-in consent page now links to *Pulihkan akun*, and so does the ETNOS sign-in form when the node has an identity host.
+
+The age to confirm on the host's sign-up form is now a setting, `MIN_AGE` on `etnos-identity-host`, with 18 as the default (see section 6).
+
+Nothing new must be created for this section beyond the shared link key from section 1, which only the Studio route needs.
+
+Tests: `packages/pds/test/host-recovery.test.mjs` (the code is shown and never stored; wrong, foreign, used and mismatched input refused; sessions end; per-account lock and per-address budget; operator links need the token, work once, expire and cannot be altered; node-signed links work with the shared key; an invite grant is not a reset link) and `test/invite-gate.test.ts` (the Studio route is steward only and needs the shared key).

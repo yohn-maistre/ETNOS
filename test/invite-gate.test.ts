@@ -154,3 +154,19 @@ test('open enrollment takes no requests; the queue table exists only for the ope
   assert.equal((await f.auth.route(req('/auth/invite-requests',{name:'a',contact:'b'},'','','203.0.113.9')))!.status,409)
  }finally{f.s.close()}
 })
+
+test('operator reset links for the identity host: steward only, signed for one handle, never without the shared key',async()=>{
+ const f=await setup({accountHost:pds,hostLinkKey:linkKey})
+ try{
+  assert.equal((await f.auth.route(req('/auth/host-reset-links',{handle:'dewi.etnos.example'})))!.status,401)
+  const r=(await f.auth.route(req('/auth/host-reset-links',{handle:'@Dewi.etnos.example'},f.steward,f.csrf)))!
+  assert.equal(r.status,200,await r.clone().text())
+  const {url}=await r.json() as {url:string}
+  assert.ok(url.startsWith(pds+'/akun/pulihkan?tautan=rg1.'))
+  const grant=await readGrant(linkKey,new URL(url).searchParams.get('tautan'),Date.now())
+  assert.equal(grant?.kind,'reset');if(grant?.kind==='reset')assert.equal(grant.handle,'dewi.etnos.example')
+  assert.equal((await f.auth.route(req('/auth/host-reset-links',{handle:'no-dot'},f.steward,f.csrf)))!.status,400)
+  const plain=await fixture(f.s,{enrollmentMode:'invite',accountHost:pds},newcomer,'friend.bsky.social',newcomer)
+  assert.equal((await plain.auth.route(req('/auth/host-reset-links',{handle:'dewi.etnos.example'},f.steward,f.csrf)))!.status,409)
+ }finally{f.s.close()}
+})

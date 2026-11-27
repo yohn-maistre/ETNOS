@@ -12,8 +12,8 @@
 import { ATProtoOAuthProvider, ClientResolver } from "@getcirrus/oauth-provider";
 import { b64url, equal, fromB64url, hmac, sha256 } from "./crypto.ts";
 import type { AccountRow } from "./directory.ts";
-import { consentPage, flowLink, messagePage, selectorPage, signupPage, type OAuthPageContext } from "./pages.ts";
-import { signupsClosed } from "./env.ts";
+import { consentPage, flowLink, messagePage, selectorPage, signupPage, signupRecoveryPage, type OAuthPageContext } from "./pages.ts";
+import { minimumAge, signupsClosed } from "./env.ts";
 import type { Host } from "./service.ts";
 
 const SELECT_COOKIE = "__Host-strata_oauth_account";
@@ -144,9 +144,12 @@ export async function signupFlow(host: Host, clientId: string, requestUri: strin
 	return (await pendingRequest(host, clientId, requestUri))?.ctx;
 }
 
-/** After sign-up inside a sign-in flow: choose the new account and go on to consent, where the password is asked again. */
-export async function continueAfterSignup(ctx: OAuthPageContext, host: Host, did: string): Promise<Response> {
-	return new Response(null, { status: 303, headers: { location: flowLink(ctx), "set-cookie": await selectionCookie(host, ctx.requestUri, did) } });
+/**
+ * After sign-up inside a sign-in flow: show the recovery code once, with the new account already chosen, then go
+ * on to consent, where the password is asked again.
+ */
+export async function continueAfterSignup(ctx: OAuthPageContext, host: Host, did: string, handle: string, code: string): Promise<Response> {
+	return signupRecoveryPage(handle, code, flowLink(ctx), await selectionCookie(host, ctx.requestUri, did));
 }
 
 const expired = () => messagePage("Permintaan masuk sudah tidak berlaku", "Kembali ke aplikasi dan mulai lagi.", 400);
@@ -180,7 +183,7 @@ export async function handleOAuth(host: Host, request: Request): Promise<Respons
 		const create = url.searchParams.get("buat") === "1" || (pending.prompt === "create" && url.searchParams.get("masuk") !== "1");
 		// The ETNOS node adds its signed grant as ?kode= when the person came from one of its invitation links.
 		const code = (url.searchParams.get("kode") ?? "").slice(0, 600);
-		if (create && !signupsClosed(host.env)) return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code, label: "" }, 200, pending.ctx);
+		if (create && !signupsClosed(host.env)) return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code, label: "", minAge: minimumAge(host.env) }, 200, pending.ctx);
 		return selector(host, request, pending.ctx);
 	}
 

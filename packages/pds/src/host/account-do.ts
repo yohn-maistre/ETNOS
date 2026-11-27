@@ -21,6 +21,8 @@ import {
 	fromB64url,
 	hashPassword,
 	hex,
+	randomBytes,
+	sha256Hex,
 	parseKek,
 	unwrapSecret,
 	verifyPassword,
@@ -54,6 +56,25 @@ export class AccountMismatchError extends Error {
 
 const FAILURE_WINDOW_MS = 10 * 60 * 1000;
 const FAILURES_PER_WINDOW = 10;
+const RECOVERY_FAILURES_PER_WINDOW = 5;
+
+/** Recovery codes: 20 characters from a 32-letter alphabet without look-alikes (100 bits), in groups of five. */
+const RECOVERY_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function recoveryCode(): string {
+	const bytes = randomBytes(20);
+	let out = "";
+	for (let i = 0; i < 20; i++) out += (i && i % 5 === 0 ? "-" : "") + RECOVERY_ALPHABET[bytes[i]! & 31];
+	return out;
+}
+/** Spaces, dashes and letter case do not matter when the code is typed back. */
+export const normalRecoveryCode = (code: string) => code.toUpperCase().replace(/[^A-Z0-9]/g, "");
+const recoveryHash = (did: string, code: string) => sha256Hex(`recovery:${did}:${normalRecoveryCode(code)}`);
+function same(a: string, b: string): boolean {
+	if (a.length !== b.length) return false;
+	let diff = 0;
+	for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+	return diff === 0;
+}
 
 interface IdentityRow {
 	account_id: string;
@@ -93,6 +114,10 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 			label TEXT NOT NULL, created INTEGER NOT NULL)`);
 		sql.exec(`CREATE TABLE IF NOT EXISTS host_passkey_challenges (
 			challenge TEXT PRIMARY KEY, kind TEXT NOT NULL, expires INTEGER NOT NULL)`);
+		// Account recovery: the hash of the one-time recovery code, failed tries per window, and used reset links.
+		sql.exec(`CREATE TABLE IF NOT EXISTS host_recovery (id INTEGER PRIMARY KEY CHECK (id = 1), code_hash TEXT NOT NULL, created INTEGER NOT NULL)`);
+		sql.exec(`CREATE TABLE IF NOT EXISTS host_recovery_failures (window INTEGER PRIMARY KEY, count INTEGER NOT NULL)`);
+		sql.exec(`CREATE TABLE IF NOT EXISTS host_used_reset_links (id TEXT PRIMARY KEY, used INTEGER NOT NULL)`);
 		this.hostSchemaReady = true;
 	}
 
@@ -223,6 +248,62 @@ export class HostedAccountDurableObject extends AccountDurableObject {
 		const ok = typeof password === "string" && password.length <= 256 && (await verifyPassword(password, row.password_hash));
 		if (!ok) sql.exec("INSERT INTO host_password_failures VALUES (?,1) ON CONFLICT(window) DO UPDATE SET count = count + 1", window);
 		return { ok, locked: false };
+	}
+
+	/**
+	 * Make a new one-time recovery code and keep only its hash. The code is returned once, to be shown to
+	 * the person; any earlier code stops working.
+	 */
+	async newRecoveryCode(expectedDid: string): Promise<string> {
+		const row = this.assertAccount(expectedDid);
+		const code = recoveryCode();
+		this.ctx.storage.sql.exec(
+			"INSERT INTO host_recovery VALUES (1,?,?) ON CONFLICT(id) DO UPDATE SET code_hash = excluded.code_hash, created = excluded.created",
+			await recoveryHash(row.did, code),
+			Date.now(),
+		);
+		return code;
+	}
+
+	/**
+	 * Set a new password with the recovery code. Five wrong codes in ten minutes lock this path for the
+	 * account until the window ends. On success the code is used up and a new one is returned.
+	 */
+	async recoverWithCode(expectedDid: string, code: string, password: string): Promise<{ ok: boolean; locked: boolean; code?: string }> {
+		const row = this.assertAccount(expectedDid);
+		const sql = this.ctx.storage.sql;
+		const window = Math.floor(Date.now() / FAILURE_WINDOW_MS);
+		sql.exec("DELETE FROM host_recovery_failures WHERE window < ?", window);
+		const failures = sql.exec<{ count: number }>("SELECT count FROM host_recovery_failures WHERE window = ?", window).toArray()[0]?.count ?? 0;
+		if (failures >= RECOVERY_FAILURES_PER_WINDOW) return { ok: false, locked: true };
+		const stored = sql.exec<{ code_hash: string }>("SELECT code_hash FROM host_recovery WHERE id = 1").toArray()[0];
+		const ok = !!stored && typeof code === "string" && code.length <= 64 && same(await recoveryHash(row.did, code), stored.code_hash);
+		if (!ok) {
+			sql.exec("INSERT INTO host_recovery_failures VALUES (?,1) ON CONFLICT(window) DO UPDATE SET count = count + 1", window);
+			return { ok: false, locked: false };
+		}
+		await this.replacePassword(row, password);
+		return { ok: true, locked: false, code: await this.newRecoveryCode(expectedDid) };
+	}
+
+	/** Set a new password with an operator's reset link. Each link id works once. */
+	async recoverWithLink(expectedDid: string, linkId: string, password: string): Promise<{ ok: boolean; code?: string }> {
+		const row = this.assertAccount(expectedDid);
+		const sql = this.ctx.storage.sql;
+		if (sql.exec("SELECT 1 FROM host_used_reset_links WHERE id = ?", linkId).toArray().length) return { ok: false };
+		sql.exec("INSERT INTO host_used_reset_links VALUES (?,?)", linkId, Date.now());
+		await this.replacePassword(row, password);
+		return { ok: true, code: await this.newRecoveryCode(expectedDid) };
+	}
+
+	/** New password hash; every refresh session of the account ends, and failed password tries are cleared. */
+	private async replacePassword(row: IdentityRow, password: string): Promise<void> {
+		if (typeof password !== "string" || password.length < 8 || password.length > 256) throw new Error("InvalidPassword");
+		const hash = await hashPassword(password);
+		this.ctx.storage.sql.exec("UPDATE host_identity SET password_hash = ? WHERE id = 1 AND did = ?", hash, row.did);
+		this.ctx.storage.sql.exec("DELETE FROM host_password_failures");
+		this.ctx.storage.sql.exec("CREATE TABLE IF NOT EXISTS strata_refresh_sessions (jti TEXT PRIMARY KEY, expires INTEGER NOT NULL)");
+		this.ctx.storage.sql.exec("DELETE FROM strata_refresh_sessions");
 	}
 
 	async listPasskeys(expectedDid: string): Promise<{ credential_id: string; public_key: string; counter: number; transports: string; label: string; created: number }[]> {

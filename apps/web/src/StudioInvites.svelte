@@ -21,7 +21,10 @@
     days = $state('7'),
     uses = $state('1'),
     made = $state<Made | null>(null),
-    approved = $state<Record<string, string>>({})
+    approved = $state<Record<string, string>>({}),
+    hostLinks = $state(false),
+    resetHandle = $state(''),
+    resetUrl = $state('')
 
   const date = (t: number) => new Date(t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
   function status(i: Invitation) {
@@ -39,6 +42,7 @@
       ])
       invitations = a.invitations
       requests = b.requests
+      hostLinks = !!(await request<{ hostInvites?: boolean }>('/auth/options', undefined, undefined, true).catch(() => ({ hostInvites: false }))).hostInvites
     } catch (e) {
       error = e instanceof Error ? e.message : 'Undangan belum dapat dimuat.'
     }
@@ -77,6 +81,10 @@
       approved = { ...approved, [r.id]: link.url }
     })
   const decline = (r: InviteRequest) => act(async () => { await request('/auth/invite-requests/' + r.id + '/decline', {}) })
+  const makeReset = () =>
+    act(async () => {
+      resetUrl = (await request<{ url: string }>('/auth/host-reset-links', { handle: resetHandle.trim() })).url
+    })
   const pending = $derived(requests.filter((r) => r.state === 'pending'))
 </script>
 
@@ -136,6 +144,18 @@
         </article>
       {/each}
     </section>
+
+    {#if hostLinks}
+      <section class="si-section" aria-labelledby="si-reset">
+        <h2 id="si-reset">Pemulihan akun</h2>
+        <p class="cx-hint">Untuk orang dengan akun ETNOS yang lupa kata sandi dan kehilangan kode pemulihannya. Tautan berlaku 24 jam dan hanya dapat dipakai sekali. Pastikan dulu bahwa yang meminta memang pemilik akun itu.</p>
+        <form class="si-form" onsubmit={(e) => { e.preventDefault(); void makeReset() }}>
+          <label>Nama akun<Input bind:value={resetHandle} placeholder="nama.etnos.space" autocapitalize="none" spellcheck={false} required /></label>
+          <Button type="submit" variant="outline" disabled={busy || !resetHandle.trim()}><Link2 size={16} />Buat tautan pemulihan</Button>
+        </form>
+        {#if resetUrl}<div class="si-url"><code>{resetUrl}</code><Button variant="outline" onclick={() => copy(resetUrl)}><Copy size={15} />Salin</Button></div>{/if}
+      </section>
+    {/if}
 
     <section class="si-section" aria-labelledby="si-links">
       <h2 id="si-links">Tautan yang sudah dibuat</h2>

@@ -12,10 +12,12 @@
  */
 import { equal, randomToken, sha256Hex } from "./crypto.ts";
 import type { AccountRow } from "./directory.ts";
-import { hostConfigProblem, signupsClosed, type HostEnv } from "./env.ts";
+import { hostConfigProblem, minimumAge, signupsClosed, type HostEnv } from "./env.ts";
 import { labelForHost } from "./handles.ts";
 import { continueAfterSignup, handleOAuth, provider, signupFlow } from "./oauth.ts";
-import { homePage, messagePage, signupDonePage, signupPage } from "./pages.ts";
+import { homePage, messagePage, recoverPage, recoveredPage, resetLinkPage, signupDonePage, signupPage } from "./pages.ts";
+import { readGrant, signGrant, type ResetGrant } from "./link-grant.ts";
+import { b64url } from "./crypto.ts";
 import { readLast, submitUpdate } from "./plc.ts";
 import { READ_ROUTES, SYNC_ROUTES, WRITE_ROUTES, runScoped, scopedStub, type ScopedEnv } from "./repo-routes.ts";
 import { Host } from "./service.ts";
@@ -181,6 +183,17 @@ async function admin(host: Host, request: Request, path: string, ctx: ExecutionC
 		await host.dir.audit("operator", "account.kem", row.did, now);
 		return json(200, { published: true });
 	}
+	// A one-time reset link for someone who lost the recovery code. Valid for 24 hours; the operator sends it.
+	if (path === "/admin/accounts/reset-link" && request.method === "POST") {
+		const body = await bodyJson(request);
+		const actor = typeof body.did === "string" ? body.did : typeof body.handle === "string" ? body.handle.trim().toLowerCase() : "";
+		const row = actor ? await host.dir.resolve(actor) : null;
+		if (!usable(row, false)) return xerr(404, "AccountNotFound", "No such active account");
+		const expires = now + 86_400_000;
+		const link = await signGrant(await ownLinkKey(host), { kind: "reset", id: crypto.randomUUID(), handle: row.handle, expires });
+		await host.dir.audit("operator", "account.reset-link", row.did, now);
+		return json(200, { url: `${host.origin}/akun/pulihkan?tautan=${link}`, expires });
+	}
 	if (path === "/admin/accounts" && request.method === "GET")
 		return json(200, {
 			accounts: (await host.dir.listAll(200)).map((r) => ({ handle: r.handle, did: r.did, status: r.status, created: r.created })),
@@ -209,18 +222,81 @@ async function signupForm(host: Host, request: Request): Promise<Response> {
 		const v = form?.get(k);
 		return typeof v === "string" ? v : "";
 	};
-	const values = { code: get("code"), label: get("label").toLowerCase() };
+	const values = { code: get("code"), label: get("label").toLowerCase(), minAge: minimumAge(host.env) };
 	// A sign-up started from an app's sign-in carries that sign-in, so the new account continues to consent.
 	const flow = await signupFlow(host, get("client_id"), get("request_uri"));
 	if (get("password") !== get("password2")) return signupPage(name, domain, { ...values, error: "Kedua kata sandi tidak sama." }, 400, flow);
-	if (get("age") !== "16") return signupPage(name, domain, { ...values, error: "Akun hanya untuk orang berusia 16 tahun atau lebih." }, 400, flow);
+	if (get("age") !== String(values.minAge)) return signupPage(name, domain, { ...values, error: `Akun hanya untuk orang berusia ${values.minAge} tahun atau lebih.` }, 400, flow);
 	if (!(await host.spend(request, "signup", 10)))
 		return signupPage(name, domain, { ...values, error: "Terlalu banyak percobaan dari jaringan ini. Coba lagi dalam 10 menit." }, 429, flow);
 	const result = await host.createAccount({ code: values.code, handle: values.label, password: get("password") });
 	if (!result.ok) return signupPage(name, domain, { ...values, error: result.message }, result.status, flow);
-	if (flow) return continueAfterSignup(flow, host, result.did);
-	const signin = host.env.SIGNIN_URL ? `${host.env.SIGNIN_URL}${host.env.SIGNIN_URL.includes("?") ? "&" : "?"}handle=${encodeURIComponent(result.handle)}` : null;
-	return signupDonePage(name, result.handle, signin);
+	// The recovery code is made now and shown once; only its hash stays in the account object.
+	const code = await host.account(result.row).newRecoveryCode(result.did);
+	if (flow) return continueAfterSignup(flow, host, result.did, result.handle, code);
+	return signupDonePage(name, result.handle, signinLink(host, result.handle), code);
+}
+
+const signinLink = (host: Host, handle: string) =>
+	host.env.SIGNIN_URL ? `${host.env.SIGNIN_URL}${host.env.SIGNIN_URL.includes("?") ? "&" : "?"}handle=${encodeURIComponent(handle)}` : null;
+
+/** The host's own key for reset links made with the operator token (link-grant.ts, kind "reset"). */
+async function ownLinkKey(host: Host): Promise<string> {
+	return b64url(await host.hostKey("reset-link/v1"));
+}
+
+/** A reset link made by the node (NODE_LINK_KEY) or by this host's admin route, still valid. */
+async function resetGrant(host: Host, text: unknown): Promise<ResetGrant | null> {
+	const now = Date.now();
+	const grant = (await readGrant(host.env.NODE_LINK_KEY, text, now)) ?? (await readGrant(await ownLinkKey(host), text, now));
+	return grant?.kind === "reset" ? grant : null;
+}
+
+const RECOVERY_FAILED = "Nama akun atau kode pemulihan salah.";
+const LINK_FAILED = "Tautan pemulihan tidak berlaku. Tautan sudah lewat waktunya, sudah dipakai, atau salah. Minta tautan baru kepada pengelola.";
+
+/**
+ * Password reset: with the handle and the recovery code, or with a one-time link from the operator. Both are
+ * budgeted per network address; the code path is also locked per account after five wrong codes. A success
+ * ends every session of the account and replaces the recovery code.
+ */
+async function recoverForm(host: Host, request: Request): Promise<Response> {
+	const name = host.displayName, domain = host.env.HANDLE_DOMAIN;
+	const origin = request.headers.get("origin");
+	if (origin && origin !== host.origin) return messagePage("Permintaan ditolak", "Formulir ini harus dikirim dari halaman pemulihan akun.", 403);
+	const form = await request.formData().catch(() => null);
+	const get = (k: string) => {
+		const v = form?.get(k);
+		return typeof v === "string" ? v : "";
+	};
+	const link = get("tautan"), handle = get("handle").trim().toLowerCase().replace(/^@/, "");
+	const grant = link ? await resetGrant(host, link) : null;
+	if (link && !grant) return messagePage("Tautan pemulihan tidak berlaku", LINK_FAILED, 400);
+	const again = (error: string, status: number) =>
+		grant ? resetLinkPage(name, grant.handle, link, error, status) : recoverPage(name, domain, { handle, error }, status);
+	if (get("password") !== get("password2")) return again("Kedua kata sandi tidak sama.", 400);
+	if (get("password").length < 8 || get("password").length > 256) return again("Kata sandi minimal 8 karakter.", 400);
+	if (!(await host.spend(request, "recovery", 10))) return again("Terlalu banyak percobaan dari jaringan ini. Coba lagi dalam 10 menit.", 429);
+	const target = grant ? grant.handle : handle.includes(".") ? handle : `${handle}.${domain}`;
+	const row = target ? await host.dir.resolve(target) : null;
+	if (!usable(row, false)) return grant ? messagePage("Tautan pemulihan tidak berlaku", LINK_FAILED, 400) : again(RECOVERY_FAILED, 400);
+	const account = host.account(row);
+	let code: string;
+	if (grant) {
+		const result = await account.recoverWithLink(row.did!, grant.id, get("password"));
+		if (!result.ok || !result.code) return messagePage("Tautan pemulihan tidak berlaku", LINK_FAILED, 400);
+		code = result.code;
+	} else {
+		const result = await account.recoverWithCode(row.did!, get("code"), get("password"));
+		if (result.locked) return again("Terlalu banyak kode yang salah untuk akun ini. Coba lagi dalam 10 menit.", 429);
+		if (!result.ok || !result.code) return again(RECOVERY_FAILED, 400);
+		code = result.code;
+	}
+	const now = Date.now();
+	await host.dir.bumpSessions(row.account_id, now);
+	await host.hub().revokeSubject(row.did!);
+	await host.dir.audit(grant ? "operator-link" : row.did!, grant ? "account.reset-link" : "account.recover", row.did, now);
+	return recoveredPage(name, row.handle, code, signinLink(host, row.handle));
 }
 
 async function listRepos(host: Host, url: URL): Promise<Response> {
@@ -294,8 +370,15 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 	if (path === "/akun/baru" && signupsClosed(host.env))
 		return messagePage("Pendaftaran belum dibuka", "Pendaftaran akun di server ini belum dibuka.", 503);
 	if (path === "/akun/baru" && method === "GET")
-		return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code: (url.searchParams.get("kode") ?? "").slice(0, 100) });
+		return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code: (url.searchParams.get("kode") ?? "").slice(0, 100), minAge: minimumAge(host.env) });
 	if (path === "/akun/baru" && method === "POST") return signupForm(host, request);
+	if (path === "/akun/pulihkan" && method === "GET") {
+		const link = url.searchParams.get("tautan");
+		if (!link) return recoverPage(host.displayName, host.env.HANDLE_DOMAIN, {});
+		const grant = await resetGrant(host, link);
+		return grant ? resetLinkPage(host.displayName, grant.handle, link) : messagePage("Tautan pemulihan tidak berlaku", LINK_FAILED, 400);
+	}
+	if (path === "/akun/pulihkan" && method === "POST") return recoverForm(host, request);
 	if (path.startsWith("/admin/")) return admin(host, request, path, ctx);
 
 	const oauth = await handleOAuth(host, request);
@@ -336,7 +419,9 @@ async function service(host: Host, request: Request, ctx: ExecutionContext): Pro
 		const result = await host.createAccount({ code: body.inviteCode, handle: body.handle, password: body.password });
 		if (!result.ok) return xerr(result.status, result.error, result.message);
 		const session = await sessionResponse(host, result.row);
-		return json(200, { did: session.did, handle: session.handle, accessJwt: session.accessJwt, refreshJwt: session.refreshJwt });
+		// Not part of the lexicon: an ETNOS client shows this once; other clients ignore it.
+		const etnosRecoveryCode = await host.account(result.row).newRecoveryCode(result.did);
+		return json(200, { did: session.did, handle: session.handle, accessJwt: session.accessJwt, refreshJwt: session.refreshJwt, etnosRecoveryCode });
 	}
 
 	if (path === "/xrpc/com.atproto.server.createSession" && method === "POST") {

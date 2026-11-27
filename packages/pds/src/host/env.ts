@@ -55,6 +55,8 @@ export interface HostEnv {
 	 * Workers secret. With it the host accepts the node's signed invite and reset grants (link-grant.ts).
 	 */
 	NODE_LINK_KEY?: string;
+	/** Minimum age a person confirms at sign-up (default 18: UU PDP treats anyone under 18 as a child). */
+	MIN_AGE?: string;
 	/** Max brand-new accounts per 24h rolling window (default 50; set "0" to disable). */
 	DAILY_SIGNUP_CAP?: string;
 }
@@ -77,4 +79,10 @@ export function hostConfigProblem(env: HostEnv): string | null {
 	if ((!env.OPERATOR_TOKEN || env.OPERATOR_TOKEN.length < 32) && !hashed) return "OPERATOR_TOKEN";
 	if (!env.ACCOUNT || !env.AUTH_HUB || (!env.DIRECTORY && !env.DIRECTORY_DO)) return "bindings";
 	return null;
+}
+
+/** The age a person confirms at sign-up: MIN_AGE when it is a whole number from 13 to 99, otherwise 18. */
+export function minimumAge(env: Pick<HostEnv, "MIN_AGE">): number {
+	const n = Number(env.MIN_AGE);
+	return Number.isInteger(n) && n >= 13 && n <= 99 ? n : 18;
 }
