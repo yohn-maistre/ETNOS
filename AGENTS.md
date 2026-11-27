@@ -156,7 +156,7 @@ All of them must pass (on 27 November: 396 root tests with 1 skipped, 38 web tes
 | `*.etnos.space/.well-known/atproto-did` | Identity host `etnos-identity-host`, which resolves handles like `name.etnos.space` |
 | `etnos-identity-host.giyaibo.workers.dev` | The identity host (PDS) itself |
 
-Models: the operator picks a keyed provider in Studio (Gemini through Google AI Studio's OpenAI-compatible endpoint, with OpenRouter as fallback). Workers AI Gemma runs without a key. Workers AI `bge-m3` makes embeddings of public posts. Service keys (Pl@ntNet and others) are stored in Studio, not in the repository. Moving to a new Cloudflare account is described in [docs/ops/fresh-cloudflare-migration.md](docs/ops/fresh-cloudflare-migration.md); Durable Object data cannot move between accounts.
+Models: the operator picks a keyed provider in Studio (Gemini through Google AI Studio's OpenAI-compatible endpoint, with OpenRouter as fallback). Workers AI Gemma runs without a key. Workers AI `bge-m3` makes embeddings of public posts. Service keys (Pl@ntNet and others) are stored in Studio, not in the repository. Moving to a new Cloudflare account is described in [docs/ops/fresh-cloudflare-migration.md](docs/ops/fresh-cloudflare-migration.md); A node moves with its backup: Studio → Pengaturan downloads it and `POST /v1/ops/restore` loads it into an empty node (§1b of that guide). Identity host accounts move by re-pointing their DID documents (§6).
 
 ## 8. Where things stand (27 November 2026)
 

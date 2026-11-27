@@ -68,6 +68,28 @@ jobs:
           OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # Web push keys (src/web-push.ts). Repository secrets ETNOS_VAPID_PUBLIC_KEY and ETNOS_VAPID_PRIVATE_KEY
+      # are used when set, so a new account keeps the same pair. Without them, a pair is made only when the
+      # Worker lacks one; the app renews each subscription on start, so a new pair costs nobody their opt-in.
+      - name: Web push keys
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$VAPID_PUBLIC" ] && [ -n "$VAPID_PRIVATE" ]; then
+            printf '%s' "$VAPID_PUBLIC" | npx wrangler secret put ETNOS_VAPID_PUBLIC_KEY --config wrangler.web.jsonc
+            printf '%s' "$VAPID_PRIVATE" | npx wrangler secret put ETNOS_VAPID_PRIVATE_KEY --config wrangler.web.jsonc
+            exit 0
+          fi
+          names=$(npx wrangler secret list --config wrangler.web.jsonc --format json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s);if(!Array.isArray(a))process.exit(3);console.log(a.map(x=>x.name).join(" "))})')
+          case " $names " in *" ETNOS_VAPID_PUBLIC_KEY "*" ETNOS_VAPID_PRIVATE_KEY "*|*" ETNOS_VAPID_PRIVATE_KEY "*" ETNOS_VAPID_PUBLIC_KEY "*) echo "The push keys exist and are left as they are."; exit 0 ;; esac
+          pair=$(node -e 'const c=require("crypto").webcrypto;(async()=>{const k=await c.subtle.generateKey({name:"ECDSA",namedCurve:"P-256"},true,["sign","verify"]);const pub=Buffer.from(await c.subtle.exportKey("raw",k.publicKey)).toString("base64url");const d=(await c.subtle.exportKey("jwk",k.privateKey)).d;console.log(pub+" "+d)})()')
+          printf '%s' "${pair%% *}" | npx wrangler secret put ETNOS_VAPID_PUBLIC_KEY --config wrangler.web.jsonc
+          printf '%s' "${pair##* }" | npx wrangler secret put ETNOS_VAPID_PRIVATE_KEY --config wrangler.web.jsonc
+        env:
+          VAPID_PUBLIC: ${{ secrets.ETNOS_VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE: ${{ secrets.ETNOS_VAPID_PRIVATE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
   # The multi-account identity host (packages/pds), on workers.dev, with sign-up closed until the owner
   # approves DNS, the escrow key and PLC writes (packages/pds/wrangler.host.jsonc). Its failure does
   # not hold back the ETNOS deploy above.
@@ -127,6 +149,25 @@ jobs:
         env:
           KEK: ${{ secrets.STRATA_PDS_KEK }}
           OPERATOR: ${{ secrets.STRATA_PDS_OPERATOR_TOKEN }}
+      # The key that the node and the identity host share for invite grants and reset links
+      # (ETNOS_IDENTITY_HOST_LINK_KEY on the node, NODE_LINK_KEY on the host). A repository secret
+      # ETNOS_LINK_KEY is used when set. Otherwise a new key is put on both Workers whenever either one
+      # lacks it; grants last minutes, so a new key breaks nothing that is stored.
+      - name: Shared link key
+        shell: bash
+        run: |
+          set -euo pipefail
+          names() { npx wrangler secret list --config "$1" --format json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=JSON.parse(s);if(!Array.isArray(a))process.exit(3);console.log(" "+a.map(x=>x.name).join(" ")+" ")})'; }
+          key="$LINK_KEY"
+          if [ -z "$key" ]; then
+            host=$(names wrangler.host.jsonc); node_=$(names ../../wrangler.web.jsonc)
+            if [[ "$host" == *" NODE_LINK_KEY "* && "$node_" == *" ETNOS_IDENTITY_HOST_LINK_KEY "* ]]; then echo "The link key exists on both Workers and is left as it is."; exit 0; fi
+            key=$(node -e 'process.stdout.write(require("crypto").randomBytes(32).toString("base64url"))')
+          fi
+          printf '%s' "$key" | npx wrangler secret put NODE_LINK_KEY --config wrangler.host.jsonc
+          printf '%s' "$key" | npx wrangler secret put ETNOS_IDENTITY_HOST_LINK_KEY --config ../../wrangler.web.jsonc
+        env:
+          LINK_KEY: ${{ secrets.ETNOS_LINK_KEY }}
       # Handles <name>.etnos.space resolve over HTTPS at /.well-known/atproto-did. That needs a proxied
       # wildcard DNS record (*.etnos.space AAAA 100::) and a Worker route for that path. Both are made
       # only when missing. Names that already have their own record keep it: a wildcard record never
