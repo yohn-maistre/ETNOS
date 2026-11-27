@@ -5,6 +5,7 @@ import {Agent} from '@atproto/api'
 import {DidResolverCommon,DidPlcMethod,DidWebMethod} from '@atproto-labs/did-resolver'
 import {EtnosCore,Fault,type Actor} from './core.ts'
 import {json,body as readBody} from './api.ts'
+import {signGrant,linkKeyBytes} from '../packages/pds/src/host/link-grant.ts'
 
 const SESSION_COOKIE='__Host-strata',FLOW_COOKIE='__Host-strata_flow'
 const token=()=>randomBytes(32).toString('base64url')
@@ -17,8 +18,13 @@ function cookie(request:Request,name:string){
 const setCookie=(name:string,value:string,age:number)=>`${name}=${value}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=${age}`
 type Saved={sealed:string;expires:number}
 type BrowserSession={hash:string;actor_id:string;csrf:string;created:number;expires:number;revoked:number}
-export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean;enrollmentMode?:'open'|'invite'|'closed';clientName?:string;accountHost?:string}
-type EnrollmentInvite={id:string;hash:string;issuer_id:string;created:number;expires:number;revoked:number;used_by:string|null;used_at:number|null}
+export type OAuthConfiguration={origin:string;privateJwk:string;sealKey:string;stewardDid:string;allowedHosts:string[];collection?:string;publishingEnabled?:boolean;enrollmentMode?:'open'|'invite'|'closed';clientName?:string;accountHost?:string
+  /** Shared with the identity host (its NODE_LINK_KEY): lets one invitation link also make a host account. */
+  hostLinkKey?:string}
+type EnrollmentInvite={id:string;hash:string;issuer_id:string;created:number;expires:number;revoked:number;used_by:string|null;used_at:number|null;uses:number;max_uses:number}
+type InviteRequest={id:string;name:string;contact:string;reason:string;created:number;state:'pending'|'approved';decided:number|null;invitation_id:string|null}
+/** Free text from a visitor: no control characters, trimmed, bounded. */
+function plain(value:unknown,max:number){return typeof value==='string'?value.replace(/[\x00-\x08\x0b-\x1f\x7f]/g,'').replace(/[ \t]+/g,' ').trim().slice(0,max):''}
 type FlowContext={browser:string;returnTo:string;enroll?:'open'|'invite'|'host';inviteHash?:string;did?:string}
 function returnPath(value:unknown){
   if(value===undefined)return '/'
@@ -173,8 +179,53 @@ export class BrowserAuth {
   }
   private invite(inviteHash:string){
     const invite=this.store.get<EnrollmentInvite>('SELECT * FROM enrollment_invitations WHERE hash=?',inviteHash)
-    if(!invite||invite.revoked||invite.used_by||invite.expires<=this.store.clock())throw new Fault(403,'Invitation is invalid, expired or already used')
+    if(!invite||invite.revoked||invite.uses>=invite.max_uses||invite.expires<=this.store.clock())throw new Fault(403,'Invitation is invalid, expired or already used')
     return invite
+  }
+  /** The address an invitation link opens. The code rides in the query only until the page reads it. */
+  inviteUrl(invitation:string){return this.config.origin+'/gabung?kode='+invitation}
+  /** A grant the identity host accepts in place of its own invite code, for this one invitation. */
+  private async hostGrant(invite:EnrollmentInvite){
+    if(!this.hostLinks())return undefined
+    const now=this.store.clock()
+    return signGrant(this.config.hostLinkKey!,{kind:'invite',id:invite.id,slots:invite.max_uses,inviteExpires:invite.expires,expires:Math.min(invite.expires,now+3600000)})
+  }
+  private hostLinks(){return !!this.accountHost()&&!!linkKeyBytes(this.config.hostLinkKey)}
+  /** Make one invitation link: 1 to 30 days, 1 to 20 uses. The code is shown once; only its hash is kept. */
+  createInvitation(issuerId:string,days:unknown=7,uses:unknown=1){
+    if(!Number.isInteger(days)||Number(days)<1||Number(days)>30)throw new Fault(400,'Choose 1 to 30 days')
+    if(!Number.isInteger(uses)||Number(uses)<1||Number(uses)>20)throw new Fault(400,'Choose 1 to 20 uses')
+    const invitation=token(),id=crypto.randomUUID(),now=this.store.clock(),expires=now+Number(days)*86400000
+    this.store.tx(()=>{
+      const active=this.store.get<{n:number}>('SELECT count(*) n FROM enrollment_invitations WHERE revoked=0 AND uses<max_uses AND expires>?',now)!.n
+      if(active>=50)throw new Fault(429,'Revoke an unused invitation before creating another')
+      this.store.run('INSERT INTO enrollment_invitations(id,hash,issuer_id,created,expires,max_uses) VALUES(?,?,?,?,?,?)',id,hash(invitation),issuerId,now,expires,Number(uses))
+      this.store.audit(issuerId,'enrollment.invite.create',id)
+    })
+    return {id,invitation,expires,maxUses:Number(uses),url:this.inviteUrl(invitation)}
+  }
+  /** Requests for an invitation: one budget per address per hour, and a ceiling on the whole queue. */
+  private requestLimit(request:Request){
+    const window=Math.floor(this.store.clock()/3600000),key=hash('request:'+window+':'+(request.headers.get('cf-connecting-ip')??'local'))
+    this.store.run('DELETE FROM invite_request_buckets WHERE window<?',window)
+    const count=this.store.get<{count:number}>('SELECT count FROM invite_request_buckets WHERE key=?',key)?.count??0
+    if(count>=3)throw new Fault(429,'Terlalu banyak permintaan dari jaringan ini. Coba lagi dalam satu jam.')
+    const pending=this.store.get<{n:number}>("SELECT count(*) n FROM invite_requests WHERE state='pending'")!.n
+    if(pending>=300)throw new Fault(429,'Antrean permintaan sedang penuh. Coba lagi besok.')
+    this.store.run('INSERT INTO invite_request_buckets VALUES(?,?,1) ON CONFLICT(key) DO UPDATE SET count=count+1',key,window)
+  }
+  private steward(request:Request){
+    this.writeGuard(request);const current=this.session(request)!
+    if(current.actor.did!==this.config.stewardDid)throw new Fault(403,'Node steward required')
+    return current
+  }
+  /** Reads need the steward's session only: a browser sends no Origin or confirmation header on a plain GET,
+   * and the session cookie (SameSite=Lax) is not sent with another site's fetch. */
+  private readSteward(request:Request){
+    const current=this.session(request)
+    if(!current)throw new Fault(401,'Authentication required')
+    if(current.actor.did!==this.config.stewardDid)throw new Fault(403,'Node steward required')
+    return current
   }
   private session(request:Request){
     const sid=cookie(request,SESSION_COOKIE)
@@ -213,7 +264,52 @@ export class BrowserAuth {
     if(path==='/oauth/jwks.json' && request.method==='GET')return json(200,this.client.jwks)
     if(!path.startsWith('/auth/'))return undefined
     try{
-      if(path==='/auth/options' && request.method==='GET')return json(200,{provider:'bluesky',enrollment:this.config.stewardDid?this.enrollmentMode():'closed',accountHost:this.accountHost()??null})
+      if(path==='/auth/options' && request.method==='GET')return json(200,{provider:'bluesky',enrollment:this.config.stewardDid?this.enrollmentMode():'closed',accountHost:this.accountHost()??null,hostInvites:this.hostLinks()})
+      // The /gabung page asks whether its link still works before showing the ways to join. Nothing else is told.
+      if(path==='/auth/invite-check' && request.method==='POST'){
+        if(request.headers.get('origin')!==this.config.origin)throw new Fault(403,'Origin not allowed')
+        this.limit(request)
+        const body=await readBody(request,1000)
+        if(typeof body.invitation!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(body.invitation))return json(200,{valid:false})
+        try{const invite=this.invite(hash(body.invitation));return json(200,{valid:true,expires:invite.expires})}catch{return json(200,{valid:false})}
+      }
+      if(path==='/auth/invite-requests' && request.method==='POST'){
+        if(request.headers.get('origin')!==this.config.origin)throw new Fault(403,'Origin not allowed')
+        if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw new Fault(415,'JSON required')
+        if(this.enrollmentMode()==='open')throw new Fault(409,'Pendaftaran sedang terbuka. Kamu bisa langsung bergabung.')
+        const body=await readBody(request,4000)
+        const name=plain(body.name,80),contact=plain(body.contact,160),reason=plain(body.reason,600)
+        if(!name||!contact)throw new Fault(400,'Isi nama dan cara menghubungimu.')
+        const id=crypto.randomUUID()
+        this.store.tx(()=>{
+          this.requestLimit(request)
+          this.store.run('INSERT INTO invite_requests(id,name,contact,reason,created) VALUES(?,?,?,?,?)',id,name,contact,reason,this.store.clock())
+        })
+        return json(200,{ok:true})
+      }
+      if(path==='/auth/invite-requests' && request.method==='GET'){
+        this.readSteward(request)
+        // Decided requests leave the queue after 30 days.
+        this.store.run("DELETE FROM invite_requests WHERE state='approved' AND decided<?",this.store.clock()-30*86400000)
+        return json(200,{requests:this.store.all<InviteRequest>("SELECT id,name,contact,reason,created,state,decided,invitation_id FROM invite_requests ORDER BY state='approved',created DESC LIMIT 200")})
+      }
+      const decide=/^\/auth\/invite-requests\/([0-9a-f-]{36})\/(approve|decline)$/.exec(path)
+      if(decide && request.method==='POST'){
+        const current=this.steward(request),[,id,action]=decide
+        const row=this.store.get<InviteRequest>('SELECT * FROM invite_requests WHERE id=?',id)
+        if(!row)throw new Fault(404,'Permintaan tidak ditemukan.')
+        if(action==='decline'){
+          this.store.tx(()=>{this.store.run('DELETE FROM invite_requests WHERE id=?',id);this.store.audit(current.actor.id,'enrollment.request.decline',id)})
+          return json(200,{removed:true})
+        }
+        if(row.state!=='pending')throw new Fault(409,'Permintaan ini sudah disetujui.')
+        const made=this.createInvitation(current.actor.id,14,1)
+        this.store.tx(()=>{
+          this.store.run("UPDATE invite_requests SET state='approved',decided=?,invitation_id=? WHERE id=? AND state='pending'",this.store.clock(),made.id,id)
+          this.store.audit(current.actor.id,'enrollment.request.approve',id)
+        })
+        return json(200,made)
+      }
       if(path==='/auth/me' && request.method==='GET'){
         const current=this.session(request)
         return json(200,current?{actor:{id:current.actor.id,did:current.actor.did,name:current.actor.name,kind:current.actor.kind},csrf:current.session.csrf,expires:current.session.expires,steward:current.actor.did===this.config.stewardDid}:{actor:null,csrf:null,steward:false})
@@ -268,6 +364,12 @@ export class BrowserAuth {
         context.browser=hash(flow)
         // On the node's own host, a sign-up opens the host's sign-up page instead of its sign-in page.
         const url=await this.client.authorize(target,{state:JSON.stringify(context),scope,...(body.mode==='signup'&&body.provider==='host'&&!body.handle?{prompt:'create' as const}:{})})
+        // On the node's own host, the same invitation link also makes the account there: the host's sign-up form
+        // receives a signed grant for this invitation in place of its own invite code (packages/pds link-grant.ts).
+        if(body.mode==='signup'&&body.provider==='host'&&!body.handle&&context.inviteHash){
+          const grant=await this.hostGrant(this.invite(context.inviteHash))
+          if(grant)url.searchParams.set('kode',grant)
+        }
         const response=json(200,{authorizationUrl:url.href});response.headers.append('set-cookie',setCookie(FLOW_COOKIE,flow,600));return response
       }
       if(path==='/auth/callback' && request.method==='GET'){
@@ -302,7 +404,10 @@ export class BrowserAuth {
             if(!this.allowed(session.did)){
               const steward=this.enrollmentSteward()
               this.store.run('INSERT INTO enrollment_allowlist VALUES(?,?)',session.did,steward.id)
-              if(invitation)this.store.run('UPDATE enrollment_invitations SET used_by=?,used_at=? WHERE id=?',person.id,now,invitation.id)
+              if(invitation){
+                this.store.run('UPDATE enrollment_invitations SET uses=uses+1,used_by=COALESCE(used_by,?),used_at=? WHERE id=?',person.id,now,invitation.id)
+                this.store.run('INSERT OR IGNORE INTO enrollment_invitation_uses VALUES(?,?,?)',invitation.id,person.id,now)
+              }
               this.store.audit(person.id,'enrollment.join',person.id)
             }
             this.store.run('UPDATE browser_sessions SET revoked=1 WHERE actor_id=?',person.id)
@@ -340,9 +445,8 @@ export class BrowserAuth {
         return json(200,{handle:identity.handle,did:identity.did})
       }
       if(path==='/auth/enrollment-invites' || /^\/auth\/enrollment-invites\/[0-9a-f-]{36}\/revoke$/.test(path)){
-        this.writeGuard(request);const current=this.session(request)!
-        if(current.actor.did!==this.config.stewardDid)throw new Fault(403,'Node steward required')
-        if(path==='/auth/enrollment-invites' && request.method==='GET')return json(200,{invitations:this.store.all('SELECT id,created,expires,revoked,used_at FROM enrollment_invitations ORDER BY created DESC,id DESC LIMIT 50')})
+        const current=request.method==='GET'?this.readSteward(request):this.steward(request)
+        if(path==='/auth/enrollment-invites' && request.method==='GET')return json(200,{invitations:this.store.all('SELECT id,created,expires,revoked,used_at,uses,max_uses AS maxUses FROM enrollment_invitations ORDER BY created DESC,id DESC LIMIT 50')})
         if(request.method!=='POST')throw new Fault(405,'Method not allowed')
         const body=await readBody(request,1000);this.writeGuard(request)
         if(path.endsWith('/revoke')){
@@ -350,16 +454,7 @@ export class BrowserAuth {
           this.store.tx(()=>{this.store.run('UPDATE enrollment_invitations SET revoked=1 WHERE id=?',id);this.store.audit(current.actor.id,'enrollment.invite.revoke',id)})
           return json(200,{ok:true})
         }
-        const days=body.days??7
-        if(!Number.isInteger(days)||Number(days)<1||Number(days)>30)throw new Fault(400,'Choose 1 to 30 days')
-        const invitation=token(),id=crypto.randomUUID(),now=this.store.clock(),expires=now+Number(days)*86400000
-        this.store.tx(()=>{
-          const active=this.store.get<{n:number}>('SELECT count(*) n FROM enrollment_invitations WHERE revoked=0 AND used_by IS NULL AND expires>?',now)!.n
-          if(active>=50)throw new Fault(429,'Revoke an unused invitation before creating another')
-          this.store.run('INSERT INTO enrollment_invitations(id,hash,issuer_id,created,expires) VALUES(?,?,?,?,?)',id,hash(invitation),current.actor.id,now,expires)
-          this.store.audit(current.actor.id,'enrollment.invite.create',id)
-        })
-        return json(200,{id,invitation,expires})
+        return json(200,this.createInvitation(current.actor.id,body.days??7,body.uses??1))
       }
       throw new Fault(404,'Not found')
     }catch(error){

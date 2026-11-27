@@ -107,6 +107,11 @@ export class Directory {
 		await this.db.prepare("INSERT INTO invites (hash, created, expires, note) VALUES (?,?,?,?)").bind(await inviteHash(code), now, expires, note).run();
 	}
 
+	/** An invite row for one slot of a node grant; idempotent, so a slot is made once and used once. */
+	async ensureInvite(hash: string, expires: number, now: number): Promise<void> {
+		await this.db.prepare("INSERT OR IGNORE INTO invites (hash, created, expires, note) VALUES (?,?,?,'node link')").bind(hash, now, expires).run();
+	}
+
 	async revokeInvite(code: string): Promise<boolean> {
 		const result = await this.db.prepare("UPDATE invites SET revoked = 1 WHERE hash = ? AND used_by IS NULL").bind(await inviteHash(code)).run();
 		return result.meta.changes === 1;

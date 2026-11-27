@@ -13,6 +13,7 @@
   import { ArrowUpRight, LoaderCircle, KeyRound } from '@lucide/svelte'
   import { onMount, untrack } from 'svelte'
   import { request } from '../../api'
+  import InviteRequestForm from '../../InviteRequestForm.svelte'
   let {
     handle = $bindable(''),
     publishing = $bindable(false),
@@ -40,6 +41,8 @@
     untrack(() => initialMode ? initialMode === 'signup' : new URLSearchParams(location.search).get('mode') === 'signup'),
   )
   let invitation = $state('')
+  // In invite mode a visitor without a code asks for one here instead.
+  let requesting = $state(false)
   let enrollment = $state<'open' | 'invite' | 'closed' | null>(null)
   // The node's own account server is the default way to join when it has one; Bluesky stays available.
   let accountHost = $state<string | null>(null)
@@ -77,6 +80,10 @@
     </Card.Description>
   </Card.Header>
   <Card.Content>
+    {#if requesting}
+      <InviteRequestForm compact />
+      <Button type="button" variant="link" class="px-0 mt-2" onclick={() => (requesting = false)}>Kembali, saya punya kode</Button>
+    {:else}
     <form
       onsubmit={(e) => {
         e.preventDefault()
@@ -115,6 +122,9 @@
                 autocapitalize="none"
                 spellcheck={false}
               />
+              <FieldDescription>
+                Belum punya kode? <button type="button" class="cx-text-link" onclick={() => (requesting = true)}>Minta undangan</button>
+              </FieldDescription>
             </Field>{:else if enrollment === 'closed'}<p role="status">
               Pendaftaran sedang ditutup. Kamu tetap dapat membaca.
             </p>
@@ -157,6 +167,7 @@
         </FieldDescription>
       </FieldGroup>
     </form>
+    {/if}
   </Card.Content>
   <Card.Footer class="border-t text-sm text-muted-foreground">
     <a href="/explore" class="cx-text-link" onclick={(event) => { if (onbrowse) { event.preventDefault(); event.stopPropagation(); onbrowse() } }}>Tetap membaca tanpa masuk</a>

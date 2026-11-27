@@ -130,8 +130,12 @@ export function signupPage(name: string, domain: string, values: SignupValues, s
 			`Akun ini adalah identitas AT Protocol yang disimpan oleh ${esc(name)}. ${esc(name)} menyimpan kunci akunmu dan bisa diminta memindahkannya ke penyedia lain.`,
 			`${errorBox(values.error)}
 <form class="stack form" method="post" action="/akun/baru">${flow ? hidden(flow) : ""}
-<div class="field"><label class="label" for="code">Kode undangan</label>
-<input class="input" id="code" name="code" type="text" autocomplete="off" required maxlength="100" value="${esc(values.code)}"></div>
+${
+	values.code?.startsWith("ig1.")
+		? `<input type="hidden" name="code" value="${esc(values.code)}"><p class="desc">Kode undangan sudah terisi dari tautan undanganmu.</p>`
+		: `<div class="field"><label class="label" for="code">Kode undangan</label>
+<input class="input" id="code" name="code" type="text" autocomplete="off" required maxlength="100" value="${esc(values.code)}"></div>`
+}
 <div class="field"><label class="label" for="label">Nama akun</label>
 <div class="suffix"><input class="input" id="label" name="label" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required minlength="3" maxlength="20" pattern="[a-z0-9-]{3,20}" value="${esc(values.label)}"><span>.${esc(domain)}</span></div>
 <p class="desc">Huruf kecil, angka dan tanda hubung, 3 sampai 20 karakter.</p></div>

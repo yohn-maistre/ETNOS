@@ -653,6 +653,23 @@ CREATE INDEX IF NOT EXISTS public_post_vectors_community ON public_post_vectors(
 -- Plain wording for the starter spaces (docs/voice.md). Only rows that still carry the shipped text change.
 UPDATE communities SET description='Tempat bercerita, bertanya kabar dan saling menyapa setiap hari.' WHERE description='Obrolan santai sehari-hari, cerita acak, dan sapaan warga Tanah Papua.';
 UPDATE communities SET description='Tanya apa saja, minta tolong, minta penjelasan yang sederhana, dan berbagi pengalaman.' WHERE description='Tanya apa saja, minta tolong, jelaskan sederhana (ELI5), dan berbagi pengalaman.';
+`, `
+-- Private alpha (W1): invitation links with a use count, and requests for an invitation. Requests are
+-- operator-only rows: no public route, search, count or export reads this table.
+ALTER TABLE enrollment_invitations ADD COLUMN max_uses INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE enrollment_invitations ADD COLUMN uses INTEGER NOT NULL DEFAULT 0;
+UPDATE enrollment_invitations SET uses=1 WHERE used_by IS NOT NULL;
+CREATE TABLE IF NOT EXISTS enrollment_invitation_uses(
+ invitation_id TEXT NOT NULL REFERENCES enrollment_invitations(id), actor_id TEXT NOT NULL REFERENCES actors(id),
+ used_at INTEGER NOT NULL, PRIMARY KEY(invitation_id,actor_id)
+);
+CREATE TABLE IF NOT EXISTS invite_requests(
+ id TEXT PRIMARY KEY, name TEXT NOT NULL, contact TEXT NOT NULL, reason TEXT NOT NULL,
+ created INTEGER NOT NULL, state TEXT NOT NULL DEFAULT 'pending' CHECK(state IN ('pending','approved')),
+ decided INTEGER, invitation_id TEXT REFERENCES enrollment_invitations(id), claim_hash TEXT, sealed_invitation TEXT
+);
+CREATE INDEX IF NOT EXISTS invite_requests_state ON invite_requests(state, created DESC);
+CREATE TABLE IF NOT EXISTS invite_request_buckets(key TEXT PRIMARY KEY, window INTEGER NOT NULL, count INTEGER NOT NULL);
 `]
 
 export const schemaVersion=migrations.length

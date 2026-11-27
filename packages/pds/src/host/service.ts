@@ -12,6 +12,7 @@ import { purgeAccountSpaces } from "./spaces.ts";
 import { signupsClosed, type HostEnv } from "./env.ts";
 import { checkHandle } from "./handles.ts";
 import { registerGenesis } from "./plc.ts";
+import { readGrant } from "./link-grant.ts";
 
 export type Failure = { ok: false; status: number; error: string; message: string };
 export type Created = { ok: true; did: string; handle: string; row: AccountRow };
@@ -55,21 +56,35 @@ export class Host {
 	async createAccount(input: { code: unknown; handle: unknown; password: unknown }): Promise<Created | Failure> {
 		if (signupsClosed(this.env) || !this.env.ESCROW_ROTATION_KEY)
 			return fail(503, "SignupsClosed", "Pendaftaran akun di server ini belum dibuka.");
-		if (typeof input.code !== "string" || !/^[A-Za-z0-9_-]{16,100}$/.test(input.code.trim()))
+		const now = Date.now();
+		// A code from /admin/invites, or the node's signed grant for one of its invitation links (link-grant.ts).
+		const grant = typeof input.code === "string" && input.code.trim().startsWith("ig1.") ? await readGrant(this.env.NODE_LINK_KEY, input.code, now) : null;
+		if (!grant && (typeof input.code !== "string" || !/^[A-Za-z0-9_-]{16,100}$/.test(input.code.trim())))
 			return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
+		if (grant && grant.kind !== "invite") return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
 		if (typeof input.handle !== "string") return fail(400, "InvalidHandle", "Nama akun wajib diisi.");
 		const checked = checkHandle(input.handle, this.env.HANDLE_DOMAIN);
 		if (!checked.ok) return fail(400, "InvalidHandle", checked.reason);
 		if (typeof input.password !== "string" || input.password.length < 8 || input.password.length > 256)
 			return fail(400, "InvalidPassword", "Kata sandi minimal 8 karakter.");
-		const code = input.code.trim(), hash = await inviteHash(code), now = Date.now();
+		// Each slot of a grant is an ordinary invite row, used once: a link for n people makes at most n accounts.
+		const hashes: string[] = [];
+		if (grant?.kind === "invite") for (let k = 0; k < grant.slots; k++) hashes.push(await inviteHash(`grant:${grant.id}:${k}`));
+		else hashes.push(await inviteHash((input.code as string).trim()));
 
-		let row = await this.dir.byInvite(hash);
-		if (row) {
+		let row: AccountRow | null = null;
+		const free: string[] = [];
+		for (const hash of hashes) {
+			const existing = await this.dir.byInvite(hash);
 			// Resume only the same registration: same invite, same name, still pending.
-			if (row.status !== "pending" || row.handle !== checked.handle)
-				return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
-		} else {
+			if (existing?.status === "pending" && existing.handle === checked.handle) {
+				row = existing;
+				break;
+			}
+			if (!existing) free.push(hash);
+		}
+		if (!row) {
+			if (!free.length) return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
 			const rawCap = this.env.DAILY_SIGNUP_CAP;
 			const cap = rawCap === undefined || rawCap === "" ? 50 : Math.max(0, Number.parseInt(rawCap, 10) || 0);
 			if (cap > 0) {
@@ -79,11 +94,16 @@ export class Host {
 				}
 			}
 			const accountId = crypto.randomUUID();
-			const claim = await this.dir.claim(accountId, checked.handle, hash, now);
-			if (claim === "handle-taken") return fail(400, "HandleNotAvailable", "Nama ini sudah dipakai. Pilih nama lain.");
-			if (claim === "invite-invalid") return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
-			row = (await this.dir.byInvite(hash))!;
-			if (row.account_id !== accountId) return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
+			for (const hash of free) {
+				if (grant?.kind === "invite") await this.dir.ensureInvite(hash, grant.inviteExpires, now);
+				const claim = await this.dir.claim(accountId, checked.handle, hash, now);
+				if (claim === "handle-taken") return fail(400, "HandleNotAvailable", "Nama ini sudah dipakai. Pilih nama lain.");
+				if (claim === "invite-invalid") continue;
+				const claimed = await this.dir.byInvite(hash);
+				if (claimed?.account_id === accountId) row = claimed;
+				break;
+			}
+			if (!row) return fail(400, "InvalidInviteCode", "Kode undangan tidak berlaku atau sudah dipakai.");
 			await this.dir.audit("signup", "account.claim", row.handle, now);
 		}
 

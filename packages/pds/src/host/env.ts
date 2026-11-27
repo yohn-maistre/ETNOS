@@ -50,6 +50,11 @@ export interface HostEnv {
 	SPACES_INDEX?: DurableObjectNamespace<HostedSpaceIndexDurableObject>;
 	/** Seconds a space credential from another host's authority is accepted (default 300). */
 	SPACES_REMOTE_CREDENTIAL_MAX_AGE?: string;
+	/**
+	 * Shared with the ETNOS node (its ETNOS_IDENTITY_HOST_LINK_KEY): 32 random bytes, base64url, as a
+	 * Workers secret. With it the host accepts the node's signed invite and reset grants (link-grant.ts).
+	 */
+	NODE_LINK_KEY?: string;
 	/** Max brand-new accounts per 24h rolling window (default 50; set "0" to disable). */
 	DAILY_SIGNUP_CAP?: string;
 }

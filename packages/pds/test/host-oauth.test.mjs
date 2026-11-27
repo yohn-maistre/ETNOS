@@ -154,7 +154,7 @@ test("ETNOS signs in two hosted accounts through OAuth with an account step; nei
 		const third = await bobSession.agent.com.atproto.repo.createRecord({ repo: bob.did, collection: "org.example.strata.post", rkey: "three", validate: false, record: { $type: "org.example.strata.post", text: "still works" } });
 		assert.ok(third.data.cid);
 		// A new person: an ETNOS invitation plus an account on the host, in one sign-up flow with no handle typed into ETNOS.
-		assert.deepEqual(await (await auth.route(new Request(clientOrigin + "/auth/options"))).json(), { provider: "bluesky", enrollment: "invite", accountHost: origin });
+		assert.deepEqual(await (await auth.route(new Request(clientOrigin + "/auth/options"))).json(), { provider: "bluesky", enrollment: "invite", accountHost: origin, hostInvites: false });
 		// The steward's account was deleted above, so the invitation row is written as the steward's Studio would write it.
 		const enrollment = s.get("SELECT id FROM actors WHERE did = ?", alice.did);
 		const invitation = randomBytes(32).toString("base64url");

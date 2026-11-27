@@ -83,7 +83,8 @@ export class StrataNode extends DurableObject<Cloudflare.Env> {
           const auth=await BrowserAuth.create(core,{origin:env.ETNOS_ORIGIN,privateJwk:env.ETNOS_OAUTH_JWK,sealKey:env.ETNOS_AUTH_SEAL_KEY,
             stewardDid:env.ETNOS_STEWARD_DID,allowedHosts:env.ETNOS_OAUTH_HOSTS.split(',').map(x=>x.trim()).filter(Boolean),
             collection:env.ETNOS_COLLECTION,publishingEnabled:env.ETNOS_PUBLISHING_ENABLED==='true',
-            enrollmentMode,clientName:env.ETNOS_CLIENT_NAME,accountHost:(env as {ETNOS_ACCOUNT_HOST?:string}).ETNOS_ACCOUNT_HOST||undefined})
+            enrollmentMode,clientName:env.ETNOS_CLIENT_NAME,accountHost:(env as {ETNOS_ACCOUNT_HOST?:string}).ETNOS_ACCOUNT_HOST||undefined,
+            hostLinkKey:(env as {ETNOS_IDENTITY_HOST_LINK_KEY?:string}).ETNOS_IDENTITY_HOST_LINK_KEY||undefined})
           const access=new AgentAccess(core,{stewardDid:env.ETNOS_STEWARD_DID,operatorAllowed:id=>auth.operatorAllowed(id)}),routes=agentRoutes(core,access,{desk:workerDesk(env)})
           this.resident=new Resident(core,access,residentProvider,undefined,autoDeps);this.resident.budget=budget
           this.discovery=acquire?new Discovery(core,acquire):undefined

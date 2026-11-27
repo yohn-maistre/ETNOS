@@ -374,6 +374,12 @@
                                         ? 'Tempat, bahasa & topik'
                                         : 'ETNOS',
   )
+  /** /gabung serves two links: a community founding link (token in the fragment) and an ETNOS invitation (?kode=). */
+  function foundingLink() {
+    if (new URLSearchParams(search).has('kode')) return false
+    if (location.hash.length > 1) return true
+    try { return !!sessionStorage.getItem('etnos-founding-pending') } catch { return false }
+  }
   function fail(value: unknown) {
     notifyError(value)
   }
@@ -1120,6 +1126,8 @@
     {#await import('./OfferingCatalog.svelte') then module}<module.default {auth} {communities} {memberships} onCreate={()=>startOffering()}/>{/await}
   {:else if path === '/studio'}
     {#await import('./StudioPage.svelte') then module}<module.default {auth}/>{/await}
+  {:else if path === '/studio/undangan'}
+    {#await import('./StudioInvites.svelte')}<ContentSkeleton />{:then module}<module.default {auth}/>{/await}
   {:else if path === '/studio/pengaturan'}
     {#await import('./DeploymentSettings.svelte')}<ContentSkeleton />{:then module}<module.default {auth}/>{/await}
   {:else if path === '/agents'}
@@ -1493,6 +1501,8 @@
       />{:else if !loading}<div class="etnos-nodata">
         <h2>Posting tidak tersedia</h2>
       </div>{/if}
+  {:else if parts[0] === 'gabung' && !foundingLink()}
+    {#await import('./JoinInvite.svelte')}<ContentSkeleton />{:then module}<module.default actor={auth.actor ?? null} />{/await}
   {:else if parts[0] === 'gabung'}
     <JoinFounding
       actor={auth.actor ?? null}

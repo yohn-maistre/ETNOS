@@ -96,7 +96,7 @@
 </script>
 
 <div class="studio-page deployment-settings">
-  <StudioTabs current="settings" />
+  <StudioTabs current="settings" operator={auth.steward} />
   {#if !auth.steward}
     <section class="etnos-nodata"><h1>Pengaturan ETNOS</h1><p>Halaman ini hanya untuk pengelola ETNOS.</p></section>
   {:else if error}

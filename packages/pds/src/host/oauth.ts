@@ -178,7 +178,9 @@ export async function handleOAuth(host: Host, request: Request): Promise<Respons
 		if (account) return consentPage(pending.ctx, account.handle);
 		// An app that asked for a new account (prompt=create) lands on sign-up; "masuk=1" switches to sign-in.
 		const create = url.searchParams.get("buat") === "1" || (pending.prompt === "create" && url.searchParams.get("masuk") !== "1");
-		if (create && !signupsClosed(host.env)) return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code: "", label: "" }, 200, pending.ctx);
+		// The ETNOS node adds its signed grant as ?kode= when the person came from one of its invitation links.
+		const code = (url.searchParams.get("kode") ?? "").slice(0, 600);
+		if (create && !signupsClosed(host.env)) return signupPage(host.displayName, host.env.HANDLE_DOMAIN, { code, label: "" }, 200, pending.ctx);
 		return selector(host, request, pending.ctx);
 	}
 

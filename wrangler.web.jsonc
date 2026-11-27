@@ -13,7 +13,7 @@
     "STRATA_ORIGIN": "https://etnos.space",
     "STRATA_NODE": "preview",
     "STRATA_AUTH_MODE": "atproto",
-    "STRATA_ENROLLMENT_MODE": "open",
+    "STRATA_ENROLLMENT_MODE": "invite",
     "STRATA_CLIENT_NAME": "ETNOS",
     "STRATA_STEWARD_DID": "did:plc:uhhrncfqtpg26h24irfcpuma",
     "STRATA_COLLECTION": "org.example.strata.post",
