@@ -106,8 +106,7 @@
               spellcheck={false}
               required
             /><FieldDescription>
-              Kata sandi tetap di penyedia akunmu.{#if accountHost}
-                Lupa kata sandi akun ETNOS? <a class="cx-text-link" href={accountHost + '/akun/pulihkan'}>Pulihkan akun</a>{/if}
+              Kata sandi tetap di penyedia akunmu.{#if accountHost}{' '}Lupa kata sandi akun ETNOS? <a class="cx-text-link" href={accountHost + '/akun/pulihkan'}>Pulihkan akun</a>{/if}
             </FieldDescription>
           </Field>{:else}
           <p class="text-sm text-muted-foreground">
@@ -170,11 +169,7 @@
         {#if signup && accountHost}<Button type="button" variant="outline" class="w-full" disabled={busy} onclick={() => (provider = provider === 'host' ? 'bluesky' : 'host')}>
             {provider === 'host' ? 'Gunakan akun Bluesky' : 'Buat akun ETNOS saja'}
           </Button>{/if}
-        <FieldDescription>
-          {signup
-            ? 'Ruang privat tetap memerlukan persetujuan komunitas.'
-            : 'Baru di ETNOS? Pilih Bergabung untuk menghubungkan akunmu.'}
-        </FieldDescription>
+        {#if signup}<FieldDescription>Ruang privat tetap memerlukan persetujuan komunitas.</FieldDescription>{/if}
       </FieldGroup>
     </form>
     {/if}
