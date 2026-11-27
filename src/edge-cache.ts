@@ -57,6 +57,8 @@ export async function cachedPublicApi(
   if (hit) {
     const h = new Headers(hit.headers)
     h.set('x-etnos-edge-cache', 'HIT')
+    // Only the edge keeps a copy. A browser that stored it would show the anonymous projection after sign-in.
+    h.set('cache-control', 'no-store')
     return new Response(hit.body, { status: hit.status, headers: h })
   }
 
@@ -71,5 +73,7 @@ export async function cachedPublicApi(
   storeHeaders.set('x-etnos-edge-cache', 'MISS')
   const toCache = new Response(bodyBytes, { status: 200, headers: storeHeaders })
   await cache.put(key, toCache.clone())
-  return toCache
+  const toClient = new Headers(storeHeaders)
+  toClient.set('cache-control', 'no-store')
+  return new Response(bodyBytes, { status: 200, headers: toClient })
 }

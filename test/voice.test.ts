@@ -216,7 +216,7 @@ test('private voice clips stay isolated after member removal, respect cloud-tran
     }))
     assert.equal(outsiderClip.status, 404)
 
-    // Private room blocks cloud Whisper transcription unless allowCloud: true is explicitly passed.
+    // A private room never sends audio to the cloud transcriber, with or without allowCloud.
     const blockedTx = await handler(new Request(s.base + '/v1/voice/' + clip.id + '/transcribe', {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: 'Bearer ' + member.token },
@@ -224,13 +224,12 @@ test('private voice clips stay isolated after member removal, respect cloud-tran
     }))
     assert.equal(blockedTx.status, 403)
 
-    const allowedTx = await handler(new Request(s.base + '/v1/voice/' + clip.id + '/transcribe', {
+    const stillBlockedTx = await handler(new Request(s.base + '/v1/voice/' + clip.id + '/transcribe', {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: 'Bearer ' + member.token },
       body: JSON.stringify({ language: 'id', allowCloud: true }),
     }))
-    assert.equal(allowedTx.status, 200)
-    assert.equal(((await allowedTx.json()) as { transcript: string }).transcript, 'Transkrip percobaan')
+    assert.equal(stillBlockedTx.status, 403)
 
     // Removing the member immediately revokes access to the private voice clip.
     s.setMember(owner.actor.id, room.id, member.actor.id, false, 'member')
@@ -247,6 +246,39 @@ test('private voice clips stay isolated after member removal, respect cloud-tran
     }))
     assert.equal(withdrawn.status, 200)
     assert.equal(r2Map.size, 0, 'R2 object deleted on withdraw')
+  } finally {
+    s.close()
+  }
+})
+
+test('cloud transcription: public clips in a public community only; restricted clips stay home', async () => {
+  const s = new Etnos(':memory:', 'https://etnos.example.org')
+  try {
+    const owner = s.provision('did:web:owner.example', 'Pengurus')
+    const member = s.provision('did:web:member.example', 'Penutur')
+    const square = s.createCommunity(owner.actor.id, 'Bahasa Mee', 'Ruang terbuka', 'public', false, 'open')
+    s.setMember(owner.actor.id, square.id, member.actor.id, true, 'member')
+    let heard = 0
+    const handler = api(s, { stewardDid: owner.actor.did, transcribeVoice: async () => { heard++; return 'Transkrip percobaan' } })
+    const upload = async (protocol: string) => {
+      const res = await handler(new Request(s.base + '/v1/voice', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: 'Bearer ' + member.token },
+        body: JSON.stringify({ communityId: square.id, bytes: makeWebm(180).toString('base64'), durationMs: 2400, protocol }),
+      }))
+      assert.equal(res.status, 200)
+      return ((await res.json()) as { id: string }).id
+    }
+    const transcribe = (id: string) => handler(new Request(s.base + '/v1/voice/' + id + '/transcribe', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: 'Bearer ' + member.token },
+      body: JSON.stringify({ language: 'id', allowCloud: true }),
+    }))
+    const open = await transcribe(await upload('public'))
+    assert.equal(open.status, 200)
+    assert.equal(((await open.json()) as { transcript: string }).transcript, 'Transkrip percobaan')
+    assert.equal((await transcribe(await upload('restricted'))).status, 403)
+    assert.equal(heard, 1, 'the restricted clip never reached the transcriber')
   } finally {
     s.close()
   }

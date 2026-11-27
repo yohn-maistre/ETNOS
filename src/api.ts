@@ -351,7 +351,8 @@ export function api(store: EtnosCore, options: ApiOptions = {}) {
       else if(parts.length===4&&parts[1]==='voice'&&parts[3]==='transcribe'){
         if(!options.transcribeVoice)throw new Fault(503,'Transkrip otomatis belum aktif di simpul ini; gunakan Bantu tulis')
         const {row,bytes}=await voice.readBytesForMember(caller,parts[2])
-        if(store.community(row.community_id).visibility!=='public'&&b.allowCloud!==true)throw new Fault(403,'Ruang privat membutuhkan persetujuan eksplisit sebelum mengirim audio ke layanan transkrip')
+        // Owner rule: no hosted model hears a private room or a restricted clip. Only public clips in public communities go to the cloud transcriber.
+        if(store.community(row.community_id).visibility!=='public'||row.protocol==='restricted')throw new Fault(403,'Suara dari ruang privat atau rekaman terbatas tidak dikirim ke layanan transkrip luar. Gunakan Bantu tulis.')
         const textOut=await options.transcribeVoice(bytes,row.mime)
         if(principal()?.id!==caller)throw new Fault(401,'Authentication required')
         result=textOut?voice.updateTranscript(caller,parts[2],textOut,b.language??'id'):{transcript:'',empty:true}

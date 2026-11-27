@@ -26,7 +26,9 @@ test('edge cache: caches anonymous allowlisted GET reads and serves HIT on repea
  const r1=await cachedPublicApi(new Request(ORIGIN+'/v1/entri/danau-tigi'),cache,upstream)
  assert.equal(r1.status,200)
  assert.equal(r1.headers.get('x-etnos-edge-cache'),'MISS')
- assert.match(r1.headers.get('cache-control')??'',/s-maxage=90/)
+ // The edge copy carries the TTL; the browser is told not to store anything.
+ assert.equal(r1.headers.get('cache-control'),'no-store')
+ assert.match((await cache.match(new Request(ORIGIN+'/v1/entri/danau-tigi')))?.headers.get('cache-control')??'',/s-maxage=90/)
  assert.deepEqual(await r1.json(),{ok:true,n:1})
  assert.equal(calls,1)
  assert.equal(cache.size(),1)
@@ -34,6 +36,7 @@ test('edge cache: caches anonymous allowlisted GET reads and serves HIT on repea
  const r2=await cachedPublicApi(new Request(ORIGIN+'/v1/entri/danau-tigi'),cache,upstream)
  assert.equal(r2.status,200)
  assert.equal(r2.headers.get('x-etnos-edge-cache'),'HIT')
+ assert.equal(r2.headers.get('cache-control'),'no-store')
  assert.deepEqual(await r2.json(),{ok:true,n:1})
  assert.equal(calls,1)
 })
