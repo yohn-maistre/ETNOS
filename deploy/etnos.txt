@@ -99,3 +99,4 @@
 2026-11-27b
 2026-11-27c
 2026-11-27d: private alpha (invite gate, backups, recovery codes, web push, first run, privacy and reports) and Aksara's reply voice
+2026-11-27e: Peta Kata map-first with basic wordlists for 187 languages (CC BY 4.0), Lani name, polish on Ensiklopedia, Aksara and Jelajah
