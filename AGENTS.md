@@ -83,7 +83,7 @@ Making a launch video, a deck or other media? Read [docs/launch/video-brief.md](
 - Feature names say what the thing is or does. No coined brand names for features.
 - Write **ETNOS** in text. The lowercase **etnos.** is the drawn wordmark only, and `etnos.space` is the domain.
 - Product names are ETNOS and Aksara. Interface names in use: Beranda, Jelajah, Komunitas, Ensiklopedia, Penampil, Peta pengetahuan, Kamus komunitas, Periksa, Percakapan, Lembaga, Kios, Situs, Studio, Pengaturan, Mode belajar, Kata hari ini, Artinya.
-- Do not put model names or model identifiers in repository files, except in a commit trailer that your harness requires.
+- Do not put model names or model identifiers in repository files.
 
 ## 6. Design
 
@@ -142,6 +142,7 @@ All of them must pass (on 27 November: 396 root tests with 1 skipped, 38 web tes
 ### Git, commits and deploys
 
 - The repository is `yohn-maistre/etnos` (earlier `strata` and `ETNOS`; GitHub redirects). Work goes straight to `main` unless the harness gives you a branch.
+- **Commits are authored as the owner** (decision, 27 November): `git config user.name "yohn-maistre"` and `git config user.email "33504511+yohn-maistre@users.noreply.github.com"`. Add no AI co-author or session trailers, even if your harness suggests them. The owner's instruction wins.
 - The tree is shared with other agents. Stage your own files by explicit path, commit with `git commit --only <paths>` when others have work in progress, and never stash, reset or revert someone else's changes. If a push is refused, fetch, merge and push again.
 - **Deploy** by appending one line to `deploy/etnos.txt` (the date plus a letter, such as `2026-11-27b`) and pushing it to main. The workflow `.github/workflows/deploy-etnos.yml` runs the checks, deploys the web Worker and the identity host, and makes the subdomain routes. Commit that file alone with `--only`. Never touch `deploy/resident.txt`; the owner runs that one.
 - After a deploy, wait for the bundle name in `https://etnos.space/` to change, then check the routes you touched.
@@ -174,4 +175,4 @@ Models: the operator picks a keyed provider in Studio (Gemini through Google AI 
   - Docs that the Situs code already links to (`docs/plan/situs-subdomains.md`, `docs/operator-guide.md`).
   - One namespace for people handles and Situs names.
   - A current "what is built" page that replaces the older status notes.
-- **Competition context:** ETNOS is entered in BUDAYA GO! 2026 (Inovasi Digital, Platform Digital untuk Komunitas Budaya). The showcase is 18 to 19 December 2026. See [docs/competition/](docs/competition/).
+- **Competition:** ETNOS was prepared for BUDAYA GO! 2026 but was not registered. Do not describe it as entered anywhere. Documents in `docs/competition/` are history.

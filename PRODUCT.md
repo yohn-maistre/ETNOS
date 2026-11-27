@@ -26,7 +26,7 @@ Conversation and knowledge in one place, owned by the community. Aksara, an AI l
 
 ## Operating Context
 
-Phones first, often on slow or costly connections. Most people meet ETNOS through Beranda (the feed), Jelajah (discovery), Wiki and community pages. The theme follows the time of day until the reader picks one. Entered in BUDAYA GO! 2026, category Inovasi Digital, subtheme Platform Digital untuk Komunitas Budaya. The proposal, video and deck are uploaded on 26 to 27 November 2026; the showcase is 18 to 19 December 2026.
+Phones first, often on slow or costly connections. Most people meet ETNOS through Beranda (the feed), Jelajah (discovery), Wiki and community pages. The theme follows the time of day until the reader picks one. ETNOS opens first as a private alpha for a small invited group, then opens wider after a clean move to its own Cloudflare account.
 
 ## Capabilities and Constraints
 
