@@ -103,3 +103,4 @@
 2026-11-27f: Aksara's drafts in Indonesian only
 2026-11-28a: language pages hold their Kamus, one Bahasa index, 278 suku, Papuan Voices with NC labels, Local Contexts Notices, English refused in Aksara's posts
 2026-11-28b: Jelajah as the one door with Ensiklopedia inside, new category cards, sidebar with Pustakawan, Kamus tab folded, language groups counted apart
+2026-11-28c: Sedang dibicarakan counts people, test communities archived, deploy works without missing service bindings
