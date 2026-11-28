@@ -721,6 +721,11 @@ CREATE TABLE IF NOT EXISTS local_contexts_collections(
  collection TEXT PRIMARY KEY, project_id TEXT NOT NULL DEFAULT '', notices TEXT NOT NULL DEFAULT '[]',
  updated INTEGER NOT NULL, updated_by TEXT NOT NULL REFERENCES actors(id)
 );
+`, `
+-- Owner decision (28 November): the two test communities on etnos.space are archived. Each row is changed only
+-- while it still holds its test title and description, so no other node and no edited community is touched.
+UPDATE communities SET archived=1 WHERE id='b35c9621-699b-4f76-a451-a730020a22f6' AND title='Pemberitahuan' AND description='Geng';
+UPDATE communities SET archived=1 WHERE id='95996cee-2410-4c38-b402-c2211a1593ef' AND title='Koordinasi daerah' AND description LIKE 'Hen tecahi%';
 `]
 
 export const schemaVersion=migrations.length
