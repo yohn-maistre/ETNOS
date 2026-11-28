@@ -46,8 +46,9 @@
       .slice(0, SIZE)
       .map<Row>((t) => ({
         key: 'c' + t.context.id,
-        title: t.lead?.title || t.context.title,
-        meta: [(kindName[t.context.kind] ?? 'Topik') + ' ' + t.context.title, t.threads + ' percakapan', t.posts + ' posting', t.people ? t.people + ' orang' : ''].filter(Boolean).join(' · '),
+        title: t.context.title,
+        text: t.lead?.title || undefined,
+        meta: [kindName[t.context.kind] ?? 'Topik', t.people + ' orang', t.threads + ' percakapan'].join(' · '),
         href: t.lead ? '/square/' + t.lead.id : '/wiki/' + t.context.slug,
         image: t.lead?.image ?? null,
       })),

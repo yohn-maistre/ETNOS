@@ -34,6 +34,11 @@ test('Sedang dibicarakan counts only public, visible posts, by thread label or c
   s.createPost(friend.actor.id,open.id,'REMOVED reply',removed.id)
   s.hidePost(steward.actor.id,removed.id)
 
+  // A label that only an agent posted under is not "being talked about".
+  const bot=s.provision('did:web:bot.example','Bot');s.join(bot.actor.id,open.id)
+  const botOnly=ctx('fixture-bot-only','place')
+  for(let i=0;i<5;i++){const p=s.createPost(bot.actor.id,open.id,'Catatan otomatis '+i);g.attach(steward.actor.id,'post',p.id,botOnly.id)}
+  s.run("UPDATE actors SET kind='agent' WHERE id=?",bot.actor.id)
   const result=g.talked(7)
   assert.equal(result.days,7)
   assert.deepEqual(result.items.map(i=>i.context.slug),['fixture-nabire','fixture-music'])
@@ -43,7 +48,7 @@ test('Sedang dibicarakan counts only public, visible posts, by thread label or c
   assert.equal(result.items[1].posts,1)
   // Over HTTP, nothing private or removed leaks into the response.
   const body=await (await api(s)(new Request(s.base+'/v1/contexts/talked?days=30'))).text()
-  for(const word of ['SECRET','REMOVED','fixture-quiet'])assert.equal(body.includes(word),false,word)
+  for(const word of ['SECRET','REMOVED','fixture-quiet','fixture-bot-only'])assert.equal(body.includes(word),false,word)
   // The window is clamped; a quiet week returns nothing rather than old news.
   now+=60*86400000
   assert.deepEqual(g.talked(7).items,[])

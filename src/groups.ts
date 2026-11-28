@@ -66,6 +66,15 @@ export function strings(value: unknown, max = 10): string[] {
 }
 
 /** Local group authority does not inherit institutional/source or forum rights. */
+/** The first sentence of a post, plain, cut at a word and never mid-word. */
+function excerpt(text: string, max = 120) {
+  const plain = text.replace(/https?:\/\/\S+/g, "").replace(/[#*_>`]/g, "").replace(/\s+/g, " ").trim();
+  const first = plain.match(/^.+?[.!?](?=\s|$)/)?.[0] ?? plain;
+  if (first.length <= max) return first;
+  const cut = first.slice(0, max);
+  return cut.slice(0, Math.max(cut.lastIndexOf(" "), 40)).replace(/[,;:]$/, "") + "…";
+}
+
 export class Groups implements GroupAuthority {
   readonly store: EtnosCore;
   readonly stewardDid?: string;
@@ -760,19 +769,19 @@ export class Groups implements GroupAuthority {
     const rows = this.store.all<ContextRow & { posts: number; threads: number; people: number }>(
       `${tagged} SELECT x.*,count(DISTINCT t.id) posts,count(DISTINCT t.root) threads,count(DISTINCT CASE WHEN a.kind='human' THEN t.author_id END) people
        FROM t JOIN contexts x ON x.id=t.context_id AND x.active=1 JOIN actors a ON a.id=t.author_id
-       GROUP BY x.id ORDER BY posts DESC,people DESC,x.title LIMIT 12`,
+       GROUP BY x.id HAVING people>0 ORDER BY people DESC,threads DESC,posts DESC,x.title LIMIT 12`,
       since,
     );
     if (!rows.length) return { days: window, items: [] };
     const leads = new Map(
       this.store
         .all<{ context_id: string; root: string; n: number; title: string | null; text: string; rank: number }>(
-          `${tagged}, c AS (SELECT t.context_id,t.root,count(*) n FROM t WHERE t.context_id IN (SELECT value FROM json_each(?)) GROUP BY t.context_id,t.root)
+          `${tagged}, c AS (SELECT t.context_id,t.root,count(*) n FROM t JOIN actors a ON a.id=t.author_id WHERE t.context_id IN (SELECT value FROM json_each(?)) GROUP BY t.context_id,t.root HAVING sum(a.kind='human')>0)
            SELECT * FROM (SELECT c.context_id,c.root,c.n,json_extract(r.content,'$.title') title,r.text,ROW_NUMBER() OVER(PARTITION BY c.context_id ORDER BY c.n DESC,r.created DESC) rank FROM c JOIN posts r ON r.id=c.root) WHERE rank=1`,
           since,
           JSON.stringify(rows.map((r) => r.id)),
         )
-        .map((l) => [l.context_id, { id: l.root, title: (l.title || l.text).replace(/[#*_>`]/g, "").replace(/\s+/g, " ").trim().slice(0, 140) }]),
+        .map((l) => [l.context_id, { id: l.root, title: l.title ? excerpt(l.title) : excerpt(l.text) }]),
     );
     return {
       days: window,
